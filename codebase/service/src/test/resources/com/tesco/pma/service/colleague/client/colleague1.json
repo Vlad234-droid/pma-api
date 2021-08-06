@@ -1,0 +1,13 @@
+{
+  "colleagueUUID": "f09c44ee-f879-4828-b35e-1c1585bf20f8",
+  "profile": {
+    "title": "Mr.",
+    "firstName": "first-name",
+    "middleName": "middle-name",
+    "lastName": "last-name",
+    "gender": "M"
+  },
+  "contact": {
+    "email": "some@dummy.com"
+  }
+}

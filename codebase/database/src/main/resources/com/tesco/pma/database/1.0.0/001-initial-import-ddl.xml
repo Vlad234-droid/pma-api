@@ -1,0 +1,44 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet author="imatvii" id="1">
+        <createTable remarks="Dictionary with details of TESCO's subsidiary groups"
+                     tableName="subsidiary_group">
+            <column name="uuid" type="${uuid_type}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="subsidiary_group_pk"/>
+            </column>
+            <column name="name" type="VARCHAR">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="updated_by" type="VARCHAR(50)"/>
+            <column name="updated_time" type="TIMESTAMPTZ"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="imatvii" id="2">
+        <createTable remarks="Dictionary with details of TESCO's subsidiaries"
+                     tableName="subsidiary">
+            <column name="uuid" type="${uuid_type}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="subsidiary_pk"/>
+            </column>
+            <column name="name" type="VARCHAR">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="subsidiary_group_uuid" type="${uuid_type}">
+                <constraints nullable="true" unique="false"/>
+            </column>
+            <column name="updated_by" type="VARCHAR(50)"/>
+            <column name="updated_time" type="TIMESTAMPTZ"/>
+        </createTable>
+        <addUniqueConstraint columnNames="name" constraintName="subsidiary_name_uc"
+                             tableName="subsidiary"/>
+        <addForeignKeyConstraint baseColumnNames="subsidiary_group_uuid" baseTableName="subsidiary"
+                                 constraintName="subsidiary_subsidiary_group_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="uuid" referencedTableName="subsidiary_group" validate="true"/>
+    </changeSet>
+
+
+</databaseChangeLog>

@@ -1,0 +1,28 @@
+{
+  "status": "Ok",
+  "version": "1.0.0-SNAPSHOT",
+  "component": [
+    {
+      "name": "com.tesco.pma.datasource",
+      "type": "COMPONENT",
+      "description": "PostgreSQL database",
+      "status": "Ok",
+      "version": "42.2.18",
+      "checked": "2021-06-24T15:36:48.433Z"
+    },
+    {
+      "name": "com.tesco.capi",
+      "type": "DEPENDENCY",
+      "description": "Colleague API Platform",
+      "status": "Ok",
+      "checked": "2021-06-24T15:36:48.433Z"
+    },
+    {
+      "name": "com.tesco.identity",
+      "type": "DEPENDENCY",
+      "description": "Identity API Platform",
+      "status": "Ok",
+      "checked": "2021-06-24T15:36:48.433Z"
+    }
+  ]
+}

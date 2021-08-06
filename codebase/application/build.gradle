@@ -1,0 +1,123 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies { classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") }
+}
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id "io.spring.dependency-management" version "${dependencyManagementVersion}"
+    id "com.github.johnrengelman.processes" version "${openApiPluginProccessVersion}"
+    id "org.springdoc.openapi-gradle-plugin" version "${openApiGradlePluginVersion}"
+}
+
+dependencies {
+    implementation project(':api')
+    implementation project(':service')
+    implementation project(':healthcheck')
+
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
+    implementation("org.springdoc:springdoc-openapi-core:${openApiCoreVersion}")
+    implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
+
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+
+processResources {
+
+    def tokens = new Hashtable<String, String>(project.properties.size() * 2)
+    project.properties.each {
+        if (it.key instanceof String) {
+            tokens.putIfAbsent(it.key, it.value.toString())
+            tokens.putIfAbsent("project.${it.key}".toString(), it.value.toString())
+        }
+    }
+
+    /**
+     * Process resources from `config` folder:
+     *  - rename files using ant-style tokens
+     *  - replace ant-style tokens in file with values
+     */
+    with copySpec {
+        from 'src/main/config'
+        if ('local' == envType) {
+            exclude '**/application-@envType@.properties'
+        }
+
+        rename { String filename ->
+            def tokenPattern = ~/@(.+)@/
+            def tokenMatcher = filename =~ tokenPattern
+            def newFilename = filename
+            tokenMatcher.findAll { List<String> token ->
+                if (tokens.containsKey(token[1])) {
+                    newFilename = newFilename.replace(token[0], tokens[token[1]])
+                }
+            }
+
+            newFilename
+        }
+
+        filter ReplaceTokens, tokens: tokens
+    }
+}
+
+jar {
+    enabled(false)
+}
+
+bootJar {
+    enabled(true)
+
+    archiveClassifier = 'boot'
+    archiveVersion = rootProjectVersion
+
+    manifest {
+        def attrs = [
+            'Implementation-Title': "${rootProjectName}",
+            'Implementation-Version': archiveVersion,
+            'Main-Class': 'org.springframework.boot.loader.PropertiesLauncher'
+        ]
+		attributes attrs
+	}
+}
+
+bootRun {
+    args += [ "--spring.profiles.active=${envType}" ]
+}
+
+//def publication = publishing.publications.maven
+//def artifacts = publication.artifacts.findAll{ it.classifier != null }.collect()
+//artifacts.add(bootJar)
+//publication.setArtifacts(artifacts)
+
+publishing {
+    publications {
+        bootJava(MavenPublication) {
+            artifact bootJar
+        }
+    }
+}
+
+springBoot {
+    buildInfo {
+        properties {
+            name = 'PMA application'
+            group = rootProjectGroup
+            version = rootProjectVersion
+        }
+    }
+}
+
+openApi {
+    apiDocsUrl.set("http://localhost:8083/v1/api-docs")
+    outputDir.set(file("$buildDir/docs"))
+    outputFileName.set("swagger.json")
+    waitTimeInSeconds.set(10)
+    //forkProperties.set("-Dspring.profiles.active=special")
+}

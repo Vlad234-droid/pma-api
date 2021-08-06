@@ -1,0 +1,70 @@
+<configuration>
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="com.tesco.pma.logging.PatternMaskingLayout">
+                <maskPattern>([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)</maskPattern><!-- Simple email pattern-->
+                <maskPattern>password:?\s*(\w+)</maskPattern><!-- Simple password pattern-->
+                <pattern>%date{ISO8601,UTC} %level ${HOSTNAME} [%thread] %logger{20} %msg%n</pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <appender name="SERVICE_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${SERVICE_HOME}/logs/service.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--
+              For daily rollover, use 'mapping-monitoring_%d{ISO8601,UTC}.log'
+              For hourly rollover, use 'mapping-monitoring_%d{yyyy-MM-dd_HH,UTC}.log'.
+              To GZIP rolled files, replace '.log' with '.log.gz'.
+              To ZIP rolled files, replace '.log' with '.log.zip'.
+            -->
+            <fileNamePattern>${SERVICE_HOME}/logs/archive/service_%d{yyyy-MM-dd,UTC}.%i.log.zip</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>20MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>50</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="com.tesco.pma.logging.PatternMaskingLayout">
+                <maskPattern>([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)</maskPattern><!-- Simple email pattern-->
+                <maskPattern>password:?\s*(\w+)</maskPattern><!-- Simple password pattern-->
+                <pattern>%date{ISO8601,UTC} %level ${HOSTNAME} [%thread] %logger %msg%n</pattern>
+            </layout>
+            <immediateFlush>true</immediateFlush>
+        </encoder>
+    </appender>
+
+    <appender name="REQUEST_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${SERVICE_HOME}/logs/request.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--
+              For daily rollover, use 'mapping-monitoring_%d{ISO8601,UTC}.log'
+              For hourly rollover, use 'mapping-monitoring_%d{yyyy-MM-dd_HH,UTC}.log'.
+              To GZIP rolled files, replace '.log' with '.log.gz'.
+              To ZIP rolled files, replace '.log' with '.log.zip'.
+            -->
+            <fileNamePattern>${SERVICE_HOME}/logs/archive/request_%d{yyyy-MM-dd,UTC}.%i.log.zip</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>20MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>50</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%date{ISO8601,UTC} %level ${HOSTNAME} [%thread] %logger %msg%n</pattern>
+            <immediateFlush>true</immediateFlush>
+        </encoder>
+    </appender>
+
+    <logger name="com.tesco.pma.logging.filter.RequestLoggingFilter" additivity="false" level="debug">
+        <appender-ref ref="REQUEST_LOG" />
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="SERVICE_LOG"/>
+    </root>
+</configuration>

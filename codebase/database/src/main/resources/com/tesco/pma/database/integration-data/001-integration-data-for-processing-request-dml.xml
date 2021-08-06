@@ -1,0 +1,21 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <property name="SUBSIDIARY_UUID_1" value="5d9bbac9-850a-45e3-856b-50be9b9f563c" global="false"/>
+
+    <changeSet author="imatvii" id="1" labels="integration">
+        <comment>Init table subsidiary with integration data</comment>
+        <insert tableName="subsidiary">
+            <column name="uuid" value="${SUBSIDIARY_UUID_1}"/>
+            <column name="name" value="subsidiary name"/>
+        </insert>
+        <rollback>
+            <delete tableName="subsidiary">
+                <where>uuid = '${SUBSIDIARY_UUID_1}'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,15 @@
+{
+  "success": false,
+  "errors": [
+    {
+      "code": "UNAUTHENTICATED",
+      "message": "error-message",
+      "details": [
+        {
+          "message": "from-exception-message",
+          "target": "test-realm"
+        }
+      ]
+    }
+  ]
+}

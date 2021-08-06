@@ -1,0 +1,20 @@
+<configuration>
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="com.tesco.pma.logging.PatternMaskingLayout">
+                <maskPattern>([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)</maskPattern><!-- Simple email pattern-->
+                <maskPattern>password:?\s*(\w+)</maskPattern><!-- Simple password pattern-->
+                <pattern>%date{ISO8601,UTC} %level ${HOSTNAME} [%thread] %logger{20} %msg%n</pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

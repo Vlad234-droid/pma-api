@@ -1,0 +1,29 @@
+apply plugin: 'maven-publish'
+
+publishing {
+
+    publications {
+        maven(MavenPublication) {
+            groupId = "${rootProjectGroup}"
+            version = "${rootProjectVersion}"
+            from components.java
+            artifact sourcesJar
+            artifact docsJar
+            artifact testsJar
+        }
+    }
+
+    repositories {
+        if ([ 'ppe', 'prod' ].any { it == envType }) {
+            maven {
+                url repositoryURL
+                credentials {
+                    username = repositoryUser
+                    password = repositoryPassword
+                }
+            }
+        } else {
+            mavenLocal()
+       }
+    }
+}

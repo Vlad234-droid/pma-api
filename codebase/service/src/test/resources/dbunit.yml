@@ -1,0 +1,5 @@
+cacheConnection: false
+properties:
+# workaround https://github.com/database-rider/database-rider/issues/198
+  caseSensitiveTableNames: true
+  datatypeFactory: !!com.tesco.pma.dao.config.TestPostgresqlDataTypeFactory {}

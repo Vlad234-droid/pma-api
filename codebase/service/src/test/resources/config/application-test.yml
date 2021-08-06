@@ -1,0 +1,147 @@
+spring:
+  application:
+    name: app
+    index: ${random.uuid}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://test-issue-url.com
+          jwk-set-uri: http://test-jwk-set-uri.com
+        opaquetoken:
+          client-id: test_client_id
+          client-secret: test_client_secret
+          introspection-uri: http://test-introspection-uri.com
+      client:
+        registration:
+          identity:
+            client-id: test_client_id
+            client-secret: test_client_secret
+            authorization-grant-type: client_credentials
+            client-authentication-method: POST
+            scope:
+              - test_scope_1
+              - test_scope_2
+            provider: identity
+        provider:
+          identity:
+            token-uri: http://test-token-uri.com
+  mvc:
+    format:
+      date-time: iso
+      date: iso
+      time: iso
+  messages:
+    basename: >
+      com/tesco/pma/exception/AppExceptionMessage
+    encoding: UTF-8
+  async-executor:
+    core-pool-size: 2
+    max-pool-size: 2
+    queue-capacity: 0
+  datasource:
+    default:
+      mybatis-session:
+        type-aliases-package: com.tesco.pma.domain
+        configuration-properties:
+          base-package: com.tesco.pma.dao
+          batchSize: 100
+    postgres-version: 11.11
+    testdb:
+      driver-class-name: org.h2.Driver
+      jdbc-url: jdbc:h2:mem:camunda;MODE=Oracle;DB_CLOSE_DELAY=-1
+      username: sa
+      password:
+      type: com.zaxxer.hikari.HikariDataSource
+      connection-test-query: SELECT 1 FROM DUAL
+      minimum-idle: 10
+      maximum-pool-size: 10
+      pool-name: testdb_ds_pool
+      is-auto-commit: true
+  liquibase:
+    enabled: true
+    change-log: 'classpath:/com/tesco/pma/database/changelog-master.xml'
+    labels: '!integration'
+---
+server:
+  port: 8083
+  servlet:
+    context-path: /
+management:
+  server:
+    port: 8090
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+    shutdown:
+      enabled: true
+validation:
+  mapping-locations:
+    - classpath:com/tesco/pma/validation/constraints-subsidiary.xml
+    - classpath:com/tesco/pma/validation/subsidiary-permission.xml
+  messages:
+    basename: com/tesco/pma/validation/AppValidationMessages
+    encoding: UTF-8
+tesco:
+  application:
+    name: pma
+    security:
+      enabled: true
+      additional-auth:
+        enabled: true
+        token-header-name: Authorization-App
+        jwt:
+          issuer-uri: http://test-additional-issue-url.com
+          jwk-set-uri: http://test-additional-jwk-set-url.com
+      role-mapping:
+        ROLE_Admin: AD_ROLE_Admin
+        ROLE_SubsidiaryManager: AD_ROLE_SubsidiaryManager
+        ROLE_Viewer: AD_ROLE_Viewer
+    external-endpoints:
+      cep:
+        subject: test-cep-subject
+        publish:
+          url: https://test.com/colleague/v1/events
+          events:
+            DataRequest:
+              feedId: pma-requests-v1-test
+        retry-timeout: 30
+      colleague-api:
+        base-url: https://test.com/colleague/colleague/v2/colleagues
+    rest-template:
+      connect-timeout: 20000
+      read-timeout: 30000
+    file-storage:
+      root: ${java.io.tmpdir}
+    data-wipe:
+      expiration-period: 3d
+    healthcheck:
+      indicators:
+        -
+          name: defaultPostgreSQLDB
+          description: Default database
+          url: ${spring.datasource.default.jdbc-url}
+          beanName: databaseHealthIndicator
+          reference: defaultDataSource
+          validationQuery: "SHOW server_version"
+        -
+          name: testDB
+          description: Test database
+          url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+          beanName: databaseHealthIndicator
+          reference: testDataSource
+          validationQuery: "SELECT H2VERSION() FROM DUAL"
+        -
+          name: identityAPI
+          description: Identity API
+          url: https://test.com/identity/_status
+          beanName: restHealthIndicator
+        -
+          name: colleagueFactsAPI
+          description: Colleague Facts API
+          url: https://test.com/colleague/_status
+          beanName: restHealthIndicator

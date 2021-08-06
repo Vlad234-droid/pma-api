@@ -1,0 +1,161 @@
+spring:
+  application:
+    #name: pma-api
+    index: ${random.uuid}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${TESCO_API_BASE_URL}/identity/v4/issue-token
+          jwk-set-uri: ${TESCO_API_BASE_URL}/.well-known/jwks.json
+        opaquetoken:
+          client-id: ${IDENTITY_CLIENT_ID}
+          client-secret: ${IDENTITY_CLIENT_SECRET}
+          introspection-uri: ${TESCO_API_BASE_URL}/identity/v4/issue-token/introspect
+      client:
+        registration:
+          identity:
+            client-id: ${IDENTITY_CLIENT_ID}
+            client-secret: ${IDENTITY_CLIENT_SECRET}
+            authorization-grant-type: client_credentials
+            client-authentication-method: POST
+            scope:
+              - internal
+              - public
+            provider: identity
+        provider:
+          identity:
+            token-uri: ${TESCO_API_BASE_URL}/identity/v4/issue-token/token
+  mvc:
+    format:
+      date-time: iso
+      date: iso
+      time: iso
+  datasource:
+    default:
+      # MyBatis config
+      mybatis-session:
+        type-aliases-package: com.tesco.pma.domain
+        configuration-properties:
+          base-package: com.tesco.pma.dao
+          batchSize: 500
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 128MB
+      max-request-size: 128MB
+  async-executor:
+    core-pool-size: 2
+    max-pool-size: 5
+    queue-capacity: 10
+server:
+  port: 8083
+  servlet:
+    context-path: /v1
+management:
+  server:
+    port: 8090
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    jmx:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+      probes:
+        enabled: true
+    shutdown:
+      enabled: true
+springdoc:
+  version: '@project.version@'
+  show-actuator: true
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    display-request-duration: true
+    groups-order: DESC
+    operationsSorter: method
+    disable-swagger-default-url: true
+validation:
+  mapping-locations:
+    - classpath:com/tesco/pma/validation/constraints-subsidiary.xml
+    - classpath:com/tesco/pma/validation/subsidiary-permission.xml
+  messages:
+    basename: com/tesco/pma/validation/AppValidationMessages
+    encoding: UTF-8
+tesco:
+  application:
+    name: pma
+    security:
+      enabled: ${SECURITY_ENABLED:true}
+      additional-auth:
+        enabled: true
+        token-header-name: Authorization-App
+        jwt:
+          issuer-uri: ${ONE_LOGIN_BASE_URL}/oidc/2
+          jwk-set-uri: ${ONE_LOGIN_BASE_URL}/oidc/2/certs
+      role-mapping:
+        ROLE_Admin: ${AD_ROLE_ADMIN}
+        ROLE_SubsidiaryManager: ${AD_ROLE_SUBSIDIARY_MANAGER}
+        ROLE_Viewer: ${AD_ROLE_VIEWER}
+    rest-template:
+      connect-timeout: 20000
+      read-timeout: 30000
+    page:
+      size: 20
+    healthcheck:
+      indicators:
+        -
+          name: defaultPostgreSQLDB
+          description: Default database
+          url: ${spring.datasource.default.jdbc-url}
+          beanName: databaseHealthIndicator
+          reference: defaultDataSource
+          validationQuery: "SHOW server_version"
+        -
+          name: identityAPI
+          url: ${TESCO_API_BASE_URL}/identity/_status
+          description: Identity API
+          beanName: restHealthIndicator
+        -
+          name: colleagueFactsAPI
+          url: ${TESCO_API_BASE_URL}/colleague/_status
+          description: Colleague Facts API
+          beanName: restHealthIndicator
+    external-endpoints:
+      cep:
+        subject: ${CEP_SUBJECT}
+        publish:
+          url: ${TESCO_API_BASE_URL}/colleague/v1/events
+        retry-timeout: 30
+      colleague-api:
+        base-url: ${TESCO_API_BASE_URL}/colleague/v2/colleagues
+
+---
+spring:
+  config:
+    activate:
+      on-profile: @envType@
+  datasource:
+    default:
+      # Database config
+      jdbc-url: ${GPG_DB_URL}
+      schema: ${GPG_DB_SCHEMA}
+      username: ${GPG_DB_USERNAME}
+      password: ${GPG_DB_PASSWORD}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: cep-local
+tesco:
+  application:
+    external-endpoints:
+      cep:
+        publish:
+          url: http://localhost:8083/v1/requests/events/local

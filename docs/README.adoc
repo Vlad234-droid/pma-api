@@ -1,0 +1,60 @@
+== Mandatory Env variables
+
+[cols="1,2,2,2"]
+|===
+|Variable Name|PPE|PROD|Comment
+
+|TESCO_API_BASE_URL|https://api-ppe.tesco.com|https://api.tesco.com|
+|FILE_STORAGE_ROOT|||The file storage root folder to store processing data request files
+4+^|*Security*
+|IDENTITY_CLIENT_ID|||
+|IDENTITY_CLIENT_SECRET|||
+|ONE_LOGIN_BASE_URL|https://loginppe.ourtesco.com|https://login.ourtesco.com|
+|CEP_SUBJECT|870f4dc2-73fc-462f-b82c-80c4492f41e5|1e8c9dbe-5946-46f7-9567-9c3fa9d53d18|https://github.dev.global.tesco.org/24Colleague/ColleagueEventingPlatform/wiki/Generic-Eventing-Platform-Onboarding#additional-technical-details[Generic-Eventing-Platform-Onboarding]
+|SECURITY_ENABLED|||Default value: true
+4+^|*Database*
+|PMA_DB_URL|||
+|PMA_DB_SCHEMA|||
+|PMA_DB_USERNAME|||
+|PMA_DB_PASSWORD|||
+|===
+
+== User Role Overrides
+
+For testing proposes (*`Not avaliable on prod`*) we have hidden endpoints with ability to manage user roles.
+Roles obtained from OneLogin token could be overridden.
+
+'colleagueUuid' - either colleague UUID or service client id. Could be obtained from Identity Token 'sub' claim.
+
+To enable this feature set spring property `_tesco.application.security.overriding-roles.enabled=true_`
+
+(gradlew bootRun --args="--tesco.application.security.overriding-roles.enabled=true")
+
+Also `_tesco.application.security.enabled=true_` should be set (that is by default)
+
+Mapping lives only in runtime, after app restarting it will be empty. Not shared across multiple nodes.
+
+* PUT  /test/colleagues/{colleagueUuid}/overriding-roles
+
+Body - array of roles: Admin, SubsidiaryManager or Viewer.
+Overrides roles for user. Body could be empty array - means erase user roles obtained from token. Example:
+
+    curl --location --request POST 'http://localhost:8083/v1/test/colleagues/4b99f4cf-f181-4ccf-be54-e0063bab3000/overriding-roles' --header 'Content-Type: application/json' --data-raw '["SubsidiaryManager","Admin"]'
+
+* DELETE  /test/colleagues/{colleagueUuid}/overriding-roles
+
+Deletes overriding roles for user. Example:
+
+    curl --location --request DELETE 'http://localhost:8083/v1/test/colleagues/4b99f4cf-f181-4ccf-be54-e0063bab3000/overriding-roles'
+
+* GET /test/colleagues
+
+Returns all users that has overriding roles. Example:
+
+    curl --location --request GET 'http://localhost:8083/v1/test/colleagues'
+
+* GET /test/colleagues/{colleagueUuid}
+
+Returns user with overriding roles or 404 if not found. Example:
+
+    curl --location --request GET 'http://localhost:8083/v1/test/colleagues/4b99f4cf-f181-4ccf-be54-e0063bab3000'
