@@ -44,6 +44,10 @@ spring:
       enabled: true
       max-file-size: 128MB
       max-request-size: 128MB
+  messages:
+    basename: >
+      com/tesco/pma/exception/AppExceptionMessage
+    encoding: UTF-8
   async-executor:
     core-pool-size: 2
     max-pool-size: 5
