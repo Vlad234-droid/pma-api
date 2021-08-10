@@ -5,3 +5,5 @@ include 'database'
 include 'service'
 include 'application'
 include 'healthcheck'
+include 'profile'
+
