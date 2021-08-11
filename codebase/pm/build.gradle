@@ -1,0 +1,26 @@
+dependencies {
+    implementation project(':api')
+    implementation project(':event')
+    implementation project(':spring')
+    implementation project(':bpm')
+    implementation project(':camunda')
+
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    implementation ("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter:${camundaVersion}")
+    implementation ("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-webapp:${camundaVersion}")
+
+    implementation ("org.codehaus.groovy:groovy-all:${groovyVersion}")
+
+    implementation ("com.h2database:h2:${h2Version}")
+    testImplementation ("com.zaxxer:HikariCP:${hikariVersion}")
+
+    // to specify parent test dependencies
+    testImplementation project(':camunda').sourceSets.test.output
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}") {
+        exclude group: 'junit' // excluding junit 4
+    }
+    testImplementation("commons-io:commons-io:${commonsIoVersion}")
+}

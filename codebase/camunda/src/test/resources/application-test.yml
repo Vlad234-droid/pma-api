@@ -1,0 +1,26 @@
+spring:
+  application:
+    index: ${random.uuid}
+  datasource:
+    camunda:
+      driver-class-name: org.h2.Driver
+      jdbc-url: jdbc:h2:mem:camunda-test;MODE=Oracle;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      username: sa
+      password:
+      type: com.zaxxer.hikari.HikariDataSource
+      connection-test-query: SELECT 1
+      min-idle: 1
+      max-pool-size: 10
+      pool-name: db_pool
+      is-auto-commit: false
+
+camunda:
+  bpm:
+    database:
+      schema-update: true
+    metrics:
+      enabled: false
+    job-execution:
+      enabled: false
+    id-generator: strong
+    deployment-resource-pattern: classpath:*.bpmn

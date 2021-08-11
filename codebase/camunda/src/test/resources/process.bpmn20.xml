@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="definitions" targetNamespace="http://camunda.org/schema/1.0/bpmn20" exporter="Camunda Modeler" exporterVersion="2.0.3">
+  <message id="authMessage" name="auth" />
+  <process id="activityTest" name="activityTest" isExecutable="true">
+    <startEvent id="theStart" />
+    <sequenceFlow id="sequenceFlow-b24279a4-da14-4b37-8845-b3373929c286" sourceRef="theStart" targetRef="authEvent" />
+    <intermediateCatchEvent id="authEvent" name="Alert">
+      <messageEventDefinition messageRef="authMessage" />
+    </intermediateCatchEvent>
+    <sequenceFlow id="sequenceFlow-d557da3d-c52b-46c2-a558-c24edcadc133" sourceRef="authEvent" targetRef="javaService" />
+    <serviceTask id="javaService" name="My Java Service Task" camunda:class="com.tesco.pma.bpm.camunda.ServiceTask" />
+    <sequenceFlow id="sequenceFlow-ac737eb6-16ef-48fc-917e-526cf4535d88" sourceRef="javaService" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_activityTest">
+    <bpmndi:BPMNPlane id="BPMNPlane_activityTest" bpmnElement="activityTest">
+      <bpmndi:BPMNShape id="BPMNShape_theStart" bpmnElement="theStart">
+        <omgdc:Bounds x="0" y="15" width="35" height="35" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_authEvent" bpmnElement="authEvent">
+        <omgdc:Bounds x="80" y="15" width="35" height="35" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_javaService" bpmnElement="javaService">
+        <omgdc:Bounds x="160" y="0" width="100" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_theEnd" bpmnElement="theEnd">
+        <omgdc:Bounds x="310" y="12" width="35" height="35" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_sequenceFlow-b24279a4-da14-4b37-8845-b3373929c286" bpmnElement="sequenceFlow-b24279a4-da14-4b37-8845-b3373929c286">
+        <omgdi:waypoint x="35" y="32" />
+        <omgdi:waypoint x="42" y="30" />
+        <omgdi:waypoint x="42" y="30" />
+        <omgdi:waypoint x="80" y="32" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_sequenceFlow-d557da3d-c52b-46c2-a558-c24edcadc133" bpmnElement="sequenceFlow-d557da3d-c52b-46c2-a558-c24edcadc133">
+        <omgdi:waypoint x="115" y="32" />
+        <omgdi:waypoint x="122" y="30" />
+        <omgdi:waypoint x="122" y="30" />
+        <omgdi:waypoint x="160" y="30" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_sequenceFlow-ac737eb6-16ef-48fc-917e-526cf4535d88" bpmnElement="sequenceFlow-ac737eb6-16ef-48fc-917e-526cf4535d88">
+        <omgdi:waypoint x="260" y="30" />
+        <omgdi:waypoint x="285" y="30" />
+        <omgdi:waypoint x="285" y="29" />
+        <omgdi:waypoint x="310" y="29" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

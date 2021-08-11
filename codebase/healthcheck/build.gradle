@@ -31,6 +31,7 @@ dependencies {
     }
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("com.squareup.okhttp3:mockwebserver")
+    testImplementation ("com.h2database:h2:${h2Version}")
 
     testCompile project(':service').sourceSets.test.output
 
