@@ -1,8 +1,8 @@
 package com.tesco.pma.profile.service;
 
-import com.tesco.pma.api.Profile;
+import com.tesco.pma.profile.domain.Profile;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.dao.ProfileDAO;
+import com.tesco.pma.profile.dao.ProfileDAO;
 import com.tesco.pma.service.colleague.client.ColleagueApiClient;
 import com.tesco.pma.service.user.UserIncludes;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +26,8 @@ public class ProfileServiceImpl implements ProfileService {
     private final NamedMessageSourceAccessor messages;
 
     @Override
-    public Optional<Profile> findProfileByColleagueUuid(UUID colleagueUuid, Collection<UserIncludes> includes) {
-        return Optional.of(new Profile());
+    public Optional<Profile> findProfileByColleagueUuid(UUID colleagueUuid) {
+        return Optional.of(profileDAO.get(colleagueUuid));
     }
 
 }
