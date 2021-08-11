@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.tesco.pma.exception.ErrorCodes.USER_NOT_FOUND;
+import static com.tesco.pma.profile.exception.ErrorCodes.PROFILE_NOT_FOUND;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -40,7 +40,7 @@ public class ProfileEndpoint {
     }
 
     private NotFoundException notFound(String paramName, Object paramValue) {
-        return new NotFoundException(USER_NOT_FOUND.getCode(), messages.getMessage(USER_NOT_FOUND, Map.of(
+        return new NotFoundException(PROFILE_NOT_FOUND.getCode(), messages.getMessage(PROFILE_NOT_FOUND, Map.of(
                 "param_name", paramName, "param_value", paramValue)));
     }
 
