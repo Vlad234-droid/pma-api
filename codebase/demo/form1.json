@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "exporter": {
+    "name": "form-js (https://demo.bpmn.io)",
+    "version": "0.2.4"
+  },
+  "type": "default",
+  "components": [
+    {
+      "key": "textfield1",
+      "label": "Text Field",
+      "type": "textfield"
+    },
+    {
+      "key": "number1",
+      "label": "Number",
+      "type": "number"
+    },
+    {
+      "key": "checkbox1",
+      "label": "Checkbox",
+      "type": "checkbox"
+    },
+    {
+      "key": "radio1",
+      "label": "Radio",
+      "type": "radio",
+      "values": [
+        {
+          "label": "Value",
+          "value": "value"
+        }
+      ]
+    },
+    {
+      "key": "select1",
+      "label": "Select",
+      "type": "select",
+      "values": [
+        {
+          "label": "Value",
+          "value": "value"
+        }
+      ]
+    },
+    {
+      "action": "submit",
+      "key": "button1",
+      "label": "Button",
+      "type": "button"
+    },
+    {
+      "action": "submit",
+      "key": "button2",
+      "label": "Button",
+      "type": "button"
+    }
+  ]
+}

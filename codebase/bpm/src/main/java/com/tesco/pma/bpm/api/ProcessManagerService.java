@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 
-import com.tesco.pma.exceptions.InitializationException;
+import com.tesco.pma.exception.InitializationException;
 
 /**
  * Interface for managing process deployment and execution

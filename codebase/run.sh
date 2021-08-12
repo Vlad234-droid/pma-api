@@ -11,7 +11,14 @@ if [ "x$JAVA" = "x" ]; then
     fi
 fi
 
-
 export SERVICE_HOME=$(pwd)
 
-$JAVA -Dloader.path=application/src/main/image/config -jar application/build/libs/application-1.0.0-SNAPSHOT.jar $@
+export SECURITY_ENABLED=false
+export SECURITY_OVERRIDING_ROLES_ENABLED=true
+export FILE_STORAGE_ROOT="$SERVICE_HOME/demo/files"
+export TESCO_API_BASE_URL=https://api-ppe.tesco.com
+export ONE_LOGIN_BASE_URL=https://loginppe.ourtesco.com
+export AD_ROLE_ADMIN=GG-UK-TescoGlobal-PMA-PPE-Admin
+export AD_ROLE_LINE_MANAGER=GG-UK-TescoGlobal-PMA-PPE-LineManager
+
+$JAVA -Dloader.path=application/src/main/image/config -jar application/build/libs/application-1.0.0-SNAPSHOT-boot.jar $@

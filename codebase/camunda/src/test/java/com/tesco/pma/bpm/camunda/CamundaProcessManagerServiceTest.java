@@ -26,7 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.tesco.pma.bpm.api.ProcessExecutionException;
-import com.tesco.pma.exceptions.InitializationException;
+import com.tesco.pma.exception.InitializationException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

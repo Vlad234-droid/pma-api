@@ -23,7 +23,7 @@ import org.camunda.bpm.engine.repository.ResourceDefinition;
 import org.camunda.bpm.engine.runtime.Execution;
 import org.camunda.bpm.engine.runtime.ExecutionQuery;
 
-import com.tesco.pma.exceptions.InitializationException;
+import com.tesco.pma.exception.InitializationException;
 import com.tesco.pma.bpm.api.ProcessExecutionException;
 import com.tesco.pma.bpm.api.ProcessManagerService;
 

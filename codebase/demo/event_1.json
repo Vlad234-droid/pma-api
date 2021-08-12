@@ -1,0 +1,15 @@
+{
+    "class":"com.tesco.demo.event.EventSupport",
+    "EVENT_NAME":"E_START_1",
+    "EVENT_ID":"100",
+    "EVENT_PRIORITY":"NORMAL",
+    "CALLBACK_EVENT":{
+	"class":"com.tesco.demo.event.EventSupport",
+	"EVENT_NAME":"callback",
+	"EVENT_ID":"101",
+	"EVENT_PRIORITY":"HIGH",
+	"PROPERTIES":{"listKey":[{"class":"java.lang.Long","value":1},{"class":"java.lang.String","value":"test"},{"class":"java.lang.Integer","value":15},{"class":"java.util.ArrayList","value":["test"]},{"class":"java.lang.Double","value":34.23}]}
+	},
+    "CALLBACK_SERVICE_URL":"callbackServiceURL",
+    "PROPERTIES":{"dateKey":{"class":"java.util.Date","value":"2021-06-14 18:50:38.812"},"longKey":{"class":"java.lang.Long","value":32}}
+}

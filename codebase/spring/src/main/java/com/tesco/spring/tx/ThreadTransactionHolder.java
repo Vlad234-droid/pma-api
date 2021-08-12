@@ -10,8 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Solution to use transaction manually since there is an issue with transactions in Spring.
- * Shold be replaced once it will be fixed 
- *
+ * Should be replaced once it will be fixed
  * Link DB transaction to thread.
  */
 @Slf4j

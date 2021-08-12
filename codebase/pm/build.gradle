@@ -4,6 +4,8 @@ dependencies {
     implementation project(':spring')
     implementation project(':bpm')
     implementation project(':camunda')
+//    implementation project(':service')
+    compileOnly project(':service')
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"

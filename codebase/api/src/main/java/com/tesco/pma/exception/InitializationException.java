@@ -1,4 +1,4 @@
-package com.tesco.pma.exceptions;
+package com.tesco.pma.exception;
 
 /**
  * Exception during initialization of object.

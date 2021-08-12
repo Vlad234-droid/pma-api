@@ -127,7 +127,11 @@ public enum ErrorCodes implements ErrorCodeAware {
     /**
      * Application is not working
      */
-    LIVENESS_STATE_ERROR;
+    LIVENESS_STATE_ERROR,
+    /**
+     * Executed process was failed
+     */
+    PROCESSING_FAILED;
 
     @Override
     public String getCode() {

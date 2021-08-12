@@ -19,6 +19,11 @@ dependencies {
     implementation project(':api')
     implementation project(':service')
     implementation project(':healthcheck')
+    implementation project(':spring')
+    implementation project(':event')
+    implementation project(':bpm')
+    implementation project(':camunda')
+    implementation project(':pm')
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-web")
