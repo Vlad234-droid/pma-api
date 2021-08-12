@@ -1,6 +1,6 @@
 package com.tesco.pma.profile.service;
 
-import com.tesco.pma.profile.domain.Profile;
+import com.tesco.pma.profile.rest.model.Profile;
 
 import javax.validation.constraints.NotNull;
 import java.util.Optional;

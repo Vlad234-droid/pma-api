@@ -2,7 +2,7 @@ package com.tesco.pma.profile.rest;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.profile.domain.Profile;
+import com.tesco.pma.profile.rest.model.Profile;
 import com.tesco.pma.profile.service.ProfileService;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;

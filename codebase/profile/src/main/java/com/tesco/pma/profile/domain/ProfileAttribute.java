@@ -7,27 +7,17 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.UUID;
 
-/**
- * Profile model.
- */
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Profile {
+public class ProfileAttribute {
 
-    /**
-     * Identifier.
-     */
-    UUID uuid;
+    UUID colleagueUuid;
 
-    String title;
+    String name;
 
-    String firstName;
+    String value;
 
-    String middleName;
-
-    String lastName;
-
-    String gender;
+    AttributeType type;
 
 }
