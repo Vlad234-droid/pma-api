@@ -21,6 +21,12 @@ import com.tesco.pma.configuration.web.client.TracingRestTemplateCustomizer;
 
 /**
  * Default {@link RestTemplate} configuration.
+ * tesco:
+ *   application:
+ *     rest-template:
+ *       connect-timeout: 20000
+ *       read-timeout: 30000
+ *       http-factory-class: com.tesco.pma.configuration.RestTemplateConfigurationTest.TestFactory
  */
 @Configuration("defaultRestTemplateConfiguration")
 public class RestTemplateConfiguration {
