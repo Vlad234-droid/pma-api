@@ -3,6 +3,7 @@ package com.tesco.pma;
 import com.tesco.pma.configuration.AsyncConfig;
 import com.tesco.pma.dao.config.MybatisDefaultConfig;
 import com.tesco.pma.logging.configuration.RequestLoggerConfiguration;
+import com.tesco.pma.profile.configuration.EnableProfileModule;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
@@ -19,6 +20,7 @@ import java.util.TimeZone;
         RequestLoggerConfiguration.class,
         AsyncConfig.class
 })
+@EnableProfileModule
 public class PmaApplication { // NOPMD
 
     @PostConstruct

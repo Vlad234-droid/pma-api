@@ -35,7 +35,7 @@ public abstract class AbstractDAOTest {
 
     // TODO: datasource can be different rather than Postgresql only, so, container should be configured accordantly.
     @Container
-    static final
+    protected static final
     PostgreSQLContainer<?> CONTAINER =
             new PostgreSQLContainer<>(DockerImageName.parse(PostgreSQLContainer.IMAGE).withTag(getPostgresVersion()));
 

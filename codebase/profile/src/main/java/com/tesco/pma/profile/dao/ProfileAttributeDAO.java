@@ -1,7 +1,6 @@
 package com.tesco.pma.profile.dao;
 
 import com.tesco.pma.profile.domain.ProfileAttribute;
-import com.tesco.pma.profile.rest.model.Profile;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -19,5 +18,29 @@ public interface ProfileAttributeDAO {
      * @return a list of profile attributes
      */
     List<ProfileAttribute> get(@Param("colleagueUuid") UUID colleagueUuid);
+
+    /**
+     * Update a profile attribute
+     *
+     * @param profileAttribute a Profile attribute
+     * @return number of updated profileAttributes
+     */
+    int update(@Param("profileAttribute") ProfileAttribute profileAttribute);
+
+    /**
+     * Insert a profile attribute
+     *
+     * @param profileAttribute a Profile attribute
+     * @return number of inserted profileAttributes
+     */
+    int create(@Param("profileAttribute") ProfileAttribute profileAttribute);
+
+    /**
+     * Delete a profile attribute
+     *
+     * @param profileAttribute a Profile attribute
+     * @return number of deleted Profile attributes
+     */
+    int delete(@Param("profileAttribute") ProfileAttribute profileAttribute);
 
 }

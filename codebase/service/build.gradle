@@ -37,6 +37,11 @@ dependencies {
 
     implementation("com.github.qianshui423:qs:${QSVersion}")
 
+    // Caching
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+//    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'com.github.ben-manes.caffeine:caffeine'
+
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude group: 'junit' // excluding junit 4
     }

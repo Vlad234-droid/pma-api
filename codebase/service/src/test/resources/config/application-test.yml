@@ -33,7 +33,8 @@ spring:
       time: iso
   messages:
     basename: >
-      com/tesco/pma/exception/AppExceptionMessage
+      com/tesco/pma/exception/AppExceptionMessage,
+      com/tesco/pma/profile/exception/AppExceptionMessage
     encoding: UTF-8
   async-executor:
     core-pool-size: 2
@@ -42,9 +43,9 @@ spring:
   datasource:
     default:
       mybatis-session:
-        type-aliases-package: com.tesco.pma.domain
+        type-aliases-package: com.tesco.pma.api, com.tesco.pma.*.domain
         configuration-properties:
-          base-package: com.tesco.pma.dao
+          base-package: com.tesco.pma.dao, com.tesco.pma.*.dao
           batchSize: 100
     postgres-version: 11.11
     testdb:

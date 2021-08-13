@@ -52,6 +52,9 @@
             <column name="name" type="VARCHAR">
                 <constraints nullable="false"/>
             </column>
+            <column name="title" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
             <column name="value" type="VARCHAR">
                 <constraints nullable="false"/>
             </column>
@@ -63,6 +66,11 @@
                                  constraintName="profile_attribute_type_pk" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="profile_attribute_type" validate="true"/>
+    </changeSet>
+
+    <changeSet author="akuzmin" id="4">
+        <addUniqueConstraint columnNames="colleague_uuid, name" constraintName="profile_attributes_uc"
+                             tableName="profile_attributes"/>
     </changeSet>
 
 </databaseChangeLog>
