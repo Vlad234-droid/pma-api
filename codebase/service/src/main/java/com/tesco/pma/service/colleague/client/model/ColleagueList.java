@@ -6,5 +6,5 @@ import java.util.List;
 
 @Data
 public class ColleagueList {
-    List<Colleague> colleagues;
+    private List<Colleague> colleagues;
 }

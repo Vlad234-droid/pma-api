@@ -6,7 +6,8 @@ import java.util.UUID;
 
 @Data
 public class Colleague {
-    UUID colleagueUUID;
-    Profile profile;
-    Contact contact;
+    private UUID colleagueUUID;
+    private Profile profile;
+    private Contact contact;
+    private ExternalSystems externalSystems;
 }
