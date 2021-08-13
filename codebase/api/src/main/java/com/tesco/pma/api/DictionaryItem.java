@@ -1,16 +1,11 @@
 package com.tesco.pma.api;
 
+import java.io.Serializable;
+
 /**
  * Identified dictionary element
  */
-public interface DictionaryItem extends Identified<Integer> {
-
-    /**
-     * Read identifier of dictionary element
-     * @return  identifier of the element
-     */
-    @Override
-    Integer getId();
+public interface DictionaryItem<T extends Serializable> extends Identified<T> {
 
     /**
      * Read code related to identifier of dictionary element

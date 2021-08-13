@@ -1,0 +1,66 @@
+tesco:
+  application:
+    code: DEMO
+    executor:
+      default-beans:
+        - test-default-1
+      test-with-custom-configuration:
+        core-pool-size: 3
+        max-pool-size: 100
+        queue-capacity: 555
+    rest-event-executor:
+      core-pool-size: 1
+      max-core-pool-size: 1
+      queue-capacity: 1
+    rest-template:
+      connect-timeout: 20
+      read-timeout: 30
+      http-factory-class: com.tesco.pma.configuration.RestTemplateConfigurationTest.TestFactory
+    to-override: value
+    clean-test:
+      clean-interval:
+        default-value: 100
+        lookup:
+          code: long
+          type: cleanIntervalResolver
+      threshold:
+        default-value: 1000
+        lookup:
+          code: integer
+          type: thresholdResolver
+      max-iteration-cnt: 10
+spring:
+  application:
+    index: ${random.uuid}
+  datasource:
+    camunda:
+      driver-class-name: org.h2.Driver
+      jdbc-url: jdbc:h2:mem:camunda-test;MODE=Oracle;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+#      jdbc-url: jdbc:h2:tcp://localhost//opt/h2/db/demo;MODE=Oracle;DB_CLOSE_DELAY=-1
+      username: sa
+      password:
+      type: com.zaxxer.hikari.HikariDataSource
+      connection-test-query: SELECT 1 FROM DUAL
+      minimum-idle: 1
+      maximum-pool-size: 10
+      pool-name: camunda_ds_pool
+      is-auto-commit: false
+server:
+  port: 8083
+  servlet:
+    context-path: /v1
+
+camunda:
+  bpm:
+    process-engine-name: demo-camunda
+    history-level: activity
+    database:
+      schema-update: create-drop
+      type: h2
+    metrics:
+      enabled: false
+    job-execution:
+      enabled: false
+    id-generator: strong
+    auto-deployment-enabled: true
+    deployment-resource-pattern: classpath:com/tesco/demo/flow/diagram_1.bpmn

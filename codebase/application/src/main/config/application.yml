@@ -39,6 +39,20 @@ spring:
         configuration-properties:
           base-package: com.tesco.pma.dao, com.tesco.pma.profile.dao
           batchSize: 500
+    camunda:
+      # TODO: change database
+      driver-class-name: org.h2.Driver
+      jdbc-url: jdbc:h2:mem:camunda;MODE=Oracle;DB_CLOSE_DELAY=-1
+      #jdbc-url: jdbc:h2:tcp://localhost//opt/h2/db/demo;MODE=Oracle;DB_CLOSE_DELAY=-1
+      username: sa
+      password:
+      type: com.zaxxer.hikari.HikariDataSource
+      connection-test-query: SELECT 1 FROM DUAL
+      minimum-idle: 10
+      maximum-pool-size: 10
+      pool-name: camunda_ds_pool
+      is-auto-commit: false
+
   servlet:
     multipart:
       enabled: true
@@ -139,6 +153,23 @@ tesco:
         retry-timeout: 30
       colleague-api:
         base-url: ${TESCO_API_BASE_URL}/colleague/v2/colleagues
+    event-mapping:
+      # TODO add real events
+      # sample events
+      E_START_1: com.tesco.pma.bpm.action.RunFlowByEventAction
+      E_START_2: com.tesco.pma.bpm.action.RunFlowByEventAction
+
+camunda:
+  bpm:
+    database:
+      schema-update: true
+    metrics:
+      enabled: true
+    #      db-reporter-activate: true
+    job-execution:
+      enabled: false
+    id-generator: strong
+#    deployment-resource-pattern: classpath:*.bpmn
 
 ---
 spring:

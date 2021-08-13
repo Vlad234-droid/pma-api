@@ -113,8 +113,9 @@ tesco:
       colleague-api:
         base-url: https://test.com/colleague/colleague/v2/colleagues
     rest-template:
-      connect-timeout: 20000
-      read-timeout: 30000
+      connect-timeout: 20
+      read-timeout: 30
+      http-factory-class: com.tesco.pma.configuration.RestTemplateConfigurationTest.TestFactory
     file-storage:
       root: ${java.io.tmpdir}
     data-wipe:

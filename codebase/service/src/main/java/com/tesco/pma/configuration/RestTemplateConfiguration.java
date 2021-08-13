@@ -1,4 +1,4 @@
-package com.tesco.pma.configuration.web.client;
+package com.tesco.pma.configuration;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,8 +14,19 @@ import java.time.Duration;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.tesco.pma.configuration.web.client.BearerAuthorizationClientHttpRequestInterceptor;
+import com.tesco.pma.configuration.web.client.BearerAuthorizationRestTemplateCustomizer;
+import com.tesco.pma.configuration.web.client.TracingClientHttpRequestInterceptor;
+import com.tesco.pma.configuration.web.client.TracingRestTemplateCustomizer;
+
 /**
  * Default {@link RestTemplate} configuration.
+ * tesco:
+ *   application:
+ *     rest-template:
+ *       connect-timeout: 20000
+ *       read-timeout: 30000
+ *       http-factory-class: com.tesco.pma.configuration.RestTemplateConfigurationTest.TestFactory
  */
 @Configuration("defaultRestTemplateConfiguration")
 public class RestTemplateConfiguration {

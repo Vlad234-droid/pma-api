@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     implementation project(':api')
+    implementation project(':event')
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
@@ -32,11 +33,8 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
 
     implementation("org.apache.commons:commons-text:${commonsTextVersion}")
+    implementation("commons-io:commons-io:${commonsIoVersion}")
 
-    // excel parsing
-    implementation("org.apache.poi:poi:${poiVersion}")
-    implementation("org.apache.poi:poi-ooxml:${poiVersion}")
-    implementation("com.github.pjfanning:excel-streaming-reader:${excelStreamingReaderVersion}")
     implementation("com.github.qianshui423:qs:${QSVersion}")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {

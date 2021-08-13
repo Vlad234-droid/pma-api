@@ -1,9 +1,18 @@
 rootProject.name = "${rootProjectName}"
 
-include 'api'
 include 'database'
-include 'service'
-include 'application'
-include 'healthcheck'
-include 'profile'
 
+include 'spring'
+
+include 'api'
+include 'event'
+include 'bpm'
+include 'camunda'
+include 'service'
+
+include 'healthcheck'
+include 'pm'
+
+include 'application'
+
+include 'profile'
