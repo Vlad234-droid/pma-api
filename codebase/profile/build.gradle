@@ -16,31 +16,21 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:${springBootMybatisVersion}")
     implementation("com.fasterxml.jackson.core:jackson-databind:${fasterxmlJacksonDatabindVersion}")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${fasterxmlJacksonDatabindVersion}")
     runtimeOnly "org.postgresql:postgresql:${postgresVersion}"
 
-    implementation("org.apache.httpcomponents:httpclient")
-
-    implementation("org.springframework:spring-tx")
-
     implementation("org.springdoc:springdoc-openapi-core:${openApiCoreVersion}")
     implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
-
-    implementation("org.apache.commons:commons-text:${commonsTextVersion}")
 
     testCompile project(':service').sourceSets.test.output
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude group: 'junit' // excluding junit 4
     }
-    testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("com.squareup.okhttp3:mockwebserver")
+
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
