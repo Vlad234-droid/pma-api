@@ -1,5 +1,6 @@
 package com.tesco.pma.profile.rest.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.tesco.pma.profile.domain.ProfileAttribute;
 import com.tesco.pma.service.colleague.client.model.Colleague;
 import lombok.AccessLevel;
@@ -15,9 +16,12 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Profile {
 
     Colleague colleague;
+
+    Colleague lineManager;
 
     List<ProfileAttribute> profileAttributes;
 

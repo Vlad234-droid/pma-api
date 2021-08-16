@@ -7,16 +7,16 @@ import com.tesco.pma.profile.domain.ProfileAttribute;
 import com.tesco.pma.profile.rest.model.Profile;
 import com.tesco.pma.service.colleague.client.ColleagueApiClient;
 import com.tesco.pma.service.colleague.client.model.Colleague;
+import com.tesco.pma.service.colleague.client.model.workrelationships.WorkRelationship;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Predicate;
 
 import static com.tesco.pma.exception.ErrorCodes.EXTERNAL_API_CONNECTION_ERROR;
 
@@ -38,19 +38,48 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public Optional<Profile> findProfileByColleagueUuid(UUID colleagueUuid) {
 
-        List<ProfileAttribute> profileAttributes = profileDAO.get(colleagueUuid);
+        List<ProfileAttribute> profileAttributes = findProfileAttributes(colleagueUuid);
 
-        Colleague colleague = tryFindColleagueByUuid(colleagueUuid);
+        Colleague colleague = findColleague(colleagueUuid);
+
+        Colleague lineManger = findLineManager(colleague);
 
         Profile profile = new Profile();
         profile.setColleague(colleague);
+        profile.setLineManager(lineManger);
         profile.setProfileAttributes(profileAttributes);
 
         return Optional.of(profile);
 
     }
 
-    private Colleague tryFindColleagueByUuid(UUID colleagueUuid) {
+    private Colleague findColleague(UUID colleagueUuid) {
+        return tryFindColleagueByUuid(colleagueUuid);
+    }
+
+    private Colleague findLineManager(Colleague colleague) {
+        if (Objects.isNull(colleague)) {
+            return null;
+        }
+
+        Predicate<WorkRelationship> predicate = workRelationship ->
+                workRelationship.getWorkingStatus().equals(WorkRelationship.WorkingStatus.ACTIVE);
+
+        Optional<UUID> managerUUID = colleague.getWorkRelationships().stream()
+                .filter(predicate)
+                .findFirst()
+                .map(WorkRelationship::getManagerUUID);
+
+        return managerUUID.map(this::tryFindColleagueByUuid).orElse(null);
+
+    }
+
+    private List<ProfileAttribute> findProfileAttributes(UUID colleagueUuid) {
+        return profileDAO.get(colleagueUuid);
+    }
+
+    @Cacheable(cacheNames = "colleagues")
+    public Colleague tryFindColleagueByUuid(UUID colleagueUuid) {
         try {
             return colleagueApiClient.findColleagueByColleagueUuid(colleagueUuid);
         } catch (HttpClientErrorException.NotFound exception) {
