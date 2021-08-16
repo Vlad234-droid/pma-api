@@ -10,6 +10,13 @@ import java.util.UUID;
 
 @Data
 public class Colleague {
+
+    public enum ColleagueType {
+        EMPLOYEE,
+        EXTERNAL,
+        CONTRACTOR
+    }
+
     private UUID colleagueUUID;
     private String employeeId;
     private String countryCode;
@@ -19,4 +26,5 @@ public class Colleague {
     private Contact contact;
     private ServiceDates serviceDates;
     private List<WorkRelationship> workRelationships;
+
 }
