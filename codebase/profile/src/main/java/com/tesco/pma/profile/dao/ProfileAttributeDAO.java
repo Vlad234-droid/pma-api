@@ -1,7 +1,6 @@
 package com.tesco.pma.profile.dao;
 
 import com.tesco.pma.profile.domain.ProfileAttribute;
-import com.tesco.pma.profile.rest.model.Profile;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
