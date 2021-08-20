@@ -41,5 +41,8 @@ public class Profile {
     String timeType;
 
     // Location
+    String country;
+    String city;
+    String address;
 
 }

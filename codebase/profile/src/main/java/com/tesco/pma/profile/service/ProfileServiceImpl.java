@@ -45,18 +45,20 @@ public class ProfileServiceImpl implements ProfileService {
 
     }
 
-    private Profile fillProfile(final Colleague colleague, final Colleague lineManger,
+    private Profile fillProfile(final Colleague colleague, final Colleague lineManager,
                                 final List<ProfileAttribute> profileAttributes) {
 
         Profile profile = new Profile();
 
         // Personal information
+
         final var colleagueProfile = colleague.getProfile();
         if (Objects.nonNull(colleagueProfile)) {
             BeanUtils.copyProperties(colleagueProfile, profile);
         }
 
         // Contact
+
         final var contact = colleague.getContact();
         if (Objects.nonNull(contact)) {
             profile.setEmailAddress(contact.getEmail());
@@ -64,12 +66,40 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         // Professional information
+
         final var serviceDates = colleague.getServiceDates();
         if (Objects.nonNull(serviceDates)) {
             profile.setHireDate(serviceDates.getHireDate());
         }
 
+        if (Objects.nonNull(colleague.getWorkRelationships())) {
+            Optional<WorkRelationship> workRelationship = colleague.getWorkRelationships().stream().findFirst();
+
+            profile.setEmploymentType(
+                    workRelationship.map(WorkRelationship::getEmploymentType).orElse(null));
+
+            profile.setJobTitle("");
+            profile.setFunction("");
+            profile.setTimeType(
+                    workRelationship.map(WorkRelationship::getWorkSchedule).orElse(null));
+
+        }
+
+        if (Objects.nonNull(lineManager.getProfile())) {
+            String fullName = String.join(" ",
+                    lineManager.getProfile().getFirstName(),
+                    lineManager.getProfile().getMiddleName(),
+                    lineManager.getProfile().getLastName());
+            profile.setLineManager(fullName);
+        }
+
         // Location
+        if (Objects.nonNull(contact)) {
+            var addresses = contact.getAddresses();
+            profile.setCountry(addresses.getCountryCode());
+            profile.setCity(addresses.getCity());
+            profile.setAddress(String.join(" ", addresses.getLines()));
+        }
 
         // Profile Attributes
         if (!profileAttributes.isEmpty()) {
