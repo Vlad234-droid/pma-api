@@ -16,6 +16,8 @@ public class ProfileAttribute {
 
     String name;
 
+    String title;
+
     String value;
 
     AttributeType type;

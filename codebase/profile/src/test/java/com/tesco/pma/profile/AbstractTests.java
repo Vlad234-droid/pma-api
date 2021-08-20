@@ -8,25 +8,35 @@ import org.jeasy.random.EasyRandom;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.LongStream;
+import java.util.stream.IntStream;
 
 public class AbstractTests {
 
     protected static final EasyRandom RANDOM = new EasyRandom();
 
-    protected List<ProfileAttribute> profileAttributes(long size) {
-        return LongStream.rangeClosed(1, size)
+    private static final String[] names = {"emergencyContact", "emergencyPhone", "businessUnitBonus"};
+
+    protected List<ProfileAttribute> profileAttributes(int size) {
+        return IntStream.rangeClosed(1, size)
                 .mapToObj(this::profileAttribute)
                 .collect(Collectors.toList());
     }
 
-    protected ProfileAttribute profileAttribute(long id) {
+    protected ProfileAttribute profileAttribute(int index) {
         ProfileAttribute profileAttribute = new ProfileAttribute();
         profileAttribute.setColleagueUuid(UUID.randomUUID());
-        profileAttribute.setName("name" + id);
-        profileAttribute.setValue("value" + id);
+        profileAttribute.setName(getName(index));
+        profileAttribute.setTitle("title" + index);
+        profileAttribute.setValue("value" + index);
         profileAttribute.setType(AttributeType.STRING);
         return profileAttribute;
+    }
+
+    private String getName(int index) {
+        if (index > names.length) {
+            throw new IllegalArgumentException();
+        }
+        return names[index - 1];
     }
 
     protected Colleague randomColleague() {

@@ -1,18 +1,21 @@
 <dataset>
 
     <profile_attributes colleague_uuid="6d37262f-3a00-4706-a74b-6bf98be65765"
-                        name="Emergency contact"
+                        name="emergencyContact"
+                        title="Emergency contact"
                         value="Fist Last Name"
                         type_id="1"/>
 
     <profile_attributes colleague_uuid="6d37262f-3a00-4706-a74b-6bf98be65765"
-                        name="Emergency phone"
-                        value="123"
+                        name="emergencyPhone"
+                        title="Emergency phone"
+                        value="+44 123 456789"
                         type_id="1"/>
 
     <profile_attributes colleague_uuid="6d37262f-3a00-4706-a74b-6bf98be65765"
+                        title="businessUnitBonus"
                         name="Business Unit Bonus"
-                        value="123"
+                        value="Value"
                         type_id="1"/>
 
 </dataset>

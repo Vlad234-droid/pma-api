@@ -42,6 +42,7 @@ class ProfileAttributeDAOTest extends AbstractDAOTest {
         final var result = instance.get(COLLEAGUE_UUID_1);
 
         assertThat(result).isNotEmpty();
+        assertThat(result.size()).isEqualTo(3);
     }
 
 }

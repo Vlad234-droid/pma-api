@@ -6,6 +6,9 @@ import com.tesco.pma.profile.rest.model.Profile;
 import com.tesco.pma.service.colleague.client.model.Colleague;
 import com.tesco.pma.service.colleague.client.model.workrelationships.WorkRelationship;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -38,13 +41,48 @@ public class ProfileServiceImpl implements ProfileService {
 
         Colleague lineManger = findLineManager(colleague);
 
+        return Optional.of(fillProfile(colleague, lineManger, profileAttributes));
+
+    }
+
+    private Profile fillProfile(final Colleague colleague, final Colleague lineManger,
+                                final List<ProfileAttribute> profileAttributes) {
+
         Profile profile = new Profile();
-        profile.setColleague(colleague);
-        profile.setLineManager(lineManger);
-        profile.setProfileAttributes(profileAttributes);
 
-        return Optional.of(profile);
+        // Personal information
+        final var colleagueProfile = colleague.getProfile();
+        if (Objects.nonNull(colleagueProfile)) {
+            BeanUtils.copyProperties(colleagueProfile, profile);
+        }
 
+        // Contact
+        final var contact = colleague.getContact();
+        if (Objects.nonNull(contact)) {
+            profile.setEmailAddress(contact.getEmail());
+            profile.setMobilePhone(contact.getWorkPhoneNumber());
+        }
+
+        // Professional information
+        final var serviceDates = colleague.getServiceDates();
+        if (Objects.nonNull(serviceDates)) {
+            profile.setHireDate(serviceDates.getHireDate());
+        }
+
+        // Location
+
+        // Profile Attributes
+        if (!profileAttributes.isEmpty()) {
+            BeanWrapper targetBeanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(profile);
+            profileAttributes.forEach(profileAttribute ->
+                    {
+                        String propertyName = profileAttribute.getName();
+                        targetBeanWrapper.setPropertyValue(propertyName, profileAttribute.getValue());
+                    }
+            );
+        }
+
+        return profile;
     }
 
     private Colleague findColleague(UUID colleagueUuid) {

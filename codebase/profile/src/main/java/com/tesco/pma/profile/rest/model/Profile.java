@@ -1,14 +1,12 @@
 package com.tesco.pma.profile.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.tesco.pma.profile.domain.ProfileAttribute;
-import com.tesco.pma.service.colleague.client.model.Colleague;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
+import java.time.LocalDate;
 
 /**
  * Profile model.
@@ -19,10 +17,29 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Profile {
 
-    Colleague colleague;
+    // Personal information
+    private String title;
+    private String firstName;
+    private String middleName;
+    private String lastName;
+    private String gender;
+    private LocalDate dateOfBirth;
 
-    Colleague lineManager;
+    // Contact
+    private String emailAddress;
+    private String mobilePhone;
+    private String emergencyContact;
+    private String emergencyPhone;
 
-    List<ProfileAttribute> profileAttributes;
+    // Professional information
+    LocalDate hireDate;
+    String employmentType;
+    String jobTitle;
+    String function;
+    String lineManager;
+    String businessUnitBonus;
+    String timeType;
+
+    // Location
 
 }
