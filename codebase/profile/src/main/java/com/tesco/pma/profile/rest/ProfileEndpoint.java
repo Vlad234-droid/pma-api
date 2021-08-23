@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,11 +42,11 @@ public class ProfileEndpoint {
     }
 
     /**
-     * PUT call to update a Profile attributes.
+     * PUT call to update profile attributes.
      *
      * @param colleagueUuid     an identifier
-     * @param profileAttributes a Profile attributes
-     * @return a RestResponse parameterized with Profile
+     * @param profileAttributes profile attributes
+     * @return a RestResponse parameterized with profile attributes
      */
     @Operation(summary = "Update existing Profile", description = "Update existing profile attributes", tags = {"profile"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Profile attributes updated")
@@ -55,6 +56,21 @@ public class ProfileEndpoint {
     public RestResponse<List<ProfileAttribute>> updateProfileAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                                                         @RequestBody @Valid List<ProfileAttribute> profileAttributes) {
         return RestResponse.success(profileService.updateProfileAttributes(colleagueUuid, profileAttributes));
+    }
+
+    /**
+     * POST call to create profile attributes.
+     *
+     * @param profileAttributes profile attributes
+     * @return a RestResponse parameterized with profile attributes
+     */
+    @Operation(summary = "Create new profile attributes", description = "Profile attributes created", tags = {"profile"})
+    @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
+    @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+//    @Validated({ValidationGroup.WithoutId.class, Default.class})
+    @ResponseStatus(HttpStatus.CREATED)
+    public RestResponse<List<ProfileAttribute>> createProfileAttributes(@RequestBody @Valid List<ProfileAttribute> profileAttributes) {
+        return RestResponse.success(profileService.createProfileAttributes(profileAttributes));
     }
 
     private NotFoundException notFound(String paramName, Object paramValue) {

@@ -6,9 +6,19 @@
     <resultMap id="profileAttributesResultMap" type="com.tesco.pma.profile.domain.ProfileAttribute">
         <id property="colleagueUuid" column="colleague_uuid"/>
         <result property="name" column="name"/>
+        <result property="title" column="title"/>
         <result property="value" column="value"/>
         <result property="type" column="type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.profile.domain.AttributeType"/>
     </resultMap>
+
+    <insert id="create" flushCache="true">
+        INSERT INTO profile_attributes (colleague_uuid, name, title, value, type_id)
+        VALUES (#{profileAttribute.colleagueUuid},
+                #{profileAttribute.name},
+                #{profileAttribute.title},
+                #{profileAttribute.value},
+                #{profileAttribute.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.profile.domain.AttributeType})
+    </insert>
 
     <select id="get" resultMap="profileAttributesResultMap">
         SELECT *

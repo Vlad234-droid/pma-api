@@ -27,5 +27,12 @@ public interface ProfileAttributeDAO {
      */
     int update(@Param("profileAttribute") ProfileAttribute profileAttribute);
 
+    /**
+     * Insert a profile attribute
+     *
+     * @param profileAttribute a Profile attribute
+     * @return number of inserted profileAttributes
+     */
+    int create(@Param("profileAttribute") ProfileAttribute profileAttribute);
 
 }

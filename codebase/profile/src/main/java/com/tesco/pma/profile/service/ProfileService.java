@@ -23,4 +23,6 @@ public interface ProfileService {
 
     List<ProfileAttribute> updateProfileAttributes(UUID colleagueUuid, List<ProfileAttribute> profileAttributes);
 
+    List<ProfileAttribute> createProfileAttributes(List<ProfileAttribute> profileAttributes);
+
 }

@@ -66,6 +66,21 @@ public class ProfileServiceImpl implements ProfileService {
         return results;
     }
 
+    @Override
+    @Transactional
+    public List<ProfileAttribute> createProfileAttributes(List<ProfileAttribute> profileAttributes) {
+        List<ProfileAttribute> results = new ArrayList<>();
+        profileAttributes.forEach(profileAttribute -> {
+            if (1 == profileAttributeDAO.create(profileAttribute)) {
+                results.add(profileAttribute);
+            } else {
+                throw notFound("colleagueUuid", profileAttribute.getColleagueUuid());
+            }
+
+        });
+        return results;
+    }
+
     private Profile fillProfile(final Colleague colleague, final Colleague lineManager,
                                 final List<ProfileAttribute> profileAttributes) {
 
