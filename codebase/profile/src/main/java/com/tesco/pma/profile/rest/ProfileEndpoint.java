@@ -44,18 +44,16 @@ public class ProfileEndpoint {
     /**
      * PUT call to update profile attributes.
      *
-     * @param colleagueUuid     an identifier
      * @param profileAttributes profile attributes
      * @return a RestResponse parameterized with profile attributes
      */
     @Operation(summary = "Update existing Profile", description = "Update existing profile attributes", tags = {"profile"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Profile attributes updated")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Profile not found", content = @Content)
-    @PutMapping(path = "/{colleagueUuid}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PutMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 //    @Validated({ValidationGroup.WithoutId.class, Default.class})
-    public RestResponse<List<ProfileAttribute>> updateProfileAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid,
-                                                                        @RequestBody @Valid List<ProfileAttribute> profileAttributes) {
-        return RestResponse.success(profileService.updateProfileAttributes(colleagueUuid, profileAttributes));
+    public RestResponse<List<ProfileAttribute>> updateProfileAttributes(@RequestBody @Valid List<ProfileAttribute> profileAttributes) {
+        return RestResponse.success(profileService.updateProfileAttributes(profileAttributes));
     }
 
     /**

@@ -21,7 +21,7 @@ public interface ProfileService {
      */
     Optional<Profile> findProfileByColleagueUuid(@NotNull UUID colleagueUuid);
 
-    List<ProfileAttribute> updateProfileAttributes(UUID colleagueUuid, List<ProfileAttribute> profileAttributes);
+    List<ProfileAttribute> updateProfileAttributes(List<ProfileAttribute> profileAttributes);
 
     List<ProfileAttribute> createProfileAttributes(List<ProfileAttribute> profileAttributes);
 

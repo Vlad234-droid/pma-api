@@ -53,7 +53,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional
-    public List<ProfileAttribute> updateProfileAttributes(UUID colleagueUuid, List<ProfileAttribute> profileAttributes) {
+    public List<ProfileAttribute> updateProfileAttributes(List<ProfileAttribute> profileAttributes) {
         List<ProfileAttribute> results = new ArrayList<>();
         profileAttributes.forEach(profileAttribute -> {
             if (1 == profileAttributeDAO.update(profileAttribute)) {
