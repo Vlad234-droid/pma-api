@@ -25,4 +25,6 @@ public interface ProfileService {
 
     List<ProfileAttribute> createProfileAttributes(List<ProfileAttribute> profileAttributes);
 
+    List<ProfileAttribute> deleteProfileAttributes(List<ProfileAttribute> profileAttributes);
+
 }

@@ -35,4 +35,12 @@ public interface ProfileAttributeDAO {
      */
     int create(@Param("profileAttribute") ProfileAttribute profileAttribute);
 
+    /**
+     * Delete a profile attribute
+     *
+     * @param profileAttribute a Profile attribute
+     * @return number of deleted Profile attributes
+     */
+    int delete(@Param("profileAttribute") ProfileAttribute profileAttribute);
+
 }

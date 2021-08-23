@@ -32,4 +32,10 @@
         WHERE colleague_uuid = #{profileAttribute.colleagueUuid} AND name = #{profileAttribute.name}
     </update>
 
+    <delete id="delete">
+        DELETE
+        FROM profile_attributes
+        WHERE colleague_uuid = #{profileAttribute.colleagueUuid} AND name = #{profileAttribute.name}
+    </delete>
+
 </mapper>

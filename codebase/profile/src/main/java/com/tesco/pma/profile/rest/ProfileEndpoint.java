@@ -73,6 +73,41 @@ public class ProfileEndpoint {
         return RestResponse.success(profileService.createProfileAttributes(profileAttributes));
     }
 
+
+       /**
+     * DELETE call to delete a Subsidiary.
+     *
+     * @param subsidiaryUuid an identifier
+     * @return a RestResponse with success field of boolean value
+     */
+
+    /*    @Operation(summary = "Delete existing Subsidiary", description = "Delete existing Subsidiary", tags = {"subsidiary"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Subsidiary deleted")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Subsidiary not found", content = @Content)
+    @DeleteMapping(path = "/{subsidiaryUuid}", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<Void> deleteSubsidiary(@PathVariable("subsidiaryUuid") UUID subsidiaryUuid) {
+        subsidiaryService.deleteSubsidiary(subsidiaryUuid);
+        return success();
+    }
+
+     */
+
+    /**
+     * DELETE call to delete profile attributes.
+     *
+     * @param profileAttributes profile attributes
+     * @return a RestResponse parameterized with profile attributes
+     */
+    @Operation(summary = "Delete existing profile attributes", description = "Delete existing profile attributes", tags = {"profile"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Profile attributes deleted")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Profile not found", content = @Content)
+    @DeleteMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+//    @Validated({ValidationGroup.WithoutId.class, Default.class})
+    public RestResponse<List<ProfileAttribute>> deleteProfileAttributes(@RequestBody @Valid List<ProfileAttribute> profileAttributes) {
+        return RestResponse.success(profileService.deleteProfileAttributes(profileAttributes));
+    }
+
+
     private NotFoundException notFound(String paramName, Object paramValue) {
         return new NotFoundException(PROFILE_NOT_FOUND.getCode(), messages.getMessage(PROFILE_NOT_FOUND, Map.of(
                 "param_name", paramName, "param_value", paramValue)));

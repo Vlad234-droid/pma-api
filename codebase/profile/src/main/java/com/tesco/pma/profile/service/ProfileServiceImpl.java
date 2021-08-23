@@ -81,6 +81,20 @@ public class ProfileServiceImpl implements ProfileService {
         return results;
     }
 
+    @Override
+    public List<ProfileAttribute> deleteProfileAttributes(List<ProfileAttribute> profileAttributes) {
+        List<ProfileAttribute> results = new ArrayList<>();
+        profileAttributes.forEach(profileAttribute -> {
+            if (1 == profileAttributeDAO.delete(profileAttribute)) {
+                results.add(profileAttribute);
+            } else {
+                throw notFound("colleagueUuid", profileAttribute.getColleagueUuid());
+            }
+
+        });
+        return results;
+    }
+
     private Profile fillProfile(final Colleague colleague, final Colleague lineManager,
                                 final List<ProfileAttribute> profileAttributes) {
 
