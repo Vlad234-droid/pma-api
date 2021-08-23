@@ -16,4 +16,10 @@
         WHERE colleague_uuid = #{colleagueUuid}
     </select>
 
+    <update id="update" flushCache="true">
+        UPDATE profile_attributes
+        SET value = (#{profileAttribute.value})
+        WHERE colleague_uuid = #{profileAttribute.colleagueUuid} AND name = #{profileAttribute.name}
+    </update>
+
 </mapper>

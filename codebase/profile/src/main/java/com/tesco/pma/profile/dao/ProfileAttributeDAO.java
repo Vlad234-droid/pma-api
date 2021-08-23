@@ -19,4 +19,13 @@ public interface ProfileAttributeDAO {
      */
     List<ProfileAttribute> get(@Param("colleagueUuid") UUID colleagueUuid);
 
+    /**
+     * Update a profile attribute
+     *
+     * @param profileAttribute a Profile attribute
+     * @return number of updated profileAttributes
+     */
+    int update(@Param("profileAttribute") ProfileAttribute profileAttribute);
+
+
 }

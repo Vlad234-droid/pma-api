@@ -1,5 +1,7 @@
 package com.tesco.pma.profile.service;
 
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.profile.dao.ProfileAttributeDAO;
 import com.tesco.pma.profile.domain.ProfileAttribute;
 import com.tesco.pma.profile.rest.model.Profile;
@@ -12,11 +14,14 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import static com.tesco.pma.profile.exception.ErrorCodes.PROFILE_NOT_FOUND;
 
 /**
  * Implementation of {@link ProfileService}.
@@ -26,8 +31,9 @@ import java.util.function.Predicate;
 @RequiredArgsConstructor
 public class ProfileServiceImpl implements ProfileService {
 
-    private final ProfileAttributeDAO profileDAO;
+    private final ProfileAttributeDAO profileAttributeDAO;
     private final ColleagueApiService colleagueApiService;
+    private final NamedMessageSourceAccessor messages;
 
     private static final Predicate<WorkRelationship> IS_WORK_RELATIONSHIP_ACTIVE = workRelationship ->
             workRelationship.getWorkingStatus().equals(WorkRelationship.WorkingStatus.ACTIVE);
@@ -43,6 +49,21 @@ public class ProfileServiceImpl implements ProfileService {
 
         return Optional.of(fillProfile(colleague, lineManger, profileAttributes));
 
+    }
+
+    @Override
+    @Transactional
+    public List<ProfileAttribute> updateProfileAttributes(UUID colleagueUuid, List<ProfileAttribute> profileAttributes) {
+        List<ProfileAttribute> results = new ArrayList<>();
+        profileAttributes.forEach(profileAttribute -> {
+            if (1 == profileAttributeDAO.update(profileAttribute)) {
+                results.add(profileAttribute);
+            } else {
+                throw notFound("colleagueUuid", profileAttribute.getColleagueUuid());
+            }
+
+        });
+        return results;
     }
 
     private Profile fillProfile(final Colleague colleague, final Colleague lineManager,
@@ -149,8 +170,12 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private List<ProfileAttribute> findProfileAttributes(UUID colleagueUuid) {
-        return profileDAO.get(colleagueUuid);
+        return profileAttributeDAO.get(colleagueUuid);
     }
 
+    private NotFoundException notFound(String paramName, Object paramValue) {
+        return new NotFoundException(PROFILE_NOT_FOUND.getCode(), messages.getMessage(PROFILE_NOT_FOUND, Map.of(
+                "param_name", paramName, "param_value", paramValue)));
+    }
 
 }
