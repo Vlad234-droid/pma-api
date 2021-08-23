@@ -1,18 +1,25 @@
 package com.tesco.pma.profile.configuration;
 
-import org.mybatis.spring.annotation.MapperScan;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.PostConstruct;
 
 @Configuration
 @ComponentScan(basePackages = "com.tesco.pma.profile")
 //        includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION,
 //                classes = {RestController.class, Service.class}))
 //@MapperScan("com.tesco.pma.profile.dao")
-public class ProfileModuleConfig {
+public class ProfileModuleConfiguration {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProfileModuleConfiguration.class);
+
+    @PostConstruct
+    public void postConstruct() {
+        logger.info("Profile module loaded !");
+    }
+
 
 }
