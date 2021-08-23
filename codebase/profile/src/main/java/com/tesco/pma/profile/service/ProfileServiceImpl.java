@@ -4,6 +4,8 @@ import com.tesco.pma.profile.dao.ProfileAttributeDAO;
 import com.tesco.pma.profile.domain.ProfileAttribute;
 import com.tesco.pma.profile.rest.model.Profile;
 import com.tesco.pma.service.colleague.client.model.Colleague;
+import com.tesco.pma.service.colleague.client.model.workrelationships.Department;
+import com.tesco.pma.service.colleague.client.model.workrelationships.Job;
 import com.tesco.pma.service.colleague.client.model.workrelationships.WorkRelationship;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -12,10 +14,8 @@ import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -73,23 +73,38 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         if (Objects.nonNull(colleague.getWorkRelationships())) {
-            Optional<WorkRelationship> workRelationship = colleague.getWorkRelationships().stream().findFirst();
+            Optional<WorkRelationship> optionalWorkRelationship = colleague.getWorkRelationships().stream().findFirst();
 
-            profile.setEmploymentType(
-                    workRelationship.map(WorkRelationship::getEmploymentType).orElse(null));
+            profile.setEmploymentType(optionalWorkRelationship.map(WorkRelationship::getEmploymentType)
+                    .orElse(null));
 
-            profile.setJobTitle("");
-            profile.setFunction("");
+            profile.setJobTitle(optionalWorkRelationship.flatMap(workRelationship
+                            -> Optional.ofNullable(workRelationship.getJob()).map(Job::getName))
+                    .orElse(null));
+
+            profile.setFunction(optionalWorkRelationship.flatMap(workRelationship
+                            -> Optional.ofNullable(workRelationship.getDepartment()).map(Department::getBusinessType))
+                    .orElse(null));
+
             profile.setTimeType(
-                    workRelationship.map(WorkRelationship::getWorkSchedule).orElse(null));
+                    optionalWorkRelationship.map(WorkRelationship::getWorkSchedule).orElse(null));
 
         }
 
-        if (Objects.nonNull(lineManager.getProfile())) {
-            String fullName = String.join(" ",
-                    lineManager.getProfile().getFirstName(),
-                    lineManager.getProfile().getMiddleName(),
-                    lineManager.getProfile().getLastName());
+        if (Objects.nonNull(lineManager)) {
+            Function<com.tesco.pma.service.colleague.client.model.Profile, String> fullNameMapper =
+                    lineManagerProfile -> {
+                        var names = new ArrayList<String>();
+                        names.add(lineManagerProfile.getFirstName());
+                        if (Objects.nonNull(lineManagerProfile.getMiddleName())) {
+                            names.add(lineManagerProfile.getMiddleName());
+                        }
+                        names.add(lineManagerProfile.getLastName());
+                        return String.join(" ", names);
+                    };
+            String fullName = Optional.ofNullable(lineManager.getProfile())
+                    .map(fullNameMapper)
+                    .orElse(null);
             profile.setLineManager(fullName);
         }
 
