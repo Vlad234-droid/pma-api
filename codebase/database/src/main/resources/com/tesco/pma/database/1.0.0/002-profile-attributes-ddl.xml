@@ -68,4 +68,9 @@
                                  referencedColumnNames="id" referencedTableName="profile_attribute_type" validate="true"/>
     </changeSet>
 
+    <changeSet author="akuzmin" id="4">
+        <addUniqueConstraint columnNames="colleague_uuid, name" constraintName="profile_attributes_uc"
+                             tableName="profile_attributes"/>
+    </changeSet>
+
 </databaseChangeLog>
