@@ -72,24 +72,6 @@ public class ProfileEndpoint {
     }
 
 
-       /**
-     * DELETE call to delete a Subsidiary.
-     *
-     * @param subsidiaryUuid an identifier
-     * @return a RestResponse with success field of boolean value
-     */
-
-    /*    @Operation(summary = "Delete existing Subsidiary", description = "Delete existing Subsidiary", tags = {"subsidiary"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Subsidiary deleted")
-    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Subsidiary not found", content = @Content)
-    @DeleteMapping(path = "/{subsidiaryUuid}", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<Void> deleteSubsidiary(@PathVariable("subsidiaryUuid") UUID subsidiaryUuid) {
-        subsidiaryService.deleteSubsidiary(subsidiaryUuid);
-        return success();
-    }
-
-     */
-
     /**
      * DELETE call to delete profile attributes.
      *
