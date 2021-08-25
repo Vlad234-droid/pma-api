@@ -28,8 +28,6 @@ public class Profile {
     // Contact
     private String emailAddress;
     private String mobilePhone;
-    private String emergencyContact;
-    private String emergencyPhone;
 
     // Professional information
     LocalDate hireDate;
@@ -37,12 +35,23 @@ public class Profile {
     String jobTitle;
     String function;
     String lineManager;
-    String businessUnitBonus;
     String timeType;
 
     // Location
     String country;
     String city;
     String address;
+
+    /* Profile attributes */
+
+    // Personal information
+    String photo;
+
+    // Contact
+    private String emergencyContact;
+    private String emergencyPhone;
+
+    // Professional information
+    String businessUnitBonus;
 
 }
