@@ -14,6 +14,10 @@ public class AbstractTests {
 
     protected static final EasyRandom RANDOM = new EasyRandom();
 
+    protected static final String COLLEAGUE_UUID_1_STRING = "6d37262f-3a00-4706-a74b-6bf98be65765";
+
+    protected static final UUID COLLEAGUE_UUID_1 = UUID.fromString(COLLEAGUE_UUID_1_STRING);
+
     private static final String[] names = {"emergencyContact", "emergencyPhone", "businessUnitBonus"};
 
     protected List<ProfileAttribute> profileAttributes(int size) {
@@ -24,7 +28,7 @@ public class AbstractTests {
 
     protected ProfileAttribute profileAttribute(int index) {
         ProfileAttribute profileAttribute = new ProfileAttribute();
-        profileAttribute.setColleagueUuid(UUID.randomUUID());
+        profileAttribute.setColleagueUuid(COLLEAGUE_UUID_1);
         profileAttribute.setName(getName(index));
         profileAttribute.setTitle("title" + index);
         profileAttribute.setValue("value" + index);

@@ -33,7 +33,8 @@ spring:
       time: iso
   messages:
     basename: >
-      com/tesco/pma/exception/AppExceptionMessage
+      com/tesco/pma/exception/AppExceptionMessage,
+      com/tesco/pma/profile/exception/AppExceptionMessage
     encoding: UTF-8
   async-executor:
     core-pool-size: 2

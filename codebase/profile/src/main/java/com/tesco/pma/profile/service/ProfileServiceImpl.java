@@ -1,6 +1,7 @@
 package com.tesco.pma.profile.service;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.profile.dao.ProfileAttributeDAO;
 import com.tesco.pma.profile.domain.ProfileAttribute;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -21,6 +23,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static com.tesco.pma.profile.exception.ErrorCodes.PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS;
 import static com.tesco.pma.profile.exception.ErrorCodes.PROFILE_NOT_FOUND;
 
 /**
@@ -71,10 +74,19 @@ public class ProfileServiceImpl implements ProfileService {
     public List<ProfileAttribute> createProfileAttributes(List<ProfileAttribute> profileAttributes) {
         List<ProfileAttribute> results = new ArrayList<>();
         profileAttributes.forEach(profileAttribute -> {
-            if (1 == profileAttributeDAO.create(profileAttribute)) {
-                results.add(profileAttribute);
-            } else {
-                throw notFound("colleagueUuid", profileAttribute.getColleagueUuid());
+            try {
+                if (1 == profileAttributeDAO.create(profileAttribute)) {
+                    results.add(profileAttribute);
+                } else {
+                    throw notFound("colleagueUuid", profileAttribute.getColleagueUuid());
+                }
+            } catch (DuplicateKeyException e) {
+                throw new DatabaseConstraintViolationException(PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS.name(),
+                        messages.getMessage(PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS,
+                                Map.of("profileAttributeName", profileAttribute.getName(),
+                                        "colleagueUuid", profileAttribute.getColleagueUuid()
+                                )), null, e);
+
             }
 
         });
