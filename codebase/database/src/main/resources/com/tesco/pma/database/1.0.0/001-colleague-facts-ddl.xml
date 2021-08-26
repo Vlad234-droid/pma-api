@@ -314,6 +314,10 @@
     <changeSet author="ypashynskyi" id="26">
         <createTable tableName="abstract_work_relationship"
                      remarks="Abstract table for work relationship data of a colleague.">
+            <column name="uuid" type="${uuid_type}"
+                    remarks="A unique identifier for every work relationship.">
+                <constraints nullable="false"/>
+            </column>
             <column name="colleague_uuid" type="${uuid_type}"
                     remarks="A unique identifier for every colleague. It is the user id present in Identity.">
                 <constraints nullable="false"/>
@@ -358,7 +362,9 @@
     </changeSet>
 
     <changeSet author="ypashynskyi" id="28">
-        <!--        Should be determined -->
+        <addPrimaryKey
+                tableName="work_relationship"
+                columnNames="uuid"/>
     </changeSet>
 
     <changeSet author="ypashynskyi" id="29">
@@ -377,7 +383,9 @@
     </changeSet>
 
     <changeSet author="ypashynskyi" id="30">
-        <!--        Should be determined -->
+        <addPrimaryKey
+                tableName="work_relationship_hi"
+                columnNames="uuid,op_timestamp"/>
     </changeSet>
 
 </databaseChangeLog>
