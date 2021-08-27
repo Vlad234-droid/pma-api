@@ -5,7 +5,7 @@ import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.profile.dao.ProfileAttributeDAO;
 import com.tesco.pma.profile.domain.ProfileAttribute;
-import com.tesco.pma.profile.rest.model.Profile;
+import com.tesco.pma.profile.rest.model.ProfileResponse;
 import com.tesco.pma.service.colleague.client.model.Colleague;
 import com.tesco.pma.service.colleague.client.model.workrelationships.Department;
 import com.tesco.pma.service.colleague.client.model.workrelationships.Job;
@@ -42,7 +42,7 @@ public class ProfileServiceImpl implements ProfileService {
             workRelationship.getWorkingStatus().equals(WorkRelationship.WorkingStatus.ACTIVE);
 
     @Override
-    public Optional<Profile> findProfileByColleagueUuid(UUID colleagueUuid) {
+    public Optional<ProfileResponse> findProfileByColleagueUuid(UUID colleagueUuid) {
 
         List<ProfileAttribute> profileAttributes = findProfileAttributes(colleagueUuid);
 
@@ -107,48 +107,48 @@ public class ProfileServiceImpl implements ProfileService {
         return results;
     }
 
-    private Profile fillProfile(final Colleague colleague, final Colleague lineManager,
-                                final List<ProfileAttribute> profileAttributes) {
+    private ProfileResponse fillProfile(final Colleague colleague, final Colleague lineManager,
+                                        final List<ProfileAttribute> profileAttributes) {
 
-        Profile profile = new Profile();
+        ProfileResponse profileResponse = new ProfileResponse();
 
         // Personal information
 
         final var colleagueProfile = colleague.getProfile();
         if (Objects.nonNull(colleagueProfile)) {
-            BeanUtils.copyProperties(colleagueProfile, profile);
+            BeanUtils.copyProperties(colleagueProfile, profileResponse);
         }
 
         // Contact
 
         final var contact = colleague.getContact();
         if (Objects.nonNull(contact)) {
-            profile.setEmailAddress(contact.getEmail());
-            profile.setMobilePhone(contact.getWorkPhoneNumber());
+            profileResponse.setEmailAddress(contact.getEmail());
+            profileResponse.setMobilePhone(contact.getWorkPhoneNumber());
         }
 
         // Professional information
 
         final var serviceDates = colleague.getServiceDates();
         if (Objects.nonNull(serviceDates)) {
-            profile.setHireDate(serviceDates.getHireDate());
+            profileResponse.setHireDate(serviceDates.getHireDate());
         }
 
         if (Objects.nonNull(colleague.getWorkRelationships())) {
             Optional<WorkRelationship> optionalWorkRelationship = colleague.getWorkRelationships().stream().findFirst();
 
-            profile.setEmploymentType(optionalWorkRelationship.map(WorkRelationship::getEmploymentType)
+            profileResponse.setEmploymentType(optionalWorkRelationship.map(WorkRelationship::getEmploymentType)
                     .orElse(null));
 
-            profile.setJobTitle(optionalWorkRelationship.flatMap(workRelationship
+            profileResponse.setJobTitle(optionalWorkRelationship.flatMap(workRelationship
                             -> Optional.ofNullable(workRelationship.getJob()).map(Job::getName))
                     .orElse(null));
 
-            profile.setFunction(optionalWorkRelationship.flatMap(workRelationship
+            profileResponse.setFunction(optionalWorkRelationship.flatMap(workRelationship
                             -> Optional.ofNullable(workRelationship.getDepartment()).map(Department::getBusinessType))
                     .orElse(null));
 
-            profile.setTimeType(
+            profileResponse.setTimeType(
                     optionalWorkRelationship.map(WorkRelationship::getWorkSchedule).orElse(null));
 
         }
@@ -167,20 +167,20 @@ public class ProfileServiceImpl implements ProfileService {
             String fullName = Optional.ofNullable(lineManager.getProfile())
                     .map(fullNameMapper)
                     .orElse(null);
-            profile.setLineManager(fullName);
+            profileResponse.setLineManager(fullName);
         }
 
         // Location
         if (Objects.nonNull(contact)) {
             var addresses = contact.getAddresses();
-            profile.setCountry(addresses.getCountryCode());
-            profile.setCity(addresses.getCity());
-            profile.setAddress(String.join(" ", addresses.getLines()));
+            profileResponse.setCountry(addresses.getCountryCode());
+            profileResponse.setCity(addresses.getCity());
+            profileResponse.setAddress(String.join(" ", addresses.getLines()));
         }
 
         // Profile Attributes
         if (!profileAttributes.isEmpty()) {
-            BeanWrapper targetBeanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(profile);
+            BeanWrapper targetBeanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(profileResponse);
             profileAttributes.forEach(profileAttribute ->
                     {
                         String propertyName = profileAttribute.getName();
@@ -189,7 +189,7 @@ public class ProfileServiceImpl implements ProfileService {
             );
         }
 
-        return profile;
+        return profileResponse;
     }
 
     private Colleague findColleague(UUID colleagueUuid) {

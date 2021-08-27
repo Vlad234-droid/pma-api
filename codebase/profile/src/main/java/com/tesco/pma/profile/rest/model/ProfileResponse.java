@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Profile {
+public class ProfileResponse {
 
     // Personal information
     private String title;

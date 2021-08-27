@@ -1,7 +1,7 @@
 package com.tesco.pma.profile.rest;
 
 import com.tesco.pma.api.User;
-import com.tesco.pma.profile.rest.model.Profile;
+import com.tesco.pma.profile.rest.model.ProfileResponse;
 import com.tesco.pma.profile.service.ProfileService;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import org.jeasy.random.EasyRandom;
@@ -47,7 +47,7 @@ class ProfileEndpointTest extends AbstractEndpointTest {
         final var colleagueUuid = user.getColleagueUuid();
 
         when(mockProfileService.findProfileByColleagueUuid(colleagueUuid))
-                .thenReturn(Optional.of(randomProfile()));
+                .thenReturn(Optional.of(randomProfileResponse()));
 
         mvc.perform(get("/profiles/{colleagueUuid}", colleagueUuid)
                         .accept(APPLICATION_JSON))
@@ -64,8 +64,8 @@ class ProfileEndpointTest extends AbstractEndpointTest {
         return RANDOM.nextObject(User.class);
     }
 
-    private Profile randomProfile() {
-        return RANDOM.nextObject(Profile.class);
+    private ProfileResponse randomProfileResponse() {
+        return RANDOM.nextObject(ProfileResponse.class);
     }
 
 }
