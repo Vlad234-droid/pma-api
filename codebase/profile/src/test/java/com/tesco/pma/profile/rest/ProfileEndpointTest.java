@@ -16,7 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.result.StatusResultMatchers;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +23,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.hamcrest.Matchers.in;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -85,7 +85,7 @@ class ProfileEndpointTest extends AbstractEndpointTest {
                         .accept(APPLICATION_JSON));
 
         // then
-        andExpect(resultActions, status().isOk());
+        andExpect(resultActions, status().isOk(), profileAttributes);
 
     }
 
@@ -105,7 +105,7 @@ class ProfileEndpointTest extends AbstractEndpointTest {
                 .accept(APPLICATION_JSON));
 
         // then
-        andExpect(resultActions, status().isCreated());
+        andExpect(resultActions, status().isCreated(), profileAttributes);
 
     }
 
@@ -125,7 +125,7 @@ class ProfileEndpointTest extends AbstractEndpointTest {
                 .accept(APPLICATION_JSON));
 
         // then
-        andExpect(resultActions, status().isOk());
+        andExpect(resultActions, status().isOk(), profileAttributes);
 
     }
 
@@ -156,13 +156,23 @@ class ProfileEndpointTest extends AbstractEndpointTest {
     }
 
     private void andExpect(ResultActions resultActions,
-                           ResultMatcher status) throws Exception {
+                           ResultMatcher status,
+                           List<ProfileAttribute> profileAttributes) throws Exception {
+
+        String colleagueUuidExpression = "$.data[%s].colleagueUuid";
+
+        List<String> colleagueUuids = profileAttributes.stream()
+                .map(profileAttribute -> profileAttribute.getColleagueUuid().toString())
+                .collect(Collectors.toList());
+
         resultActions
                 .andExpect(status)
                 .andExpect(content().contentType(APPLICATION_JSON))
-                .andExpect(jsonPath("$.data[0].colleagueUuid").exists())
-                .andExpect(jsonPath("$.data[1].colleagueUuid").exists())
-                .andExpect(jsonPath("$.data[2].colleagueUuid").isString());
+                .andExpect(jsonPath(colleagueUuidExpression, 0).exists())
+                .andExpect(jsonPath(colleagueUuidExpression, 1).exists())
+                .andExpect(jsonPath(colleagueUuidExpression, 2).isString())
+                .andExpect(jsonPath(colleagueUuidExpression, 2).value(is(in(colleagueUuids))));
+
     }
 
 }
