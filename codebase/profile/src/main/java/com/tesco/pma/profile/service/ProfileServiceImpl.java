@@ -6,6 +6,7 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.profile.dao.ProfileAttributeDAO;
 import com.tesco.pma.profile.domain.ProfileAttribute;
 import com.tesco.pma.profile.rest.model.ProfileResponse;
+import com.tesco.pma.service.colleague.ColleagueApiService;
 import com.tesco.pma.service.colleague.client.model.Colleague;
 import com.tesco.pma.service.colleague.client.model.workrelationships.Department;
 import com.tesco.pma.service.colleague.client.model.workrelationships.Job;

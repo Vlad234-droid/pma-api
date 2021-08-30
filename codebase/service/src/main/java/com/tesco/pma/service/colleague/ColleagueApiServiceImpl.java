@@ -1,4 +1,4 @@
-package com.tesco.pma.profile.service;
+package com.tesco.pma.service.colleague;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.ExternalSystemException;
@@ -20,7 +20,7 @@ import static com.tesco.pma.exception.ErrorCodes.EXTERNAL_API_CONNECTION_ERROR;
 @Service
 @RequiredArgsConstructor
 @CacheConfig(cacheNames = "colleagues")
-public class ColleagueApiService {
+public class ColleagueApiServiceImpl implements ColleagueApiService {
 
     static final String MESSAGE_PARAM_NAME_API_NAME = "apiName";
     static final String MESSAGE_PARAM_VALUE_COLLEAGUE_API = "Colleague-Api";
@@ -30,6 +30,7 @@ public class ColleagueApiService {
 
     private final CacheManager cacheManager;
 
+    @Override
     @Cacheable
     public Colleague tryFindColleagueByUuid(UUID colleagueUuid) {
         try {
