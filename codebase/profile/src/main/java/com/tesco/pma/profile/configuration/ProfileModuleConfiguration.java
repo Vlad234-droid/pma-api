@@ -14,11 +14,11 @@ import javax.annotation.PostConstruct;
 //@MapperScan("com.tesco.pma.profile.dao")
 public class ProfileModuleConfiguration {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProfileModuleConfiguration.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileModuleConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        logger.info("Profile module loaded !");
+        LOGGER.info("Profile module loaded !");
     }
 
 

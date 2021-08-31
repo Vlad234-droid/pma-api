@@ -143,11 +143,11 @@ class ProfileEndpointTest extends AbstractEndpointTest {
 
     private List<ProfileAttribute> profileAttributes(int size) {
         return IntStream.rangeClosed(1, size)
-                .mapToObj(this::profileAttribute)
+                .mapToObj(value ->  profileAttribute())
                 .collect(Collectors.toList());
     }
 
-    private ProfileAttribute profileAttribute(int index) {
+    private ProfileAttribute profileAttribute() {
         return randomProfileAttribute();
     }
 

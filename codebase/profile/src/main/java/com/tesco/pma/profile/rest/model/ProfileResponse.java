@@ -15,6 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@SuppressWarnings("PMD.TooManyFields")
 public class ProfileResponse {
 
     // Personal information

@@ -26,11 +26,14 @@ class ProfileAttributeDAOTest extends AbstractDAOTest {
     private static final String COLLEAGUE_UUID_1_STRING = "6d37262f-3a00-4706-a74b-6bf98be65765";
     private static final UUID COLLEAGUE_UUID_1 = UUID.fromString(COLLEAGUE_UUID_1_STRING);
 
-    private static final String[][] testData = {
+    private static final String[][] TEST_DATA = {
             {"emergencyContact", "Emergency contact", "Full name", "STRING"},
             {"emergencyPhone", "Emergency phone", "+44 123 456789", "STRING"},
             {"businessUnitBonus", "Business Unit Bonus", "Value", "STRING"}
     };
+
+    @Autowired
+    private ProfileAttributeDAO instance;
 
     @DynamicPropertySource
     static void postgresqlProperties(DynamicPropertyRegistry registry) {
@@ -38,9 +41,6 @@ class ProfileAttributeDAOTest extends AbstractDAOTest {
         registry.add("spring.datasource.default.password", CONTAINER::getPassword);
         registry.add("spring.datasource.default.username", CONTAINER::getUsername);
     }
-
-    @Autowired
-    private ProfileAttributeDAO instance;
 
     @BeforeEach
     void setUp() {
@@ -122,10 +122,10 @@ class ProfileAttributeDAOTest extends AbstractDAOTest {
     private ProfileAttribute profileAttribute(int index) {
         ProfileAttribute profileAttribute = new ProfileAttribute();
         profileAttribute.setColleagueUuid(COLLEAGUE_UUID_1);
-        profileAttribute.setName(testData[index - 1][0]);
-        profileAttribute.setTitle(testData[index - 1][1]);
-        profileAttribute.setValue(testData[index - 1][2]);
-        profileAttribute.setType(AttributeType.valueOf(testData[index - 1][3]));
+        profileAttribute.setName(TEST_DATA[index - 1][0]);
+        profileAttribute.setTitle(TEST_DATA[index - 1][1]);
+        profileAttribute.setValue(TEST_DATA[index - 1][2]);
+        profileAttribute.setType(AttributeType.valueOf(TEST_DATA[index - 1][3]));
         return profileAttribute;
     }
 

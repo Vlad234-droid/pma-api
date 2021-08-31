@@ -18,7 +18,7 @@ public class AbstractTests {
 
     protected static final UUID COLLEAGUE_UUID_1 = UUID.fromString(COLLEAGUE_UUID_1_STRING);
 
-    private static final String[] names = {"emergencyContact", "emergencyPhone", "businessUnitBonus"};
+    private static final String[] NAMES = {"emergencyContact", "emergencyPhone", "businessUnitBonus"};
 
     protected List<ProfileAttribute> profileAttributes(int size) {
         return IntStream.rangeClosed(1, size)
@@ -37,10 +37,10 @@ public class AbstractTests {
     }
 
     private String getName(int index) {
-        if (index > names.length) {
+        if (index > NAMES.length) {
             throw new IllegalArgumentException();
         }
-        return names[index - 1];
+        return NAMES[index - 1];
     }
 
     protected Colleague randomColleague() {

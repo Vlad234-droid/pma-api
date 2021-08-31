@@ -47,6 +47,9 @@ public class ProfileServiceImpl implements ProfileService {
     private static final Predicate<WorkRelationship> IS_WORK_RELATIONSHIP_ACTIVE = workRelationship ->
             workRelationship.getWorkingStatus().equals(WorkRelationship.WorkingStatus.ACTIVE);
 
+    private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
+    private static final String PROFILE_ATTRIBUTE_NAME_PARAMETER_NAME = "profileAttributeName";
+
     @Override
     public Optional<ProfileResponse> findProfileByColleagueUuid(UUID colleagueUuid) {
 
@@ -68,7 +71,7 @@ public class ProfileServiceImpl implements ProfileService {
             if (1 == profileAttributeDAO.update(profileAttribute)) {
                 results.add(profileAttribute);
             } else {
-                throw notFound("colleagueUuid", profileAttribute.getColleagueUuid());
+                throw notFound(COLLEAGUE_UUID_PARAMETER_NAME, profileAttribute.getColleagueUuid());
             }
 
         });
@@ -84,13 +87,13 @@ public class ProfileServiceImpl implements ProfileService {
                 if (1 == profileAttributeDAO.create(profileAttribute)) {
                     results.add(profileAttribute);
                 } else {
-                    throw notFound("colleagueUuid", profileAttribute.getColleagueUuid());
+                    throw notFound(COLLEAGUE_UUID_PARAMETER_NAME, profileAttribute.getColleagueUuid());
                 }
             } catch (DuplicateKeyException e) {
                 throw new DatabaseConstraintViolationException(PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS.name(),
                         messages.getMessage(PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS,
-                                Map.of("profileAttributeName", profileAttribute.getName(),
-                                        "colleagueUuid", profileAttribute.getColleagueUuid()
+                                Map.of(PROFILE_ATTRIBUTE_NAME_PARAMETER_NAME, profileAttribute.getName(),
+                                        COLLEAGUE_UUID_PARAMETER_NAME, profileAttribute.getColleagueUuid()
                                 )), null, e);
 
             }
@@ -106,13 +109,14 @@ public class ProfileServiceImpl implements ProfileService {
             if (1 == profileAttributeDAO.delete(profileAttribute)) {
                 results.add(profileAttribute);
             } else {
-                throw notFound("colleagueUuid", profileAttribute.getColleagueUuid());
+                throw notFound(COLLEAGUE_UUID_PARAMETER_NAME, profileAttribute.getColleagueUuid());
             }
 
         });
         return results;
     }
 
+    @SuppressWarnings("PMD.NcssCount")
     private ProfileResponse fillProfile(final Colleague colleague, final Colleague lineManager,
                                         final List<ProfileAttribute> profileAttributes) {
 
