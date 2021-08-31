@@ -20,7 +20,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -182,8 +187,7 @@ public class ProfileServiceImpl implements ProfileService {
         // Profile Attributes
         if (!profileAttributes.isEmpty()) {
             BeanWrapper targetBeanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(profileResponse);
-            profileAttributes.forEach(profileAttribute ->
-                    {
+            profileAttributes.forEach(profileAttribute -> {
                         String propertyName = profileAttribute.getName();
                         targetBeanWrapper.setPropertyValue(propertyName, profileAttribute.getValue());
                     }
