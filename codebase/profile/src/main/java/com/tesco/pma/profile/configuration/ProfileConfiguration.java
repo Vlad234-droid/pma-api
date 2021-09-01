@@ -9,12 +9,9 @@ import javax.annotation.PostConstruct;
 
 @Configuration
 @ComponentScan(basePackages = "com.tesco.pma.profile")
-//        includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION,
-//                classes = {RestController.class, Service.class}))
-//@MapperScan("com.tesco.pma.profile.dao")
-public class ProfileModuleConfiguration {
+public class ProfileConfiguration {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileModuleConfiguration.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {

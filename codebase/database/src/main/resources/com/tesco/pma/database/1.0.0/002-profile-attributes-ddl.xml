@@ -30,12 +30,28 @@
             <column name="code" value="DATE"/>
             <column name="description" value="Date type of attribute"/>
         </insert>
+        <insert tableName="profile_attribute_type">
+            <column name="id" value="3"/>
+            <column name="code" value="NUMBER"/>
+            <column name="description" value="Number type of attribute"/>
+        </insert>
+        <insert tableName="profile_attribute_type">
+            <column name="id" value="4"/>
+            <column name="code" value="BOOLEAN"/>
+            <column name="description" value="Boolean type of attribute"/>
+        </insert>
         <rollback>
             <delete tableName="profile_attribute_type">
                 <where>code = 'STRING'</where>
             </delete>
             <delete tableName="profile_attribute_type">
                 <where>code = 'DATE'</where>
+            </delete>
+            <delete tableName="profile_attribute_type">
+                <where>code = 'NUMBER'</where>
+            </delete>
+            <delete tableName="profile_attribute_type">
+                <where>code = 'BOOLEAN'</where>
             </delete>
         </rollback>
     </changeSet>
@@ -66,9 +82,6 @@
                                  constraintName="profile_attribute_type_pk" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="profile_attribute_type" validate="true"/>
-    </changeSet>
-
-    <changeSet author="akuzmin" id="4">
         <addUniqueConstraint columnNames="colleague_uuid, name" constraintName="profile_attributes_uc"
                              tableName="profile_attributes"/>
     </changeSet>
