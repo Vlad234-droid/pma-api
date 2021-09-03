@@ -32,7 +32,7 @@ import java.util.UUID;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping(path = "/profiles", produces = APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/colleagues", produces = APPLICATION_JSON_VALUE)
 @Validated
 @RequiredArgsConstructor
 public class ProfileEndpoint {
@@ -52,46 +52,51 @@ public class ProfileEndpoint {
     /**
      * PUT call to update profile attributes.
      *
+     * @param colleagueUuid an identifier
      * @param profileAttributes profile attributes
      * @return a RestResponse parameterized with profile attributes
      */
     @Operation(summary = "Update existing Profile", description = "Update existing profile attributes", tags = {"profile"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Profile attributes updated")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Profile not found", content = @Content)
-    @PutMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<ProfileAttribute>> updateProfileAttributes(@RequestBody @Valid List<ProfileAttribute> profileAttributes) {
-        return RestResponse.success(profileService.updateProfileAttributes(profileAttributes));
+    @PutMapping(path = "{colleagueUuid}/attributes", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public RestResponse<List<ProfileAttribute>> updateProfileAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid,
+                                                                        @RequestBody @Valid List<ProfileAttribute> profileAttributes) {
+        return RestResponse.success(profileService.updateProfileAttributes(colleagueUuid, profileAttributes));
     }
 
     /**
      * POST call to create profile attributes.
      *
+     * @param colleagueUuid an identifier
      * @param profileAttributes profile attributes
      * @return a RestResponse parameterized with profile attributes
      */
     @Operation(summary = "Create new profile attributes", description = "Profile attributes created", tags = {"profile"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
-    @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(path = "{colleagueUuid}/attributes", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<List<ProfileAttribute>> createProfileAttributes(@RequestBody @Valid List<ProfileAttribute> profileAttributes) {
-        return RestResponse.success(profileService.createProfileAttributes(profileAttributes));
+    public RestResponse<List<ProfileAttribute>> createProfileAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid,
+                                                                        @RequestBody @Valid List<ProfileAttribute> profileAttributes) {
+        return RestResponse.success(profileService.createProfileAttributes(colleagueUuid, profileAttributes));
     }
 
 
     /**
      * DELETE call to delete profile attributes.
      *
+     * @param colleagueUuid an identifier
      * @param profileAttributes profile attributes
      * @return a RestResponse parameterized with profile attributes
      */
     @Operation(summary = "Delete existing profile attributes", description = "Delete existing profile attributes", tags = {"profile"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Profile attributes deleted")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Profile not found", content = @Content)
-    @DeleteMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<ProfileAttribute>> deleteProfileAttributes(@RequestBody @Valid List<ProfileAttribute> profileAttributes) {
-        return RestResponse.success(profileService.deleteProfileAttributes(profileAttributes));
+    @DeleteMapping(path = "{colleagueUuid}/attributes", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public RestResponse<List<ProfileAttribute>> deleteProfileAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid,
+                                                                        @RequestBody @Valid List<ProfileAttribute> profileAttributes) {
+        return RestResponse.success(profileService.deleteProfileAttributes(colleagueUuid, profileAttributes));
     }
-
 
     private NotFoundException notFound(String paramName, Object paramValue) {
         return new NotFoundException(ErrorCodes.PROFILE_NOT_FOUND.getCode(), messages.getMessage(ErrorCodes.PROFILE_NOT_FOUND, Map.of(

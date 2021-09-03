@@ -10,7 +10,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class AbstractTests {
+public class AbstractProfileTests {
 
     protected static final EasyRandom RANDOM = new EasyRandom();
 

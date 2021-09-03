@@ -27,7 +27,7 @@ public interface ProfileService {
      * @param profileAttributes
      * @return Updated profile attributes
      */
-    List<ProfileAttribute> updateProfileAttributes(List<ProfileAttribute> profileAttributes);
+    List<ProfileAttribute> updateProfileAttributes(@NotNull UUID colleagueUuid, List<ProfileAttribute> profileAttributes);
 
     /**
      * Insert profile attributes
@@ -35,7 +35,7 @@ public interface ProfileService {
      * @param profileAttributes
      * @return Inserted profile attributes
      */
-    List<ProfileAttribute> createProfileAttributes(List<ProfileAttribute> profileAttributes);
+    List<ProfileAttribute> createProfileAttributes(@NotNull UUID colleagueUuid, List<ProfileAttribute> profileAttributes);
 
     /**
      * Delete profile attributes
@@ -43,6 +43,6 @@ public interface ProfileService {
      * @param profileAttributes
      * @return Deleted profile attributes
      */
-    List<ProfileAttribute> deleteProfileAttributes(List<ProfileAttribute> profileAttributes);
+    List<ProfileAttribute> deleteProfileAttributes(@NotNull UUID colleagueUuid, List<ProfileAttribute> profileAttributes);
 
 }

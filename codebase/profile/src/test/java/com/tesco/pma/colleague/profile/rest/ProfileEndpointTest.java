@@ -1,7 +1,6 @@
 package com.tesco.pma.colleague.profile.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tesco.pma.api.User;
 import com.tesco.pma.colleague.profile.domain.ProfileAttribute;
 import com.tesco.pma.colleague.profile.rest.model.AggregatedColleagueResponse;
 import com.tesco.pma.colleague.profile.service.ProfileService;
@@ -23,6 +22,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static java.util.UUID.randomUUID;
 import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
@@ -46,6 +46,8 @@ class ProfileEndpointTest extends AbstractEndpointTest {
     @MockBean
     private ProfileService mockProfileService;
 
+    private final UUID colleagueUuid = randomUUID();
+
     @BeforeEach
     void setUp() {
     }
@@ -56,13 +58,11 @@ class ProfileEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getProfileByColleagueUuidShouldReturnProfileBy() throws Exception {
-        final var user = randomUser();
-        final var colleagueUuid = user.getColleagueUuid();
 
         when(mockProfileService.findProfileByColleagueUuid(colleagueUuid))
                 .thenReturn(Optional.of(randomProfileResponse()));
 
-        mvc.perform(get("/profiles/{colleagueUuid}", colleagueUuid)
+        mvc.perform(get("/colleagues/{colleagueUuid}", colleagueUuid)
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON));
@@ -75,11 +75,11 @@ class ProfileEndpointTest extends AbstractEndpointTest {
         List<ProfileAttribute> profileAttributes = profileAttributes(3);
 
         // given
-        when(mockProfileService.updateProfileAttributes(profileAttributes))
+        when(mockProfileService.updateProfileAttributes(colleagueUuid, profileAttributes))
                 .thenReturn(profileAttributes);
 
         // when
-        ResultActions resultActions = mvc.perform(put("/profiles")
+        ResultActions resultActions = mvc.perform(put("/colleagues/{colleagueUuid}/attributes", colleagueUuid)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(profileAttributes))
                         .accept(APPLICATION_JSON));
@@ -95,11 +95,11 @@ class ProfileEndpointTest extends AbstractEndpointTest {
         List<ProfileAttribute> profileAttributes = profileAttributes(3);
 
         // given
-        when(mockProfileService.createProfileAttributes(profileAttributes))
+        when(mockProfileService.createProfileAttributes(colleagueUuid, profileAttributes))
                 .thenReturn(profileAttributes);
 
         // when
-        ResultActions resultActions = mvc.perform(post("/profiles")
+        ResultActions resultActions = mvc.perform(post("/colleagues/{colleagueUuid}/attributes", colleagueUuid)
                 .contentType(APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(profileAttributes))
                 .accept(APPLICATION_JSON));
@@ -115,11 +115,11 @@ class ProfileEndpointTest extends AbstractEndpointTest {
         List<ProfileAttribute> profileAttributes = profileAttributes(3);
 
         // given
-        when(mockProfileService.deleteProfileAttributes(profileAttributes))
+        when(mockProfileService.deleteProfileAttributes(colleagueUuid, profileAttributes))
                 .thenReturn(profileAttributes);
 
         // when
-        ResultActions resultActions = mvc.perform(delete("/profiles")
+        ResultActions resultActions = mvc.perform(delete("/colleagues/{colleagueUuid}/attributes", colleagueUuid)
                 .contentType(APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(profileAttributes))
                 .accept(APPLICATION_JSON));
@@ -127,14 +127,6 @@ class ProfileEndpointTest extends AbstractEndpointTest {
         // then
         andExpect(resultActions, status().isOk(), profileAttributes);
 
-    }
-
-    private UUID randomUuid() {
-        return UUID.randomUUID();
-    }
-
-    private User randomUser() {
-        return RANDOM.nextObject(User.class);
     }
 
     private AggregatedColleagueResponse randomProfileResponse() {

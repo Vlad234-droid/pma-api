@@ -23,6 +23,8 @@ import com.tesco.pma.service.colleague.client.model.service.ServiceDates;
 import com.tesco.pma.service.colleague.client.model.workrelationships.WorkRelationship;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +45,7 @@ import java.util.stream.Collectors;
 @Service
 @Validated
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "aggregatedColleagues")
 public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileAttributeDAO profileAttributeDAO;
@@ -56,6 +59,7 @@ public class ProfileServiceImpl implements ProfileService {
     private static final String PROFILE_ATTRIBUTE_NAME_PARAMETER_NAME = "profileAttributeName";
 
     @Override
+    @Cacheable
     public Optional<AggregatedColleagueResponse> findProfileByColleagueUuid(UUID colleagueUuid) {
 
         List<ProfileAttribute> profileAttributes = findProfileAttributes(colleagueUuid);
@@ -70,7 +74,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional
-    public List<ProfileAttribute> updateProfileAttributes(List<ProfileAttribute> profileAttributes) {
+    public List<ProfileAttribute> updateProfileAttributes(UUID colleagueUuid, List<ProfileAttribute> profileAttributes) {
         List<ProfileAttribute> results = new ArrayList<>();
         profileAttributes.forEach(profileAttribute -> {
             if (1 == profileAttributeDAO.update(profileAttribute)) {
@@ -85,7 +89,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional
-    public List<ProfileAttribute> createProfileAttributes(List<ProfileAttribute> profileAttributes) {
+    public List<ProfileAttribute> createProfileAttributes(UUID colleagueUuid, List<ProfileAttribute> profileAttributes) {
         List<ProfileAttribute> results = new ArrayList<>();
         profileAttributes.forEach(profileAttribute -> {
             try {
@@ -108,7 +112,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<ProfileAttribute> deleteProfileAttributes(List<ProfileAttribute> profileAttributes) {
+    public List<ProfileAttribute> deleteProfileAttributes(UUID colleagueUuid, List<ProfileAttribute> profileAttributes) {
         List<ProfileAttribute> results = new ArrayList<>();
         profileAttributes.forEach(profileAttribute -> {
             if (1 == profileAttributeDAO.delete(profileAttribute)) {
