@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -37,8 +38,7 @@ class ProfileEndpointTest extends AbstractEndpointTest {
 
     private static final EasyRandom RANDOM = new EasyRandom();
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private JacksonTester<List<ProfileAttribute>> jsonTester;
 
     @Autowired
     protected MockMvc mvc;
@@ -50,6 +50,8 @@ class ProfileEndpointTest extends AbstractEndpointTest {
 
     @BeforeEach
     void setUp() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JacksonTester.initFields(this, objectMapper);
     }
 
     @AfterEach
@@ -81,7 +83,7 @@ class ProfileEndpointTest extends AbstractEndpointTest {
         // when
         ResultActions resultActions = mvc.perform(put("/colleagues/{colleagueUuid}/attributes", colleagueUuid)
                         .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(profileAttributes))
+                        .content(jsonTester.write(profileAttributes).getJson())
                         .accept(APPLICATION_JSON));
 
         // then
@@ -101,7 +103,7 @@ class ProfileEndpointTest extends AbstractEndpointTest {
         // when
         ResultActions resultActions = mvc.perform(post("/colleagues/{colleagueUuid}/attributes", colleagueUuid)
                 .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(profileAttributes))
+                .content(jsonTester.write(profileAttributes).getJson())
                 .accept(APPLICATION_JSON));
 
         // then
@@ -121,7 +123,7 @@ class ProfileEndpointTest extends AbstractEndpointTest {
         // when
         ResultActions resultActions = mvc.perform(delete("/colleagues/{colleagueUuid}/attributes", colleagueUuid)
                 .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(profileAttributes))
+                .content(jsonTester.write(profileAttributes).getJson())
                 .accept(APPLICATION_JSON));
 
         // then
