@@ -3,7 +3,7 @@ package com.tesco.pma.colleague.profile.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tesco.pma.api.User;
 import com.tesco.pma.colleague.profile.domain.ProfileAttribute;
-import com.tesco.pma.colleague.profile.rest.model.ProfileResponse;
+import com.tesco.pma.colleague.profile.rest.model.AggregatedColleagueResponse;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import org.jeasy.random.EasyRandom;
@@ -137,8 +137,8 @@ class ProfileEndpointTest extends AbstractEndpointTest {
         return RANDOM.nextObject(User.class);
     }
 
-    private ProfileResponse randomProfileResponse() {
-        return RANDOM.nextObject(ProfileResponse.class);
+    private AggregatedColleagueResponse randomProfileResponse() {
+        return RANDOM.nextObject(AggregatedColleagueResponse.class);
     }
 
     private List<ProfileAttribute> profileAttributes(int size) {
