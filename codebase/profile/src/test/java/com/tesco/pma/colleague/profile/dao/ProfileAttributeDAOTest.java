@@ -35,6 +35,8 @@ class ProfileAttributeDAOTest extends AbstractDAOTest {
     @Autowired
     private ProfileAttributeDAO instance;
 
+    private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/colleague/profile/dao/";
+
     @DynamicPropertySource
     static void postgresqlProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.default.jdbc-url", CONTAINER::getJdbcUrl);
@@ -51,7 +53,7 @@ class ProfileAttributeDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"profile_attributes_init.xml"})
+    @DataSet({BASE_PATH_TO_DATA_SET + "profile_attributes_init.xml"})
     void get() {
         final var result = instance.get(COLLEAGUE_UUID_1);
 
@@ -60,8 +62,8 @@ class ProfileAttributeDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"cleanup.xml"})
-    @ExpectedDataSet("profile_attributes_insert_expected_1.xml")
+    @DataSet({BASE_PATH_TO_DATA_SET + "cleanup.xml"})
+    @ExpectedDataSet(BASE_PATH_TO_DATA_SET + "profile_attributes_insert_expected_1.xml")
     void insertSucceeded() {
         List<ProfileAttribute> profileAttributes = profileAttributes(3);
         profileAttributes.forEach(profileAttribute -> {
@@ -73,7 +75,7 @@ class ProfileAttributeDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"profile_attributes_init.xml"})
+    @DataSet({BASE_PATH_TO_DATA_SET + "profile_attributes_init.xml"})
     void insertAlreadyExistsWithSameName() {
         ProfileAttribute profileAttribute = profileAttribute(1);
 
@@ -83,8 +85,8 @@ class ProfileAttributeDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet("profile_attributes_init.xml")
-    @ExpectedDataSet("profile_attributes_update_expected_1.xml")
+    @DataSet(BASE_PATH_TO_DATA_SET + "profile_attributes_init.xml")
+    @ExpectedDataSet(BASE_PATH_TO_DATA_SET + "profile_attributes_update_expected_1.xml")
     void updateSucceeded() {
         List<ProfileAttribute> profileAttributes = profileAttributes(3);
         profileAttributes.forEach(profileAttribute -> {
@@ -101,7 +103,7 @@ class ProfileAttributeDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @ExpectedDataSet("profile_attributes_delete_expected_1.xml")
+    @ExpectedDataSet(BASE_PATH_TO_DATA_SET + "profile_attributes_delete_expected_1.xml")
     void deleteSucceeded() {
         List<ProfileAttribute> profileAttributes = profileAttributes(3);
         profileAttributes.forEach(profileAttribute -> {

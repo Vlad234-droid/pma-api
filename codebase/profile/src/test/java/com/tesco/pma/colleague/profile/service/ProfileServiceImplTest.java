@@ -13,10 +13,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -30,7 +30,9 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @SpringBootTest(classes = LocalTestConfig.class)
@@ -43,13 +45,12 @@ class ProfileServiceImplTest extends AbstractProfileTests {
     @Autowired
     private NamedMessageSourceAccessor messages;
 
-    @Mock
+    @MockBean
     private ProfileAttributeDAO mockProfileDAO;
 
-    @Mock
+    @MockBean
     private ColleagueApiService mockColleagueApiService;
 
-//    @InjectMocks
     private ProfileServiceImpl mockProfileService;
 
     private final UUID colleagueUuid = randomUUID();
