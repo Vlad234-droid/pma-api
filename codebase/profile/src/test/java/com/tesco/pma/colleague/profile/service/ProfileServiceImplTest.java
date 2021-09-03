@@ -70,7 +70,7 @@ class ProfileServiceImplTest extends AbstractProfileTests {
         when(mockProfileDAO.get(any(UUID.class)))
                 .thenReturn(profileAttributes(3));
 
-        when(mockColleagueApiService.tryFindColleagueByUuid(any(UUID.class)))
+        when(mockColleagueApiService.findColleagueByUuid(any(UUID.class)))
                 .thenReturn(randomColleague());
 
         Optional<AggregatedColleagueResponse> profileResponse = mockProfileService.findProfileByColleagueUuid(colleagueUuid);
@@ -84,7 +84,7 @@ class ProfileServiceImplTest extends AbstractProfileTests {
         when(mockProfileDAO.get(any(UUID.class)))
                 .thenReturn(profileAttributes(3));
 
-        when(mockColleagueApiService.tryFindColleagueByUuid(any(UUID.class)))
+        when(mockColleagueApiService.findColleagueByUuid(any(UUID.class)))
                 .thenThrow(ExternalSystemException.class);
 
         assertThatExceptionOfType(ExternalSystemException.class)

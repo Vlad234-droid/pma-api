@@ -28,7 +28,7 @@ public class ColleagueApiServiceImpl implements ColleagueApiService {
     private final CacheManager cacheManager;
 
     @Override
-    public Colleague tryFindColleagueByUuid(UUID colleagueUuid) {
+    public Colleague findColleagueByUuid(UUID colleagueUuid) {
         try {
             return colleagueApiClient.findColleagueByColleagueUuid(colleagueUuid);
         } catch (HttpClientErrorException.NotFound exception) {

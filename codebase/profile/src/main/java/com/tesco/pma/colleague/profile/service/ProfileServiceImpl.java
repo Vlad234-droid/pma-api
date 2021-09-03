@@ -238,7 +238,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private Colleague findColleagueByColleagueUuid(UUID colleagueUuid) {
-        return colleagueApiService.tryFindColleagueByUuid(colleagueUuid);
+        return colleagueApiService.findColleagueByUuid(colleagueUuid);
     }
 
     private Colleague findLineManager(Colleague colleague) {
@@ -251,7 +251,7 @@ public class ProfileServiceImpl implements ProfileService {
                 .findFirst()
                 .map(WorkRelationship::getManagerUUID);
 
-        return managerUUID.map(colleagueApiService::tryFindColleagueByUuid).orElse(null);
+        return managerUUID.map(colleagueApiService::findColleagueByUuid).orElse(null);
 
     }
 

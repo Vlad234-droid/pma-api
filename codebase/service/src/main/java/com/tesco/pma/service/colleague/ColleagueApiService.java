@@ -7,6 +7,11 @@ import java.util.UUID;
 
 public interface ColleagueApiService {
 
-    Colleague tryFindColleagueByUuid(UUID colleagueUuid);
+    /**
+     * Find colleague by UUID
+     * @param colleagueUuid
+     * @return Colleague information
+     */
+    Colleague findColleagueByUuid(UUID colleagueUuid);
 
 }
