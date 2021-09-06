@@ -1,7 +1,7 @@
 package com.tesco.pma.colleague.profile.service;
 
 import com.tesco.pma.colleague.profile.domain.ProfileAttribute;
-import com.tesco.pma.colleague.profile.rest.model.AggregatedColleagueResponse;
+import com.tesco.pma.colleague.profile.service.rest.model.AggregatedColleagueResponse;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;

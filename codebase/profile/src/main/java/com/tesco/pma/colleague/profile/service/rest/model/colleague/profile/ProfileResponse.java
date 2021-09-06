@@ -1,4 +1,4 @@
-package com.tesco.pma.colleague.profile.rest.model.colleague.profile;
+package com.tesco.pma.colleague.profile.service.rest.model.colleague.profile;
 
 import lombok.Data;
 

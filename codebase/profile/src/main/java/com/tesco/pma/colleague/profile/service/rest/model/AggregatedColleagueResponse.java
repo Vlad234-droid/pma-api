@@ -1,8 +1,8 @@
-package com.tesco.pma.colleague.profile.rest.model;
+package com.tesco.pma.colleague.profile.service.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.tesco.pma.colleague.profile.domain.ProfileAttribute;
-import com.tesco.pma.colleague.profile.rest.model.colleague.ColleagueResponse;
+import com.tesco.pma.colleague.profile.service.rest.model.colleague.ColleagueResponse;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;

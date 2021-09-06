@@ -1,10 +1,10 @@
-package com.tesco.pma.colleague.profile.rest.model.colleague;
+package com.tesco.pma.colleague.profile.service.rest.model.colleague;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.tesco.pma.colleague.profile.rest.model.colleague.contact.ContactResponse;
-import com.tesco.pma.colleague.profile.rest.model.colleague.profile.ProfileResponse;
-import com.tesco.pma.colleague.profile.rest.model.colleague.service.ServiceDatesResponse;
-import com.tesco.pma.colleague.profile.rest.model.colleague.workrelationships.WorkRelationshipResponse;
+import com.tesco.pma.colleague.profile.service.rest.model.colleague.contact.ContactResponse;
+import com.tesco.pma.colleague.profile.service.rest.model.colleague.profile.ProfileResponse;
+import com.tesco.pma.colleague.profile.service.rest.model.colleague.service.ServiceDatesResponse;
+import com.tesco.pma.colleague.profile.service.rest.model.colleague.workrelationships.WorkRelationshipResponse;
 import lombok.Data;
 
 import java.util.List;

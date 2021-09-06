@@ -1,4 +1,4 @@
-package com.tesco.pma.colleague.profile.rest.model.colleague.service;
+package com.tesco.pma.colleague.profile.service.rest.model.colleague.service;
 
 import lombok.AccessLevel;
 import lombok.Data;
