@@ -1,7 +1,7 @@
 package com.tesco.pma.colleague.profile.service.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tesco.pma.colleague.profile.domain.ProfileAttribute;
+import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.profile.service.rest.model.AggregatedColleague;
 import com.tesco.pma.rest.AbstractEndpointTest;
@@ -38,7 +38,7 @@ class ProfileEndpointTest extends AbstractEndpointTest {
 
     private static final EasyRandom RANDOM = new EasyRandom();
 
-    private JacksonTester<List<ProfileAttribute>> jsonTester;
+    private JacksonTester<List<TypedAttribute>> jsonTester;
 
     @Autowired
     protected MockMvc mvc;
@@ -74,7 +74,7 @@ class ProfileEndpointTest extends AbstractEndpointTest {
     @Test
     void updateProfileAttributesShouldReturnUpdatedProfileAttributes() throws Exception {
 
-        List<ProfileAttribute> profileAttributes = profileAttributes(3);
+        List<TypedAttribute> profileAttributes = profileAttributes(3);
 
         // given
         when(mockProfileService.updateProfileAttributes(colleagueUuid, profileAttributes))
@@ -94,7 +94,7 @@ class ProfileEndpointTest extends AbstractEndpointTest {
     @Test
     void createProfileAttributesShouldReturnInsertedProfileAttributes() throws Exception {
 
-        List<ProfileAttribute> profileAttributes = profileAttributes(3);
+        List<TypedAttribute> profileAttributes = profileAttributes(3);
 
         // given
         when(mockProfileService.createProfileAttributes(colleagueUuid, profileAttributes))
@@ -114,7 +114,7 @@ class ProfileEndpointTest extends AbstractEndpointTest {
     @Test
     void deleteProfileAttributesShouldReturnDeletedProfileAttributes() throws Exception {
 
-        List<ProfileAttribute> profileAttributes = profileAttributes(3);
+        List<TypedAttribute> profileAttributes = profileAttributes(3);
 
         // given
         when(mockProfileService.deleteProfileAttributes(colleagueUuid, profileAttributes))
@@ -135,23 +135,23 @@ class ProfileEndpointTest extends AbstractEndpointTest {
         return RANDOM.nextObject(AggregatedColleague.class);
     }
 
-    private List<ProfileAttribute> profileAttributes(int size) {
+    private List<TypedAttribute> profileAttributes(int size) {
         return IntStream.rangeClosed(1, size)
                 .mapToObj(value ->  profileAttribute())
                 .collect(Collectors.toList());
     }
 
-    private ProfileAttribute profileAttribute() {
+    private TypedAttribute profileAttribute() {
         return randomProfileAttribute();
     }
 
-    private ProfileAttribute randomProfileAttribute() {
-        return RANDOM.nextObject(ProfileAttribute.class);
+    private TypedAttribute randomProfileAttribute() {
+        return RANDOM.nextObject(TypedAttribute.class);
     }
 
     private void andExpect(ResultActions resultActions,
                            ResultMatcher status,
-                           List<ProfileAttribute> profileAttributes) throws Exception {
+                           List<TypedAttribute> profileAttributes) throws Exception {
 
         String colleagueUuidExpression = "$.data[%s].colleagueUuid";
 

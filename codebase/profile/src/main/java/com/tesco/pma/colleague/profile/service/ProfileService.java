@@ -1,6 +1,6 @@
 package com.tesco.pma.colleague.profile.service;
 
-import com.tesco.pma.colleague.profile.domain.ProfileAttribute;
+import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.service.rest.model.AggregatedColleague;
 
 import javax.validation.constraints.NotNull;
@@ -27,7 +27,7 @@ public interface ProfileService {
      * @param profileAttributes
      * @return Updated profile attributes
      */
-    List<ProfileAttribute> updateProfileAttributes(@NotNull UUID colleagueUuid, List<ProfileAttribute> profileAttributes);
+    List<TypedAttribute> updateProfileAttributes(@NotNull UUID colleagueUuid, List<TypedAttribute> profileAttributes);
 
     /**
      * Insert profile attributes
@@ -35,7 +35,7 @@ public interface ProfileService {
      * @param profileAttributes
      * @return Inserted profile attributes
      */
-    List<ProfileAttribute> createProfileAttributes(@NotNull UUID colleagueUuid, List<ProfileAttribute> profileAttributes);
+    List<TypedAttribute> createProfileAttributes(@NotNull UUID colleagueUuid, List<TypedAttribute> profileAttributes);
 
     /**
      * Delete profile attributes
@@ -43,6 +43,6 @@ public interface ProfileService {
      * @param profileAttributes
      * @return Deleted profile attributes
      */
-    List<ProfileAttribute> deleteProfileAttributes(@NotNull UUID colleagueUuid, List<ProfileAttribute> profileAttributes);
+    List<TypedAttribute> deleteProfileAttributes(@NotNull UUID colleagueUuid, List<TypedAttribute> profileAttributes);
 
 }

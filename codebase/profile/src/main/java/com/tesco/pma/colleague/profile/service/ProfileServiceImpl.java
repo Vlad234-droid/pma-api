@@ -1,7 +1,7 @@
 package com.tesco.pma.colleague.profile.service;
 
 import com.tesco.pma.colleague.profile.dao.ProfileAttributeDAO;
-import com.tesco.pma.colleague.profile.domain.ProfileAttribute;
+import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.exception.ErrorCodes;
 import com.tesco.pma.colleague.profile.service.rest.model.AggregatedColleague;
 import com.tesco.pma.colleague.profile.service.rest.model.colleague.Colleague;
@@ -58,7 +58,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Cacheable
     public Optional<AggregatedColleague> findProfileByColleagueUuid(UUID colleagueUuid) {
 
-        List<ProfileAttribute> profileAttributes = findProfileAttributes(colleagueUuid);
+        List<TypedAttribute> profileAttributes = findProfileAttributes(colleagueUuid);
 
         com.tesco.pma.service.colleague.client.model.Colleague colleague = findColleagueByColleagueUuid(colleagueUuid);
 
@@ -70,8 +70,8 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional
-    public List<ProfileAttribute> updateProfileAttributes(UUID colleagueUuid, List<ProfileAttribute> profileAttributes) {
-        List<ProfileAttribute> results = new ArrayList<>();
+    public List<TypedAttribute> updateProfileAttributes(UUID colleagueUuid, List<TypedAttribute> profileAttributes) {
+        List<TypedAttribute> results = new ArrayList<>();
         profileAttributes.forEach(profileAttribute -> {
             if (1 == profileAttributeDAO.update(profileAttribute)) {
                 results.add(profileAttribute);
@@ -85,8 +85,8 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional
-    public List<ProfileAttribute> createProfileAttributes(UUID colleagueUuid, List<ProfileAttribute> profileAttributes) {
-        List<ProfileAttribute> results = new ArrayList<>();
+    public List<TypedAttribute> createProfileAttributes(UUID colleagueUuid, List<TypedAttribute> profileAttributes) {
+        List<TypedAttribute> results = new ArrayList<>();
         profileAttributes.forEach(profileAttribute -> {
             try {
                 if (1 == profileAttributeDAO.create(profileAttribute)) {
@@ -108,8 +108,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<ProfileAttribute> deleteProfileAttributes(UUID colleagueUuid, List<ProfileAttribute> profileAttributes) {
-        List<ProfileAttribute> results = new ArrayList<>();
+    public List<TypedAttribute> deleteProfileAttributes(UUID colleagueUuid, List<TypedAttribute> profileAttributes) {
+        List<TypedAttribute> results = new ArrayList<>();
         profileAttributes.forEach(profileAttribute -> {
             if (1 == profileAttributeDAO.delete(profileAttribute)) {
                 results.add(profileAttribute);
@@ -123,7 +123,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     private AggregatedColleague fillProfileResponse(final com.tesco.pma.service.colleague.client.model.Colleague colleague,
                                                     final com.tesco.pma.service.colleague.client.model.Colleague lineManager,
-                                                    final List<ProfileAttribute> profileAttributes) {
+                                                    final List<TypedAttribute> profileAttributes) {
 
         AggregatedColleague aggregatedColleagueResponse = new AggregatedColleague();
 
@@ -255,7 +255,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     }
 
-    private List<ProfileAttribute> findProfileAttributes(UUID colleagueUuid) {
+    private List<TypedAttribute> findProfileAttributes(UUID colleagueUuid) {
         return profileAttributeDAO.get(colleagueUuid);
     }
 

@@ -1,7 +1,7 @@
 package com.tesco.pma.colleague.profile.service.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.tesco.pma.colleague.profile.domain.ProfileAttribute;
+import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.service.rest.model.colleague.Colleague;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -23,6 +23,6 @@ public class AggregatedColleague {
 
     Colleague lineManager;
 
-    List<ProfileAttribute> profileAttributes;
+    List<TypedAttribute> profileAttributes;
 
 }

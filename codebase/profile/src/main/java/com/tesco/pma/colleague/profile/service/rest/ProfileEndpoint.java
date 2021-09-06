@@ -5,7 +5,7 @@ import com.tesco.pma.colleague.profile.service.rest.model.AggregatedColleague;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.colleague.profile.domain.ProfileAttribute;
+import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -60,8 +60,8 @@ public class ProfileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Profile attributes updated")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Profile not found", content = @Content)
     @PutMapping(path = "{colleagueUuid}/attributes", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<ProfileAttribute>> updateProfileAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid,
-                                                                        @RequestBody @Valid List<ProfileAttribute> profileAttributes) {
+    public RestResponse<List<TypedAttribute>> updateProfileAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid,
+                                                                      @RequestBody @Valid List<TypedAttribute> profileAttributes) {
         return RestResponse.success(profileService.updateProfileAttributes(colleagueUuid, profileAttributes));
     }
 
@@ -76,8 +76,8 @@ public class ProfileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
     @PostMapping(path = "{colleagueUuid}/attributes", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<List<ProfileAttribute>> createProfileAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid,
-                                                                        @RequestBody @Valid List<ProfileAttribute> profileAttributes) {
+    public RestResponse<List<TypedAttribute>> createProfileAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid,
+                                                                      @RequestBody @Valid List<TypedAttribute> profileAttributes) {
         return RestResponse.success(profileService.createProfileAttributes(colleagueUuid, profileAttributes));
     }
 
@@ -93,8 +93,8 @@ public class ProfileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Profile attributes deleted")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Profile not found", content = @Content)
     @DeleteMapping(path = "{colleagueUuid}/attributes", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<ProfileAttribute>> deleteProfileAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid,
-                                                                        @RequestBody @Valid List<ProfileAttribute> profileAttributes) {
+    public RestResponse<List<TypedAttribute>> deleteProfileAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid,
+                                                                      @RequestBody @Valid List<TypedAttribute> profileAttributes) {
         return RestResponse.success(profileService.deleteProfileAttributes(colleagueUuid, profileAttributes));
     }
 

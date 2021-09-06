@@ -1,7 +1,7 @@
 package com.tesco.pma.colleague.profile;
 
 import com.tesco.pma.colleague.profile.domain.AttributeType;
-import com.tesco.pma.colleague.profile.domain.ProfileAttribute;
+import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.service.colleague.client.model.Colleague;
 import org.jeasy.random.EasyRandom;
 
@@ -20,17 +20,16 @@ public class AbstractProfileTests {
 
     private static final String[] NAMES = {"emergencyContact", "emergencyPhone", "businessUnitBonus"};
 
-    protected List<ProfileAttribute> profileAttributes(int size) {
+    protected List<TypedAttribute> profileAttributes(int size) {
         return IntStream.rangeClosed(1, size)
                 .mapToObj(this::profileAttribute)
                 .collect(Collectors.toList());
     }
 
-    protected ProfileAttribute profileAttribute(int index) {
-        ProfileAttribute profileAttribute = new ProfileAttribute();
+    protected TypedAttribute profileAttribute(int index) {
+        TypedAttribute profileAttribute = new TypedAttribute();
         profileAttribute.setColleagueUuid(COLLEAGUE_UUID_1);
         profileAttribute.setName(getName(index));
-        profileAttribute.setTitle("title" + index);
         profileAttribute.setValue("value" + index);
         profileAttribute.setType(AttributeType.STRING);
         return profileAttribute;

@@ -4,7 +4,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.colleague.profile.domain.AttributeType;
-import com.tesco.pma.colleague.profile.domain.ProfileAttribute;
+import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -65,7 +65,7 @@ class ProfileAttributeDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "cleanup.xml"})
     @ExpectedDataSet(BASE_PATH_TO_DATA_SET + "profile_attributes_insert_expected_1.xml")
     void insertSucceeded() {
-        List<ProfileAttribute> profileAttributes = profileAttributes(3);
+        List<TypedAttribute> profileAttributes = profileAttributes(3);
         profileAttributes.forEach(profileAttribute -> {
             final var result = instance.create(profileAttribute);
 
@@ -77,7 +77,7 @@ class ProfileAttributeDAOTest extends AbstractDAOTest {
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "profile_attributes_init.xml"})
     void insertAlreadyExistsWithSameName() {
-        ProfileAttribute profileAttribute = profileAttribute(1);
+        TypedAttribute profileAttribute = profileAttribute(1);
 
         assertThatCode(() -> instance.create(profileAttribute))
                 .isExactlyInstanceOf(DuplicateKeyException.class)
@@ -88,7 +88,7 @@ class ProfileAttributeDAOTest extends AbstractDAOTest {
     @DataSet(BASE_PATH_TO_DATA_SET + "profile_attributes_init.xml")
     @ExpectedDataSet(BASE_PATH_TO_DATA_SET + "profile_attributes_update_expected_1.xml")
     void updateSucceeded() {
-        List<ProfileAttribute> profileAttributes = profileAttributes(3);
+        List<TypedAttribute> profileAttributes = profileAttributes(3);
         profileAttributes.forEach(profileAttribute -> {
             String updatedValue = profileAttribute.getValue() + "(Updated)";
             profileAttribute.setValue(updatedValue);
@@ -105,7 +105,7 @@ class ProfileAttributeDAOTest extends AbstractDAOTest {
     @Test
     @ExpectedDataSet(BASE_PATH_TO_DATA_SET + "profile_attributes_delete_expected_1.xml")
     void deleteSucceeded() {
-        List<ProfileAttribute> profileAttributes = profileAttributes(3);
+        List<TypedAttribute> profileAttributes = profileAttributes(3);
         profileAttributes.forEach(profileAttribute -> {
             final var result = instance.delete(profileAttribute);
 
@@ -115,17 +115,16 @@ class ProfileAttributeDAOTest extends AbstractDAOTest {
     }
 
 
-    private List<ProfileAttribute> profileAttributes(int size) {
+    private List<TypedAttribute> profileAttributes(int size) {
         return IntStream.rangeClosed(1, size)
                 .mapToObj(this::profileAttribute)
                 .collect(Collectors.toList());
     }
 
-    private ProfileAttribute profileAttribute(int index) {
-        ProfileAttribute profileAttribute = new ProfileAttribute();
+    private TypedAttribute profileAttribute(int index) {
+        TypedAttribute profileAttribute = new TypedAttribute();
         profileAttribute.setColleagueUuid(COLLEAGUE_UUID_1);
         profileAttribute.setName(TEST_DATA[index - 1][0]);
-        profileAttribute.setTitle(TEST_DATA[index - 1][1]);
         profileAttribute.setValue(TEST_DATA[index - 1][2]);
         profileAttribute.setType(AttributeType.valueOf(TEST_DATA[index - 1][3]));
         return profileAttribute;

@@ -6,7 +6,7 @@ import com.tesco.pma.exception.ExternalSystemException;
 import com.tesco.pma.colleague.profile.AbstractProfileTests;
 import com.tesco.pma.colleague.profile.LocalTestConfig;
 import com.tesco.pma.colleague.profile.dao.ProfileAttributeDAO;
-import com.tesco.pma.colleague.profile.domain.ProfileAttribute;
+import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.service.rest.model.AggregatedColleague;
 import com.tesco.pma.service.colleague.ColleagueApiService;
 import org.junit.jupiter.api.AfterEach;
@@ -96,7 +96,7 @@ class ProfileServiceImplTest extends AbstractProfileTests {
     @Test
     void updateProfileAttributesShouldReturnUpdatedProfileAttributes() {
 
-        when(mockProfileDAO.update(any(ProfileAttribute.class)))
+        when(mockProfileDAO.update(any(TypedAttribute.class)))
                 .thenReturn(1);
 
         var results = mockProfileService.updateProfileAttributes(colleagueUuid, profileAttributes(3));
@@ -104,14 +104,14 @@ class ProfileServiceImplTest extends AbstractProfileTests {
         assertThat(results).isNotEmpty();
         assertThat(results.size()).isEqualTo(3);
 
-        verify(mockProfileDAO, times(3)).update(any(ProfileAttribute.class));
+        verify(mockProfileDAO, times(3)).update(any(TypedAttribute.class));
 
     }
 
     @Test
     void createProfileAttributesShouldReturnInsertedProfileAttributes() {
 
-        when(mockProfileDAO.create(any(ProfileAttribute.class)))
+        when(mockProfileDAO.create(any(TypedAttribute.class)))
                 .thenReturn(1);
 
         var results = mockProfileService.createProfileAttributes(colleagueUuid, profileAttributes(3));
@@ -119,14 +119,14 @@ class ProfileServiceImplTest extends AbstractProfileTests {
         assertThat(results).isNotEmpty();
         assertThat(results.size()).isEqualTo(3);
 
-        verify(mockProfileDAO, times(3)).create(any(ProfileAttribute.class));
+        verify(mockProfileDAO, times(3)).create(any(TypedAttribute.class));
 
     }
 
     @Test
     void createProfileAttributesWithNotUniqueName() {
 
-        when(mockProfileDAO.create(any(ProfileAttribute.class)))
+        when(mockProfileDAO.create(any(TypedAttribute.class)))
                 .thenThrow(DuplicateKeyException.class);
 
         var exception = assertThrows(DatabaseConstraintViolationException.class,
@@ -135,7 +135,7 @@ class ProfileServiceImplTest extends AbstractProfileTests {
         assertEquals(PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS.name(), exception.getCode());
         assertEquals(PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS_MESSAGE, exception.getMessage());
 
-        verify(mockProfileDAO, times(1)).create(any(ProfileAttribute.class));
+        verify(mockProfileDAO, times(1)).create(any(TypedAttribute.class));
 
     }
 
@@ -143,7 +143,7 @@ class ProfileServiceImplTest extends AbstractProfileTests {
     @Test
     void deleteProfileAttributesShouldReturnDeletedProfileAttributes() {
 
-        when(mockProfileDAO.delete(any(ProfileAttribute.class)))
+        when(mockProfileDAO.delete(any(TypedAttribute.class)))
                 .thenReturn(1);
 
         var results = mockProfileService.deleteProfileAttributes(colleagueUuid, profileAttributes(3));
@@ -151,7 +151,7 @@ class ProfileServiceImplTest extends AbstractProfileTests {
         assertThat(results).isNotEmpty();
         assertThat(results.size()).isEqualTo(3);
 
-        verify(mockProfileDAO, times(3)).delete(any(ProfileAttribute.class));
+        verify(mockProfileDAO, times(3)).delete(any(TypedAttribute.class));
 
     }
 
