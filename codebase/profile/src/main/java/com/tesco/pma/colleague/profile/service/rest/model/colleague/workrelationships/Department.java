@@ -6,7 +6,7 @@ import lombok.experimental.FieldDefaults;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class DepartmentResponse {
+public class Department {
     String id;
     String name;
     String businessType;

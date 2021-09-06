@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AddressListResponse {
+public class AddressList {
     List<String> lines;
     String countryCode;
     String postcode;

@@ -3,7 +3,7 @@ package com.tesco.pma.colleague.profile.service.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tesco.pma.colleague.profile.domain.ProfileAttribute;
 import com.tesco.pma.colleague.profile.service.ProfileService;
-import com.tesco.pma.colleague.profile.service.rest.model.AggregatedColleagueResponse;
+import com.tesco.pma.colleague.profile.service.rest.model.AggregatedColleague;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.AfterEach;
@@ -131,8 +131,8 @@ class ProfileEndpointTest extends AbstractEndpointTest {
 
     }
 
-    private AggregatedColleagueResponse randomProfileResponse() {
-        return RANDOM.nextObject(AggregatedColleagueResponse.class);
+    private AggregatedColleague randomProfileResponse() {
+        return RANDOM.nextObject(AggregatedColleague.class);
     }
 
     private List<ProfileAttribute> profileAttributes(int size) {

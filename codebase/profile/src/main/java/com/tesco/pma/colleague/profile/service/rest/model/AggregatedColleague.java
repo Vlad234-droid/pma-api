@@ -2,7 +2,7 @@ package com.tesco.pma.colleague.profile.service.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.tesco.pma.colleague.profile.domain.ProfileAttribute;
-import com.tesco.pma.colleague.profile.service.rest.model.colleague.ColleagueResponse;
+import com.tesco.pma.colleague.profile.service.rest.model.colleague.Colleague;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,11 +17,11 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class AggregatedColleagueResponse {
+public class AggregatedColleague {
 
-    ColleagueResponse colleague;
+    Colleague colleague;
 
-    ColleagueResponse lineManager;
+    Colleague lineManager;
 
     List<ProfileAttribute> profileAttributes;
 

@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class ProfileResponse {
+public class Profile {
     private String title;
     private String firstName;
     private String middleName;

@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ServiceDatesResponse {
+public class ServiceDates {
     LocalDate hireDate;
     LocalDate leavingDate;
 }

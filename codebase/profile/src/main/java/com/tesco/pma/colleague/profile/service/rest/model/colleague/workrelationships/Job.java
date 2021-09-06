@@ -6,7 +6,8 @@ import lombok.experimental.FieldDefaults;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class JobResponse {
+@SuppressWarnings("PMD.ShortClassName")
+public class Job {
     String id;
     String code;
     String name;

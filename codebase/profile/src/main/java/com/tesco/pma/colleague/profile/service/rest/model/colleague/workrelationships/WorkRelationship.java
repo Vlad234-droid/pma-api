@@ -8,9 +8,9 @@ import lombok.experimental.FieldDefaults;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class WorkRelationshipResponse {
-    DepartmentResponse department;
-    JobResponse job;
+public class WorkRelationship {
+    Department department;
+    Job job;
     String workSchedule;
     String employmentType;
     Boolean isManager;
