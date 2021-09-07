@@ -15,3 +15,5 @@ include 'pm'
 include 'organization-api'
 
 include 'application'
+
+include 'profile'

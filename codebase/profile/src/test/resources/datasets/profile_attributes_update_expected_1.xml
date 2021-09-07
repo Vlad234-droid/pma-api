@@ -1,0 +1,27 @@
+<dataset>
+
+    <profile_attributes colleague_uuid="6d37262f-3a00-4706-a74b-6bf98be65765"
+                        name="emergencyContact"
+                        title="Emergency contact"
+                        value="Full name(Updated)"
+                        type_id="1"/>
+
+    <profile_attributes colleague_uuid="6d37262f-3a00-4706-a74b-6bf98be65765"
+                        name="emergencyPhone"
+                        title="Emergency phone"
+                        value="+44 123 456789(Updated)"
+                        type_id="1"/>
+
+    <profile_attributes colleague_uuid="6d37262f-3a00-4706-a74b-6bf98be65765"
+                        name="businessUnitBonus"
+                        title="Business Unit Bonus"
+                        value="Value(Updated)"
+                        type_id="1"/>
+
+    <profile_attributes colleague_uuid="6d37262f-3a00-4706-a74b-6bf98be65765"
+                        title="Photo of colleague"
+                        name="photo"
+                        value="6d37262f-3a00-4706-a74b-6bf98be65765.gif"
+                        type_id="1"/>
+
+</dataset>
