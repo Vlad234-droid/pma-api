@@ -43,4 +43,13 @@ public class RestTemplateBasedColleagueApiClient implements ColleagueApiClient {
         return restTemplate.getForObject(uriBuilder.build(), ColleagueList.class).getColleagues();
     }
 
+    @Override
+    public List<Colleague> findColleagueSubordinates(UUID colleagueUuid) {
+        final var uriBuilder = uriBuilderFactory.builder()
+                .path("/{colleagueUUID}")
+                .path("/subordinates")
+                .queryParam("maxDepthLevel", 1);
+        return restTemplate.getForObject(uriBuilder.build(colleagueUuid), ColleagueList.class).getColleagues();
+    }
+
 }

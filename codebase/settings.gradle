@@ -12,5 +12,6 @@ include 'service'
 
 include 'healthcheck'
 include 'pm'
+include 'organization-api'
 
 include 'application'

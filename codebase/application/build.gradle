@@ -24,6 +24,7 @@ dependencies {
     implementation project(':bpm')
     implementation project(':camunda')
     implementation project(':pm')
+    implementation project(':organization-api')
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-web")

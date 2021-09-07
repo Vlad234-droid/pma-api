@@ -15,4 +15,6 @@ public interface ColleagueApiClient {
 
     List<Colleague> findColleagues(FindColleaguesRequest findColleaguesRequest);
 
+    List<Colleague> findColleagueSubordinates(UUID colleagueUuid);
+
 }
