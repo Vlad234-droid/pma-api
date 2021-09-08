@@ -35,9 +35,9 @@ spring:
     default:
       # MyBatis config
       mybatis-session:
-        type-aliases-package: com.tesco.pma.api, com.tesco.pma.colleague.profile.domain
+        type-aliases-package: com.tesco.pma.api, com.tesco.pma.colleague.profile.domain, com.tesco.pma.organization_api.api
         configuration-properties:
-          base-package: com.tesco.pma.dao, com.tesco.pma.colleague.profile.dao
+          base-package: com.tesco.pma.dao, com.tesco.pma.colleague.profile.dao, com.tesco.pma.organization_api.dao
           batchSize: 500
     camunda:
       # TODO: change database
@@ -179,10 +179,10 @@ spring:
   datasource:
     default:
       # Database config
-      jdbc-url: ${GPG_DB_URL}
-      schema: ${GPG_DB_SCHEMA}
-      username: ${GPG_DB_USERNAME}
-      password: ${GPG_DB_PASSWORD}
+      jdbc-url: ${PMA_DB_URL}
+      schema: ${PMA_DB_SCHEMA}
+      username: ${PMA_DB_USERNAME}
+      password: ${PMA_DB_PASSWORD}
 
 ---
 spring:

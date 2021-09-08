@@ -62,12 +62,6 @@
         VALUES (#{colleagueUuid}, #{managerUuid}, #{departmentId})
     </insert>
 
-    <delete id="deleteWorkRelationshipByUuid">
-        DELETE
-        FROM work_relationship
-        WHERE uuid = #{uuid}
-    </delete>
-
     <delete id="deleteWorkRelationship">
         DELETE
         FROM work_relationship

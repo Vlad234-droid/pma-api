@@ -1,5 +1,7 @@
 package com.tesco.pma.service.colleague.client.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tesco.pma.api.Identified;
 import com.tesco.pma.service.colleague.client.model.effectivity.Effectivity;
 import com.tesco.pma.service.colleague.client.model.service.ServiceDates;
 import com.tesco.pma.service.colleague.client.model.workrelationships.WorkRelationship;
@@ -9,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-public class Colleague {
+public class Colleague implements Identified<UUID> {
 
     public enum ColleagueType {
         EMPLOYEE,
@@ -27,4 +29,9 @@ public class Colleague {
     private ServiceDates serviceDates;
     private List<WorkRelationship> workRelationships;
 
+    @Override
+    @JsonIgnore
+    public UUID getId() {
+        return colleagueUUID;
+    }
 }
