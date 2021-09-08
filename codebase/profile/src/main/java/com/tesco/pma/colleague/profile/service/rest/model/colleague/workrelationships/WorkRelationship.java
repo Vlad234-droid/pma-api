@@ -1,4 +1,4 @@
-package com.tesco.pma.colleague.profile.rest.model.colleague.workrelationships;
+package com.tesco.pma.colleague.profile.service.rest.model.colleague.workrelationships;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;
@@ -8,9 +8,9 @@ import lombok.experimental.FieldDefaults;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class WorkRelationshipResponse {
-    DepartmentResponse department;
-    JobResponse job;
+public class WorkRelationship {
+    Department department;
+    Job job;
     String workSchedule;
     String employmentType;
     Boolean isManager;

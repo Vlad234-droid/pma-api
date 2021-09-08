@@ -25,6 +25,11 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-core:${openApiCoreVersion}")
     implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
 
+    // Caching
+    // TODO Add an implementation of caching to code
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+//    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     testCompile project(':service').sourceSets.test.output
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {

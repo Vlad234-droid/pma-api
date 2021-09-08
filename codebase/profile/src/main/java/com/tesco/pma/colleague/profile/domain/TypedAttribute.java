@@ -10,13 +10,11 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProfileAttribute {
+public class TypedAttribute {
 
     UUID colleagueUuid;
 
     String name;
-
-    String title;
 
     String value;
 

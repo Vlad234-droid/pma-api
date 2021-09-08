@@ -1,4 +1,4 @@
-package com.tesco.pma.colleague.profile.rest.model.colleague.workrelationships;
+package com.tesco.pma.colleague.profile.service.rest.model.colleague.workrelationships;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.experimental.FieldDefaults;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class DepartmentResponse {
+public class Department {
     String id;
     String name;
     String businessType;

@@ -6,8 +6,6 @@ import com.tesco.pma.service.colleague.client.ColleagueApiClient;
 import com.tesco.pma.service.colleague.client.model.Colleague;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
@@ -19,7 +17,6 @@ import static com.tesco.pma.exception.ErrorCodes.EXTERNAL_API_CONNECTION_ERROR;
 
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = "colleagues")
 public class ColleagueApiServiceImpl implements ColleagueApiService {
 
     static final String MESSAGE_PARAM_NAME_API_NAME = "apiName";
@@ -31,8 +28,7 @@ public class ColleagueApiServiceImpl implements ColleagueApiService {
     private final CacheManager cacheManager;
 
     @Override
-    @Cacheable
-    public Colleague tryFindColleagueByUuid(UUID colleagueUuid) {
+    public Colleague findColleagueByUuid(UUID colleagueUuid) {
         try {
             return colleagueApiClient.findColleagueByColleagueUuid(colleagueUuid);
         } catch (HttpClientErrorException.NotFound exception) {

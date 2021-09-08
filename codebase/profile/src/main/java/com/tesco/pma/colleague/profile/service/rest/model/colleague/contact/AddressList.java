@@ -1,4 +1,4 @@
-package com.tesco.pma.colleague.profile.rest.model.colleague.contact;
+package com.tesco.pma.colleague.profile.service.rest.model.colleague.contact;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AddressListResponse {
+public class AddressList {
     List<String> lines;
     String countryCode;
     String postcode;

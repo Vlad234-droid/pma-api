@@ -1,10 +1,9 @@
-package com.tesco.pma.colleague.profile.rest;
+package com.tesco.pma.colleague.profile.service.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tesco.pma.api.User;
-import com.tesco.pma.colleague.profile.domain.ProfileAttribute;
-import com.tesco.pma.colleague.profile.rest.model.AggregatedColleagueResponse;
+import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.service.ProfileService;
+import com.tesco.pma.colleague.profile.service.rest.model.AggregatedColleague;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.AfterEach;
@@ -12,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -23,6 +23,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static java.util.UUID.randomUUID;
 import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
@@ -37,8 +38,7 @@ class ProfileEndpointTest extends AbstractEndpointTest {
 
     private static final EasyRandom RANDOM = new EasyRandom();
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private JacksonTester<List<TypedAttribute>> jsonTester;
 
     @Autowired
     protected MockMvc mvc;
@@ -46,8 +46,12 @@ class ProfileEndpointTest extends AbstractEndpointTest {
     @MockBean
     private ProfileService mockProfileService;
 
+    private final UUID colleagueUuid = randomUUID();
+
     @BeforeEach
     void setUp() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JacksonTester.initFields(this, objectMapper);
     }
 
     @AfterEach
@@ -56,13 +60,11 @@ class ProfileEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getProfileByColleagueUuidShouldReturnProfileBy() throws Exception {
-        final var user = randomUser();
-        final var colleagueUuid = user.getColleagueUuid();
 
         when(mockProfileService.findProfileByColleagueUuid(colleagueUuid))
                 .thenReturn(Optional.of(randomProfileResponse()));
 
-        mvc.perform(get("/profiles/{colleagueUuid}", colleagueUuid)
+        mvc.perform(get("/colleagues/{colleagueUuid}", colleagueUuid)
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON));
@@ -72,16 +74,16 @@ class ProfileEndpointTest extends AbstractEndpointTest {
     @Test
     void updateProfileAttributesShouldReturnUpdatedProfileAttributes() throws Exception {
 
-        List<ProfileAttribute> profileAttributes = profileAttributes(3);
+        List<TypedAttribute> profileAttributes = profileAttributes(3);
 
         // given
-        when(mockProfileService.updateProfileAttributes(profileAttributes))
+        when(mockProfileService.updateProfileAttributes(colleagueUuid, profileAttributes))
                 .thenReturn(profileAttributes);
 
         // when
-        ResultActions resultActions = mvc.perform(put("/profiles")
+        ResultActions resultActions = mvc.perform(put("/colleagues/{colleagueUuid}/attributes", colleagueUuid)
                         .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(profileAttributes))
+                        .content(jsonTester.write(profileAttributes).getJson())
                         .accept(APPLICATION_JSON));
 
         // then
@@ -92,16 +94,16 @@ class ProfileEndpointTest extends AbstractEndpointTest {
     @Test
     void createProfileAttributesShouldReturnInsertedProfileAttributes() throws Exception {
 
-        List<ProfileAttribute> profileAttributes = profileAttributes(3);
+        List<TypedAttribute> profileAttributes = profileAttributes(3);
 
         // given
-        when(mockProfileService.createProfileAttributes(profileAttributes))
+        when(mockProfileService.createProfileAttributes(colleagueUuid, profileAttributes))
                 .thenReturn(profileAttributes);
 
         // when
-        ResultActions resultActions = mvc.perform(post("/profiles")
+        ResultActions resultActions = mvc.perform(post("/colleagues/{colleagueUuid}/attributes", colleagueUuid)
                 .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(profileAttributes))
+                .content(jsonTester.write(profileAttributes).getJson())
                 .accept(APPLICATION_JSON));
 
         // then
@@ -112,16 +114,16 @@ class ProfileEndpointTest extends AbstractEndpointTest {
     @Test
     void deleteProfileAttributesShouldReturnDeletedProfileAttributes() throws Exception {
 
-        List<ProfileAttribute> profileAttributes = profileAttributes(3);
+        List<TypedAttribute> profileAttributes = profileAttributes(3);
 
         // given
-        when(mockProfileService.deleteProfileAttributes(profileAttributes))
+        when(mockProfileService.deleteProfileAttributes(colleagueUuid, profileAttributes))
                 .thenReturn(profileAttributes);
 
         // when
-        ResultActions resultActions = mvc.perform(delete("/profiles")
+        ResultActions resultActions = mvc.perform(delete("/colleagues/{colleagueUuid}/attributes", colleagueUuid)
                 .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(profileAttributes))
+                .content(jsonTester.write(profileAttributes).getJson())
                 .accept(APPLICATION_JSON));
 
         // then
@@ -129,35 +131,27 @@ class ProfileEndpointTest extends AbstractEndpointTest {
 
     }
 
-    private UUID randomUuid() {
-        return UUID.randomUUID();
+    private AggregatedColleague randomProfileResponse() {
+        return RANDOM.nextObject(AggregatedColleague.class);
     }
 
-    private User randomUser() {
-        return RANDOM.nextObject(User.class);
-    }
-
-    private AggregatedColleagueResponse randomProfileResponse() {
-        return RANDOM.nextObject(AggregatedColleagueResponse.class);
-    }
-
-    private List<ProfileAttribute> profileAttributes(int size) {
+    private List<TypedAttribute> profileAttributes(int size) {
         return IntStream.rangeClosed(1, size)
                 .mapToObj(value ->  profileAttribute())
                 .collect(Collectors.toList());
     }
 
-    private ProfileAttribute profileAttribute() {
+    private TypedAttribute profileAttribute() {
         return randomProfileAttribute();
     }
 
-    private ProfileAttribute randomProfileAttribute() {
-        return RANDOM.nextObject(ProfileAttribute.class);
+    private TypedAttribute randomProfileAttribute() {
+        return RANDOM.nextObject(TypedAttribute.class);
     }
 
     private void andExpect(ResultActions resultActions,
                            ResultMatcher status,
-                           List<ProfileAttribute> profileAttributes) throws Exception {
+                           List<TypedAttribute> profileAttributes) throws Exception {
 
         String colleagueUuidExpression = "$.data[%s].colleagueUuid";
 

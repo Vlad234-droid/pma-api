@@ -1,7 +1,7 @@
 package com.tesco.pma.colleague.profile.service;
 
-import com.tesco.pma.colleague.profile.domain.ProfileAttribute;
-import com.tesco.pma.colleague.profile.rest.model.AggregatedColleagueResponse;
+import com.tesco.pma.colleague.profile.domain.TypedAttribute;
+import com.tesco.pma.colleague.profile.service.rest.model.AggregatedColleague;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -19,7 +19,7 @@ public interface ProfileService {
      * @param colleagueUuid colleague uuid, not null.
      * @return Optional with user, {@link Optional#empty()} if not found.
      */
-    Optional<AggregatedColleagueResponse> findProfileByColleagueUuid(@NotNull UUID colleagueUuid);
+    Optional<AggregatedColleague> findProfileByColleagueUuid(@NotNull UUID colleagueUuid);
 
     /**
      * Update profile attributes
@@ -27,7 +27,7 @@ public interface ProfileService {
      * @param profileAttributes
      * @return Updated profile attributes
      */
-    List<ProfileAttribute> updateProfileAttributes(List<ProfileAttribute> profileAttributes);
+    List<TypedAttribute> updateProfileAttributes(@NotNull UUID colleagueUuid, List<TypedAttribute> profileAttributes);
 
     /**
      * Insert profile attributes
@@ -35,7 +35,7 @@ public interface ProfileService {
      * @param profileAttributes
      * @return Inserted profile attributes
      */
-    List<ProfileAttribute> createProfileAttributes(List<ProfileAttribute> profileAttributes);
+    List<TypedAttribute> createProfileAttributes(@NotNull UUID colleagueUuid, List<TypedAttribute> profileAttributes);
 
     /**
      * Delete profile attributes
@@ -43,6 +43,6 @@ public interface ProfileService {
      * @param profileAttributes
      * @return Deleted profile attributes
      */
-    List<ProfileAttribute> deleteProfileAttributes(List<ProfileAttribute> profileAttributes);
+    List<TypedAttribute> deleteProfileAttributes(@NotNull UUID colleagueUuid, List<TypedAttribute> profileAttributes);
 
 }

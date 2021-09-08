@@ -68,9 +68,6 @@
             <column name="name" type="VARCHAR">
                 <constraints nullable="false"/>
             </column>
-            <column name="title" type="VARCHAR">
-                <constraints nullable="false"/>
-            </column>
             <column name="value" type="VARCHAR">
                 <constraints nullable="false"/>
             </column>
