@@ -18,8 +18,6 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.service.colleague.ColleagueApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +38,7 @@ import java.util.stream.Collectors;
 @Service
 @Validated
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = "aggregatedColleagues")
+//todo @CacheConfig(cacheNames = "aggregatedColleagues")
 public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileAttributeDAO profileAttributeDAO;
@@ -55,14 +53,14 @@ public class ProfileServiceImpl implements ProfileService {
     private static final String PROFILE_ATTRIBUTE_NAME_PARAMETER_NAME = "profileAttributeName";
 
     @Override
-    @Cacheable
+    //todo    @Cacheable
     public Optional<AggregatedColleague> findProfileByColleagueUuid(UUID colleagueUuid) {
 
-        List<TypedAttribute> profileAttributes = findProfileAttributes(colleagueUuid);
+        var profileAttributes = findProfileAttributes(colleagueUuid);
 
-        com.tesco.pma.service.colleague.client.model.Colleague colleague = findColleagueByColleagueUuid(colleagueUuid);
+        var colleague = findColleagueByColleagueUuid(colleagueUuid);
 
-        com.tesco.pma.service.colleague.client.model.Colleague lineManger = findLineManager(colleague);
+        var lineManger = findLineManager(colleague);
 
         return Optional.of(fillProfileResponse(colleague, lineManger, profileAttributes));
 
@@ -125,7 +123,7 @@ public class ProfileServiceImpl implements ProfileService {
                                                     final com.tesco.pma.service.colleague.client.model.Colleague lineManager,
                                                     final List<TypedAttribute> profileAttributes) {
 
-        AggregatedColleague aggregatedColleagueResponse = new AggregatedColleague();
+        var aggregatedColleagueResponse = new AggregatedColleague();
 
         aggregatedColleagueResponse.setColleague(convertToColleagueResponse(colleague));
 
@@ -137,7 +135,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private Colleague convertToColleagueResponse(com.tesco.pma.service.colleague.client.model.Colleague colleague) {
-        Colleague colleagueResponse = new Colleague();
+        var colleagueResponse = new Colleague();
 
         // Common information
         colleagueResponse.setColleagueUUID(colleague.getColleagueUUID());
@@ -197,7 +195,7 @@ public class ProfileServiceImpl implements ProfileService {
     private List<WorkRelationship> convertToWorkRelationshipsResponse(
             List<com.tesco.pma.service.colleague.client.model.workrelationships.WorkRelationship> workRelationships) {
         if (Objects.isNull(workRelationships)) {
-            return null;
+            return null; // NOSONAR
         }
 
         Optional<com.tesco.pma.service.colleague.client.model.workrelationships.WorkRelationship> optionalWorkRelationship =
@@ -243,7 +241,7 @@ public class ProfileServiceImpl implements ProfileService {
     private com.tesco.pma.service.colleague.client.model.Colleague findLineManager(
             com.tesco.pma.service.colleague.client.model.Colleague colleague) {
         if (Objects.isNull(colleague)) {
-            return null;
+            return null; //NOSONAR
         }
 
         Optional<UUID> managerUUID = colleague.getWorkRelationships().stream()
@@ -260,8 +258,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private NotFoundException notFound(String paramName, Object paramValue) {
-        return new NotFoundException(ErrorCodes.PROFILE_NOT_FOUND.getCode(), messages.getMessage(ErrorCodes.PROFILE_NOT_FOUND, Map.of(
-                "param_name", paramName, "param_value", paramValue)));
+        return new NotFoundException(ErrorCodes.PROFILE_NOT_FOUND.getCode(),
+                messages.getMessage(ErrorCodes.PROFILE_NOT_FOUND, Map.of("param_name", paramName, "param_value", paramValue)));
     }
 
 }

@@ -5,7 +5,6 @@ import com.tesco.pma.exception.ExternalSystemException;
 import com.tesco.pma.service.colleague.client.ColleagueApiClient;
 import com.tesco.pma.service.colleague.client.model.Colleague;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
@@ -24,8 +23,6 @@ public class ColleagueApiServiceImpl implements ColleagueApiService {
 
     private final ColleagueApiClient colleagueApiClient;
     private final NamedMessageSourceAccessor messages;
-
-    private final CacheManager cacheManager;
 
     @Override
     public Colleague findColleagueByUuid(UUID colleagueUuid) {

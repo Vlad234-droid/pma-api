@@ -11,6 +11,7 @@ import java.util.UUID;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@SuppressWarnings("PMD.TooManyFields")
 public class WorkRelationship {
 
     public enum WorkingStatus {

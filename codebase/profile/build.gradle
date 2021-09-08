@@ -27,7 +27,7 @@ dependencies {
 
     // Caching
     // TODO Add an implementation of caching to code
-    implementation 'org.springframework.boot:spring-boot-starter-cache'
+//    implementation 'org.springframework.boot:spring-boot-starter-cache'
 //    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     testCompile project(':service').sourceSets.test.output
