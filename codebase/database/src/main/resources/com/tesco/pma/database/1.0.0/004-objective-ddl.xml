@@ -1,0 +1,171 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+
+    <changeSet author="ypashynskyi" id="1">
+        <createTable tableName="objective_status"
+                     remarks="Dictionary of objective's statuses">
+            <column name="id" type="integer"
+                    remarks="A unique identifier for status">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="objective_status_pk"/>
+            </column>
+            <column name="code" type="VARCHAR(30)"
+                    remarks="Shortname of status">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(100)"
+                    remarks="Description of status">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="ypashynskyi" id="2">
+        <createTable tableName="personal_objective"
+                     remarks="Table of personal objectives">
+            <column name="uuid" type="${uuid_type}"
+                    remarks="A unique identifier for personal objective">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="personal_objective_pk"/>
+            </column>
+            <column name="colleague_uuid" type="${uuid_type}"
+                    remarks="A unique identifier for every colleague. It is the user id present in Identity.">
+                <constraints nullable="false" uniqueConstraintName="personal_objective_unique"/>
+            </column>
+            <column name="performance_cycle_uuid" type="${uuid_type}"
+                    remarks="A unique identifier for performance cycle">
+                <constraints nullable="false" uniqueConstraintName="personal_objective_unique"/>
+            </column>
+            <column name="sequence_number" type="integer"
+                    remarks="A sequence number for colleague's objective">
+                <constraints nullable="false" uniqueConstraintName="personal_objective_unique"/>
+            </column>
+            <column name="title" type="varchar(50)"
+                    remarks="Title of objective">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(500)"
+                    remarks="Description of objective">
+                <constraints nullable="false"/>
+            </column>
+            <column name="meets" type="varchar(500)"
+                    remarks="How colleague can meet the objective?">
+                <constraints nullable="false"/>
+            </column>
+            <column name="exceeds" type="varchar(500)"
+                    remarks="How colleague can exceed the objective?">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status_id" type="integer"
+                    remarks="Status of objective">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="personal_objective"
+                                 constraintName="personal_objective_status_id_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="objective_status"
+                                 validate="true"/>
+    </changeSet>
+
+    <changeSet author="ypashynskyi" id="3">
+        <createTable tableName="group_objective"
+                     remarks="Table of group(organization, department etc.) objectives">
+            <column name="uuid" type="${uuid_type}"
+                    remarks="A unique identifier for group objective">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="group_objective_pk"/>
+            </column>
+            <column name="business_unit_uuid" type="${uuid_type}"
+                    remarks="A unique identifier for business unit.">
+                <constraints nullable="false" uniqueConstraintName="group_objective_unique"/>
+            </column>
+            <column name="performance_cycle_uuid" type="${uuid_type}"
+                    remarks="A unique identifier for performance cycle">
+                <constraints nullable="false" uniqueConstraintName="group_objective_unique"/>
+            </column>
+            <column name="sequence_number" type="integer"
+                    remarks="A sequence number for business unit's objective">
+                <constraints nullable="false" uniqueConstraintName="group_objective_unique"/>
+            </column>
+            <column name="version" type="integer"
+                    remarks="Version of business unit's objective">
+                <constraints nullable="false" uniqueConstraintName="group_objective_unique"/>
+            </column>
+            <column name="title" type="varchar(50)"
+                    remarks="Title of objective">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status_id" type="integer"
+                    remarks="Status of objective">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="group_objective"
+                                 constraintName="group_objective_status_id_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="objective_status"
+                                 validate="true"/>
+    </changeSet>
+
+    <changeSet author="ypashynskyi" id="4">
+        <createTable tableName="working_group_objective"
+                     remarks="Table for working version of group objective">
+            <column name="business_unit_uuid" type="${uuid_type}"
+                    remarks="A unique identifier for business unit.">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="working_group_objective_pk"/>
+            </column>
+            <column name="performance_cycle_uuid" type="${uuid_type}"
+                    remarks="A unique identifier for performance cycle">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="working_group_objective_pk"/>
+            </column>
+            <column name="sequence_number" type="integer"
+                    remarks="A sequence number for business unit's objective">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="working_group_objective_pk"/>
+            </column>
+            <column name="version" type="integer"
+                    remarks="Version of business unit's objective">
+                <constraints nullable="false"/>
+            </column>
+            <column name="objective_uuid" type="${uuid_type}"
+                    remarks="A unique identifier for group objective">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_by" type="VARCHAR(50)"
+                    remarks="User who made changes"/>
+            <column name="updated_time" type="TIMESTAMPTZ"
+                    remarks="Timestamp with zone when changes were applied">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="objective_uuid" baseTableName="working_group_objective"
+                                 constraintName="working_group_objective_objective_uuid_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
+                                 referencedColumnNames="uuid" referencedTableName="group_objective"
+                                 validate="true"/>
+    </changeSet>
+
+    <changeSet author="ypashynskyi" id="5">
+        <createTable tableName="objective_link"
+                     remarks="Table for links from personal objective to group objective">
+            <column name="personal_objective_uuid" type="${uuid_type}"
+                    remarks="A unique identifier for personal objective">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="objective_link_pk"/>
+            </column>
+            <column name="group_objective_uuid" type="${uuid_type}"
+                    remarks="A unique identifier for group objective">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="objective_link_pk"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="personal_objective_uuid" baseTableName="objective_link"
+                                 constraintName="objective_link_personal_objective_uuid_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
+                                 referencedColumnNames="uuid" referencedTableName="personal_objective"
+                                 validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="group_objective_uuid" baseTableName="objective_link"
+                                 constraintName="objective_link_group_objective_uuid_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
+                                 referencedColumnNames="uuid" referencedTableName="group_objective"
+                                 validate="true"/>
+    </changeSet>
+</databaseChangeLog>
