@@ -1,4 +1,4 @@
-package com.tesco.pma.service.colleague.client.model;
+package com.tesco.pma.colleague.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

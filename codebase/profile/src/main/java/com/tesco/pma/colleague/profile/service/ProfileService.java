@@ -1,7 +1,7 @@
 package com.tesco.pma.colleague.profile.service;
 
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
-import com.tesco.pma.colleague.profile.service.rest.model.AggregatedColleague;
+import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -19,7 +19,7 @@ public interface ProfileService {
      * @param colleagueUuid colleague uuid, not null.
      * @return Optional with user, {@link Optional#empty()} if not found.
      */
-    Optional<AggregatedColleague> findProfileByColleagueUuid(@NotNull UUID colleagueUuid);
+    Optional<ColleagueProfile> findProfileByColleagueUuid(@NotNull UUID colleagueUuid);
 
     /**
      * Update profile attributes

@@ -1,6 +1,6 @@
 package com.tesco.pma.service.colleague;
 
-import com.tesco.pma.service.colleague.client.model.Colleague;
+import com.tesco.pma.colleague.api.Colleague;
 
 import java.util.UUID;
 

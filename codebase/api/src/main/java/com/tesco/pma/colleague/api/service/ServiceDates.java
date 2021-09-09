@@ -1,4 +1,4 @@
-package com.tesco.pma.service.colleague.client.model.workrelationships;
+package com.tesco.pma.colleague.api.service;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -8,8 +8,7 @@ import java.time.LocalDate;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ContractType {
-    String sourceCode;
-    String sourceName;
-    LocalDate endDate;
+public class ServiceDates {
+    LocalDate hireDate;
+    LocalDate leavingDate;
 }

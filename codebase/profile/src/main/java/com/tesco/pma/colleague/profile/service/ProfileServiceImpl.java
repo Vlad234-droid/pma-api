@@ -1,36 +1,28 @@
 package com.tesco.pma.colleague.profile.service;
 
-import com.tesco.pma.colleague.profile.dao.ProfileAttributeDAO;
-import com.tesco.pma.colleague.profile.domain.TypedAttribute;
-import com.tesco.pma.colleague.profile.exception.ErrorCodes;
-import com.tesco.pma.colleague.profile.service.rest.model.AggregatedColleague;
-import com.tesco.pma.colleague.profile.service.rest.model.colleague.Colleague;
-import com.tesco.pma.colleague.profile.service.rest.model.colleague.contact.AddressList;
-import com.tesco.pma.colleague.profile.service.rest.model.colleague.contact.Contact;
-import com.tesco.pma.colleague.profile.service.rest.model.colleague.profile.Profile;
-import com.tesco.pma.colleague.profile.service.rest.model.colleague.service.ServiceDates;
-import com.tesco.pma.colleague.profile.service.rest.model.colleague.workrelationships.Department;
-import com.tesco.pma.colleague.profile.service.rest.model.colleague.workrelationships.Job;
-import com.tesco.pma.colleague.profile.service.rest.model.colleague.workrelationships.WorkRelationship;
-import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.exception.DatabaseConstraintViolationException;
-import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.service.colleague.ColleagueApiService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.function.Predicate;
+
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
+import com.tesco.pma.colleague.api.Colleague;
+import com.tesco.pma.colleague.profile.dao.ProfileAttributeDAO;
+import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
+import com.tesco.pma.colleague.profile.domain.TypedAttribute;
+import com.tesco.pma.colleague.profile.exception.ErrorCodes;
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.exception.DatabaseConstraintViolationException;
+import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.service.colleague.ColleagueApiService;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Implementation of {@link ProfileService}.
@@ -45,25 +37,27 @@ public class ProfileServiceImpl implements ProfileService {
     private final ColleagueApiService colleagueApiService;
     private final NamedMessageSourceAccessor messages;
 
-    private static final Predicate<com.tesco.pma.service.colleague.client.model.workrelationships.WorkRelationship>
+    private static final Predicate<com.tesco.pma.colleague.api.workrelationships.WorkRelationship>
             IS_WORK_RELATIONSHIP_ACTIVE = workRelationship -> workRelationship.getWorkingStatus().equals(
-                    com.tesco.pma.service.colleague.client.model.workrelationships.WorkRelationship.WorkingStatus.ACTIVE);
+                    com.tesco.pma.colleague.api.workrelationships.WorkRelationship.WorkingStatus.ACTIVE);
 
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     private static final String PROFILE_ATTRIBUTE_NAME_PARAMETER_NAME = "profileAttributeName";
 
     @Override
     //todo    @Cacheable
-    public Optional<AggregatedColleague> findProfileByColleagueUuid(UUID colleagueUuid) {
-
-        var profileAttributes = findProfileAttributes(colleagueUuid);
+    public Optional<ColleagueProfile> findProfileByColleagueUuid(UUID colleagueUuid) {
 
         var colleague = findColleagueByColleagueUuid(colleagueUuid);
-
-        var lineManger = findLineManager(colleague);
-
-        return Optional.of(fillProfileResponse(colleague, lineManger, profileAttributes));
-
+        if (colleague != null) {
+            var profileAttributes = findProfileAttributes(colleagueUuid);
+            var colleagueProfile = new ColleagueProfile();
+            if (!profileAttributes.isEmpty()) {
+                colleagueProfile.setProfileAttributes(profileAttributes);
+            }
+            return Optional.of(colleagueProfile);
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -119,138 +113,8 @@ public class ProfileServiceImpl implements ProfileService {
         return results;
     }
 
-    private AggregatedColleague fillProfileResponse(final com.tesco.pma.service.colleague.client.model.Colleague colleague,
-                                                    final com.tesco.pma.service.colleague.client.model.Colleague lineManager,
-                                                    final List<TypedAttribute> profileAttributes) {
-
-        var aggregatedColleagueResponse = new AggregatedColleague();
-
-        aggregatedColleagueResponse.setColleague(convertToColleagueResponse(colleague));
-
-        aggregatedColleagueResponse.setLineManager(convertToColleagueResponse(lineManager));
-
-        aggregatedColleagueResponse.setProfileAttributes(profileAttributes);
-
-        return aggregatedColleagueResponse;
-    }
-
-    private Colleague convertToColleagueResponse(com.tesco.pma.service.colleague.client.model.Colleague colleague) {
-        var colleagueResponse = new Colleague();
-
-        // Common information
-        colleagueResponse.setColleagueUUID(colleague.getColleagueUUID());
-        colleagueResponse.setEmployeeId(colleague.getEmployeeId());
-        colleagueResponse.setCountryCode(colleague.getCountryCode());
-
-        // Profile information
-        colleagueResponse.setProfile(convertToProfileResponse(colleague.getProfile()));
-
-        // Contact information
-        colleagueResponse.setContact(convertToContactResponse(colleague.getContact()));
-
-        // Service Dates information
-        colleagueResponse.setServiceDates(convertToServiceDatesResponse(colleague.getServiceDates()));
-
-        // WorkRelationship information
-        colleagueResponse.setWorkRelationships(convertToWorkRelationshipsResponse(colleague.getWorkRelationships()));
-
-        return colleagueResponse;
-    }
-
-    private Profile convertToProfileResponse(com.tesco.pma.service.colleague.client.model.Profile profile) {
-        return Optional.ofNullable(profile)
-                .map(input -> {
-                    var profileResponse = new Profile();
-                    BeanUtils.copyProperties(input, profileResponse);
-                    return profileResponse;
-                }).orElse(null);
-    }
-
-    private Contact convertToContactResponse(com.tesco.pma.service.colleague.client.model.Contact contact) {
-        return Optional.ofNullable(contact)
-                .map(input -> {
-                    var contactResponse = new Contact();
-                    BeanUtils.copyProperties(input, contactResponse);
-
-                    if (Objects.nonNull(input.getAddresses())) {
-                        var addressListResponse = new AddressList();
-                        BeanUtils.copyProperties(input.getAddresses(), addressListResponse);
-                        contactResponse.setAddresses(addressListResponse);
-                    }
-
-                    return contactResponse;
-                }).orElse(null);
-    }
-
-    private ServiceDates convertToServiceDatesResponse(com.tesco.pma.service.colleague.client.model.service.ServiceDates serviceDates) {
-        return Optional.ofNullable(serviceDates)
-                .map(input -> {
-                    var serviceDatesResponse = new ServiceDates();
-                    BeanUtils.copyProperties(input, serviceDatesResponse);
-                    return serviceDatesResponse;
-                }).orElse(null);
-
-    }
-
-    private List<WorkRelationship> convertToWorkRelationshipsResponse(
-            List<com.tesco.pma.service.colleague.client.model.workrelationships.WorkRelationship> workRelationships) {
-        if (Objects.isNull(workRelationships)) {
-            return null; // NOSONAR
-        }
-
-        Optional<com.tesco.pma.service.colleague.client.model.workrelationships.WorkRelationship> optionalWorkRelationship =
-                workRelationships.stream()
-                        .filter(IS_WORK_RELATIONSHIP_ACTIVE)
-                        .findFirst();
-
-        return optionalWorkRelationship
-                .map(input -> {
-                    var workRelationshipResponse = new WorkRelationship();
-                    workRelationshipResponse.setEmploymentType(input.getEmploymentType());
-                    workRelationshipResponse.setWorkSchedule(input.getWorkSchedule()); // Time Type
-                    workRelationshipResponse.setEmploymentType(input.getEmploymentType());
-                    workRelationshipResponse.setIsManager(input.getIsManager());
-
-                    // Job Title
-                    var jobResponse = Optional.ofNullable(input.getJob()).map(job -> {
-                        var result = new Job();
-                        BeanUtils.copyProperties(job, result);
-                        return result;
-                    }).orElse(null);
-                    workRelationshipResponse.setJob(jobResponse);
-
-                    // Function
-                    var departmentResponse = Optional.ofNullable(input.getDepartment()).map(department -> {
-                        var result = new Department();
-                        BeanUtils.copyProperties(department, result);
-                        return result;
-                    }).orElse(null);
-                    workRelationshipResponse.setDepartment(departmentResponse);
-
-                    return workRelationshipResponse;
-                })
-                .stream()
-                .collect(Collectors.toList());
-
-    }
-
-    private com.tesco.pma.service.colleague.client.model.Colleague findColleagueByColleagueUuid(UUID colleagueUuid) {
+    private Colleague findColleagueByColleagueUuid(UUID colleagueUuid) {
         return colleagueApiService.findColleagueByUuid(colleagueUuid);
-    }
-
-    private com.tesco.pma.service.colleague.client.model.Colleague findLineManager(
-            com.tesco.pma.service.colleague.client.model.Colleague colleague) {
-        if (Objects.isNull(colleague)) {
-            return null; //NOSONAR
-        }
-
-        Optional<UUID> managerUUID = colleague.getWorkRelationships().stream()
-                .filter(IS_WORK_RELATIONSHIP_ACTIVE)
-                .findFirst()
-                .map(com.tesco.pma.service.colleague.client.model.workrelationships.WorkRelationship::getManagerUUID);
-
-        return managerUUID.map(colleagueApiService::findColleagueByUuid).orElse(null);
-
     }
 
     private List<TypedAttribute> findProfileAttributes(UUID colleagueUuid) {

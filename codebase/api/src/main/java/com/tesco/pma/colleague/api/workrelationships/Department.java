@@ -1,4 +1,4 @@
-package com.tesco.pma.service.colleague.client.model.workrelationships;
+package com.tesco.pma.colleague.api.workrelationships;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -6,10 +6,8 @@ import lombok.experimental.FieldDefaults;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@SuppressWarnings("PMD.ShortClassName")
-public class Job {
+public class Department {
     String id;
-    String code;
     String name;
-    String costCategory;
+    String businessType;
 }

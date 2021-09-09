@@ -1,8 +1,8 @@
-package com.tesco.pma.service.colleague.client.model;
+package com.tesco.pma.colleague.api;
 
-import com.tesco.pma.service.colleague.client.model.effectivity.Effectivity;
-import com.tesco.pma.service.colleague.client.model.service.ServiceDates;
-import com.tesco.pma.service.colleague.client.model.workrelationships.WorkRelationship;
+import com.tesco.pma.colleague.api.effectivity.Effectivity;
+import com.tesco.pma.colleague.api.service.ServiceDates;
+import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
 import lombok.Data;
 
 import java.util.List;

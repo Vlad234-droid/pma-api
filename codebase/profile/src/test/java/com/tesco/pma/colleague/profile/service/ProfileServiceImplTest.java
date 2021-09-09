@@ -7,7 +7,7 @@ import com.tesco.pma.colleague.profile.AbstractProfileTests;
 import com.tesco.pma.colleague.profile.LocalTestConfig;
 import com.tesco.pma.colleague.profile.dao.ProfileAttributeDAO;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
-import com.tesco.pma.colleague.profile.service.rest.model.AggregatedColleague;
+import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.service.colleague.ColleagueApiService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,7 +73,7 @@ class ProfileServiceImplTest extends AbstractProfileTests {
         when(mockColleagueApiService.findColleagueByUuid(any(UUID.class)))
                 .thenReturn(randomColleague());
 
-        Optional<AggregatedColleague> profileResponse = mockProfileService.findProfileByColleagueUuid(colleagueUuid);
+        Optional<ColleagueProfile> profileResponse = mockProfileService.findProfileByColleagueUuid(colleagueUuid);
         assertThat(profileResponse).isPresent();
 
     }

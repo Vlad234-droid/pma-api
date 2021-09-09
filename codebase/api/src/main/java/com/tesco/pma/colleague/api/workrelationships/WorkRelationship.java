@@ -1,7 +1,7 @@
-package com.tesco.pma.service.colleague.client.model.workrelationships;
+package com.tesco.pma.colleague.api.workrelationships;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.tesco.pma.service.colleague.client.model.Colleague.ColleagueType;
+import com.tesco.pma.colleague.api.Colleague.ColleagueType;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
