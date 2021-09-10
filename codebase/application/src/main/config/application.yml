@@ -120,7 +120,7 @@ tesco:
           jwk-set-uri: ${ONE_LOGIN_BASE_URL}/oidc/2/certs
       role-mapping:
         ROLE_Admin: ${AD_ROLE_ADMIN}
-        ROLE_SubsidiaryManager: ${AD_ROLE_SUBSIDIARY_MANAGER}
+        ROLE_LineManager: ${AD_ROLE_LINE_MANAGER}
         ROLE_Viewer: ${AD_ROLE_VIEWER}
     rest-template:
       connect-timeout: 20000
@@ -180,10 +180,10 @@ spring:
   datasource:
     default:
       # Database config
-      jdbc-url: ${GPG_DB_URL}
-      schema: ${GPG_DB_SCHEMA}
-      username: ${GPG_DB_USERNAME}
-      password: ${GPG_DB_PASSWORD}
+      jdbc-url: ${PMA_DB_URL}
+      schema: ${PMA_DB_SCHEMA}
+      username: ${PMA_DB_USERNAME}
+      password: ${PMA_DB_PASSWORD}
 
 ---
 spring:

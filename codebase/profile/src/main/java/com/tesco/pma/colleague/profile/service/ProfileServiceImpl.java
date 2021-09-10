@@ -50,8 +50,10 @@ public class ProfileServiceImpl implements ProfileService {
 
         var colleague = findColleagueByColleagueUuid(colleagueUuid);
         if (colleague != null) {
-            var profileAttributes = findProfileAttributes(colleagueUuid);
             var colleagueProfile = new ColleagueProfile();
+            colleagueProfile.setColleague(colleague);
+
+            var profileAttributes = findProfileAttributes(colleagueUuid);
             if (!profileAttributes.isEmpty()) {
                 colleagueProfile.setProfileAttributes(profileAttributes);
             }
