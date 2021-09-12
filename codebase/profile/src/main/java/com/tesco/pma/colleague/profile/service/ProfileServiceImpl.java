@@ -67,6 +67,7 @@ public class ProfileServiceImpl implements ProfileService {
     public List<TypedAttribute> updateProfileAttributes(UUID colleagueUuid, List<TypedAttribute> profileAttributes) {
         List<TypedAttribute> results = new ArrayList<>();
         profileAttributes.forEach(profileAttribute -> {
+            profileAttribute.setColleagueUuid(colleagueUuid);
             if (1 == profileAttributeDAO.update(profileAttribute)) {
                 results.add(profileAttribute);
             } else {
@@ -83,6 +84,7 @@ public class ProfileServiceImpl implements ProfileService {
         List<TypedAttribute> results = new ArrayList<>();
         profileAttributes.forEach(profileAttribute -> {
             try {
+                profileAttribute.setColleagueUuid(colleagueUuid);
                 if (1 == profileAttributeDAO.create(profileAttribute)) {
                     results.add(profileAttribute);
                 } else {
@@ -102,9 +104,10 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<TypedAttribute> deleteProfileAttributes(UUID colleagueUuid, List<TypedAttribute> profileAttributes) {
+    public List<TypedAttribute> deleteProfileAttributes(final UUID colleagueUuid, List<TypedAttribute> profileAttributes) {
         List<TypedAttribute> results = new ArrayList<>();
         profileAttributes.forEach(profileAttribute -> {
+            profileAttribute.setColleagueUuid(colleagueUuid);
             if (1 == profileAttributeDAO.delete(profileAttribute)) {
                 results.add(profileAttribute);
             } else {

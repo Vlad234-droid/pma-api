@@ -24,7 +24,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS;
-import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,13 +50,13 @@ class ProfileServiceImplTest extends AbstractProfileTests {
     @MockBean
     private ColleagueApiService mockColleagueApiService;
 
-    private ProfileServiceImpl mockProfileService;
+    private ProfileServiceImpl profileService;
 
-    private final UUID colleagueUuid = randomUUID();
+    private final UUID colleagueUuid = COLLEAGUE_UUID_1;
 
     @BeforeEach
     void setUp() {
-        mockProfileService = new ProfileServiceImpl(mockProfileDAO, mockColleagueApiService, messages);
+        profileService = new ProfileServiceImpl(mockProfileDAO, mockColleagueApiService, messages);
     }
 
     @AfterEach
@@ -73,7 +72,7 @@ class ProfileServiceImplTest extends AbstractProfileTests {
         when(mockColleagueApiService.findColleagueByUuid(any(UUID.class)))
                 .thenReturn(randomColleague());
 
-        Optional<ColleagueProfile> profileResponse = mockProfileService.findProfileByColleagueUuid(colleagueUuid);
+        Optional<ColleagueProfile> profileResponse = profileService.findProfileByColleagueUuid(colleagueUuid);
         assertThat(profileResponse).isPresent();
 
     }
@@ -88,7 +87,7 @@ class ProfileServiceImplTest extends AbstractProfileTests {
                 .thenThrow(ExternalSystemException.class);
 
         assertThatExceptionOfType(ExternalSystemException.class)
-                .isThrownBy(() -> mockProfileService.findProfileByColleagueUuid(colleagueUuid))
+                .isThrownBy(() -> profileService.findProfileByColleagueUuid(colleagueUuid))
                 .withNoCause();
 
     }
@@ -99,7 +98,7 @@ class ProfileServiceImplTest extends AbstractProfileTests {
         when(mockProfileDAO.update(any(TypedAttribute.class)))
                 .thenReturn(1);
 
-        var results = mockProfileService.updateProfileAttributes(colleagueUuid, profileAttributes(3));
+        var results = profileService.updateProfileAttributes(colleagueUuid, profileAttributes(3));
 
         assertThat(results).isNotEmpty();
         assertThat(results.size()).isEqualTo(3);
@@ -114,7 +113,7 @@ class ProfileServiceImplTest extends AbstractProfileTests {
         when(mockProfileDAO.create(any(TypedAttribute.class)))
                 .thenReturn(1);
 
-        var results = mockProfileService.createProfileAttributes(colleagueUuid, profileAttributes(3));
+        var results = profileService.createProfileAttributes(colleagueUuid, profileAttributes(3));
 
         assertThat(results).isNotEmpty();
         assertThat(results.size()).isEqualTo(3);
@@ -130,7 +129,7 @@ class ProfileServiceImplTest extends AbstractProfileTests {
                 .thenThrow(DuplicateKeyException.class);
 
         var exception = assertThrows(DatabaseConstraintViolationException.class,
-                () -> mockProfileService.createProfileAttributes(colleagueUuid, profileAttributes(3)));
+                () -> profileService.createProfileAttributes(colleagueUuid, profileAttributes(3)));
 
         assertEquals(PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS.name(), exception.getCode());
         assertEquals(PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS_MESSAGE, exception.getMessage());
@@ -146,7 +145,7 @@ class ProfileServiceImplTest extends AbstractProfileTests {
         when(mockProfileDAO.delete(any(TypedAttribute.class)))
                 .thenReturn(1);
 
-        var results = mockProfileService.deleteProfileAttributes(colleagueUuid, profileAttributes(3));
+        var results = profileService.deleteProfileAttributes(colleagueUuid, profileAttributes(3));
 
         assertThat(results).isNotEmpty();
         assertThat(results.size()).isEqualTo(3);
