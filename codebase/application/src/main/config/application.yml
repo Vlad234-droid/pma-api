@@ -123,6 +123,8 @@ tesco:
         ROLE_LineManager: ${AD_ROLE_LINE_MANAGER}
         ROLE_Viewer: ${AD_ROLE_VIEWER}
     rest-template:
+      security:
+        enabled: ${REST_TEMPLATE_SECURITY_ENABLED:true}
       connect-timeout: 20000
       read-timeout: 30000
     page:
