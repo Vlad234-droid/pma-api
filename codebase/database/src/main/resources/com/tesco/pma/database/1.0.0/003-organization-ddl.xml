@@ -1,0 +1,100 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet author="mdiadia" id="1">
+        <createTable remarks="Dictionary of business unit types"
+                     tableName="business_unit_type">
+            <column name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="business_unit_type_pk"/>
+            </column>
+            <column name="code" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="mdiadia" id="2">
+        <comment>Init table business_unit_type</comment>
+        <insert tableName="business_unit_type">
+            <column name="id" value="1"/>
+            <column name="code" value="DEPARTMENT"/>
+            <column name="description" value="Department business unit"/>
+        </insert>
+        <rollback>
+            <delete tableName="business_unit_type">
+                <where>code = 'DEPARTMENT'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="mdiadia" id="3">
+        <createTable remarks="Business unit"
+                     tableName="business_unit">
+            <column name="uuid" type="${uuid_type}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="business_unit_pk"/>
+            </column>
+            <column name="name" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_uuid" type="${uuid_type}">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="business_unit"
+                                 constraintName="business_unit_type_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="business_unit_type" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="parent_uuid" baseTableName="business_unit"
+                                 constraintName="business_unit_parent_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="uuid" referencedTableName="business_unit" validate="true"/>
+        <addUniqueConstraint columnNames="name, type, version" constraintName="business_unit_uc"
+                             tableName="business_unit"/>
+    </changeSet>
+
+    <changeSet author="mdiadia" id="4">
+        <createTable remarks="Working business unit"
+                     tableName="working_business_unit">
+            <column name="name" type="VARCHAR">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="working_business_unit_pk"/>
+            </column>
+            <column name="type_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="working_business_unit_pk"/>
+            </column>
+            <column name="version" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="root_uuid" type="${uuid_type}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_by" type="VARCHAR">
+                <constraints nullable="true"/>
+            </column>
+            <column name="updated_time" type="timestamptz">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="working_business_unit"
+                                 constraintName="working_business_unit_type_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="business_unit_type" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="root_uuid" baseTableName="working_business_unit"
+                                 constraintName="working_business_unit_root_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="uuid" referencedTableName="business_unit" validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>

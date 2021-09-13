@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.organization.dao.OrganizationDAO">
+
+    <resultMap id="businessUnitStructure" type="com.tesco.pma.organization.api.BusinessUnit">
+        <id column="uuid" property="uuid"/>
+        <result column="name" property="name"/>
+        <result column="type_id" property="type" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.organization.api.BusinessUnitType"/>
+        <result column="version" property="version"/>
+        <result column="parent_uuid" property="parentUuid"/>
+    </resultMap>
+
+
+    <select id="findBusinessUnitParentStructure" resultMap="businessUnitStructure">
+        WITH RECURSIVE orgs AS (
+            SELECT bu.uuid, name, bu.type_id, bu.version, bu.parent_uuid, 0 as depth
+            FROM business_unit bu
+            WHERE bu.uuid = #{uuid}
+            UNION ALL
+            SELECT bu.uuid, bu.name, bu.type_id, bu.version, bu.parent_uuid, depth + 1 as depth
+            FROM orgs
+                     JOIN business_unit bu ON bu.uuid = orgs.parent_uuid
+        )
+        SELECT uuid, name, type_id, version, parent_uuid
+        FROM orgs
+        ORDER BY depth DESC;
+    </select>
+
+    <select id="findBusinessUnitChildStructureByUuid" resultMap="businessUnitStructure">
+        WITH RECURSIVE orgs AS (
+            SELECT bu.uuid, name, bu.type_id, bu.version, bu.parent_uuid, 0 as depth
+            FROM business_unit bu
+            WHERE bu.uuid = #{uuid}
+            UNION ALL
+            SELECT bu.uuid, bu.name, bu.type_id, bu.version, bu.parent_uuid, depth + 1 as depth
+            FROM orgs
+                     JOIN business_unit bu ON bu.parent_uuid = orgs.uuid
+        )
+        SELECT uuid, name, type_id, version, parent_uuid
+        FROM orgs
+        ORDER BY depth ASC;
+    </select>
+
+    <select id="findBusinessUnitsByUuids" resultMap="businessUnitStructure">
+        SELECT uuid, name, type_id, version, parent_uuid
+        FROM business_unit
+        WHERE id IN
+        <foreach collection="uuids" open="(" separator="," close=")" item="uuid">
+            #{uuid}
+        </foreach>
+    </select>
+
+    <select id="getNextVersion" resultType="int">
+        SELECT COALESCE(MAX(version), 0) + 1
+        FROM business_unit
+        WHERE name = #{name}
+          AND type_id =
+              #{type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.organization.api.BusinessUnitType};
+    </select>
+
+    <insert id="createBusinessUnit" flushCache="true">
+        INSERT INTO business_unit(uuid, name, type_id, version, parent_uuid)
+        VALUES (#{bu.uuid}, #{bu.name},
+                #{bu.type, , typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.organization.api.BusinessUnitType},
+                #{bu.version}, #{bu.parentUuid})
+    </insert>
+
+    <insert id="publishBusinessUnit" flushCache="true">
+        INSERT INTO working_business_unit(name, type_id, version, root_uuid)
+        SELECT name, type_id, version, uuid
+        FROM business_unit
+        WHERE uuid = #{uuid}
+    </insert>
+
+    <delete id="unpublishBusinessUnit" flushCache="true">
+        DELETE
+        FROM working_business_unit
+        WHERE uuid = #{uuid}
+    </delete>
+</mapper>
