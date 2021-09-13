@@ -1,5 +1,4 @@
-package com.tesco.pma.colleague.objective.domain;
-
+package com.tesco.pma.objective.domain;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -11,12 +10,15 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class GroupObjective {
+public class PersonalObjective {
     UUID uuid;
-    UUID businessUnitUuid;
+    UUID colleagueUuid;
     UUID performanceCycleUuid;
     Integer sequenceNumber;
     String title;
-    Integer version;
+    String description;
+    String meets;
+    String exceeds;
+    GroupObjective groupObjective;
     ObjectiveStatus status;
 }

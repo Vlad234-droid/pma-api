@@ -1,24 +1,22 @@
-package com.tesco.pma.colleague.objective.domain;
+package com.tesco.pma.objective.domain;
 
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PersonalObjective {
-    UUID uuid;
-    UUID colleagueUuid;
+public class WorkingGroupObjective {
+    UUID businessUnitUuid;
     UUID performanceCycleUuid;
     Integer sequenceNumber;
-    String title;
-    String description;
-    String meets;
-    String exceeds;
-    GroupObjective groupObjective;
-    ObjectiveStatus status;
+    Integer version;
+    UUID groupObjectiveUuid;
+    String updaterId;
+    Instant updateTime;
 }

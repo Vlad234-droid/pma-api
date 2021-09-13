@@ -1,4 +1,4 @@
-package com.tesco.pma.colleague.objective.domain;
+package com.tesco.pma.objective.domain;
 
 import com.tesco.pma.api.DictionaryItem;
 import lombok.Getter;

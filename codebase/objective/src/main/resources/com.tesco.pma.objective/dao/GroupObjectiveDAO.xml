@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.objective.dao.GroupObjectiveDAO">
+
+    <resultMap id="groupObjectiveResultMap" type="com.tesco.pma.objective.domain.GroupObjective">
+        <id property="uuid" column="uuid"/>
+        <result property="businessUnitUuid" column="business_unit_uuid"/>
+        <result property="performanceCycleUuid" column="performance_cycle_uuid"/>
+        <result property="sequenceNumber" column="sequence_number"/>
+        <result property="title" column="title"/>
+        <result property="version" column="version"/>
+        <result property="status" column="status_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.objective.domain.ObjectiveStatus"/>
+    </resultMap>
+
+    <insert id="insert" flushCache="true">
+        INSERT INTO group_objective
+        (uuid,
+         business_unit_uuid,
+         performance_cycle_uuid,
+         sequence_number,
+         title,
+         version,
+         status_id)
+        VALUES (#{groupObjective.uuid},
+                #{groupObjective.businessUnitUuid},
+                #{groupObjective.performanceCycleUuid},
+                #{groupObjective.sequenceNumber},
+                #{groupObjective.title},
+                #{groupObjective.version},
+                #{groupObjective.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.objective.domain.ObjectiveStatus})
+    </insert>
+
+    <select id="get" resultMap="groupObjectiveResultMap">
+        SELECT *
+        FROM group_objective
+        WHERE uuid = #{groupObjectiveUuid}
+    </select>
+
+    <update id="update" flushCache="true">
+        UPDATE group_objective
+        SET title    = #{groupObjective.title},
+            version  = #{groupObjective.version},
+            status_id=#{groupObjective.status.id}
+        WHERE uuid = #{groupObjective.uuid}
+    </update>
+
+    <delete id="delete">
+        DELETE
+        FROM group_objective
+        WHERE uuid = #{groupObjectiveUuid}
+    </delete>
+
+</mapper>
