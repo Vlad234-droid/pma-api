@@ -1,3 +1,7 @@
+plugins {
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
+}
+
 dependencies {
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
@@ -12,5 +16,12 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
 
     implementation("org.springframework.boot:spring-boot-starter-web")
+}
 
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+        mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+    }
 }
