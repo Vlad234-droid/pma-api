@@ -24,6 +24,7 @@ dependencies {
     implementation project(':bpm')
     implementation project(':camunda')
     implementation project(':pm')
+    implementation project(':profile')
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -51,6 +52,8 @@ processResources {
      */
     with copySpec {
         from 'src/main/config'
+        exclude '**/application.yml'
+        exclude '**/logback.xml'
         if ('local' == envType) {
             exclude '**/application-@envType@.properties'
         }

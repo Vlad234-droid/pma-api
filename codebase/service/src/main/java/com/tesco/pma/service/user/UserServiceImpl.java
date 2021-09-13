@@ -6,8 +6,8 @@ import com.tesco.pma.api.security.SubsidiaryPermission;
 import com.tesco.pma.exception.ExternalSystemException;
 import com.tesco.pma.security.UserRoleNames;
 import com.tesco.pma.service.colleague.client.ColleagueApiClient;
-import com.tesco.pma.service.colleague.client.model.Colleague;
-import com.tesco.pma.service.colleague.client.model.FindColleaguesRequest;
+import com.tesco.pma.colleague.api.Colleague;
+import com.tesco.pma.colleague.api.FindColleaguesRequest;
 import com.tesco.pma.service.security.SubsidiaryPermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
                     messages.getMessage(COLLEAGUE_API_UNEXPECTED_RESULT,
                             Map.of("reason", "more then one colleague found for iamId: " + iamId)));
         }
-        User user = mapColleagueToUser(colleagues.iterator().next());
+        var user = mapColleagueToUser(colleagues.iterator().next());
         return Optional.of(processIncludes(user, includes));
     }
 
@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService {
             return Optional.empty();
         }
 
-        User user = findUserByColleagueUuidInternal(colleagueUuid, includes).orElse(null);
+        var user = findUserByColleagueUuidInternal(colleagueUuid, includes).orElse(null);
         if (user == null) {
             //fallback to onelogin token if provided
             final var auth2UserAuthority = authentication.getAuthorities().stream()

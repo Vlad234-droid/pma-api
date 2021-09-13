@@ -1,9 +1,9 @@
 package com.tesco.pma.service.colleague.client;
 
-import com.tesco.pma.service.colleague.client.model.Colleague;
-import com.tesco.pma.service.colleague.client.model.Contact;
-import com.tesco.pma.service.colleague.client.model.FindColleaguesRequest;
-import com.tesco.pma.service.colleague.client.model.Profile;
+import com.tesco.pma.colleague.api.Colleague;
+import com.tesco.pma.colleague.api.Contact;
+import com.tesco.pma.colleague.api.FindColleaguesRequest;
+import com.tesco.pma.colleague.api.Profile;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;

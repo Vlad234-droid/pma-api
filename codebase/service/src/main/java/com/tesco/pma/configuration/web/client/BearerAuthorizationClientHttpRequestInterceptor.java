@@ -1,14 +1,15 @@
 package com.tesco.pma.configuration.web.client;
 
-import lombok.NonNull;
+import java.io.IOException;
+import java.util.function.Supplier;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 
-import java.io.IOException;
-import java.util.function.Supplier;
+import lombok.NonNull;
 
 /**
  * {@link ClientHttpRequestInterceptor} to apply a given HTTP Bearer Authentication
