@@ -33,7 +33,8 @@ spring:
       time: iso
   messages:
     basename: >
-      com/tesco/pma/exception/AppExceptionMessage
+      com/tesco/pma/exception/AppExceptionMessage,
+      com/tesco/pma/colleague/profile/exception/AppExceptionMessage
     encoding: UTF-8
   async-executor:
     core-pool-size: 2
@@ -42,9 +43,9 @@ spring:
   datasource:
     default:
       mybatis-session:
-        type-aliases-package: com.tesco.pma.domain
+        type-aliases-package: com.tesco.pma.api, com.tesco.pma.colleague.profile.domain
         configuration-properties:
-          base-package: com.tesco.pma.dao
+          base-package: com.tesco.pma.dao, com.tesco.pma.colleague.profile.dao
           batchSize: 100
     postgres-version: 11.11
     testdb:
@@ -99,7 +100,7 @@ tesco:
           jwk-set-uri: http://test-additional-jwk-set-url.com
       role-mapping:
         ROLE_Admin: AD_ROLE_Admin
-        ROLE_SubsidiaryManager: AD_ROLE_SubsidiaryManager
+        ROLE_LineManager: AD_ROLE_LineManager
         ROLE_Viewer: AD_ROLE_Viewer
     external-endpoints:
       cep:
@@ -113,6 +114,8 @@ tesco:
       colleague-api:
         base-url: https://test.com/colleague/colleague/v2/colleagues
     rest-template:
+      security:
+        enabled: ${REST_TEMPLATE_SECURITY_ENABLED:true}
       connect-timeout: 20
       read-timeout: 30
       http-factory-class: com.tesco.pma.configuration.RestTemplateConfigurationTest.TestFactory

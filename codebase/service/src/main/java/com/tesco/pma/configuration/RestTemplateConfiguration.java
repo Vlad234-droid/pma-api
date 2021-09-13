@@ -2,6 +2,7 @@ package com.tesco.pma.configuration;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.client.RestTemplateCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -62,12 +63,14 @@ public class RestTemplateConfiguration {
     }
 
     @Bean
+    @ConditionalOnProperty(prefix = "tesco.application", name = "rest-template.security.enabled")
     public RestTemplateCustomizer pmaAuthorizationRestTemplateCustomizer(
             BearerAuthorizationClientHttpRequestInterceptor interceptor) {
         return new BearerAuthorizationRestTemplateCustomizer(interceptor);
     }
 
     @Bean
+    @ConditionalOnProperty(prefix = "tesco.application", name = "rest-template.security.enabled")
     public BearerAuthorizationClientHttpRequestInterceptor pmaClientBearerAuthorizationRequestInterceptor(
             @Qualifier("pmaClientTokenSupplier") Supplier<String> tokenSupplier) {
         return new BearerAuthorizationClientHttpRequestInterceptor(tokenSupplier);

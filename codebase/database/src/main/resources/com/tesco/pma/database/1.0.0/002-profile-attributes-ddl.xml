@@ -1,0 +1,86 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet author="akuzmin" id="1">
+        <createTable remarks="Dictionary of profile attribute types"
+                     tableName="profile_attribute_type">
+            <column name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="profile_attribute_type_pk"/>
+            </column>
+            <column name="code" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="akuzmin" id="2">
+        <comment>Init table profile_attribute_type</comment>
+        <insert tableName="profile_attribute_type">
+            <column name="id" value="1"/>
+            <column name="code" value="STRING"/>
+            <column name="description" value="String type of attribute"/>
+        </insert>
+        <insert tableName="profile_attribute_type">
+            <column name="id" value="2"/>
+            <column name="code" value="DATE"/>
+            <column name="description" value="Date type of attribute"/>
+        </insert>
+        <insert tableName="profile_attribute_type">
+            <column name="id" value="3"/>
+            <column name="code" value="NUMBER"/>
+            <column name="description" value="Number type of attribute"/>
+        </insert>
+        <insert tableName="profile_attribute_type">
+            <column name="id" value="4"/>
+            <column name="code" value="BOOLEAN"/>
+            <column name="description" value="Boolean type of attribute"/>
+        </insert>
+        <rollback>
+            <delete tableName="profile_attribute_type">
+                <where>code = 'STRING'</where>
+            </delete>
+            <delete tableName="profile_attribute_type">
+                <where>code = 'DATE'</where>
+            </delete>
+            <delete tableName="profile_attribute_type">
+                <where>code = 'NUMBER'</where>
+            </delete>
+            <delete tableName="profile_attribute_type">
+                <where>code = 'BOOLEAN'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="akuzmin" id="3">
+        <createTable remarks="Profiles attributes"
+                     tableName="profile_attributes">
+            <column name="id" type="INTEGER" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="profile_attributes_pk"/>
+            </column>
+            <column name="colleague_uuid" type="${uuid_type}">
+                <constraints nullable="false" />
+            </column>
+            <column name="name" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="profile_attributes"
+                                 constraintName="profile_attribute_type_pk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="profile_attribute_type" validate="true"/>
+        <addUniqueConstraint columnNames="colleague_uuid, name" constraintName="profile_attributes_uc"
+                             tableName="profile_attributes"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -35,9 +35,10 @@ spring:
     default:
       # MyBatis config
       mybatis-session:
-        type-aliases-package: com.tesco.pma.domain
+        type-aliases-package: com.tesco.pma.api, com.tesco.pma.colleague.profile.domain
         configuration-properties:
-          base-package: com.tesco.pma.dao
+          base-package: com.tesco.pma.dao,
+                        com.tesco.pma.colleague.profile.dao
           batchSize: 500
     camunda:
       # TODO: change database
@@ -60,7 +61,8 @@ spring:
       max-request-size: 128MB
   messages:
     basename: >
-      com/tesco/pma/exception/AppExceptionMessage
+      com/tesco/pma/exception/AppExceptionMessage,
+      com/tesco/pma/colleague/profile/exception/AppExceptionMessage
     encoding: UTF-8
   async-executor:
     core-pool-size: 2
@@ -118,9 +120,11 @@ tesco:
           jwk-set-uri: ${ONE_LOGIN_BASE_URL}/oidc/2/certs
       role-mapping:
         ROLE_Admin: ${AD_ROLE_ADMIN}
-        ROLE_SubsidiaryManager: ${AD_ROLE_SUBSIDIARY_MANAGER}
+        ROLE_LineManager: ${AD_ROLE_LINE_MANAGER}
         ROLE_Viewer: ${AD_ROLE_VIEWER}
     rest-template:
+      security:
+        enabled: ${REST_TEMPLATE_SECURITY_ENABLED:true}
       connect-timeout: 20000
       read-timeout: 30000
     page:
@@ -178,10 +182,10 @@ spring:
   datasource:
     default:
       # Database config
-      jdbc-url: ${GPG_DB_URL}
-      schema: ${GPG_DB_SCHEMA}
-      username: ${GPG_DB_USERNAME}
-      password: ${GPG_DB_PASSWORD}
+      jdbc-url: ${PMA_DB_URL}
+      schema: ${PMA_DB_SCHEMA}
+      username: ${PMA_DB_USERNAME}
+      password: ${PMA_DB_PASSWORD}
 
 ---
 spring:

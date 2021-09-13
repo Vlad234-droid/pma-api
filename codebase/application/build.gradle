@@ -24,6 +24,7 @@ dependencies {
     implementation project(':bpm')
     implementation project(':camunda')
     implementation project(':pm')
+    implementation project(':profile')
     implementation project(':objective')
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")

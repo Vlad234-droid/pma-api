@@ -1,6 +1,8 @@
 package com.tesco.pma.configuration;
 
 import com.tesco.pma.configuration.security.IdentityOAuth2ClientCredentialsGrantRequestEntityConverter;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
@@ -19,6 +21,7 @@ import java.util.function.Supplier;
  * to be used to authorize calls to different Tesco APIs.
  */
 @Configuration
+@ConditionalOnProperty(prefix = "tesco.application", name = "rest-template.security.enabled")
 public class ClientSecurityConfiguration {
     /**
      * Constant principal name for Pma client.
