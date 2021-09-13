@@ -6,6 +6,7 @@ import com.tesco.pma.organization.api.BusinessUnitResponse;
 import com.tesco.pma.organization.dao.OrganizationDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,6 +65,15 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public void unpublishUnit(UUID businessUnitUuid) {
         dao.unpublishBusinessUnit(businessUnitUuid);
+    }
+
+    @Override
+    @Transactional
+    public void createBusinessUnit(BusinessUnit businessUnit) {
+        var nextVersion = dao.getNextVersion(businessUnit.getName(), businessUnit.getType());
+        businessUnit.setUuid(UUID.randomUUID());
+        businessUnit.setVersion(nextVersion);
+        dao.createBusinessUnit(businessUnit);
     }
 
     private BusinessUnitResponse buildStructure(Collection<BusinessUnit> units) {

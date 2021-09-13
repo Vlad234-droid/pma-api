@@ -63,7 +63,7 @@
     <insert id="createBusinessUnit" flushCache="true">
         INSERT INTO business_unit(uuid, name, type_id, version, parent_uuid)
         VALUES (#{bu.uuid}, #{bu.name},
-                #{bu.type, , typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.organization.api.BusinessUnitType},
+                #{bu.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.organization.api.BusinessUnitType},
                 #{bu.version}, #{bu.parentUuid})
     </insert>
 

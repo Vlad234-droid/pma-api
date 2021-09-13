@@ -60,7 +60,7 @@
                                  constraintName="business_unit_parent_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="uuid" referencedTableName="business_unit" validate="true"/>
-        <addUniqueConstraint columnNames="name, type, version" constraintName="business_unit_uc"
+        <addUniqueConstraint columnNames="name, type_id, version" constraintName="business_unit_uc"
                              tableName="business_unit"/>
     </changeSet>
 
