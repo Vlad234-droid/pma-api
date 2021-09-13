@@ -1,7 +1,6 @@
 package com.tesco.pma.service.colleague;
 
-import com.tesco.pma.service.colleague.client.model.Colleague;
-import org.springframework.cache.annotation.Cacheable;
+import com.tesco.pma.colleague.api.Colleague;
 
 import java.util.UUID;
 

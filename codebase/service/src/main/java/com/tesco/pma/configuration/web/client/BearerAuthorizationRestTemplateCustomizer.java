@@ -1,11 +1,11 @@
 package com.tesco.pma.configuration.web.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.boot.web.client.RestTemplateCustomizer;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * {@link RestTemplateCustomizer} that configures the {@link RestTemplate} to set

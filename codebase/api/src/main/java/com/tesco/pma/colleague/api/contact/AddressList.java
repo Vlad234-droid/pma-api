@@ -1,4 +1,4 @@
-package com.tesco.pma.service.colleague.client.model.contact;
+package com.tesco.pma.colleague.api.contact;
 
 import lombok.AccessLevel;
 import lombok.Data;

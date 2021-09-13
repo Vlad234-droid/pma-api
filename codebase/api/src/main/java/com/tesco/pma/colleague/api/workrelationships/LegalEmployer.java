@@ -1,4 +1,4 @@
-package com.tesco.pma.service.colleague.client.model.workrelationships;
+package com.tesco.pma.colleague.api.workrelationships;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -6,9 +6,7 @@ import lombok.experimental.FieldDefaults;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Job {
-    String id;
-    String code;
+public class LegalEmployer {
+    Long id;
     String name;
-    String costCategory;
 }

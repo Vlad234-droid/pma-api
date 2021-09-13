@@ -100,7 +100,7 @@ tesco:
           jwk-set-uri: http://test-additional-jwk-set-url.com
       role-mapping:
         ROLE_Admin: AD_ROLE_Admin
-        ROLE_SubsidiaryManager: AD_ROLE_SubsidiaryManager
+        ROLE_LineManager: AD_ROLE_LineManager
         ROLE_Viewer: AD_ROLE_Viewer
     external-endpoints:
       cep:
@@ -114,6 +114,8 @@ tesco:
       colleague-api:
         base-url: https://test.com/colleague/colleague/v2/colleagues
     rest-template:
+      security:
+        enabled: ${REST_TEMPLATE_SECURITY_ENABLED:true}
       connect-timeout: 20
       read-timeout: 30
       http-factory-class: com.tesco.pma.configuration.RestTemplateConfigurationTest.TestFactory

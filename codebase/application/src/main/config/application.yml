@@ -37,7 +37,9 @@ spring:
       mybatis-session:
         type-aliases-package: com.tesco.pma.api, com.tesco.pma.colleague.profile.domain, com.tesco.pma.organization.api
         configuration-properties:
-          base-package: com.tesco.pma.dao, com.tesco.pma.colleague.profile.dao, com.tesco.pma.organization.dao
+          base-package: com.tesco.pma.dao,
+                        com.tesco.pma.colleague.profile.dao,
+                        com.tesco.pma.organization.dao
           batchSize: 500
     camunda:
       # TODO: change database
@@ -119,9 +121,11 @@ tesco:
           jwk-set-uri: ${ONE_LOGIN_BASE_URL}/oidc/2/certs
       role-mapping:
         ROLE_Admin: ${AD_ROLE_ADMIN}
-        ROLE_SubsidiaryManager: ${AD_ROLE_SUBSIDIARY_MANAGER}
+        ROLE_LineManager: ${AD_ROLE_LINE_MANAGER}
         ROLE_Viewer: ${AD_ROLE_VIEWER}
     rest-template:
+      security:
+        enabled: ${REST_TEMPLATE_SECURITY_ENABLED:true}
       connect-timeout: 20000
       read-timeout: 30000
     page:

@@ -1,8 +1,8 @@
 package com.tesco.pma.service.colleague.client;
 
-import com.tesco.pma.service.colleague.client.model.Colleague;
-import com.tesco.pma.service.colleague.client.model.ColleagueList;
-import com.tesco.pma.service.colleague.client.model.FindColleaguesRequest;
+import com.tesco.pma.colleague.api.Colleague;
+import com.tesco.pma.colleague.api.ColleagueList;
+import com.tesco.pma.colleague.api.FindColleaguesRequest;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriBuilderFactory;

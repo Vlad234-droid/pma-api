@@ -2,7 +2,7 @@ package com.tesco.pma.colleague.profile;
 
 import com.tesco.pma.colleague.profile.domain.AttributeType;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
-import com.tesco.pma.service.colleague.client.model.Colleague;
+import com.tesco.pma.colleague.api.Colleague;
 import org.jeasy.random.EasyRandom;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class AbstractProfileTests {
+public abstract class AbstractProfileTests {
 
     protected static final EasyRandom RANDOM = new EasyRandom();
 

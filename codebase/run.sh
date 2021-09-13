@@ -14,11 +14,17 @@ fi
 export SERVICE_HOME=$(pwd)
 
 export SECURITY_ENABLED=false
+export REST_TEMPLATE_SECURITY_ENABLED=false
 export SECURITY_OVERRIDING_ROLES_ENABLED=true
 export FILE_STORAGE_ROOT="$SERVICE_HOME/demo/files"
-export TESCO_API_BASE_URL=https://api-ppe.tesco.com
+#export TESCO_API_BASE_URL=https://api-ppe.tesco.com
+export TESCO_API_BASE_URL=http://localhost:9080
 export ONE_LOGIN_BASE_URL=https://loginppe.ourtesco.com
 export AD_ROLE_ADMIN=GG-UK-TescoGlobal-PMA-PPE-Admin
 export AD_ROLE_LINE_MANAGER=GG-UK-TescoGlobal-PMA-PPE-LineManager
 
-$JAVA -Dloader.path=application/src/main/image/config -jar application/build/libs/application-1.0.0-SNAPSHOT-boot.jar $@
+export IDENTITY_CLIENT_ID=1234567890
+export IDENTITY_CLIENT_SECRET=1234567890
+
+$JAVA -Dloader.path=demo/config -jar application/build/libs/application-1.0.0-SNAPSHOT-boot.jar $@
+# $JAVA -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Dloader.path=demo/config -jar application/build/libs/application-1.0.0-SNAPSHOT-boot.jar $@

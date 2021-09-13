@@ -1,7 +1,7 @@
 package com.tesco.pma.colleague.profile.service.rest;
 
 import com.tesco.pma.colleague.profile.exception.ErrorCodes;
-import com.tesco.pma.colleague.profile.service.rest.model.AggregatedColleague;
+import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.NotFoundException;
@@ -44,7 +44,7 @@ public class ProfileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Profile found")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Profile not found")
     @GetMapping(path = "/{colleagueUuid}")
-    public RestResponse<AggregatedColleague> getProfileByColleagueUuid(@PathVariable UUID colleagueUuid) {
+    public RestResponse<ColleagueProfile> getProfileByColleagueUuid(@PathVariable UUID colleagueUuid) {
         return RestResponse.success(profileService.findProfileByColleagueUuid(colleagueUuid)
                 .orElseThrow(() -> notFound("colleagueUuid", colleagueUuid)));
     }

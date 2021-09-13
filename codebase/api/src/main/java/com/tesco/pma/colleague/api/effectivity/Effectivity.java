@@ -1,4 +1,4 @@
-package com.tesco.pma.service.colleague.client.model.effectivity;
+package com.tesco.pma.colleague.api.effectivity;
 
 import lombok.AccessLevel;
 import lombok.Data;

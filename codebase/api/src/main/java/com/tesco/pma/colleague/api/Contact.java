@@ -1,5 +1,6 @@
-package com.tesco.pma.colleague.profile.service.rest.model.colleague.contact;
+package com.tesco.pma.colleague.api;
 
+import com.tesco.pma.colleague.api.contact.AddressList;
 import lombok.Data;
 
 @Data
