@@ -23,6 +23,52 @@
     </changeSet>
 
     <changeSet author="ypashynskyi" id="2">
+        <comment>Init table objective_status</comment>
+        <insert tableName="objective_status">
+            <column name="id" value="1"/>
+            <column name="code" value="DRAFT"/>
+            <column name="description" value="A draft of objective"/>
+        </insert>
+        <insert tableName="objective_status">
+            <column name="id" value="2"/>
+            <column name="code" value="SUBMITTED"/>
+            <column name="description" value="An objective is submitted"/>
+        </insert>
+        <insert tableName="objective_status">
+            <column name="id" value="3"/>
+            <column name="code" value="APPROVED"/>
+            <column name="description" value="An objective is approved"/>
+        </insert>
+        <insert tableName="objective_status">
+            <column name="id" value="4"/>
+            <column name="code" value="REJECTED"/>
+            <column name="description" value="An objective is rejected"/>
+        </insert>
+        <insert tableName="objective_status">
+            <column name="id" value="5"/>
+            <column name="code" value="COMPLETED"/>
+            <column name="description" value="An objective is completed"/>
+        </insert>
+        <rollback>
+            <delete tableName="objective_status">
+                <where>code = 'DRAFT'</where>
+            </delete>
+            <delete tableName="objective_status">
+                <where>code = 'SUBMITTED'</where>
+            </delete>
+            <delete tableName="objective_status">
+                <where>code = 'APPROVED'</where>
+            </delete>
+            <delete tableName="objective_status">
+                <where>code = 'REJECTED'</where>
+            </delete>
+            <delete tableName="objective_status">
+                <where>code = 'COMPLETED'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="ypashynskyi" id="3">
         <createTable tableName="personal_objective"
                      remarks="Table of personal objectives">
             <column name="uuid" type="${uuid_type}"
@@ -69,7 +115,7 @@
                                  validate="true"/>
     </changeSet>
 
-    <changeSet author="ypashynskyi" id="3">
+    <changeSet author="ypashynskyi" id="4">
         <createTable tableName="group_objective"
                      remarks="Table of group(organization, department etc.) objectives">
             <column name="uuid" type="${uuid_type}"
@@ -108,7 +154,7 @@
                                  validate="true"/>
     </changeSet>
 
-    <changeSet author="ypashynskyi" id="4">
+    <changeSet author="ypashynskyi" id="5">
         <createTable tableName="working_group_objective"
                      remarks="Table for working version of group objective">
             <column name="business_unit_uuid" type="${uuid_type}"
@@ -145,7 +191,7 @@
                                  validate="true"/>
     </changeSet>
 
-    <changeSet author="ypashynskyi" id="5">
+    <changeSet author="ypashynskyi" id="6">
         <createTable tableName="objective_link"
                      remarks="Table for links from personal objective to group objective">
             <column name="personal_objective_uuid" type="${uuid_type}"
