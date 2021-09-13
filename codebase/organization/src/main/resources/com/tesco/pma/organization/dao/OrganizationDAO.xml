@@ -28,7 +28,7 @@
         ORDER BY depth DESC;
     </select>
 
-    <select id="findBusinessUnitChildStructureByUuid" resultMap="businessUnitStructure">
+    <select id="findBusinessUnitChildStructure" resultMap="businessUnitStructure">
         WITH RECURSIVE orgs AS (
             SELECT bu.uuid, name, bu.type_id, bu.version, bu.parent_uuid, 0 as depth
             FROM business_unit bu

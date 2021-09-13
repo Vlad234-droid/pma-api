@@ -12,7 +12,7 @@ public interface OrganizationDAO {
 
     List<BusinessUnit> findBusinessUnitParentStructure(@Param("uuid") UUID uuid);
 
-    List<BusinessUnit> findBusinessUnitChildStructureByUuid(@Param("uuid") UUID uuid);
+    List<BusinessUnit> findBusinessUnitChildStructure(@Param("uuid") UUID uuid);
 
     List<BusinessUnit> findBusinessUnitsByUuids(@Param("uuids") Collection<UUID> uuid);
 

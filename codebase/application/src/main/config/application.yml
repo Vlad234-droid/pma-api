@@ -37,9 +37,7 @@ spring:
       mybatis-session:
         type-aliases-package: com.tesco.pma.api, com.tesco.pma.colleague.profile.domain, com.tesco.pma.organization.api
         configuration-properties:
-          base-package: com.tesco.pma.dao,
-                        com.tesco.pma.colleague.profile.dao,
-                        com.tesco.pma.organization.dao
+          base-package: com.tesco.pma.dao, com.tesco.pma.colleague.profile.dao, com.tesco.pma.organization.dao
           batchSize: 500
     camunda:
       # TODO: change database
@@ -132,20 +130,17 @@ tesco:
       size: 20
     healthcheck:
       indicators:
-        -
-          name: defaultPostgreSQLDB
+        - name: defaultPostgreSQLDB
           description: Default database
           url: ${spring.datasource.default.jdbc-url}
           beanName: databaseHealthIndicator
           reference: defaultDataSource
           validationQuery: "SHOW server_version"
-        -
-          name: identityAPI
+        - name: identityAPI
           url: ${TESCO_API_BASE_URL}/identity/_status
           description: Identity API
           beanName: restHealthIndicator
-        -
-          name: colleagueFactsAPI
+        - name: colleagueFactsAPI
           url: ${TESCO_API_BASE_URL}/colleague/_status
           description: Colleague Facts API
           beanName: restHealthIndicator

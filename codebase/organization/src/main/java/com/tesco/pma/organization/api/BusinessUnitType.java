@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 public enum BusinessUnitType implements DictionaryItem<Integer> {
     DEPARTMENT(1, "Department business type");
 
-    private final int id;
+    private final Integer id;
     private final String description;
 
 
