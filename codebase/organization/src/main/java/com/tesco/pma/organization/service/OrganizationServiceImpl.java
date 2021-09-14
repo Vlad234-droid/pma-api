@@ -106,12 +106,9 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .map(BusinessUnit::getUuid)
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("CODE", "no root"));
-        units.removeIf(u -> u.getParentUuid() == null);
+        units.removeIf(u -> u.getUuid().equals(rootUuid));
 
-        units.forEach(u -> uuidToResponse.computeIfPresent(u.getParentUuid(), (k, v) -> {
-            v.getChildren().add(uuidToResponse.get(u.getUuid()));
-            return v;
-        }));
+        units.forEach(u -> uuidToResponse.get(u.getParentUuid()).getChildren().add(uuidToResponse.get(u.getUuid())));
 
         return uuidToResponse.get(rootUuid);
     }
