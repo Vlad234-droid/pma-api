@@ -43,16 +43,20 @@
         ORDER BY depth ASC;
     </select>
 
-    <select id="findBusinessUnitsByUuids" resultMap="businessUnitStructure">
-        SELECT uuid, name, type_id, version, parent_uuid
-        FROM business_unit
-        WHERE id IN
-        <foreach collection="uuids" open="(" separator="," close=")" item="uuid">
-            #{uuid}
-        </foreach>
+    <select id="findPublishedBusinessUnitsByKey" resultMap="businessUnitStructure">
+        SELECT bu.uuid, bu.name, bu.type_id, bu.version, bu.parent_uuid
+        FROM working_business_unit wbu
+                 JOIN business_unit bu ON wbu.unit_uuid = bu.uuid
+        WHERE wbu.composite_key like #{key}
     </select>
 
-    <select id="getNextVersion" resultType="int">
+    <select id="getCurrentPublishedVersion" resultType="int">
+        SELECT COALESCE(MAX(version), 0)
+        FROM working_business_unit
+        WHERE composite_key = #{key};
+    </select>
+
+    <select id="getNextUnpublishedVersion" resultType="int">
         SELECT COALESCE(MAX(version), 0) + 1
         FROM business_unit
         WHERE name = #{name}
@@ -68,15 +72,15 @@
     </insert>
 
     <insert id="publishBusinessUnit" flushCache="true">
-        INSERT INTO working_business_unit(name, type_id, version, root_uuid)
-        SELECT name, type_id, version, uuid
-        FROM business_unit
-        WHERE uuid = #{uuid}
+        INSERT INTO working_business_unit(name, type_id, version, unit_uuid, composite_key)
+        VALUES (#{wbu.name},
+                #{wbu.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.organization.api.BusinessUnitType},
+                #{wbu.version}, #{wbu.unitUuid}, #{wbu.compositeKey})
     </insert>
 
-    <delete id="unpublishBusinessUnit" flushCache="true">
+    <delete id="unpublishBusinessUnits" flushCache="true">
         DELETE
         FROM working_business_unit
-        WHERE uuid = #{uuid}
+        WHERE composite_key like #{key};
     </delete>
 </mapper>

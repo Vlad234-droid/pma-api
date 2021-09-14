@@ -11,7 +11,7 @@ public interface OrganizationService {
 
     String generateCompositeKey(UUID businessUnitUuid);
 
-    BusinessUnitResponse getStructureByCompositeKey(String key);
+    BusinessUnitResponse getPublishedChildStructureByCompositeKey(String key);
 
     void publishUnit(UUID businessUnitUuid);
 

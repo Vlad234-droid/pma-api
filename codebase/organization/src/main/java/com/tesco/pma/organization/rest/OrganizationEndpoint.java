@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -37,6 +38,14 @@ public class OrganizationEndpoint {
     @GetMapping(value = "/business-units/{unitUuid}/structure", produces = APPLICATION_JSON_VALUE)
     public RestResponse<BusinessUnitResponse> getBusinessUnitStructure(@PathVariable UUID unitUuid) {
         return RestResponse.success(organizationService.getStructure(unitUuid));
+    }
+
+    @Operation(summary = "Get business unit structure by composite key",
+            tags = {"organization-api"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the business unit structure")
+    @GetMapping(value = "/business-units", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<BusinessUnitResponse> getBusinessUnitStructureByCompositeKey(@RequestParam String compositeKey) {
+        return RestResponse.success(organizationService.getPublishedChildStructureByCompositeKey(compositeKey));
     }
 
     @Operation(summary = "Create business unit",

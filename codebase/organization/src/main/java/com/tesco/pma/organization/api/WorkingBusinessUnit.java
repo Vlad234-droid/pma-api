@@ -9,5 +9,6 @@ public class WorkingBusinessUnit {
     private String name;
     private BusinessUnitType type;
     private int version;
-    private UUID rootUuid;
+    private UUID unitUuid;
+    private String compositeKey;
 }

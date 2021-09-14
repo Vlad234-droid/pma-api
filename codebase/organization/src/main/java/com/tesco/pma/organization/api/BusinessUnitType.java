@@ -7,14 +7,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public enum BusinessUnitType implements DictionaryItem<Integer> {
-    DEPARTMENT(1, "Department business type");
+    DEPARTMENT(1, "DP", "Department business type");
 
     private final Integer id;
+    private final String code;
     private final String description;
-
-
-    @Override
-    public String getCode() {
-        return name();
-    }
 }

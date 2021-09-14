@@ -76,7 +76,7 @@
             <column name="version" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
-            <column name="root_uuid" type="${uuid_type}">
+            <column name="unit_uuid" type="${uuid_type}">
                 <constraints nullable="false"/>
             </column>
             <column name="updated_by" type="VARCHAR">
@@ -85,14 +85,17 @@
             <column name="updated_time" type="timestamptz">
                 <constraints nullable="true"/>
             </column>
+            <column name="composite_key" type="varchar">
+                <constraints nullable="false" unique="true"/>
+            </column>
         </createTable>
         <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="working_business_unit"
                                  constraintName="working_business_unit_type_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="business_unit_type" validate="true"/>
 
-        <addForeignKeyConstraint baseColumnNames="root_uuid" baseTableName="working_business_unit"
-                                 constraintName="working_business_unit_root_fk" deferrable="false"
+        <addForeignKeyConstraint baseColumnNames="unit_uuid" baseTableName="working_business_unit"
+                                 constraintName="working_business_unit_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="uuid" referencedTableName="business_unit" validate="true"/>
     </changeSet>
