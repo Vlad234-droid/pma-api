@@ -35,10 +35,13 @@ spring:
     default:
       # MyBatis config
       mybatis-session:
-        type-aliases-package: com.tesco.pma.api, com.tesco.pma.colleague.profile.domain
+        type-aliases-package: com.tesco.pma.api,
+                              com.tesco.pma.colleague.profile.domain,
+                              com.tesco.pma.objective.domain
         configuration-properties:
           base-package: com.tesco.pma.dao,
-                        com.tesco.pma.colleague.profile.dao
+                        com.tesco.pma.colleague.profile.dao,
+                        com.tesco.pma.objective.dao
           batchSize: 500
     camunda:
       # TODO: change database
