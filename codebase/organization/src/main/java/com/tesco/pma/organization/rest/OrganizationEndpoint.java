@@ -57,6 +57,16 @@ public class OrganizationEndpoint {
         return RestResponse.success();
     }
 
+    @Operation(summary = "Update business unit",
+            tags = {"organization-api"})
+    @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Updated business unit")
+    @PostMapping(value = "/business-units/{unitUuid}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    public RestResponse<?> update(@PathVariable UUID unitUuid, @RequestBody BusinessUnit businessUnit) {
+        businessUnit.setUuid(unitUuid);
+        organizationService.updateBusinessUnit(businessUnit);
+        return RestResponse.success();
+    }
+
     @Operation(summary = "Publish business unit", tags = {"organization-api"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Structure has been published")
     @PostMapping(value = "/business-units/{unitUuid}/publish", produces = APPLICATION_JSON_VALUE)

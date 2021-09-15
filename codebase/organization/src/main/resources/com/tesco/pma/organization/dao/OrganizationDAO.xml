@@ -13,6 +13,21 @@
     </resultMap>
 
 
+    <select id="findRootBusinessUnit" resultMap="businessUnitStructure">
+        with recursive orgs as (
+            select bu.uuid, bu.name, bu.type_id, bu.version, bu.parent_uuid, 0 as depth
+            from business_unit bu
+            where bu.uuid = #{uuid}
+            union all
+            select bu.uuid, bu.name, bu.type_id, bu.version, bu.parent_uuid, depth + 1 as depth
+            from orgs
+                     join business_unit bu on bu.uuid = orgs.parent_uuid
+        )
+        select uuid, name, type_id, version, null as parent_uuid
+        from orgs
+        where depth = (select max(depth) from orgs)
+    </select>
+
     <select id="findBusinessUnitParentStructure" resultMap="businessUnitStructure">
         WITH RECURSIVE orgs AS (
             SELECT bu.uuid, name, bu.type_id, bu.version, bu.parent_uuid, 0 as depth
@@ -48,20 +63,6 @@
         FROM working_business_unit wbu
                  JOIN business_unit bu ON wbu.unit_uuid = bu.uuid
         WHERE wbu.composite_key like #{key}
-    </select>
-
-    <select id="getCurrentPublishedVersion" resultType="int">
-        SELECT COALESCE(MAX(version), 0)
-        FROM working_business_unit
-        WHERE composite_key = #{key};
-    </select>
-
-    <select id="getNextUnpublishedVersion" resultType="int">
-        SELECT COALESCE(MAX(version), 0) + 1
-        FROM business_unit
-        WHERE name = #{name}
-          AND type_id =
-              #{type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.organization.api.BusinessUnitType};
     </select>
 
     <insert id="createBusinessUnit" flushCache="true">

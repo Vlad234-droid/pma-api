@@ -2,6 +2,7 @@ package com.tesco.pma.organization.service;
 
 import com.tesco.pma.organization.api.BusinessUnit;
 import com.tesco.pma.organization.api.BusinessUnitResponse;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -18,4 +19,7 @@ public interface OrganizationService {
     void unpublishUnit(UUID businessUnitUuid);
 
     void createBusinessUnit(BusinessUnit businessUnit);
+
+    @Transactional
+    void updateBusinessUnit(BusinessUnit businessUnit);
 }

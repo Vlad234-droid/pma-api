@@ -13,28 +13,17 @@ import java.util.UUID;
 
 /*
 1. Когда увеличиваем версию.
-Создание +
 Апдейт+
-Как увеличивать+
-Копировать все дерево?+
-
-2. Ключ формат
-BU/Tesco/BU/Auchan/#v1
-
-3.
-Когда мы должны читать именно с воркинг таблицы
  */
 public interface OrganizationDAO {
+
+    BusinessUnit findRootBusinessUnit(@Param("uuid") UUID uuid);
 
     List<BusinessUnit> findBusinessUnitParentStructure(@Param("uuid") UUID uuid);
 
     List<BusinessUnit> findBusinessUnitChildStructure(@Param("uuid") UUID uuid);
 
     List<BusinessUnit> findPublishedBusinessUnitsByKey(@Param("key") String key);
-
-    int getCurrentPublishedVersion(@Param("key") String key);
-
-    int getNextUnpublishedVersion(@Param("name") String name, @Param("type") BusinessUnitType type);
 
     int createBusinessUnit(@Param("bu") BusinessUnit businessUnit);
 
