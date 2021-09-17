@@ -200,7 +200,7 @@
             </column>
             <column name="group_objective_uuid" type="${uuid_type}"
                     remarks="A unique identifier for group objective">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="objective_link_pk"/>
+                <constraints nullable="false"/>
             </column>
         </createTable>
         <addForeignKeyConstraint baseColumnNames="personal_objective_uuid" baseTableName="objective_link"

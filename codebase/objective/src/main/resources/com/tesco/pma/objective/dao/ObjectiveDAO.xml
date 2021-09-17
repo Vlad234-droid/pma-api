@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.objective.dao.ObjectiveDAO">
+
+    <resultMap id="groupObjectiveResultMap" type="com.tesco.pma.objective.domain.GroupObjective">
+        <id property="uuid" column="group_objective_uuid"/>
+        <result property="businessUnitUuid" column="group_objective_business_unit_uuid"/>
+        <result property="performanceCycleUuid" column="group_objective_performance_cycle_uuid"/>
+        <result property="sequenceNumber" column="group_objective_sequence_number"/>
+        <result property="title" column="group_objective_title"/>
+        <result property="version" column="group_objective_version"/>
+        <result property="status" column="group_objective_status_id"
+                typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.objective.domain.ObjectiveStatus"/>
+    </resultMap>
+
+    <resultMap id="personalObjectiveResultMap" type="com.tesco.pma.objective.domain.PersonalObjective">
+        <id property="uuid" column="personal_objective_uuid"/>
+        <result property="colleagueUuid" column="personal_objective_colleague_uuid"/>
+        <result property="performanceCycleUuid" column="personal_objective_performance_cycle_uuid"/>
+        <result property="sequenceNumber" column="personal_objective_sequence_number"/>
+        <result property="title" column="personal_objective_title"/>
+        <result property="description" column="personal_objective_description"/>
+        <result property="meets" column="personal_objective_meets"/>
+        <result property="exceeds" column="personal_objective_exceeds"/>
+        <result property="status" column="personal_objective_status_id"
+                typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.objective.domain.ObjectiveStatus"/>
+        <association property="groupObjective" javaType="com.tesco.pma.objective.domain.GroupObjective"
+                     resultMap="groupObjectiveResultMap"/>
+    </resultMap>
+
+    <insert id="createGroupObjective" flushCache="true">
+        INSERT INTO group_objective
+        (uuid,
+         business_unit_uuid,
+         performance_cycle_uuid,
+         sequence_number,
+         title,
+         version,
+         status_id)
+        VALUES (#{groupObjective.uuid},
+                #{groupObjective.businessUnitUuid},
+                #{groupObjective.performanceCycleUuid},
+                #{groupObjective.sequenceNumber},
+                #{groupObjective.title},
+                #{groupObjective.version},
+                #{groupObjective.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.objective.domain.ObjectiveStatus})
+    </insert>
+
+    <select id="getGroupObjective" resultMap="groupObjectiveResultMap">
+        SELECT go.uuid                   as group_objective_uuid,
+               go.business_unit_uuid     as group_objective_business_unit_uuid,
+               go.performance_cycle_uuid as group_objective_performance_cycle_uuid,
+               go.sequence_number        as group_objective_sequence_number,
+               go.title                  as group_objective_title,
+               go.version                as group_objective_version,
+               go.status_id              as group_objective_status_id
+        FROM group_objective go
+        WHERE go.uuid = #{groupObjectiveUuid}
+    </select>
+
+    <update id="updateGroupObjective" flushCache="true">
+        UPDATE group_objective
+        SET title    = #{groupObjective.title},
+            version  = #{groupObjective.version},
+            status_id=#{groupObjective.status.id}
+        WHERE uuid = #{groupObjective.uuid}
+    </update>
+
+    <delete id="deleteGroupObjective">
+        DELETE
+        FROM group_objective
+        WHERE uuid = #{groupObjectiveUuid}
+    </delete>
+
+    <insert id="createPersonalObjective" flushCache="true">
+        INSERT INTO personal_objective
+        (uuid,
+        colleague_uuid,
+        performance_cycle_uuid,
+        sequence_number,
+        title,
+        description,
+        meets,
+        exceeds,
+        status_id)
+        VALUES (#{personalObjective.uuid},
+        #{personalObjective.colleagueUuid},
+        #{personalObjective.performanceCycleUuid},
+        #{personalObjective.sequenceNumber},
+        #{personalObjective.title},
+        #{personalObjective.description},
+        #{personalObjective.meets},
+        #{personalObjective.exceeds},
+        #{personalObjective.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.objective.domain.ObjectiveStatus});
+        <choose>
+            <when test="personalObjective.groupObjective != null">
+                INSERT INTO objective_link
+                (personal_objective_uuid,
+                group_objective_uuid)
+                VALUES (#{personalObjective.uuid},
+                #{personalObjective.groupObjective.uuid}
+                );
+            </when>
+        </choose>
+    </insert>
+
+    <select id="getPersonalObjective" resultMap="personalObjectiveResultMap">
+        SELECT po.uuid                   as personal_objective_uuid,
+               po.colleague_uuid         as personal_objective_colleague_uuid,
+               po.performance_cycle_uuid as personal_objective_performance_cycle_uuid,
+               po.sequence_number        as personal_objective_sequence_number,
+               po.title                  as personal_objective_title,
+               po.description            as personal_objective_description,
+               po.meets                  as personal_objective_meets,
+               po.exceeds                as personal_objective_exceeds,
+               po.status_id              as personal_objective_status_id,
+               go.uuid                   as group_objective_uuid,
+               go.business_unit_uuid     as group_objective_business_unit_uuid,
+               go.performance_cycle_uuid as group_objective_performance_cycle_uuid,
+               go.sequence_number        as group_objective_sequence_number,
+               go.title                  as group_objective_title,
+               go.version                as group_objective_version,
+               go.status_id              as group_objective_status_id
+        FROM personal_objective po
+                 LEFT JOIN objective_link ol
+                           ON (po.uuid = ol.personal_objective_uuid)
+                 LEFT JOIN group_objective go
+        ON (ol.group_objective_uuid = go.uuid)
+        WHERE po.uuid = #{personalObjectiveUuid}
+    </select>
+
+    <!-- cascade delete -->
+    <delete id="deletePersonalObjective">
+        DELETE
+        FROM personal_objective
+        WHERE uuid = #{personalObjectiveUuid}
+    </delete>
+
+    <update id="updatePersonalObjective" flushCache="true">
+        UPDATE personal_objective
+        SET title = #{personalObjective.title},
+        description = #{personalObjective.description},
+        meets = #{personalObjective.meets},
+        exceeds = #{personalObjective.exceeds},
+        status_id=#{personalObjective.status.id}
+        WHERE uuid = #{personalObjective.uuid};
+        <choose>
+            <when test="personalObjective.groupObjective == null">
+                DELETE
+                FROM objective_link
+                WHERE uuid = #{personalObjective.uuid};
+            </when>
+            <otherwise>
+                INSERT INTO objective_link
+                (personal_objective_uuid,
+                group_objective_uuid)
+                VALUES (#{personalObjective.uuid},
+                #{personalObjective.groupObjective.uuid}
+                )
+                ON CONFLICT (personal_objective_uuid)
+                DO UPDATE
+                SET group_objective_uuid = EXCLUDED.group_objective_uuid
+                where objective_link.group_objective_uuid != EXCLUDED.group_objective_uuid;
+            </otherwise>
+        </choose>
+    </update>
+
+</mapper>
