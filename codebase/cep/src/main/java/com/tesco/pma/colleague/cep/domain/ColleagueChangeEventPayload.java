@@ -1,5 +1,6 @@
 package com.tesco.pma.colleague.cep.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tesco.pma.api.Identified;
 import lombok.Value;
 import lombok.experimental.Accessors;
@@ -16,6 +17,7 @@ public class ColleagueChangeEventPayload implements Identified<UUID> {
 
     UUID colleagueUUID;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     LocalDate effectiveDate;
 
     Collection<String> changedAttributes;
