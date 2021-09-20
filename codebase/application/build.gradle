@@ -54,24 +54,6 @@ processResources {
         from 'src/main/config'
         exclude '**/application.yml'
         exclude '**/logback.xml'
-        if ('local' == envType) {
-            exclude '**/application-@envType@.properties'
-        }
-
-        rename { String filename ->
-            def tokenPattern = ~/@(.+)@/
-            def tokenMatcher = filename =~ tokenPattern
-            def newFilename = filename
-            tokenMatcher.findAll { List<String> token ->
-                if (tokens.containsKey(token[1])) {
-                    newFilename = newFilename.replace(token[0], tokens[token[1]])
-                }
-            }
-
-            newFilename
-        }
-
-        filter ReplaceTokens, tokens: tokens
     }
 }
 

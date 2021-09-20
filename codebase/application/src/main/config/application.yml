@@ -33,6 +33,20 @@ spring:
       time: iso
   datasource:
     default:
+      # Database config
+      driver-class-name: org.postgresql.Driver
+      jdbc-url: ${PMA_DB_URL}
+      schema: ${PMA_DB_SCHEMA}
+      username: ${PMA_DB_USERNAME}
+      password: ${PMA_DB_PASSWORD}
+      type: com.zaxxer.hikari.HikariDataSource
+      connection-test-query: SELECT 1
+      minimum-idle: 1
+      maximum-pool-size: 10
+      #idle-timeout: 60000
+      #max-life-time: 1750000
+      pool-name: default_ds_pool
+      is-auto-commit: false
       # MyBatis config
       mybatis-session:
         type-aliases-package: com.tesco.pma.api, com.tesco.pma.colleague.profile.domain
@@ -90,7 +104,7 @@ management:
     shutdown:
       enabled: true
 springdoc:
-  version: '@project.version@'
+  version: ${PMA_PROJECT_VERSION}
   show-actuator: true
   api-docs:
     path: /api-docs
@@ -115,7 +129,7 @@ tesco:
       additional-auth:
         enabled: true
         token-header-name: Authorization-App
-        jwt:
+        jwt: # TODO Onelogin should return all these URL via config endpoint
           issuer-uri: ${ONE_LOGIN_BASE_URL}/oidc/2
           jwk-set-uri: ${ONE_LOGIN_BASE_URL}/oidc/2/certs
       role-mapping:
@@ -173,19 +187,6 @@ camunda:
       enabled: false
     id-generator: strong
 #    deployment-resource-pattern: classpath:*.bpmn
-
----
-spring:
-  config:
-    activate:
-      on-profile: @envType@
-  datasource:
-    default:
-      # Database config
-      jdbc-url: ${PMA_DB_URL}
-      schema: ${PMA_DB_SCHEMA}
-      username: ${PMA_DB_USERNAME}
-      password: ${PMA_DB_PASSWORD}
 
 ---
 spring:
