@@ -31,6 +31,16 @@
                      resultMap="groupObjectiveResultMap"/>
     </resultMap>
 
+    <resultMap id="workingGroupObjectiveResultMap" type="com.tesco.pma.objective.domain.WorkingGroupObjective">
+        <id property="businessUnitUuid" column="business_unit_uuid"/>
+        <id property="performanceCycleUuid" column="performance_cycle_uuid"/>
+        <id property="sequenceNumber" column="sequence_number"/>
+        <result property="version" column="version"/>
+        <result property="groupObjectiveUuid" column="objective_uuid"/>
+        <result property="updaterId" column="updated_by"/>
+        <result property="updateTime" column="updated_time"/>
+    </resultMap>
+
     <insert id="createGroupObjective" flushCache="true">
         INSERT INTO group_objective
         (uuid,
@@ -151,7 +161,7 @@
             <when test="personalObjective.groupObjective == null">
                 DELETE
                 FROM objective_link
-                WHERE uuid = #{personalObjective.uuid};
+                WHERE personal_objective_uuid = #{personalObjective.uuid};
             </when>
             <otherwise>
                 INSERT INTO objective_link
@@ -167,5 +177,50 @@
             </otherwise>
         </choose>
     </update>
+
+    <insert id="createWorkingGroupObjective" flushCache="true">
+        INSERT INTO working_group_objective
+        (business_unit_uuid,
+         performance_cycle_uuid,
+         sequence_number,
+         version,
+         objective_uuid,
+         updated_by,
+         updated_time)
+        VALUES (#{workingGroupObjective.businessUnitUuid},
+                #{workingGroupObjective.performanceCycleUuid},
+                #{workingGroupObjective.sequenceNumber},
+                #{workingGroupObjective.version},
+                #{workingGroupObjective.groupObjectiveUuid},
+                #{workingGroupObjective.updaterId},
+                #{workingGroupObjective.updateTime})
+    </insert>
+
+    <update id="updateWorkingGroupObjective" flushCache="true">
+        UPDATE working_group_objective
+        SET version        = #{workingGroupObjective.version},
+            objective_uuid = #{workingGroupObjective.groupObjectiveUuid},
+            updated_by     = #{workingGroupObjective.updaterId},
+            updated_time   = #{workingGroupObjective.updateTime}
+        WHERE business_unit_uuid = #{workingGroupObjective.businessUnitUuid}
+          and performance_cycle_uuid = #{workingGroupObjective.performanceCycleUuid}
+          and sequence_number = #{workingGroupObjective.sequenceNumber}
+    </update>
+
+    <select id="getWorkingGroupObjective" resultMap="workingGroupObjectiveResultMap">
+        SELECT *
+        FROM working_group_objective
+        WHERE business_unit_uuid = #{businessUnitUuid}
+          and performance_cycle_uuid = #{performanceCycleUuid}
+          and sequence_number = #{sequenceNumber}
+    </select>
+
+    <delete id="deleteWorkingGroupObjective">
+        DELETE
+        FROM working_group_objective
+        WHERE business_unit_uuid = #{businessUnitUuid}
+          and performance_cycle_uuid = #{performanceCycleUuid}
+          and sequence_number = #{sequenceNumber}
+    </delete>
 
 </mapper>

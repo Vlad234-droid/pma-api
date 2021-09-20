@@ -2,6 +2,7 @@ package com.tesco.pma.objective.dao;
 
 import com.tesco.pma.objective.domain.GroupObjective;
 import com.tesco.pma.objective.domain.PersonalObjective;
+import com.tesco.pma.objective.domain.WorkingGroupObjective;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.UUID;
@@ -74,5 +75,45 @@ public interface ObjectiveDAO {
      * @return number of deleted personal objectives
      */
     int deletePersonalObjective(@Param("personalObjectiveUuid") UUID personalObjectiveUuid);
+
+    /**
+     * Creates a working group objective
+     *
+     * @param workingGroupObjective a WorkingGroupObjective
+     * @return number of created working group objectives
+     */
+    int createWorkingGroupObjective(@Param("workingGroupObjective") WorkingGroupObjective workingGroupObjective);
+
+    /**
+     * Update a working group objective
+     *
+     * @param workingGroupObjective a WorkingGroupObjective
+     * @return number of updated working group objectives
+     */
+    int updateWorkingGroupObjective(@Param("workingGroupObjective") WorkingGroupObjective workingGroupObjective);
+
+    /**
+     * Returns a working group objective
+     *
+     * @param businessUnitUuid     an identifier of business unit
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param sequenceNumber       a sequence number of group objective
+     * @return a WorkingGroupObjective
+     */
+    WorkingGroupObjective getWorkingGroupObjective(@Param("businessUnitUuid") UUID businessUnitUuid,
+                                                   @Param("performanceCycleUuid") UUID performanceCycleUuid,
+                                                   @Param("sequenceNumber") Integer sequenceNumber);
+
+    /**
+     * Delete a working group objective
+     *
+     * @param businessUnitUuid     an identifier of business unit
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param sequenceNumber       a sequence number of group objective
+     * @return number of deleted working group objectives
+     */
+    int deleteWorkingGroupObjective(@Param("businessUnitUuid") UUID businessUnitUuid,
+                                    @Param("performanceCycleUuid") UUID performanceCycleUuid,
+                                    @Param("sequenceNumber") Integer sequenceNumber);
 
 }
