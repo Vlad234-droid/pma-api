@@ -53,18 +53,21 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
     @Test
     void processColleagueChangeEventShouldReturnAcceptedHttpStatus() throws Exception {
 
-        // given
+        callEventRequest(status().isAccepted());
 
-        // when
-        ResultActions resultActions = mvc.perform(post("/colleagues/cep/events")
-                .with(jwtWithSubject(TEST_CEP_SUBJECT))
-                .contentType(APPLICATION_JSON)
-                .content(json.from(IMMEDIATE_REQUEST_CEP_SUCCESS_JSON).getJson())
-                .accept(APPLICATION_JSON));
+        verify(mockColleagueChangesService, timeout(500))
+                .processColleagueChangeEvent(any(ColleagueChangeEventPayload.class));
 
-        // then
-        resultActions
-                .andExpect(status().isAccepted());
+    }
+
+    @Test
+    void processColleagueChangeEventSeveralTimesShouldReturnAcceptedHttpStatus() throws Exception {
+        for (var i = 0; i < MAX_NUMBER_PARALLEL_REQUESTS; i++) {
+            callEventRequest(status().isAccepted());
+        }
+
+        verify(mockColleagueChangesService, timeout(500)
+                .times(MAX_NUMBER_PARALLEL_REQUESTS)).processColleagueChangeEvent(any(ColleagueChangeEventPayload.class));
 
     }
 
@@ -116,6 +119,17 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
+
+        verifyNoInteractions(mockColleagueChangesService);
+    }
+
+    @Test
+    void processColleagueChangeEventForbiddenWithSubjectNotMatch() throws Exception {
+        mvc.perform(post(POST_EVENT_PATH).with(jwtWithSubject("not-cep-subject"))
+                        .content(json.from(IMMEDIATE_REQUEST_CEP_SUCCESS_JSON).getJson())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isForbidden());
 
         verifyNoInteractions(mockColleagueChangesService);
     }
