@@ -33,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
 
     private static final String POST_EVENT_PATH = "/colleagues/cep/events";
+    private static final String JIT_REQUEST_CEP_SUCCESS_JSON = "jit_request_cep_success.json";
     private static final String IMMEDIATE_REQUEST_CEP_SUCCESS_JSON = "immediate_request_cep_success.json";
     private static final int MAX_NUMBER_PARALLEL_REQUESTS = 2;
     private static final String TEST_CEP_SUBJECT = "test-cep-subject";
@@ -115,7 +116,7 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
     @Test
     void processColleagueChangeEventsUnauthorized() throws Exception {
         mvc.perform(post(POST_EVENT_PATH).with(anonymous())
-                        .content(json.from(IMMEDIATE_REQUEST_CEP_SUCCESS_JSON).getJson())
+                        .content(json.from(JIT_REQUEST_CEP_SUCCESS_JSON).getJson())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
@@ -126,7 +127,7 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
     @Test
     void processColleagueChangeEventForbiddenWithSubjectNotMatch() throws Exception {
         mvc.perform(post(POST_EVENT_PATH).with(jwtWithSubject("not-cep-subject"))
-                        .content(json.from(IMMEDIATE_REQUEST_CEP_SUCCESS_JSON).getJson())
+                        .content(json.from(JIT_REQUEST_CEP_SUCCESS_JSON).getJson())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isForbidden());
@@ -142,7 +143,7 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
         // when
         ResultActions resultActions = mvc.perform(post("/colleagues/cep/events/local")
                 .contentType(APPLICATION_JSON)
-                .content(json.from(IMMEDIATE_REQUEST_CEP_SUCCESS_JSON).getJson())
+                .content(json.from(JIT_REQUEST_CEP_SUCCESS_JSON).getJson())
                 .accept(APPLICATION_JSON));
 
         // then
@@ -154,7 +155,7 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
     private void callEventRequest(ResultMatcher resultMatcher) throws Exception {
         mvc.perform(post(POST_EVENT_PATH)
                         .with(jwtWithSubject(TEST_CEP_SUBJECT))
-                        .content(json.from(IMMEDIATE_REQUEST_CEP_SUCCESS_JSON).getJson())
+                        .content(json.from(JIT_REQUEST_CEP_SUCCESS_JSON).getJson())
                         .contentType(APPLICATION_JSON)
                         .accept(APPLICATION_JSON))
                 .andDo(print())
