@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  var1: {{ .Values.var1 }}
+  var2: {{ .Values.var2 }}
+  var3: {{ .Values.var3 }}
+  var4: {{ .Values.var4 }}
+  var5: {{ .Values.var5 }}
+kind: ConfigMap
+metadata:
+  name: pma-api-config
