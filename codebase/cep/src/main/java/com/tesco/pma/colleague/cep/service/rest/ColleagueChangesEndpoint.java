@@ -7,7 +7,6 @@ import com.tesco.pma.logging.LogFormatter;
 import com.tesco.pma.logging.TraceUtils;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.service.cep.EventRequest;
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,7 +24,7 @@ import java.util.Objects;
 import java.util.concurrent.Executor;
 
 @RestController
-@RequestMapping(path = "/colleagues/cep")
+@RequestMapping(path = "/colleagues")
 @Validated
 @Slf4j
 public class ColleagueChangesEndpoint {
@@ -70,13 +69,6 @@ public class ColleagueChangesEndpoint {
             colleagueChangesService.processColleagueChangeEvent(colleagueChangeEventPayload);
         });
 
-    }
-
-    @Hidden
-    @PostMapping("/events/local")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void processColleagueChangeEventLocal(@RequestBody EventRequest<ColleagueChangeEventPayload> eventRequest) {
-        processColleagueChangeEvent(eventRequest);
     }
 
 }

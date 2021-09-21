@@ -11,15 +11,28 @@ import java.util.stream.Collectors;
 @Getter
 public enum EventType {
 
+    /**
+     * Joiner (mostly for newhires) - established for HCM flow
+     */
     @JsonProperty("Joiner")
     JOINER("Joiner"),
 
-    @JsonProperty("Mover")
-    MOVER("Mover"),
-
+    /**
+     * Leaver (mostly for leaving Tesco) - established for HCM flow
+     */
     @JsonProperty("Leaver")
     LEAVER("Leaver"),
 
+    /**
+     * Mover (all other changes) - established for HCM flow
+     */
+    @JsonProperty("Mover")
+    MOVER("Mover"),
+
+    /**
+     * But for IAM we also recognize one more:
+     *   Reinstatement (when resigning from leaving Tesco and coming back to work)
+     */
     @JsonProperty("Reinstatement")
     REINSTATEMENT("Reinstatement");
 

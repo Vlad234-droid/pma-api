@@ -13,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.util.concurrent.TimeUnit;
@@ -32,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 })
 public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
 
-    private static final String POST_EVENT_PATH = "/colleagues/cep/events";
+    private static final String POST_EVENT_PATH = "/colleagues/events";
     private static final String JIT_REQUEST_CEP_SUCCESS_JSON = "jit_request_cep_success.json";
     private static final String IMMEDIATE_REQUEST_CEP_SUCCESS_JSON = "immediate_request_cep_success.json";
     private static final int MAX_NUMBER_PARALLEL_REQUESTS = 2;
@@ -134,23 +133,6 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
                 .andExpect(status().isForbidden());
 
         verifyNoInteractions(mockColleagueChangesService);
-    }
-
-    @Test
-    void processColleagueChangeEventLocalShouldReturnAcceptedHttpStatus() throws Exception {
-
-        // given
-
-        // when
-        ResultActions resultActions = mvc.perform(post("/colleagues/cep/events/local")
-                .contentType(APPLICATION_JSON)
-                .content(json.from(JIT_REQUEST_CEP_SUCCESS_JSON).getJson())
-                .accept(APPLICATION_JSON));
-
-        // then
-        resultActions
-                .andExpect(status().isCreated());
-
     }
 
     private void callEventRequest(ResultMatcher resultMatcher) throws Exception {
