@@ -77,15 +77,15 @@
             </column>
             <column name="colleague_uuid" type="${uuid_type}"
                     remarks="A unique identifier for every colleague. It is the user id present in Identity.">
-                <constraints nullable="false" uniqueConstraintName="personal_objective_unique"/>
+                <constraints nullable="false"/>
             </column>
             <column name="performance_cycle_uuid" type="${uuid_type}"
                     remarks="A unique identifier for performance cycle">
-                <constraints nullable="false" uniqueConstraintName="personal_objective_unique"/>
+                <constraints nullable="false"/>
             </column>
             <column name="sequence_number" type="integer"
                     remarks="A sequence number for colleague's objective">
-                <constraints nullable="false" uniqueConstraintName="personal_objective_unique"/>
+                <constraints nullable="false"/>
             </column>
             <column name="title" type="varchar(50)"
                     remarks="Title of objective">
@@ -113,6 +113,9 @@
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
                                  referencedColumnNames="id" referencedTableName="objective_status"
                                  validate="true"/>
+        <addUniqueConstraint columnNames="colleague_uuid, performance_cycle_uuid, sequence_number"
+                             constraintName="personal_objective_unique"
+                             tableName="personal_objective"/>
     </changeSet>
 
     <changeSet author="ypashynskyi" id="4">
@@ -124,19 +127,19 @@
             </column>
             <column name="business_unit_uuid" type="${uuid_type}"
                     remarks="A unique identifier for business unit.">
-                <constraints nullable="false" uniqueConstraintName="group_objective_unique"/>
+                <constraints nullable="false"/>
             </column>
             <column name="performance_cycle_uuid" type="${uuid_type}"
                     remarks="A unique identifier for performance cycle">
-                <constraints nullable="false" uniqueConstraintName="group_objective_unique"/>
+                <constraints nullable="false"/>
             </column>
             <column name="sequence_number" type="integer"
                     remarks="A sequence number for business unit's objective">
-                <constraints nullable="false" uniqueConstraintName="group_objective_unique"/>
+                <constraints nullable="false"/>
             </column>
             <column name="version" type="integer"
                     remarks="Version of business unit's objective">
-                <constraints nullable="false" uniqueConstraintName="group_objective_unique"/>
+                <constraints nullable="false"/>
             </column>
             <column name="title" type="varchar(50)"
                     remarks="Title of objective">
@@ -152,6 +155,9 @@
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
                                  referencedColumnNames="id" referencedTableName="objective_status"
                                  validate="true"/>
+        <addUniqueConstraint columnNames="business_unit_uuid, performance_cycle_uuid, sequence_number, version"
+                             constraintName="group_objective_unique"
+                             tableName="group_objective"/>
     </changeSet>
 
     <changeSet author="ypashynskyi" id="5">
