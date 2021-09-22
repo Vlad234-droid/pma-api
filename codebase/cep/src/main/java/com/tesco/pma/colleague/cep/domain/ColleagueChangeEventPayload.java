@@ -9,11 +9,11 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.UUID;
 
-@Value
-@Accessors(fluent = true)
 /*
   @see <a href="https://github.dev.global.tesco.org/24Colleague/ColleagueEventingPlatform/wiki/Event-Producer-Colleague-Changes">here</a>
  */
+@Value
+@Accessors(fluent = true)
 public class ColleagueChangeEventPayload implements Identified<UUID> {
 
     EventType eventType;

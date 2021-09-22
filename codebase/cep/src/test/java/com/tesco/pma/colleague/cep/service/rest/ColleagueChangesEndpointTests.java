@@ -1,6 +1,7 @@
 package com.tesco.pma.colleague.cep.service.rest;
 
 import com.tesco.pma.colleague.cep.domain.ColleagueChangeEventPayload;
+import com.tesco.pma.colleague.cep.domain.DeliveryMode;
 import com.tesco.pma.colleague.cep.service.ColleagueChangesService;
 import com.tesco.pma.configuration.cep.CEPProperties;
 import com.tesco.pma.rest.AbstractEndpointTest;
@@ -28,8 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
 
     private static final String POST_EVENT_PATH = "/colleagues/events";
-    private static final String JIT_REQUEST_CEP_SUCCESS_JSON = "jit_request_cep_success.json";
-    private static final String IMMEDIATE_REQUEST_CEP_SUCCESS_JSON = "immediate_request_cep_success.json";
+    private static final String JIT_REQUEST_CEP_JSON = "jit_request_cep.json";
+    private static final String IMMEDIATE_REQUEST_CEP_JSON = "immediate_request_cep.json";
     private static final int MAX_NUMBER_PARALLEL_REQUESTS = 2;
     private static final String TEST_CEP_SUBJECT = "test-cep-subject";
 
@@ -46,23 +47,35 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
     }
 
     @Test
-    void processColleagueChangeEventShouldReturnAcceptedHttpStatus() throws Exception {
+    void processJustInTimeFlowColleagueChangeEventShouldReturnAcceptedHttpStatus() throws Exception {
 
-        callEventRequest(status().isAccepted());
+        callEventRequest(JIT_REQUEST_CEP_JSON, status().isAccepted());
 
         verify(mockColleagueChangesService, timeout(500))
-                .processColleagueChangeEvent(any(ColleagueChangeEventPayload.class));
+                .processColleagueChangeEvent(any(DeliveryMode.class), any(ColleagueChangeEventPayload.class));
 
     }
 
     @Test
+    void processImmediateFlowColleagueChangeEventShouldReturnAcceptedHttpStatus() throws Exception {
+
+        callEventRequest(IMMEDIATE_REQUEST_CEP_JSON, status().isAccepted());
+
+        verify(mockColleagueChangesService, timeout(500))
+                .processColleagueChangeEvent(any(DeliveryMode.class), any(ColleagueChangeEventPayload.class));
+
+    }
+
+
+    @Test
     void processColleagueChangeEventSeveralTimesShouldReturnAcceptedHttpStatus() throws Exception {
         for (var i = 0; i < MAX_NUMBER_PARALLEL_REQUESTS; i++) {
-            callEventRequest(status().isAccepted());
+            callEventRequest(JIT_REQUEST_CEP_JSON, status().isAccepted());
         }
 
         verify(mockColleagueChangesService, timeout(500)
-                .times(MAX_NUMBER_PARALLEL_REQUESTS)).processColleagueChangeEvent(any(ColleagueChangeEventPayload.class));
+                .times(MAX_NUMBER_PARALLEL_REQUESTS))
+                .processColleagueChangeEvent(any(DeliveryMode.class), any(ColleagueChangeEventPayload.class));
 
     }
 
@@ -71,18 +84,19 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
 
         // given
         doAnswer(new AnswersWithDelay(500, DoesNothing.doesNothing()))
-                .when(mockColleagueChangesService).processColleagueChangeEvent(any(ColleagueChangeEventPayload.class));
+                .when(mockColleagueChangesService)
+                .processColleagueChangeEvent(any(DeliveryMode.class), any(ColleagueChangeEventPayload.class));
 
         // when
         for (var i = 0; i < MAX_NUMBER_PARALLEL_REQUESTS; i++) {
-            callEventRequest(status().isAccepted());
+            callEventRequest(JIT_REQUEST_CEP_JSON, status().isAccepted());
         }
 
-        callEventRequest(status().isTooManyRequests());
+        callEventRequest(JIT_REQUEST_CEP_JSON, status().isTooManyRequests());
 
         // then
         verify(mockColleagueChangesService, timeout(1000).times(MAX_NUMBER_PARALLEL_REQUESTS))
-                .processColleagueChangeEvent(any(ColleagueChangeEventPayload.class));
+                .processColleagueChangeEvent(any(DeliveryMode.class), any(ColleagueChangeEventPayload.class));
     }
 
     @Test
@@ -103,13 +117,13 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
                 .andExpect(status().isAccepted());
 
         verify(mockColleagueChangesService, timeout(500).times(0))
-                .processColleagueChangeEvent(any(ColleagueChangeEventPayload.class));
+                .processColleagueChangeEvent(any(DeliveryMode.class), any(ColleagueChangeEventPayload.class));
     }
 
     @Test
     void processColleagueChangeEventsUnauthorized() throws Exception {
         mvc.perform(post(POST_EVENT_PATH).with(anonymous())
-                        .content(json.from(JIT_REQUEST_CEP_SUCCESS_JSON).getJson())
+                        .content(json.from(JIT_REQUEST_CEP_JSON).getJson())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
@@ -120,7 +134,7 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
     @Test
     void processColleagueChangeEventForbiddenWithSubjectNotMatch() throws Exception {
         mvc.perform(post(POST_EVENT_PATH).with(jwtWithSubject("not-cep-subject"))
-                        .content(json.from(JIT_REQUEST_CEP_SUCCESS_JSON).getJson())
+                        .content(json.from(JIT_REQUEST_CEP_JSON).getJson())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isForbidden());
@@ -128,10 +142,10 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
         verifyNoInteractions(mockColleagueChangesService);
     }
 
-    private void callEventRequest(ResultMatcher resultMatcher) throws Exception {
+    private void callEventRequest(String jsonSource, ResultMatcher resultMatcher) throws Exception {
         mvc.perform(post(POST_EVENT_PATH)
                         .with(jwtWithSubject(TEST_CEP_SUBJECT))
-                        .content(json.from(JIT_REQUEST_CEP_SUCCESS_JSON).getJson())
+                        .content(json.from(jsonSource).getJson())
                         .contentType(APPLICATION_JSON)
                         .accept(APPLICATION_JSON))
                 .andDo(print())
