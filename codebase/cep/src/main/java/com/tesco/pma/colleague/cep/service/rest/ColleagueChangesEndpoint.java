@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,12 +49,11 @@ public class ColleagueChangesEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.TOO_MANY_REQUESTS, description = "Too Many Requests", content = @Content)
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping("/events")
-    //TODO:: implement authorization for service-service communication - check access to endpoint by identity subject and/or client_id:
-    //for example: @PreAuthorize("isAllowed('REQUESTS_START_PROCESS')")
-    //@PreAuthorize("authentication.name == @cepProperties.subject")
+    @PreAuthorize("authentication.name == @cepProperties.subject")
     public void processColleagueChangeEvent(@RequestBody EventRequest<ColleagueChangeEventPayload> eventRequest) {
         if (Objects.isNull(eventRequest.getPayload()) || Objects.isNull(eventRequest.getPayload().eventType())) {
             log.warn(LogFormatter.formatMessage(ErrorCodes.EVENT_PAYLOAD_ERROR, "Invalid payload was received from CEP"));
+            log.debug(String.format("Tried to process a event request %s", eventRequest));
             return;
         }
 

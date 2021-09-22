@@ -2,10 +2,9 @@ package com.tesco.pma.colleague.cep.service.rest;
 
 import com.tesco.pma.colleague.cep.domain.ColleagueChangeEventPayload;
 import com.tesco.pma.colleague.cep.service.ColleagueChangesService;
+import com.tesco.pma.configuration.cep.CEPProperties;
 import com.tesco.pma.rest.AbstractEndpointTest;
-import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.internal.stubbing.answers.AnswersWithDelay;
 import org.mockito.internal.stubbing.answers.DoesNothing;
@@ -25,10 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
-@WebMvcTest(controllers = ColleagueChangesEndpoint.class, properties = {
-        "tesco.application.security.enabled=true",
-})
+@WebMvcTest(controllers = ColleagueChangesEndpoint.class)
 public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
 
     private static final String POST_EVENT_PATH = "/colleagues/events";
@@ -37,17 +33,16 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
     private static final int MAX_NUMBER_PARALLEL_REQUESTS = 2;
     private static final String TEST_CEP_SUBJECT = "test-cep-subject";
 
-    private static final EasyRandom RANDOM = new EasyRandom();
-
-    private final ColleagueChangeEventPayload colleagueChangeEventPayload =
-            RANDOM.nextObject(ColleagueChangeEventPayload.class);
-
     @MockBean
     private ColleagueChangesService mockColleagueChangesService;
+
+    @MockBean
+    private CEPProperties mockCepProperties;
 
     @BeforeEach
     void waitForFinishAllTasks() throws InterruptedException {
         TimeUnit.SECONDS.sleep(MAX_NUMBER_PARALLEL_REQUESTS);
+        when(mockCepProperties.getSubject()).thenReturn(TEST_CEP_SUBJECT);
     }
 
     @Test
@@ -72,12 +67,11 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
     }
 
     @Test
-    @Disabled // TODO
     void processColleagueChangeEventShouldThrowsExceptionIfToManyRequests() throws Exception {
 
         // given
         doAnswer(new AnswersWithDelay(500, DoesNothing.doesNothing()))
-                .when(mockColleagueChangesService).processColleagueChangeEvent(colleagueChangeEventPayload);
+                .when(mockColleagueChangesService).processColleagueChangeEvent(any(ColleagueChangeEventPayload.class));
 
         // when
         for (var i = 0; i < MAX_NUMBER_PARALLEL_REQUESTS; i++) {
@@ -88,7 +82,7 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
 
         // then
         verify(mockColleagueChangesService, timeout(1000).times(MAX_NUMBER_PARALLEL_REQUESTS))
-                .processColleagueChangeEvent(colleagueChangeEventPayload);
+                .processColleagueChangeEvent(any(ColleagueChangeEventPayload.class));
     }
 
     @Test
@@ -109,7 +103,7 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
                 .andExpect(status().isAccepted());
 
         verify(mockColleagueChangesService, timeout(500).times(0))
-                .processColleagueChangeEvent(colleagueChangeEventPayload);
+                .processColleagueChangeEvent(any(ColleagueChangeEventPayload.class));
     }
 
     @Test
@@ -124,7 +118,6 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
     }
 
     @Test
-    @Disabled // TODO
     void processColleagueChangeEventForbiddenWithSubjectNotMatch() throws Exception {
         mvc.perform(post(POST_EVENT_PATH).with(jwtWithSubject("not-cep-subject"))
                         .content(json.from(JIT_REQUEST_CEP_SUCCESS_JSON).getJson())
