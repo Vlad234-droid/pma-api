@@ -67,6 +67,15 @@ public class OrganisationEndpoint {
         return RestResponse.success();
     }
 
+    @Operation(summary = "Delete business unit",
+            tags = {"organisation"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Delete business unit")
+    @DeleteMapping(value = "/business-units/{unitUuid}", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<?> delete(@PathVariable UUID unitUuid) {
+        organisationService.deleteBusinessUnit(unitUuid);
+        return RestResponse.success();
+    }
+
     @Operation(summary = "Publish business unit", tags = {"organisation"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Structure has been published")
     @PostMapping(value = "/business-units/{unitUuid}/publish", produces = APPLICATION_JSON_VALUE)

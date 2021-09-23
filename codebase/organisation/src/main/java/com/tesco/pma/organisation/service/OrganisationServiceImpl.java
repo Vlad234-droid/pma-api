@@ -125,6 +125,17 @@ public class OrganisationServiceImpl implements OrganisationService {
         copyStructure(structure);
     }
 
+    @Override
+    @Transactional
+    public void deleteBusinessUnit(UUID buUuid) {
+        var root = dao.findRootBusinessUnit(buUuid);
+        var version = root.getVersion() + 1;
+        var structure = dao.findBusinessUnitChildStructure(root.getUuid());
+        structure = structure.stream().takeWhile(bu -> !bu.getUuid().equals(buUuid)).collect(Collectors.toList());
+        structure.forEach(bu -> bu.setVersion(version));
+        copyStructure(structure);
+    }
+
     private void copyStructure(List<BusinessUnit> structure) {
         var oldToNewUuid = new HashMap<UUID, UUID>();
         structure.forEach(bu -> {
