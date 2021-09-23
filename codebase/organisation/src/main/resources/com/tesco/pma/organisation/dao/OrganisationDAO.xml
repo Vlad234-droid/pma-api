@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.tesco.pma.organization.dao.OrganizationDAO">
+<mapper namespace="com.tesco.pma.organisation.dao.OrganisationDAO">
 
-    <resultMap id="businessUnitStructure" type="com.tesco.pma.organization.api.BusinessUnit">
+    <resultMap id="businessUnitStructure" type="com.tesco.pma.organisation.api.BusinessUnit">
         <id column="uuid" property="uuid"/>
         <result column="name" property="name"/>
         <result column="type_id" property="type" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.organization.api.BusinessUnitType"/>
+                javaType="com.tesco.pma.organisation.api.BusinessUnitType"/>
         <result column="version" property="version"/>
         <result column="parent_uuid" property="parentUuid"/>
     </resultMap>
@@ -68,15 +68,15 @@
     <insert id="createBusinessUnit" flushCache="true">
         INSERT INTO business_unit(uuid, name, type_id, version, parent_uuid)
         VALUES (#{bu.uuid}, #{bu.name},
-                #{bu.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.organization.api.BusinessUnitType},
-                #{bu.version}, #{bu.parentUuid})
+        #{bu.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.organisation.api.BusinessUnitType},
+        #{bu.version}, #{bu.parentUuid})
     </insert>
 
     <insert id="publishBusinessUnit" flushCache="true">
         INSERT INTO working_business_unit(name, type_id, version, unit_uuid, composite_key)
         VALUES (#{wbu.name},
-                #{wbu.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.organization.api.BusinessUnitType},
-                #{wbu.version}, #{wbu.unitUuid}, #{wbu.compositeKey})
+        #{wbu.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.organisation.api.BusinessUnitType},
+        #{wbu.version}, #{wbu.unitUuid}, #{wbu.compositeKey})
     </insert>
 
     <delete id="unpublishBusinessUnits" flushCache="true">

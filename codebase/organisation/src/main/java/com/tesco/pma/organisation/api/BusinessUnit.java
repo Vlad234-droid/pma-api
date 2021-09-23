@@ -1,14 +1,14 @@
-package com.tesco.pma.organization.api;
+package com.tesco.pma.organisation.api;
 
 import lombok.Data;
 
 import java.util.UUID;
 
 @Data
-public class WorkingBusinessUnit {
+public class BusinessUnit {
+    private UUID uuid;
     private String name;
     private BusinessUnitType type;
     private int version;
-    private UUID unitUuid;
-    private String compositeKey;
+    private UUID parentUuid;
 }

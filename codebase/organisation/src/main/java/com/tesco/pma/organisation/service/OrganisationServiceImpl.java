@@ -1,10 +1,10 @@
-package com.tesco.pma.organization.service;
+package com.tesco.pma.organisation.service;
 
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.organization.api.BusinessUnit;
-import com.tesco.pma.organization.api.BusinessUnitResponse;
-import com.tesco.pma.organization.api.WorkingBusinessUnit;
-import com.tesco.pma.organization.dao.OrganizationDAO;
+import com.tesco.pma.organisation.api.BusinessUnit;
+import com.tesco.pma.organisation.api.BusinessUnitResponse;
+import com.tesco.pma.organisation.api.WorkingBusinessUnit;
+import com.tesco.pma.organisation.dao.OrganisationDAO;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class OrganizationServiceImpl implements OrganizationService {
+public class OrganisationServiceImpl implements OrganisationService {
 
     private static final String COMPOSITE_KEY_FORMAT = "%s/%s/%s";
     private static final String COMPOSITE_KEY_VERSION_FORMAT = "%s#v%d";
-    private final OrganizationDAO dao;
+    private final OrganisationDAO dao;
 
     @Override
     public BusinessUnitResponse getStructure(UUID businessUnitUuid) {

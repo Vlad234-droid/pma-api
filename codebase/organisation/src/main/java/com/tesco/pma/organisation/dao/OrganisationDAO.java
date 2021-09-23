@@ -1,11 +1,9 @@
-package com.tesco.pma.organization.dao;
+package com.tesco.pma.organisation.dao;
 
-import com.tesco.pma.organization.api.BusinessUnit;
-import com.tesco.pma.organization.api.BusinessUnitType;
-import com.tesco.pma.organization.api.WorkingBusinessUnit;
+import com.tesco.pma.organisation.api.BusinessUnit;
+import com.tesco.pma.organisation.api.WorkingBusinessUnit;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,7 +13,7 @@ import java.util.UUID;
 1. Когда увеличиваем версию.
 Апдейт+
  */
-public interface OrganizationDAO {
+public interface OrganisationDAO {
 
     BusinessUnit findRootBusinessUnit(@Param("uuid") UUID uuid);
 

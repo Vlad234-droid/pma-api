@@ -22,9 +22,29 @@
         <comment>Init table business_unit_type</comment>
         <insert tableName="business_unit_type">
             <column name="id" value="1"/>
-            <column name="code" value="DEPARTMENT"/>
-            <column name="description" value="Department business unit"/>
+            <column name="code" value="HEAD_OFFICE"/>
+            <column name="description" value="Head office business unit type"/>
         </insert>
+        <insert tableName="business_unit_type">
+            <column name="id" value="2"/>
+            <column name="code" value="SUBSIDIARY"/>
+            <column name="description" value="Subsidiary business unit type"/>
+        </insert>
+        <insert tableName="business_unit_type">
+            <column name="id" value="3"/>
+            <column name="code" value="DEPARTMENT"/>
+            <column name="description" value="Department business unit type"/>
+        </insert>
+        <rollback>
+            <delete tableName="business_unit_type">
+                <where>code = 'HEAD_OFFICE'</where>
+            </delete>
+        </rollback>
+        <rollback>
+            <delete tableName="business_unit_type">
+                <where>code = 'SUBSIDIARY'</where>
+            </delete>
+        </rollback>
         <rollback>
             <delete tableName="business_unit_type">
                 <where>code = 'DEPARTMENT'</where>

@@ -1,4 +1,4 @@
-package com.tesco.pma.organization.api;
+package com.tesco.pma.organisation.api;
 
 import lombok.Data;
 

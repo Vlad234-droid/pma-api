@@ -1,12 +1,12 @@
-package com.tesco.pma.organization.service;
+package com.tesco.pma.organisation.service;
 
-import com.tesco.pma.organization.api.BusinessUnit;
-import com.tesco.pma.organization.api.BusinessUnitResponse;
+import com.tesco.pma.organisation.api.BusinessUnit;
+import com.tesco.pma.organisation.api.BusinessUnitResponse;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-public interface OrganizationService {
+public interface OrganisationService {
 
     BusinessUnitResponse getStructure(UUID businessUnitUuid);
 
