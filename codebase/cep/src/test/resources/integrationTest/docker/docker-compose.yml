@@ -1,0 +1,51 @@
+version: '3'
+
+volumes:
+  postgres-volume:
+
+services:
+
+  postgres:
+    image: postgres:12
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=pma
+    ports:
+      - 5432:5432
+
+#  redis:
+#    image: redis
+#    container_name: redis
+#    ports:
+#      - 6379:6379
+#    restart: unless-stopped
+
+  wiremock:
+    image: rodolpheche/wiremock
+    container_name: wiremock
+    volumes:
+      - ./data/WireMock/__files:/home/wiremock/__files
+      - ./data/WireMock/mappings:/home/wiremock/mappings
+    ports:
+      - 9090:8080    
+
+  cep-producer:
+    image: curlimages/curl
+    hostname: cep-producer
+    container_name: cep-producer
+    depends_on:
+      initializer:
+        condition: service_started
+    command: sh -c "/scripts/CEP_Colleague_Changes_Event_Producer.sh"
+    volumes:
+      - ./scripts:/scripts
+    extra_hosts:
+        - "pma-api-service:172.31.134.67"
+    restart: unless-stopped
+
+networks:
+  default:
+    name: pma_dev
+

@@ -1,0 +1,131 @@
+{
+  "colleagueUUID": "d158ebc0-d97d-4b2e-9e34-4bbb6099fdc6",
+  "employeeId": "12345561",
+  "countryCode": "GB",
+  "effectivity": {
+    "from": "2001-01-01",
+    "to": "2002-01-01"
+  },
+  "externalSystems": {
+    "sourceSystem": "HCM",
+    "iam": {
+      "id": "UKE12345",
+      "name": "IAM",
+      "source": "OracleHCM"
+    },
+    "hcm": {
+      "id": 300000001199303,
+      "name": "Work & Pay",
+      "type": "SKINNY",
+      "migrationStatus": "IN_MIGRATION"
+    }
+  },
+  "profile": {
+    "title": "MR.",
+    "firstName": "William",
+    "middleName": "Jeffrey",
+    "lastName": "Smith",
+    "preferredName": "Will",
+    "dateOfBirth": "1979-12-29",
+    "gender": "M"
+  },
+  "contact": {
+    "email": "william.smith3@tesco.com",
+    "workPhoneNumber": "7567123321",
+    "addresses": {
+      "lines": [
+        "Station",
+        "Road",
+        "London"
+      ],
+      "countryCode": "GB",
+      "postcode": "OX26 1DE",
+      "city": "Bicester"
+    }
+  },
+  "serviceDates": {
+    "hireDate": "2019-04-20",
+    "leavingDate": "2020-01-01"
+  },
+  "workRelationships": [
+    {
+      "locationUUID": "3abec81c-76cb-45bb-b8e7-35e7a7e77d2f",
+      "contractType": {
+        "sourceCode": "TES_PER_1_YEAR_ROLLING",
+        "sourceName": "1 Year Rolling",
+        "endDate": "2020-01-01"
+      },
+      "colleagueType": "EMPLOYEE",
+      "workingStatus": "ACTIVE",
+      "type": "PRIMARY",
+      "managerUUID": "9af76d44-c9a3-4e7b-a272-f0b3057c9d6d",
+      "actionCode": "ASG_CHANGE",
+      "actionReasonCode": null,
+      "userStatus": "Active - Payroll Eligible",
+      "workSchedule": "FULL_TIME",
+      "employmentType": "R",
+      "salaryFrequency": "ANNUAL",
+      "workingHours": "29.75",
+      "costCenter": "8181100",
+      "assignmentId": "300002393113630",
+      "primaryEntity": "Tesco PLC",
+      "workingInHiredCountry": true,
+      "isManager": false,
+      "workLevel": "WL3",
+      "legalEmployer": {
+        "id": 300000001199303,
+        "name": "Tesco Stores Limited"
+      },
+      "department": {
+        "id": "300001051375877",
+        "name": "Kesgrave Metro",
+        "businessType": "Store"
+      },
+      "job": {
+        "id": "300000600015282",
+        "code": "Office-0316",
+        "name": "Customer Assistant",
+        "costCategory": "Stores Non Management"
+      },
+      "grade": {
+        "id": "300000002503024",
+        "code": "C"
+      },
+      "position": {
+        "id": "300002947054468",
+        "code": "22971",
+        "name": "Kesgrave Metro - Customer Assistant",
+        "teamName": "Metro"
+      }
+    }
+  ],
+  "nonTerms": [
+    {
+      "startDate": "2019-12-01",
+      "endDate": "2019-12-02"
+    },
+    {
+      "startDate": "2019-12-03",
+      "endDate": "2019-12-04"
+    }
+  ],
+  "visaPermits": [
+    {
+      "code": "TES_PER_ISD",
+      "name": "Immigration Status Document",
+      "expirationDate": "2030-12-31"
+    }
+  ],
+  "skills": [
+    {
+      "code": "23232342",
+      "name": "Bakery",
+      "type": "PRIMARY"
+    },
+    {
+      "code": "42342342",
+      "name": "Store Cleaner",
+      "type": "SECONDARY"
+    }
+  ]
+}

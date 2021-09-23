@@ -1,0 +1,14 @@
+{        
+    "request": {                                    
+        "method": "GET",                        
+        "urlPattern": "/colleague/v2/colleagues/.*"
+    },                                      
+    "response": {                                   
+        "status": 200,                          
+        "bodyFileName": "colleague-facts-api.json",
+        "headers": {
+            "Content-Type": "application/json",
+            "Cache-Control": "max-age=86400"
+        }
+    }                                               
+}
