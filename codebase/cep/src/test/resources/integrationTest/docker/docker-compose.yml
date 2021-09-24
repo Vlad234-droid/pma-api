@@ -6,13 +6,7 @@ services:
     image: curlimages/curl
     hostname: cep-producer
     container_name: cep-producer
-    depends_on:
-      initializer:
-        condition: service_started
     command: sh -c "/scripts/CEP_Colleague_Changes_Event_Producer.sh"
     volumes:
       - ./scripts:/scripts
-    extra_hosts:
-        - "pma-api-service:172.31.134.67"
     restart: unless-stopped
-
