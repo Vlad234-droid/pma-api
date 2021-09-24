@@ -1,7 +1,7 @@
-package com.tesco.pma.colleague.cep.service;
+package com.tesco.pma.cep.service;
 
-import com.tesco.pma.colleague.cep.domain.ColleagueChangeEventPayload;
-import com.tesco.pma.colleague.cep.domain.DeliveryMode;
+import com.tesco.pma.cep.domain.ColleagueChangeEventPayload;
+import com.tesco.pma.cep.domain.DeliveryMode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

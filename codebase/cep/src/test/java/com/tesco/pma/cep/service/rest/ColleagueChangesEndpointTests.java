@@ -1,8 +1,8 @@
-package com.tesco.pma.colleague.cep.service.rest;
+package com.tesco.pma.cep.service.rest;
 
-import com.tesco.pma.colleague.cep.domain.ColleagueChangeEventPayload;
-import com.tesco.pma.colleague.cep.domain.DeliveryMode;
-import com.tesco.pma.colleague.cep.service.ColleagueChangesService;
+import com.tesco.pma.cep.domain.ColleagueChangeEventPayload;
+import com.tesco.pma.cep.domain.DeliveryMode;
+import com.tesco.pma.cep.service.ColleagueChangesService;
 import com.tesco.pma.configuration.cep.CEPProperties;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import org.junit.jupiter.api.BeforeEach;

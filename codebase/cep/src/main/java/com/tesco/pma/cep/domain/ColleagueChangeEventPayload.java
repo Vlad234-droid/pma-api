@@ -1,4 +1,4 @@
-package com.tesco.pma.colleague.cep.domain;
+package com.tesco.pma.cep.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tesco.pma.api.Identified;
@@ -12,7 +12,7 @@ import java.util.UUID;
 /**
  * This class describes a structure of payload section CEP events.
  *
- * For more information:
+ * <p>For more information:
  * @see <a href="https://github.dev.global.tesco.org/24Colleague/ColleagueEventingPlatform/wiki/Event-Producer-Colleague-Changes">here</a>
  */
 @Value

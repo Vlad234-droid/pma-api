@@ -1,4 +1,4 @@
-package com.tesco.pma.colleague.cep.domain;
+package com.tesco.pma.cep.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

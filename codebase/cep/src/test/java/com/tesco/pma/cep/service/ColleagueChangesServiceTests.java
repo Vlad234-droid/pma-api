@@ -1,4 +1,4 @@
-package com.tesco.pma.colleague.cep.service;
+package com.tesco.pma.cep.service;
 
 import org.junit.jupiter.api.Test;
 
