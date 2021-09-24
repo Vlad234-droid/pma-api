@@ -12,6 +12,7 @@ do
     do
         echo "Submit an event for $i with delivery mode $j"
         curl -v -i -H "Accept: */*" -H "Content-Type: application/json" -H  "Authorization: Bearer $Bearer" -X POST $PMA_SERVER/v1/colleagues/events -d @/scripts/tests/cep/$j/$i.json
-        sleep 15
+        sleep 5
     done
+    sleep 10
 done
