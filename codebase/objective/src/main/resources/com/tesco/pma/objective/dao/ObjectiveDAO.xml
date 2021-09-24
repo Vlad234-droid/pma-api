@@ -4,31 +4,30 @@
 <mapper namespace="com.tesco.pma.objective.dao.ObjectiveDAO">
 
     <resultMap id="groupObjectiveResultMap" type="com.tesco.pma.objective.domain.GroupObjective">
-        <id property="uuid" column="group_objective_uuid"/>
-        <result property="businessUnitUuid" column="group_objective_business_unit_uuid"/>
-        <result property="performanceCycleUuid" column="group_objective_performance_cycle_uuid"/>
-        <result property="sequenceNumber" column="group_objective_sequence_number"/>
-        <result property="title" column="group_objective_title"/>
-        <result property="version" column="group_objective_version"/>
-        <result property="status" column="group_objective_status_id"
+        <id property="uuid" column="uuid"/>
+        <result property="businessUnitUuid" column="business_unit_uuid"/>
+        <result property="performanceCycleUuid" column="performance_cycle_uuid"/>
+        <result property="sequenceNumber" column="sequence_number"/>
+        <result property="title" column="title"/>
+        <result property="version" column="version"/>
+        <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.objective.domain.ObjectiveStatus"/>
     </resultMap>
 
     <resultMap id="personalObjectiveResultMap" type="com.tesco.pma.objective.domain.PersonalObjective">
-        <id property="uuid" column="personal_objective_uuid"/>
-        <result property="colleagueUuid" column="personal_objective_colleague_uuid"/>
-        <result property="performanceCycleUuid" column="personal_objective_performance_cycle_uuid"/>
-        <result property="sequenceNumber" column="personal_objective_sequence_number"/>
-        <result property="title" column="personal_objective_title"/>
-        <result property="description" column="personal_objective_description"/>
-        <result property="meets" column="personal_objective_meets"/>
-        <result property="exceeds" column="personal_objective_exceeds"/>
-        <result property="status" column="personal_objective_status_id"
+        <id property="uuid" column="uuid"/>
+        <result property="colleagueUuid" column="colleague_uuid"/>
+        <result property="performanceCycleUuid" column="performance_cycle_uuid"/>
+        <result property="sequenceNumber" column="sequence_number"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="meets" column="meets"/>
+        <result property="exceeds" column="exceeds"/>
+        <result property="groupObjectiveUuid" column="group_objective_uuid"/>
+        <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.objective.domain.ObjectiveStatus"/>
-        <association property="groupObjective" javaType="com.tesco.pma.objective.domain.GroupObjective"
-                     resultMap="groupObjectiveResultMap"/>
     </resultMap>
 
     <resultMap id="workingGroupObjectiveResultMap" type="com.tesco.pma.objective.domain.WorkingGroupObjective">
@@ -60,15 +59,31 @@
     </insert>
 
     <select id="getGroupObjective" resultMap="groupObjectiveResultMap">
-        SELECT go.uuid                   as group_objective_uuid,
-               go.business_unit_uuid     as group_objective_business_unit_uuid,
-               go.performance_cycle_uuid as group_objective_performance_cycle_uuid,
-               go.sequence_number        as group_objective_sequence_number,
-               go.title                  as group_objective_title,
-               go.version                as group_objective_version,
-               go.status_id              as group_objective_status_id
+        SELECT go.uuid,
+               go.business_unit_uuid,
+               go.performance_cycle_uuid,
+               go.sequence_number,
+               go.title,
+               go.version,
+               go.status_id
         FROM group_objective go
         WHERE go.uuid = #{groupObjectiveUuid}
+    </select>
+
+    <select id="getAllGroupObjectives" resultMap="groupObjectiveResultMap">
+        SELECT go.uuid,
+               go.business_unit_uuid,
+               go.performance_cycle_uuid,
+               go.sequence_number,
+               go.title,
+               go.version,
+               go.status_id
+        FROM working_group_objective wgo
+                 inner join group_objective go
+        on (wgo.objective_uuid = go.uuid)
+        WHERE wgo.business_unit_uuid = #{businessUnitUuid}
+          and wgo.performance_cycle_uuid = #{performanceCycleUuid}
+        order by go.sequence_number
     </select>
 
     <update id="updateGroupObjective" flushCache="true">
@@ -106,39 +121,31 @@
         #{personalObjective.exceeds},
         #{personalObjective.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.objective.domain.ObjectiveStatus});
         <choose>
-            <when test="personalObjective.groupObjective != null">
+            <when test="personalObjective.groupObjectiveUuid != null">
                 INSERT INTO objective_link
                 (personal_objective_uuid,
                 group_objective_uuid)
                 VALUES (#{personalObjective.uuid},
-                #{personalObjective.groupObjective.uuid}
+                #{personalObjective.groupObjectiveUuid}
                 );
             </when>
         </choose>
     </insert>
 
     <select id="getPersonalObjective" resultMap="personalObjectiveResultMap">
-        SELECT po.uuid                   as personal_objective_uuid,
-               po.colleague_uuid         as personal_objective_colleague_uuid,
-               po.performance_cycle_uuid as personal_objective_performance_cycle_uuid,
-               po.sequence_number        as personal_objective_sequence_number,
-               po.title                  as personal_objective_title,
-               po.description            as personal_objective_description,
-               po.meets                  as personal_objective_meets,
-               po.exceeds                as personal_objective_exceeds,
-               po.status_id              as personal_objective_status_id,
-               go.uuid                   as group_objective_uuid,
-               go.business_unit_uuid     as group_objective_business_unit_uuid,
-               go.performance_cycle_uuid as group_objective_performance_cycle_uuid,
-               go.sequence_number        as group_objective_sequence_number,
-               go.title                  as group_objective_title,
-               go.version                as group_objective_version,
-               go.status_id              as group_objective_status_id
+        SELECT po.uuid,
+               po.colleague_uuid,
+               po.performance_cycle_uuid,
+               po.sequence_number,
+               po.title,
+               po.description,
+               po.meets,
+               po.exceeds,
+               po.status_id,
+               ol.group_objective_uuid
         FROM personal_objective po
                  LEFT JOIN objective_link ol
                            ON (po.uuid = ol.personal_objective_uuid)
-                 LEFT JOIN group_objective go
-        ON (ol.group_objective_uuid = go.uuid)
         WHERE po.uuid = #{personalObjectiveUuid}
     </select>
 
@@ -158,7 +165,7 @@
         status_id=#{personalObjective.status.id}
         WHERE uuid = #{personalObjective.uuid};
         <choose>
-            <when test="personalObjective.groupObjective == null">
+            <when test="personalObjective.groupObjectiveUuid == null">
                 DELETE
                 FROM objective_link
                 WHERE personal_objective_uuid = #{personalObjective.uuid};
@@ -168,7 +175,7 @@
                 (personal_objective_uuid,
                 group_objective_uuid)
                 VALUES (#{personalObjective.uuid},
-                #{personalObjective.groupObjective.uuid}
+                #{personalObjective.groupObjectiveUuid}
                 )
                 ON CONFLICT (personal_objective_uuid)
                 DO UPDATE

@@ -23,6 +23,6 @@ public class PersonalObjective {
     String description;
     String meets;
     String exceeds;
-    GroupObjective groupObjective;
+    UUID groupObjectiveUuid;
     ObjectiveStatus status;
 }

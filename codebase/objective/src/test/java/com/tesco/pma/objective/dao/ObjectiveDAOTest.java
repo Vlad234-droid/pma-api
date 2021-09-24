@@ -187,7 +187,6 @@ class ObjectiveDAOTest extends AbstractDAOTest {
     @Test
     @DataSet({"group_objective_init.xml", "personal_objective_init.xml"})
     void getPersonalObjective() {
-        final var groupObjective = instance.getGroupObjective(GROUP_OBJECTIVE_UUID_2);
         final var result = instance.getPersonalObjective(PERSONAL_OBJECTIVE_UUID);
 
         assertThat(result)
@@ -199,7 +198,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
                 .returns(DESCRIPTION_INIT, from(PersonalObjective::getDescription))
                 .returns(MEETS_INIT, from(PersonalObjective::getMeets))
                 .returns(EXCEEDS_INIT, from(PersonalObjective::getExceeds))
-                .returns(groupObjective, from(PersonalObjective::getGroupObjective))
+                .returns(GROUP_OBJECTIVE_UUID_2, from(PersonalObjective::getGroupObjectiveUuid))
                 .returns(ObjectiveStatus.DRAFT, from(PersonalObjective::getStatus));
     }
 
@@ -215,7 +214,6 @@ class ObjectiveDAOTest extends AbstractDAOTest {
     @DataSet({"group_objective_init.xml", "cleanup.xml"})
     @ExpectedDataSet("personal_objective_create_expected_1.xml")
     void createPersonalObjectiveSucceeded() {
-        final var groupObjective = instance.getGroupObjective(GROUP_OBJECTIVE_UUID_2);
         final var personalObjective = PersonalObjective.builder()
                 .uuid(PERSONAL_OBJECTIVE_UUID)
                 .colleagueUuid(COLLEAGUE_UUID)
@@ -225,7 +223,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
                 .description(DESCRIPTION_INIT)
                 .meets(MEETS_INIT)
                 .exceeds(EXCEEDS_INIT)
-                .groupObjective(groupObjective)
+                .groupObjectiveUuid(GROUP_OBJECTIVE_UUID_2)
                 .status(ObjectiveStatus.DRAFT)
                 .build();
 
@@ -272,7 +270,6 @@ class ObjectiveDAOTest extends AbstractDAOTest {
     @DataSet({"group_objective_init.xml", "personal_objective_init.xml"})
     @ExpectedDataSet("personal_objective_update_expected_1.xml")
     void updatePersonalObjectiveSucceeded() {
-        final var groupObjective = instance.getGroupObjective(GROUP_OBJECTIVE_UUID);
         final var personalObjective = PersonalObjective.builder()
                 .uuid(PERSONAL_OBJECTIVE_UUID)
                 .colleagueUuid(COLLEAGUE_UUID)
@@ -282,7 +279,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
                 .description(DESCRIPTION_UPDATE)
                 .meets(MEETS_UPDATE)
                 .exceeds(EXCEEDS_UPDATE)
-                .groupObjective(groupObjective)
+                .groupObjectiveUuid(GROUP_OBJECTIVE_UUID)
                 .status(ObjectiveStatus.SUBMITTED)
                 .build();
 
@@ -336,7 +333,6 @@ class ObjectiveDAOTest extends AbstractDAOTest {
     @DataSet({"group_objective_init.xml", "personal_objective_without_group_objective_init.xml"})
     @ExpectedDataSet("personal_objective_unlink_group_objective_expected.xml")
     void updatePersonalObjectiveLinkGroupObjective() {
-        final var groupObjective = instance.getGroupObjective(GROUP_OBJECTIVE_UUID_2);
         final var personalObjective = PersonalObjective.builder()
                 .uuid(PERSONAL_OBJECTIVE_UUID)
                 .colleagueUuid(COLLEAGUE_UUID)
@@ -346,7 +342,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
                 .description(DESCRIPTION_INIT)
                 .meets(MEETS_INIT)
                 .exceeds(EXCEEDS_INIT)
-                .groupObjective(groupObjective)
+                .groupObjectiveUuid(GROUP_OBJECTIVE_UUID_2)
                 .status(ObjectiveStatus.DRAFT)
                 .build();
 

@@ -5,6 +5,7 @@ import com.tesco.pma.objective.domain.PersonalObjective;
 import com.tesco.pma.objective.domain.WorkingGroupObjective;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -103,6 +104,16 @@ public interface ObjectiveDAO {
     WorkingGroupObjective getWorkingGroupObjective(@Param("businessUnitUuid") UUID businessUnitUuid,
                                                    @Param("performanceCycleUuid") UUID performanceCycleUuid,
                                                    @Param("sequenceNumber") Integer sequenceNumber);
+
+    /**
+     * Returns a all group objectives by business unit and performance cycle
+     *
+     * @param businessUnitUuid     an identifier of business unit
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @return a list of Group Objectives
+     */
+    List<GroupObjective> getAllGroupObjectives(@Param("businessUnitUuid") UUID businessUnitUuid,
+                                               @Param("performanceCycleUuid") UUID performanceCycleUuid);
 
     /**
      * Delete a working group objective
