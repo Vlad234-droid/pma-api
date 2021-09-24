@@ -1,7 +1,6 @@
 package com.tesco.pma.cep.service.rest;
 
 import com.tesco.pma.cep.domain.ColleagueChangeEventPayload;
-import com.tesco.pma.cep.domain.DeliveryMode;
 import com.tesco.pma.cep.service.ColleagueChangesService;
 import com.tesco.pma.configuration.cep.CEPProperties;
 import com.tesco.pma.rest.AbstractEndpointTest;
@@ -52,7 +51,7 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
         callEventRequest(JIT_REQUEST_CEP_JSON, status().isAccepted());
 
         verify(mockColleagueChangesService, timeout(500))
-                .processColleagueChangeEvent(any(DeliveryMode.class), any(ColleagueChangeEventPayload.class));
+                .processColleagueChangeEvent(any(String.class), any(ColleagueChangeEventPayload.class));
 
     }
 
@@ -62,7 +61,7 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
         callEventRequest(IMMEDIATE_REQUEST_CEP_JSON, status().isAccepted());
 
         verify(mockColleagueChangesService, timeout(500))
-                .processColleagueChangeEvent(any(DeliveryMode.class), any(ColleagueChangeEventPayload.class));
+                .processColleagueChangeEvent(any(String.class), any(ColleagueChangeEventPayload.class));
 
     }
 
@@ -75,7 +74,7 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
 
         verify(mockColleagueChangesService, timeout(500)
                 .times(MAX_NUMBER_PARALLEL_REQUESTS))
-                .processColleagueChangeEvent(any(DeliveryMode.class), any(ColleagueChangeEventPayload.class));
+                .processColleagueChangeEvent(any(String.class), any(ColleagueChangeEventPayload.class));
 
     }
 
@@ -85,7 +84,7 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
         // given
         doAnswer(new AnswersWithDelay(500, DoesNothing.doesNothing()))
                 .when(mockColleagueChangesService)
-                .processColleagueChangeEvent(any(DeliveryMode.class), any(ColleagueChangeEventPayload.class));
+                .processColleagueChangeEvent(any(String.class), any(ColleagueChangeEventPayload.class));
 
         // when
         for (var i = 0; i < MAX_NUMBER_PARALLEL_REQUESTS; i++) {
@@ -96,7 +95,7 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
 
         // then
         verify(mockColleagueChangesService, timeout(1000).times(MAX_NUMBER_PARALLEL_REQUESTS))
-                .processColleagueChangeEvent(any(DeliveryMode.class), any(ColleagueChangeEventPayload.class));
+                .processColleagueChangeEvent(any(String.class), any(ColleagueChangeEventPayload.class));
     }
 
     @Test
@@ -117,7 +116,7 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
                 .andExpect(status().isAccepted());
 
         verify(mockColleagueChangesService, timeout(500).times(0))
-                .processColleagueChangeEvent(any(DeliveryMode.class), any(ColleagueChangeEventPayload.class));
+                .processColleagueChangeEvent(any(String.class), any(ColleagueChangeEventPayload.class));
     }
 
     @Test

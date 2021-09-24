@@ -1,7 +1,6 @@
 package com.tesco.pma.cep.service.rest;
 
 import com.tesco.pma.cep.domain.ColleagueChangeEventPayload;
-import com.tesco.pma.cep.domain.DeliveryMode;
 import com.tesco.pma.cep.service.ColleagueChangesService;
 import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.logging.LogFormatter;
@@ -58,18 +57,17 @@ public class ColleagueChangesEndpoint {
             return;
         }
 
-        DeliveryMode feedDeliveryMode = DeliveryMode.getDeliveryMode(eventRequest.getMetadata().getFeedId());
-        processColleagueChangeEvent(feedDeliveryMode, eventRequest.getPayload());
+        processColleagueChangeEvent(eventRequest.getMetadata().getFeedId(), eventRequest.getPayload());
 
     }
 
-    private void processColleagueChangeEvent(DeliveryMode feedDeliveryMode,
+    private void processColleagueChangeEvent(String feedId,
                                              ColleagueChangeEventPayload colleagueChangeEventPayload) {
         var traceId = TraceUtils.getTraceId();
 
         executor.execute(() -> {
             TraceUtils.setTraceId(traceId);
-            colleagueChangesService.processColleagueChangeEvent(feedDeliveryMode, colleagueChangeEventPayload);
+            colleagueChangesService.processColleagueChangeEvent(feedId, colleagueChangeEventPayload);
         });
 
     }
