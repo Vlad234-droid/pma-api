@@ -1,6 +1,5 @@
 package com.tesco.pma.cep.service;
 
-import com.tesco.pma.cep.configuration.CEPFeedsProperties;
 import com.tesco.pma.cep.domain.ColleagueChangeEventPayload;
 import com.tesco.pma.cep.domain.DeliveryMode;
 import com.tesco.pma.exception.ErrorCodes;
@@ -15,14 +14,14 @@ import java.util.Objects;
 @Slf4j
 public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
-    private final CEPFeedsProperties cepFeedsProperties;
+    private final CEPSubscribeProperties cepSubscribeProperties;
 
     /**
      *
-     * @param cepFeedsProperties
+     * @param cepSubscribeProperties
      */
-    public ColleagueChangesServiceImpl(CEPFeedsProperties cepFeedsProperties) {
-        this.cepFeedsProperties = cepFeedsProperties;
+    public ColleagueChangesServiceImpl(CEPSubscribeProperties cepSubscribeProperties) {
+        this.cepSubscribeProperties = cepSubscribeProperties;
     }
 
     @Override
@@ -37,7 +36,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     }
 
     private DeliveryMode resolveDeliveryModeByFeedId(String feedId) {
-        String key = cepFeedsProperties.getFeeds().entrySet().stream()
+        String key = cepSubscribeProperties.getFeeds().entrySet().stream()
                 .filter(entry -> entry.getValue().equals(feedId))
                 .map(Map.Entry::getKey)
                 .findFirst()

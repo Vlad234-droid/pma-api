@@ -8,6 +8,13 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Three different types of events have been established for HCM flow.
+ * But for IAM we also recognize one more.
+ *
+ * <p>For more information:
+ *  @see <a href="https://github.dev.global.tesco.org/24Colleague/ColleagueEventingPlatform/wiki/Event-Producer-Colleague-Changes">here</a>
+ */
 @Getter
 public enum EventType {
 

@@ -111,9 +111,10 @@ tesco:
             DataRequest:
               feedId: pma-requests-v1-test
         retry-timeout: 30
-        feeds:
-          jit: colleagues-jit-v1
-          immediate: colleagues-immediate-v1
+        subscribe:
+          feeds:
+            jit: colleagues-jit-v1
+            immediate: colleagues-immediate-v1
       colleague-api:
         base-url: https://test.com/colleague/colleague/v2/colleagues
     rest-template:
