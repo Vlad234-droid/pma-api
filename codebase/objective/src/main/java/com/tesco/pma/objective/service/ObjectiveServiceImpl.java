@@ -56,8 +56,8 @@ public class ObjectiveServiceImpl implements ObjectiveService {
     }
 
     @Override
-    public PersonalObjective getPersonalObjectiveForColleague(UUID colleagueUuid, UUID performanceCycleUuid, Integer sequenceNumber) {
-        var res = objectiveDAO.getPersonalObjectiveForColleague(colleagueUuid, performanceCycleUuid, sequenceNumber);
+    public PersonalObjective getPersonalObjectiveForColleague(UUID performanceCycleUuid, UUID colleagueUuid, Integer sequenceNumber) {
+        var res = objectiveDAO.getPersonalObjectiveForColleague(performanceCycleUuid, colleagueUuid, sequenceNumber);
         if (res == null) {
             throw notFound(PERSONAL_OBJECTIVE_NOT_FOUND_FOR_COLLEAGUE,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
@@ -68,8 +68,8 @@ public class ObjectiveServiceImpl implements ObjectiveService {
     }
 
     @Override
-    public List<PersonalObjective> getPersonalObjectivesForColleague(UUID colleagueUuid, UUID performanceCycleUuid) {
-        List<PersonalObjective> results = objectiveDAO.getPersonalObjectivesForColleague(colleagueUuid, performanceCycleUuid);
+    public List<PersonalObjective> getPersonalObjectivesForColleague(UUID performanceCycleUuid, UUID colleagueUuid) {
+        List<PersonalObjective> results = objectiveDAO.getPersonalObjectivesForColleague(performanceCycleUuid, colleagueUuid);
         if (results == null) {
             throw notFound(PERSONAL_OBJECTIVES_NOT_FOUND,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,

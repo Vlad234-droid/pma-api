@@ -23,28 +23,28 @@ public interface ObjectiveService {
     PersonalObjective getPersonalObjectiveByUuid(@NotNull UUID personalObjectiveUuid);
 
     /**
-     * Finds personal objective by colleagueUuid, performanceCycleUuid, sequenceNumber.
+     * Finds personal objective by performanceCycleUuid, colleagueUuid and sequenceNumber.
      *
-     * @param colleagueUuid        an identifier of colleague
      * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
      * @param sequenceNumber       a sequence number of personal objective
      * @return personal objective
      * @throws com.tesco.pma.exception.NotFoundException if personal objective doesn't exist.
      */
-    PersonalObjective getPersonalObjectiveForColleague(@NotNull UUID colleagueUuid,
-                                                       @NotNull UUID performanceCycleUuid,
+    PersonalObjective getPersonalObjectiveForColleague(@NotNull UUID performanceCycleUuid,
+                                                       @NotNull UUID colleagueUuid,
                                                        @NotNull Integer sequenceNumber);
 
     /**
-     * Finds personal objectives by colleagueUuid, performanceCycleUuid.
+     * Finds personal objectives by performanceCycleUuid, colleagueUuid.
      *
-     * @param colleagueUuid        an identifier of colleague
      * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
      * @return a list of personal objectives
      * @throws com.tesco.pma.exception.NotFoundException if personal objectives don't exist.
      */
-    List<PersonalObjective> getPersonalObjectivesForColleague(@NotNull UUID colleagueUuid,
-                                                              @NotNull UUID performanceCycleUuid);
+    List<PersonalObjective> getPersonalObjectivesForColleague(@NotNull UUID performanceCycleUuid,
+                                                              @NotNull UUID colleagueUuid);
 
     /**
      * Creates personal objective.

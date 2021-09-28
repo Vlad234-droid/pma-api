@@ -42,15 +42,25 @@ public class ObjectiveEndpoint {
     /**
      * POST call to create a PersonalObjective.
      *
-     * @param personalObjective a PersonalObjective
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
+     * @param sequenceNumber       a sequence number of personal objective
+     * @param personalObjective    a PersonalObjective
      * @return a RestResponse parameterized with PersonalObjective
      */
     @Operation(summary = "Create a personal objective", description = "PersonalObjective created", tags = {"objective"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
-    @PostMapping(path = "/objectives", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/performance-cycles/{performanceCycleUuid}/colleagues/{colleagueUuid}/sequence-numbers/{sequenceNumber}",
+            produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @Validated({ValidationGroup.WithoutId.class, Default.class})
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<PersonalObjective> createPersonalObjective(@RequestBody @Valid PersonalObjective personalObjective) {
+    public RestResponse<PersonalObjective> createPersonalObjective(@PathVariable("performanceCycleUuid") UUID performanceCycleUuid,
+                                                                   @PathVariable("colleagueUuid") UUID colleagueUuid,
+                                                                   @PathVariable("sequenceNumber") Integer sequenceNumber,
+                                                                   @RequestBody @Valid PersonalObjective personalObjective) {
+        personalObjective.setPerformanceCycleUuid(performanceCycleUuid);
+        personalObjective.setColleagueUuid(colleagueUuid);
+        personalObjective.setSequenceNumber(sequenceNumber);
         return success(objectiveService.createPersonalObjective(personalObjective));
     }
 
@@ -69,57 +79,64 @@ public class ObjectiveEndpoint {
     }
 
     /**
-     * Get call using a Path param and return a PersonalObjective as JSON.
+     * Get call using a Path param and return a personal objective as JSON.
      *
-     * @param colleagueUuid        an identifier of colleague
      * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
      * @param sequenceNumber       a sequence number of personal objective
-     * @return a RestResponse parameterized with PersonalObjective
+     * @return a RestResponse parameterized with personal objective
      */
-    @Operation(summary = "Get a personal objective by its colleagueUuid, performanceCycleUuid and sequenceNumber", tags = {"objective"})
+    @Operation(summary = "Get a personal objective by its performanceCycleUuid, colleagueUuid and sequenceNumber", tags = {"objective"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the PersonalObjective")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PersonalObjective not found", content = @Content)
-    @GetMapping(path = "/colleagues/{colleagueUuid}/performance-cycles/{performanceCycleUuid}/sequence-numbers/{sequenceNumber}/objectives",
+    @GetMapping(path = "/performance-cycles/{performanceCycleUuid}/colleagues/{colleagueUuid}/sequence-numbers/{sequenceNumber}",
             produces = APPLICATION_JSON_VALUE)
-    public RestResponse<PersonalObjective> getPersonalObjectiveForColleague(@PathVariable("colleagueUuid") UUID colleagueUuid,
-                                                                            @PathVariable("performanceCycleUuid") UUID performanceCycleUuid,
+    public RestResponse<PersonalObjective> getPersonalObjectiveForColleague(@PathVariable("performanceCycleUuid") UUID performanceCycleUuid,
+                                                                            @PathVariable("colleagueUuid") UUID colleagueUuid,
                                                                             @PathVariable("sequenceNumber") Integer sequenceNumber) {
-        return success(objectiveService.getPersonalObjectiveForColleague(colleagueUuid, performanceCycleUuid, sequenceNumber));
+        return success(objectiveService.getPersonalObjectiveForColleague(performanceCycleUuid, colleagueUuid, sequenceNumber));
     }
 
     /**
      * Get call using a Path param and return a list of personal objectives as JSON.
      *
-     * @param colleagueUuid        an identifier of colleague
      * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
      * @return a RestResponse parameterized with list of personal objectives
      */
-    @Operation(summary = "Get a list of personal objectives by its colleagueUuid, performanceCycleUuid", tags = {"objective"})
+    @Operation(summary = "Get a list of personal objectives by its performanceCycleUuid, colleagueUuid", tags = {"objective"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found personal objectives")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Personal objectives not found", content = @Content)
-    @GetMapping(path = "/colleagues/{colleagueUuid}/performance-cycles/{performanceCycleUuid}/objectives",
+    @GetMapping(path = "/performance-cycles/{performanceCycleUuid}/colleagues/{colleagueUuid}/objectives",
             produces = APPLICATION_JSON_VALUE)
     public RestResponse<List<PersonalObjective>> getPersonalObjectivesForColleague(
-            @PathVariable("colleagueUuid") UUID colleagueUuid,
-            @PathVariable("performanceCycleUuid") UUID performanceCycleUuid) {
-        return success(objectiveService.getPersonalObjectivesForColleague(colleagueUuid, performanceCycleUuid));
+            @PathVariable("performanceCycleUuid") UUID performanceCycleUuid,
+            @PathVariable("colleagueUuid") UUID colleagueUuid) {
+        return success(objectiveService.getPersonalObjectivesForColleague(performanceCycleUuid, colleagueUuid));
     }
 
     /**
      * PUT call to update a PersonalObjective.
      *
-     * @param uuid              an identifier
-     * @param personalObjective a PersonalObjective
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
+     * @param sequenceNumber       a sequence number of personal objective
+     * @param personalObjective    a PersonalObjective
      * @return a RestResponse parameterized with PersonalObjective
      */
     @Operation(summary = "Update existing personal objective", description = "Update existing PersonalObjective", tags = {"objective"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "PersonalObjective updated")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PersonalObjective not found", content = @Content)
-    @PutMapping(path = "/objectives/{uuid}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/performance-cycles/{performanceCycleUuid}/colleagues/{colleagueUuid}/sequence-numbers/{sequenceNumber}",
+            consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @Validated({ValidationGroup.WithoutId.class, Default.class})
-    public RestResponse<PersonalObjective> updatePersonalObjective(@PathVariable("uuid") @NotNull UUID uuid,
+    public RestResponse<PersonalObjective> updatePersonalObjective(@PathVariable("performanceCycleUuid") UUID performanceCycleUuid,
+                                                                   @PathVariable("colleagueUuid") UUID colleagueUuid,
+                                                                   @PathVariable("sequenceNumber") Integer sequenceNumber,
                                                                    @RequestBody @Valid PersonalObjective personalObjective) {
-        personalObjective.setUuid(uuid);
+        personalObjective.setPerformanceCycleUuid(performanceCycleUuid);
+        personalObjective.setColleagueUuid(colleagueUuid);
+        personalObjective.setSequenceNumber(sequenceNumber);
         return success(objectiveService.updatePersonalObjective(personalObjective));
     }
 

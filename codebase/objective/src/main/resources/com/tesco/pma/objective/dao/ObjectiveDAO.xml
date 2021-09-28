@@ -206,7 +206,9 @@
         meets = #{personalObjective.meets},
         exceeds = #{personalObjective.exceeds},
         status_id=#{personalObjective.status.id}
-        WHERE uuid = #{personalObjective.uuid};
+        WHERE performance_cycle_uuid = #{personalObjective.performanceCycleUuid}
+        and colleague_uuid = #{personalObjective.colleagueUuid}
+        and sequence_number = #{personalObjective.sequenceNumber};
         <choose>
             <when test="personalObjective.groupObjectiveUuid == null">
                 DELETE

@@ -70,26 +70,26 @@ public interface ObjectiveDAO {
     PersonalObjective getPersonalObjective(@Param("personalObjectiveUuid") UUID personalObjectiveUuid);
 
     /**
-     * Returns a personal objective by Colleague, Performance Cycle and Sequence Number.
+     * Returns a personal objective by performance cycle, colleague and sequence number.
      *
-     * @param colleagueUuid        an identifier of Colleague
-     * @param performanceCycleUuid an identifier of Performance Cycle
-     * @param sequenceNumber       a Sequence Number of Personal Objective
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
+     * @param sequenceNumber       a sequence number of personal objective
      * @return a PersonalObjective
      */
-    PersonalObjective getPersonalObjectiveForColleague(@Param("colleagueUuid") UUID colleagueUuid,
-                                                       @Param("performanceCycleUuid") UUID performanceCycleUuid,
+    PersonalObjective getPersonalObjectiveForColleague(@Param("performanceCycleUuid") UUID performanceCycleUuid,
+                                                       @Param("colleagueUuid") UUID colleagueUuid,
                                                        @Param("sequenceNumber") Integer sequenceNumber);
 
     /**
-     * Returns a personal objective by Colleague, Performance Cycle and Sequence Number.
+     * Returns a personal objective by performance cycle, colleague and sequence number.
      *
-     * @param colleagueUuid        an identifier of Colleague
-     * @param performanceCycleUuid an identifier of Performance Cycle
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
      * @return a PersonalObjective
      */
-    List<PersonalObjective> getPersonalObjectivesForColleague(@Param("colleagueUuid") UUID colleagueUuid,
-                                                              @Param("performanceCycleUuid") UUID performanceCycleUuid);
+    List<PersonalObjective> getPersonalObjectivesForColleague(@Param("performanceCycleUuid") UUID performanceCycleUuid,
+                                                              @Param("colleagueUuid") UUID colleagueUuid);
 
     /**
      * Creates a personal objective

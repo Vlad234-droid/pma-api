@@ -34,6 +34,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
     private static final UUID BUSINESS_UNIT_UUID_2 = UUID.fromString("ffb9ab0b-f50f-4442-8900-b03777ee00ec");
     private static final UUID BUSINESS_UNIT_UUID_NOT_EXIST = UUID.fromString("ffb9ab0b-f50f-4442-8900-000000000000");
     private static final UUID COLLEAGUE_UUID = UUID.fromString("ccb9ab0b-f50f-4442-8900-b03777ee00ec");
+    private static final UUID COLLEAGUE_UUID_NOT_EXIST = UUID.fromString("ccb9ab0b-f50f-4442-8900-000000000000");
     private static final UUID PERFORMANCE_CYCLE_UUID = UUID.fromString("0c5d9cb1-22cf-4fcd-a19a-9e70df6bc941");
     private static final Integer SEQUENCE_NUMBER_1 = 1;
     private static final String TITLE_1 = "Title #1";
@@ -253,8 +254,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
     @DataSet({"group_objective_init.xml", "personal_objective_init.xml"})
     void updatePersonalObjectiveNotExist() {
         final var personalObjective = PersonalObjective.builder()
-                .uuid(PERSONAL_OBJECTIVE_UUID_NOT_EXIST)
-                .colleagueUuid(COLLEAGUE_UUID)
+                .colleagueUuid(COLLEAGUE_UUID_NOT_EXIST)
                 .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
                 .sequenceNumber(SEQUENCE_NUMBER_1)
                 .title(TITLE_UPDATE)
