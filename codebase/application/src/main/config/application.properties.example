@@ -1,3 +1,15 @@
+### ======================================================================
+### WARNING: THIS IS ONLY EXAMPLE FILE
+###     TO LAUNCH THE APPLICATION application.properties SHOULD BE CREATED
+### ----------------------------------------------------------------------
+### To run application create application.properties file in this folder
+### and fill it with properties from this example file according to your
+### environment.
+### Use this file as a reference.
+### Always update this file if some new required property is introduced.
+### Comments to properties are welcomed.
+### ======================================================================
+
 SECURITY_ENABLED=false
 REST_TEMPLATE_SECURITY_ENABLED=false
 
