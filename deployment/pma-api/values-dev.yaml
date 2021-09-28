@@ -1,94 +1,76 @@
-#ENC[AES256_GCM,data:glBS2EOvvG2+PumfY/4tXiCqkv2w2EbvWSwfvw==,iv:M6cLngk+TKn3aAT4jD8FEcxyq7oL7HQC6V5KMN3rBuk=,tag:2YXFDI6SRYX/2dOZoScdYQ==,type:comment]
-#ENC[AES256_GCM,data:HVQd0ULgZ6QhN7FbfCf2Cot6A7UqZ3gfpKeER49VNg==,iv:M/7prDpXxBpsS9YiJnTwdurEIUu5ovkhqN/kBnuvFHk=,tag:tq2bOeL64qCj2X2HQRRBew==,type:comment]
-#ENC[AES256_GCM,data:PtM/5pyIOx3GymOIfZ83P2aW279155tYQUBEIxrk2kA3Hn3vWIphZ9U2Iavs1eiORKreew==,iv:YTgQGGLeyrN27Qgbz1xDT20zXkm1+paf3I7CsApdToo=,tag:vNYDWOH95+/53DHo8lm6sw==,type:comment]
-replicaCount: ENC[AES256_GCM,data:XQ==,iv:a5ZvMgA3j6AJOqhQ0KBNg+yNyUO/imqrUFxZOl7YhJg=,tag:JJWeFo+SUlFnTqvGEBWh1Q==,type:int]
+# Default values for pma-api.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
 image:
-    repository: ENC[AES256_GCM,data:hHY2vCpsgyVVkdZIaIUgJk/72UGGiRUStD9PCDk47wmt7X3xg0V9LGem7qvv44HP,iv:g4YyFAIcjzL0Y+H3lGa2m+v1g2QlLMIkViS1LILfr7M=,tag:NtBIrXT97ZLnHu+/OF9jQA==,type:str]
-    pullPolicy: ENC[AES256_GCM,data:rLZ2YLSJrOjmoAh8,iv:vkb1NohpqUA7fM9r4Pa+bziwbaKvWQT706wjmfJ+U8E=,tag:IZtSlJQe/ptv9ijDhrphmg==,type:str]
-    #ENC[AES256_GCM,data:XgbTSWKZjU9vPBskb4l/N1gI3RC9YfVeNbiDtQ7Okov5lLncgflU4kNWClAmpIBs8XIo/8NcpKsiPYvaENK6,iv:Ex7U9GTLhnUDdaJH/1CIcWeMXKtlK7TFbMPgLIQdAyE=,tag:zSGitfcM8KEODuO3P0Vkrg==,type:comment]
+    repository: euwdev214pmacontainerregistry.azurecr.io/pma-api
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
     tag: ""
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 serviceAccount:
-    #ENC[AES256_GCM,data:yuj6sw2DRE4DwxYfqH6FJKFyrFBdybZ/OhYTRtkQiO9tYjxm8R6vruMHeJjADUH1mHXLozIn,iv:hj8HmrSxM/87Sw9V73g0q+WEIvWGhuHZhH6focSuYQU=,tag:7hITn6p7f5cUEntyMqNLSA==,type:comment]
-    create: ENC[AES256_GCM,data:cJsu/os=,iv:o4oZeLhjghqqt9sTBeRH+6dllo1hrlolOzySEHptG+g=,tag:S/1E8u+MZtuUW2VNBNqnyg==,type:bool]
-    #ENC[AES256_GCM,data:0PBQ/KSZhTpWjXMq2GUAdHFih87AK66KiwwhFk7+mBM6FWDvV+kZJXl2,iv:eicPuFLg5HvXG2wUMjyBXEYVoKgYDUI1h0i+d1B4KsM=,tag:YZy/GQawXVlacJirbBIRug==,type:comment]
+    # Specifies whether a service account should be created
+    create: false
+    # Annotations to add to the service account
     annotations: {}
-    #ENC[AES256_GCM,data:0a/odEiwfC+iJx8J+JVwcQATlGlLkSRJNzyVx4J30kIFa80uhuMQRw==,iv:GxptXTKIDbJRn/qcbXl8dp8h6M/jxxftkZP153I9okI=,tag:JLE9+6uIBelhruy02TugbQ==,type:comment]
-    #ENC[AES256_GCM,data:mgjeVi+ZxJUO8I0TjfPj71vLY+77iFHxqWfb8V2ZpDlAfncUdNtaxBk4soodvM357EbLg5gar6cRP9C+aT3cB/QzYpNxc3btfprKLW97BQ==,iv:NtRIuu3+Ps1hEuc4QwUCqrzbHM+29VC3/qeR/ys8aPQ=,tag:XGnNbAwzkeawQMYwSWngBw==,type:comment]
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
     name: ""
 podAnnotations: {}
 podSecurityContext: {}
-#ENC[AES256_GCM,data:wTO74kdloTE8AWt/a3E=,iv:Jsj2HZF+Ge+tRW1t4YCrwtq9lQsuLbYzMZomq5mU6h4=,tag:5PwG+KeSK+qK2LvlTQ+trQ==,type:comment]
+# fsGroup: 2000
 securityContext: {}
-#ENC[AES256_GCM,data:ddhsuT8S9Qn2whWzUTE=,iv:3r3cVXhsJGY+zDAGX0OwPoQ7YhfiLz5kA3p4s7s/loU=,tag:mcgswAg3CsaxU7wDnzU43g==,type:comment]
-#ENC[AES256_GCM,data:Y3ugJv3uIi0=,iv:VzXDKtLkNoOpxZif38P/ldFQQkP5Gp32UaJ8SYat3Uw=,tag:XxZ8dtcZb7+e+UZLtPxOJA==,type:comment]
-#ENC[AES256_GCM,data:jiouqFa5f+o=,iv:JU3EnyFIyvMZBzgjFEVwEDkPROrPJwXDOvLEGvPFJhw=,tag:Z1TIi8HZDZVZYJ0IpXqfYw==,type:comment]
-#ENC[AES256_GCM,data:mwraUkJcH5tA+ZMBS3GMxjDXb/n+loxOkGsR8dE=,iv:Zv1rN5GJqkF7KXyIiI1Gk0OcZBf3A7sbd/1f+UU4WGA=,tag:LtApBVYvzsP0XUgCOo+jqg==,type:comment]
-#ENC[AES256_GCM,data:T1IKAnK2XG2Ha6MG4WAnfLM/qw==,iv:1w2NnG+ReE5e9E3e45XJwZzXEifOZLx+zhrR5nlU5LM=,tag:DO2lB5dkrvZPXDv5u/j+1w==,type:comment]
-#ENC[AES256_GCM,data:I92YfCXJ8Lwkp/rYqUbS+w==,iv:mibIQLdikQWOd58VngZXQHGGEpz5rX0JvW4hIeRhTXk=,tag:GtJnJvcdfYxLlsBTXGZqmQ==,type:comment]
+# capabilities:
+#   drop:
+#   - ALL
+# readOnlyRootFilesystem: true
+# runAsNonRoot: true
+# runAsUser: 1000
 service:
-    type: ENC[AES256_GCM,data:iGGsDNu+8PwY,iv:83KdH50vLhDZTe+NyDxS5/11nv1sX9Dieshe2ZdSk3w=,tag:vdqqUYPzN6a9o3kGdttgVA==,type:str]
-    port: ENC[AES256_GCM,data:cl7+6g==,iv:UlwxTNDq1h0yVVrWspXJMo3l/KBIwWiPueMmpVc/oV8=,tag:CtQl4nd2raTs74wc+EFyuA==,type:int]
+    type: ClusterIP
+    port: 8083
 ingress:
-    enabled: ENC[AES256_GCM,data:DkOAlDM=,iv:e8FSf1PXi6dzxutoRlkAhvzAlnY/qfxUxY2W0UpE+sE=,tag:PHSq+E4Oppm5HH2wuWpy5A==,type:bool]
+    enabled: false
     className: ""
     annotations: {}
-    #ENC[AES256_GCM,data:S9+HzqFtevynZbz9bCavzw/D7/8YyfjNrbFhXo9QnlDt+Mc=,iv:naxsyFEma4Qj/Rp00qDRZt7enL3UkHeCdcI1V6MS/jg=,tag:INvYWHBRyWcTOf+nRkGhng==,type:comment]
-    #ENC[AES256_GCM,data:dOe1jgS080GO/ig+Y2v++q+5ePoVXdrIF8zKIyAUaw==,iv:ZGmbSgqNVoF7ocfuAKduO0eS0Kbflz5IgfazhvdkLP8=,tag:6k9Zie/oa6nK8tFAS6/s+Q==,type:comment]
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
     hosts:
-        - host: ENC[AES256_GCM,data:Vg==,iv:Z9/W4MPdmhKLoy/yosIs9ujU9NQYCYYfqCZZp+eB5O4=,tag:4kibAJdWpd6szVuj7BQ49A==,type:str]
+        - host: '*'
           paths:
-            - path: ENC[AES256_GCM,data:HndjaWc=,iv:JHIqrKhdYeyVSdG+hbA2vRh3PT5b+iMPdRHQA5NIQxA=,tag:gCszHCBdS5NRYHAlft9EhA==,type:str]
-              pathType: ENC[AES256_GCM,data:paXvmYDn+G3y627qnpGfNo/3gxEH2Q==,iv:xRelisA8mhVavUqsdM2KdVsImiuBK+qHwt1OlztLRPg=,tag:aYZ0BZQPLjZNW29fcy9vLA==,type:str]
+            - path: /(.*)
+              pathType: ImplementationSpecific
     tls: []
-    #ENC[AES256_GCM,data:o6sDiHRPy2HBnG/ahAXug0j31yHDxQvp/aSzolHxRJ09,iv:wEUBKfKbOuwG9M3awdAD4C0/z/z3yxsHol/7J9ffjHk=,tag:WDJKGMcaiZRFJWzc2h0r3w==,type:comment]
-    #ENC[AES256_GCM,data:HLNu8xtmv0PlWw==,iv:hYW91x8PJhQJSqInuZFHB70TolTyAslp2IhCIxgnIik=,tag:dSkbByEqEoEHGE4+Q54IKA==,type:comment]
-    #ENC[AES256_GCM,data:3Q9B9FBqXG5KDBxNtHGgJaKTko0K7qqYFAlS,iv:inqAEgvVx5/NWFUS6ujn9bsH9mZqtiVsaO+7ofGiVss=,tag:qbUK8WfS2fP4cSHnk2WOew==,type:comment]
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
 resources: {}
-#ENC[AES256_GCM,data:fNKARJhoq35Dy/EBiD4Md3eT7c1iBOzLBmuGuVr9iqIHr+jqkPXhTxQcpxQx2SsBYn9Et+YvkMLWEEbPsWEX3EdzlysbPgpSkAbeJxZ1FHe/vJIOKI4B,iv:AWHSQWGeDWzqNoMMSgehBDAOSxWn9KdU2K0heznrieY=,tag:1szqBhIHme9XB4m9dKACUg==,type:comment]
-#ENC[AES256_GCM,data:RNu+y5pW0Lu44s7VV6g5fxilKT2bqsLlGTF2GJIaMJEY5iprEs9tLC+FK3J6V4CfiWoyS8X3uMcsPhKdux8UcHr4d3wXI3ddiKMb3C8uXLFWwF0w9fjl5w==,iv:iZXPHXg4qcMYjfnnJNX2v1UCZ+YVcBJz5ztLicY+6o4=,tag:eb5uWjMZVlQfxftz2zDfGw==,type:comment]
-#ENC[AES256_GCM,data:OW9rAudON4RGOQGM2SK6Y43xEey4Fqi6Bl3eFHT6v2EIuV8SVZzhnvnevtcysJl+q/3HQL5tzjFOFqkEZUyP8cSzKz1OremrwdkJhXmXU6loT5SS+tRe3O2H,iv:flfm6QobbFCrP/eSTsg0a7obooNcmkm5Hbyhn9HE0Vc=,tag:fti9gCroSz/4wZhJTINoPw==,type:comment]
-#ENC[AES256_GCM,data:+dwuBaimRmdcw6F3bmEWjomOF9BYuB5TaAo0VYD4sb9V0puJtd11AuipkFrSl9ftEwEXi+L1WDr6fTkCL2b/P99TRbOatgpWM4cls1PZ6mAc,iv:SJ6MnTGYB6xfb6zuX4TZlYRuyAOA8p+mqJBDWX4s0mg=,tag:1VfYuyCE9dM0oULKfkNbZQ==,type:comment]
-#ENC[AES256_GCM,data:jhtKLpbgQ8M=,iv:Bs3IsjINvX00snAr+Suln7qUuJwpzOprIvF5JkEa2Rs=,tag:FXrx/JtA/gDc3+dP5zW+dQ==,type:comment]
-#ENC[AES256_GCM,data:MiHbWY2iDHwvBdnN,iv:P1aMVeIf0ThGii2MSfH0ZqIwh2HDCJK03nxoXfuxWvE=,tag:5IqfpxjXKdLyieE36fQF0A==,type:comment]
-#ENC[AES256_GCM,data:kc35Yub1k9TwKK+wDzhi1g==,iv:X9R5oN2+DGngbMN+NbC7TbnfgfepCgtKn07eP9fZ+nY=,tag:x9ekkNX0thfpamDXrgalAQ==,type:comment]
-#ENC[AES256_GCM,data:uzG3SSGQ/usdNg==,iv:QtNZb0u9b6mZ3ap/mm1lAiMWCkANtc3rCkhACu2Pa1o=,tag:kyTvxPa3wMwZSTtSwxWYug==,type:comment]
-#ENC[AES256_GCM,data:MiHbWY2iDHwvBdnN,iv:P1aMVeIf0ThGii2MSfH0ZqIwh2HDCJK03nxoXfuxWvE=,tag:5IqfpxjXKdLyieE36fQF0A==,type:comment]
-#ENC[AES256_GCM,data:kc35Yub1k9TwKK+wDzhi1g==,iv:X9R5oN2+DGngbMN+NbC7TbnfgfepCgtKn07eP9fZ+nY=,tag:x9ekkNX0thfpamDXrgalAQ==,type:comment]
+# We usually recommend not to specify default resources and to leave this as a conscious
+# choice for the user. This also increases chances charts run on environments with little
+# resources, such as Minikube. If you do want to specify resources, uncomment the following
+# lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+# limits:
+#   cpu: 100m
+#   memory: 128Mi
+# requests:
+#   cpu: 100m
+#   memory: 128Mi
 autoscaling:
-    enabled: ENC[AES256_GCM,data:ShQRvLE=,iv:rOS2LJ44w1OsRMGjxRROVThJspC1A6u6F2j/KMnKk8g=,tag:6AYTjezQLQXFW70xgvS1VA==,type:bool]
-    minReplicas: ENC[AES256_GCM,data:+Q==,iv:4ltY8czn6slvs02IZGRAGh2XgpIxfjcmlhyhJG5YR3Y=,tag:YjvRFmVGr3V/homc1JpDxw==,type:int]
-    maxReplicas: ENC[AES256_GCM,data:BS6k,iv:0M0JyebX2ZNKLDagluvAbZN+16FKLbYXdsd7wwXNJE0=,tag:Qf3+N84mNFE3OPbZ2EUrIw==,type:int]
-    targetCPUUtilizationPercentage: ENC[AES256_GCM,data:928=,iv:cHyuNPbRWFO5hPRhkq9EK/PoHrIJg7VgI3hx/kdx2xg=,tag:dnn1hl3x86W0JhT6pJmmJw==,type:int]
-    #ENC[AES256_GCM,data:HslEfBxkdDZU8DiD+xFKnhJ028nfnfjAicNhKcluNr9aqxpAmxQ=,iv:o01oehGk/9nI8kh+o6TMHvlIJJHTk6bN4tgedNxC9oU=,tag:cRlXSM/BQWBMOnw1LboMeA==,type:comment]
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
 nodeSelector: {}
 tolerations: []
 affinity: {}
-TESCO_API_BASE_URL: ENC[AES256_GCM,data:T09KDCjvuBpeaccsOFJ2yggOX1OEj7o9VA==,iv:xp6uYTKXLy9BGWvrTCP2MXADANt3333MHGZzH4n8PR8=,tag:oAOGUkegx4TcLzLgpL6wbw==,type:str]
-ONE_LOGIN_BASE_URL: ENC[AES256_GCM,data:E1iDazQE3IZvdTmIoixXk+/Rve6SC1PCFyoanMs=,iv:q/zoqJhVUnu5HL5nIYGCKOlbQbVQ2Nf3E1jTqv9Gw00=,tag:QPqu3aoihaChhztZWdn9yQ==,type:str]
-AD_ROLE_ADMIN: ENC[AES256_GCM,data:FIROuHRPdOvi3LoYNPkx+GZRYjixrs8RmwZezZKxLA==,iv:JL4k6IQY+IxqGry6GEkgBhbD+rAmFYEMsJw9zO8cAAc=,tag:IVNxRl9qA/kFFcD5l4Ws1w==,type:str]
-AD_ROLE_LINE_MANAGER: ENC[AES256_GCM,data:9gd2L4SQhTVjN6vZNND3Y3hvSBHxe8pBU8O8bp+za240eA5sGA==,iv:EJJ5vD8alA4zr9uvaJImRNXzsbyGyZAAwtR5Uaum87w=,tag:1qBKD2mnHcwjLIUXdtfa3g==,type:str]
-IDENTITY_CLIENT_ID: ENC[AES256_GCM,data:LmIRAtqTIG7hiA==,iv:dps8ov2nYt8+pQXPX4lU5j6+qMSZvamWC2gXKQK4edQ=,tag:qmpOgI3v6AxHKcr+c2HddQ==,type:str]
-IDENTITY_CLIENT_SECRET: ENC[AES256_GCM,data:roOCYieABicsvw==,iv:mh/8RerO/AUcCjv0qIIlsPfaVKHLvahK5R997UHf6to=,tag:g4nf1kHectcuZ7SR5gfKaw==,type:str]
-PMA_DB_URL: ENC[AES256_GCM,data:xKNWl7zAbf3rqGwAE1llv30ssO5YKxIleswfTsLq7PF4SxIn9Tz1nPj+HbiE+qFgcl3lHYdGNNyjA2M=,iv:7bcSgPYHl47fl6moP33Zh1WjnknzgtgxfMIEPnnzUwM=,tag:dtNMVVb8X8vDIDrwaycbBQ==,type:str]
-PMA_DB_SCHEMA: ENC[AES256_GCM,data:oUI5trsG,iv:nVSKwmAuSZE8Ji09b2YGpY7Q4F4treoZ/nI/ZFFS76I=,tag:uz2HNzdy2dgMu7cjNNLejA==,type:str]
-PMA_DB_USERNAME: ENC[AES256_GCM,data:52QYzK2Bl2FysoI4w0OUlum7SBEDxq5grCLwFxBWYkctKYpXUw==,iv:UULL/dWIlan4DAJBfFn7b1pVvCM1rNvbjxqvjYdt/ng=,tag:CDRYxZmGAEDsag8cienYUQ==,type:str]
-PMA_DB_PASSWORD: ENC[AES256_GCM,data:RL6JSKhy9lfcp2xc,iv:cVDq63dBaZUwBcqqE2kLFY/1Fd5UJ87MTV8VjPlXcd0=,tag:vId0FTgM/Gar2SeAIXGjvA==,type:str]
-sops:
-    kms: []
-    gcp_kms: []
-    azure_kv:
-        - vault_url: https://euw-dev-214-pma-kv.vault.azure.net
-          name: euw-dev-214-pma-sops
-          version: b24f7c8fb15547d79040a1dd1dc475d0
-          created_at: "2021-09-21T15:01:31Z"
-          enc: necnkCKdLKbg8fcp-p1jWjSFTeRsEWHYv8GQHjm6nu4-wk3LzpcWWu-jWkg-VEAP47qH4QdgGCjsI-KemQ-4FYeDFym7vw8Mu69cjQZ08LYfPTul_ABEeSOq3YKHvI1Anyd9CAe6TAFPyefUzSQmFVrDGdqWc5vEIYvIK5Svqh_B61fwdDmOpwrzaw1462dBAGJsMvbgPWBIacSiB85dcaeXWJwrfPPTL-I_LFOEWYyY4NLYJRrMn66ZP_DGlJodrT5vcGWpXpCR2sy_DMGUvrZ0yiKO3ShZ6VkPAGk4--CTS3_cPPtBW_HtgcpnP_GyBp2qI8FgBm7h3wWDGBOhIQ
-    hc_vault: []
-    age: []
-    lastmodified: "2021-09-21T17:03:49Z"
-    mac: ENC[AES256_GCM,data:Z+zSoEZVn0xl08x2B4xqCHAalJea4DUJw58T4niLNKItpRTQX+vK6Bep/CYZnrdQau7IpmHSRMApy3SRuZxjfHYOuBS0d32JRVBWFSjR8biiIzTePxHf1NO1BjfB0H366ne4Sz0BJRYJmVefYahcVAO+2UgSGGSXhIjAE5aUdaQ=,iv:G/jn801vVD87UKufExuV340Yepq5gN11HwAb8lG8Xg0=,tag:r1Y2V/+WTZha4hL+jivfww==,type:str]
-    pgp: []
-    unencrypted_suffix: _unencrypted
-    version: 3.7.1
+TESCO_API_BASE_URL: https://api-ppe.tesco.com
+ONE_LOGIN_BASE_URL: https://loginppe.ourtesco.com
+AD_ROLE_ADMIN: GG-UK-TescoGlobal-PMA-PPE-Admin
+AD_ROLE_LINE_MANAGER: GG-UK-TescoGlobal-PMA-PPE-LineManager
+IDENTITY_CLIENT_ID: "1234567890"
+PMA_DB_URL: jdbc:postgresql://10.123.22.24:5432/pma-dev?sslmode=require
+PMA_DB_SCHEMA: public
+PMA_DB_USERNAME: pmadbadmin@euw-dev-214-pma-postgresql
