@@ -129,10 +129,6 @@
                     remarks="A unique identifier for business unit.">
                 <constraints nullable="false"/>
             </column>
-            <column name="performance_cycle_uuid" type="${uuid_type}"
-                    remarks="A unique identifier for performance cycle">
-                <constraints nullable="false"/>
-            </column>
             <column name="sequence_number" type="integer"
                     remarks="A sequence number for business unit's objective">
                 <constraints nullable="false"/>
@@ -145,17 +141,8 @@
                     remarks="Title of objective">
                 <constraints nullable="false"/>
             </column>
-            <column name="status_id" type="integer"
-                    remarks="Status of objective">
-                <constraints nullable="false"/>
-            </column>
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="group_objective"
-                                 constraintName="group_objective_status_id_fk" deferrable="false"
-                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
-                                 referencedColumnNames="id" referencedTableName="objective_status"
-                                 validate="true"/>
-        <addUniqueConstraint columnNames="business_unit_uuid, performance_cycle_uuid, sequence_number, version"
+        <addUniqueConstraint columnNames="business_unit_uuid, version, sequence_number"
                              constraintName="group_objective_unique"
                              tableName="group_objective"/>
     </changeSet>
@@ -167,20 +154,8 @@
                     remarks="A unique identifier for business unit.">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="working_group_objective_pk"/>
             </column>
-            <column name="performance_cycle_uuid" type="${uuid_type}"
-                    remarks="A unique identifier for performance cycle">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="working_group_objective_pk"/>
-            </column>
-            <column name="sequence_number" type="integer"
-                    remarks="A sequence number for business unit's objective">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="working_group_objective_pk"/>
-            </column>
             <column name="version" type="integer"
                     remarks="Version of business unit's objective">
-                <constraints nullable="false"/>
-            </column>
-            <column name="objective_uuid" type="${uuid_type}"
-                    remarks="A unique identifier for group objective">
                 <constraints nullable="false"/>
             </column>
             <column name="updated_by" type="VARCHAR(50)"
@@ -190,11 +165,6 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="objective_uuid" baseTableName="working_group_objective"
-                                 constraintName="working_group_objective_objective_uuid_fk" deferrable="false"
-                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
-                                 referencedColumnNames="uuid" referencedTableName="group_objective"
-                                 validate="true"/>
     </changeSet>
 
     <changeSet author="ypashynskyi" id="6">

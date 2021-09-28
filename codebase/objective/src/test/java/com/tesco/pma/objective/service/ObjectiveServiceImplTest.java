@@ -17,7 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.UUID;
 
-import static com.tesco.pma.objective.exception.ErrorCodes.PERSONAL_OBJECTIVE_NOT_FOUND;
+import static com.tesco.pma.objective.exception.ErrorCodes.PERSONAL_OBJECTIVE_NOT_FOUND_BY_UUID;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -94,7 +94,7 @@ class ObjectiveServiceImplTest {
         final var exception = assertThrows(NotFoundException.class,
                 () -> objectiveService.deletePersonalObjective(personalObjectiveUuid));
 
-        assertEquals(PERSONAL_OBJECTIVE_NOT_FOUND.getCode(), exception.getCode());
+        assertEquals(PERSONAL_OBJECTIVE_NOT_FOUND_BY_UUID.getCode(), exception.getCode());
         assertEquals(PERSONAL_OBJECTIVE_NOT_FOUND_MESSAGE, exception.getMessage());
 
     }

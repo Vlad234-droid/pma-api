@@ -27,7 +27,6 @@ class ObjectiveDAOTest extends AbstractDAOTest {
 
     private static final UUID GROUP_OBJECTIVE_UUID = UUID.fromString("aab9ab0b-f50f-4442-8900-b03777ee0012");
     private static final UUID GROUP_OBJECTIVE_UUID_2 = UUID.fromString("aab9ab0b-f50f-4442-8900-b03777ee0011");
-    private static final UUID GROUP_OBJECTIVE_UUID_3 = UUID.fromString("aab9ab0b-f50f-4442-8900-b03777ee0013");
     private static final UUID GROUP_OBJECTIVE_UUID_NOT_EXIST = UUID.fromString("aab9ab0b-f50f-4442-8900-000000000000");
     private static final UUID PERSONAL_OBJECTIVE_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
     private static final UUID PERSONAL_OBJECTIVE_UUID_NOT_EXIST = UUID.fromString("ddb9ab0b-f50f-4442-8900-000000000000");
@@ -36,8 +35,6 @@ class ObjectiveDAOTest extends AbstractDAOTest {
     private static final UUID BUSINESS_UNIT_UUID_NOT_EXIST = UUID.fromString("ffb9ab0b-f50f-4442-8900-000000000000");
     private static final UUID COLLEAGUE_UUID = UUID.fromString("ccb9ab0b-f50f-4442-8900-b03777ee00ec");
     private static final UUID PERFORMANCE_CYCLE_UUID = UUID.fromString("0c5d9cb1-22cf-4fcd-a19a-9e70df6bc941");
-    private static final UUID PERFORMANCE_CYCLE_UUID_2 = UUID.fromString("0c5d9cb1-22cf-4fcd-a19a-9e70df6bc942");
-    private static final UUID PERFORMANCE_CYCLE_UUID_NOT_EXIST = UUID.fromString("0c5d9cb1-22cf-4fcd-a19a-000000000000");
     private static final Integer SEQUENCE_NUMBER_1 = 1;
     private static final String TITLE_1 = "Title #1";
     private static final String TITLE_UPDATE = "Title update";
@@ -81,11 +78,9 @@ class ObjectiveDAOTest extends AbstractDAOTest {
         final var groupObjective = GroupObjective.builder()
                 .uuid(GROUP_OBJECTIVE_UUID)
                 .businessUnitUuid(BUSINESS_UNIT_UUID)
-                .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
                 .sequenceNumber(SEQUENCE_NUMBER_1)
                 .title(TITLE_1)
                 .version(VERSION_1)
-                .status(ObjectiveStatus.DRAFT)
                 .build();
 
         final int rowsInserted = instance.createGroupObjective(groupObjective);
@@ -100,11 +95,9 @@ class ObjectiveDAOTest extends AbstractDAOTest {
         final var groupObjective = GroupObjective.builder()
                 .uuid(GROUP_OBJECTIVE_UUID_2)
                 .businessUnitUuid(BUSINESS_UNIT_UUID_2)
-                .performanceCycleUuid(PERFORMANCE_CYCLE_UUID_2)
                 .sequenceNumber(SEQUENCE_NUMBER_1)
                 .title(TITLE_1)
                 .version(VERSION_1)
-                .status(ObjectiveStatus.DRAFT)
                 .build();
 
         Assertions.assertThatThrownBy(() -> instance.createGroupObjective(groupObjective))
@@ -119,10 +112,8 @@ class ObjectiveDAOTest extends AbstractDAOTest {
         assertThat(result)
                 .asInstanceOf(type(GroupObjective.class))
                 .returns(BUSINESS_UNIT_UUID_2, from(GroupObjective::getBusinessUnitUuid))
-                .returns(PERFORMANCE_CYCLE_UUID_2, from(GroupObjective::getPerformanceCycleUuid))
                 .returns(SEQUENCE_NUMBER_1, from(GroupObjective::getSequenceNumber))
-                .returns(VERSION_1, from(GroupObjective::getVersion))
-                .returns(ObjectiveStatus.DRAFT, from(GroupObjective::getStatus));
+                .returns(VERSION_1, from(GroupObjective::getVersion));
     }
 
     @Test
@@ -149,39 +140,9 @@ class ObjectiveDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet("group_objective_init.xml")
-    void updateGroupObjectiveNotExist() {
-        final var groupObjective = GroupObjective.builder()
-                .uuid(GROUP_OBJECTIVE_UUID_NOT_EXIST)
-                .businessUnitUuid(BUSINESS_UNIT_UUID)
-                .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
-                .sequenceNumber(SEQUENCE_NUMBER_1)
-                .title(TITLE_1)
-                .version(VERSION_1)
-                .status(ObjectiveStatus.DRAFT)
-                .build();
-
-        final var result = instance.updateGroupObjective(groupObjective);
-
-        assertThat(result).isZero();
-    }
-
-    @Test
-    @DataSet("group_objective_init.xml")
-    @ExpectedDataSet("group_objective_update_expected_1.xml")
-    void updateGroupObjectiveSucceeded() {
-        final var groupObjective = GroupObjective.builder()
-                .uuid(GROUP_OBJECTIVE_UUID_2)
-                .businessUnitUuid(BUSINESS_UNIT_UUID_2)
-                .performanceCycleUuid(PERFORMANCE_CYCLE_UUID_2)
-                .sequenceNumber(SEQUENCE_NUMBER_1)
-                .title(TITLE_UPDATE)
-                .version(VERSION_2)
-                .status(ObjectiveStatus.SUBMITTED)
-                .build();
-
-        final var result = instance.updateGroupObjective(groupObjective);
-
-        assertThat(result).isOne();
+    void getMaxVersionGroupObjective() {
+        final var result = instance.getMaxVersionGroupObjective(BUSINESS_UNIT_UUID_2);
+        assertThat(result).isEqualTo(3);
     }
 
     @Test
@@ -352,128 +313,55 @@ class ObjectiveDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet("group_objective_init.xml")
+    @DataSet("cleanup.xml")
     @ExpectedDataSet("working_group_objective_create_expected.xml")
     void createWorkingGroupObjectiveSucceeded() {
 
         final var workingGroupObjective = WorkingGroupObjective.builder()
                 .businessUnitUuid(BUSINESS_UNIT_UUID_2)
-                .performanceCycleUuid(PERFORMANCE_CYCLE_UUID_2)
-                .sequenceNumber(SEQUENCE_NUMBER_1)
                 .version(VERSION_1)
-                .groupObjectiveUuid(GROUP_OBJECTIVE_UUID_2)
                 .updaterId(USER_INIT)
                 .updateTime(Timestamp.valueOf(TIME_INIT).toInstant())
                 .build();
 
-        final var rowsInserted = instance.createWorkingGroupObjective(workingGroupObjective);
+        final var rowsInserted = instance.insertOrUpdateWorkingGroupObjective(workingGroupObjective);
 
         assertThat(rowsInserted).isOne();
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "working_group_objective_init.xml"})
-    void createWorkingGroupObjectiveAlreadyExist() {
-
-        final var workingGroupObjective = WorkingGroupObjective.builder()
-                .businessUnitUuid(BUSINESS_UNIT_UUID_2)
-                .performanceCycleUuid(PERFORMANCE_CYCLE_UUID_2)
-                .sequenceNumber(SEQUENCE_NUMBER_1)
-                .version(VERSION_1)
-                .groupObjectiveUuid(GROUP_OBJECTIVE_UUID_2)
-                .updaterId(USER_INIT)
-                .updateTime(Timestamp.valueOf(TIME_INIT).toInstant())
-                .build();
-
-        Assertions.assertThatThrownBy(() -> instance.createWorkingGroupObjective(workingGroupObjective))
-                .isInstanceOf(DuplicateKeyException.class);
-    }
-
-    @Test
-    @DataSet({"group_objective_init.xml", "working_group_objective_init.xml"})
+    @DataSet("working_group_objective_init.xml")
     void deleteWorkingGroupObjectiveNotExist() {
-        final var result = instance.deleteWorkingGroupObjective(
-                BUSINESS_UNIT_UUID_NOT_EXIST,
-                PERFORMANCE_CYCLE_UUID_NOT_EXIST,
-                SEQUENCE_NUMBER_1);
+        final var result = instance.deleteWorkingGroupObjective(BUSINESS_UNIT_UUID_NOT_EXIST);
 
         assertThat(result).isZero();
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "working_group_objective_init.xml"})
+    @DataSet("working_group_objective_init.xml")
     void deleteWorkingGroupObjectiveSucceeded() {
-        final var result = instance.deleteWorkingGroupObjective(
-                BUSINESS_UNIT_UUID_2,
-                PERFORMANCE_CYCLE_UUID_2,
-                SEQUENCE_NUMBER_1);
+        final var result = instance.deleteWorkingGroupObjective(BUSINESS_UNIT_UUID_2);
 
         assertThat(result).isOne();
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "working_group_objective_init.xml"})
-    @ExpectedDataSet("working_group_objective_update_expected_1.xml")
-    void updateWorkingGroupObjectiveSucceeded() {
-        final var workingGroupObjective = WorkingGroupObjective.builder()
-                .businessUnitUuid(BUSINESS_UNIT_UUID_2)
-                .performanceCycleUuid(PERFORMANCE_CYCLE_UUID_2)
-                .sequenceNumber(SEQUENCE_NUMBER_1)
-                .version(VERSION_2)
-                .groupObjectiveUuid(GROUP_OBJECTIVE_UUID_3)
-                .updaterId(USER_UPDATE)
-                .updateTime(Timestamp.valueOf(TIME_UPDATE).toInstant())
-                .build();
-
-        final var result = instance.updateWorkingGroupObjective(workingGroupObjective);
-
-        assertThat(result).isOne();
-    }
-
-    @Test
-    @DataSet({"group_objective_init.xml", "working_group_objective_init.xml"})
-    void updateWorkingGroupObjectiveNotExist() {
-        final var workingGroupObjective = WorkingGroupObjective.builder()
-                .businessUnitUuid(BUSINESS_UNIT_UUID_NOT_EXIST)
-                .performanceCycleUuid(PERFORMANCE_CYCLE_UUID_NOT_EXIST)
-                .sequenceNumber(SEQUENCE_NUMBER_1)
-                .version(VERSION_2)
-                .groupObjectiveUuid(GROUP_OBJECTIVE_UUID_3)
-                .updaterId(USER_UPDATE)
-                .updateTime(Timestamp.valueOf(TIME_UPDATE).toInstant())
-                .build();
-
-        final var result = instance.updateWorkingGroupObjective(workingGroupObjective);
-
-        assertThat(result).isZero();
-    }
-
-    @Test
-    @DataSet({"group_objective_init.xml", "working_group_objective_init.xml"})
+    @DataSet("working_group_objective_init.xml")
     void getWorkingGroupObjective() {
-        final var result = instance.getWorkingGroupObjective(
-                BUSINESS_UNIT_UUID_2,
-                PERFORMANCE_CYCLE_UUID_2,
-                SEQUENCE_NUMBER_1);
+        final var result = instance.getWorkingGroupObjective(BUSINESS_UNIT_UUID_2);
 
         assertThat(result)
                 .asInstanceOf(type(WorkingGroupObjective.class))
                 .returns(BUSINESS_UNIT_UUID_2, from(WorkingGroupObjective::getBusinessUnitUuid))
-                .returns(PERFORMANCE_CYCLE_UUID_2, from(WorkingGroupObjective::getPerformanceCycleUuid))
-                .returns(SEQUENCE_NUMBER_1, from(WorkingGroupObjective::getSequenceNumber))
                 .returns(VERSION_1, from(WorkingGroupObjective::getVersion))
-                .returns(GROUP_OBJECTIVE_UUID_2, from(WorkingGroupObjective::getGroupObjectiveUuid))
                 .returns(USER_INIT, from(WorkingGroupObjective::getUpdaterId))
                 .returns(Timestamp.valueOf(TIME_INIT).toInstant(), from(WorkingGroupObjective::getUpdateTime));
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "working_group_objective_init.xml"})
+    @DataSet("working_group_objective_init.xml")
     void getWorkingGroupObjectiveNotExist() {
-        final var result = instance.getWorkingGroupObjective(
-                BUSINESS_UNIT_UUID_NOT_EXIST,
-                PERFORMANCE_CYCLE_UUID_NOT_EXIST,
-                SEQUENCE_NUMBER_1);
+        final var result = instance.getWorkingGroupObjective(BUSINESS_UNIT_UUID_NOT_EXIST);
 
         assertThat(result).isNull();
     }

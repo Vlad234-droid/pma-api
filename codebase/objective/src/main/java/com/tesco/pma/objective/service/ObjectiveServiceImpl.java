@@ -19,11 +19,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.tesco.pma.objective.exception.ErrorCodes.BUSINESS_UNIT_NOT_EXISTS;
 import static com.tesco.pma.objective.exception.ErrorCodes.GROUP_OBJECTIVES_NOT_FOUND;
 import static com.tesco.pma.objective.exception.ErrorCodes.GROUP_OBJECTIVE_ALREADY_EXISTS;
-import static com.tesco.pma.objective.exception.ErrorCodes.GROUP_OBJECTIVE_FOREIGN_CONSTRAINT_VIOLATION;
+import static com.tesco.pma.objective.exception.ErrorCodes.PERSONAL_OBJECTIVES_NOT_FOUND;
 import static com.tesco.pma.objective.exception.ErrorCodes.PERSONAL_OBJECTIVE_ALREADY_EXISTS;
-import static com.tesco.pma.objective.exception.ErrorCodes.PERSONAL_OBJECTIVE_NOT_FOUND;
+import static com.tesco.pma.objective.exception.ErrorCodes.PERSONAL_OBJECTIVE_NOT_FOUND_BY_UUID;
+import static com.tesco.pma.objective.exception.ErrorCodes.PERSONAL_OBJECTIVE_NOT_FOUND_FOR_COLLEAGUE;
 import static java.time.Instant.now;
 
 /**
@@ -42,16 +44,38 @@ public class ObjectiveServiceImpl implements ObjectiveService {
     private static final String BUSINESS_UNIT_UUID_PARAMETER_NAME = "businessUnitUuid";
     private static final String SEQUENCE_NUMBER_PARAMETER_NAME = "sequenceNumber";
     private static final String VERSION_PARAMETER_NAME = "version";
-    private static final Integer VERSION_1 = 1;
 
     @Override
     public PersonalObjective getPersonalObjectiveByUuid(UUID personalObjectiveUuid) {
         var res = objectiveDAO.getPersonalObjective(personalObjectiveUuid);
         if (res == null) {
-            throw notFound(PERSONAL_OBJECTIVE_NOT_FOUND,
+            throw notFound(PERSONAL_OBJECTIVE_NOT_FOUND_BY_UUID,
                     Map.of(PERSONAL_OBJECTIVE_UUID_PARAMETER_NAME, personalObjectiveUuid));
         }
         return res;
+    }
+
+    @Override
+    public PersonalObjective getPersonalObjectiveForColleague(UUID colleagueUuid, UUID performanceCycleUuid, Integer sequenceNumber) {
+        var res = objectiveDAO.getPersonalObjectiveForColleague(colleagueUuid, performanceCycleUuid, sequenceNumber);
+        if (res == null) {
+            throw notFound(PERSONAL_OBJECTIVE_NOT_FOUND_FOR_COLLEAGUE,
+                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
+                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
+                            SEQUENCE_NUMBER_PARAMETER_NAME, sequenceNumber));
+        }
+        return res;
+    }
+
+    @Override
+    public List<PersonalObjective> getPersonalObjectivesForColleague(UUID colleagueUuid, UUID performanceCycleUuid) {
+        List<PersonalObjective> results = objectiveDAO.getPersonalObjectivesForColleague(colleagueUuid, performanceCycleUuid);
+        if (results == null) {
+            throw notFound(PERSONAL_OBJECTIVES_NOT_FOUND,
+                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
+                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid));
+        }
+        return results;
     }
 
     @Override
@@ -75,7 +99,7 @@ public class ObjectiveServiceImpl implements ObjectiveService {
     @Transactional
     public PersonalObjective updatePersonalObjective(PersonalObjective personalObjective) {
         if (1 != objectiveDAO.updatePersonalObjective(personalObjective)) {
-            throw notFound(PERSONAL_OBJECTIVE_NOT_FOUND,
+            throw notFound(PERSONAL_OBJECTIVE_NOT_FOUND_BY_UUID,
                     Map.of(PERSONAL_OBJECTIVE_UUID_PARAMETER_NAME, personalObjective.getUuid()));
         }
         return personalObjective;
@@ -85,7 +109,7 @@ public class ObjectiveServiceImpl implements ObjectiveService {
     @Transactional
     public void deletePersonalObjective(UUID personalObjectiveUuid) {
         if (1 != objectiveDAO.deletePersonalObjective(personalObjectiveUuid)) {
-            throw notFound(PERSONAL_OBJECTIVE_NOT_FOUND,
+            throw notFound(PERSONAL_OBJECTIVE_NOT_FOUND_BY_UUID,
                     Map.of(PERSONAL_OBJECTIVE_UUID_PARAMETER_NAME, personalObjectiveUuid));
         }
     }
@@ -93,29 +117,25 @@ public class ObjectiveServiceImpl implements ObjectiveService {
     @Override
     @Transactional
     public List<GroupObjective> createGroupObjectives(UUID businessUnitUuid,
-                                                      UUID performanceCycleUuid,
                                                       List<GroupObjective> groupObjectives) {
         List<GroupObjective> results = new ArrayList<>();
+        final var newVersion = objectiveDAO.getMaxVersionGroupObjective(businessUnitUuid) + 1;
         groupObjectives.forEach(groupObjective -> {
             try {
                 groupObjective.setUuid(UUID.randomUUID());
                 groupObjective.setBusinessUnitUuid(businessUnitUuid);
-                groupObjective.setPerformanceCycleUuid(performanceCycleUuid);
-                groupObjective.setVersion(VERSION_1);
+                groupObjective.setVersion(newVersion);
                 if (1 == objectiveDAO.createGroupObjective(groupObjective)) {
                     results.add(groupObjective);
-                    objectiveDAO.createWorkingGroupObjective(getWorkingGroupObjective(groupObjective));
                 } else {
                     //todo it will work after implementation foreign keys
-                    throw notFound(GROUP_OBJECTIVE_FOREIGN_CONSTRAINT_VIOLATION,
-                            Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, groupObjective.getBusinessUnitUuid(),
-                                    PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, groupObjective.getPerformanceCycleUuid()));
+                    throw notFound(BUSINESS_UNIT_NOT_EXISTS,
+                            Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, groupObjective.getBusinessUnitUuid()));
                 }
             } catch (DuplicateKeyException e) {
                 throw databaseConstraintViolation(
                         GROUP_OBJECTIVE_ALREADY_EXISTS,
                         Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, groupObjective.getBusinessUnitUuid(),
-                                PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, groupObjective.getPerformanceCycleUuid(),
                                 SEQUENCE_NUMBER_PARAMETER_NAME, groupObjective.getSequenceNumber(),
                                 VERSION_PARAMETER_NAME, groupObjective.getVersion()),
                         e);
@@ -123,77 +143,48 @@ public class ObjectiveServiceImpl implements ObjectiveService {
             }
 
         });
+        return results;
+    }
+
+    @Override
+    public List<GroupObjective> getAllGroupObjectives(UUID businessUnitUuid) {
+        List<GroupObjective> results = objectiveDAO.getGroupObjectivesByBusinessUnitUuid(businessUnitUuid);
+        if (results == null) {
+            throw notFound(GROUP_OBJECTIVES_NOT_FOUND,
+                    Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, businessUnitUuid));
+        }
         return results;
     }
 
     @Override
     @Transactional
-    public List<GroupObjective> updateGroupObjectives(UUID businessUnitUuid,
-                                                      UUID performanceCycleUuid,
-                                                      List<GroupObjective> groupObjectives) {
-        List<GroupObjective> results = new ArrayList<>();
-        groupObjectives.forEach(groupObjective -> {
-            try {
-                groupObjective.setBusinessUnitUuid(businessUnitUuid);
-                groupObjective.setPerformanceCycleUuid(performanceCycleUuid);
-                var workingGroupObjective = objectiveDAO.getWorkingGroupObjective(
-                        groupObjective.getBusinessUnitUuid(),
-                        groupObjective.getPerformanceCycleUuid(),
-                        groupObjective.getSequenceNumber());
-                if (workingGroupObjective != null) {
-                    var oldGroupObjective =
-                            objectiveDAO.getGroupObjective(workingGroupObjective.getGroupObjectiveUuid());
-                    if (oldGroupObjective.getTitle().equals(groupObjective.getTitle())
-                            && oldGroupObjective.getStatus().equals(groupObjective.getStatus())) {
-                        groupObjective.setUuid(oldGroupObjective.getUuid());
-                        groupObjective.setVersion(oldGroupObjective.getVersion());
-                    } else if (oldGroupObjective.getTitle().equals(groupObjective.getTitle())
-                            && !oldGroupObjective.getStatus().equals(groupObjective.getStatus())) {
-                        groupObjective.setUuid(oldGroupObjective.getUuid());
-                        groupObjective.setVersion(oldGroupObjective.getVersion());
-                        objectiveDAO.updateGroupObjective(groupObjective);
-                    } else {
-                        groupObjective.setUuid(UUID.randomUUID());
-                        groupObjective.setVersion(oldGroupObjective.getVersion() + 1);
-                        objectiveDAO.createGroupObjective(groupObjective);
-                        objectiveDAO.updateWorkingGroupObjective(getWorkingGroupObjective(groupObjective));
-                    }
-                    results.add(groupObjective);
-                } else {
-                    groupObjective.setUuid(UUID.randomUUID());
-                    groupObjective.setVersion(VERSION_1);
-                    if (1 == objectiveDAO.createGroupObjective(groupObjective)) {
-                        results.add(groupObjective);
-                        objectiveDAO.createWorkingGroupObjective(getWorkingGroupObjective(groupObjective));
-                    } else {
-                        //todo it will work after implementation foreign keys
-                        throw notFound(GROUP_OBJECTIVE_FOREIGN_CONSTRAINT_VIOLATION,
-                                Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, groupObjective.getBusinessUnitUuid(),
-                                        PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, groupObjective.getPerformanceCycleUuid()));
-                    }
-                }
-            } catch (DuplicateKeyException e) {
-                throw databaseConstraintViolation(
-                        GROUP_OBJECTIVE_ALREADY_EXISTS,
-                        Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, groupObjective.getBusinessUnitUuid(),
-                                PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, groupObjective.getPerformanceCycleUuid(),
-                                SEQUENCE_NUMBER_PARAMETER_NAME, groupObjective.getSequenceNumber(),
-                                VERSION_PARAMETER_NAME, groupObjective.getVersion()),
-                        e);
-
-            }
-
-        });
-        return results;
+    public WorkingGroupObjective publishGroupObjectives(UUID businessUnitUuid) {
+        final var version = objectiveDAO.getMaxVersionGroupObjective(businessUnitUuid);
+        final var workingGroupObjective = getWorkingGroupObjective(businessUnitUuid, version);
+        if (1 == objectiveDAO.insertOrUpdateWorkingGroupObjective(workingGroupObjective)) {
+            return workingGroupObjective;
+        } else {
+            //todo it will work after implementation foreign keys
+            throw notFound(BUSINESS_UNIT_NOT_EXISTS,
+                    Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, businessUnitUuid));
+        }
     }
 
     @Override
-    public List<GroupObjective> getAllGroupObjectives(UUID businessUnitUuid, UUID performanceCycleUuid) {
-        List<GroupObjective> results = objectiveDAO.getAllGroupObjectives(businessUnitUuid, performanceCycleUuid);
+    @Transactional
+    public void unpublishGroupObjectives(UUID businessUnitUuid) {
+        if (1 != objectiveDAO.deleteWorkingGroupObjective(businessUnitUuid)) {
+            throw notFound(BUSINESS_UNIT_NOT_EXISTS,
+                    Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, businessUnitUuid));
+        }
+    }
+
+    @Override
+    public List<GroupObjective> getPublishedGroupObjectives(UUID businessUnitUuid) {
+        List<GroupObjective> results = objectiveDAO.getWorkingGroupObjectivesByBusinessUnitUuid(businessUnitUuid);
         if (results == null) {
             throw notFound(GROUP_OBJECTIVES_NOT_FOUND,
-                    Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, businessUnitUuid,
-                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, businessUnitUuid));
+                    Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, businessUnitUuid));
         }
         return results;
     }
@@ -213,13 +204,10 @@ public class ObjectiveServiceImpl implements ObjectiveService {
                 messageSourceAccessor.getMessage(errorCode.getCode(), params), null, cause);
     }
 
-    private WorkingGroupObjective getWorkingGroupObjective(GroupObjective groupObjective) {
+    private WorkingGroupObjective getWorkingGroupObjective(UUID businessUnitUuid, int version) {
         return WorkingGroupObjective.builder()
-                .businessUnitUuid(groupObjective.getBusinessUnitUuid())
-                .performanceCycleUuid(groupObjective.getPerformanceCycleUuid())
-                .sequenceNumber(groupObjective.getSequenceNumber())
-                .version(groupObjective.getVersion())
-                .groupObjectiveUuid(groupObjective.getUuid())
+                .businessUnitUuid(businessUnitUuid)
+                .version(version)
                 .updateTime(now())
                 //todo use real user
                 .updaterId("TempUser")

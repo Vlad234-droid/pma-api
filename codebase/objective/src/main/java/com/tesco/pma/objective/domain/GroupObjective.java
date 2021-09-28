@@ -18,9 +18,7 @@ import java.util.UUID;
 public class GroupObjective {
     UUID uuid;
     UUID businessUnitUuid;
-    UUID performanceCycleUuid;
     Integer sequenceNumber;
     String title;
     Integer version;
-    ObjectiveStatus status;
 }

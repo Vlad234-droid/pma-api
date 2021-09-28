@@ -17,10 +17,7 @@ import java.util.UUID;
 @Builder
 public class WorkingGroupObjective {
     UUID businessUnitUuid;
-    UUID performanceCycleUuid;
-    Integer sequenceNumber;
     Integer version;
-    UUID groupObjectiveUuid;
     String updaterId;
     Instant updateTime;
 }
