@@ -10,7 +10,7 @@ RUN set -o errexit -o nounset \
     && mkdir /home/gradle/.gradle \
     && chown --recursive gradle:gradle /home/gradle \
     \
-    && echo "Symlinking root Gradle cache to gradle Gradle cache" \
+    && echo "Sym-linking root Gradle cache to gradle Gradle cache" \
     && ln -s /home/gradle/.gradle /root/.gradle
 
 VOLUME /home/gradle/.gradle
@@ -51,20 +51,24 @@ RUN set -o errexit -o nounset \
 COPY --chown=gradle:gradle ./codebase/ /home/gradle/app
 WORKDIR /home/gradle/app
 
-ARG BUILD_ENV=dev
+ARG BUILD_PROFILES=default
 
 # Build app, and skip tests
-RUN gradle build --no-daemon -PenvType=$BUILD_ENV -x test
+RUN gradle build --no-daemon -PbuildProfiles=$BUILD_PROFILES -x test
 
 FROM openjdk:11-jre-slim
+
+ENV JAVA_OPTS ""
+ENV JAVA_ARGS ""
 
 RUN mkdir /app
 
 COPY --from=build /home/gradle/app/application/build/libs/*.jar /app/app.jar
+COPY --from=build /home/gradle/app/application/build/libs/config /app/config
 
 EXPOSE 8083/tcp
 EXPOSE 8090/tcp
 
 WORKDIR /app
 
-CMD [ "java", "-jar", "-Dspring.profiles.active=dev,cep-local", "./app.jar" ]
+CMD java -Dloader.path=/app/config $JAVA_OPTS -jar ./app.jar $JAVA_ARGS

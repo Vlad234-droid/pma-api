@@ -2,7 +2,7 @@ subprojects {
     apply plugin: 'java'
 
     repositories {
-        if ([ 'ppe', 'prod' ].any { it == envType }) {
+        if ('useRepository' in buildProfiles.split('[,;:]')) {
             maven {
                 url repositoryURL
                 credentials {
@@ -13,8 +13,8 @@ subprojects {
         } else {
             mavenLocal()
             mavenCentral()
+            maven { url 'https://jitpack.io' }
         }
-        maven { url 'https://jitpack.io' }
     }
 
     dependencies {

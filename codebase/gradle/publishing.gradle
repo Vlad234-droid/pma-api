@@ -14,7 +14,7 @@ publishing {
     }
 
     repositories {
-        if ([ 'ppe', 'prod' ].any { it == envType }) {
+        if ('useRepository' in buildProfiles.split('[,;:]')) {
             maven {
                 url repositoryURL
                 credentials {

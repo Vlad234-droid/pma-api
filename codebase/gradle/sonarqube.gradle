@@ -1,14 +1,17 @@
 /**
+ * https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-gradle/
+ *
  * Sonarqube scanner running
- * ./gradlew clean build sonarqube -Dsonar.login=admin -Dsonar.password=admin1 \
- * -Dsonar.host.url=http://localhost:9000
+ * ./gradlew clean build sonarqube \
+ *     -Dsonar.login=admin \
+ *     -Dsonar.password=admin1 \
+ *     -Dsonar.host.url=http://localhost:9000
  *
  * Default project settings overwriting example:
- * -Dsonar.projectName=${APP_NAME}_${BRANCH_NAME}
- * -Dsonar.projectKey=${APP_NAME}_${BRANCH_NAME}
- * -Dsonar.projectVersion=${APP_NAME_VERSION}
+ *     -Dsonar.projectName=${APP_NAME}_${BRANCH_NAME}
+ *     -Dsonar.projectKey=${APP_NAME}_${BRANCH_NAME}
+ *     -Dsonar.projectVersion=${APP_NAME_VERSION}
  *
- * https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-gradle/
  */
 apply plugin: 'org.sonarqube'
 
@@ -16,9 +19,10 @@ sonarqube {
     properties {
         property 'sonar.projectName', "$rootProjectName"
         property 'sonar.projectKey', "$rootProjectName"
-        property "sonar.sources", "src/main"
+        property 'sonar.sources', 'src/main'
     }
-//  put properties directly to avoid not existing paths checking
+
+    // put properties directly to avoid not existing paths checking
     properties.put('sonar.tests', 'src/test')
     properties.put("sonar.coverage.jacoco.xmlReportPaths", "$buildDir/reports/jacoco/test/jacocoTestReport.xml")
     properties.put("sonar.junit.reportsPaths", "$buildDir/test-results/")

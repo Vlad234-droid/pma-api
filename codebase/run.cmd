@@ -64,4 +64,4 @@ if not errorlevel == 1 (
   )
 )
 
-"%JAVA%" -Dloader.path=application/src/main/image/config -jar application/build/libs/application-1.0.0-SNAPSHOT.jar %*
+"%JAVA%" -Dloader.path=application/build/libs/config -jar application/build/libs/application-1.0.0-SNAPSHOT-boot.jar %*
