@@ -1,4 +1,9 @@
+/**
+ * Setting-up root level plugins
+ */
 plugins {
     id 'org.sonarqube' version "$sonarqubeVersion"
 }
+
+
 apply from: "$rootDir/gradle/projects.gradle"

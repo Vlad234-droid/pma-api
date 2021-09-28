@@ -12,7 +12,6 @@ fi
 docker build \
   --progress plain \
   --tag $IMAGE_TAG \
-  --build-arg BUILD_ENV=dev \
+  --build-arg BUILD_PROFILES=default \
   --file dockerfiles/pma-api_docker_multistage_build.Dockerfile \
   .;
-

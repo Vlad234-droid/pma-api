@@ -1,10 +1,10 @@
-import org.apache.tools.ant.filters.ReplaceTokens
-
 buildscript {
     repositories {
         mavenCentral()
     }
-    dependencies { classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
 }
 
 plugins {
@@ -36,25 +36,16 @@ dependencies {
     testCompile("org.springframework.boot:spring-boot-starter-test")
 }
 
-processResources {
-
-    def tokens = new Hashtable<String, String>(project.properties.size() * 2)
-    project.properties.each {
-        if (it.key instanceof String) {
-            tokens.putIfAbsent(it.key, it.value.toString())
-            tokens.putIfAbsent("project.${it.key}".toString(), it.value.toString())
-        }
-    }
-
+build {
     /**
-     * Process resources from `config` folder:
-     *  - rename files using ant-style tokens
-     *  - replace ant-style tokens in file with values
+     * Copying all files from 'scr/main/config'
+     * to destination 'libs' folder
      */
-    with copySpec {
-        from 'src/main/config'
-        exclude '**/application.yml'
-        exclude '**/logback.xml'
+    doLast {
+        copy {
+            from 'src/main/config'
+            into layout.buildDirectory.dir('libs/config')
+        }
     }
 }
 
@@ -79,7 +70,10 @@ bootJar {
 }
 
 bootRun {
-    args += [ "--spring.profiles.active=${envType}" ]
+    // add boot configs here, if required
+    //println layout.buildDirectory.dir('libs/config')
+    args += [ "--loader.path=C:/Projects/Tesco/Colleague24Repos/pma-api/codebase/application/build/libs/config/" ]
+    //args += [ "--spring.config.location=C:/Projects/Tesco/Colleague24Repos/pma-api/codebase/application/build/libs/config/" ]
 }
 
 //def publication = publishing.publications.maven
