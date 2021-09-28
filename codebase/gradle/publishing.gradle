@@ -14,7 +14,7 @@ publishing {
     }
 
     repositories {
-        if ('useRepository' in buildProfiles.split('[,;:]')) {
+        if ('useRepository' in buildProfiles.split(/[,;:]/)) {
             maven {
                 url repositoryURL
                 credentials {

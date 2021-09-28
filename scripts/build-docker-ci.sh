@@ -12,6 +12,6 @@ fi
 docker build \
   --progress plain \
   --tag $IMAGE_TAG \
-  --build-arg BUILD_PROFILES=default \
+  --build-arg BUILD_PROFILES=default,docker \
   --file dockerfiles/pma-api_docker_multistage_build.Dockerfile \
   .;
