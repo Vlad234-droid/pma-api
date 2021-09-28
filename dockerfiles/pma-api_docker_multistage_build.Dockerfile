@@ -1,11 +1,10 @@
 FROM openjdk:11-jdk-slim as build
 
-ARG GRADLE_VERSION 6.8.3
-ARG GRADLE_DOWNLOAD_SHA256=7faa7198769f872826c8ef4f1450f839ec27f0b4d5d1e51bade63667cbccd205
-
 ARG BUILD_PROFILES=default,docker
 
-ENV GRADLE_HOME /opt/gradle
+ENV GRADLE_HOME=/opt/gradle
+ENV GRADLE_VERSION=6.8.3
+ENV GRADLE_DOWNLOAD_SHA256=7faa7198769f872826c8ef4f1450f839ec27f0b4d5d1e51bade63667cbccd205
 
 RUN set -o errexit -o nounset \
     \
@@ -35,8 +34,6 @@ RUN apt-get update \
         subversion \
     && rm -rf /var/lib/apt/lists/*
 
-ENV GRADLE_VERSION $GRADLE_VERSION
-
 RUN set -o errexit -o nounset \
     && echo "Downloading Gradle" \
     && wget --no-verbose --output-document=gradle.zip "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
@@ -54,6 +51,7 @@ RUN set -o errexit -o nounset \
     && gradle --version
 
 COPY --chown=gradle:gradle ./codebase/ /home/gradle/app
+
 WORKDIR /home/gradle/app
 
 # Build app, and skip tests
