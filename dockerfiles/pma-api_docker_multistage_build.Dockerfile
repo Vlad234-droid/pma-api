@@ -1,6 +1,10 @@
 FROM openjdk:11-jdk-slim as build
 
-ENV GRADLE_HOME /opt/gradle
+ARG BUILD_PROFILES=default,docker
+
+ENV GRADLE_HOME=/opt/gradle
+ENV GRADLE_VERSION=6.8.3
+ENV GRADLE_DOWNLOAD_SHA256=7faa7198769f872826c8ef4f1450f839ec27f0b4d5d1e51bade63667cbccd205
 
 RUN set -o errexit -o nounset \
     \
@@ -10,7 +14,7 @@ RUN set -o errexit -o nounset \
     && mkdir /home/gradle/.gradle \
     && chown --recursive gradle:gradle /home/gradle \
     \
-    && echo "Symlinking root Gradle cache to gradle Gradle cache" \
+    && echo "Sym-linking root Gradle cache to gradle Gradle cache" \
     && ln -s /home/gradle/.gradle /root/.gradle
 
 VOLUME /home/gradle/.gradle
@@ -30,8 +34,6 @@ RUN apt-get update \
         subversion \
     && rm -rf /var/lib/apt/lists/*
 
-ENV GRADLE_VERSION 6.8.3
-ARG GRADLE_DOWNLOAD_SHA256=7faa7198769f872826c8ef4f1450f839ec27f0b4d5d1e51bade63667cbccd205
 RUN set -o errexit -o nounset \
     && echo "Downloading Gradle" \
     && wget --no-verbose --output-document=gradle.zip "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
@@ -49,22 +51,28 @@ RUN set -o errexit -o nounset \
     && gradle --version
 
 COPY --chown=gradle:gradle ./codebase/ /home/gradle/app
+
 WORKDIR /home/gradle/app
 
-ARG BUILD_ENV=dev
-
 # Build app, and skip tests
-RUN gradle build --no-daemon -PenvType=$BUILD_ENV -x test
+RUN gradle build --no-daemon -PbuildProfiles=$BUILD_PROFILES -x test
 
 FROM openjdk:11-jre-slim
+
+ARG RUNTIME_JAVA_OPTS ""
+ARG RUNTIME_JAVA_ARGS ""
+
+ENV JAVA_OPTS $RUNTIME_JAVA_OPTS
+ENV JAVA_ARGS $RUNTIME_JAVA_ARGS
 
 RUN mkdir /app
 
 COPY --from=build /home/gradle/app/application/build/libs/*.jar /app/app.jar
+COPY --from=build /home/gradle/app/application/build/libs/config /app/config
 
 EXPOSE 8083/tcp
 EXPOSE 8090/tcp
 
 WORKDIR /app
 
-CMD [ "java", "-jar", "-Dspring.profiles.active=dev,cep-local", "./app.jar" ]
+CMD java -Dloader.path=/app/config $JAVA_OPTS -jar ./app.jar $JAVA_ARGS

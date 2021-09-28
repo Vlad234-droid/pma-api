@@ -4,7 +4,9 @@ buildscript {
     repositories {
         mavenCentral()
     }
-    dependencies { classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
 }
 
 plugins {
@@ -36,30 +38,35 @@ dependencies {
     testCompile("org.springframework.boot:spring-boot-starter-test")
 }
 
-processResources {
-
-    def tokens = new Hashtable<String, String>(project.properties.size() * 2)
-    project.properties.each {
-        if (it.key instanceof String) {
-            tokens.putIfAbsent(it.key, it.value.toString())
-            tokens.putIfAbsent("project.${it.key}".toString(), it.value.toString())
-        }
-    }
-
+build {
     /**
-     * Process resources from `config` folder:
-     *  - rename files using ant-style tokens
-     *  - replace ant-style tokens in file with values
+     * Copying all files from 'scr/main/config'
+     * to destination 'libs' folder
      */
-    with copySpec {
-        from 'src/main/config'
-        exclude '**/application.yml'
-        exclude '**/logback.xml'
+    doLast {
+        copy {
+            from 'src/main/config'
+            into layout.buildDirectory.dir('libs/config')
+            exclude '**/application.properties.example'
+            if ('docker' in buildProfiles.split(/[,;:]/)) {
+                exclude '**/application.properties'
+            }
+        }
     }
 }
 
 jar {
     enabled(false)
+}
+
+springBoot {
+    buildInfo {
+        properties {
+            name = 'PMA application'
+            group = rootProjectGroup
+            version = rootProjectVersion
+        }
+    }
 }
 
 bootJar {
@@ -69,38 +76,54 @@ bootJar {
     archiveVersion = rootProjectVersion
 
     manifest {
-        def attrs = [
-            'Implementation-Title': "${rootProjectName}",
-            'Implementation-Version': archiveVersion,
-            'Main-Class': 'org.springframework.boot.loader.PropertiesLauncher'
-        ]
-		attributes attrs
-	}
+        attributes 'Implementation-Title': "${rootProjectName}"
+        attributes 'Implementation-Version': archiveVersion
+        attributes 'Main-Class': 'org.springframework.boot.loader.PropertiesLauncher'
+    }
+}
+
+sourceSets {
+    main {
+        resources {
+            exclude '**/application.properties.example'
+            if ('docker' in buildProfiles.split(/[,;:]/)) {
+                exclude '**/application.properties'
+            }
+        }
+    }
+    bootRunSet {
+        runtimeClasspath += sourceSets.main.runtimeClasspath
+        resources {
+            srcDir "${buildDir}/resources/main"
+            srcDir "src/main/config"
+            exclude '**/application.properties.example'
+            if ('docker' in buildProfiles.split(/[,;:]/)) {
+                exclude '**/application.properties'
+            }
+        }
+    }
+}
+
+processResources {
+    include '**/banner.txt'
+    filter ReplaceTokens, tokens: [
+        "camunda.version": String.format("%10s", "(${project.property("camundaVersion")})"),
+        "springBoot.version": String.format("%10s", "(${project.property("springBootVersion")})")
+    ]
 }
 
 bootRun {
-    args += [ "--spring.profiles.active=${envType}" ]
-}
+    sourceResources sourceSets.bootRunSet
 
-//def publication = publishing.publications.maven
-//def artifacts = publication.artifacts.findAll{ it.classifier != null }.collect()
-//artifacts.add(bootJar)
-//publication.setArtifacts(artifacts)
+    // setting environment variables
+    environment 'SERVICE_HOME', "${buildDir}/bootRun"
+    environment 'java.io.tmpdir', "${buildDir}/bootRun/temp"
+}
 
 publishing {
     publications {
         bootJava(MavenPublication) {
             artifact bootJar
-        }
-    }
-}
-
-springBoot {
-    buildInfo {
-        properties {
-            name = 'PMA application'
-            group = rootProjectGroup
-            version = rootProjectVersion
         }
     }
 }

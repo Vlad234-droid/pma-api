@@ -20,6 +20,8 @@ popd
 
 set DIRNAME=
 
+set java.io.tmpdir=%SERVICE_HOME%\temp
+
 if "%OS%" == "Windows_NT" (
   set "PROGNAME=%~nx0%"
 ) else (
@@ -64,4 +66,4 @@ if not errorlevel == 1 (
   )
 )
 
-"%JAVA%" -Dloader.path=application/src/main/image/config -jar application/build/libs/application-1.0.0-SNAPSHOT.jar %*
+"%JAVA%" -Dloader.path=application/build/libs/config %JAVA_OPTS% -jar application/build/libs/application-1.0.0-SNAPSHOT-boot.jar %*
