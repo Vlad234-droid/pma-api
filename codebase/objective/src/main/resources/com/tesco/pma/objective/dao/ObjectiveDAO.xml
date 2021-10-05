@@ -204,8 +204,7 @@
         SET title = #{personalObjective.title},
         description = #{personalObjective.description},
         meets = #{personalObjective.meets},
-        exceeds = #{personalObjective.exceeds},
-        status_id=#{personalObjective.status.id}
+        exceeds = #{personalObjective.exceeds}
         WHERE performance_cycle_uuid = #{personalObjective.performanceCycleUuid}
         and colleague_uuid = #{personalObjective.colleagueUuid}
         and sequence_number = #{personalObjective.sequenceNumber};
@@ -227,6 +226,20 @@
                 where objective_link.group_objective_uuid != EXCLUDED.group_objective_uuid;
             </otherwise>
         </choose>
+    </update>
+
+    <update id="updatePersonalObjectiveStatus" flushCache="true">
+        update personal_objective po
+        SET status_id=#{newStatus.id}
+        WHERE po.colleague_uuid = #{colleagueUuid}
+        and po.performance_cycle_uuid = #{performanceCycleUuid}
+        and po.sequence_number = #{sequenceNumber}
+        <if test="prevObjectiveStatuses != null and !prevObjectiveStatuses.isEmpty()">
+            and po.status_id in
+            <foreach item="prevStatus" collection="prevObjectiveStatuses" separator="," open="(" close=")">
+                #{prevStatus.id}
+            </foreach>
+        </if>
     </update>
 
     <insert id="insertOrUpdateWorkingGroupObjective" flushCache="true">

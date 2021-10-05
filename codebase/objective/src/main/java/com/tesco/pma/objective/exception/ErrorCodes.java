@@ -17,6 +17,10 @@ public enum ErrorCodes implements ErrorCodeAware {
      */
     PERSONAL_OBJECTIVES_NOT_FOUND,
     /**
+     * Personal objectives not found for status update
+     */
+    PERSONAL_OBJECTIVE_NOT_FOUND,
+    /**
      * Personal objective already exists
      */
     PERSONAL_OBJECTIVE_ALREADY_EXISTS,

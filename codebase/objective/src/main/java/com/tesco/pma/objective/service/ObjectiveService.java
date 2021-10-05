@@ -1,8 +1,11 @@
 package com.tesco.pma.objective.service;
 
 import com.tesco.pma.objective.domain.GroupObjective;
+import com.tesco.pma.objective.domain.ObjectiveStatus;
 import com.tesco.pma.objective.domain.PersonalObjective;
 import com.tesco.pma.objective.domain.WorkingGroupObjective;
+import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.exception.DatabaseConstraintViolationException;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -18,7 +21,7 @@ public interface ObjectiveService {
      *
      * @param personalObjectiveUuid an identifier
      * @return personal objective
-     * @throws com.tesco.pma.exception.NotFoundException if personal objective doesn't exist.
+     * @throws NotFoundException if personal objective doesn't exist.
      */
     PersonalObjective getPersonalObjectiveByUuid(@NotNull UUID personalObjectiveUuid);
 
@@ -29,7 +32,7 @@ public interface ObjectiveService {
      * @param colleagueUuid        an identifier of colleague
      * @param sequenceNumber       a sequence number of personal objective
      * @return personal objective
-     * @throws com.tesco.pma.exception.NotFoundException if personal objective doesn't exist.
+     * @throws NotFoundException if personal objective doesn't exist.
      */
     PersonalObjective getPersonalObjectiveForColleague(@NotNull UUID performanceCycleUuid,
                                                        @NotNull UUID colleagueUuid,
@@ -41,7 +44,7 @@ public interface ObjectiveService {
      * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
      * @return a list of personal objectives
-     * @throws com.tesco.pma.exception.NotFoundException if personal objectives don't exist.
+     * @throws NotFoundException if personal objectives don't exist.
      */
     List<PersonalObjective> getPersonalObjectivesForColleague(@NotNull UUID performanceCycleUuid,
                                                               @NotNull UUID colleagueUuid);
@@ -51,7 +54,7 @@ public interface ObjectiveService {
      *
      * @param personalObjective personal objective.
      * @return created personal objective.
-     * @throws com.tesco.pma.exception.DatabaseConstraintViolationException personal objective already exist.
+     * @throws DatabaseConstraintViolationException personal objective already exist.
      */
     PersonalObjective createPersonalObjective(@NotNull PersonalObjective personalObjective);
 
@@ -60,15 +63,29 @@ public interface ObjectiveService {
      *
      * @param personalObjective personal objective.
      * @return updated personal objective.
-     * @throws com.tesco.pma.exception.NotFoundException if personal objective doesn't exist.
+     * @throws NotFoundException if personal objective doesn't exist.
      */
     PersonalObjective updatePersonalObjective(@NotNull PersonalObjective personalObjective);
+
+    /**
+     * Updates personal objective status.
+     *
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
+     * @param sequenceNumber       a sequence number of personal objective
+     * @return a ObjectiveStatus
+     * @throws NotFoundException if personal objective doesn't exist.
+     */
+    ObjectiveStatus updatePersonalObjectiveStatus(@NotNull UUID performanceCycleUuid,
+                                                  @NotNull UUID colleagueUuid,
+                                                  @NotNull Integer sequenceNumber,
+                                                  @NotNull ObjectiveStatus status);
 
     /**
      * Deletes personal objective.
      *
      * @param personalObjectiveUuid an identifier.
-     * @throws com.tesco.pma.exception.NotFoundException if personal objective doesn't exist.
+     * @throws NotFoundException if personal objective doesn't exist.
      */
     void deletePersonalObjective(@NotNull UUID personalObjectiveUuid);
 
@@ -78,8 +95,8 @@ public interface ObjectiveService {
      * @param businessUnitUuid business unit an identifier, not null
      * @param groupObjectives  a list of group's objectives
      * @return Created group's objectives
-     * @throws com.tesco.pma.exception.NotFoundException                    if business unit or performance cycle doesn't exist.
-     * @throws com.tesco.pma.exception.DatabaseConstraintViolationException group objective already exist.
+     * @throws NotFoundException                    if business unit or performance cycle doesn't exist.
+     * @throws DatabaseConstraintViolationException group objective already exist.
      */
     List<GroupObjective> createGroupObjectives(@NotNull UUID businessUnitUuid,
                                                List<GroupObjective> groupObjectives);

@@ -17,8 +17,11 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.UUID;
 
+import static com.tesco.pma.objective.domain.ObjectiveStatus.DRAFT;
+import static com.tesco.pma.objective.domain.ObjectiveStatus.SUBMITTED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
 import static org.assertj.core.api.InstanceOfAssertFactories.type;
@@ -39,6 +42,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
     private static final Integer SEQUENCE_NUMBER_1 = 1;
     private static final String TITLE_1 = "Title #1";
     private static final String TITLE_UPDATE = "Title update";
+    private static final String GROUP_TITLE_UPDATE = "Title #1 updated";
     private static final String TITLE_INIT = "Title init";
     private static final String DESCRIPTION_INIT = "Description init";
     private static final String DESCRIPTION_UPDATE = "Description update";
@@ -48,6 +52,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
     private static final String EXCEEDS_UPDATE = "Exceeds update";
     private static final Integer VERSION_1 = 1;
     private static final Integer VERSION_2 = 2;
+    private static final Integer VERSION_3 = 3;
     private static final String USER_INIT = "Init user";
     private static final String USER_UPDATE = "Update user";
     private static final String TIME_INIT = "2021-09-20 10:45:12.448057";
@@ -123,6 +128,21 @@ class ObjectiveDAOTest extends AbstractDAOTest {
         final var result = instance.getGroupObjective(GROUP_OBJECTIVE_UUID_NOT_EXIST);
 
         assertThat(result).isNull();
+    }
+
+    @Test
+    @DataSet("group_objective_init.xml")
+    void getGroupObjectivesByBusinessUnitUuid() {
+        final var result = instance.getGroupObjectivesByBusinessUnitUuid(BUSINESS_UNIT_UUID_2);
+
+        assertThat(result).isNotEmpty();
+        assertThat(result.size()).isEqualTo(1);
+
+        assertThat(result.get(0))
+                .returns(BUSINESS_UNIT_UUID_2, from(GroupObjective::getBusinessUnitUuid))
+                .returns(SEQUENCE_NUMBER_1, from(GroupObjective::getSequenceNumber))
+                .returns(GROUP_TITLE_UPDATE, from(GroupObjective::getTitle))
+                .returns(VERSION_3, from(GroupObjective::getVersion));
     }
 
     @Test
@@ -242,7 +262,6 @@ class ObjectiveDAOTest extends AbstractDAOTest {
                 .meets(MEETS_UPDATE)
                 .exceeds(EXCEEDS_UPDATE)
                 .groupObjectiveUuid(GROUP_OBJECTIVE_UUID)
-                .status(ObjectiveStatus.SUBMITTED)
                 .build();
 
         final var result = instance.updatePersonalObjective(personalObjective);
@@ -261,12 +280,27 @@ class ObjectiveDAOTest extends AbstractDAOTest {
                 .description(DESCRIPTION_UPDATE)
                 .meets(MEETS_UPDATE)
                 .exceeds(EXCEEDS_UPDATE)
-                .status(ObjectiveStatus.SUBMITTED)
+                .status(SUBMITTED)
                 .build();
 
         final var result = instance.updatePersonalObjective(personalObjective);
 
         assertThat(result).isZero();
+    }
+
+    @Test
+    @DataSet({"group_objective_init.xml", "personal_objective_init.xml"})
+    @ExpectedDataSet("personal_objective_update_status_1.xml")
+    void updatePersonalObjectiveStatusSucceeded() {
+
+        final var result = instance.updatePersonalObjectiveStatus(
+                PERFORMANCE_CYCLE_UUID,
+                COLLEAGUE_UUID,
+                SEQUENCE_NUMBER_1,
+                SUBMITTED,
+                Collections.singleton(DRAFT));
+
+        assertThat(result).isOne();
     }
 
     @Test

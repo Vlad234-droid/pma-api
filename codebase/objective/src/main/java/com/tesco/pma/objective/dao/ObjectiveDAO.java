@@ -1,10 +1,12 @@
 package com.tesco.pma.objective.dao;
 
 import com.tesco.pma.objective.domain.GroupObjective;
+import com.tesco.pma.objective.domain.ObjectiveStatus;
 import com.tesco.pma.objective.domain.PersonalObjective;
 import com.tesco.pma.objective.domain.WorkingGroupObjective;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,10 +24,10 @@ public interface ObjectiveDAO {
     GroupObjective getGroupObjective(@Param("groupObjectiveUuid") UUID groupObjectiveUuid);
 
     /**
-     * Returns a list of group objectives
+     * Returns a list of group objectives for max version
      *
      * @param businessUnitUuid an identifier of business unit
-     * @return a list of Group Objectives
+     * @return a list of Group Objectives for max version
      */
     List<GroupObjective> getGroupObjectivesByBusinessUnitUuid(@Param("businessUnitUuid") UUID businessUnitUuid);
 
@@ -106,6 +108,22 @@ public interface ObjectiveDAO {
      * @return number of updated personal objectives
      */
     int updatePersonalObjective(@Param("personalObjective") PersonalObjective personalObjective);
+
+    /**
+     * Updates a personal objective status
+     *
+     * @param performanceCycleUuid  an identifier of performance cycle
+     * @param colleagueUuid         an identifier of colleague
+     * @param sequenceNumber        a sequence number of personal objective
+     * @param newStatus             a new personal objective status
+     * @param prevObjectiveStatuses previous objective statuses
+     * @return number of updated personal objective statuses
+     */
+    int updatePersonalObjectiveStatus(@Param("performanceCycleUuid") UUID performanceCycleUuid,
+                                      @Param("colleagueUuid") UUID colleagueUuid,
+                                      @Param("sequenceNumber") Integer sequenceNumber,
+                                      @Param("newStatus") ObjectiveStatus newStatus,
+                                      @Param("prevObjectiveStatuses") Collection<ObjectiveStatus> prevObjectiveStatuses);
 
     /**
      * Delete a personal objective
