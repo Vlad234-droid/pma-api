@@ -91,7 +91,7 @@
                cet.code        as t_code,
                cet.description as t_description
         FROM working_config_entry wce
-                 JOIN config_entry ce ON wce.unit_uuid = ce.uuid
+                 JOIN config_entry ce ON wce.config_entry_uuid = ce.uuid
                  JOIN config_entry_type cet ON cet.id = wce.type_id
         WHERE wce.composite_key like #{key}
     </select>
@@ -104,10 +104,10 @@
     </insert>
 
     <insert id="publishConfigEntry" flushCache="true">
-        INSERT INTO working_config_entry(name, type_id, version, unit_uuid, composite_key)
+        INSERT INTO working_config_entry(name, type_id, version, config_entry_uuid, composite_key)
         VALUES (#{wce.name},
                 #{wce.type.id},
-                #{wce.version}, #{wce.unitUuid}, #{wce.compositeKey})
+                #{wce.version}, #{wce.configEntryUuid}, #{wce.compositeKey})
     </insert>
 
     <delete id="unpublishConfigEntries" flushCache="true">

@@ -96,7 +96,7 @@
             <column name="version" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
-            <column name="unit_uuid" type="${uuid_type}">
+            <column name="config_entry_uuid" type="${uuid_type}">
                 <constraints nullable="false"/>
             </column>
             <column name="updated_by" type="VARCHAR">
@@ -114,7 +114,7 @@
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="config_entry_type" validate="true"/>
 
-        <addForeignKeyConstraint baseColumnNames="unit_uuid" baseTableName="working_config_entry"
+        <addForeignKeyConstraint baseColumnNames="config_entry_uuid" baseTableName="working_config_entry"
                                  constraintName="working_config_entry_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="uuid" referencedTableName="config_entry" validate="true"/>

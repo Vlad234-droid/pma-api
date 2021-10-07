@@ -1,5 +1,6 @@
 package com.tesco.pma.organisation.service;
 
+import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.ConfigEntryResponse;
@@ -38,7 +39,7 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
         var configEntry = structureList.stream()
                 .filter(ce -> ce.getUuid().equals(configEntryUuid))
                 .findFirst()
-                .orElseThrow(() -> new NotFoundException("CODE", "Not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorCodes.CONFIG_ENTRY_NOT_FOUND.getCode(), "Config entry not found by id"));
         return generateCompositeKey(structureList, configEntry);
     }
 
@@ -75,7 +76,7 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
                     wce.setName(ce.getName());
                     wce.setType(ce.getType());
                     wce.setVersion(ce.getVersion());
-                    wce.setUnitUuid(ce.getUuid());
+                    wce.setConfigEntryUuid(ce.getUuid());
                     wce.setCompositeKey(generateCompositeKey(fullStructure, ce));
                     return wce;
                 }).forEach(dao::publishConfigEntry);
@@ -121,17 +122,17 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
                     ce.setType(configEntry.getType());
                     ce.setParentUuid(configEntry.getParentUuid());
                     return ce;
-                }).orElseThrow(() -> new NotFoundException("Code", "not found"));
+                }).orElseThrow(() -> new NotFoundException(ErrorCodes.CONFIG_ENTRY_NOT_FOUND.getCode(), "Config entry not found by id"));
         copyStructure(structure);
     }
 
     @Override
     @Transactional
-    public void deleteConfigEntry(UUID buUuid) {
-        var root = dao.findRootConfigEntry(buUuid);
+    public void deleteConfigEntry(UUID configEntryUuid) {
+        var root = dao.findRootConfigEntry(configEntryUuid);
         var version = root.getVersion() + 1;
         var structure = dao.findConfigEntryChildStructure(root.getUuid());
-        structure = structure.stream().takeWhile(ce -> !ce.getUuid().equals(buUuid)).collect(Collectors.toList());
+        structure = structure.stream().takeWhile(ce -> !ce.getUuid().equals(configEntryUuid)).collect(Collectors.toList());
         structure.forEach(ce -> ce.setVersion(version));
         copyStructure(structure);
     }
@@ -157,7 +158,7 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
                 .filter(entry -> entry.getParentUuid() == null || !uuidToResponse.containsKey(entry.getParentUuid()))
                 .map(ConfigEntry::getUuid)
                 .findFirst()
-                .orElseThrow(() -> new NotFoundException("CODE", "no root"));
+                .orElseThrow(() -> new NotFoundException(ErrorCodes.CONFIG_ENTRY_NOT_FOUND.getCode(), "Cannot find root config entry"));
         entries.removeIf(entry -> entry.getUuid().equals(rootUuid));
 
         entries.forEach(entry -> uuidToResponse.get(entry.getParentUuid()).getChildren().add(uuidToResponse.get(entry.getUuid())));

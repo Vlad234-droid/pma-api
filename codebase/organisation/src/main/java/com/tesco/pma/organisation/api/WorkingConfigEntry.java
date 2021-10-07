@@ -9,6 +9,6 @@ public class WorkingConfigEntry {
     private String name;
     private ConfigEntryType type;
     private int version;
-    private UUID unitUuid;
+    private UUID configEntryUuid;
     private String compositeKey;
 }

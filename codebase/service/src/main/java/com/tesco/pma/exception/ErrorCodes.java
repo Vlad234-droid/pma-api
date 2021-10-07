@@ -131,7 +131,11 @@ public enum ErrorCodes implements ErrorCodeAware {
     /**
      * Executed process was failed
      */
-    PROCESSING_FAILED;
+    PROCESSING_FAILED,
+    /**
+     * Config entry not found
+     */
+    CONFIG_ENTRY_NOT_FOUND;
 
     @Override
     public String getCode() {

@@ -9,10 +9,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-/*
-1. Когда увеличиваем версию.
-Апдейт+
- */
 public interface ConfigEntryDAO {
 
     ConfigEntry findRootConfigEntry(@Param("uuid") UUID uuid);
@@ -29,9 +25,9 @@ public interface ConfigEntryDAO {
 
     void unpublishConfigEntries(@Param("key") String key);
 
-    default Set<ConfigEntry> getFullStructure(UUID businessUnitUuid) {
-        var parentStructure = findConfigEntryParentStructure(businessUnitUuid);
-        var childStructure = findConfigEntryChildStructure(businessUnitUuid);
+    default Set<ConfigEntry> getFullStructure(UUID configEntryUuid) {
+        var parentStructure = findConfigEntryParentStructure(configEntryUuid);
+        var childStructure = findConfigEntryChildStructure(configEntryUuid);
 
         var set = new HashSet<>(parentStructure);
         set.addAll(childStructure);

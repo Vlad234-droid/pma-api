@@ -1,0 +1,16 @@
+<dataset>
+
+    <config_entry_type id="1" code="BU" description="bu desc"/>
+
+    <config_entry uuid="56141037-6e2d-45f0-b47f-4875e68dd1d7" name="CE1" version="1" type_id="1" parent_uuid="[null]"/>
+    <config_entry uuid="6bc4f35b-4fd2-4e95-986e-765e4fd9b037" name="CE1" version="2" type_id="1" parent_uuid="[null]"/>
+    <config_entry uuid="aedff942-2e19-44e0-9c23-bd8f152a937f" name="CE2" version="2" type_id="1"
+                  parent_uuid="6bc4f35b-4fd2-4e95-986e-765e4fd9b037"/>
+    <config_entry uuid="dc55e38f-d4cc-4420-b20c-d9fcfed8ba40" name="CE1" version="3" type_id="1" parent_uuid="[null]"/>
+    <config_entry uuid="a7a76484-bbe2-4b61-b6f6-ea260159a340" name="CE3" version="3" type_id="1"
+                  parent_uuid="dc55e38f-d4cc-4420-b20c-d9fcfed8ba40"/>
+
+    <working_config_entry name="WCE" type_id="1" version="2" config_entry_uuid="6bc4f35b-4fd2-4e95-986e-765e4fd9b037" composite_key="BU/WCE/#v2"/>
+    <working_config_entry name="WCE2" type_id="1" version="2" config_entry_uuid="aedff942-2e19-44e0-9c23-bd8f152a937f" composite_key="BU/WCE/BU/WCE2/#v2"/>
+
+</dataset>

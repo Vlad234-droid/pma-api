@@ -43,9 +43,9 @@ spring:
   datasource:
     default:
       mybatis-session:
-        type-aliases-package: com.tesco.pma.api, com.tesco.pma.colleague.profile.domain
+        type-aliases-package: com.tesco.pma.api, com.tesco.pma.colleague.profile.domain, com.tesco.pma.organisation.api
         configuration-properties:
-          base-package: com.tesco.pma.dao, com.tesco.pma.colleague.profile.dao
+          base-package: com.tesco.pma.dao, com.tesco.pma.colleague.profile.dao, com.tesco.pma.organisation.dao
           batchSize: 100
     postgres-version: 11.11
     testdb:
