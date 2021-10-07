@@ -60,7 +60,7 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
 
         when(service.getPublishedChildStructureByCompositeKey(COMPOSITE_KEY)).thenReturn(getConfigEntryResponse());
 
-        var result = mvc.perform(get("/config-entries").param("compositeKey", COMPOSITE_KEY)
+        var result = mvc.perform(get("/config-entries/published").param("compositeKey", COMPOSITE_KEY)
                 .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))

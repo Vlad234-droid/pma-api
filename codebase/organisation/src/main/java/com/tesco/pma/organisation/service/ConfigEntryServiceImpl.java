@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -93,9 +94,11 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
     @Transactional
     public void createConfigEntry(ConfigEntry configEntry) {
         configEntry.setUuid(UUID.randomUUID());
+        configEntry.setType(dao.findConfigEntryType(configEntry.getType().getId()));
         var parentUuid = configEntry.getParentUuid();
         if (parentUuid == null) {
             configEntry.setVersion(1);
+            configEntry.setCompositeKey(generateCompositeKey(Collections.emptySet(), configEntry));
             dao.createConfigEntry(configEntry);
         } else {
             var root = dao.findRootConfigEntry(parentUuid);
@@ -146,6 +149,7 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
         });
         structure.stream().filter(ce -> ce.getParentUuid() != null)
                 .forEach(ce -> ce.setParentUuid(oldToNewUuid.get(ce.getParentUuid())));
+        structure.forEach(ce -> ce.setCompositeKey(generateCompositeKey(structure, ce)));
         structure.forEach(dao::createConfigEntry);
     }
 

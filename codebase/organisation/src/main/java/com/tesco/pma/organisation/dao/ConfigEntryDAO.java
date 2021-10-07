@@ -1,6 +1,7 @@
 package com.tesco.pma.organisation.dao;
 
 import com.tesco.pma.organisation.api.ConfigEntry;
+import com.tesco.pma.organisation.api.ConfigEntryType;
 import com.tesco.pma.organisation.api.WorkingConfigEntry;
 import org.apache.ibatis.annotations.Param;
 
@@ -11,20 +12,68 @@ import java.util.UUID;
 
 public interface ConfigEntryDAO {
 
+    /**
+     * Find root config entry by child uuid
+     *
+     * @param uuid - child uuid
+     * @return root config entry object
+     */
     ConfigEntry findRootConfigEntry(@Param("uuid") UUID uuid);
 
+    /**
+     * Get all parent structure for config entry
+     *
+     * @param uuid - child uuid
+     * @return parent structure includes child object
+     */
     List<ConfigEntry> findConfigEntryParentStructure(@Param("uuid") UUID uuid);
 
+    /**
+     * Get all child structure for config entry
+     *
+     * @param uuid - root uuid
+     * @return parent structure includes root object
+     */
     List<ConfigEntry> findConfigEntryChildStructure(@Param("uuid") UUID uuid);
 
+    /**
+     * Gets published child structure by composite key
+     *
+     * @param key - composite key
+     * @return published child structure includes root object
+     */
     List<ConfigEntry> findPublishedConfigEntriesByKey(@Param("key") String key);
 
+    /**
+     * Creates config entry
+     *
+     * @param configEntry - object to be created
+     * @return 1 is save success, 0 if failed
+     */
     int createConfigEntry(@Param("ce") ConfigEntry configEntry);
 
+    /**
+     * Creates record in publish table for config entry
+     *
+     * @param workingConfigEntry - config entry
+     */
     void publishConfigEntry(@Param("wce") WorkingConfigEntry workingConfigEntry);
 
+    /**
+     * Deletes all rows from publish table by composite key
+     *
+     * @param key - composite key
+     */
     void unpublishConfigEntries(@Param("key") String key);
 
+    ConfigEntryType findConfigEntryType(@Param("id") int id);
+
+    /**
+     * Gets all structure for config entry
+     *
+     * @param configEntryUuid - config entry identifier
+     * @return set of config structure
+     */
     default Set<ConfigEntry> getFullStructure(UUID configEntryUuid) {
         var parentStructure = findConfigEntryParentStructure(configEntryUuid);
         var childStructure = findConfigEntryChildStructure(configEntryUuid);

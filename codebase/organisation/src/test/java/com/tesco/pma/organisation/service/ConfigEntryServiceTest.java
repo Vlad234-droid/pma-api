@@ -118,8 +118,14 @@ public class ConfigEntryServiceTest {
 
     @Test
     void createConfigEntryWithoutParent() {
-        service.createConfigEntry(new ConfigEntry());
+        var configEntry = new ConfigEntry();
+        configEntry.setType(getConfigEntryType());
+        Mockito.when(dao.findConfigEntryType(1)).thenReturn(getConfigEntryType());
+
+        service.createConfigEntry(configEntry);
+
         Mockito.verify(dao).createConfigEntry(Mockito.argThat(a -> a.getVersion() == 1));
+        Mockito.verify(dao).findConfigEntryType(1);
         Mockito.verifyNoMoreInteractions(dao);
     }
 
@@ -131,6 +137,8 @@ public class ConfigEntryServiceTest {
                 thenReturn(new ArrayList<>(List.of(getConfigEntry(ROOT_UUID, ROOT_NAME, null),
                         getConfigEntry(CHILD_UUID_1, CHILD_NAME_1, ROOT_UUID),
                         getConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, CHILD_UUID_1))));
+        Mockito.when(dao.findConfigEntryType(1))
+                .thenReturn(getConfigEntryType());
 
         service.createConfigEntry(getConfigEntry(CHILD_UUID_1, "child", ROOT_UUID));
 

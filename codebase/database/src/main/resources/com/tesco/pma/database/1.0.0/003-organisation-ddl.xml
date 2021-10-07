@@ -70,6 +70,9 @@
             <column name="parent_uuid" type="${uuid_type}">
                 <constraints nullable="true"/>
             </column>
+            <column name="composite_key" type="varchar">
+                <constraints nullable="false" unique="true"/>
+            </column>
         </createTable>
         <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="config_entry"
                                  constraintName="config_entry_type_fk" deferrable="false"

@@ -83,6 +83,7 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
         ce.setType(cet);
         ce.setVersion(4);
         ce.setParentUuid(CE_UUID_2);
+        ce.setCompositeKey("BU/C22/#v4");
 
         var configEntry = dao.createConfigEntry(ce);
 

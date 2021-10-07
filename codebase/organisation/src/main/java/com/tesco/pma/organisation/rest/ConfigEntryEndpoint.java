@@ -43,10 +43,9 @@ public class ConfigEntryEndpoint {
         return RestResponse.success(configEntryService.getStructure(entryUuid));
     }
 
-    @Operation(summary = "Get config entry structure by composite key",
-            tags = {"config-entry"})
+    @Operation(summary = "Get config entry structure by composite key", tags = {"config-entry"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the config entry structure")
-    @GetMapping(produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "published", produces = APPLICATION_JSON_VALUE)
     public RestResponse<ConfigEntryResponse> getEntryConfigStructureByCompositeKey(@RequestParam String compositeKey) {
         return RestResponse.success(configEntryService.getPublishedChildStructureByCompositeKey(compositeKey));
     }

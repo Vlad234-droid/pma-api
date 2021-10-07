@@ -11,4 +11,5 @@ public class ConfigEntry {
     private ConfigEntryType type;
     private int version;
     private UUID parentUuid;
+    private String compositeKey;
 }

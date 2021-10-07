@@ -8,17 +8,18 @@
         <result column="name" property="name"/>
         <result column="version" property="version"/>
         <result column="parent_uuid" property="parentUuid"/>
+        <result column="composite_key" property="compositeKey"/>
         <association property="type" autoMapping="true" columnPrefix="t_"/>
     </resultMap>
 
 
     <select id="findRootConfigEntry" resultMap="configEntryStructure">
         with recursive orgs as (
-            select ce.uuid, ce.name, ce.type_id, ce.version, ce.parent_uuid, 0 as depth
+            select ce.uuid, ce.name, ce.type_id, ce.version, ce.parent_uuid, ce.composite_key, 0 as depth
             from config_entry ce
             where ce.uuid = #{uuid}
             union all
-            select ce.uuid, ce.name, ce.type_id, ce.version, ce.parent_uuid, depth + 1 as depth
+            select ce.uuid, ce.name, ce.type_id, ce.version, ce.parent_uuid, ce.composite_key, depth + 1 as depth
             from orgs
                      join config_entry ce on ce.uuid = orgs.parent_uuid
         )
@@ -26,6 +27,7 @@
                o.name,
                o.type_id,
                o.version,
+               o.composite_key,
                null            as parent_uuid,
                cet.id          as t_id,
                cet.code        as t_code,
@@ -37,11 +39,11 @@
 
     <select id="findConfigEntryParentStructure" resultMap="configEntryStructure">
         WITH RECURSIVE orgs AS (
-            SELECT ce.uuid, name, ce.type_id, ce.version, ce.parent_uuid, 0 as depth
+            SELECT ce.uuid, name, ce.type_id, ce.version, ce.parent_uuid, ce.composite_key, 0 as depth
             FROM config_entry ce
             WHERE ce.uuid = #{uuid}
             UNION ALL
-            SELECT ce.uuid, ce.name, ce.type_id, ce.version, ce.parent_uuid, depth + 1 as depth
+            SELECT ce.uuid, ce.name, ce.type_id, ce.version, ce.parent_uuid, ce.composite_key, depth + 1 as depth
             FROM orgs
                      JOIN config_entry ce ON ce.uuid = orgs.parent_uuid
         )
@@ -50,6 +52,7 @@
                o.type_id,
                o.version,
                o.parent_uuid,
+               o.composite_key,
                cet.id          as t_id,
                cet.code        as t_code,
                cet.description as t_description
@@ -60,11 +63,11 @@
 
     <select id="findConfigEntryChildStructure" resultMap="configEntryStructure">
         WITH RECURSIVE orgs AS (
-            SELECT ce.uuid, name, ce.type_id, ce.version, ce.parent_uuid, 0 as depth
+            SELECT ce.uuid, name, ce.type_id, ce.version, ce.parent_uuid, ce.composite_key, 0 as depth
             FROM config_entry ce
             WHERE ce.uuid = #{uuid}
             UNION ALL
-            SELECT ce.uuid, ce.name, ce.type_id, ce.version, ce.parent_uuid, depth + 1 as depth
+            SELECT ce.uuid, ce.name, ce.type_id, ce.version, ce.parent_uuid, ce.composite_key, depth + 1 as depth
             FROM orgs
                      JOIN config_entry ce ON ce.parent_uuid = orgs.uuid
         )
@@ -73,6 +76,7 @@
                o.type_id,
                o.version,
                o.parent_uuid,
+               o.composite_key,
                cet.id          as t_id,
                cet.code        as t_code,
                cet.description as t_description
@@ -87,6 +91,7 @@
                ce.type_id,
                ce.version,
                ce.parent_uuid,
+               ce.composite_key,
                cet.id          as t_id,
                cet.code        as t_code,
                cet.description as t_description
@@ -96,11 +101,17 @@
         WHERE wce.composite_key like #{key}
     </select>
 
+    <select id="findConfigEntryType" resultType="com.tesco.pma.organisation.api.ConfigEntryType">
+        SELECT id, code, description
+        FROM config_entry_type
+        WHERE id = #{id}
+    </select>
+
     <insert id="createConfigEntry" flushCache="true">
-        INSERT INTO config_entry(uuid, name, type_id, version, parent_uuid)
+        INSERT INTO config_entry(uuid, name, type_id, version, parent_uuid, composite_key)
         VALUES (#{ce.uuid}, #{ce.name},
                 #{ce.type.id},
-                #{ce.version}, #{ce.parentUuid})
+                #{ce.version}, #{ce.parentUuid}, #{ce.compositeKey})
     </insert>
 
     <insert id="publishConfigEntry" flushCache="true">
