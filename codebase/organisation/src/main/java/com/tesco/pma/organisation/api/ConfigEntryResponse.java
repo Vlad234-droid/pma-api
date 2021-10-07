@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-public class BusinessUnitResponse {
+public class ConfigEntryResponse {
     private UUID uuid;
     private String name;
-    private BusinessUnitType type;
+    private ConfigEntryType type;
     private int version;
     private boolean root;
 
-    private List<BusinessUnitResponse> children;
+    private List<ConfigEntryResponse> children;
 }

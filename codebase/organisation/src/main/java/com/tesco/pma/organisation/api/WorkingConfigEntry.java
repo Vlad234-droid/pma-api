@@ -5,10 +5,10 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class BusinessUnit {
-    private UUID uuid;
+public class WorkingConfigEntry {
     private String name;
-    private BusinessUnitType type;
+    private ConfigEntryType type;
     private int version;
-    private UUID parentUuid;
+    private UUID unitUuid;
+    private String compositeKey;
 }
