@@ -1,0 +1,16 @@
+{
+  "metadata": {
+    "classifier": "11111111-2222-3333-4444-555555555555",
+    "eventId": "AAAAAAAAAAAAAAAA1111111111111111-2222222222222222BBBBBBBBBBBBBBBB",
+    "feedId": "colleagues-jit-v1"
+  },
+  "payload": {
+    "eventType": "Reinstatement",
+    "colleagueUUID": "77778888-9999-0000-1111-222222222222",
+    "effectiveDate": "2021-06-25",
+    "changedAttributes": [
+      "someField",
+      "someOtherField"
+    ]
+  }
+}

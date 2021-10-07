@@ -12,7 +12,7 @@ import com.tesco.pma.event.controller.Action;
 import com.tesco.pma.event.controller.EventMapping;
 
 /**
- * Maps events' names to actions' instances. 
+ * Maps event names to action instances.
  */
 public class BaseEventMapping implements EventMapping {
 
@@ -39,7 +39,7 @@ public class BaseEventMapping implements EventMapping {
     /**
      * Sets event name to action mapping (all actions is pre-instantiated).
      * @param actionKey action key
-     * @param actionClassName clas name
+     * @param actionClassName class name
      */
     private void setMapping(Object actionKey, Object actionClassName) {
         try {
@@ -51,13 +51,12 @@ public class BaseEventMapping implements EventMapping {
                 logger.info("Event -> Action mapping: {} -> {}", actionKey, actionInstance);
             }
         } catch (Exception e) {
-            logger.error("Action {} cannot be loaded. Exception was occured:{}", actionClassName, e.getMessage(), e);
+            logger.error("Action {} cannot be loaded. Exception was occurred: {}", actionClassName, e.getMessage(), e);
         }
     }
 
     /**
-     * Looks up a action for the given event.
-     *
+     * Looks up for an action for the given event.
      * @param event current event.
      * @return the looked up action instance, or null.
      */

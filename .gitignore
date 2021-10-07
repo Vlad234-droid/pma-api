@@ -40,4 +40,6 @@ out/
 ### Logs ###
 **/logs/*.log
 **/logs/*.log.zip
-codebase/application/SERVICE_HOME_IS_UNDEFINED/logs/*
+
+codebase/application/src/main/config/application.properties
+codebase/application/SERVICE_HOME_IS_UNDEFINED/**

@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+
+  cep-producer:
+    image: curlimages/curl
+    hostname: cep-producer
+    container_name: cep-producer
+    command: sh -c "/scripts/CEP_Colleague_Changes_Event_Producer.sh"
+    volumes:
+      - ./scripts:/scripts
+    restart: unless-stopped

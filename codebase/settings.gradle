@@ -17,3 +17,4 @@ include 'organisation'
 include 'application'
 
 include 'profile'
+include 'cep'
