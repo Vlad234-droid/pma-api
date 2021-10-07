@@ -195,19 +195,6 @@ camunda:
 spring:
   config:
     activate:
-      on-profile: local
-  datasource:
-    default:
-      # Database config
-      jdbc-url: ${PMA_DB_URL}
-      schema: ${PMA_DB_SCHEMA}
-      username: ${PMA_DB_USERNAME}
-      password: ${PMA_DB_PASSWORD}
-
----
-spring:
-  config:
-    activate:
       on-profile: cep-local
 tesco:
   application:

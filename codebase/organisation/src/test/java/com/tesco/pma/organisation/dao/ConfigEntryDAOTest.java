@@ -22,6 +22,7 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
     private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/organisation/dao/";
     private static final UUID CE_UUID = UUID.fromString("dc55e38f-d4cc-4420-b20c-d9fcfed8ba40");
     private static final UUID CE_UUID_2 = UUID.fromString("a7a76484-bbe2-4b61-b6f6-ea260159a340");
+    private static final String COMPOSITE_KEY_FILTER = "BU/WCE%/#v2";
 
     @Autowired
     private ConfigEntryDAO dao;
@@ -100,7 +101,7 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "config_entries_init.xml"})
     void findPublishedConfigEntriesByKey() {
-        final var result = dao.findPublishedConfigEntriesByKey("BU/WCE%/#v2");
+        final var result = dao.findPublishedConfigEntriesByKey(COMPOSITE_KEY_FILTER);
 
         assertThat(result)
                 .hasSize(2)
@@ -117,13 +118,13 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "config_entries_init.xml"})
     void unpublishConfigEntries() {
 
-        var result = dao.findPublishedConfigEntriesByKey("BU/WCE%/#v2");
+        var result = dao.findPublishedConfigEntriesByKey(COMPOSITE_KEY_FILTER);
 
         assertThat(result).hasSize(2);
 
-        dao.unpublishConfigEntries("BU/WCE%/#v2");
+        dao.unpublishConfigEntries(COMPOSITE_KEY_FILTER);
 
-        assertThat(dao.findPublishedConfigEntriesByKey("BU/WCE%/#v2")).isEmpty();
+        assertThat(dao.findPublishedConfigEntriesByKey(COMPOSITE_KEY_FILTER)).isEmpty();
     }
 
     @Test
@@ -142,7 +143,7 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
 
         dao.publishConfigEntry(wce);
 
-        var result = dao.findPublishedConfigEntriesByKey("BU/WCE%/#v2");
+        var result = dao.findPublishedConfigEntriesByKey(COMPOSITE_KEY_FILTER);
 
         assertThat(result).hasSize(3)
                 .element(2)

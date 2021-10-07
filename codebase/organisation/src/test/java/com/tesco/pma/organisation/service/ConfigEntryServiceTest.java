@@ -25,18 +25,21 @@ public class ConfigEntryServiceTest {
     private static final UUID CHILD_UUID_2 = UUID.randomUUID();
     private static final UUID CHILD_UUID_1_1 = UUID.randomUUID();
 
-    private final ConfigEntry ROOT_CE = getConfigEntry(ROOT_UUID, "root", null);
-    private final ConfigEntry CHILD_CE_1 = getConfigEntry(CHILD_UUID_1, "child_1", ROOT_UUID);
-    private final ConfigEntry CHILD_CE_2 = getConfigEntry(CHILD_UUID_2, "child_2", ROOT_UUID);
-    private final ConfigEntry CHILD_CE_1_1 = getConfigEntry(CHILD_UUID_1_1, "child_1_1", CHILD_UUID_1);
+    private static final String ROOT_NAME = "root";
+    private static final String CHILD_NAME_1 = "child_1";
+    private static final String CHILD_NAME_2 = "child_2";
+    private static final String CHILD_NAME_1_1 = "child_1_1";
+
     private final ConfigEntryDAO dao = Mockito.mock(ConfigEntryDAO.class);
 
     private final ConfigEntryService service = new ConfigEntryServiceImpl(dao);
 
-
     @Test
     void getStructure() {
-        Mockito.when(dao.getFullStructure(CHILD_UUID_1)).thenReturn(new HashSet<>(Set.of(ROOT_CE, CHILD_CE_1, CHILD_CE_2, CHILD_CE_1_1)));
+        Mockito.when(dao.getFullStructure(CHILD_UUID_1)).thenReturn(new HashSet<>(Set.of(getConfigEntry(ROOT_UUID, ROOT_NAME, null),
+                getConfigEntry(CHILD_UUID_1, CHILD_NAME_1, ROOT_UUID),
+                getConfigEntry(CHILD_UUID_2, CHILD_NAME_2, ROOT_UUID),
+                getConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, CHILD_UUID_1))));
 
         var structure = service.getStructure(CHILD_UUID_1);
 
@@ -51,7 +54,10 @@ public class ConfigEntryServiceTest {
 
     @Test
     void generateCompositeKey() {
-        Mockito.when(dao.findConfigEntryParentStructure(CHILD_UUID_1_1)).thenReturn(new ArrayList<>(List.of(ROOT_CE, CHILD_CE_1, CHILD_CE_1_1)));
+        Mockito.when(dao.findConfigEntryParentStructure(CHILD_UUID_1_1))
+                .thenReturn(new ArrayList<>(List.of(getConfigEntry(ROOT_UUID, ROOT_NAME, null),
+                        getConfigEntry(CHILD_UUID_1, CHILD_NAME_1, ROOT_UUID),
+                        getConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, CHILD_UUID_1))));
 
         var compositeKey = service.generateCompositeKey(CHILD_UUID_1_1);
 
@@ -60,7 +66,11 @@ public class ConfigEntryServiceTest {
 
     @Test
     void getPublishedChildStructureByCompositeKey() {
-        Mockito.when(dao.findPublishedConfigEntriesByKey("BU/root/BU/child_1%/#v4")).thenReturn(new ArrayList<>(List.of(ROOT_CE, CHILD_CE_1, CHILD_CE_2, CHILD_CE_1_1)));
+        Mockito.when(dao.findPublishedConfigEntriesByKey("BU/root/BU/child_1%/#v4"))
+                .thenReturn(new ArrayList<>(List.of(getConfigEntry(ROOT_UUID, ROOT_NAME, null),
+                        getConfigEntry(CHILD_UUID_1, CHILD_NAME_1, ROOT_UUID),
+                        getConfigEntry(CHILD_UUID_2, CHILD_NAME_2, ROOT_UUID),
+                        getConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, CHILD_UUID_1))));
 
         var structure = service.getPublishedChildStructureByCompositeKey("BU/root/BU/child_1/#v4");
 
@@ -75,20 +85,31 @@ public class ConfigEntryServiceTest {
 
     @Test
     void publishConfigEntries() {
-        Mockito.when(dao.findConfigEntryParentStructure(CHILD_UUID_1)).thenReturn(new ArrayList<>(List.of(ROOT_CE, CHILD_CE_1)));
-        Mockito.when(dao.findConfigEntryChildStructure(CHILD_UUID_1)).thenReturn(new ArrayList<>(List.of(CHILD_CE_1, CHILD_CE_1_1)));
-        Mockito.when(dao.getFullStructure(CHILD_UUID_1)).thenReturn(new HashSet<>(List.of(ROOT_CE, CHILD_CE_1, CHILD_CE_2, CHILD_CE_1_1)));
+        Mockito.when(dao.findConfigEntryParentStructure(CHILD_UUID_1))
+                .thenReturn(new ArrayList<>(List.of(getConfigEntry(ROOT_UUID, ROOT_NAME, null),
+                        getConfigEntry(CHILD_UUID_1, CHILD_NAME_1, ROOT_UUID))));
+        Mockito.when(dao.findConfigEntryChildStructure(CHILD_UUID_1))
+                .thenReturn(new ArrayList<>(List.of(getConfigEntry(CHILD_UUID_1, CHILD_NAME_1, ROOT_UUID),
+                        getConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, CHILD_UUID_1))));
+        Mockito.when(dao.getFullStructure(CHILD_UUID_1))
+                .thenReturn(new HashSet<>(List.of(getConfigEntry(ROOT_UUID, ROOT_NAME, null),
+                        getConfigEntry(CHILD_UUID_1, CHILD_NAME_1, ROOT_UUID),
+                        getConfigEntry(CHILD_UUID_2, CHILD_NAME_2, ROOT_UUID),
+                        getConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, CHILD_UUID_1))));
 
         service.publishConfigEntry(CHILD_UUID_1);
 
         Mockito.verify(dao).unpublishConfigEntries("BU/root/BU/child_1%");
-        Mockito.verify(dao).publishConfigEntry(getWorkingConfigEntry(CHILD_UUID_1, "child_1", "BU/root/BU/child_1/#v4"));
-        Mockito.verify(dao).publishConfigEntry(getWorkingConfigEntry(CHILD_UUID_1_1, "child_1_1", "BU/root/BU/child_1/BU/child_1_1/#v4"));
+        Mockito.verify(dao).publishConfigEntry(getWorkingConfigEntry(CHILD_UUID_1, CHILD_NAME_1, "BU/root/BU/child_1/#v4"));
+        Mockito.verify(dao).publishConfigEntry(getWorkingConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, "BU/root/BU/child_1/BU/child_1_1/#v4"));
     }
 
     @Test
     void unpublishConfigEntries() {
-        Mockito.when(dao.findConfigEntryParentStructure(CHILD_UUID_1_1)).thenReturn(new ArrayList<>(List.of(ROOT_CE, CHILD_CE_1, CHILD_CE_1_1)));
+        Mockito.when(dao.findConfigEntryParentStructure(CHILD_UUID_1_1))
+                .thenReturn(new ArrayList<>(List.of(getConfigEntry(ROOT_UUID, ROOT_NAME, null),
+                        getConfigEntry(CHILD_UUID_1, CHILD_NAME_1, ROOT_UUID),
+                        getConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, CHILD_UUID_1))));
 
         service.unpublishConfigEntry(CHILD_UUID_1_1);
 
@@ -104,8 +125,12 @@ public class ConfigEntryServiceTest {
 
     @Test
     void createConfigEntryWithParent() {
-        Mockito.when(dao.findRootConfigEntry(ROOT_UUID)).thenReturn(getConfigEntry(ROOT_UUID, "root", null));
-        Mockito.when(dao.findConfigEntryChildStructure(ROOT_UUID)).thenReturn(new ArrayList<>(List.of(ROOT_CE, CHILD_CE_1, CHILD_CE_1_1)));
+        Mockito.when(dao.findRootConfigEntry(ROOT_UUID))
+                .thenReturn(getConfigEntry(ROOT_UUID, ROOT_NAME, null));
+        Mockito.when(dao.findConfigEntryChildStructure(ROOT_UUID)).
+                thenReturn(new ArrayList<>(List.of(getConfigEntry(ROOT_UUID, ROOT_NAME, null),
+                        getConfigEntry(CHILD_UUID_1, CHILD_NAME_1, ROOT_UUID),
+                        getConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, CHILD_UUID_1))));
 
         service.createConfigEntry(getConfigEntry(CHILD_UUID_1, "child", ROOT_UUID));
 
@@ -114,27 +139,35 @@ public class ConfigEntryServiceTest {
 
     @Test
     void updateConfigEntry() {
-        Mockito.when(dao.findRootConfigEntry(CHILD_UUID_1)).thenReturn(getConfigEntry(ROOT_UUID, "root", null));
-        Mockito.when(dao.findConfigEntryChildStructure(ROOT_UUID)).thenReturn(new ArrayList<>(List.of(ROOT_CE, CHILD_CE_1, CHILD_CE_1_1)));
+        Mockito.when(dao.findRootConfigEntry(CHILD_UUID_1))
+                .thenReturn(getConfigEntry(ROOT_UUID, ROOT_NAME, null));
+        Mockito.when(dao.findConfigEntryChildStructure(ROOT_UUID))
+                .thenReturn(new ArrayList<>(List.of(getConfigEntry(ROOT_UUID, ROOT_NAME, null),
+                        getConfigEntry(CHILD_UUID_1, CHILD_NAME_1, ROOT_UUID),
+                        getConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, CHILD_UUID_1))));
 
         service.updateConfigEntry(getConfigEntry(CHILD_UUID_1, "child_updated", null));
 
         Mockito.verify(dao, Mockito.times(3)).createConfigEntry(Mockito.argThat(a -> a.getVersion() == 5));
         Mockito.verify(dao, Mockito.times(2)).createConfigEntry(Mockito.argThat(a -> a.getParentUuid() == null));
-        Mockito.verify(dao).createConfigEntry(Mockito.argThat(a -> a.getParentUuid() == null && a.getName().equals("child_updated")));
+        Mockito.verify(dao).createConfigEntry(Mockito.argThat(a -> a.getParentUuid() == null && "child_updated".equals(a.getName())));
     }
 
     @Test
     void deleteConfigEntry() {
-        Mockito.when(dao.findRootConfigEntry(CHILD_UUID_1)).thenReturn(getConfigEntry(ROOT_UUID, "root", null));
-        Mockito.when(dao.findConfigEntryChildStructure(ROOT_UUID)).thenReturn(new ArrayList<>(List.of(ROOT_CE, CHILD_CE_1, CHILD_CE_1_1)));
+        Mockito.when(dao.findRootConfigEntry(CHILD_UUID_1))
+                .thenReturn(getConfigEntry(ROOT_UUID, ROOT_NAME, null));
+        Mockito.when(dao.findConfigEntryChildStructure(ROOT_UUID))
+                .thenReturn(new ArrayList<>(List.of(getConfigEntry(ROOT_UUID, ROOT_NAME, null),
+                        getConfigEntry(CHILD_UUID_1, CHILD_NAME_1, ROOT_UUID),
+                        getConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, CHILD_UUID_1))));
 
         service.deleteConfigEntry(CHILD_UUID_1);
 
         Mockito.verify(dao).createConfigEntry(Mockito.argThat(a -> a.getVersion() == 5));
     }
 
-    private ConfigEntry getConfigEntry(UUID uuid, String name, UUID parentUuid) {
+    private static ConfigEntry getConfigEntry(UUID uuid, String name, UUID parentUuid) {
         var cet = getConfigEntryType();
 
         var ce = new ConfigEntry();
@@ -146,7 +179,7 @@ public class ConfigEntryServiceTest {
         return ce;
     }
 
-    private WorkingConfigEntry getWorkingConfigEntry(UUID uuid, String name, String key) {
+    private static WorkingConfigEntry getWorkingConfigEntry(UUID uuid, String name, String key) {
         var cet = getConfigEntryType();
 
         var ce = new WorkingConfigEntry();
@@ -159,7 +192,7 @@ public class ConfigEntryServiceTest {
     }
 
 
-    private ConfigEntryType getConfigEntryType() {
+    private static ConfigEntryType getConfigEntryType() {
         var cet = new ConfigEntryType();
         cet.setId(1);
         cet.setCode("BU");
