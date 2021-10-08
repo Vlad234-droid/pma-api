@@ -11,11 +11,13 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConfigEntryDAOTest extends AbstractDAOTest {
 
@@ -149,5 +151,47 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
         assertThat(result).hasSize(3)
                 .element(2)
                 .returns(CE_UUID_2, ConfigEntry::getUuid);
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "config_entries_init.xml"})
+    void getMaxVersionForRootEntry() {
+
+        var result = dao.getMaxVersionForRootEntry("CE1", 1);
+        assertEquals(3, result);
+
+        result = dao.getMaxVersionForRootEntry("Invalid name", 1);
+        assertEquals(0, result);
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "config_entries_init.xml"})
+    void findAllRootEntries() {
+
+        var result = dao.findAllRootEntries();
+
+        assertThat(result).hasSize(3);
+
+        var uuids = result.stream().map(ConfigEntry::getUuid).collect(Collectors.toSet());
+
+        assertTrue(uuids.contains(CE_UUID));
+        assertTrue(uuids.contains(UUID.fromString("56141037-6e2d-45f0-b47f-4875e68dd1d7")));
+        assertTrue(uuids.contains(UUID.fromString("6bc4f35b-4fd2-4e95-986e-765e4fd9b037")));
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "config_entries_init.xml"})
+    void findConfigEntriesByKey() {
+        final var result = dao.findConfigEntriesByKey("BU/CE1%/#v3");
+
+        assertThat(result)
+                .hasSize(2)
+                .element(0)
+                .returns(CE_UUID, ConfigEntry::getUuid);
+
+        assertThat(result)
+                .element(1)
+                .returns(CE_UUID_2, ConfigEntry::getUuid)
+                .returns(CE_UUID, ConfigEntry::getParentUuid);
     }
 }

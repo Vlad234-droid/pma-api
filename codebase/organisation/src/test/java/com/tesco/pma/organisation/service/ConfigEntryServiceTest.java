@@ -178,6 +178,39 @@ public class ConfigEntryServiceTest {
         Mockito.verify(dao).createConfigEntry(Mockito.argThat(a -> a.getVersion() == 5));
     }
 
+    @Test
+    void getUnpublishedRoots() {
+        Mockito.when(dao.findAllRootEntries()).thenReturn(List.of(getConfigEntry(ROOT_UUID, ROOT_NAME, null),
+                getConfigEntry(CHILD_UUID_1, CHILD_NAME_1, null)));
+
+        var structure = service.getUnpublishedRoots();
+
+        assertEquals(structure.size(), 2);
+        var uuids = structure.stream().map(ConfigEntryResponse::getUuid).collect(Collectors.toList());
+        assertTrue(uuids.contains(ROOT_UUID));
+        assertTrue(uuids.contains(CHILD_UUID_1));
+        assertTrue(structure.stream().allMatch(ConfigEntryResponse::isRoot));
+    }
+
+    @Test
+    void getUnpublishedChildStructureByCompositeKey() {
+        Mockito.when(dao.findConfigEntriesByKey("BU/root/BU/child_1%/#v4"))
+                .thenReturn(new ArrayList<>(List.of(getConfigEntry(ROOT_UUID, ROOT_NAME, null),
+                        getConfigEntry(CHILD_UUID_1, CHILD_NAME_1, ROOT_UUID),
+                        getConfigEntry(CHILD_UUID_2, CHILD_NAME_2, ROOT_UUID),
+                        getConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, CHILD_UUID_1))));
+
+        var structure = service.getUnpublishedChildStructureByCompositeKey("BU/root/BU/child_1/#v4");
+
+        assertEquals(ROOT_UUID, structure.getUuid());
+        var children = structure.getChildren();
+        assertEquals(children.size(), 2);
+        var uuids = children.stream().map(ConfigEntryResponse::getUuid).collect(Collectors.toList());
+        assertTrue(uuids.contains(CHILD_UUID_1));
+        assertTrue(uuids.contains(CHILD_UUID_2));
+        assertEquals(CHILD_UUID_1_1, children.stream().filter(s -> s.getUuid().equals(CHILD_UUID_1)).findFirst().get().getChildren().get(0).getUuid());
+    }
+
     private static ConfigEntry getConfigEntry(UUID uuid, String name, UUID parentUuid) {
         var cet = getConfigEntryType();
 
@@ -201,7 +234,6 @@ public class ConfigEntryServiceTest {
         ce.setVersion(4);
         return ce;
     }
-
 
     private static ConfigEntryType getConfigEntryType() {
         var cet = new ConfigEntryType();

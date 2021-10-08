@@ -45,7 +45,7 @@ public interface ConfigEntryDAO {
     List<ConfigEntry> findPublishedConfigEntriesByKey(@Param("key") String key);
 
     /**
-     * Gets child structure by composite key
+     * Gets unpublished child structure by composite key
      *
      * @param key - composite key
      * @return child structure includes root object
@@ -53,7 +53,7 @@ public interface ConfigEntryDAO {
     List<ConfigEntry> findConfigEntriesByKey(@Param("key") String key);
 
     /**
-     * Gets all root config entries
+     * Gets all unpublished root config entries
      *
      * @return list of root entries
      */
@@ -67,6 +67,13 @@ public interface ConfigEntryDAO {
      */
     int createConfigEntry(@Param("ce") ConfigEntry configEntry);
 
+    /**
+     * Gets max version by name and type. If nothing found returns 0
+     *
+     * @param name   - entry name
+     * @param typeId - type identifier
+     * @return max version or 0 if nothing found
+     */
     int getMaxVersionForRootEntry(@Param("name") String name, @Param("typeId") int typeId);
 
     /**

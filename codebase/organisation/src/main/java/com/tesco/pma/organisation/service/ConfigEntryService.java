@@ -67,7 +67,18 @@ public interface ConfigEntryService {
      */
     void deleteConfigEntry(UUID configEntryUuid);
 
+    /**
+     * Gets all unpublished root config entries
+     *
+     * @return list of root entries
+     */
     List<ConfigEntryResponse> getUnpublishedRoots();
 
+    /**
+     * Gets unpublished child structure by composite key
+     *
+     * @param compositeKey - composite key
+     * @return child structure includes root object
+     */
     ConfigEntryResponse getUnpublishedChildStructureByCompositeKey(String compositeKey);
 }
