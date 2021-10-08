@@ -12,6 +12,7 @@ public class ConfigEntryResponse {
     private ConfigEntryType type;
     private int version;
     private boolean root;
+    private String compositeKey;
 
     private List<ConfigEntryResponse> children;
 }

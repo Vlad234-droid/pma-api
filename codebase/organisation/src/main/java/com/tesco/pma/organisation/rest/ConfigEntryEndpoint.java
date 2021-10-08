@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -43,12 +44,27 @@ public class ConfigEntryEndpoint {
         return RestResponse.success(configEntryService.getStructure(entryUuid));
     }
 
-    @Operation(summary = "Get config entry structure by composite key", tags = {"config-entry"})
+    @Operation(summary = "Get published config entry structure by composite key", tags = {"config-entry"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the config entry structure")
     @GetMapping(value = "published", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<ConfigEntryResponse> getEntryConfigStructureByCompositeKey(@RequestParam String compositeKey) {
+    public RestResponse<ConfigEntryResponse> getPublishedEntryConfigStructureByCompositeKey(@RequestParam String compositeKey) {
         return RestResponse.success(configEntryService.getPublishedChildStructureByCompositeKey(compositeKey));
     }
+
+    @Operation(summary = "Get all root config entries ", tags = {"config-entry"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the config entry structure")
+    @GetMapping(value = "roots", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<List<ConfigEntryResponse>> getUnpublished() {
+        return RestResponse.success(configEntryService.getUnpublishedRoots());
+    }
+
+    @Operation(summary = "Get unpublished structure by composite key", tags = {"config-entry"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the config entry structure")
+    @GetMapping(produces = APPLICATION_JSON_VALUE)
+    public RestResponse<ConfigEntryResponse> getUnpublished(@RequestParam String compositeKey) {
+        return RestResponse.success(configEntryService.getUnpublishedChildStructureByCompositeKey(compositeKey));
+    }
+
 
     @Operation(summary = "Create config entry",
             tags = {"config-entry"})

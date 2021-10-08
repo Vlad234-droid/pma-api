@@ -45,6 +45,21 @@ public interface ConfigEntryDAO {
     List<ConfigEntry> findPublishedConfigEntriesByKey(@Param("key") String key);
 
     /**
+     * Gets child structure by composite key
+     *
+     * @param key - composite key
+     * @return child structure includes root object
+     */
+    List<ConfigEntry> findConfigEntriesByKey(@Param("key") String key);
+
+    /**
+     * Gets all root config entries
+     *
+     * @return list of root entries
+     */
+    List<ConfigEntry> findAllRootEntries();
+
+    /**
      * Creates config entry
      *
      * @param configEntry - object to be created

@@ -3,6 +3,7 @@ package com.tesco.pma.organisation.service;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.ConfigEntryResponse;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface ConfigEntryService {
@@ -65,4 +66,8 @@ public interface ConfigEntryService {
      * @param configEntryUuid - config entry identifier
      */
     void deleteConfigEntry(UUID configEntryUuid);
+
+    List<ConfigEntryResponse> getUnpublishedRoots();
+
+    ConfigEntryResponse getUnpublishedChildStructureByCompositeKey(String compositeKey);
 }

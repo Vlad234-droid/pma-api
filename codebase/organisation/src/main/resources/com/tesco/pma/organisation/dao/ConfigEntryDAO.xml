@@ -101,6 +101,36 @@
         WHERE wce.composite_key like #{key}
     </select>
 
+    <select id="findConfigEntriesByKey" resultMap="configEntryStructure">
+        SELECT ce.uuid,
+               ce.name,
+               ce.type_id,
+               ce.version,
+               ce.parent_uuid,
+               ce.composite_key,
+               cet.id          as t_id,
+               cet.code        as t_code,
+               cet.description as t_description
+        FROM config_entry ce
+                 JOIN config_entry_type cet ON cet.id = ce.type_id
+        WHERE ce.composite_key like #{key}
+    </select>
+
+    <select id="findAllRootEntries" resultMap="configEntryStructure">
+        SELECT ce.uuid,
+               ce.name,
+               ce.type_id,
+               ce.version,
+               ce.parent_uuid,
+               ce.composite_key,
+               cet.id          as t_id,
+               cet.code        as t_code,
+               cet.description as t_description
+        FROM config_entry ce
+                 JOIN config_entry_type cet ON cet.id = ce.type_id
+        WHERE ce.parent_uuid is null
+    </select>
+
     <select id="findConfigEntryType" resultType="com.tesco.pma.organisation.api.ConfigEntryType">
         SELECT id, code, description
         FROM config_entry_type

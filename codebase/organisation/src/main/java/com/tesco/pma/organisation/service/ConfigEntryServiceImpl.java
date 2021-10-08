@@ -140,6 +140,22 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
         copyStructure(structure);
     }
 
+    @Override
+    public List<ConfigEntryResponse> getUnpublishedRoots() {
+        return dao.findAllRootEntries()
+                .stream()
+                .map(this::buildResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ConfigEntryResponse getUnpublishedChildStructureByCompositeKey(String compositeKey) {
+        var versionPosition = compositeKey.indexOf("/#v");
+        var searchTerm = compositeKey.substring(0, versionPosition) + "%" + compositeKey.substring(versionPosition);
+        var entries = dao.findConfigEntriesByKey(searchTerm);
+        return buildStructure(entries);
+    }
+
     private void copyStructure(List<ConfigEntry> structure) {
         var oldToNewUuid = new HashMap<UUID, UUID>();
         structure.forEach(ce -> {
@@ -177,6 +193,7 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
         response.setType(configEntry.getType());
         response.setVersion(configEntry.getVersion());
         response.setRoot(configEntry.getParentUuid() == null);
+        response.setCompositeKey(configEntry.getCompositeKey());
         response.setChildren(new ArrayList<>());
         return response;
     }
