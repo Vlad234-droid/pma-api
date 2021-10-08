@@ -10,6 +10,7 @@
     },
     "version": 4,
     "root": true,
+    "compositeKey": "BU/Test/#v1",
     "children": [
       {
         "uuid": null,
@@ -17,6 +18,7 @@
         "type": null,
         "version": 0,
         "root": false,
+        "compositeKey": null,
         "children": null
       }
     ]

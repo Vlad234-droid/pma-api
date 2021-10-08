@@ -33,6 +33,7 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
     private static final UUID ENTRY_UUID = UUID.fromString("fe33d24d-1fd2-4e68-8dff-6220609a80df");
     private static final String COMPOSITE_KEY = "BU/Test/#v1";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final String GET_STRUCTURE_JSON = "get_structure.json";
 
     @Autowired
     protected MockMvc mvc;
@@ -52,11 +53,11 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
                 .andReturn()
                 .getResponse();
 
-        assertResponseContent(result, "get_structure.json");
+        assertResponseContent(result, GET_STRUCTURE_JSON);
     }
 
     @Test
-    void getEntryConfigStructureByCompositeKey() throws Exception {
+    void getPublishedEntryConfigStructureByCompositeKey() throws Exception {
 
         when(service.getPublishedChildStructureByCompositeKey(COMPOSITE_KEY)).thenReturn(getConfigEntryResponse());
 
@@ -67,7 +68,37 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
                 .andReturn()
                 .getResponse();
 
-        assertResponseContent(result, "get_structure.json");
+        assertResponseContent(result, GET_STRUCTURE_JSON);
+    }
+
+    @Test
+    void getEntryConfigStructureByCompositeKey() throws Exception {
+
+        when(service.getUnpublishedChildStructureByCompositeKey(COMPOSITE_KEY)).thenReturn(getConfigEntryResponse());
+
+        var result = mvc.perform(get("/config-entries").param("compositeKey", COMPOSITE_KEY)
+                .accept(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andReturn()
+                .getResponse();
+
+        assertResponseContent(result, GET_STRUCTURE_JSON);
+    }
+
+    @Test
+    void getUnpublishedRoots() throws Exception {
+
+        when(service.getUnpublishedChildStructureByCompositeKey(COMPOSITE_KEY)).thenReturn(getConfigEntryResponse());
+
+        var result = mvc.perform(get("/config-entries").param("compositeKey", COMPOSITE_KEY)
+                .accept(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andReturn()
+                .getResponse();
+
+        assertResponseContent(result, GET_STRUCTURE_JSON);
     }
 
     @Test
@@ -154,6 +185,7 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
         ce.setType(cet);
         ce.setVersion(4);
         ce.setRoot(true);
+        ce.setCompositeKey(COMPOSITE_KEY);
         ce.setChildren(List.of(new ConfigEntryResponse()));
         return ce;
     }

@@ -37,6 +37,11 @@
         where depth = (select max(depth) from orgs)
     </select>
 
+    <select id="getMaxVersionForRootEntry" resultType="int">
+        SELECT COALESCE(MAX(version), 0) FROM config_entry
+        WHERE name = #{name} AND type_id = #{typeId}
+    </select>
+
     <select id="findConfigEntryParentStructure" resultMap="configEntryStructure">
         WITH RECURSIVE orgs AS (
             SELECT ce.uuid, name, ce.type_id, ce.version, ce.parent_uuid, ce.composite_key, 0 as depth

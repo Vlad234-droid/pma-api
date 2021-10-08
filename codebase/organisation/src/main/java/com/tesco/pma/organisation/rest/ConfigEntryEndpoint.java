@@ -54,7 +54,7 @@ public class ConfigEntryEndpoint {
     @Operation(summary = "Get all root config entries ", tags = {"config-entry"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the config entry structure")
     @GetMapping(value = "roots", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<ConfigEntryResponse>> getUnpublished() {
+    public RestResponse<List<ConfigEntryResponse>> getUnpublishedRoots() {
         return RestResponse.success(configEntryService.getUnpublishedRoots());
     }
 

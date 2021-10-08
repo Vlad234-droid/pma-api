@@ -139,6 +139,7 @@ public class ConfigEntryServiceTest {
                         getConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, CHILD_UUID_1))));
         Mockito.when(dao.findConfigEntryType(1))
                 .thenReturn(getConfigEntryType());
+        Mockito.when(dao.getMaxVersionForRootEntry(ROOT_NAME, 1)).thenReturn(4);
 
         service.createConfigEntry(getConfigEntry(CHILD_UUID_1, "child", ROOT_UUID));
 
@@ -153,6 +154,7 @@ public class ConfigEntryServiceTest {
                 .thenReturn(new ArrayList<>(List.of(getConfigEntry(ROOT_UUID, ROOT_NAME, null),
                         getConfigEntry(CHILD_UUID_1, CHILD_NAME_1, ROOT_UUID),
                         getConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, CHILD_UUID_1))));
+        Mockito.when(dao.getMaxVersionForRootEntry(ROOT_NAME, 1)).thenReturn(4);
 
         service.updateConfigEntry(getConfigEntry(CHILD_UUID_1, "child_updated", null));
 
@@ -169,6 +171,7 @@ public class ConfigEntryServiceTest {
                 .thenReturn(new ArrayList<>(List.of(getConfigEntry(ROOT_UUID, ROOT_NAME, null),
                         getConfigEntry(CHILD_UUID_1, CHILD_NAME_1, ROOT_UUID),
                         getConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, CHILD_UUID_1))));
+        Mockito.when(dao.getMaxVersionForRootEntry(ROOT_NAME, 1)).thenReturn(4);
 
         service.deleteConfigEntry(CHILD_UUID_1);
 

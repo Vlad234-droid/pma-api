@@ -102,7 +102,7 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
             dao.createConfigEntry(configEntry);
         } else {
             var root = dao.findRootConfigEntry(parentUuid);
-            var version = root.getVersion() + 1;
+            var version = dao.getMaxVersionForRootEntry(root.getName(), root.getType().getId()) + 1;
             var structure = dao.findConfigEntryChildStructure(root.getUuid());
             structure.add(configEntry);
             structure.forEach(bu -> bu.setVersion(version));
@@ -114,7 +114,7 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
     @Transactional
     public void updateConfigEntry(ConfigEntry configEntry) {
         var root = dao.findRootConfigEntry(configEntry.getUuid());
-        var version = root.getVersion() + 1;
+        var version = dao.getMaxVersionForRootEntry(root.getName(), root.getType().getId()) + 1;
         var structure = dao.findConfigEntryChildStructure(root.getUuid());
         structure.forEach(bu -> bu.setVersion(version));
         structure.stream()
@@ -133,7 +133,7 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
     @Transactional
     public void deleteConfigEntry(UUID configEntryUuid) {
         var root = dao.findRootConfigEntry(configEntryUuid);
-        var version = root.getVersion() + 1;
+        var version = dao.getMaxVersionForRootEntry(root.getName(), root.getType().getId()) + 1;
         var structure = dao.findConfigEntryChildStructure(root.getUuid());
         structure = structure.stream().takeWhile(ce -> !ce.getUuid().equals(configEntryUuid)).collect(Collectors.toList());
         structure.forEach(ce -> ce.setVersion(version));

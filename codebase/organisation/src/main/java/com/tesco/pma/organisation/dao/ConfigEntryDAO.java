@@ -67,6 +67,8 @@ public interface ConfigEntryDAO {
      */
     int createConfigEntry(@Param("ce") ConfigEntry configEntry);
 
+    int getMaxVersionForRootEntry(@Param("name") String name, @Param("typeId") int typeId);
+
     /**
      * Creates record in publish table for config entry
      *
