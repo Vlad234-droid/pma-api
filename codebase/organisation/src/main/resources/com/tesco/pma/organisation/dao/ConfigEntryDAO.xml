@@ -161,4 +161,10 @@
         FROM working_config_entry
         WHERE composite_key like #{key};
     </delete>
+
+    <delete id="deleteConfigEntry" flushCache="true">
+        DELETE
+        FROM config_entry
+        WHERE uuid = #{uuid};
+    </delete>
 </mapper>

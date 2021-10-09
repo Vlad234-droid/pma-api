@@ -194,4 +194,24 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
                 .returns(CE_UUID_2, ConfigEntry::getUuid)
                 .returns(CE_UUID, ConfigEntry::getParentUuid);
     }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "config_entries_init.xml"})
+    void findConfigEntryType() {
+        final var result = dao.findConfigEntryType(1);
+
+        assertEquals(1, result.getId());
+        assertEquals("BU", result.getCode());
+        assertEquals("bu desc", result.getDescription());
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "config_entries_init.xml"})
+    void deleteConfigEntry() {
+        dao.deleteConfigEntry(CE_UUID);
+
+        assertThat(dao.findConfigEntryChildStructure(CE_UUID))
+                .isEmpty();
+
+    }
 }

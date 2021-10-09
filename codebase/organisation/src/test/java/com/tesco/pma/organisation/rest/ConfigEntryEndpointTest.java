@@ -34,6 +34,7 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
     private static final String COMPOSITE_KEY = "BU/Test/#v1";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String GET_STRUCTURE_JSON = "get_structure.json";
+    private static final String GET_ARRAY_STRUCTURE_JSON = "get_array_structure.json";
 
     @Autowired
     protected MockMvc mvc;
@@ -59,7 +60,7 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
     @Test
     void getPublishedEntryConfigStructureByCompositeKey() throws Exception {
 
-        when(service.getPublishedChildStructureByCompositeKey(COMPOSITE_KEY)).thenReturn(getConfigEntryResponse());
+        when(service.getPublishedChildStructureByCompositeKey(COMPOSITE_KEY)).thenReturn(List.of(getConfigEntryResponse()));
 
         var result = mvc.perform(get("/config-entries/published").param("compositeKey", COMPOSITE_KEY)
                 .accept(APPLICATION_JSON))
@@ -68,13 +69,13 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
                 .andReturn()
                 .getResponse();
 
-        assertResponseContent(result, GET_STRUCTURE_JSON);
+        assertResponseContent(result, GET_ARRAY_STRUCTURE_JSON);
     }
 
     @Test
     void getEntryConfigStructureByCompositeKey() throws Exception {
 
-        when(service.getUnpublishedChildStructureByCompositeKey(COMPOSITE_KEY)).thenReturn(getConfigEntryResponse());
+        when(service.getUnpublishedChildStructureByCompositeKey(COMPOSITE_KEY)).thenReturn(List.of(getConfigEntryResponse()));
 
         var result = mvc.perform(get("/config-entries").param("compositeKey", COMPOSITE_KEY)
                 .accept(APPLICATION_JSON))
@@ -83,22 +84,22 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
                 .andReturn()
                 .getResponse();
 
-        assertResponseContent(result, GET_STRUCTURE_JSON);
+        assertResponseContent(result, GET_ARRAY_STRUCTURE_JSON);
     }
 
     @Test
     void getUnpublishedRoots() throws Exception {
 
-        when(service.getUnpublishedChildStructureByCompositeKey(COMPOSITE_KEY)).thenReturn(getConfigEntryResponse());
+        when(service.getUnpublishedRoots()).thenReturn(List.of(getConfigEntryResponse()));
 
-        var result = mvc.perform(get("/config-entries").param("compositeKey", COMPOSITE_KEY)
+        var result = mvc.perform(get("/config-entries/roots")
                 .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andReturn()
                 .getResponse();
 
-        assertResponseContent(result, GET_STRUCTURE_JSON);
+        assertResponseContent(result, GET_ARRAY_STRUCTURE_JSON);
     }
 
     @Test

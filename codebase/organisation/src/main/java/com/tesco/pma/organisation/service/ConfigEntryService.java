@@ -28,9 +28,9 @@ public interface ConfigEntryService {
      * Gets published child structure by composite key
      *
      * @param key - composite key
-     * @return published child structure includes root object
+     * @return published child structure includes root objects
      */
-    ConfigEntryResponse getPublishedChildStructureByCompositeKey(String key);
+    List<ConfigEntryResponse> getPublishedChildStructureByCompositeKey(String key);
 
     /**
      * Creates record in publish table for config entry
@@ -78,7 +78,7 @@ public interface ConfigEntryService {
      * Gets unpublished child structure by composite key
      *
      * @param compositeKey - composite key
-     * @return child structure includes root object
+     * @return child structure includes root objects
      */
-    ConfigEntryResponse getUnpublishedChildStructureByCompositeKey(String compositeKey);
+    List<ConfigEntryResponse> getUnpublishedChildStructureByCompositeKey(String compositeKey);
 }

@@ -22,32 +22,42 @@
         <comment>Init table config_entry_type</comment>
         <insert tableName="config_entry_type">
             <column name="id" value="1"/>
-            <column name="code" value="HEAD_OFFICE"/>
-            <column name="description" value="Head office business unit type"/>
+            <column name="code" value="l1"/>
+            <column name="description" value="Level 1"/>
         </insert>
         <insert tableName="config_entry_type">
             <column name="id" value="2"/>
-            <column name="code" value="SUBSIDIARY"/>
-            <column name="description" value="Subsidiary business unit type"/>
+            <column name="code" value="l2"/>
+            <column name="description" value="Level 2"/>
         </insert>
         <insert tableName="config_entry_type">
             <column name="id" value="3"/>
-            <column name="code" value="DEPARTMENT"/>
-            <column name="description" value="Department business unit type"/>
+            <column name="code" value="l3"/>
+            <column name="description" value="Level 3"/>
+        </insert>
+        <insert tableName="config_entry_type">
+            <column name="id" value="4"/>
+            <column name="code" value="l4"/>
+            <column name="description" value="Level 4"/>
         </insert>
         <rollback>
             <delete tableName="config_entry_type">
-                <where>code = 'HEAD_OFFICE'</where>
+                <where>code = 'l1'</where>
             </delete>
         </rollback>
         <rollback>
             <delete tableName="config_entry_type">
-                <where>code = 'SUBSIDIARY'</where>
+                <where>code = 'l2'</where>
             </delete>
         </rollback>
         <rollback>
             <delete tableName="config_entry_type">
-                <where>code = 'DEPARTMENT'</where>
+                <where>code = 'l3'</where>
+            </delete>
+        </rollback>
+        <rollback>
+            <delete tableName="config_entry_type">
+                <where>code = 'l4'</where>
             </delete>
         </rollback>
     </changeSet>
@@ -83,8 +93,6 @@
                                  constraintName="config_entry_parent_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="uuid" referencedTableName="config_entry" validate="true"/>
-        <addUniqueConstraint columnNames="name, type_id, version" constraintName="config_entry_uc"
-                             tableName="config_entry"/>
     </changeSet>
 
     <changeSet author="mdiadia" id="4">

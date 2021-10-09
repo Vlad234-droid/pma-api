@@ -47,7 +47,7 @@ public class ConfigEntryEndpoint {
     @Operation(summary = "Get published config entry structure by composite key", tags = {"config-entry"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the config entry structure")
     @GetMapping(value = "published", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<ConfigEntryResponse> getPublishedEntryConfigStructureByCompositeKey(@RequestParam String compositeKey) {
+    public RestResponse<List<ConfigEntryResponse>> getPublishedEntryConfigStructureByCompositeKey(@RequestParam String compositeKey) {
         return RestResponse.success(configEntryService.getPublishedChildStructureByCompositeKey(compositeKey));
     }
 
@@ -61,7 +61,7 @@ public class ConfigEntryEndpoint {
     @Operation(summary = "Get unpublished structure by composite key", tags = {"config-entry"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the config entry structure")
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public RestResponse<ConfigEntryResponse> getUnpublished(@RequestParam String compositeKey) {
+    public RestResponse<List<ConfigEntryResponse>> getUnpublished(@RequestParam String compositeKey) {
         return RestResponse.success(configEntryService.getUnpublishedChildStructureByCompositeKey(compositeKey));
     }
 

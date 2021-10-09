@@ -90,7 +90,20 @@ public interface ConfigEntryDAO {
      */
     void unpublishConfigEntries(@Param("key") String key);
 
+    /**
+     * Find config entry type by its id
+     *
+     * @param id - identifier
+     * @return config entry type object
+     */
     ConfigEntryType findConfigEntryType(@Param("id") int id);
+
+    /**
+     * Delete unpublished config entry by its uuid
+     *
+     * @param uuid - entry identifier
+     */
+    void deleteConfigEntry(@Param("uuid") UUID uuid);
 
     /**
      * Gets all structure for config entry

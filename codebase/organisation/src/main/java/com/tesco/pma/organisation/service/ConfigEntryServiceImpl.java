@@ -1,21 +1,26 @@
 package com.tesco.pma.organisation.service;
 
-import com.tesco.pma.exception.ErrorCodes;
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.organisation.api.ConfigEntry;
+import com.tesco.pma.organisation.api.ConfigEntryErrorCodes;
 import com.tesco.pma.organisation.api.ConfigEntryResponse;
 import com.tesco.pma.organisation.api.WorkingConfigEntry;
 import com.tesco.pma.organisation.dao.ConfigEntryDAO;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -26,12 +31,14 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
 
     private static final String COMPOSITE_KEY_FORMAT = "%s/%s/%s";
     private static final String COMPOSITE_KEY_VERSION_FORMAT = "%s#v%d";
+    private static final String ID = "id";
     private final ConfigEntryDAO dao;
+    private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Override
     public ConfigEntryResponse getStructure(UUID configEntryUuid) {
         var fullStructure = dao.getFullStructure(configEntryUuid);
-        return buildStructure(fullStructure);
+        return CollectionUtils.firstElement(buildStructure(fullStructure));
     }
 
     @Override
@@ -40,7 +47,8 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
         var configEntry = structureList.stream()
                 .filter(ce -> ce.getUuid().equals(configEntryUuid))
                 .findFirst()
-                .orElseThrow(() -> new NotFoundException(ErrorCodes.CONFIG_ENTRY_NOT_FOUND.getCode(), "Config entry not found by id"));
+                .orElseThrow(() -> new NotFoundException(ConfigEntryErrorCodes.CONFIG_ENTRY_NOT_FOUND.getCode(),
+                        messageSourceAccessor.getMessage(ConfigEntryErrorCodes.CONFIG_ENTRY_NOT_FOUND, Map.of(ID, configEntryUuid))));
         return generateCompositeKey(structureList, configEntry);
     }
 
@@ -57,9 +65,8 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
     }
 
     @Override
-    public ConfigEntryResponse getPublishedChildStructureByCompositeKey(String key) {
-        var versionPosition = key.indexOf("/#v");
-        var searchTerm = key.substring(0, versionPosition) + "%" + key.substring(versionPosition);
+    public List<ConfigEntryResponse> getPublishedChildStructureByCompositeKey(String key) {
+        String searchTerm = buildCompositeKeySearchTerm(key);
         var entries = dao.findPublishedConfigEntriesByKey(searchTerm);
         return buildStructure(entries);
     }
@@ -99,7 +106,12 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
         if (parentUuid == null) {
             configEntry.setVersion(1);
             configEntry.setCompositeKey(generateCompositeKey(Collections.emptySet(), configEntry));
-            dao.createConfigEntry(configEntry);
+            try {
+                dao.createConfigEntry(configEntry);
+            } catch (DuplicateKeyException ex) {
+                throw new DatabaseConstraintViolationException(ConfigEntryErrorCodes.CONFIG_ENTRY_ALREADY_EXISTS.getCode(),
+                        messageSourceAccessor.getMessage(ConfigEntryErrorCodes.CONFIG_ENTRY_ALREADY_EXISTS), null, ex);
+            }
         } else {
             var root = dao.findRootConfigEntry(parentUuid);
             var version = dao.getMaxVersionForRootEntry(root.getName(), root.getType().getId()) + 1;
@@ -125,7 +137,8 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
                     ce.setType(configEntry.getType());
                     ce.setParentUuid(configEntry.getParentUuid());
                     return ce;
-                }).orElseThrow(() -> new NotFoundException(ErrorCodes.CONFIG_ENTRY_NOT_FOUND.getCode(), "Config entry not found by id"));
+                }).orElseThrow(() -> new NotFoundException(ConfigEntryErrorCodes.CONFIG_ENTRY_NOT_FOUND.getCode(),
+                messageSourceAccessor.getMessage(ConfigEntryErrorCodes.CONFIG_ENTRY_NOT_FOUND, Map.of(ID, configEntry.getUuid()))));
         copyStructure(structure);
     }
 
@@ -133,6 +146,9 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
     @Transactional
     public void deleteConfigEntry(UUID configEntryUuid) {
         var root = dao.findRootConfigEntry(configEntryUuid);
+        if (root.getUuid().equals(configEntryUuid)) {
+            dao.deleteConfigEntry(configEntryUuid);
+        }
         var version = dao.getMaxVersionForRootEntry(root.getName(), root.getType().getId()) + 1;
         var structure = dao.findConfigEntryChildStructure(root.getUuid());
         structure = structure.stream().takeWhile(ce -> !ce.getUuid().equals(configEntryUuid)).collect(Collectors.toList());
@@ -149,11 +165,18 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
     }
 
     @Override
-    public ConfigEntryResponse getUnpublishedChildStructureByCompositeKey(String compositeKey) {
-        var versionPosition = compositeKey.indexOf("/#v");
-        var searchTerm = compositeKey.substring(0, versionPosition) + "%" + compositeKey.substring(versionPosition);
+    public List<ConfigEntryResponse> getUnpublishedChildStructureByCompositeKey(String compositeKey) {
+        String searchTerm = buildCompositeKeySearchTerm(compositeKey);
         var entries = dao.findConfigEntriesByKey(searchTerm);
         return buildStructure(entries);
+    }
+
+    private String buildCompositeKeySearchTerm(String key) {
+        if (key.contains("/#v")) {
+            var versionPosition = key.indexOf("/#v");
+            return key.substring(0, versionPosition) + "%" + key.substring(versionPosition);
+        }
+        return key + "%";
     }
 
     private void copyStructure(List<ConfigEntry> structure) {
@@ -166,24 +189,31 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
         structure.stream().filter(ce -> ce.getParentUuid() != null)
                 .forEach(ce -> ce.setParentUuid(oldToNewUuid.get(ce.getParentUuid())));
         structure.forEach(ce -> ce.setCompositeKey(generateCompositeKey(structure, ce)));
-        structure.forEach(dao::createConfigEntry);
+        try {
+            structure.forEach(dao::createConfigEntry);
+        } catch (DuplicateKeyException ex) {
+            throw new DatabaseConstraintViolationException(ConfigEntryErrorCodes.CONFIG_ENTRY_ALREADY_EXISTS.getCode(),
+                    messageSourceAccessor.getMessage(ConfigEntryErrorCodes.CONFIG_ENTRY_ALREADY_EXISTS), null, ex);
+        }
     }
 
-    private ConfigEntryResponse buildStructure(Collection<ConfigEntry> entries) {
+    private List<ConfigEntryResponse> buildStructure(Collection<ConfigEntry> entries) {
         var uuidToResponse = entries
                 .stream()
                 .collect(Collectors.toMap(ConfigEntry::getUuid, this::buildResponse));
 
-        var rootUuid = entries.stream()
+        var rootUuids = entries.stream()
                 .filter(entry -> entry.getParentUuid() == null || !uuidToResponse.containsKey(entry.getParentUuid()))
                 .map(ConfigEntry::getUuid)
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException(ErrorCodes.CONFIG_ENTRY_NOT_FOUND.getCode(), "Cannot find root config entry"));
-        entries.removeIf(entry -> entry.getUuid().equals(rootUuid));
+                .collect(Collectors.toList());
+        entries.removeIf(entry -> rootUuids.contains(entry.getUuid()));
 
         entries.forEach(entry -> uuidToResponse.get(entry.getParentUuid()).getChildren().add(uuidToResponse.get(entry.getUuid())));
 
-        return uuidToResponse.get(rootUuid);
+        return uuidToResponse.entrySet().stream()
+                .filter(entry -> rootUuids.contains(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
     }
 
     private ConfigEntryResponse buildResponse(ConfigEntry configEntry) {

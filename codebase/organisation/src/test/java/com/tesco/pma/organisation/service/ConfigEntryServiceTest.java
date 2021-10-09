@@ -1,14 +1,20 @@
 package com.tesco.pma.organisation.service;
 
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.organisation.api.ConfigEntry;
+import com.tesco.pma.organisation.api.ConfigEntryErrorCodes;
 import com.tesco.pma.organisation.api.ConfigEntryResponse;
 import com.tesco.pma.organisation.api.ConfigEntryType;
 import com.tesco.pma.organisation.api.WorkingConfigEntry;
 import com.tesco.pma.organisation.dao.ConfigEntryDAO;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.dao.DuplicateKeyException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,8 +37,9 @@ public class ConfigEntryServiceTest {
     private static final String CHILD_NAME_1_1 = "child_1_1";
 
     private final ConfigEntryDAO dao = Mockito.mock(ConfigEntryDAO.class);
+    private final NamedMessageSourceAccessor accessor = Mockito.mock(NamedMessageSourceAccessor.class);
 
-    private final ConfigEntryService service = new ConfigEntryServiceImpl(dao);
+    private final ConfigEntryService service = new ConfigEntryServiceImpl(dao, accessor);
 
     @Test
     void getStructure() {
@@ -74,13 +81,25 @@ public class ConfigEntryServiceTest {
 
         var structure = service.getPublishedChildStructureByCompositeKey("BU/root/BU/child_1/#v4");
 
-        assertEquals(ROOT_UUID, structure.getUuid());
-        var children = structure.getChildren();
+        assertEquals(1, structure.size());
+        var element = structure.get(0);
+        assertEquals(ROOT_UUID, element.getUuid());
+        var children = element.getChildren();
         assertEquals(children.size(), 2);
         var uuids = children.stream().map(ConfigEntryResponse::getUuid).collect(Collectors.toList());
         assertTrue(uuids.contains(CHILD_UUID_1));
         assertTrue(uuids.contains(CHILD_UUID_2));
         assertEquals(CHILD_UUID_1_1, children.stream().filter(s -> s.getUuid().equals(CHILD_UUID_1)).findFirst().get().getChildren().get(0).getUuid());
+    }
+
+    @Test
+    void buildCompositeKeySearchTerm() {
+        Mockito.when(dao.findConfigEntriesByKey(Mockito.anyString()))
+                .thenReturn(Collections.emptyList());
+
+        service.getUnpublishedChildStructureByCompositeKey("BU/root/BU/child_1/");
+
+        Mockito.verify(dao).findConfigEntriesByKey("BU/root/BU/child_1/%");
     }
 
     @Test
@@ -126,6 +145,21 @@ public class ConfigEntryServiceTest {
 
         Mockito.verify(dao).createConfigEntry(Mockito.argThat(a -> a.getVersion() == 1));
         Mockito.verify(dao).findConfigEntryType(1);
+        Mockito.verifyNoMoreInteractions(dao);
+    }
+
+    @Test
+    void createConfigEntryWithoutParentAndDuplicateKey() {
+        var configEntry = new ConfigEntry();
+        configEntry.setType(getConfigEntryType());
+        Mockito.when(dao.findConfigEntryType(1)).thenReturn(getConfigEntryType());
+        Mockito.when(dao.createConfigEntry(Mockito.any(ConfigEntry.class))).thenThrow(DuplicateKeyException.class);
+
+        Assertions.assertThrows(DatabaseConstraintViolationException.class, () -> service.createConfigEntry(configEntry));
+
+        Mockito.verify(dao).createConfigEntry(Mockito.argThat(a -> a.getVersion() == 1));
+        Mockito.verify(dao).findConfigEntryType(1);
+        Mockito.verify(accessor).getMessage(ConfigEntryErrorCodes.CONFIG_ENTRY_ALREADY_EXISTS);
         Mockito.verifyNoMoreInteractions(dao);
     }
 
@@ -179,6 +213,16 @@ public class ConfigEntryServiceTest {
     }
 
     @Test
+    void deleteRootConfigEntry() {
+        Mockito.when(dao.findRootConfigEntry(ROOT_UUID))
+                .thenReturn(getConfigEntry(ROOT_UUID, ROOT_NAME, null));
+
+        service.deleteConfigEntry(ROOT_UUID);
+
+        Mockito.verify(dao).deleteConfigEntry(ROOT_UUID);
+    }
+
+    @Test
     void getUnpublishedRoots() {
         Mockito.when(dao.findAllRootEntries()).thenReturn(List.of(getConfigEntry(ROOT_UUID, ROOT_NAME, null),
                 getConfigEntry(CHILD_UUID_1, CHILD_NAME_1, null)));
@@ -202,8 +246,10 @@ public class ConfigEntryServiceTest {
 
         var structure = service.getUnpublishedChildStructureByCompositeKey("BU/root/BU/child_1/#v4");
 
-        assertEquals(ROOT_UUID, structure.getUuid());
-        var children = structure.getChildren();
+        assertEquals(1, structure.size());
+        var element = structure.get(0);
+        assertEquals(ROOT_UUID, element.getUuid());
+        var children = element.getChildren();
         assertEquals(children.size(), 2);
         var uuids = children.stream().map(ConfigEntryResponse::getUuid).collect(Collectors.toList());
         assertTrue(uuids.contains(CHILD_UUID_1));
