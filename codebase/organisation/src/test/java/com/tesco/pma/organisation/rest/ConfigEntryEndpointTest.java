@@ -3,7 +3,7 @@ package com.tesco.pma.organisation.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.ConfigEntryResponse;
-import com.tesco.pma.organisation.api.ConfigEntryType;
+import com.tesco.pma.api.GeneralDictionaryItem;
 import com.tesco.pma.organisation.service.ConfigEntryService;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import org.junit.jupiter.api.Test;
@@ -191,8 +191,8 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
         return ce;
     }
 
-    private ConfigEntryType getConfigEntryType() {
-        var cet = new ConfigEntryType();
+    private GeneralDictionaryItem getConfigEntryType() {
+        var cet = new GeneralDictionaryItem();
         cet.setId(1);
         cet.setCode("code");
         cet.setDescription("desc");

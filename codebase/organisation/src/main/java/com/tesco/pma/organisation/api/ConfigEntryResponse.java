@@ -1,5 +1,6 @@
 package com.tesco.pma.organisation.api;
 
+import com.tesco.pma.api.GeneralDictionaryItem;
 import lombok.Data;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.UUID;
 public class ConfigEntryResponse {
     private UUID uuid;
     private String name;
-    private ConfigEntryType type;
+    private GeneralDictionaryItem type;
     private int version;
     private boolean root;
     private String compositeKey;

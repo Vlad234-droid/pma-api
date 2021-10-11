@@ -1,7 +1,7 @@
 package com.tesco.pma.organisation.dao;
 
 import com.tesco.pma.organisation.api.ConfigEntry;
-import com.tesco.pma.organisation.api.ConfigEntryType;
+import com.tesco.pma.api.GeneralDictionaryItem;
 import com.tesco.pma.organisation.api.WorkingConfigEntry;
 import org.apache.ibatis.annotations.Param;
 
@@ -96,7 +96,7 @@ public interface ConfigEntryDAO {
      * @param id - identifier
      * @return config entry type object
      */
-    ConfigEntryType findConfigEntryType(@Param("id") int id);
+    GeneralDictionaryItem findConfigEntryType(@Param("id") int id);
 
     /**
      * Delete unpublished config entry by its uuid

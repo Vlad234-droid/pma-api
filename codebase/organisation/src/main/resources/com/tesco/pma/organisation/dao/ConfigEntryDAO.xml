@@ -136,7 +136,7 @@
         WHERE ce.parent_uuid is null
     </select>
 
-    <select id="findConfigEntryType" resultType="com.tesco.pma.organisation.api.ConfigEntryType">
+    <select id="findConfigEntryType" resultType="com.tesco.pma.api.GeneralDictionaryItem">
         SELECT id, code, description
         FROM config_entry_type
         WHERE id = #{id}

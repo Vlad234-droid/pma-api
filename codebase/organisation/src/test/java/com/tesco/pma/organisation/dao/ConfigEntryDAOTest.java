@@ -3,7 +3,7 @@ package com.tesco.pma.organisation.dao;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.organisation.api.ConfigEntry;
-import com.tesco.pma.organisation.api.ConfigEntryType;
+import com.tesco.pma.api.GeneralDictionaryItem;
 import com.tesco.pma.organisation.api.WorkingConfigEntry;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +80,7 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
         var uuid = UUID.fromString("fe33d24d-1fd2-4e68-8dff-6220609a80df");
         ce.setUuid(uuid);
         ce.setName("C22");
-        var cet = new ConfigEntryType();
+        var cet = new GeneralDictionaryItem();
         cet.setId(1);
         ce.setType(cet);
         ce.setVersion(4);
@@ -134,7 +134,7 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "config_entries_init.xml"})
     void publishConfigEntries() {
 
-        var cet = new ConfigEntryType();
+        var cet = new GeneralDictionaryItem();
         cet.setId(1);
 
         var wce = new WorkingConfigEntry();

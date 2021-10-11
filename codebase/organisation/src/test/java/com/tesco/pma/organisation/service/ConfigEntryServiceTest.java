@@ -5,7 +5,7 @@ import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.ConfigEntryErrorCodes;
 import com.tesco.pma.organisation.api.ConfigEntryResponse;
-import com.tesco.pma.organisation.api.ConfigEntryType;
+import com.tesco.pma.api.GeneralDictionaryItem;
 import com.tesco.pma.organisation.api.WorkingConfigEntry;
 import com.tesco.pma.organisation.dao.ConfigEntryDAO;
 import org.junit.jupiter.api.Assertions;
@@ -281,8 +281,8 @@ public class ConfigEntryServiceTest {
         return ce;
     }
 
-    private static ConfigEntryType getConfigEntryType() {
-        var cet = new ConfigEntryType();
+    private static GeneralDictionaryItem getConfigEntryType() {
+        var cet = new GeneralDictionaryItem();
         cet.setId(1);
         cet.setCode("BU");
         cet.setDescription("desc");
