@@ -1,0 +1,28 @@
+{
+  "success": true,
+  "data": [
+    {
+      "uuid": "fe33d24d-1fd2-4e68-8dff-6220609a80df",
+      "name": "C22",
+      "type": {
+        "id": 1,
+        "code": "code",
+        "description": "desc"
+      },
+      "version": 4,
+      "root": true,
+      "compositeKey": "BU/Test/#v1",
+      "children": [
+        {
+          "uuid": null,
+          "name": null,
+          "type": null,
+          "version": 0,
+          "root": false,
+          "compositeKey": null,
+          "children": null
+        }
+      ]
+    }
+  ]
+}

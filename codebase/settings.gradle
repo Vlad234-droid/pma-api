@@ -12,6 +12,7 @@ include 'service'
 
 include 'healthcheck'
 include 'pm'
+include 'organisation'
 
 include 'application'
 

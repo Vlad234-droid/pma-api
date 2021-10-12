@@ -1,0 +1,134 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet author="mdiadia" id="1">
+        <createTable remarks="Dictionary of config entry types"
+                     tableName="config_entry_type">
+            <column name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="config_entry_type_pk"/>
+            </column>
+            <column name="code" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="mdiadia" id="2">
+        <comment>Init table config_entry_type</comment>
+        <insert tableName="config_entry_type">
+            <column name="id" value="1"/>
+            <column name="code" value="l1"/>
+            <column name="description" value="Level 1"/>
+        </insert>
+        <insert tableName="config_entry_type">
+            <column name="id" value="2"/>
+            <column name="code" value="l2"/>
+            <column name="description" value="Level 2"/>
+        </insert>
+        <insert tableName="config_entry_type">
+            <column name="id" value="3"/>
+            <column name="code" value="l3"/>
+            <column name="description" value="Level 3"/>
+        </insert>
+        <insert tableName="config_entry_type">
+            <column name="id" value="4"/>
+            <column name="code" value="l4"/>
+            <column name="description" value="Level 4"/>
+        </insert>
+        <rollback>
+            <delete tableName="config_entry_type">
+                <where>code = 'l1'</where>
+            </delete>
+        </rollback>
+        <rollback>
+            <delete tableName="config_entry_type">
+                <where>code = 'l2'</where>
+            </delete>
+        </rollback>
+        <rollback>
+            <delete tableName="config_entry_type">
+                <where>code = 'l3'</where>
+            </delete>
+        </rollback>
+        <rollback>
+            <delete tableName="config_entry_type">
+                <where>code = 'l4'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="mdiadia" id="3">
+        <createTable remarks="Config entry"
+                     tableName="config_entry">
+            <column name="uuid" type="${uuid_type}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="config_entry_pk"/>
+            </column>
+            <column name="name" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_uuid" type="${uuid_type}">
+                <constraints nullable="true"/>
+            </column>
+            <column name="composite_key" type="varchar">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="config_entry"
+                                 constraintName="config_entry_type_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="config_entry_type" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="parent_uuid" baseTableName="config_entry"
+                                 constraintName="config_entry_parent_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="uuid" referencedTableName="config_entry" validate="true"/>
+    </changeSet>
+
+    <changeSet author="mdiadia" id="4">
+        <createTable remarks="Working business unit"
+                     tableName="working_config_entry">
+            <column name="name" type="VARCHAR">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="working_config_entry_pk"/>
+            </column>
+            <column name="type_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="working_config_entry_pk"/>
+            </column>
+            <column name="version" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="config_entry_uuid" type="${uuid_type}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_by" type="VARCHAR">
+                <constraints nullable="true"/>
+            </column>
+            <column name="updated_time" type="timestamptz">
+                <constraints nullable="true"/>
+            </column>
+            <column name="composite_key" type="varchar">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="working_config_entry"
+                                 constraintName="working_config_entry_type_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="config_entry_type" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="config_entry_uuid" baseTableName="working_config_entry"
+                                 constraintName="working_config_entry_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="uuid" referencedTableName="config_entry" validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>

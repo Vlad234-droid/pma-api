@@ -26,6 +26,7 @@ dependencies {
     implementation project(':bpm')
     implementation project(':camunda')
     implementation project(':pm')
+    implementation project(':organisation')
     implementation project(':profile')
     implementation project(':cep')
 
