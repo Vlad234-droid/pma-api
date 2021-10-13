@@ -74,3 +74,4 @@ IDENTITY_CLIENT_ID: "1234567890"
 PMA_DB_URL: jdbc:postgresql://10.123.22.24:5432/pma-dev?sslmode=require
 PMA_DB_SCHEMA: public
 PMA_DB_USERNAME: pmadbadmin@euw-dev-214-pma-postgresql
+env: "dev/**.dec"

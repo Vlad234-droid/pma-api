@@ -1,0 +1,7 @@
+{{- $env := .Values.env -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configfiles
+data:
+{{ (.Files.Glob $env ).AsConfig | indent 2 }}
