@@ -1,10 +1,14 @@
+plugins {
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
+}
+
 dependencies {
     implementation project(':api')
     implementation project(':event')
     implementation project(':spring')
     implementation project(':bpm')
     implementation project(':camunda')
-//    implementation project(':service')
+
     compileOnly project(':service')
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
@@ -25,4 +29,22 @@ dependencies {
         exclude group: 'junit' // excluding junit 4
     }
     testImplementation("commons-io:commons-io:${commonsIoVersion}")
+
+    testCompile project(':service').sourceSets.test.output
+
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+    testImplementation "com.github.database-rider:rider-junit5:${databaseRiderVersion}"
+    testRuntimeOnly "org.liquibase:liquibase-core:${liquibaseVersion}"
+    testRuntimeOnly project(':database')
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+        mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+    }
 }

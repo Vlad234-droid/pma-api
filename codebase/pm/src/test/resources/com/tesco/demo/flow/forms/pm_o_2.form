@@ -12,7 +12,7 @@
           "value": "true"
         },
         {
-          "label": "Rejected",
+          "label": "Declined",
           "value": "false"
         }
       ],
@@ -24,8 +24,8 @@
       }
     },
     {
-      "key": "field_1",
-      "label": "Line manager rejection reason",
+      "key": "reason",
+      "label": "Line manager declining reason",
       "type": "textfield",
       "id": "Field_0x6v3ef",
       "validate": {
@@ -33,22 +33,8 @@
         "minLength": 10,
         "maxLength": 1000
       }
-    },
-    {
-      "action": "submit",
-      "key": "field_2",
-      "label": "Submit",
-      "type": "button",
-      "id": "Field_125mnqn"
-    },
-    {
-      "action": "reset",
-      "key": "field_3",
-      "label": "Cancel",
-      "type": "button",
-      "id": "Field_038l7qu"
     }
   ],
   "type": "default",
-  "id": "Form_1tjya16"
+  "id": "lm_objectives_approval_form"
 }
