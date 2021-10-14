@@ -2,14 +2,19 @@ package com.tesco.pma.process.dao;
 
 import java.util.UUID;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.dao.AbstractDAOTest;
+import com.tesco.pma.process.api.PMProcess;
+import com.tesco.pma.process.api.PMProcessStatus;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 13.10.2021 Time: 22:40
@@ -18,7 +23,11 @@ class PMProcessDAOTest extends AbstractDAOTest {
 
     private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/process/dao/";
     private static final UUID PM_UUID = UUID.fromString("4f2ab073-2c31-11ec-916b-0242391d2e7a");
+    private static final UUID NEW_UUID = UUID.fromString("4f2ab073-2c31-11ec-916b-0242391d2e7c");
     private static final UUID CL_UUID = UUID.fromString("cf2ab073-2c31-11ec-916b-0242391d2e7c");
+    private static final UUID BPM_UUID = UUID.fromString("bf2ab073-2c31-11ec-916b-0242391d2e7c");
+    private static final UUID NEW_BPM_UUID = UUID.fromString("cf2ab073-2c31-11ec-916b-0242391d2e7c");
+    private static final String BPM_PM_NAME = "PROCESS_NAME";
 
     @Autowired
     private PMProcessDAO dao;
@@ -32,22 +41,60 @@ class PMProcessDAOTest extends AbstractDAOTest {
 
     @Test
     void create() {
+        assertEquals(1, dao.create(new PMProcess(NEW_UUID, CL_UUID, PMProcessStatus.STARTED, NEW_BPM_UUID, BPM_PM_NAME, null)));
 
+        var actual = dao.read(NEW_UUID);
+        checkProcess(actual, NEW_UUID, PMProcessStatus.STARTED, NEW_BPM_UUID);
+        checkHistory(actual, 1, 0);
     }
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "pm_process_init.xml"})
     void read() {
-        var process = dao.read(PM_UUID);
-        Assertions.assertNotNull(process);
-        var hi = dao.readHistory(PM_UUID);
-        Assertions.assertNotNull(hi);
-        Assertions.assertEquals(1, hi.size());
+        var actual = dao.read(PM_UUID);
+        checkProcess(actual, PM_UUID, PMProcessStatus.REGISTERED, BPM_UUID);
+        checkHistory(actual, 1, 0);
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "pm_process_init.xml"})
+    void updateStatusFailed() {
+        assertEquals(0, dao.updateStatus(PM_UUID, PMProcessStatus.COMPLETED,
+                DictionaryFilter.includeFilter(PMProcessStatus.STARTED)));
+
+        var actual = dao.read(PM_UUID);
+        checkProcess(actual, PM_UUID, PMProcessStatus.REGISTERED, BPM_UUID);
+        checkHistory(actual, 1, 0);
     }
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "pm_process_init.xml"})
     void updateStatus() {
+        assertEquals(1, dao.updateStatus(PM_UUID, PMProcessStatus.STARTED,
+                DictionaryFilter.includeFilter(PMProcessStatus.REGISTERED)));
 
+        var actual = dao.read(PM_UUID);
+        checkProcess(actual, PM_UUID, PMProcessStatus.STARTED, BPM_UUID);
+        checkHistory(actual, 2, 1);
+    }
+
+    private void checkProcess(PMProcess actual, UUID pmUuid, PMProcessStatus registered, UUID bpmUuid) {
+        assertNotNull(actual);
+        assertEquals(pmUuid, actual.getId());
+        assertEquals(CL_UUID, actual.getColleagueUuid());
+        assertEquals(registered, actual.getStatus());
+        assertEquals(bpmUuid, actual.getBpmProcessId());
+        assertEquals(BPM_PM_NAME, actual.getBpmProcessName());
+        assertNotNull(actual.getLastUpdateTime());
+    }
+
+    private void checkHistory(PMProcess actual, int amount, int checking) {
+        var hi = dao.readHistory(actual.getId());
+        assertNotNull(hi);
+        assertEquals(amount, hi.size());
+        var rec = hi.get(checking);
+        assertEquals(actual.getId(), rec.getId());
+        assertEquals(actual.getStatus(), rec.getStatus());
+        assertEquals(actual.getLastUpdateTime(), rec.getUpdateTime());
     }
 }

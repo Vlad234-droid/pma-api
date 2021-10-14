@@ -156,6 +156,9 @@
             <column name="bpm_process_id" type="${uuid_type}">
                 <constraints nullable="true"/>
             </column>
+            <column name="bpm_process_name" type="VARCHAR">
+                <constraints nullable="true"/>
+            </column>
             <column name="last_update_time" type="TIMESTAMPTZ">
                 <constraints nullable="false"/>
             </column>

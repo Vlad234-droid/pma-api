@@ -9,7 +9,7 @@ dependencies {
     implementation project(':bpm')
     implementation project(':camunda')
 
-    compileOnly project(':service')
+    implementation project(':service')
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
@@ -30,7 +30,7 @@ dependencies {
     }
     testImplementation("commons-io:commons-io:${commonsIoVersion}")
 
-    testCompile project(':service').sourceSets.test.output
+    testImplementation project(':service').sourceSets.test.output
 
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"

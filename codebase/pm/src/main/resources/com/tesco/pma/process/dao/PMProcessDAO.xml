@@ -14,8 +14,10 @@
 
     <resultMap id="pmProcess" type="com.tesco.pma.process.api.PMProcess">
         <id column="uuid" property="id"/>
+        <result column="colleague_uuid" property="colleagueUuid"/>
         <result column="status_id" property="status" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.process.api.PMProcessStatus" />
         <result column="bpm_process_id" property="bpmProcessId"/>
+        <result column="bpm_process_name" property="bpmProcessName"/>
         <result column="last_update_time" property="lastUpdateTime"/>
     </resultMap>
 
@@ -31,15 +33,18 @@
 
     <select id="readHistory" resultMap="pmProcessHistory">
         select * from pm_process_hi where uuid = #{uuid}
+        order by update_time
     </select>
 
     <insert id="createInt" parameterType="com.tesco.pma.process.api.PMProcess" useGeneratedKeys="true" keyColumn="uuid" keyProperty="id">
-        insert into pm_process (uuid, status_id, bpm_process_id, last_update_time)
+        insert into pm_process (uuid, colleague_uuid, status_id, bpm_process_id, bpm_process_name, last_update_time)
         values (
-            #{id},
-            #{status.id},
-            #{bpmProcessId},
-            #{lastUpdateTime}
+            #{process.id},
+            #{process.colleagueUuid},
+            #{process.status.id},
+            #{process.bpmProcessId},
+            #{process.bpmProcessName},
+            #{process.lastUpdateTime}
         )
     </insert>
 
@@ -53,7 +58,7 @@
     <insert id="createHistoryRecord">
         insert into pm_process_hi (uuid, status_id, update_time)
         values (
-            #{id},
+            #{uuid},
             #{status.id},
             #{updateTime}
         )
