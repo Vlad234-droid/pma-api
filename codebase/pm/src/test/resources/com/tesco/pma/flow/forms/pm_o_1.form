@@ -6,7 +6,7 @@
   },
   "components": [
     {
-      "key": "title_1",
+      "key": "title",
       "label": "Objective title",
       "type": "textfield",
       "id": "Field_141o520",
@@ -17,7 +17,7 @@
       }
     },
     {
-      "key": "description_1",
+      "key": "description",
       "label": "Objective description",
       "type": "textfield",
       "id": "Field_05qgsfz",
@@ -34,7 +34,7 @@
       "id": "Field_0hu83pj"
     },
     {
-      "key": "day_job_1",
+      "key": "day_job",
       "label": "Day Job",
       "type": "textfield",
       "id": "Field_17nyw6d",
@@ -45,7 +45,7 @@
       }
     },
     {
-      "key": "behaviours_and_values_1",
+      "key": "behaviours_and_values",
       "label": "Behaviours and Values",
       "type": "textfield",
       "id": "Field_1ug5wco",
@@ -56,7 +56,7 @@
       }
     },
     {
-      "key": "impact_1",
+      "key": "impact",
       "label": "Impact",
       "type": "textfield",
       "id": "Field_12p3spr",
@@ -85,7 +85,7 @@
           "value": "Exceeded"
         }
       ],
-      "key": "rating_1",
+      "key": "rating",
       "label": "Rating",
       "type": "select",
       "id": "Field_1ribi5m",
@@ -99,7 +99,7 @@
       "id": "Field_148wy3b"
     },
     {
-      "key": "based_on_my_feedback_1",
+      "key": "based_on_my_feedback",
       "label": "Based on my feedback, next year I am going to focus my development on:",
       "type": "textfield",
       "id": "Field_15z0fpz",
@@ -110,7 +110,7 @@
       }
     },
     {
-      "key": "in_the_year_ahead_1",
+      "key": "in_the_year_ahead",
       "label": "In the year ahead my priorities are going to be:",
       "type": "textfield",
       "id": "Field_0hww046",
@@ -126,7 +126,7 @@
       "id": "Field_0s73vfz"
     },
     {
-      "key": "my_feedback_1",
+      "key": "my_feedback",
       "label": "My feedback and coaching for you is",
       "type": "textfield",
       "id": "Field_07w2uk5",
