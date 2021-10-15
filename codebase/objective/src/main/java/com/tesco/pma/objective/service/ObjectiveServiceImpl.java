@@ -125,10 +125,21 @@ public class ObjectiveServiceImpl implements ObjectiveService {
     @Override
     @Transactional
     public PersonalObjective updatePersonalObjective(PersonalObjective personalObjective) {
-        if (1 != objectiveDAO.updatePersonalObjective(personalObjective)) {
-            throw notFound(PERSONAL_OBJECTIVE_NOT_FOUND_BY_UUID,
-                    Map.of(PERSONAL_OBJECTIVE_UUID_PARAMETER_NAME, personalObjective.getUuid()));
+        var personalObjectiveBefore = objectiveDAO.getPersonalObjectiveForColleague(
+                personalObjective.getPerformanceCycleUuid(),
+                personalObjective.getColleagueUuid(),
+                personalObjective.getSequenceNumber());
+        if (null == personalObjectiveBefore) {
+            throw notFound(PERSONAL_OBJECTIVE_NOT_FOUND_FOR_COLLEAGUE,
+                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, personalObjective.getColleagueUuid(),
+                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, personalObjective.getPerformanceCycleUuid(),
+                            SEQUENCE_NUMBER_PARAMETER_NAME, personalObjective.getSequenceNumber()));
+        } else {
+            personalObjective.setUuid(personalObjectiveBefore.getUuid());
+            personalObjective.setStatus(personalObjectiveBefore.getStatus());
+            objectiveDAO.updatePersonalObjective(personalObjective);
         }
+
         return personalObjective;
     }
 

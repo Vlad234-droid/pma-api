@@ -19,10 +19,7 @@ public class PersonalObjective {
     UUID colleagueUuid;
     UUID performanceCycleUuid;
     Integer sequenceNumber;
-    String title;
-    String description;
-    String meets;
-    String exceeds;
+    ReviewProperties properties;
     UUID groupObjectiveUuid;
     ObjectiveStatus status;
 }

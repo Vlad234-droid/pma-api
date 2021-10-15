@@ -16,10 +16,9 @@
         <result property="colleagueUuid" column="colleague_uuid"/>
         <result property="performanceCycleUuid" column="performance_cycle_uuid"/>
         <result property="sequenceNumber" column="sequence_number"/>
-        <result property="title" column="title"/>
-        <result property="description" column="description"/>
-        <result property="meets" column="meets"/>
-        <result property="exceeds" column="exceeds"/>
+        <result property="properties" column="properties"
+                typeHandler="com.tesco.pma.objective.dao.utils.ReviewPropertiesJsonbTypeHandler"
+                javaType="com.tesco.pma.objective.domain.ReviewProperties"/>
         <result property="groupObjectiveUuid" column="group_objective_uuid"/>
         <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
@@ -111,19 +110,13 @@
         colleague_uuid,
         performance_cycle_uuid,
         sequence_number,
-        title,
-        description,
-        meets,
-        exceeds,
+        properties,
         status_id)
         VALUES (#{personalObjective.uuid},
         #{personalObjective.colleagueUuid},
         #{personalObjective.performanceCycleUuid},
         #{personalObjective.sequenceNumber},
-        #{personalObjective.title},
-        #{personalObjective.description},
-        #{personalObjective.meets},
-        #{personalObjective.exceeds},
+        #{personalObjective.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.objective.dao.utils.ReviewPropertiesJsonbTypeHandler},
         #{personalObjective.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.objective.domain.ObjectiveStatus});
         <choose>
             <when test="personalObjective.groupObjectiveUuid != null">
@@ -142,10 +135,7 @@
                po.colleague_uuid,
                po.performance_cycle_uuid,
                po.sequence_number,
-               po.title,
-               po.description,
-               po.meets,
-               po.exceeds,
+               po.properties,
                po.status_id,
                ol.group_objective_uuid
         FROM personal_objective po
@@ -159,10 +149,7 @@
                po.colleague_uuid,
                po.performance_cycle_uuid,
                po.sequence_number,
-               po.title,
-               po.description,
-               po.meets,
-               po.exceeds,
+               po.properties,
                po.status_id,
                ol.group_objective_uuid
         FROM personal_objective po
@@ -178,10 +165,7 @@
                po.colleague_uuid,
                po.performance_cycle_uuid,
                po.sequence_number,
-               po.title,
-               po.description,
-               po.meets,
-               po.exceeds,
+               po.properties,
                po.status_id,
                ol.group_objective_uuid
         FROM personal_objective po
@@ -201,10 +185,7 @@
 
     <update id="updatePersonalObjective" flushCache="true">
         UPDATE personal_objective
-        SET title = #{personalObjective.title},
-        description = #{personalObjective.description},
-        meets = #{personalObjective.meets},
-        exceeds = #{personalObjective.exceeds}
+        SET properties = #{personalObjective.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.objective.dao.utils.ReviewPropertiesJsonbTypeHandler}
         WHERE performance_cycle_uuid = #{personalObjective.performanceCycleUuid}
         and colleague_uuid = #{personalObjective.colleagueUuid}
         and sequence_number = #{personalObjective.sequenceNumber};

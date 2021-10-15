@@ -3,21 +3,26 @@ package com.tesco.pma.objective.dao;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.tesco.pma.dao.AbstractDAOTest;
+import com.tesco.pma.dao.TestConfig;
+import com.tesco.pma.objective.dao.config.ReviewTypeHandlerConfig;
 import com.tesco.pma.objective.domain.GroupObjective;
 import com.tesco.pma.objective.domain.ObjectiveStatus;
 import com.tesco.pma.objective.domain.PersonalObjective;
+import com.tesco.pma.objective.domain.ReviewProperties;
 import com.tesco.pma.objective.domain.WorkingGroupObjective;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import java.sql.Timestamp;
 import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
 
 import static com.tesco.pma.objective.domain.ObjectiveStatus.DRAFT;
@@ -26,6 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
 import static org.assertj.core.api.InstanceOfAssertFactories.type;
 
+@SpringBootTest(classes = {TestConfig.class, ReviewTypeHandlerConfig.class})
 class ObjectiveDAOTest extends AbstractDAOTest {
 
     private static final UUID GROUP_OBJECTIVE_UUID = UUID.fromString("aab9ab0b-f50f-4442-8900-b03777ee0012");
@@ -40,14 +46,18 @@ class ObjectiveDAOTest extends AbstractDAOTest {
     private static final UUID COLLEAGUE_UUID_NOT_EXIST = UUID.fromString("ccb9ab0b-f50f-4442-8900-000000000000");
     private static final UUID PERFORMANCE_CYCLE_UUID = UUID.fromString("0c5d9cb1-22cf-4fcd-a19a-9e70df6bc941");
     private static final Integer SEQUENCE_NUMBER_1 = 1;
+    private static final String TITLE_PROPERTY_NAME = "title";
     private static final String TITLE_1 = "Title #1";
     private static final String TITLE_UPDATE = "Title update";
     private static final String GROUP_TITLE_UPDATE = "Title #1 updated";
     private static final String TITLE_INIT = "Title init";
+    private static final String DESCRIPTION_PROPERTY_NAME = "description";
     private static final String DESCRIPTION_INIT = "Description init";
     private static final String DESCRIPTION_UPDATE = "Description update";
+    private static final String MEETS_PROPERTY_NAME = "meets";
     private static final String MEETS_INIT = "Meets init";
     private static final String MEETS_UPDATE = "Meets update";
+    private static final String EXCEEDS_PROPERTY_NAME = "exceeds";
     private static final String EXCEEDS_INIT = "Exceeds init";
     private static final String EXCEEDS_UPDATE = "Exceeds update";
     private static final Integer VERSION_1 = 1;
@@ -57,6 +67,18 @@ class ObjectiveDAOTest extends AbstractDAOTest {
     private static final String USER_UPDATE = "Update user";
     private static final String TIME_INIT = "2021-09-20 10:45:12.448057";
     private static final String TIME_UPDATE = "2021-09-20 11:45:12.448057";
+    private static final ReviewProperties REVIEW_PROPERTIES_INIT = new ReviewProperties(
+            Map.of(TITLE_PROPERTY_NAME, TITLE_INIT,
+                    DESCRIPTION_PROPERTY_NAME, DESCRIPTION_INIT,
+                    MEETS_PROPERTY_NAME, MEETS_INIT,
+                    EXCEEDS_PROPERTY_NAME, EXCEEDS_INIT
+            ));
+    private static final ReviewProperties REVIEW_PROPERTIES_UPDATE = new ReviewProperties(
+            Map.of(TITLE_PROPERTY_NAME, TITLE_UPDATE,
+                    DESCRIPTION_PROPERTY_NAME, DESCRIPTION_UPDATE,
+                    MEETS_PROPERTY_NAME, MEETS_UPDATE,
+                    EXCEEDS_PROPERTY_NAME, EXCEEDS_UPDATE
+            ));
 
     @Autowired
     private ObjectiveDAO instance;
@@ -176,10 +198,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
                 .returns(COLLEAGUE_UUID, from(PersonalObjective::getColleagueUuid))
                 .returns(PERFORMANCE_CYCLE_UUID, from(PersonalObjective::getPerformanceCycleUuid))
                 .returns(SEQUENCE_NUMBER_1, from(PersonalObjective::getSequenceNumber))
-                .returns(TITLE_INIT, from(PersonalObjective::getTitle))
-                .returns(DESCRIPTION_INIT, from(PersonalObjective::getDescription))
-                .returns(MEETS_INIT, from(PersonalObjective::getMeets))
-                .returns(EXCEEDS_INIT, from(PersonalObjective::getExceeds))
+                .returns(REVIEW_PROPERTIES_INIT, from(PersonalObjective::getProperties))
                 .returns(GROUP_OBJECTIVE_UUID_2, from(PersonalObjective::getGroupObjectiveUuid))
                 .returns(ObjectiveStatus.DRAFT, from(PersonalObjective::getStatus));
     }
@@ -201,10 +220,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
                 .colleagueUuid(COLLEAGUE_UUID)
                 .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
                 .sequenceNumber(SEQUENCE_NUMBER_1)
-                .title(TITLE_INIT)
-                .description(DESCRIPTION_INIT)
-                .meets(MEETS_INIT)
-                .exceeds(EXCEEDS_INIT)
+                .properties(REVIEW_PROPERTIES_INIT)
                 .groupObjectiveUuid(GROUP_OBJECTIVE_UUID_2)
                 .status(ObjectiveStatus.DRAFT)
                 .build();
@@ -223,10 +239,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
                 .colleagueUuid(COLLEAGUE_UUID)
                 .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
                 .sequenceNumber(SEQUENCE_NUMBER_1)
-                .title(TITLE_INIT)
-                .description(DESCRIPTION_INIT)
-                .meets(MEETS_INIT)
-                .exceeds(EXCEEDS_INIT)
+                .properties(REVIEW_PROPERTIES_INIT)
                 .status(ObjectiveStatus.DRAFT)
                 .build();
 
@@ -257,10 +270,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
                 .colleagueUuid(COLLEAGUE_UUID)
                 .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
                 .sequenceNumber(SEQUENCE_NUMBER_1)
-                .title(TITLE_UPDATE)
-                .description(DESCRIPTION_UPDATE)
-                .meets(MEETS_UPDATE)
-                .exceeds(EXCEEDS_UPDATE)
+                .properties(REVIEW_PROPERTIES_UPDATE)
                 .groupObjectiveUuid(GROUP_OBJECTIVE_UUID)
                 .build();
 
@@ -276,10 +286,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
                 .colleagueUuid(COLLEAGUE_UUID_NOT_EXIST)
                 .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
                 .sequenceNumber(SEQUENCE_NUMBER_1)
-                .title(TITLE_UPDATE)
-                .description(DESCRIPTION_UPDATE)
-                .meets(MEETS_UPDATE)
-                .exceeds(EXCEEDS_UPDATE)
+                .properties(REVIEW_PROPERTIES_UPDATE)
                 .status(SUBMITTED)
                 .build();
 
@@ -312,10 +319,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
                 .colleagueUuid(COLLEAGUE_UUID)
                 .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
                 .sequenceNumber(SEQUENCE_NUMBER_1)
-                .title(TITLE_INIT)
-                .description(DESCRIPTION_INIT)
-                .meets(MEETS_INIT)
-                .exceeds(EXCEEDS_INIT)
+                .properties(REVIEW_PROPERTIES_INIT)
                 .status(ObjectiveStatus.DRAFT)
                 .build();
 
@@ -333,10 +337,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
                 .colleagueUuid(COLLEAGUE_UUID)
                 .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
                 .sequenceNumber(SEQUENCE_NUMBER_1)
-                .title(TITLE_INIT)
-                .description(DESCRIPTION_INIT)
-                .meets(MEETS_INIT)
-                .exceeds(EXCEEDS_INIT)
+                .properties(REVIEW_PROPERTIES_INIT)
                 .groupObjectiveUuid(GROUP_OBJECTIVE_UUID_2)
                 .status(ObjectiveStatus.DRAFT)
                 .build();

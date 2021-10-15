@@ -4,7 +4,9 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.objective.domain.GroupObjective;
 import com.tesco.pma.objective.domain.ObjectiveStatus;
 import com.tesco.pma.objective.domain.PersonalObjective;
+import com.tesco.pma.objective.domain.ReviewProperties;
 import com.tesco.pma.objective.domain.WorkingGroupObjective;
+import com.tesco.pma.objective.domain.request.ReviewBodyRequest;
 import com.tesco.pma.objective.service.ObjectiveService;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
@@ -37,6 +39,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Validated
 @RequiredArgsConstructor
 public class ObjectiveEndpoint {
+    public static final String LINKED_REVIEW_UUID = "linkedReviewUuid";
+
     private final ObjectiveService objectiveService;
     private final NamedMessageSourceAccessor messages;
 
@@ -46,7 +50,7 @@ public class ObjectiveEndpoint {
      * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
      * @param sequenceNumber       a sequence number of personal objective
-     * @param personalObjective    a PersonalObjective
+     * @param reviewBodyRequest    a ReviewBodyRequest
      * @return a RestResponse parameterized with PersonalObjective
      */
     @Operation(summary = "Create a personal objective", description = "PersonalObjective created", tags = {"objective"})
@@ -58,10 +62,13 @@ public class ObjectiveEndpoint {
     public RestResponse<PersonalObjective> createPersonalObjective(@PathVariable("performanceCycleUuid") UUID performanceCycleUuid,
                                                                    @PathVariable("colleagueUuid") UUID colleagueUuid,
                                                                    @PathVariable("sequenceNumber") Integer sequenceNumber,
-                                                                   @RequestBody @Valid PersonalObjective personalObjective) {
+                                                                   @RequestBody @Valid ReviewBodyRequest reviewBodyRequest) {
+        var personalObjective = new PersonalObjective();
         personalObjective.setPerformanceCycleUuid(performanceCycleUuid);
         personalObjective.setColleagueUuid(colleagueUuid);
         personalObjective.setSequenceNumber(sequenceNumber);
+        personalObjective.setGroupObjectiveUuid(reviewBodyRequest.getLinkedReviewUuid());
+        personalObjective.setProperties(new ReviewProperties(reviewBodyRequest.getReviewProperties()));
         return success(objectiveService.createPersonalObjective(personalObjective));
     }
 
@@ -122,7 +129,7 @@ public class ObjectiveEndpoint {
      * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
      * @param sequenceNumber       a sequence number of personal objective
-     * @param personalObjective    a PersonalObjective
+     * @param reviewBodyRequest    a ReviewBodyRequest
      * @return a RestResponse parameterized with PersonalObjective
      */
     @Operation(summary = "Update existing personal objective", description = "Update existing PersonalObjective", tags = {"objective"})
@@ -134,10 +141,13 @@ public class ObjectiveEndpoint {
     public RestResponse<PersonalObjective> updatePersonalObjective(@PathVariable("performanceCycleUuid") UUID performanceCycleUuid,
                                                                    @PathVariable("colleagueUuid") UUID colleagueUuid,
                                                                    @PathVariable("sequenceNumber") Integer sequenceNumber,
-                                                                   @RequestBody @Valid PersonalObjective personalObjective) {
+                                                                   @RequestBody @Valid ReviewBodyRequest reviewBodyRequest) {
+        var personalObjective = new PersonalObjective();
         personalObjective.setPerformanceCycleUuid(performanceCycleUuid);
         personalObjective.setColleagueUuid(colleagueUuid);
         personalObjective.setSequenceNumber(sequenceNumber);
+        personalObjective.setGroupObjectiveUuid(reviewBodyRequest.getLinkedReviewUuid());
+        personalObjective.setProperties(new ReviewProperties(reviewBodyRequest.getReviewProperties()));
         return success(objectiveService.updatePersonalObjective(personalObjective));
     }
 

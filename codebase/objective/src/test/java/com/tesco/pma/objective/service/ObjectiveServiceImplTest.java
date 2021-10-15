@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.UUID;
 
 import static com.tesco.pma.objective.exception.ErrorCodes.PERSONAL_OBJECTIVE_NOT_FOUND_BY_UUID;
+import static org.assertj.core.api.Assertions.from;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -36,13 +37,13 @@ class ObjectiveServiceImplTest {
     private NamedMessageSourceAccessor messages;
 
     @MockBean
-    private ObjectiveDAO mockProfileDAO;
+    private ObjectiveDAO mockObjectiveDAO;
 
     private ObjectiveServiceImpl objectiveService;
 
     @BeforeEach
     void setUp() {
-        objectiveService = new ObjectiveServiceImpl(mockProfileDAO, messages);
+        objectiveService = new ObjectiveServiceImpl(mockObjectiveDAO, messages);
     }
 
     @AfterEach
@@ -54,7 +55,7 @@ class ObjectiveServiceImplTest {
         final var personalObjectiveUuid = UUID.randomUUID();
         final var expectedPersonalObjective = PersonalObjective.builder().build();
 
-        when(mockProfileDAO.getPersonalObjective(any(UUID.class)))
+        when(mockObjectiveDAO.getPersonalObjective(any(UUID.class)))
                 .thenReturn(expectedPersonalObjective);
 
         final var res = objectiveService.getPersonalObjectiveByUuid(personalObjectiveUuid);
@@ -64,21 +65,26 @@ class ObjectiveServiceImplTest {
 
     @Test
     void updatePersonalObjectiveShouldReturnUpdatedPersonalObjective() {
+        final var beforePersonalObjective = PersonalObjective.builder().build();
         final var expectedPersonalObjective = PersonalObjective.builder().build();
 
-        when(mockProfileDAO.updatePersonalObjective(any(PersonalObjective.class)))
+        when(mockObjectiveDAO.updatePersonalObjective(any(PersonalObjective.class)))
                 .thenReturn(1);
+        when(mockObjectiveDAO.getPersonalObjectiveForColleague(any(), any(), any()))
+                .thenReturn(beforePersonalObjective);
 
         final var res = objectiveService.updatePersonalObjective(expectedPersonalObjective);
 
-        assertThat(res).isSameAs(expectedPersonalObjective);
+        assertThat(res)
+                .returns(expectedPersonalObjective.getProperties(), from(PersonalObjective::getProperties))
+                .returns(expectedPersonalObjective.getGroupObjectiveUuid(), from(PersonalObjective::getGroupObjectiveUuid));
     }
 
     @Test
     void createPersonalObjectiveShouldReturnCreatedPersonalObjective() {
         final var expectedPersonalObjective = PersonalObjective.builder().build();
 
-        when(mockProfileDAO.createPersonalObjective(any(PersonalObjective.class)))
+        when(mockObjectiveDAO.createPersonalObjective(any(PersonalObjective.class)))
                 .thenReturn(1);
 
         final var res = objectiveService.createPersonalObjective(expectedPersonalObjective);
@@ -89,7 +95,7 @@ class ObjectiveServiceImplTest {
     @Test
     void deletePersonalObjectiveNotExists() {
         final var personalObjectiveUuid = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
-        when(mockProfileDAO.deletePersonalObjective(any(UUID.class)))
+        when(mockObjectiveDAO.deletePersonalObjective(any(UUID.class)))
                 .thenReturn(0);
         final var exception = assertThrows(NotFoundException.class,
                 () -> objectiveService.deletePersonalObjective(personalObjectiveUuid));
