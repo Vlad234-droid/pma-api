@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.tesco.pma.api.StatusHistoryRecord;
 import com.tesco.pma.api.DictionaryFilter;
-import com.tesco.pma.process.api.PMProcess;
+import com.tesco.pma.process.api.PMRuntimeProcess;
 import com.tesco.pma.process.api.PMProcessStatus;
 
 import static java.time.Instant.now;
@@ -16,13 +16,13 @@ import static java.time.Instant.now;
 /**
  * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 13.10.2021 Time: 18:46
  */
-public interface PMProcessDAO {
+public interface PMRuntimeProcessDAO {
     /**
      * Creates the process
      * @param process Creating process
      * @return number of created instances: 0 or 1
      */
-    default int create(PMProcess process) {
+    default int create(PMRuntimeProcess process) {
         var updateTime = now();
         process.setLastUpdateTime(updateTime);
         if (1 == createInt(process)) {
@@ -31,7 +31,7 @@ public interface PMProcessDAO {
         return 0;
     }
 
-    int createInt(@Param("process") PMProcess process);
+    int createInt(@Param("process") PMRuntimeProcess process);
 
     /**
      * Updates status allowed by set of old statuses.
@@ -49,7 +49,7 @@ public interface PMProcessDAO {
         return 0;
     }
 
-    PMProcess read(@Param("uuid") UUID uuid);
+    PMRuntimeProcess read(@Param("uuid") UUID uuid);
 
     List<StatusHistoryRecord<UUID, PMProcessStatus>> readHistory(@Param("uuid") UUID uuid);
 

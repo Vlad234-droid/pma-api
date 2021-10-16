@@ -1,7 +1,9 @@
 package com.tesco.pma.process.api;
 
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.tesco.pma.process.api.model.PMElement;
 
 import lombok.Getter;
 
@@ -10,12 +12,5 @@ import lombok.Getter;
  */
 @Getter
 public class PMProcessMetadata {
-    public static final String TIMELINE_POINT = "timelinePoint";
-    public static final String TIMELINE_POINT_NAME = "timelinePointName";
-
-    private SortedMap<String, String> timeline = new TreeMap<>();
-
-    //todo start event properties
-    //todo review notification properties
-
+    private List<PMElement> elements = new ArrayList<>();
 }

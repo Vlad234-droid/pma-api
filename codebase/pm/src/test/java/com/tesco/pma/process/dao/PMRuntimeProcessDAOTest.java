@@ -10,7 +10,7 @@ import org.springframework.test.context.DynamicPropertySource;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.dao.AbstractDAOTest;
-import com.tesco.pma.process.api.PMProcess;
+import com.tesco.pma.process.api.PMRuntimeProcess;
 import com.tesco.pma.process.api.PMProcessStatus;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 13.10.2021 Time: 22:40
  */
-class PMProcessDAOTest extends AbstractDAOTest {
+class PMRuntimeProcessDAOTest extends AbstractDAOTest {
 
     private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/process/dao/";
     private static final UUID PM_UUID = UUID.fromString("4f2ab073-2c31-11ec-916b-0242391d2e7a");
@@ -30,7 +30,7 @@ class PMProcessDAOTest extends AbstractDAOTest {
     private static final String BPM_PM_NAME = "PROCESS_NAME";
 
     @Autowired
-    private PMProcessDAO dao;
+    private PMRuntimeProcessDAO dao;
 
     @DynamicPropertySource
     static void postgresqlProperties(DynamicPropertyRegistry registry) {
@@ -41,7 +41,7 @@ class PMProcessDAOTest extends AbstractDAOTest {
 
     @Test
     void create() {
-        assertEquals(1, dao.create(new PMProcess(NEW_UUID, CL_UUID, PMProcessStatus.STARTED, NEW_BPM_UUID, BPM_PM_NAME, null)));
+        assertEquals(1, dao.create(new PMRuntimeProcess(NEW_UUID, CL_UUID, PMProcessStatus.STARTED, NEW_BPM_UUID, BPM_PM_NAME, null)));
 
         var actual = dao.read(NEW_UUID);
         checkProcess(actual, NEW_UUID, PMProcessStatus.STARTED, NEW_BPM_UUID);
@@ -78,7 +78,7 @@ class PMProcessDAOTest extends AbstractDAOTest {
         checkHistory(actual, 2, 1);
     }
 
-    private void checkProcess(PMProcess actual, UUID pmUuid, PMProcessStatus registered, UUID bpmUuid) {
+    private void checkProcess(PMRuntimeProcess actual, UUID pmUuid, PMProcessStatus registered, UUID bpmUuid) {
         assertNotNull(actual);
         assertEquals(pmUuid, actual.getId());
         assertEquals(CL_UUID, actual.getColleagueUuid());
@@ -88,7 +88,7 @@ class PMProcessDAOTest extends AbstractDAOTest {
         assertNotNull(actual.getLastUpdateTime());
     }
 
-    private void checkHistory(PMProcess actual, int amount, int checking) {
+    private void checkHistory(PMRuntimeProcess actual, int amount, int checking) {
         var hi = dao.readHistory(actual.getId());
         assertNotNull(hi);
         assertEquals(amount, hi.size());

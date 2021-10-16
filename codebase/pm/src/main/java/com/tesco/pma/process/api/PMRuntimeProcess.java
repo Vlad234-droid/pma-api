@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PMProcess implements Identified<UUID>, StatusAware<PMProcessStatus> {
+public class PMRuntimeProcess implements Identified<UUID>, StatusAware<PMProcessStatus> {
     private UUID id;
     private UUID colleagueUuid;
     private PMProcessStatus status;

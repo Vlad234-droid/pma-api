@@ -11,10 +11,10 @@ import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.process.api.PMProcess;
+import com.tesco.pma.process.api.PMRuntimeProcess;
 import com.tesco.pma.process.api.PMProcessErrorCodes;
 import com.tesco.pma.process.api.PMProcessStatus;
-import com.tesco.pma.process.dao.PMProcessDAO;
+import com.tesco.pma.process.dao.PMRuntimeProcessDAO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,12 +28,12 @@ public class PMProcessServiceImpl implements PMProcessService {
     private static final String STATUS = "status";
     private static final String STATUS_FILTER = "status_filter";
 
-    private final PMProcessDAO dao;
+    private final PMRuntimeProcessDAO dao;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Override
     @Transactional
-    public void create(PMProcess process) {
+    public void create(PMRuntimeProcess process) {
         process.setId(UUID.randomUUID());
         try {
             dao.create(process);
@@ -44,7 +44,7 @@ public class PMProcessServiceImpl implements PMProcessService {
     }
 
     @Override
-    public PMProcess getProcess(UUID uuid) {
+    public PMRuntimeProcess getProcess(UUID uuid) {
         var process = dao.read(uuid);
         if (process == null) {
             throw new NotFoundException(PMProcessErrorCodes.PROCESS_NOT_FOUND.getCode(),

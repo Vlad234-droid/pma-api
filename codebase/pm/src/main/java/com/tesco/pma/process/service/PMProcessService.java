@@ -3,7 +3,7 @@ package com.tesco.pma.process.service;
 import java.util.UUID;
 
 import com.tesco.pma.api.DictionaryFilter;
-import com.tesco.pma.process.api.PMProcess;
+import com.tesco.pma.process.api.PMRuntimeProcess;
 import com.tesco.pma.process.api.PMProcessStatus;
 
 /**
@@ -14,7 +14,7 @@ public interface PMProcessService {
      * Creates a new instance of the process
      * @param process creating process. Note: UUID identifier is generating automatically
      */
-    void create(PMProcess process);
+    void create(PMRuntimeProcess process);
 
     /**
      * Returns process by uuid
@@ -23,7 +23,7 @@ public interface PMProcessService {
      * @return the instance of the process otherwise
      * @throws NotFoundException if the was not found
      */
-    PMProcess getProcess(UUID uuid);
+    PMRuntimeProcess getProcess(UUID uuid);
 
     /**
      * Updates the status of the process by uuid with the filter

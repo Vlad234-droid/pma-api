@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.tesco.pma.process.dao.PMProcessDAO">
+<mapper namespace="com.tesco.pma.process.dao.PMRuntimeProcessDAO">
 
     <sql id="addStatusIdCondition">
         <if test="statusFilter != null and !statusFilter.isEmpty()">
@@ -12,7 +12,7 @@
         </if>
     </sql>
 
-    <resultMap id="pmProcess" type="com.tesco.pma.process.api.PMProcess">
+    <resultMap id="pmProcess" type="com.tesco.pma.process.api.PMRuntimeProcess">
         <id column="uuid" property="id"/>
         <result column="colleague_uuid" property="colleagueUuid"/>
         <result column="status_id" property="status" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.process.api.PMProcessStatus" />
@@ -36,7 +36,7 @@
         order by update_time
     </select>
 
-    <insert id="createInt" parameterType="com.tesco.pma.process.api.PMProcess" useGeneratedKeys="true" keyColumn="uuid" keyProperty="id">
+    <insert id="createInt" parameterType="com.tesco.pma.process.api.PMRuntimeProcess" useGeneratedKeys="true" keyColumn="uuid" keyProperty="id">
         insert into pm_process (uuid, colleague_uuid, status_id, bpm_process_id, bpm_process_name, last_update_time)
         values (
             #{process.id},

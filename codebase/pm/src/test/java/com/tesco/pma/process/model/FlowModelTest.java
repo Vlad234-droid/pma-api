@@ -33,10 +33,9 @@ class FlowModelTest extends AbstractCamundaSpringBootTest {
         PMProcessMetadata metadata = new PMProcessMetadata();
         Collection<Task> tasks = model.getModelElementsByType(Task.class);
 
-        new TimelineParser().parseTimeline(metadata, tasks);
+        new PMProcessModelParser().parse(metadata, tasks);
 
-        assertEquals(2, metadata.getTimeline().size());
-
+        assertEquals(3, metadata.getElements().size());
     }
 
     private BpmnModelInstance getModel() {
