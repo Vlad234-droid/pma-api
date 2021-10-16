@@ -4,6 +4,7 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.objective.LocalTestConfig;
 import com.tesco.pma.objective.dao.ObjectiveDAO;
+import com.tesco.pma.objective.dao.ReviewAuditLogDAO;
 import com.tesco.pma.objective.domain.PersonalObjective;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,11 +40,14 @@ class ObjectiveServiceImplTest {
     @MockBean
     private ObjectiveDAO mockObjectiveDAO;
 
+    @MockBean
+    private ReviewAuditLogDAO mockReviewAuditLogDAO;
+
     private ObjectiveServiceImpl objectiveService;
 
     @BeforeEach
     void setUp() {
-        objectiveService = new ObjectiveServiceImpl(mockObjectiveDAO, messages);
+        objectiveService = new ObjectiveServiceImpl(mockObjectiveDAO, mockReviewAuditLogDAO, messages);
     }
 
     @AfterEach

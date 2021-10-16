@@ -1,13 +1,14 @@
 package com.tesco.pma.objective.service;
 
+import com.tesco.pma.exception.DatabaseConstraintViolationException;
+import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.objective.domain.GroupObjective;
 import com.tesco.pma.objective.domain.ObjectiveStatus;
 import com.tesco.pma.objective.domain.PersonalObjective;
 import com.tesco.pma.objective.domain.WorkingGroupObjective;
-import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.exception.DatabaseConstraintViolationException;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.UUID;
 
@@ -73,13 +74,17 @@ public interface ObjectiveService {
      * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
      * @param sequenceNumber       a sequence number of personal objective
+     * @param status               a new review status
+     * @param reason               a reason of changing status
      * @return a ObjectiveStatus
      * @throws NotFoundException if personal objective doesn't exist.
      */
     ObjectiveStatus updatePersonalObjectiveStatus(@NotNull UUID performanceCycleUuid,
                                                   @NotNull UUID colleagueUuid,
                                                   @NotNull Integer sequenceNumber,
-                                                  @NotNull ObjectiveStatus status);
+                                                  @NotNull ObjectiveStatus status,
+                                                  @Size(max = 250) String reason,
+                                                  @NotNull String loggedUserName);
 
     /**
      * Deletes personal objective.

@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static com.tesco.pma.objective.domain.ObjectiveStatus.DRAFT;
-import static com.tesco.pma.objective.domain.ObjectiveStatus.SUBMITTED;
+import static com.tesco.pma.objective.domain.ObjectiveStatus.WAITING_FOR_APPROVAL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
 import static org.assertj.core.api.InstanceOfAssertFactories.type;
@@ -287,7 +287,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
                 .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
                 .sequenceNumber(SEQUENCE_NUMBER_1)
                 .properties(REVIEW_PROPERTIES_UPDATE)
-                .status(SUBMITTED)
+                .status(WAITING_FOR_APPROVAL)
                 .build();
 
         final var result = instance.updatePersonalObjective(personalObjective);
@@ -304,7 +304,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
                 PERFORMANCE_CYCLE_UUID,
                 COLLEAGUE_UUID,
                 SEQUENCE_NUMBER_1,
-                SUBMITTED,
+                WAITING_FOR_APPROVAL,
                 Collections.singleton(DRAFT));
 
         assertThat(result).isOne();

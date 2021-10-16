@@ -8,10 +8,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ObjectiveStatus implements DictionaryItem<Integer> {
 
-    DRAFT(1, "A draft of objective"),
-    SUBMITTED(2, "An objective is submitted"),
-    APPROVED(3, "An objective is approved"),
-    REJECTED(4, "An objective is rejected"),
+    DRAFT(1, "An objective is saved as draft"),
+    WAITING_FOR_APPROVAL(2, "An objective objective was submitted to LM approval but not yet approved"),
+    APPROVED(3, "An objective was approved by LM"),
+    RETURNED(4, "An objective was returned by LM"),
     COMPLETED(5, "An objective is completed");
 
     private final Integer id;

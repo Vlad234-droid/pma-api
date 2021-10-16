@@ -176,4 +176,27 @@
                                  referencedColumnNames="uuid" referencedTableName="group_objective"
                                  validate="true"/>
     </changeSet>
+
+    <changeSet author="ypashynskyi" id="7">
+        <createTable remarks="History of changing review's statuses"
+                     tableName="review_change_status_hi">
+            <column name="review_uuid" type="${uuid_type}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="review_change_status_hi_pk"/>
+            </column>
+            <column name="old_status_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="new_status_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="change_reason" type="VARCHAR"/>
+            <column name="updated_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_time" type="TIMESTAMPTZ">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="review_change_status_hi_pk"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

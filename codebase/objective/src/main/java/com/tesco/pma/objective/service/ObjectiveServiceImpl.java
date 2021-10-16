@@ -5,6 +5,7 @@ import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.objective.dao.ObjectiveDAO;
+import com.tesco.pma.objective.dao.ReviewAuditLogDAO;
 import com.tesco.pma.objective.domain.GroupObjective;
 import com.tesco.pma.objective.domain.ObjectiveStatus;
 import com.tesco.pma.objective.domain.PersonalObjective;
@@ -26,8 +27,8 @@ import java.util.UUID;
 import static com.tesco.pma.objective.domain.ObjectiveStatus.APPROVED;
 import static com.tesco.pma.objective.domain.ObjectiveStatus.COMPLETED;
 import static com.tesco.pma.objective.domain.ObjectiveStatus.DRAFT;
-import static com.tesco.pma.objective.domain.ObjectiveStatus.REJECTED;
-import static com.tesco.pma.objective.domain.ObjectiveStatus.SUBMITTED;
+import static com.tesco.pma.objective.domain.ObjectiveStatus.RETURNED;
+import static com.tesco.pma.objective.domain.ObjectiveStatus.WAITING_FOR_APPROVAL;
 import static com.tesco.pma.objective.exception.ErrorCodes.BUSINESS_UNIT_NOT_EXISTS;
 import static com.tesco.pma.objective.exception.ErrorCodes.GROUP_OBJECTIVES_NOT_FOUND;
 import static com.tesco.pma.objective.exception.ErrorCodes.GROUP_OBJECTIVE_ALREADY_EXISTS;
@@ -46,6 +47,7 @@ import static java.time.Instant.now;
 @RequiredArgsConstructor
 public class ObjectiveServiceImpl implements ObjectiveService {
     private final ObjectiveDAO objectiveDAO;
+    private final ReviewAuditLogDAO reviewAuditLogDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
     private static final String PERSONAL_OBJECTIVE_UUID_PARAMETER_NAME = "personalObjectiveUuid";
@@ -63,11 +65,11 @@ public class ObjectiveServiceImpl implements ObjectiveService {
 
     static {
         UPDATE_STATUS_RULE_MAP = Map.of(
-                SUBMITTED, List.of(DRAFT),
-                APPROVED, List.of(SUBMITTED),
-                REJECTED, List.of(SUBMITTED, APPROVED),
+                WAITING_FOR_APPROVAL, List.of(DRAFT),
+                APPROVED, List.of(WAITING_FOR_APPROVAL),
+                RETURNED, List.of(WAITING_FOR_APPROVAL, APPROVED),
                 COMPLETED, List.of(APPROVED),
-                DRAFT, List.of(REJECTED)
+                DRAFT, List.of(RETURNED)
         );
     }
 
@@ -148,7 +150,13 @@ public class ObjectiveServiceImpl implements ObjectiveService {
     public ObjectiveStatus updatePersonalObjectiveStatus(UUID performanceCycleUuid,
                                                          UUID colleagueUuid,
                                                          Integer sequenceNumber,
-                                                         ObjectiveStatus status) {
+                                                         ObjectiveStatus status,
+                                                         String reason,
+                                                         String loggedUserName) {
+        var actualReview = objectiveDAO.getPersonalObjectiveForColleague(
+                performanceCycleUuid,
+                colleagueUuid,
+                sequenceNumber);
         var prevStatuses = UPDATE_STATUS_RULE_MAP.get(status);
         if (1 == objectiveDAO.updatePersonalObjectiveStatus(
                 performanceCycleUuid,
@@ -156,6 +164,7 @@ public class ObjectiveServiceImpl implements ObjectiveService {
                 sequenceNumber,
                 status,
                 prevStatuses)) {
+            reviewAuditLogDAO.logLogReviewUpdating(actualReview, status, reason, loggedUserName);
             return status;
         } else {
             throw notFound(PERSONAL_OBJECTIVE_NOT_FOUND,

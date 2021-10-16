@@ -1,6 +1,7 @@
 package com.tesco.pma.objective.service.rest;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.objective.domain.GroupObjective;
 import com.tesco.pma.objective.domain.ObjectiveStatus;
 import com.tesco.pma.objective.domain.PersonalObjective;
@@ -42,6 +43,7 @@ public class ObjectiveEndpoint {
     public static final String LINKED_REVIEW_UUID = "linkedReviewUuid";
 
     private final ObjectiveService objectiveService;
+    private final AuditorAware<String> auditorAware;
     private final NamedMessageSourceAccessor messages;
 
     /**
@@ -158,6 +160,7 @@ public class ObjectiveEndpoint {
      * @param colleagueUuid        an identifier of colleague
      * @param sequenceNumber       a sequence number of personal objective
      * @param status               a ObjectiveStatus
+     * @param reason               a reason of changing status
      * @return a RestResponse parameterized with ObjectiveStatus
      */
     @Operation(summary = "Update status of existing personal objective",
@@ -171,12 +174,15 @@ public class ObjectiveEndpoint {
     public RestResponse<ObjectiveStatus> updatePersonalObjectiveStatus(@PathVariable("perfCycleUuid") UUID performanceCycleUuid,
                                                                        @PathVariable("colleagueUuid") UUID colleagueUuid,
                                                                        @PathVariable("sequenceNumber") Integer sequenceNumber,
-                                                                       @PathVariable("status") ObjectiveStatus status) {
+                                                                       @PathVariable("status") ObjectiveStatus status,
+                                                                       @RequestBody String reason) {
         return success(objectiveService.updatePersonalObjectiveStatus(
                 performanceCycleUuid,
                 colleagueUuid,
                 sequenceNumber,
-                status
+                status,
+                reason,
+                resolveUserName()
         ));
     }
 
@@ -255,5 +261,9 @@ public class ObjectiveEndpoint {
     public RestResponse<?> unpublishBusinessUnitStructure(@PathVariable("businessUnitUuid") UUID businessUnitUuid) {
         objectiveService.unpublishGroupObjectives(businessUnitUuid);
         return RestResponse.success();
+    }
+
+    private String resolveUserName() {
+        return auditorAware.getCurrentAuditor();
     }
 }
