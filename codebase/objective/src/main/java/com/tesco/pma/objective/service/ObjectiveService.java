@@ -27,17 +27,17 @@ public interface ObjectiveService {
     PersonalObjective getPersonalObjectiveByUuid(@NotNull UUID personalObjectiveUuid);
 
     /**
-     * Finds personal objective by performanceCycleUuid, colleagueUuid and sequenceNumber.
+     * Finds personal objective by performanceCycleUuid, colleagueUuid and number.
      *
      * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
-     * @param sequenceNumber       a sequence number of personal objective
+     * @param number       a sequence number of personal objective
      * @return personal objective
      * @throws NotFoundException if personal objective doesn't exist.
      */
     PersonalObjective getPersonalObjectiveForColleague(@NotNull UUID performanceCycleUuid,
                                                        @NotNull UUID colleagueUuid,
-                                                       @NotNull Integer sequenceNumber);
+                                                       @NotNull Integer number);
 
     /**
      * Finds personal objectives by performanceCycleUuid, colleagueUuid.
@@ -73,7 +73,7 @@ public interface ObjectiveService {
      *
      * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
-     * @param sequenceNumber       a sequence number of personal objective
+     * @param number       a sequence number of personal objective
      * @param status               a new review status
      * @param reason               a reason of changing status
      * @return a ObjectiveStatus
@@ -81,7 +81,7 @@ public interface ObjectiveService {
      */
     ObjectiveStatus updatePersonalObjectiveStatus(@NotNull UUID performanceCycleUuid,
                                                   @NotNull UUID colleagueUuid,
-                                                  @NotNull Integer sequenceNumber,
+                                                  @NotNull Integer number,
                                                   @NotNull ObjectiveStatus status,
                                                   @Size(max = 250) String reason,
                                                   @NotNull String loggedUserName);

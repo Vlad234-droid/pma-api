@@ -6,7 +6,7 @@
     <resultMap id="groupObjectiveResultMap" type="com.tesco.pma.objective.domain.GroupObjective">
         <id property="uuid" column="uuid"/>
         <result property="businessUnitUuid" column="business_unit_uuid"/>
-        <result property="sequenceNumber" column="sequence_number"/>
+        <result property="number" column="sequence_number"/>
         <result property="title" column="title"/>
         <result property="version" column="version"/>
     </resultMap>
@@ -15,7 +15,7 @@
         <id property="uuid" column="uuid"/>
         <result property="colleagueUuid" column="colleague_uuid"/>
         <result property="performanceCycleUuid" column="performance_cycle_uuid"/>
-        <result property="sequenceNumber" column="sequence_number"/>
+        <result property="number" column="sequence_number"/>
         <result property="properties" column="properties"
                 typeHandler="com.tesco.pma.objective.dao.utils.ReviewPropertiesJsonbTypeHandler"
                 javaType="com.tesco.pma.objective.domain.ReviewProperties"/>
@@ -41,7 +41,7 @@
          version)
         VALUES (#{groupObjective.uuid},
                 #{groupObjective.businessUnitUuid},
-                #{groupObjective.sequenceNumber},
+                #{groupObjective.number},
                 #{groupObjective.title},
                 #{groupObjective.version})
     </insert>
@@ -115,7 +115,7 @@
         VALUES (#{personalObjective.uuid},
         #{personalObjective.colleagueUuid},
         #{personalObjective.performanceCycleUuid},
-        #{personalObjective.sequenceNumber},
+        #{personalObjective.number},
         #{personalObjective.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.objective.dao.utils.ReviewPropertiesJsonbTypeHandler},
         #{personalObjective.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.objective.domain.ObjectiveStatus});
         <choose>
@@ -157,7 +157,7 @@
                            ON (po.uuid = ol.personal_objective_uuid)
         WHERE po.colleague_uuid = #{colleagueUuid}
           and po.performance_cycle_uuid = #{performanceCycleUuid}
-          and po.sequence_number = #{sequenceNumber}
+          and po.sequence_number = #{number}
     </select>
 
     <select id="getPersonalObjectivesForColleague" resultMap="personalObjectiveResultMap">
@@ -188,7 +188,7 @@
         SET properties = #{personalObjective.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.objective.dao.utils.ReviewPropertiesJsonbTypeHandler}
         WHERE performance_cycle_uuid = #{personalObjective.performanceCycleUuid}
         and colleague_uuid = #{personalObjective.colleagueUuid}
-        and sequence_number = #{personalObjective.sequenceNumber};
+        and sequence_number = #{personalObjective.number};
         <choose>
             <when test="personalObjective.groupObjectiveUuid == null">
                 DELETE
@@ -214,7 +214,7 @@
         SET status_id=#{newStatus.id}
         WHERE po.colleague_uuid = #{colleagueUuid}
         and po.performance_cycle_uuid = #{performanceCycleUuid}
-        and po.sequence_number = #{sequenceNumber}
+        and po.sequence_number = #{number}
         <if test="prevObjectiveStatuses != null and !prevObjectiveStatuses.isEmpty()">
             and po.status_id in
             <foreach item="prevStatus" collection="prevObjectiveStatuses" separator="," open="(" close=")">

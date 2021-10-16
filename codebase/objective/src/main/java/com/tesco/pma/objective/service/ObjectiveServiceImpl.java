@@ -54,12 +54,12 @@ public class ObjectiveServiceImpl implements ObjectiveService {
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     private static final String PERFORMANCE_CYCLE_UUID_PARAMETER_NAME = "performanceCycleUuid";
     private static final String BUSINESS_UNIT_UUID_PARAMETER_NAME = "businessUnitUuid";
-    private static final String SEQUENCE_NUMBER_PARAMETER_NAME = "sequenceNumber";
+    private static final String NUMBER_PARAMETER_NAME = "number";
     private static final String VERSION_PARAMETER_NAME = "version";
     private static final String STATUS_PARAMETER_NAME = "status";
     private static final String PREV_STATUSES_PARAMETER_NAME = "prevStatuses";
     private static final Comparator<GroupObjective> GROUP_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR =
-            Comparator.comparing(GroupObjective::getSequenceNumber)
+            Comparator.comparing(GroupObjective::getNumber)
                     .thenComparing(GroupObjective::getTitle);
     private static final Map<ObjectiveStatus, Collection<ObjectiveStatus>> UPDATE_STATUS_RULE_MAP;
 
@@ -84,13 +84,13 @@ public class ObjectiveServiceImpl implements ObjectiveService {
     }
 
     @Override
-    public PersonalObjective getPersonalObjectiveForColleague(UUID performanceCycleUuid, UUID colleagueUuid, Integer sequenceNumber) {
-        var res = objectiveDAO.getPersonalObjectiveForColleague(performanceCycleUuid, colleagueUuid, sequenceNumber);
+    public PersonalObjective getPersonalObjectiveForColleague(UUID performanceCycleUuid, UUID colleagueUuid, Integer number) {
+        var res = objectiveDAO.getPersonalObjectiveForColleague(performanceCycleUuid, colleagueUuid, number);
         if (res == null) {
             throw notFound(PERSONAL_OBJECTIVE_NOT_FOUND_FOR_COLLEAGUE,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
-                            SEQUENCE_NUMBER_PARAMETER_NAME, sequenceNumber));
+                            NUMBER_PARAMETER_NAME, number));
         }
         return res;
     }
@@ -119,7 +119,7 @@ public class ObjectiveServiceImpl implements ObjectiveService {
                     PERSONAL_OBJECTIVE_ALREADY_EXISTS,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, personalObjective.getColleagueUuid(),
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, personalObjective.getPerformanceCycleUuid(),
-                            SEQUENCE_NUMBER_PARAMETER_NAME, personalObjective.getSequenceNumber()),
+                            NUMBER_PARAMETER_NAME, personalObjective.getNumber()),
                     e);
         }
     }
@@ -130,12 +130,12 @@ public class ObjectiveServiceImpl implements ObjectiveService {
         var personalObjectiveBefore = objectiveDAO.getPersonalObjectiveForColleague(
                 personalObjective.getPerformanceCycleUuid(),
                 personalObjective.getColleagueUuid(),
-                personalObjective.getSequenceNumber());
+                personalObjective.getNumber());
         if (null == personalObjectiveBefore) {
             throw notFound(PERSONAL_OBJECTIVE_NOT_FOUND_FOR_COLLEAGUE,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, personalObjective.getColleagueUuid(),
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, personalObjective.getPerformanceCycleUuid(),
-                            SEQUENCE_NUMBER_PARAMETER_NAME, personalObjective.getSequenceNumber()));
+                            NUMBER_PARAMETER_NAME, personalObjective.getNumber()));
         } else {
             personalObjective.setUuid(personalObjectiveBefore.getUuid());
             personalObjective.setStatus(personalObjectiveBefore.getStatus());
@@ -149,19 +149,19 @@ public class ObjectiveServiceImpl implements ObjectiveService {
     @Transactional
     public ObjectiveStatus updatePersonalObjectiveStatus(UUID performanceCycleUuid,
                                                          UUID colleagueUuid,
-                                                         Integer sequenceNumber,
+                                                         Integer number,
                                                          ObjectiveStatus status,
                                                          String reason,
                                                          String loggedUserName) {
         var actualReview = objectiveDAO.getPersonalObjectiveForColleague(
                 performanceCycleUuid,
                 colleagueUuid,
-                sequenceNumber);
+                number);
         var prevStatuses = UPDATE_STATUS_RULE_MAP.get(status);
         if (1 == objectiveDAO.updatePersonalObjectiveStatus(
                 performanceCycleUuid,
                 colleagueUuid,
-                sequenceNumber,
+                number,
                 status,
                 prevStatuses)) {
             reviewAuditLogDAO.logLogReviewUpdating(actualReview, status, reason, loggedUserName);
@@ -171,7 +171,7 @@ public class ObjectiveServiceImpl implements ObjectiveService {
                     Map.of(STATUS_PARAMETER_NAME, status,
                             COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
-                            SEQUENCE_NUMBER_PARAMETER_NAME, sequenceNumber,
+                            NUMBER_PARAMETER_NAME, number,
                             PREV_STATUSES_PARAMETER_NAME, prevStatuses));
         }
     }
@@ -211,7 +211,7 @@ public class ObjectiveServiceImpl implements ObjectiveService {
                 throw databaseConstraintViolation(
                         GROUP_OBJECTIVE_ALREADY_EXISTS,
                         Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, groupObjective.getBusinessUnitUuid(),
-                                SEQUENCE_NUMBER_PARAMETER_NAME, groupObjective.getSequenceNumber(),
+                                NUMBER_PARAMETER_NAME, groupObjective.getNumber(),
                                 VERSION_PARAMETER_NAME, groupObjective.getVersion()),
                         e);
 

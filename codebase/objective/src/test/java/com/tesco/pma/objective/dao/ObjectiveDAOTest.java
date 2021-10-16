@@ -106,7 +106,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
         final var groupObjective = GroupObjective.builder()
                 .uuid(GROUP_OBJECTIVE_UUID)
                 .businessUnitUuid(BUSINESS_UNIT_UUID)
-                .sequenceNumber(SEQUENCE_NUMBER_1)
+                .number(SEQUENCE_NUMBER_1)
                 .title(TITLE_1)
                 .version(VERSION_1)
                 .build();
@@ -123,7 +123,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
         final var groupObjective = GroupObjective.builder()
                 .uuid(GROUP_OBJECTIVE_UUID_2)
                 .businessUnitUuid(BUSINESS_UNIT_UUID_2)
-                .sequenceNumber(SEQUENCE_NUMBER_1)
+                .number(SEQUENCE_NUMBER_1)
                 .title(TITLE_1)
                 .version(VERSION_1)
                 .build();
@@ -140,7 +140,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
         assertThat(result)
                 .asInstanceOf(type(GroupObjective.class))
                 .returns(BUSINESS_UNIT_UUID_2, from(GroupObjective::getBusinessUnitUuid))
-                .returns(SEQUENCE_NUMBER_1, from(GroupObjective::getSequenceNumber))
+                .returns(SEQUENCE_NUMBER_1, from(GroupObjective::getNumber))
                 .returns(VERSION_1, from(GroupObjective::getVersion));
     }
 
@@ -162,7 +162,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
 
         assertThat(result.get(0))
                 .returns(BUSINESS_UNIT_UUID_2, from(GroupObjective::getBusinessUnitUuid))
-                .returns(SEQUENCE_NUMBER_1, from(GroupObjective::getSequenceNumber))
+                .returns(SEQUENCE_NUMBER_1, from(GroupObjective::getNumber))
                 .returns(GROUP_TITLE_UPDATE, from(GroupObjective::getTitle))
                 .returns(VERSION_3, from(GroupObjective::getVersion));
     }
@@ -197,7 +197,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
                 .asInstanceOf(type(PersonalObjective.class))
                 .returns(COLLEAGUE_UUID, from(PersonalObjective::getColleagueUuid))
                 .returns(PERFORMANCE_CYCLE_UUID, from(PersonalObjective::getPerformanceCycleUuid))
-                .returns(SEQUENCE_NUMBER_1, from(PersonalObjective::getSequenceNumber))
+                .returns(SEQUENCE_NUMBER_1, from(PersonalObjective::getNumber))
                 .returns(REVIEW_PROPERTIES_INIT, from(PersonalObjective::getProperties))
                 .returns(GROUP_OBJECTIVE_UUID_2, from(PersonalObjective::getGroupObjectiveUuid))
                 .returns(ObjectiveStatus.DRAFT, from(PersonalObjective::getStatus));
@@ -219,7 +219,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
                 .uuid(PERSONAL_OBJECTIVE_UUID)
                 .colleagueUuid(COLLEAGUE_UUID)
                 .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
-                .sequenceNumber(SEQUENCE_NUMBER_1)
+                .number(SEQUENCE_NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
                 .groupObjectiveUuid(GROUP_OBJECTIVE_UUID_2)
                 .status(ObjectiveStatus.DRAFT)
@@ -238,7 +238,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
                 .uuid(PERSONAL_OBJECTIVE_UUID)
                 .colleagueUuid(COLLEAGUE_UUID)
                 .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
-                .sequenceNumber(SEQUENCE_NUMBER_1)
+                .number(SEQUENCE_NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
                 .status(ObjectiveStatus.DRAFT)
                 .build();
@@ -269,7 +269,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
                 .uuid(PERSONAL_OBJECTIVE_UUID)
                 .colleagueUuid(COLLEAGUE_UUID)
                 .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
-                .sequenceNumber(SEQUENCE_NUMBER_1)
+                .number(SEQUENCE_NUMBER_1)
                 .properties(REVIEW_PROPERTIES_UPDATE)
                 .groupObjectiveUuid(GROUP_OBJECTIVE_UUID)
                 .build();
@@ -285,7 +285,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
         final var personalObjective = PersonalObjective.builder()
                 .colleagueUuid(COLLEAGUE_UUID_NOT_EXIST)
                 .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
-                .sequenceNumber(SEQUENCE_NUMBER_1)
+                .number(SEQUENCE_NUMBER_1)
                 .properties(REVIEW_PROPERTIES_UPDATE)
                 .status(WAITING_FOR_APPROVAL)
                 .build();
@@ -318,7 +318,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
                 .uuid(PERSONAL_OBJECTIVE_UUID)
                 .colleagueUuid(COLLEAGUE_UUID)
                 .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
-                .sequenceNumber(SEQUENCE_NUMBER_1)
+                .number(SEQUENCE_NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
                 .status(ObjectiveStatus.DRAFT)
                 .build();
@@ -336,7 +336,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
                 .uuid(PERSONAL_OBJECTIVE_UUID)
                 .colleagueUuid(COLLEAGUE_UUID)
                 .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
-                .sequenceNumber(SEQUENCE_NUMBER_1)
+                .number(SEQUENCE_NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
                 .groupObjectiveUuid(GROUP_OBJECTIVE_UUID_2)
                 .status(ObjectiveStatus.DRAFT)

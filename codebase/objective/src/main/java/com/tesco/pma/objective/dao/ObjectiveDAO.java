@@ -76,12 +76,12 @@ public interface ObjectiveDAO {
      *
      * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
-     * @param sequenceNumber       a sequence number of personal objective
+     * @param number       a sequence number of personal objective
      * @return a PersonalObjective
      */
     PersonalObjective getPersonalObjectiveForColleague(@Param("performanceCycleUuid") UUID performanceCycleUuid,
                                                        @Param("colleagueUuid") UUID colleagueUuid,
-                                                       @Param("sequenceNumber") Integer sequenceNumber);
+                                                       @Param("number") Integer number);
 
     /**
      * Returns a personal objective by performance cycle, colleague and sequence number.
@@ -114,14 +114,14 @@ public interface ObjectiveDAO {
      *
      * @param performanceCycleUuid  an identifier of performance cycle
      * @param colleagueUuid         an identifier of colleague
-     * @param sequenceNumber        a sequence number of personal objective
+     * @param number        a sequence number of personal objective
      * @param newStatus             a new personal objective status
      * @param prevObjectiveStatuses previous objective statuses
      * @return number of updated personal objective statuses
      */
     int updatePersonalObjectiveStatus(@Param("performanceCycleUuid") UUID performanceCycleUuid,
                                       @Param("colleagueUuid") UUID colleagueUuid,
-                                      @Param("sequenceNumber") Integer sequenceNumber,
+                                      @Param("number") Integer number,
                                       @Param("newStatus") ObjectiveStatus newStatus,
                                       @Param("prevObjectiveStatuses") Collection<ObjectiveStatus> prevObjectiveStatuses);
 

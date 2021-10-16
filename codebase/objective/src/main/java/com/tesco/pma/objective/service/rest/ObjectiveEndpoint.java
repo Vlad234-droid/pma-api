@@ -51,24 +51,24 @@ public class ObjectiveEndpoint {
      *
      * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
-     * @param sequenceNumber       a sequence number of personal objective
+     * @param number       a sequence number of personal objective
      * @param reviewBodyRequest    a ReviewBodyRequest
      * @return a RestResponse parameterized with PersonalObjective
      */
     @Operation(summary = "Create a personal objective", description = "PersonalObjective created", tags = {"objective"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
-    @PostMapping(path = "/performance-cycles/{performanceCycleUuid}/colleagues/{colleagueUuid}/sequence-numbers/{sequenceNumber}",
+    @PostMapping(path = "/performance-cycles/{performanceCycleUuid}/colleagues/{colleagueUuid}/numbers/{number}",
             produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @Validated({ValidationGroup.WithoutId.class, Default.class})
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse<PersonalObjective> createPersonalObjective(@PathVariable("performanceCycleUuid") UUID performanceCycleUuid,
                                                                    @PathVariable("colleagueUuid") UUID colleagueUuid,
-                                                                   @PathVariable("sequenceNumber") Integer sequenceNumber,
+                                                                   @PathVariable("number") Integer number,
                                                                    @RequestBody @Valid ReviewBodyRequest reviewBodyRequest) {
         var personalObjective = new PersonalObjective();
         personalObjective.setPerformanceCycleUuid(performanceCycleUuid);
         personalObjective.setColleagueUuid(colleagueUuid);
-        personalObjective.setSequenceNumber(sequenceNumber);
+        personalObjective.setNumber(number);
         personalObjective.setGroupObjectiveUuid(reviewBodyRequest.getLinkedReviewUuid());
         personalObjective.setProperties(new ReviewProperties(reviewBodyRequest.getReviewProperties()));
         return success(objectiveService.createPersonalObjective(personalObjective));
@@ -93,18 +93,18 @@ public class ObjectiveEndpoint {
      *
      * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
-     * @param sequenceNumber       a sequence number of personal objective
+     * @param number       a sequence number of personal objective
      * @return a RestResponse parameterized with personal objective
      */
-    @Operation(summary = "Get a personal objective by its performanceCycleUuid, colleagueUuid and sequenceNumber", tags = {"objective"})
+    @Operation(summary = "Get a personal objective by its performanceCycleUuid, colleagueUuid and number", tags = {"objective"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the PersonalObjective")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PersonalObjective not found", content = @Content)
-    @GetMapping(path = "/performance-cycles/{performanceCycleUuid}/colleagues/{colleagueUuid}/sequence-numbers/{sequenceNumber}",
+    @GetMapping(path = "/performance-cycles/{performanceCycleUuid}/colleagues/{colleagueUuid}/numbers/{number}",
             produces = APPLICATION_JSON_VALUE)
     public RestResponse<PersonalObjective> getPersonalObjectiveForColleague(@PathVariable("performanceCycleUuid") UUID performanceCycleUuid,
                                                                             @PathVariable("colleagueUuid") UUID colleagueUuid,
-                                                                            @PathVariable("sequenceNumber") Integer sequenceNumber) {
-        return success(objectiveService.getPersonalObjectiveForColleague(performanceCycleUuid, colleagueUuid, sequenceNumber));
+                                                                            @PathVariable("number") Integer number) {
+        return success(objectiveService.getPersonalObjectiveForColleague(performanceCycleUuid, colleagueUuid, number));
     }
 
     /**
@@ -130,24 +130,24 @@ public class ObjectiveEndpoint {
      *
      * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
-     * @param sequenceNumber       a sequence number of personal objective
+     * @param number       a sequence number of personal objective
      * @param reviewBodyRequest    a ReviewBodyRequest
      * @return a RestResponse parameterized with PersonalObjective
      */
     @Operation(summary = "Update existing personal objective", description = "Update existing PersonalObjective", tags = {"objective"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "PersonalObjective updated")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PersonalObjective not found", content = @Content)
-    @PutMapping(path = "/performance-cycles/{performanceCycleUuid}/colleagues/{colleagueUuid}/sequence-numbers/{sequenceNumber}",
+    @PutMapping(path = "/performance-cycles/{performanceCycleUuid}/colleagues/{colleagueUuid}/numbers/{number}",
             consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @Validated({ValidationGroup.WithoutId.class, Default.class})
     public RestResponse<PersonalObjective> updatePersonalObjective(@PathVariable("performanceCycleUuid") UUID performanceCycleUuid,
                                                                    @PathVariable("colleagueUuid") UUID colleagueUuid,
-                                                                   @PathVariable("sequenceNumber") Integer sequenceNumber,
+                                                                   @PathVariable("number") Integer number,
                                                                    @RequestBody @Valid ReviewBodyRequest reviewBodyRequest) {
         var personalObjective = new PersonalObjective();
         personalObjective.setPerformanceCycleUuid(performanceCycleUuid);
         personalObjective.setColleagueUuid(colleagueUuid);
-        personalObjective.setSequenceNumber(sequenceNumber);
+        personalObjective.setNumber(number);
         personalObjective.setGroupObjectiveUuid(reviewBodyRequest.getLinkedReviewUuid());
         personalObjective.setProperties(new ReviewProperties(reviewBodyRequest.getReviewProperties()));
         return success(objectiveService.updatePersonalObjective(personalObjective));
@@ -158,7 +158,7 @@ public class ObjectiveEndpoint {
      *
      * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
-     * @param sequenceNumber       a sequence number of personal objective
+     * @param number       a sequence number of personal objective
      * @param status               a ObjectiveStatus
      * @param reason               a reason of changing status
      * @return a RestResponse parameterized with ObjectiveStatus
@@ -168,18 +168,18 @@ public class ObjectiveEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Personal objective status updated")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Personal objective not found", content = @Content)
     @PutMapping(
-            path = "/performance-cycles/{perfCycleUuid}/colleagues/{colleagueUuid}/sequence-numbers/{sequenceNumber}/statuses/{status}",
+            path = "/performance-cycles/{perfCycleUuid}/colleagues/{colleagueUuid}/numbers/{number}/statuses/{status}",
             produces = APPLICATION_JSON_VALUE)
     @Validated({ValidationGroup.WithoutId.class, Default.class})
     public RestResponse<ObjectiveStatus> updatePersonalObjectiveStatus(@PathVariable("perfCycleUuid") UUID performanceCycleUuid,
                                                                        @PathVariable("colleagueUuid") UUID colleagueUuid,
-                                                                       @PathVariable("sequenceNumber") Integer sequenceNumber,
+                                                                       @PathVariable("number") Integer number,
                                                                        @PathVariable("status") ObjectiveStatus status,
                                                                        @RequestBody String reason) {
         return success(objectiveService.updatePersonalObjectiveStatus(
                 performanceCycleUuid,
                 colleagueUuid,
-                sequenceNumber,
+                number,
                 status,
                 reason,
                 resolveUserName()

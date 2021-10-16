@@ -18,7 +18,7 @@ import java.util.UUID;
 public class GroupObjective {
     UUID uuid;
     UUID businessUnitUuid;
-    Integer sequenceNumber;
+    Integer number;
     String title;
     Integer version;
 }

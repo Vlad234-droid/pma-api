@@ -18,7 +18,7 @@ public class PersonalObjective {
     UUID uuid;
     UUID colleagueUuid;
     UUID performanceCycleUuid;
-    Integer sequenceNumber;
+    Integer number;
     ReviewProperties properties;
     UUID groupObjectiveUuid;
     ObjectiveStatus status;
