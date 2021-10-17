@@ -1,7 +1,12 @@
 package com.tesco.pma.process.model;
 
-import java.util.Collection;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
+import org.apache.commons.io.IOUtils;
+import org.camunda.bpm.engine.repository.Deployment;
+import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Task;
 import org.junit.jupiter.api.Test;
@@ -23,26 +28,52 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(classes = {CamundaSpringBootTestConfig.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class FlowModelTest extends AbstractCamundaSpringBootTest {
-    public static final String PROCESS_NAME = "GROUPS_HO_S_WL1";
+    private static final String PROCESS_NAME = "GROUPS_HO_S_WL1";
+    private static final String FORMS_PATH = "/com/tesco/pma/flow/forms/";
+    private static final String FORM_1 = "pm_o_1.form";
+    private static final String FORM_2 = "pm_o_2.form";
 
     @Test
-    void timelineModel() {
-        BpmnModelInstance model = getModel();
+    void readModel() {
+        var processDefinition = getProcessDefinition();
+        var model = getModel(processDefinition);
         assertNotNull(model);
 
-        PMProcessMetadata metadata = new PMProcessMetadata();
-        Collection<Task> tasks = model.getModelElementsByType(Task.class);
+        var metadata = new PMProcessMetadata();
+        var tasks = model.getModelElementsByType(Task.class);
 
-        new PMProcessModelParser().parse(metadata, tasks);
+        var parser = new PMProcessModelParser();
+        parser.parse(metadata, tasks);
+        parser.parseForms(metadata, new ResourceProvider() {
+            @Override
+            public InputStream read(String resourceName) throws IOException {
+                return getClass().getResourceAsStream(FORMS_PATH + resourceName);
+            }
+
+            @Override
+            public String resourceToString(final String resourceName) throws IOException {
+                try (InputStream is = getClass().getResourceAsStream(FORMS_PATH + resourceName)) {
+                    return IOUtils.toString(is);
+                }
+            }
+        });
 
         assertEquals(3, metadata.getElements().size());
     }
 
-    private BpmnModelInstance getModel() {
-        var processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
-        processDefinitionQuery.processDefinitionKey(PROCESS_NAME);
-        var processDefinition = processDefinitionQuery.singleResult();
+    private BpmnModelInstance getModel(ProcessDefinition processDefinition) {
         return processEngine.getRepositoryService().getBpmnModelInstance(processDefinition.getId());
     }
 
+    private ProcessDefinition getProcessDefinition() {
+        var processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
+        processDefinitionQuery.processDefinitionKey(PROCESS_NAME);
+        return processDefinitionQuery.singleResult();
+    }
+
+    private List<Deployment> getDeployment(String deploymentId) {
+        var dq= processEngine.getRepositoryService().createDeploymentQuery();
+        dq.deploymentId(deploymentId);
+        return dq.list();
+    }
 }
