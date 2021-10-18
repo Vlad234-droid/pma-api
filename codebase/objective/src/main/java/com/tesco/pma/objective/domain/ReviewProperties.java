@@ -10,5 +10,5 @@ import java.util.Map;
 @AllArgsConstructor
 public class ReviewProperties implements Jsonb {
 
-    private final Map<String, String> reviewPropertyValues;
+    private final Map<String, String> reviewProperties;
 }

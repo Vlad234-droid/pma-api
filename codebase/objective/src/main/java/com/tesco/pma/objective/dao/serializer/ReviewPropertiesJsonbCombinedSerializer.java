@@ -46,9 +46,9 @@ public class ReviewPropertiesJsonbCombinedSerializer {
         @Override
         public void serialize(ReviewProperties value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
             gen.writeStartObject();
-            var reviewPropertyValues = value.getReviewPropertyValues();
+            var reviewPropertyValues = value.getReviewProperties();
             for (var ci : reviewPropertyValues.keySet()) {
-                gen.writeObjectField(ci, value.getReviewPropertyValues().get(ci));
+                gen.writeObjectField(ci, value.getReviewProperties().get(ci));
             }
             gen.writeEndObject();
         }
