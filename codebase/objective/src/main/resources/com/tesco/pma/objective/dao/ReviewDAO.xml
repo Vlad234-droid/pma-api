@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.tesco.pma.objective.dao.ObjectiveDAO">
+<mapper namespace="com.tesco.pma.objective.dao.ReviewDAO">
 
     <resultMap id="groupObjectiveResultMap" type="com.tesco.pma.objective.domain.GroupObjective">
         <id property="uuid" column="uuid"/>
         <result property="businessUnitUuid" column="business_unit_uuid"/>
-        <result property="number" column="sequence_number"/>
+        <result property="number" column="number"/>
         <result property="title" column="title"/>
         <result property="version" column="version"/>
     </resultMap>
 
-    <resultMap id="personalObjectiveResultMap" type="com.tesco.pma.objective.domain.PersonalObjective">
+    <resultMap id="reviewResultMap" type="com.tesco.pma.objective.domain.Review">
         <id property="uuid" column="uuid"/>
         <result property="colleagueUuid" column="colleague_uuid"/>
         <result property="performanceCycleUuid" column="performance_cycle_uuid"/>
-        <result property="number" column="sequence_number"/>
+        <result property="type" column="type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.objective.domain.ReviewType"/>
+        <result property="number" column="number"/>
         <result property="properties" column="properties"
                 typeHandler="com.tesco.pma.objective.dao.utils.ReviewPropertiesJsonbTypeHandler"
                 javaType="com.tesco.pma.objective.domain.ReviewProperties"/>
         <result property="groupObjectiveUuid" column="group_objective_uuid"/>
         <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.objective.domain.ObjectiveStatus"/>
+                javaType="com.tesco.pma.objective.domain.ReviewStatus"/>
     </resultMap>
 
     <resultMap id="workingGroupObjectiveResultMap" type="com.tesco.pma.objective.domain.WorkingGroupObjective">
@@ -36,7 +38,7 @@
         INSERT INTO group_objective
         (uuid,
          business_unit_uuid,
-         sequence_number,
+         number,
          title,
          version)
         VALUES (#{groupObjective.uuid},
@@ -49,7 +51,7 @@
     <select id="getGroupObjective" resultMap="groupObjectiveResultMap">
         SELECT go.uuid,
                go.business_unit_uuid,
-               go.sequence_number,
+               go.number,
                go.title,
                go.version
         FROM group_objective go
@@ -64,14 +66,14 @@
         )
         select go.uuid,
         go.business_unit_uuid,
-        go.sequence_number,
+        go.number,
         go.title,
         go.version
         from group_objective go
         inner join max_version mv
         on (go.version = mv.version)
         WHERE go.business_unit_uuid = #{businessUnitUuid}
-        order by go.sequence_number
+        order by go.number
     </select>
 
     <select id="getWorkingGroupObjectivesByBusinessUnitUuid" resultMap="groupObjectiveResultMap">
@@ -82,14 +84,14 @@
         )
         select go.uuid,
                go.business_unit_uuid,
-               go.sequence_number,
+               go.number,
                go.title,
                go.version
         from group_objective go
          inner join working_version wv
         on (go.version = wv.version)
         WHERE go.business_unit_uuid = #{businessUnitUuid}
-        order by go.sequence_number
+        order by go.number
     </select>
 
     <delete id="deleteGroupObjective">
@@ -104,120 +106,128 @@
         </include>
     </select>
 
-    <insert id="createPersonalObjective" flushCache="true">
-        INSERT INTO personal_objective
+    <insert id="createReview" flushCache="true">
+        INSERT INTO review
         (uuid,
         colleague_uuid,
         performance_cycle_uuid,
-        sequence_number,
+        type_id,
+        number,
         properties,
         status_id)
-        VALUES (#{personalObjective.uuid},
-        #{personalObjective.colleagueUuid},
-        #{personalObjective.performanceCycleUuid},
-        #{personalObjective.number},
-        #{personalObjective.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.objective.dao.utils.ReviewPropertiesJsonbTypeHandler},
-        #{personalObjective.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.objective.domain.ObjectiveStatus});
+        VALUES (#{review.uuid},
+        #{review.colleagueUuid},
+        #{review.performanceCycleUuid},
+        #{review.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.objective.domain.ReviewType},
+        #{review.number},
+        #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.objective.dao.utils.ReviewPropertiesJsonbTypeHandler},
+        #{review.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.objective.domain.ReviewStatus});
         <choose>
-            <when test="personalObjective.groupObjectiveUuid != null">
-                INSERT INTO objective_link
-                (personal_objective_uuid,
+            <when test="review.groupObjectiveUuid != null">
+                INSERT INTO review_link
+                (review_uuid,
                 group_objective_uuid)
-                VALUES (#{personalObjective.uuid},
-                #{personalObjective.groupObjectiveUuid}
+                VALUES (#{review.uuid},
+                #{review.groupObjectiveUuid}
                 );
             </when>
         </choose>
     </insert>
 
-    <select id="getPersonalObjective" resultMap="personalObjectiveResultMap">
-        SELECT po.uuid,
-               po.colleague_uuid,
-               po.performance_cycle_uuid,
-               po.sequence_number,
-               po.properties,
-               po.status_id,
-               ol.group_objective_uuid
-        FROM personal_objective po
-                 LEFT JOIN objective_link ol
-                           ON (po.uuid = ol.personal_objective_uuid)
-        WHERE po.uuid = #{personalObjectiveUuid}
+    <select id="getReviewByUuid" resultMap="reviewResultMap">
+        SELECT r.uuid,
+               r.colleague_uuid,
+               r.performance_cycle_uuid,
+               r.type_id,
+               r.number,
+               r.properties,
+               r.status_id,
+               rl.group_objective_uuid
+        FROM review r
+                 LEFT JOIN review_link rl
+                           ON (r.uuid = rl.review_uuid)
+        WHERE r.uuid = #{reviewUuid}
     </select>
 
-    <select id="getPersonalObjectiveForColleague" resultMap="personalObjectiveResultMap">
-        SELECT po.uuid,
-               po.colleague_uuid,
-               po.performance_cycle_uuid,
-               po.sequence_number,
-               po.properties,
-               po.status_id,
-               ol.group_objective_uuid
-        FROM personal_objective po
-                 LEFT JOIN objective_link ol
-                           ON (po.uuid = ol.personal_objective_uuid)
-        WHERE po.colleague_uuid = #{colleagueUuid}
-          and po.performance_cycle_uuid = #{performanceCycleUuid}
-          and po.sequence_number = #{number}
+    <select id="getReview" resultMap="reviewResultMap">
+        SELECT r.uuid,
+               r.colleague_uuid,
+               r.performance_cycle_uuid,
+               r.number,
+               r.properties,
+               r.status_id,
+               rl.group_objective_uuid
+        FROM review r
+                 LEFT JOIN review_link rl
+                           ON (r.uuid = rl.review_uuid)
+        WHERE r.colleague_uuid = #{colleagueUuid}
+          and r.performance_cycle_uuid = #{performanceCycleUuid}
+          and r.type_id = #{type.id}
+          and r.number = #{number}
     </select>
 
-    <select id="getPersonalObjectivesForColleague" resultMap="personalObjectiveResultMap">
-        SELECT po.uuid,
-               po.colleague_uuid,
-               po.performance_cycle_uuid,
-               po.sequence_number,
-               po.properties,
-               po.status_id,
-               ol.group_objective_uuid
-        FROM personal_objective po
-                 LEFT JOIN objective_link ol
-                           ON (po.uuid = ol.personal_objective_uuid)
-        WHERE po.colleague_uuid = #{colleagueUuid}
-          and po.performance_cycle_uuid = #{performanceCycleUuid}
-        order by po.sequence_number
+    <select id="getReviews" resultMap="reviewResultMap">
+        SELECT r.uuid,
+               r.colleague_uuid,
+               r.performance_cycle_uuid,
+               r.number,
+               r.properties,
+               r.status_id,
+               rl.group_objective_uuid
+        FROM review r
+                 LEFT JOIN review_link rl
+                           ON (r.uuid = rl.review_uuid)
+        WHERE r.colleague_uuid = #{colleagueUuid}
+          and r.performance_cycle_uuid = #{performanceCycleUuid}
+          and r.type_id = #{type.id}
+        order by r.number
     </select>
 
     <!-- cascade delete -->
-    <delete id="deletePersonalObjective">
+    <delete id="deleteReview">
         DELETE
-        FROM personal_objective
-        WHERE uuid = #{personalObjectiveUuid}
+        FROM review
+        WHERE uuid = #{reviewUuid}
     </delete>
 
-    <update id="updatePersonalObjective" flushCache="true">
-        UPDATE personal_objective
-        SET properties = #{personalObjective.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.objective.dao.utils.ReviewPropertiesJsonbTypeHandler}
-        WHERE performance_cycle_uuid = #{personalObjective.performanceCycleUuid}
-        and colleague_uuid = #{personalObjective.colleagueUuid}
-        and sequence_number = #{personalObjective.number};
+    <update id="updateReview" flushCache="true">
+        UPDATE review
+        SET properties =
+        #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.objective.dao.utils.ReviewPropertiesJsonbTypeHandler}
+        WHERE performance_cycle_uuid = #{review.performanceCycleUuid}
+        and colleague_uuid = #{review.colleagueUuid}
+        and type_id = #{review.type.id}
+        and number = #{review.number};
         <choose>
-            <when test="personalObjective.groupObjectiveUuid == null">
+            <when test="review.groupObjectiveUuid == null">
                 DELETE
-                FROM objective_link
-                WHERE personal_objective_uuid = #{personalObjective.uuid};
+                FROM review_link
+                WHERE review_uuid = #{review.uuid};
             </when>
             <otherwise>
-                INSERT INTO objective_link
-                (personal_objective_uuid,
+                INSERT INTO review_link
+                (review_uuid,
                 group_objective_uuid)
-                VALUES (#{personalObjective.uuid},
-                #{personalObjective.groupObjectiveUuid}) ON CONFLICT (personal_objective_uuid)
+                VALUES (#{review.uuid},
+                #{review.groupObjectiveUuid}) ON CONFLICT (review_uuid)
                 DO
                 UPDATE
                 SET group_objective_uuid = EXCLUDED.group_objective_uuid
-                where objective_link.group_objective_uuid != EXCLUDED.group_objective_uuid;
+                where review_link.group_objective_uuid != EXCLUDED.group_objective_uuid;
             </otherwise>
         </choose>
     </update>
 
-    <update id="updatePersonalObjectiveStatus" flushCache="true">
-        update personal_objective po
+    <update id="updateReviewStatus" flushCache="true">
+        update review r
         SET status_id=#{newStatus.id}
-        WHERE po.colleague_uuid = #{colleagueUuid}
-        and po.performance_cycle_uuid = #{performanceCycleUuid}
-        and po.sequence_number = #{number}
-        <if test="prevObjectiveStatuses != null and !prevObjectiveStatuses.isEmpty()">
-            and po.status_id in
-            <foreach item="prevStatus" collection="prevObjectiveStatuses" separator="," open="(" close=")">
+        WHERE r.colleague_uuid = #{colleagueUuid}
+        and r.performance_cycle_uuid = #{performanceCycleUuid}
+        and r.type_id = #{type.id}
+        and r.number = #{number}
+        <if test="prevReviewStatuses != null and !prevReviewStatuses.isEmpty()">
+            and r.status_id in
+            <foreach item="prevStatus" collection="prevReviewStatuses" separator="," open="(" close=")">
                 #{prevStatus.id}
             </foreach>
         </if>

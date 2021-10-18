@@ -5,25 +5,25 @@ import com.tesco.pma.error.ErrorCodeAware;
 public enum ErrorCodes implements ErrorCodeAware {
 
     /**
-     * Personal objective not found by uuid
+     * Review not found by uuid
      */
-    PERSONAL_OBJECTIVE_NOT_FOUND_BY_UUID,
+    REVIEW_NOT_FOUND_BY_UUID,
     /**
-     * Personal objective not found for colleague
+     * Review not found for colleague
      */
-    PERSONAL_OBJECTIVE_NOT_FOUND_FOR_COLLEAGUE,
+    REVIEW_NOT_FOUND_FOR_COLLEAGUE,
     /**
-     * Personal objectives not found
+     * Reviews not found
      */
-    PERSONAL_OBJECTIVES_NOT_FOUND,
+    REVIEWS_NOT_FOUND,
     /**
-     * Personal objectives not found for status update
+     * Reviews not found for status update
      */
-    PERSONAL_OBJECTIVE_NOT_FOUND,
+    REVIEWS_NOT_FOUND_FOR_STATUS_UPDATE,
     /**
-     * Personal objective already exists
+     * Review already exists
      */
-    PERSONAL_OBJECTIVE_ALREADY_EXISTS,
+    REVIEW_ALREADY_EXISTS,
     /**
      * Business unit does not exists
      */

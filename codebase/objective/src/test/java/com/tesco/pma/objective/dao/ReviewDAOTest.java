@@ -6,9 +6,9 @@ import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.dao.TestConfig;
 import com.tesco.pma.objective.dao.config.ReviewTypeHandlerConfig;
 import com.tesco.pma.objective.domain.GroupObjective;
-import com.tesco.pma.objective.domain.ObjectiveStatus;
-import com.tesco.pma.objective.domain.PersonalObjective;
+import com.tesco.pma.objective.domain.Review;
 import com.tesco.pma.objective.domain.ReviewProperties;
+import com.tesco.pma.objective.domain.ReviewStatus;
 import com.tesco.pma.objective.domain.WorkingGroupObjective;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -25,27 +25,28 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.tesco.pma.objective.domain.ObjectiveStatus.DRAFT;
-import static com.tesco.pma.objective.domain.ObjectiveStatus.WAITING_FOR_APPROVAL;
+import static com.tesco.pma.objective.domain.ReviewStatus.DRAFT;
+import static com.tesco.pma.objective.domain.ReviewStatus.WAITING_FOR_APPROVAL;
+import static com.tesco.pma.objective.domain.ReviewType.OBJECTIVE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
 import static org.assertj.core.api.InstanceOfAssertFactories.type;
 
 @SpringBootTest(classes = {TestConfig.class, ReviewTypeHandlerConfig.class})
-class ObjectiveDAOTest extends AbstractDAOTest {
+class ReviewDAOTest extends AbstractDAOTest {
 
     private static final UUID GROUP_OBJECTIVE_UUID = UUID.fromString("aab9ab0b-f50f-4442-8900-b03777ee0012");
     private static final UUID GROUP_OBJECTIVE_UUID_2 = UUID.fromString("aab9ab0b-f50f-4442-8900-b03777ee0011");
     private static final UUID GROUP_OBJECTIVE_UUID_NOT_EXIST = UUID.fromString("aab9ab0b-f50f-4442-8900-000000000000");
-    private static final UUID PERSONAL_OBJECTIVE_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
-    private static final UUID PERSONAL_OBJECTIVE_UUID_NOT_EXIST = UUID.fromString("ddb9ab0b-f50f-4442-8900-000000000000");
+    private static final UUID REVIEW_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
+    private static final UUID REVIEW_UUID_NOT_EXIST = UUID.fromString("ddb9ab0b-f50f-4442-8900-000000000000");
     private static final UUID BUSINESS_UNIT_UUID = UUID.fromString("ffb9ab0b-f50f-4442-8900-b03777ee00ef");
     private static final UUID BUSINESS_UNIT_UUID_2 = UUID.fromString("ffb9ab0b-f50f-4442-8900-b03777ee00ec");
     private static final UUID BUSINESS_UNIT_UUID_NOT_EXIST = UUID.fromString("ffb9ab0b-f50f-4442-8900-000000000000");
     private static final UUID COLLEAGUE_UUID = UUID.fromString("ccb9ab0b-f50f-4442-8900-b03777ee00ec");
     private static final UUID COLLEAGUE_UUID_NOT_EXIST = UUID.fromString("ccb9ab0b-f50f-4442-8900-000000000000");
     private static final UUID PERFORMANCE_CYCLE_UUID = UUID.fromString("0c5d9cb1-22cf-4fcd-a19a-9e70df6bc941");
-    private static final Integer SEQUENCE_NUMBER_1 = 1;
+    private static final Integer NUMBER_1 = 1;
     private static final String TITLE_PROPERTY_NAME = "title";
     private static final String TITLE_1 = "Title #1";
     private static final String TITLE_UPDATE = "Title update";
@@ -61,12 +62,9 @@ class ObjectiveDAOTest extends AbstractDAOTest {
     private static final String EXCEEDS_INIT = "Exceeds init";
     private static final String EXCEEDS_UPDATE = "Exceeds update";
     private static final Integer VERSION_1 = 1;
-    private static final Integer VERSION_2 = 2;
     private static final Integer VERSION_3 = 3;
     private static final String USER_INIT = "Init user";
-    private static final String USER_UPDATE = "Update user";
     private static final String TIME_INIT = "2021-09-20 10:45:12.448057";
-    private static final String TIME_UPDATE = "2021-09-20 11:45:12.448057";
     private static final ReviewProperties REVIEW_PROPERTIES_INIT = new ReviewProperties(
             Map.of(TITLE_PROPERTY_NAME, TITLE_INIT,
                     DESCRIPTION_PROPERTY_NAME, DESCRIPTION_INIT,
@@ -81,7 +79,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
             ));
 
     @Autowired
-    private ObjectiveDAO instance;
+    private ReviewDAO instance;
 
     @DynamicPropertySource
     static void postgresqlProperties(DynamicPropertyRegistry registry) {
@@ -106,7 +104,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
         final var groupObjective = GroupObjective.builder()
                 .uuid(GROUP_OBJECTIVE_UUID)
                 .businessUnitUuid(BUSINESS_UNIT_UUID)
-                .number(SEQUENCE_NUMBER_1)
+                .number(NUMBER_1)
                 .title(TITLE_1)
                 .version(VERSION_1)
                 .build();
@@ -123,7 +121,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
         final var groupObjective = GroupObjective.builder()
                 .uuid(GROUP_OBJECTIVE_UUID_2)
                 .businessUnitUuid(BUSINESS_UNIT_UUID_2)
-                .number(SEQUENCE_NUMBER_1)
+                .number(NUMBER_1)
                 .title(TITLE_1)
                 .version(VERSION_1)
                 .build();
@@ -140,7 +138,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
         assertThat(result)
                 .asInstanceOf(type(GroupObjective.class))
                 .returns(BUSINESS_UNIT_UUID_2, from(GroupObjective::getBusinessUnitUuid))
-                .returns(SEQUENCE_NUMBER_1, from(GroupObjective::getNumber))
+                .returns(NUMBER_1, from(GroupObjective::getNumber))
                 .returns(VERSION_1, from(GroupObjective::getVersion));
     }
 
@@ -162,7 +160,7 @@ class ObjectiveDAOTest extends AbstractDAOTest {
 
         assertThat(result.get(0))
                 .returns(BUSINESS_UNIT_UUID_2, from(GroupObjective::getBusinessUnitUuid))
-                .returns(SEQUENCE_NUMBER_1, from(GroupObjective::getNumber))
+                .returns(NUMBER_1, from(GroupObjective::getNumber))
                 .returns(GROUP_TITLE_UPDATE, from(GroupObjective::getTitle))
                 .returns(VERSION_3, from(GroupObjective::getVersion));
     }
@@ -189,121 +187,127 @@ class ObjectiveDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "personal_objective_init.xml"})
-    void getPersonalObjective() {
-        final var result = instance.getPersonalObjective(PERSONAL_OBJECTIVE_UUID);
+    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    void getReview() {
+        final var result = instance.getReviewByUuid(REVIEW_UUID);
 
         assertThat(result)
-                .asInstanceOf(type(PersonalObjective.class))
-                .returns(COLLEAGUE_UUID, from(PersonalObjective::getColleagueUuid))
-                .returns(PERFORMANCE_CYCLE_UUID, from(PersonalObjective::getPerformanceCycleUuid))
-                .returns(SEQUENCE_NUMBER_1, from(PersonalObjective::getNumber))
-                .returns(REVIEW_PROPERTIES_INIT, from(PersonalObjective::getProperties))
-                .returns(GROUP_OBJECTIVE_UUID_2, from(PersonalObjective::getGroupObjectiveUuid))
-                .returns(ObjectiveStatus.DRAFT, from(PersonalObjective::getStatus));
+                .asInstanceOf(type(Review.class))
+                .returns(COLLEAGUE_UUID, from(Review::getColleagueUuid))
+                .returns(PERFORMANCE_CYCLE_UUID, from(Review::getPerformanceCycleUuid))
+                .returns(OBJECTIVE, from(Review::getType))
+                .returns(NUMBER_1, from(Review::getNumber))
+                .returns(REVIEW_PROPERTIES_INIT, from(Review::getProperties))
+                .returns(GROUP_OBJECTIVE_UUID_2, from(Review::getGroupObjectiveUuid))
+                .returns(DRAFT, from(Review::getStatus));
     }
 
     @Test
-    @DataSet("personal_objective_init.xml")
-    void getPersonalObjectiveNotExist() {
-        final var result = instance.getPersonalObjective(PERSONAL_OBJECTIVE_UUID_NOT_EXIST);
+    @DataSet("review_init.xml")
+    void getReviewNotExist() {
+        final var result = instance.getReviewByUuid(REVIEW_UUID_NOT_EXIST);
 
         assertThat(result).isNull();
     }
 
     @Test
     @DataSet({"group_objective_init.xml", "cleanup.xml"})
-    @ExpectedDataSet("personal_objective_create_expected_1.xml")
-    void createPersonalObjectiveSucceeded() {
-        final var personalObjective = PersonalObjective.builder()
-                .uuid(PERSONAL_OBJECTIVE_UUID)
+    @ExpectedDataSet("review_create_expected_1.xml")
+    void createReviewSucceeded() {
+        final var review = Review.builder()
+                .uuid(REVIEW_UUID)
                 .colleagueUuid(COLLEAGUE_UUID)
                 .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
-                .number(SEQUENCE_NUMBER_1)
+                .type(OBJECTIVE)
+                .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
                 .groupObjectiveUuid(GROUP_OBJECTIVE_UUID_2)
-                .status(ObjectiveStatus.DRAFT)
+                .status(ReviewStatus.DRAFT)
                 .build();
 
-        final int rowsInserted = instance.createPersonalObjective(personalObjective);
+        final int rowsInserted = instance.createReview(review);
 
         assertThat(rowsInserted).isOne();
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "personal_objective_init.xml"})
-    void createPersonalObjectiveAlreadyExist() {
+    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    void createReviewAlreadyExist() {
 
-        final var personalObjective = PersonalObjective.builder()
-                .uuid(PERSONAL_OBJECTIVE_UUID)
+        final var review = Review.builder()
+                .uuid(REVIEW_UUID)
                 .colleagueUuid(COLLEAGUE_UUID)
                 .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
-                .number(SEQUENCE_NUMBER_1)
+                .type(OBJECTIVE)
+                .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
-                .status(ObjectiveStatus.DRAFT)
+                .status(ReviewStatus.DRAFT)
                 .build();
 
-        Assertions.assertThatThrownBy(() -> instance.createPersonalObjective(personalObjective))
+        Assertions.assertThatThrownBy(() -> instance.createReview(review))
                 .isInstanceOf(DuplicateKeyException.class);
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "personal_objective_init.xml"})
-    void deletePersonalObjectiveNotExist() {
-        final var result = instance.deletePersonalObjective(PERSONAL_OBJECTIVE_UUID_NOT_EXIST);
+    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    void deleteReviewNotExist() {
+        final var result = instance.deleteReview(REVIEW_UUID_NOT_EXIST);
         assertThat(result).isZero();
     }
 
     @Test
-    @DataSet("personal_objective_init.xml")
-    void deletePersonalObjectiveSucceeded() {
-        final var result = instance.deletePersonalObjective(PERSONAL_OBJECTIVE_UUID);
+    @DataSet("review_init.xml")
+    void deleteReviewSucceeded() {
+        final var result = instance.deleteReview(REVIEW_UUID);
         assertThat(result).isOne();
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "personal_objective_init.xml"})
-    @ExpectedDataSet("personal_objective_update_expected_1.xml")
-    void updatePersonalObjectiveSucceeded() {
-        final var personalObjective = PersonalObjective.builder()
-                .uuid(PERSONAL_OBJECTIVE_UUID)
+    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @ExpectedDataSet("review_update_expected_1.xml")
+    void updateReviewSucceeded() {
+        final var review = Review.builder()
+                .uuid(REVIEW_UUID)
                 .colleagueUuid(COLLEAGUE_UUID)
                 .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
-                .number(SEQUENCE_NUMBER_1)
+                .type(OBJECTIVE)
+                .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_UPDATE)
                 .groupObjectiveUuid(GROUP_OBJECTIVE_UUID)
                 .build();
 
-        final var result = instance.updatePersonalObjective(personalObjective);
+        final var result = instance.updateReview(review);
 
         assertThat(result).isOne();
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "personal_objective_init.xml"})
-    void updatePersonalObjectiveNotExist() {
-        final var personalObjective = PersonalObjective.builder()
+    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    void updateReviewNotExist() {
+        final var review = Review.builder()
                 .colleagueUuid(COLLEAGUE_UUID_NOT_EXIST)
                 .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
-                .number(SEQUENCE_NUMBER_1)
+                .type(OBJECTIVE)
+                .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_UPDATE)
                 .status(WAITING_FOR_APPROVAL)
                 .build();
 
-        final var result = instance.updatePersonalObjective(personalObjective);
+        final var result = instance.updateReview(review);
 
         assertThat(result).isZero();
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "personal_objective_init.xml"})
-    @ExpectedDataSet("personal_objective_update_status_1.xml")
-    void updatePersonalObjectiveStatusSucceeded() {
+    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @ExpectedDataSet("review_update_status_1.xml")
+    void updateReviewStatusSucceeded() {
 
-        final var result = instance.updatePersonalObjectiveStatus(
+        final var result = instance.updateReviewStatus(
                 PERFORMANCE_CYCLE_UUID,
                 COLLEAGUE_UUID,
-                SEQUENCE_NUMBER_1,
+                OBJECTIVE,
+                NUMBER_1,
                 WAITING_FOR_APPROVAL,
                 Collections.singleton(DRAFT));
 
@@ -311,38 +315,40 @@ class ObjectiveDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "personal_objective_init.xml"})
-    @ExpectedDataSet("personal_objective_unlink_group_objective_expected.xml")
-    void updatePersonalObjectiveUnlinkGroupObjective() {
-        final var personalObjective = PersonalObjective.builder()
-                .uuid(PERSONAL_OBJECTIVE_UUID)
+    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @ExpectedDataSet("review_unlink_group_objective_expected.xml")
+    void updateReviewUnlinkGroupObjective() {
+        final var review = Review.builder()
+                .uuid(REVIEW_UUID)
                 .colleagueUuid(COLLEAGUE_UUID)
                 .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
-                .number(SEQUENCE_NUMBER_1)
+                .type(OBJECTIVE)
+                .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
-                .status(ObjectiveStatus.DRAFT)
+                .status(ReviewStatus.DRAFT)
                 .build();
 
-        final var result = instance.updatePersonalObjective(personalObjective);
+        final var result = instance.updateReview(review);
 
         assertThat(result).isOne();
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "personal_objective_without_group_objective_init.xml"})
-    @ExpectedDataSet("personal_objective_unlink_group_objective_expected.xml")
-    void updatePersonalObjectiveLinkGroupObjective() {
-        final var personalObjective = PersonalObjective.builder()
-                .uuid(PERSONAL_OBJECTIVE_UUID)
+    @DataSet({"group_objective_init.xml", "review_without_group_objective_init.xml"})
+    @ExpectedDataSet("review_unlink_group_objective_expected.xml")
+    void updateReviewLinkGroupObjective() {
+        final var review = Review.builder()
+                .uuid(REVIEW_UUID)
                 .colleagueUuid(COLLEAGUE_UUID)
                 .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
-                .number(SEQUENCE_NUMBER_1)
+                .type(OBJECTIVE)
+                .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
                 .groupObjectiveUuid(GROUP_OBJECTIVE_UUID_2)
-                .status(ObjectiveStatus.DRAFT)
+                .status(ReviewStatus.DRAFT)
                 .build();
 
-        final var result = instance.updatePersonalObjective(personalObjective);
+        final var result = instance.updateReview(review);
 
         assertThat(result).isOne();
     }

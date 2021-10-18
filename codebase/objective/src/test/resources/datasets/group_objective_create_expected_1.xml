@@ -2,7 +2,7 @@
     <group_objective
             uuid="aab9ab0b-f50f-4442-8900-b03777ee0012"
             business_unit_uuid="ffb9ab0b-f50f-4442-8900-b03777ee00ef"
-            sequence_number="1"
+            number="1"
             title="Title #1"
             version="1"
     />

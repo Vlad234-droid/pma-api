@@ -4,11 +4,12 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.objective.dao.ObjectiveDAO;
+import com.tesco.pma.objective.dao.ReviewDAO;
 import com.tesco.pma.objective.dao.ReviewAuditLogDAO;
 import com.tesco.pma.objective.domain.GroupObjective;
-import com.tesco.pma.objective.domain.ObjectiveStatus;
-import com.tesco.pma.objective.domain.PersonalObjective;
+import com.tesco.pma.objective.domain.Review;
+import com.tesco.pma.objective.domain.ReviewStatus;
+import com.tesco.pma.objective.domain.ReviewType;
 import com.tesco.pma.objective.domain.WorkingGroupObjective;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
@@ -24,35 +25,36 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.tesco.pma.objective.domain.ObjectiveStatus.APPROVED;
-import static com.tesco.pma.objective.domain.ObjectiveStatus.COMPLETED;
-import static com.tesco.pma.objective.domain.ObjectiveStatus.DRAFT;
-import static com.tesco.pma.objective.domain.ObjectiveStatus.RETURNED;
-import static com.tesco.pma.objective.domain.ObjectiveStatus.WAITING_FOR_APPROVAL;
+import static com.tesco.pma.objective.domain.ReviewStatus.APPROVED;
+import static com.tesco.pma.objective.domain.ReviewStatus.COMPLETED;
+import static com.tesco.pma.objective.domain.ReviewStatus.DRAFT;
+import static com.tesco.pma.objective.domain.ReviewStatus.RETURNED;
+import static com.tesco.pma.objective.domain.ReviewStatus.WAITING_FOR_APPROVAL;
 import static com.tesco.pma.objective.exception.ErrorCodes.BUSINESS_UNIT_NOT_EXISTS;
 import static com.tesco.pma.objective.exception.ErrorCodes.GROUP_OBJECTIVES_NOT_FOUND;
 import static com.tesco.pma.objective.exception.ErrorCodes.GROUP_OBJECTIVE_ALREADY_EXISTS;
-import static com.tesco.pma.objective.exception.ErrorCodes.PERSONAL_OBJECTIVES_NOT_FOUND;
-import static com.tesco.pma.objective.exception.ErrorCodes.PERSONAL_OBJECTIVE_ALREADY_EXISTS;
-import static com.tesco.pma.objective.exception.ErrorCodes.PERSONAL_OBJECTIVE_NOT_FOUND;
-import static com.tesco.pma.objective.exception.ErrorCodes.PERSONAL_OBJECTIVE_NOT_FOUND_BY_UUID;
-import static com.tesco.pma.objective.exception.ErrorCodes.PERSONAL_OBJECTIVE_NOT_FOUND_FOR_COLLEAGUE;
+import static com.tesco.pma.objective.exception.ErrorCodes.REVIEWS_NOT_FOUND;
+import static com.tesco.pma.objective.exception.ErrorCodes.REVIEW_ALREADY_EXISTS;
+import static com.tesco.pma.objective.exception.ErrorCodes.REVIEWS_NOT_FOUND_FOR_STATUS_UPDATE;
+import static com.tesco.pma.objective.exception.ErrorCodes.REVIEW_NOT_FOUND_BY_UUID;
+import static com.tesco.pma.objective.exception.ErrorCodes.REVIEW_NOT_FOUND_FOR_COLLEAGUE;
 import static java.time.Instant.now;
 
 /**
- * Implementation of {@link ObjectiveService}.
+ * Implementation of {@link ReviewService}.
  */
 @Service
 @Validated
 @RequiredArgsConstructor
-public class ObjectiveServiceImpl implements ObjectiveService {
-    private final ObjectiveDAO objectiveDAO;
+public class ReviewServiceImpl implements ReviewService {
+    private final ReviewDAO reviewDAO;
     private final ReviewAuditLogDAO reviewAuditLogDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
-    private static final String PERSONAL_OBJECTIVE_UUID_PARAMETER_NAME = "personalObjectiveUuid";
+    private static final String REVIEW_UUID_PARAMETER_NAME = "reviewUuid";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     private static final String PERFORMANCE_CYCLE_UUID_PARAMETER_NAME = "performanceCycleUuid";
+    private static final String TYPE_PARAMETER_NAME = "type";
     private static final String BUSINESS_UNIT_UUID_PARAMETER_NAME = "businessUnitUuid";
     private static final String NUMBER_PARAMETER_NAME = "number";
     private static final String VERSION_PARAMETER_NAME = "version";
@@ -61,7 +63,7 @@ public class ObjectiveServiceImpl implements ObjectiveService {
     private static final Comparator<GroupObjective> GROUP_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR =
             Comparator.comparing(GroupObjective::getNumber)
                     .thenComparing(GroupObjective::getTitle);
-    private static final Map<ObjectiveStatus, Collection<ObjectiveStatus>> UPDATE_STATUS_RULE_MAP;
+    private static final Map<ReviewStatus, Collection<ReviewStatus>> UPDATE_STATUS_RULE_MAP;
 
     static {
         UPDATE_STATUS_RULE_MAP = Map.of(
@@ -74,103 +76,112 @@ public class ObjectiveServiceImpl implements ObjectiveService {
     }
 
     @Override
-    public PersonalObjective getPersonalObjectiveByUuid(UUID personalObjectiveUuid) {
-        var res = objectiveDAO.getPersonalObjective(personalObjectiveUuid);
+    public Review getReviewByUuid(UUID reviewUuid) {
+        var res = reviewDAO.getReviewByUuid(reviewUuid);
         if (res == null) {
-            throw notFound(PERSONAL_OBJECTIVE_NOT_FOUND_BY_UUID,
-                    Map.of(PERSONAL_OBJECTIVE_UUID_PARAMETER_NAME, personalObjectiveUuid));
+            throw notFound(REVIEW_NOT_FOUND_BY_UUID,
+                    Map.of(REVIEW_UUID_PARAMETER_NAME, reviewUuid));
         }
         return res;
     }
 
     @Override
-    public PersonalObjective getPersonalObjectiveForColleague(UUID performanceCycleUuid, UUID colleagueUuid, Integer number) {
-        var res = objectiveDAO.getPersonalObjectiveForColleague(performanceCycleUuid, colleagueUuid, number);
+    public Review getReview(UUID performanceCycleUuid, UUID colleagueUuid, ReviewType type, Integer number) {
+        var res = reviewDAO.getReview(performanceCycleUuid, colleagueUuid, type, number);
         if (res == null) {
-            throw notFound(PERSONAL_OBJECTIVE_NOT_FOUND_FOR_COLLEAGUE,
+            throw notFound(REVIEW_NOT_FOUND_FOR_COLLEAGUE,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
+                            TYPE_PARAMETER_NAME, type,
                             NUMBER_PARAMETER_NAME, number));
         }
         return res;
     }
 
     @Override
-    public List<PersonalObjective> getPersonalObjectivesForColleague(UUID performanceCycleUuid, UUID colleagueUuid) {
-        List<PersonalObjective> results = objectiveDAO.getPersonalObjectivesForColleague(performanceCycleUuid, colleagueUuid);
+    public List<Review> getReviews(UUID performanceCycleUuid, UUID colleagueUuid, ReviewType type) {
+        List<Review> results = reviewDAO.getReviews(performanceCycleUuid, colleagueUuid, type);
         if (results == null) {
-            throw notFound(PERSONAL_OBJECTIVES_NOT_FOUND,
+            throw notFound(REVIEWS_NOT_FOUND,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
-                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid));
+                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
+                            TYPE_PARAMETER_NAME, type));
         }
         return results;
     }
 
     @Override
     @Transactional
-    public PersonalObjective createPersonalObjective(PersonalObjective personalObjective) {
+    public Review createReview(Review review) {
         try {
-            personalObjective.setUuid(UUID.randomUUID());
-            personalObjective.setStatus(DRAFT);
-            objectiveDAO.createPersonalObjective(personalObjective);
-            return personalObjective;
+            review.setUuid(UUID.randomUUID());
+            review.setStatus(DRAFT);
+            reviewDAO.createReview(review);
+            return review;
         } catch (DuplicateKeyException e) {
             throw databaseConstraintViolation(
-                    PERSONAL_OBJECTIVE_ALREADY_EXISTS,
-                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, personalObjective.getColleagueUuid(),
-                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, personalObjective.getPerformanceCycleUuid(),
-                            NUMBER_PARAMETER_NAME, personalObjective.getNumber()),
+                    REVIEW_ALREADY_EXISTS,
+                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, review.getColleagueUuid(),
+                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, review.getPerformanceCycleUuid(),
+                            TYPE_PARAMETER_NAME, review.getType(),
+                            NUMBER_PARAMETER_NAME, review.getNumber()),
                     e);
         }
     }
 
     @Override
     @Transactional
-    public PersonalObjective updatePersonalObjective(PersonalObjective personalObjective) {
-        var personalObjectiveBefore = objectiveDAO.getPersonalObjectiveForColleague(
-                personalObjective.getPerformanceCycleUuid(),
-                personalObjective.getColleagueUuid(),
-                personalObjective.getNumber());
-        if (null == personalObjectiveBefore) {
-            throw notFound(PERSONAL_OBJECTIVE_NOT_FOUND_FOR_COLLEAGUE,
-                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, personalObjective.getColleagueUuid(),
-                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, personalObjective.getPerformanceCycleUuid(),
-                            NUMBER_PARAMETER_NAME, personalObjective.getNumber()));
+    public Review updateReview(Review review) {
+        var reviewBefore = reviewDAO.getReview(
+                review.getPerformanceCycleUuid(),
+                review.getColleagueUuid(),
+                review.getType(),
+                review.getNumber());
+        if (null == reviewBefore) {
+            throw notFound(REVIEW_NOT_FOUND_FOR_COLLEAGUE,
+                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, review.getColleagueUuid(),
+                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, review.getPerformanceCycleUuid(),
+                            TYPE_PARAMETER_NAME, review.getType(),
+                            NUMBER_PARAMETER_NAME, review.getNumber()));
         } else {
-            personalObjective.setUuid(personalObjectiveBefore.getUuid());
-            personalObjective.setStatus(personalObjectiveBefore.getStatus());
-            objectiveDAO.updatePersonalObjective(personalObjective);
+            review.setUuid(reviewBefore.getUuid());
+            review.setStatus(reviewBefore.getStatus());
+            reviewDAO.updateReview(review);
         }
 
-        return personalObjective;
+        return review;
     }
 
     @Override
     @Transactional
-    public ObjectiveStatus updatePersonalObjectiveStatus(UUID performanceCycleUuid,
-                                                         UUID colleagueUuid,
-                                                         Integer number,
-                                                         ObjectiveStatus status,
-                                                         String reason,
-                                                         String loggedUserName) {
-        var actualReview = objectiveDAO.getPersonalObjectiveForColleague(
+    public ReviewStatus updateReviewStatus(UUID performanceCycleUuid,
+                                           UUID colleagueUuid,
+                                           ReviewType type,
+                                           Integer number,
+                                           ReviewStatus status,
+                                           String reason,
+                                           String loggedUserName) {
+        var actualReview = reviewDAO.getReview(
                 performanceCycleUuid,
                 colleagueUuid,
+                type,
                 number);
         var prevStatuses = UPDATE_STATUS_RULE_MAP.get(status);
-        if (1 == objectiveDAO.updatePersonalObjectiveStatus(
+        if (1 == reviewDAO.updateReviewStatus(
                 performanceCycleUuid,
                 colleagueUuid,
+                type,
                 number,
                 status,
                 prevStatuses)) {
             reviewAuditLogDAO.logLogReviewUpdating(actualReview, status, reason, loggedUserName);
             return status;
         } else {
-            throw notFound(PERSONAL_OBJECTIVE_NOT_FOUND,
+            throw notFound(REVIEWS_NOT_FOUND_FOR_STATUS_UPDATE,
                     Map.of(STATUS_PARAMETER_NAME, status,
                             COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
+                            TYPE_PARAMETER_NAME, type,
                             NUMBER_PARAMETER_NAME, number,
                             PREV_STATUSES_PARAMETER_NAME, prevStatuses));
         }
@@ -178,10 +189,10 @@ public class ObjectiveServiceImpl implements ObjectiveService {
 
     @Override
     @Transactional
-    public void deletePersonalObjective(UUID personalObjectiveUuid) {
-        if (1 != objectiveDAO.deletePersonalObjective(personalObjectiveUuid)) {
-            throw notFound(PERSONAL_OBJECTIVE_NOT_FOUND_BY_UUID,
-                    Map.of(PERSONAL_OBJECTIVE_UUID_PARAMETER_NAME, personalObjectiveUuid));
+    public void deleteReview(UUID reviewUuid) {
+        if (1 != reviewDAO.deleteReview(reviewUuid)) {
+            throw notFound(REVIEW_NOT_FOUND_BY_UUID,
+                    Map.of(REVIEW_UUID_PARAMETER_NAME, reviewUuid));
         }
     }
 
@@ -189,18 +200,18 @@ public class ObjectiveServiceImpl implements ObjectiveService {
     @Transactional
     public List<GroupObjective> createGroupObjectives(UUID businessUnitUuid,
                                                       List<GroupObjective> groupObjectives) {
-        var currentGroupObjectives = objectiveDAO.getGroupObjectivesByBusinessUnitUuid(businessUnitUuid);
+        var currentGroupObjectives = reviewDAO.getGroupObjectivesByBusinessUnitUuid(businessUnitUuid);
         if (listEqualsIgnoreOrder(currentGroupObjectives, groupObjectives, GROUP_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR)) {
             return currentGroupObjectives;
         }
         List<GroupObjective> results = new ArrayList<>();
-        final var newVersion = objectiveDAO.getMaxVersionGroupObjective(businessUnitUuid) + 1;
+        final var newVersion = reviewDAO.getMaxVersionGroupObjective(businessUnitUuid) + 1;
         groupObjectives.forEach(groupObjective -> {
             try {
                 groupObjective.setUuid(UUID.randomUUID());
                 groupObjective.setBusinessUnitUuid(businessUnitUuid);
                 groupObjective.setVersion(newVersion);
-                if (1 == objectiveDAO.createGroupObjective(groupObjective)) {
+                if (1 == reviewDAO.createGroupObjective(groupObjective)) {
                     results.add(groupObjective);
                 } else {
                     //todo it will work after implementation foreign keys
@@ -223,7 +234,7 @@ public class ObjectiveServiceImpl implements ObjectiveService {
 
     @Override
     public List<GroupObjective> getAllGroupObjectives(UUID businessUnitUuid) {
-        List<GroupObjective> results = objectiveDAO.getGroupObjectivesByBusinessUnitUuid(businessUnitUuid);
+        List<GroupObjective> results = reviewDAO.getGroupObjectivesByBusinessUnitUuid(businessUnitUuid);
         if (results == null) {
             throw notFound(GROUP_OBJECTIVES_NOT_FOUND,
                     Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, businessUnitUuid));
@@ -235,10 +246,10 @@ public class ObjectiveServiceImpl implements ObjectiveService {
     @Transactional
     public WorkingGroupObjective publishGroupObjectives(UUID businessUnitUuid,
                                                         String loggedUserName) {
-        final var version = objectiveDAO.getMaxVersionGroupObjective(businessUnitUuid);
+        final var version = reviewDAO.getMaxVersionGroupObjective(businessUnitUuid);
         final var workingGroupObjective = getWorkingGroupObjective(businessUnitUuid, version);
         workingGroupObjective.setUpdaterId(loggedUserName);
-        if (1 == objectiveDAO.insertOrUpdateWorkingGroupObjective(workingGroupObjective)) {
+        if (1 == reviewDAO.insertOrUpdateWorkingGroupObjective(workingGroupObjective)) {
             return workingGroupObjective;
         } else {
             //todo it will work after implementation foreign keys
@@ -250,7 +261,7 @@ public class ObjectiveServiceImpl implements ObjectiveService {
     @Override
     @Transactional
     public void unpublishGroupObjectives(UUID businessUnitUuid) {
-        if (1 != objectiveDAO.deleteWorkingGroupObjective(businessUnitUuid)) {
+        if (1 != reviewDAO.deleteWorkingGroupObjective(businessUnitUuid)) {
             throw notFound(BUSINESS_UNIT_NOT_EXISTS,
                     Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, businessUnitUuid));
         }
@@ -258,7 +269,7 @@ public class ObjectiveServiceImpl implements ObjectiveService {
 
     @Override
     public List<GroupObjective> getPublishedGroupObjectives(UUID businessUnitUuid) {
-        List<GroupObjective> results = objectiveDAO.getWorkingGroupObjectivesByBusinessUnitUuid(businessUnitUuid);
+        List<GroupObjective> results = reviewDAO.getWorkingGroupObjectivesByBusinessUnitUuid(businessUnitUuid);
         if (results == null) {
             throw notFound(GROUP_OBJECTIVES_NOT_FOUND,
                     Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, businessUnitUuid));

@@ -14,12 +14,13 @@ import java.util.UUID;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class PersonalObjective {
+public class Review {
     UUID uuid;
-    UUID colleagueUuid;
     UUID performanceCycleUuid;
+    UUID colleagueUuid;
+    ReviewType type;
     Integer number;
     ReviewProperties properties;
     UUID groupObjectiveUuid;
-    ObjectiveStatus status;
+    ReviewStatus status;
 }

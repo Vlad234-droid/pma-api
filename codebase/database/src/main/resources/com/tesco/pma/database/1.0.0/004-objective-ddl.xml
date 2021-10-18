@@ -27,28 +27,28 @@
         <insert tableName="review_status">
             <column name="id" value="1"/>
             <column name="code" value="DRAFT"/>
-            <column name="description" value="An objective is saved as draft"/>
+            <column name="description" value="Review is saved as draft"/>
         </insert>
         <insert tableName="review_status">
             <column name="id" value="2"/>
             <column name="code" value="WAITING_FOR_APPROVAL"/>
             <column name="description"
-                    value="An objective objective was submitted to LM approval but not yet approved"/>
+                    value="Review was submitted but not yet approved"/>
         </insert>
         <insert tableName="review_status">
             <column name="id" value="3"/>
             <column name="code" value="APPROVED"/>
-            <column name="description" value="An objective was approved by LM"/>
+            <column name="description" value="Review was approved"/>
         </insert>
         <insert tableName="review_status">
             <column name="id" value="4"/>
             <column name="code" value="RETURNED"/>
-            <column name="description" value="An objective was returned by LM"/>
+            <column name="description" value="Review was returned"/>
         </insert>
         <insert tableName="review_status">
             <column name="id" value="5"/>
             <column name="code" value="COMPLETED"/>
-            <column name="description" value="An objective is completed"/>
+            <column name="description" value="Review is completed"/>
         </insert>
         <rollback>
             <delete tableName="review_status">

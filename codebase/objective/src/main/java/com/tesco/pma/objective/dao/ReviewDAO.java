@@ -1,8 +1,9 @@
 package com.tesco.pma.objective.dao;
 
 import com.tesco.pma.objective.domain.GroupObjective;
-import com.tesco.pma.objective.domain.ObjectiveStatus;
-import com.tesco.pma.objective.domain.PersonalObjective;
+import com.tesco.pma.objective.domain.Review;
+import com.tesco.pma.objective.domain.ReviewStatus;
+import com.tesco.pma.objective.domain.ReviewType;
 import com.tesco.pma.objective.domain.WorkingGroupObjective;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,7 +14,7 @@ import java.util.UUID;
 /**
  * Interface to perform database operation on objective
  */
-public interface ObjectiveDAO {
+public interface ReviewDAO {
 
     /**
      * Returns a group objective
@@ -64,74 +65,80 @@ public interface ObjectiveDAO {
     int getMaxVersionGroupObjective(@Param("businessUnitUuid") UUID businessUnitUuid);
 
     /**
-     * Returns a personal objective
+     * Returns a review
      *
-     * @param personalObjectiveUuid an identifier
-     * @return a PersonalObjective
+     * @param reviewUuid an identifier
+     * @return a Review
      */
-    PersonalObjective getPersonalObjective(@Param("personalObjectiveUuid") UUID personalObjectiveUuid);
+    Review getReviewByUuid(@Param("reviewUuid") UUID reviewUuid);
 
     /**
-     * Returns a personal objective by performance cycle, colleague and sequence number.
+     * Returns a review by performance cycle, colleague, review type and sequence number.
      *
      * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
-     * @param number       a sequence number of personal objective
-     * @return a PersonalObjective
+     * @param type                 a review type
+     * @param number               a sequence number of review
+     * @return a Review
      */
-    PersonalObjective getPersonalObjectiveForColleague(@Param("performanceCycleUuid") UUID performanceCycleUuid,
-                                                       @Param("colleagueUuid") UUID colleagueUuid,
-                                                       @Param("number") Integer number);
+    Review getReview(@Param("performanceCycleUuid") UUID performanceCycleUuid,
+                     @Param("colleagueUuid") UUID colleagueUuid,
+                     @Param("reviewType") ReviewType type,
+                     @Param("number") Integer number);
 
     /**
-     * Returns a personal objective by performance cycle, colleague and sequence number.
+     * Returns a review by performance cycle, colleague and review type.
      *
      * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
-     * @return a PersonalObjective
+     * @param type                 a review type
+     * @return a list of reviews
      */
-    List<PersonalObjective> getPersonalObjectivesForColleague(@Param("performanceCycleUuid") UUID performanceCycleUuid,
-                                                              @Param("colleagueUuid") UUID colleagueUuid);
+    List<Review> getReviews(@Param("performanceCycleUuid") UUID performanceCycleUuid,
+                            @Param("colleagueUuid") UUID colleagueUuid,
+                            @Param("reviewType") ReviewType type);
 
     /**
-     * Creates a personal objective
+     * Creates a review
      *
-     * @param personalObjective a PersonalObjective
-     * @return number of created personal objectives
+     * @param review a Review
+     * @return number of created reviews
      */
-    int createPersonalObjective(@Param("personalObjective") PersonalObjective personalObjective);
+    int createReview(@Param("review") Review review);
 
     /**
-     * Update a personal objective
+     * Update a review
      *
-     * @param personalObjective a PersonalObjective
-     * @return number of updated personal objectives
+     * @param review a Review
+     * @return number of updated reviews
      */
-    int updatePersonalObjective(@Param("personalObjective") PersonalObjective personalObjective);
+    int updateReview(@Param("review") Review review);
 
     /**
-     * Updates a personal objective status
+     * Updates a review status
      *
-     * @param performanceCycleUuid  an identifier of performance cycle
-     * @param colleagueUuid         an identifier of colleague
-     * @param number        a sequence number of personal objective
-     * @param newStatus             a new personal objective status
-     * @param prevObjectiveStatuses previous objective statuses
-     * @return number of updated personal objective statuses
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
+     * @param type                 a review type
+     * @param number               a sequence number of review
+     * @param newStatus            a new review status
+     * @param prevReviewStatuses   previous review statuses
+     * @return number of updated review statuses
      */
-    int updatePersonalObjectiveStatus(@Param("performanceCycleUuid") UUID performanceCycleUuid,
-                                      @Param("colleagueUuid") UUID colleagueUuid,
-                                      @Param("number") Integer number,
-                                      @Param("newStatus") ObjectiveStatus newStatus,
-                                      @Param("prevObjectiveStatuses") Collection<ObjectiveStatus> prevObjectiveStatuses);
+    int updateReviewStatus(@Param("performanceCycleUuid") UUID performanceCycleUuid,
+                           @Param("colleagueUuid") UUID colleagueUuid,
+                           @Param("type") ReviewType type,
+                           @Param("number") Integer number,
+                           @Param("newStatus") ReviewStatus newStatus,
+                           @Param("prevReviewStatuses") Collection<ReviewStatus> prevReviewStatuses);
 
     /**
-     * Delete a personal objective
+     * Delete a review
      *
-     * @param personalObjectiveUuid an identifier
-     * @return number of deleted personal objectives
+     * @param reviewUuid an identifier of review
+     * @return number of deleted reviews
      */
-    int deletePersonalObjective(@Param("personalObjectiveUuid") UUID personalObjectiveUuid);
+    int deleteReview(@Param("reviewUuid") UUID reviewUuid);
 
     /**
      * Insert or update a working group objective
