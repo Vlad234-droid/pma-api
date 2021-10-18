@@ -31,7 +31,7 @@ public interface ObjectiveService {
      *
      * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
-     * @param number       a sequence number of personal objective
+     * @param number               a sequence number of personal objective
      * @return personal objective
      * @throws NotFoundException if personal objective doesn't exist.
      */
@@ -73,9 +73,10 @@ public interface ObjectiveService {
      *
      * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
-     * @param number       a sequence number of personal objective
+     * @param number               a sequence number of personal objective
      * @param status               a new review status
      * @param reason               a reason of changing status
+     * @param loggedUserName       a logged user
      * @return a ObjectiveStatus
      * @throws NotFoundException if personal objective doesn't exist.
      */
@@ -118,9 +119,11 @@ public interface ObjectiveService {
      * Publish the last version of group objectives
      *
      * @param businessUnitUuid business unit an identifier, not null
+     * @param loggedUserName   a logged user
      * @return a working group objective
      */
-    WorkingGroupObjective publishGroupObjectives(@NotNull UUID businessUnitUuid);
+    WorkingGroupObjective publishGroupObjectives(@NotNull UUID businessUnitUuid,
+                                                 @NotNull String loggedUserName);
 
     /**
      * Un-publish group objectives

@@ -51,7 +51,7 @@ public class ObjectiveEndpoint {
      *
      * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
-     * @param number       a sequence number of personal objective
+     * @param number               a sequence number of personal objective
      * @param reviewBodyRequest    a ReviewBodyRequest
      * @return a RestResponse parameterized with PersonalObjective
      */
@@ -93,7 +93,7 @@ public class ObjectiveEndpoint {
      *
      * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
-     * @param number       a sequence number of personal objective
+     * @param number               a sequence number of personal objective
      * @return a RestResponse parameterized with personal objective
      */
     @Operation(summary = "Get a personal objective by its performanceCycleUuid, colleagueUuid and number", tags = {"objective"})
@@ -130,7 +130,7 @@ public class ObjectiveEndpoint {
      *
      * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
-     * @param number       a sequence number of personal objective
+     * @param number               a sequence number of personal objective
      * @param reviewBodyRequest    a ReviewBodyRequest
      * @return a RestResponse parameterized with PersonalObjective
      */
@@ -158,7 +158,7 @@ public class ObjectiveEndpoint {
      *
      * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
-     * @param number       a sequence number of personal objective
+     * @param number               a sequence number of personal objective
      * @param status               a ObjectiveStatus
      * @param reason               a reason of changing status
      * @return a RestResponse parameterized with ObjectiveStatus
@@ -252,7 +252,7 @@ public class ObjectiveEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Group's objectives have been published")
     @PostMapping(value = "/business-units/{businessUnitUuid}/objectives/publish", produces = APPLICATION_JSON_VALUE)
     public RestResponse<WorkingGroupObjective> publishBusinessUnitStructure(@PathVariable("businessUnitUuid") UUID businessUnitUuid) {
-        return success(objectiveService.publishGroupObjectives(businessUnitUuid));
+        return success(objectiveService.publishGroupObjectives(businessUnitUuid, resolveUserName()));
     }
 
     @Operation(summary = "Unpublish group's objectives", tags = {"objective"})

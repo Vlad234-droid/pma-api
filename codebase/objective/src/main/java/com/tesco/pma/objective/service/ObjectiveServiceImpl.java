@@ -233,9 +233,11 @@ public class ObjectiveServiceImpl implements ObjectiveService {
 
     @Override
     @Transactional
-    public WorkingGroupObjective publishGroupObjectives(UUID businessUnitUuid) {
+    public WorkingGroupObjective publishGroupObjectives(UUID businessUnitUuid,
+                                                        String loggedUserName) {
         final var version = objectiveDAO.getMaxVersionGroupObjective(businessUnitUuid);
         final var workingGroupObjective = getWorkingGroupObjective(businessUnitUuid, version);
+        workingGroupObjective.setUpdaterId(loggedUserName);
         if (1 == objectiveDAO.insertOrUpdateWorkingGroupObjective(workingGroupObjective)) {
             return workingGroupObjective;
         } else {
@@ -284,8 +286,6 @@ public class ObjectiveServiceImpl implements ObjectiveService {
                 .businessUnitUuid(businessUnitUuid)
                 .version(version)
                 .updateTime(now())
-                //todo use real user
-                .updaterId("TempUser")
                 .build();
     }
 
