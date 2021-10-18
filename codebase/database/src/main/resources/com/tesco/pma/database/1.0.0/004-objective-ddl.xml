@@ -27,22 +27,22 @@
         <insert tableName="objective_status">
             <column name="id" value="1"/>
             <column name="code" value="DRAFT"/>
-            <column name="description" value="A draft of objective"/>
+            <column name="description" value="An objective is saved as draft"/>
         </insert>
         <insert tableName="objective_status">
             <column name="id" value="2"/>
-            <column name="code" value="SUBMITTED"/>
-            <column name="description" value="An objective is submitted"/>
+            <column name="code" value="WAITING_FOR_APPROVAL"/>
+            <column name="description" value="An objective objective was submitted to LM approval but not yet approved"/>
         </insert>
         <insert tableName="objective_status">
             <column name="id" value="3"/>
             <column name="code" value="APPROVED"/>
-            <column name="description" value="An objective is approved"/>
+            <column name="description" value="An objective was approved by LM"/>
         </insert>
         <insert tableName="objective_status">
             <column name="id" value="4"/>
-            <column name="code" value="REJECTED"/>
-            <column name="description" value="An objective is rejected"/>
+            <column name="code" value="RETURNED"/>
+            <column name="description" value="An objective was returned by LM"/>
         </insert>
         <insert tableName="objective_status">
             <column name="id" value="5"/>
@@ -54,13 +54,13 @@
                 <where>code = 'DRAFT'</where>
             </delete>
             <delete tableName="objective_status">
-                <where>code = 'SUBMITTED'</where>
+                <where>code = 'WAITING_FOR_APPROVAL'</where>
             </delete>
             <delete tableName="objective_status">
                 <where>code = 'APPROVED'</where>
             </delete>
             <delete tableName="objective_status">
-                <where>code = 'REJECTED'</where>
+                <where>code = 'RETURNED'</where>
             </delete>
             <delete tableName="objective_status">
                 <where>code = 'COMPLETED'</where>
