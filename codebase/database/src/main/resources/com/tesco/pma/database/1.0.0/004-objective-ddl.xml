@@ -5,11 +5,11 @@
 
 
     <changeSet author="ypashynskyi" id="1">
-        <createTable tableName="objective_status"
-                     remarks="Dictionary of objective's statuses">
+        <createTable tableName="review_status"
+                     remarks="Dictionary of review's statuses">
             <column name="id" type="integer"
                     remarks="A unique identifier for status">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="objective_status_pk"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="review_status_pk"/>
             </column>
             <column name="code" type="VARCHAR(30)"
                     remarks="Shortname of status">
@@ -23,88 +23,155 @@
     </changeSet>
 
     <changeSet author="ypashynskyi" id="2">
-        <comment>Init table objective_status</comment>
-        <insert tableName="objective_status">
+        <comment>Init table review_status</comment>
+        <insert tableName="review_status">
             <column name="id" value="1"/>
             <column name="code" value="DRAFT"/>
             <column name="description" value="An objective is saved as draft"/>
         </insert>
-        <insert tableName="objective_status">
+        <insert tableName="review_status">
             <column name="id" value="2"/>
             <column name="code" value="WAITING_FOR_APPROVAL"/>
-            <column name="description" value="An objective objective was submitted to LM approval but not yet approved"/>
+            <column name="description"
+                    value="An objective objective was submitted to LM approval but not yet approved"/>
         </insert>
-        <insert tableName="objective_status">
+        <insert tableName="review_status">
             <column name="id" value="3"/>
             <column name="code" value="APPROVED"/>
             <column name="description" value="An objective was approved by LM"/>
         </insert>
-        <insert tableName="objective_status">
+        <insert tableName="review_status">
             <column name="id" value="4"/>
             <column name="code" value="RETURNED"/>
             <column name="description" value="An objective was returned by LM"/>
         </insert>
-        <insert tableName="objective_status">
+        <insert tableName="review_status">
             <column name="id" value="5"/>
             <column name="code" value="COMPLETED"/>
             <column name="description" value="An objective is completed"/>
         </insert>
         <rollback>
-            <delete tableName="objective_status">
+            <delete tableName="review_status">
                 <where>code = 'DRAFT'</where>
             </delete>
-            <delete tableName="objective_status">
+            <delete tableName="review_status">
                 <where>code = 'WAITING_FOR_APPROVAL'</where>
             </delete>
-            <delete tableName="objective_status">
+            <delete tableName="review_status">
                 <where>code = 'APPROVED'</where>
             </delete>
-            <delete tableName="objective_status">
+            <delete tableName="review_status">
                 <where>code = 'RETURNED'</where>
             </delete>
-            <delete tableName="objective_status">
+            <delete tableName="review_status">
                 <where>code = 'COMPLETED'</where>
             </delete>
         </rollback>
     </changeSet>
 
     <changeSet author="ypashynskyi" id="3">
-        <createTable tableName="personal_objective"
-                     remarks="Table of personal objectives">
-            <column name="uuid" type="${uuid_type}"
-                    remarks="A unique identifier for personal objective">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="personal_objective_pk"/>
+        <createTable tableName="review_types"
+                     remarks="Dictionary of review's types">
+            <column name="id" type="integer"
+                    remarks="A unique identifier for type">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="review_types_pk"/>
             </column>
-            <column name="colleague_uuid" type="${uuid_type}"
-                    remarks="A unique identifier for every colleague. It is the user id present in Identity.">
+            <column name="code" type="VARCHAR(30)"
+                    remarks="Shortname of type">
                 <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(100)"
+                    remarks="Description of type">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="ypashynskyi" id="4">
+        <comment>Init table review_types</comment>
+        <insert tableName="review_types">
+            <column name="id" value="1"/>
+            <column name="code" value="OBJECTIVE"/>
+            <column name="description" value="Objective review"/>
+        </insert>
+        <insert tableName="review_types">
+            <column name="id" value="2"/>
+            <column name="code" value="QUARTER"/>
+            <column name="description"
+                    value="Quarter review"/>
+        </insert>
+        <insert tableName="review_types">
+            <column name="id" value="3"/>
+            <column name="code" value="MYR"/>
+            <column name="description" value="Mid year review"/>
+        </insert>
+        <insert tableName="review_types">
+            <column name="id" value="4"/>
+            <column name="code" value="EYR"/>
+            <column name="description" value="End of year review"/>
+        </insert>
+        <rollback>
+            <delete tableName="review_types">
+                <where>code = 'OBJECTIVE'</where>
+            </delete>
+            <delete tableName="review_types">
+                <where>code = 'QUARTER'</where>
+            </delete>
+            <delete tableName="review_types">
+                <where>code = 'MYR'</where>
+            </delete>
+            <delete tableName="review_types">
+                <where>code = 'EYR'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="ypashynskyi" id="5">
+        <createTable tableName="review"
+                     remarks="Table of PMA reviews">
+            <column name="uuid" type="${uuid_type}"
+                    remarks="A unique identifier for review">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="review_pk"/>
             </column>
             <column name="performance_cycle_uuid" type="${uuid_type}"
                     remarks="A unique identifier for performance cycle">
                 <constraints nullable="false"/>
             </column>
-            <column name="sequence_number" type="integer"
-                    remarks="A sequence number for colleague's objective">
+            <column name="colleague_uuid" type="${uuid_type}"
+                    remarks="A unique identifier for every colleague. It is the user id present in Identity.">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_id" type="integer"
+                    remarks="Type of review">
+                <constraints nullable="false"/>
+            </column>
+            <column name="number" type="integer"
+                    remarks="A sequence number for colleague's review">
                 <constraints nullable="false"/>
             </column>
             <column name="properties" type="jsonb"
-                    remarks="Properties of personal objective"/>
+                    remarks="Properties of review"/>
             <column name="status_id" type="integer"
-                    remarks="Status of objective">
+                    remarks="Status of review">
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="personal_objective"
-                                 constraintName="personal_objective_status_id_fk" deferrable="false"
+        <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="review"
+                                 constraintName="review_status_id_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
-                                 referencedColumnNames="id" referencedTableName="objective_status"
+                                 referencedColumnNames="id" referencedTableName="review_status"
                                  validate="true"/>
-        <addUniqueConstraint columnNames="colleague_uuid, performance_cycle_uuid, sequence_number"
-                             constraintName="personal_objective_unique"
-                             tableName="personal_objective"/>
+        <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="review"
+                                 constraintName="review_type_id_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="review_types"
+                                 validate="true"/>
+        <addUniqueConstraint columnNames="performance_cycle_uuid, colleague_uuid, type_id, number"
+                             constraintName="review_unique"
+                             tableName="review"/>
     </changeSet>
 
-    <changeSet author="ypashynskyi" id="4">
+    <changeSet author="ypashynskyi" id="6">
         <createTable tableName="group_objective"
                      remarks="Table of group(organization, department etc.) objectives">
             <column name="uuid" type="${uuid_type}"
@@ -115,7 +182,7 @@
                     remarks="A unique identifier for business unit.">
                 <constraints nullable="false"/>
             </column>
-            <column name="sequence_number" type="integer"
+            <column name="number" type="integer"
                     remarks="A sequence number for business unit's objective">
                 <constraints nullable="false"/>
             </column>
@@ -128,12 +195,12 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addUniqueConstraint columnNames="business_unit_uuid, version, sequence_number"
+        <addUniqueConstraint columnNames="business_unit_uuid, version, number"
                              constraintName="group_objective_unique"
                              tableName="group_objective"/>
     </changeSet>
 
-    <changeSet author="ypashynskyi" id="5">
+    <changeSet author="ypashynskyi" id="7">
         <createTable tableName="working_group_objective"
                      remarks="Table for working version of group objective">
             <column name="business_unit_uuid" type="${uuid_type}"
@@ -153,31 +220,31 @@
         </createTable>
     </changeSet>
 
-    <changeSet author="ypashynskyi" id="6">
-        <createTable tableName="objective_link"
-                     remarks="Table for links from personal objective to group objective">
-            <column name="personal_objective_uuid" type="${uuid_type}"
-                    remarks="A unique identifier for personal objective">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="objective_link_pk"/>
+    <changeSet author="ypashynskyi" id="8">
+        <createTable tableName="review_link"
+                     remarks="Table for links from review to group objective">
+            <column name="review_uuid" type="${uuid_type}"
+                    remarks="A unique identifier for review">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="review_link_pk"/>
             </column>
             <column name="group_objective_uuid" type="${uuid_type}"
                     remarks="A unique identifier for group objective">
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="personal_objective_uuid" baseTableName="objective_link"
-                                 constraintName="objective_link_personal_objective_uuid_fk" deferrable="false"
+        <addForeignKeyConstraint baseColumnNames="review_uuid" baseTableName="review_link"
+                                 constraintName="review_link_review_uuid_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
-                                 referencedColumnNames="uuid" referencedTableName="personal_objective"
+                                 referencedColumnNames="uuid" referencedTableName="review"
                                  validate="true"/>
-        <addForeignKeyConstraint baseColumnNames="group_objective_uuid" baseTableName="objective_link"
-                                 constraintName="objective_link_group_objective_uuid_fk" deferrable="false"
+        <addForeignKeyConstraint baseColumnNames="group_objective_uuid" baseTableName="review_link"
+                                 constraintName="review_link_group_objective_uuid_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
                                  referencedColumnNames="uuid" referencedTableName="group_objective"
                                  validate="true"/>
     </changeSet>
 
-    <changeSet author="ypashynskyi" id="7">
+    <changeSet author="ypashynskyi" id="9">
         <createTable remarks="History of changing review's statuses"
                      tableName="review_change_status_hi">
             <column name="review_uuid" type="${uuid_type}">
