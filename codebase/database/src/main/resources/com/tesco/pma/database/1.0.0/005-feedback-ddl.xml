@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <!--
+        Added the entity Feedback.
+    -->
+    <changeSet id="1" author="Stanislav.Eurich">
+        <createTable tableName="feedback">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="colleague_uuid" type="${uuid_type}" remarks="Author. Colleague from whom feedback is written or requested.">
+                <constraints nullable="false" />
+            </column>
+            <column name="target_type" type="varchar(50)" remarks="Target type: COLLEAGUE, GOAL, OBJECTIVE, VALUE_BEHAVIOR, OTHER.">
+                <constraints nullable="false" />
+            </column>
+            <column name="target_id" type="varchar(255)" remarks="Object identifier that is feedback given on/to or requested about/from.">
+                <constraints nullable="false" />
+            </column>
+            <column name="read" type="boolean" remarks="Checkbox. False for Unread feedback." defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+            <column name="status" type="varchar(50)" remarks="Status: DRAFT, SUBMITTED, PENDING, PENDING_DRAFT, COMPLETED.">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_time" type="timestamptz" defaultValueComputed="NOW()">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated_time" type="timestamptz">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!--
+        Added the constraints for entity Feedback.
+    -->
+    <changeSet id="2" author="Stanislav.Eurich">
+        <addForeignKeyConstraint baseColumnNames="colleague_uuid"
+          baseTableName="feedback"
+          constraintName="fk_feedback__colleague_uuid"
+          referencedColumnNames="uuid"
+          referencedTableName="colleague"/>
+    </changeSet>
+
+    <!--
+        Added the entity FeedbackItem.
+    -->
+    <changeSet id="3" author="Stanislav.Eurich">
+        <createTable tableName="feedback_item" remarks="The Feedback Item. Answers for questions, comments or free form feedback.">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="varchar(50)" remarks="Item code. Examples: whatWellDone, whatFocusOn, comment or question1, etc.">
+                <constraints nullable="false" />
+            </column>
+            <column name="content" type="varchar(500)" remarks="Body of feedback item. Answer for question or comment.">
+                <constraints nullable="true" />
+            </column>
+            <column name="feedback_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!--
+        Added the constraints for entity FeedbackItem.
+    -->
+    <changeSet id="4" author="Stanislav.Eurich">
+        <addForeignKeyConstraint baseColumnNames="feedback_id"
+          baseTableName="feedback_item"
+          constraintName="fk_feedback_item__feedback_id"
+          onDelete="CASCADE"
+          onUpdate="CASCADE"
+          referencedColumnNames="id"
+          referencedTableName="feedback"/>
+    </changeSet>
+</databaseChangeLog>
