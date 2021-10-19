@@ -18,3 +18,4 @@ include 'application'
 
 include 'profile'
 include 'cep'
+include 'fs'
