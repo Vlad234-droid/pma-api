@@ -18,6 +18,7 @@ import com.tesco.pma.bpm.camunda.flow.AbstractCamundaSpringBootTest;
 import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
 import com.tesco.pma.process.api.PMProcessMetadata;
 
+import static com.tesco.pma.process.api.model.PMReview.PM_REVIEW;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -61,7 +62,8 @@ class FlowModelTest extends AbstractCamundaSpringBootTest {
         var parser = new PMProcessModelParser(resourceProvider);
         parser.parse(metadata, tasks);
 
-        assertEquals(3, metadata.getElements().size());
+        assertEquals(3, metadata.getElements().stream()
+                .filter(pmElement -> PM_REVIEW.equalsIgnoreCase(pmElement.getType().getCode())).count());
     }
 
     @Test

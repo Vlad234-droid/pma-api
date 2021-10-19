@@ -68,7 +68,7 @@ public class PMProcessModelParser {
             switch (key) {
                 case PM_REVIEW_TYPE:
                     pmReview.setReviewType(new GeneralDictionaryItem(null, property.getCamundaValue(), null));
-                    break;
+                case PM_TYPE:
                 case PM_REVIEW_MIN:
                 case PM_REVIEW_MAX:
                     pmReview.getProperties().put(key, property.getCamundaValue());
