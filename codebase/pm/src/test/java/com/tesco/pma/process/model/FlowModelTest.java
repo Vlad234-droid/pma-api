@@ -33,6 +33,22 @@ class FlowModelTest extends AbstractCamundaSpringBootTest {
     private static final String FORM_1 = "pm_o_1.form";
     private static final String FORM_2 = "pm_o_2.form";
 
+    private final ResourceProvider resourceProvider = new FormsResourceProvider();
+
+    private static class FormsResourceProvider implements ResourceProvider {
+        @Override
+        public InputStream read(String resourceName) throws IOException {
+            return getClass().getResourceAsStream(FORMS_PATH + resourceName);
+        }
+
+        @Override
+        public String resourceToString(final String resourceName) throws IOException {
+            try (InputStream is = getClass().getResourceAsStream(FORMS_PATH + resourceName)) {
+                return IOUtils.toString(is);
+            }
+        }
+    }
+
     @Test
     void readModel() {
         var processDefinition = getProcessDefinition();
@@ -42,23 +58,17 @@ class FlowModelTest extends AbstractCamundaSpringBootTest {
         var metadata = new PMProcessMetadata();
         var tasks = model.getModelElementsByType(Task.class);
 
-        var parser = new PMProcessModelParser();
+        var parser = new PMProcessModelParser(resourceProvider);
         parser.parse(metadata, tasks);
-        parser.parseForms(metadata, new ResourceProvider() {
-            @Override
-            public InputStream read(String resourceName) throws IOException {
-                return getClass().getResourceAsStream(FORMS_PATH + resourceName);
-            }
-
-            @Override
-            public String resourceToString(final String resourceName) throws IOException {
-                try (InputStream is = getClass().getResourceAsStream(FORMS_PATH + resourceName)) {
-                    return IOUtils.toString(is);
-                }
-            }
-        });
 
         assertEquals(3, metadata.getElements().size());
+    }
+
+    @Test
+    void getFormName() {
+        var parser = new PMProcessModelParser(resourceProvider);
+        assertEquals(FORM_1, parser.getFormName("camunda-forms:deployment:forms/pm_o_1.form"));
+        assertEquals(FORM_2, parser.getFormName("camunda-forms:deployment:pm_o_2.form"));
     }
 
     private BpmnModelInstance getModel(ProcessDefinition processDefinition) {

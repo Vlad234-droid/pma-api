@@ -1,5 +1,6 @@
 package com.tesco.pma.process.dao;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import com.tesco.pma.process.api.PMProcessStatus;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 13.10.2021 Time: 22:40
@@ -27,7 +29,11 @@ class PMRuntimeProcessDAOTest extends AbstractDAOTest {
     private static final UUID CL_UUID = UUID.fromString("cf2ab073-2c31-11ec-916b-0242391d2e7c");
     private static final UUID BPM_UUID = UUID.fromString("bf2ab073-2c31-11ec-916b-0242391d2e7c");
     private static final UUID NEW_BPM_UUID = UUID.fromString("cf2ab073-2c31-11ec-916b-0242391d2e7c");
-    private static final String BPM_PM_NAME = "PROCESS_NAME";
+    private static final String BPM_PROCESS_NAME = "PROCESS_NAME";
+
+    private static final UUID F1_OLD_UUID = UUID.fromString("10000000-0000-0000-0000-000000000000");
+    private static final UUID F1_NEW_UUID = UUID.fromString("10000000-0000-0000-0000-000000000001");
+    private static final UUID F1_CL_UUID = UUID.fromString("10000000-0000-0000-0000-000000000001");
 
     @Autowired
     private PMRuntimeProcessDAO dao;
@@ -41,7 +47,7 @@ class PMRuntimeProcessDAOTest extends AbstractDAOTest {
 
     @Test
     void create() {
-        assertEquals(1, dao.create(new PMRuntimeProcess(NEW_UUID, CL_UUID, PMProcessStatus.STARTED, NEW_BPM_UUID, BPM_PM_NAME, null)));
+        assertEquals(1, dao.create(new PMRuntimeProcess(NEW_UUID, CL_UUID, PMProcessStatus.STARTED, NEW_BPM_UUID, BPM_PROCESS_NAME, null)));
 
         var actual = dao.read(NEW_UUID);
         checkProcess(actual, NEW_UUID, PMProcessStatus.STARTED, NEW_BPM_UUID);
@@ -78,13 +84,21 @@ class PMRuntimeProcessDAOTest extends AbstractDAOTest {
         checkHistory(actual, 2, 1);
     }
 
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "pm_process_init.xml"})
+    void findByColleagueAndProcessName() {
+        List<PMRuntimeProcess> processes = dao.findByColleagueAndProcessName(F1_CL_UUID, BPM_PROCESS_NAME);
+        assertEquals(2, processes.size());
+        assertTrue(processes.get(0).getLastUpdateTime().isAfter(processes.get(1).getLastUpdateTime()));
+    }
+
     private void checkProcess(PMRuntimeProcess actual, UUID pmUuid, PMProcessStatus registered, UUID bpmUuid) {
         assertNotNull(actual);
         assertEquals(pmUuid, actual.getId());
         assertEquals(CL_UUID, actual.getColleagueUuid());
         assertEquals(registered, actual.getStatus());
         assertEquals(bpmUuid, actual.getBpmProcessId());
-        assertEquals(BPM_PM_NAME, actual.getBpmProcessName());
+        assertEquals(BPM_PROCESS_NAME, actual.getBpmProcessName());
         assertNotNull(actual.getLastUpdateTime());
     }
 

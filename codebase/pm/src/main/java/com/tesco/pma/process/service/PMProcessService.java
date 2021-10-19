@@ -12,16 +12,20 @@ import com.tesco.pma.process.api.PMProcessStatus;
 public interface PMProcessService {
     /**
      * Creates a new instance of the process
-     * @param process creating process. Note: UUID identifier is generating automatically
+     * @param process creating process.
+     *                Notes:
+     *                1. UUID identifier is generating automatically
+     *                2. REGISTERED status is applying
+     *                3.
      */
-    void create(PMRuntimeProcess process);
+    void register(PMRuntimeProcess process);
 
     /**
      * Returns process by uuid
      *
      * @param uuid process identifier
      * @return the instance of the process otherwise
-     * @throws NotFoundException if the was not found
+     * @throws com.tesco.pma.exception.NotFoundException if the was not found
      */
     PMRuntimeProcess getProcess(UUID uuid);
 

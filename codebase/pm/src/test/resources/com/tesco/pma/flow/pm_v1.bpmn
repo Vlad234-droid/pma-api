@@ -16,7 +16,6 @@
       <bpmn:lane id="Lane_0ni704a" name="Colleague">
         <bpmn:flowNodeRef>Activity_05tmtcb</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_1ojfucu</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_1go70pc</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_0etkwms</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_0zbpmy4</bpmn:flowNodeRef>
@@ -28,6 +27,7 @@
         <bpmn:flowNodeRef>Event_0rfd7is</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_1lzsoia</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_0gndjjj</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:userTask id="Activity_05tmtcb" name="Set&#10;objectives" camunda:formKey="camunda-forms:deployment:forms/pm_o_1.form" camunda:assignee="${assignee}" camunda:candidateGroups="tesco-colleague">
@@ -36,8 +36,6 @@
           <camunda:property name="pm_review_min" value="3" />
           <camunda:property name="pm_review_max" value="3" />
           <camunda:property name="pm_review_type" value="objective" />
-          <camunda:property name="timelinePoint" value="02-objective" />
-          <camunda:property name="timelinePointName" value="Set Objectives" />
           <camunda:property name="pm_type" value="review" />
         </camunda:properties>
       </bpmn:extensionElements>
@@ -59,16 +57,6 @@
       <bpmn:incoming>Flow_1j07w5j</bpmn:incoming>
       <bpmn:outgoing>Flow_0gba6dp</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:startEvent id="StartEvent_1" name="Fiscal Year">
-      <bpmn:extensionElements>
-        <camunda:properties>
-          <camunda:property name="timerType" value="fiscalYear" />
-          <camunda:property name="timerStartTime" value="2021-05-01" />
-          <camunda:property name="endTime" value="2021-04-30" />
-        </camunda:properties>
-      </bpmn:extensionElements>
-      <bpmn:outgoing>Flow_1j07w5j</bpmn:outgoing>
-    </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_0gba6dp" sourceRef="Activity_1ojfucu" targetRef="Activity_05tmtcb" />
     <bpmn:sequenceFlow id="Flow_1lrzwch" sourceRef="Activity_05tmtcb" targetRef="Activity_1go70pc" />
     <bpmn:sequenceFlow id="Flow_1j07w5j" sourceRef="StartEvent_1" targetRef="Activity_1ojfucu" />
@@ -159,8 +147,6 @@
     <bpmn:task id="Activity_0y2pi2t" name="End of Year Review&#10;(similar to Objectives&#10;form)">
       <bpmn:extensionElements>
         <camunda:properties>
-          <camunda:property name="timelinePoint" value="03-eyr" />
-          <camunda:property name="timelinePointName" value="End of Year Review" />
           <camunda:property name="pm_review_type" value="eyr" />
           <camunda:property name="pm_type" value="review" />
         </camunda:properties>
@@ -207,6 +193,19 @@
 "\n ${execution.getCurrentActivityName()}"</bpmn:script>
     </bpmn:scriptTask>
     <bpmn:sequenceFlow id="Flow_0dit8v5" sourceRef="Activity_1lzsoia" targetRef="Event_0rfd7is" />
+    <bpmn:startEvent id="StartEvent_1" name="Fiscal Year">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="timerType" value="fiscalYear" />
+          <camunda:property name="timerStartTime" value="2021-05-01" />
+          <camunda:property name="endTime" value="2021-04-30" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1j07w5j</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0vwdouu">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">R5/PT1M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:startEvent>
     <bpmn:textAnnotation id="TextAnnotation_03wvhb0">
       <bpmn:text>type
 start date
@@ -334,12 +333,6 @@ duration
       <bpmndi:BPMNShape id="Activity_1oznjan_di" bpmnElement="Activity_1ojfucu">
         <dc:Bounds x="290" y="430" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1loagua_di" bpmnElement="StartEvent_1">
-        <dc:Bounds x="222" y="452" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="222" y="495" width="55" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1go70pc_di" bpmnElement="Activity_1go70pc">
         <dc:Bounds x="580" y="430" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -393,6 +386,12 @@ duration
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0s9nxcw_di" bpmnElement="TextAnnotation_0s9nxcw">
         <dc:Bounds x="220" y="393" width="220" height="30" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_075gn9c_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="222" y="452" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="222" y="495" width="55" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0mq52u2_di" bpmnElement="Event_0gndjjj">
         <dc:Bounds x="492" y="492" width="36" height="36" />

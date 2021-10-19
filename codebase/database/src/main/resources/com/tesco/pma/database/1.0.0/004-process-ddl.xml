@@ -154,10 +154,10 @@
                 <constraints nullable="false"/>
             </column>
             <column name="bpm_process_id" type="${uuid_type}">
-                <constraints nullable="true"/>
+                <constraints nullable="false"/>
             </column>
             <column name="bpm_process_name" type="VARCHAR">
-                <constraints nullable="true"/>
+                <constraints nullable="false"/>
             </column>
             <column name="last_update_time" type="TIMESTAMPTZ">
                 <constraints nullable="false"/>
@@ -167,6 +167,11 @@
                                  constraintName="process_status_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="pm_process_status" validate="true"/>
+        <createIndex tableName="pm_process" indexName="pm_pn_cid_lut_i">
+            <column name="colleague_uuid"/>
+            <column name="bpm_process_name"/>
+            <column name="last_update_time"/>
+        </createIndex>
     </changeSet>
 
     <changeSet author="vshatokhin" id="6">

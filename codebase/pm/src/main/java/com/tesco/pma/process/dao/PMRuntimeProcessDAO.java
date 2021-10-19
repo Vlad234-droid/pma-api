@@ -20,11 +20,13 @@ public interface PMRuntimeProcessDAO {
     /**
      * Creates the process
      * @param process Creating process
+     *                Note: sets last update time if it is not set
      * @return number of created instances: 0 or 1
      */
     default int create(PMRuntimeProcess process) {
-        var updateTime = now();
-        process.setLastUpdateTime(updateTime);
+        if (process.getLastUpdateTime() == null) {
+            process.setLastUpdateTime(now());
+        }
         if (1 == createInt(process)) {
             return createHistoryRecord(process.getId(), process.getStatus(), process.getLastUpdateTime());
         }
@@ -52,6 +54,9 @@ public interface PMRuntimeProcessDAO {
     PMRuntimeProcess read(@Param("uuid") UUID uuid);
 
     List<StatusHistoryRecord<UUID, PMProcessStatus>> readHistory(@Param("uuid") UUID uuid);
+
+    List<PMRuntimeProcess> findByColleagueAndProcessName(@Param("colleagueUuid") UUID colleagueUuid,
+                                                         @Param("processName") String processName);
 
     //todo: find methods
 

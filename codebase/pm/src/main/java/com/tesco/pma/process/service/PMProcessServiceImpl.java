@@ -33,8 +33,10 @@ public class PMProcessServiceImpl implements PMProcessService {
 
     @Override
     @Transactional
-    public void create(PMRuntimeProcess process) {
+    public void register(PMRuntimeProcess process) {
         process.setId(UUID.randomUUID());
+        process.setStatus(PMProcessStatus.REGISTERED);
+        //todo check not null colleagueUuid, bpmProcessName, bpmProcessId
         try {
             dao.create(process);
         } catch (DuplicateKeyException ex) {

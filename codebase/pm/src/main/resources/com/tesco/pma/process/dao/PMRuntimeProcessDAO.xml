@@ -31,6 +31,11 @@
         select * from pm_process where uuid = #{uuid}
     </select>
 
+    <select id="findByColleagueAndProcessName" resultMap="pmProcess">
+        select * from pm_process where colleague_uuid = #{colleagueUuid} and bpm_process_name = #{processName}
+        order by last_update_time desc
+    </select>
+
     <select id="readHistory" resultMap="pmProcessHistory">
         select * from pm_process_hi where uuid = #{uuid}
         order by update_time
