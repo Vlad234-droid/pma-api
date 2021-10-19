@@ -190,6 +190,11 @@
             <column name="level">1</column>
         </insert>
         <insert tableName="organisation_dictionary">
+            <column name="code">tb</column>
+            <column name="name">Tesco Bank</column>
+            <column name="level">1</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
             <column name="code">ho_c</column>
             <column name="name">Head office &amp; Channels</column>
             <column name="level">2</column>
@@ -269,6 +274,14 @@
             <column name="name">Colleague</column>
             <column name="level">4</column>
         </insert>
+        <rollback>
+            <delete tableName="organisation_dictionary">
+                <where>code in ('group','uk','roi','india','uk_m','uk_h_c','uk_d','tb','ho_c',
+                    'ho','channels','hp', 'salaried','hp_none_prod','hp_prod','wl1','wl2','wl3',
+                    'wl4','wl5','wl6','wl2_on_bonus','wl2_tl','colleague')
+                </where>
+            </delete>
+        </rollback>
     </changeSet>
 
 </databaseChangeLog>

@@ -1,5 +1,6 @@
 package com.tesco.pma.organisation.dao;
 
+import com.tesco.pma.organisation.api.Colleague;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.api.GeneralDictionaryItem;
 import com.tesco.pma.organisation.api.WorkingConfigEntry;
@@ -119,5 +120,7 @@ public interface ConfigEntryDAO {
         set.addAll(childStructure);
         return set;
     }
+
+    List<Colleague> findColleaguesByTypes(@Param("key") String key);
 
 }

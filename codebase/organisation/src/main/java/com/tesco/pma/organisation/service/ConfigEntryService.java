@@ -1,5 +1,6 @@
 package com.tesco.pma.organisation.service;
 
+import com.tesco.pma.organisation.api.Colleague;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.ConfigEntryResponse;
 
@@ -81,4 +82,6 @@ public interface ConfigEntryService {
      * @return child structure includes root objects
      */
     List<ConfigEntryResponse> getUnpublishedChildStructureByCompositeKey(String compositeKey);
+
+    List<Colleague> findColleaguesByCompositeKey(String compositeKey);
 }
