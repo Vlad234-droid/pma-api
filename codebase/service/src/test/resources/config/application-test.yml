@@ -46,10 +46,12 @@ spring:
       mybatis-session:
         type-aliases-package: com.tesco.pma.api,
                               com.tesco.pma.colleague.profile.domain,
+                              com.tesco.pma.organisation.api,
                               com.tesco.pma.objective.domain
         configuration-properties:
           base-package: com.tesco.pma.dao,
                         com.tesco.pma.colleague.profile.dao,
+                        com.tesco.pma.organisation.dao,
                         com.tesco.pma.objective.dao
           batchSize: 100
     postgres-version: 11.11
@@ -116,6 +118,10 @@ tesco:
             DataRequest:
               feedId: pma-requests-v1-test
         retry-timeout: 30
+        subscribe:
+          feeds:
+            jit: colleagues-jit-v1
+            immediate: colleagues-immediate-v1
       colleague-api:
         base-url: https://test.com/colleague/colleague/v2/colleagues
     rest-template:

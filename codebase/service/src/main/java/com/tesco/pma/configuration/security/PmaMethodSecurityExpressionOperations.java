@@ -9,6 +9,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Delegate;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 
 import java.util.EnumSet;
@@ -36,6 +38,7 @@ import static com.tesco.pma.security.UserRoleNames.VIEWER;
  *
  * <p>Example: @PreAuthorize("isAdmin() or isViewer() or isManagerFor(#subsidiaryUuid)")
  */
+@Slf4j
 public class PmaMethodSecurityExpressionOperations implements MethodSecurityExpressionOperations {
     static final UserDetails NULL_USER_DETAILS = new UserDetails(new User(UUID.fromString("00000000-0000-0000-0000-000000000000")));
 
@@ -52,6 +55,8 @@ public class PmaMethodSecurityExpressionOperations implements MethodSecurityExpr
     public PmaMethodSecurityExpressionOperations(@NonNull MethodSecurityExpressionOperations delegate, @NonNull UserService userService) {
         this.delegate = delegate;
         this.userService = userService;
+        log.info("MethodSecurityExpressionOperations delegate: {}", delegate);
+        log.info("UserService: {}", userService);
     }
 
     /**

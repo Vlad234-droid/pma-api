@@ -12,7 +12,10 @@ include 'service'
 
 include 'healthcheck'
 include 'pm'
+include 'organisation'
 
 include 'application'
+
 include 'profile'
 include 'objective'
+include 'cep'
