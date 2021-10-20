@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class PMElement implements DictionaryItem<String> {
-    public static final String PREFIX = "pm_";
-    public static final String PM_TYPE = PREFIX + "type";
+    public static final String PM_PREFIX = "pm_";
+    public static final String PM_TYPE = PM_PREFIX + "type";
 
     private String id;
     private String code;

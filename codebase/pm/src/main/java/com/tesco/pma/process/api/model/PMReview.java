@@ -14,12 +14,10 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class PMReview extends PMElement {
     public static final String PM_REVIEW = "review";
-    public static final String PM_REVIEW_TYPE = PREFIX + "review_type";
-    public static final String PM_REVIEW_MIN = PREFIX + "review_min";
-    public static final String PM_REVIEW_MAX = PREFIX + "review_max";
-    public static final String PM_FORM_KEY = PREFIX + "form_key";
-    public static final String PM_FORM_NAME = PREFIX + "form_name";
-    public static final String PM_FORM_JSON = PREFIX + "form_json";
+    public static final String PM_REVIEW_PREFIX = PM_PREFIX + PM_REVIEW + "_";
+    public static final String PM_REVIEW_TYPE = PM_REVIEW_PREFIX + "review_type";
+    public static final String PM_REVIEW_MIN = PM_REVIEW_PREFIX + "review_min";
+    public static final String PM_REVIEW_MAX = PM_REVIEW_PREFIX + "review_max";
 
     public static final String DEFAULT_PM_REVIEW_MIN = "1";
     public static final String DEFAULT_PM_REVIEW_MAX = "1";

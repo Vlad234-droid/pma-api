@@ -11,7 +11,7 @@ import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperties;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperty;
 
 import com.tesco.pma.api.GeneralDictionaryItem;
-import com.tesco.pma.process.api.PMProcessMetadata;
+import com.tesco.pma.process.api.model.PMCycle;
 import com.tesco.pma.process.api.model.PMForm;
 import com.tesco.pma.process.api.model.PMReview;
 
@@ -36,11 +36,11 @@ public class PMProcessModelParser {
 
     private ResourceProvider resourceProvider;
 
-    public void parse(PMProcessMetadata metadata, Collection<Task> tasks) {
-        tasks.forEach(task -> processTask(metadata, task));
+    public void parse(PMCycle cycle, Collection<Task> tasks) {
+        tasks.forEach(task -> processTask(cycle, task));
     }
 
-    private void processTask(PMProcessMetadata metadata, Task task) {
+    private void processTask(PMCycle cycle, Task task) {
         var extensionElements = task.getExtensionElements();
         if (extensionElements != null) {
             var propsQuery = extensionElements.getElementsQuery().filterByType(CamundaProperties.class);
@@ -54,7 +54,7 @@ public class PMProcessModelParser {
             if (typeOptional.isPresent()) {
                 var type = typeOptional.get().getCamundaValue().toLowerCase();
                 if (PM_REVIEW.equals(type)) {
-                    metadata.getElements().add(parseReview(task, props, type));
+                    cycle.getReviews().add(parseReview(task, props, type));
                 }
             }
         }
@@ -65,17 +65,10 @@ public class PMProcessModelParser {
 
         props.getCamundaProperties().forEach(property -> {
             var key = property.getCamundaName().toLowerCase();
-            switch (key) {
-                case PM_REVIEW_TYPE:
-                    pmReview.setReviewType(new GeneralDictionaryItem(null, property.getCamundaValue(), null));
-                case PM_TYPE:
-                case PM_REVIEW_MIN:
-                case PM_REVIEW_MAX:
-                    pmReview.getProperties().put(key, property.getCamundaValue());
-                    break;
-                default:
-                    // nothing
+            if (PM_REVIEW_TYPE.equals(key)) {
+                pmReview.setReviewType(new GeneralDictionaryItem(null, property.getCamundaValue(), null));
             }
+            pmReview.getProperties().put(key, property.getCamundaValue());
         });
         pmReview.getProperties().putIfAbsent(PM_REVIEW_MIN, DEFAULT_PM_REVIEW_MIN);
         pmReview.getProperties().put(PM_REVIEW_MAX, DEFAULT_PM_REVIEW_MAX);

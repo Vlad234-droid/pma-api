@@ -196,9 +196,10 @@
     <bpmn:startEvent id="StartEvent_1" name="Fiscal Year">
       <bpmn:extensionElements>
         <camunda:properties>
-          <camunda:property name="timerType" value="fiscalYear" />
-          <camunda:property name="timerStartTime" value="2021-05-01" />
-          <camunda:property name="endTime" value="2021-04-30" />
+          <camunda:property name="pm_cycle_type" value="fiscal_year" />
+          <camunda:property name="pm_cycle_start_time" value="2021-05-01" />
+          <camunda:property name="pm_cycle_end_time" value="2021-04-30" />
+          <camunda:property name="pm_max_number" value="5" />
         </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_1j07w5j</bpmn:outgoing>
@@ -381,17 +382,17 @@ duration
       <bpmndi:BPMNShape id="Activity_1l5gc7z_di" bpmnElement="Activity_1lzsoia">
         <dc:Bounds x="540" y="540" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_03wvhb0_di" bpmnElement="TextAnnotation_03wvhb0">
-        <dc:Bounds x="220" y="523" width="100" height="69" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0s9nxcw_di" bpmnElement="TextAnnotation_0s9nxcw">
-        <dc:Bounds x="220" y="393" width="220" height="30" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_075gn9c_di" bpmnElement="StartEvent_1">
         <dc:Bounds x="222" y="452" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="222" y="495" width="55" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_03wvhb0_di" bpmnElement="TextAnnotation_03wvhb0">
+        <dc:Bounds x="220" y="523" width="100" height="69" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0s9nxcw_di" bpmnElement="TextAnnotation_0s9nxcw">
+        <dc:Bounds x="220" y="393" width="220" height="30" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0mq52u2_di" bpmnElement="Event_0gndjjj">
         <dc:Bounds x="492" y="492" width="36" height="36" />
