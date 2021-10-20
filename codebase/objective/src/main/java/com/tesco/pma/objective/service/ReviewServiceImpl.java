@@ -4,15 +4,13 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.objective.dao.ReviewDAO;
 import com.tesco.pma.objective.dao.ReviewAuditLogDAO;
+import com.tesco.pma.objective.dao.ReviewDAO;
 import com.tesco.pma.objective.domain.GroupObjective;
 import com.tesco.pma.objective.domain.Review;
-import com.tesco.pma.api.MapProperties;
 import com.tesco.pma.objective.domain.ReviewStatus;
 import com.tesco.pma.objective.domain.ReviewType;
 import com.tesco.pma.objective.domain.WorkingGroupObjective;
-import com.tesco.pma.objective.domain.request.ReviewBodyRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -37,8 +35,8 @@ import static com.tesco.pma.objective.exception.ErrorCodes.BUSINESS_UNIT_NOT_EXI
 import static com.tesco.pma.objective.exception.ErrorCodes.GROUP_OBJECTIVES_NOT_FOUND;
 import static com.tesco.pma.objective.exception.ErrorCodes.GROUP_OBJECTIVE_ALREADY_EXISTS;
 import static com.tesco.pma.objective.exception.ErrorCodes.REVIEWS_NOT_FOUND;
-import static com.tesco.pma.objective.exception.ErrorCodes.REVIEW_ALREADY_EXISTS;
 import static com.tesco.pma.objective.exception.ErrorCodes.REVIEWS_NOT_FOUND_FOR_STATUS_UPDATE;
+import static com.tesco.pma.objective.exception.ErrorCodes.REVIEW_ALREADY_EXISTS;
 import static com.tesco.pma.objective.exception.ErrorCodes.REVIEW_NOT_FOUND_BY_UUID;
 import static com.tesco.pma.objective.exception.ErrorCodes.REVIEW_NOT_FOUND_FOR_COLLEAGUE;
 import static java.time.Instant.now;
@@ -63,7 +61,6 @@ public class ReviewServiceImpl implements ReviewService {
     private static final String VERSION_PARAMETER_NAME = "version";
     private static final String STATUS_PARAMETER_NAME = "status";
     private static final String PREV_STATUSES_PARAMETER_NAME = "prevStatuses";
-    private static final int INIT_NUMBER_REVIEW = 1;
     private static final Comparator<GroupObjective> GROUP_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR =
             Comparator.comparing(GroupObjective::getNumber)
                     .thenComparing(GroupObjective::getTitle);
@@ -117,9 +114,8 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public Review createReview(Review review) {
+        review.setUuid(UUID.randomUUID());
         try {
-            review.setUuid(UUID.randomUUID());
-            review.setStatus(DRAFT);
             reviewDAO.createReview(review);
             return review;
         } catch (DuplicateKeyException e) {
@@ -135,23 +131,13 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public List<Review> createReviews(UUID performanceCycleUuid,
-                                      UUID colleagueUuid,
-                                      ReviewType type,
-                                      List<ReviewBodyRequest> reviews) {
+    public List<Review> createReviews(List<Review> reviews) {
         List<Review> results = new ArrayList<>();
         IntStream.range(0, reviews.size())
                 .forEach(idx -> {
-                    var review = Review.builder()
-                            .uuid(UUID.randomUUID())
-                            .performanceCycleUuid(performanceCycleUuid)
-                            .colleagueUuid(colleagueUuid)
-                            .type(type)
-                            .number(idx + 1)
-                            .properties(new MapProperties(reviews.get(idx).getReviewProperties()))
-                            .groupObjectiveUuid(reviews.get(idx).getGroupObjectiveUuid())
-                            .status(DRAFT)
-                            .build();
+                    var review = reviews.get(idx);
+                    review.setUuid(UUID.randomUUID());
+                    review.setNumber(idx + 1);
                     try {
                         reviewDAO.createReview(review);
                         results.add(review);
@@ -184,40 +170,29 @@ public class ReviewServiceImpl implements ReviewService {
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, review.getPerformanceCycleUuid(),
                             TYPE_PARAMETER_NAME, review.getType(),
                             NUMBER_PARAMETER_NAME, review.getNumber()));
-        } else {
-            review.setUuid(reviewBefore.getUuid());
-            review.setStatus(reviewBefore.getStatus());
-            reviewDAO.updateReview(review);
         }
+        review.setUuid(reviewBefore.getUuid());
+        review.setNumber(reviewBefore.getNumber());
+        reviewDAO.updateReview(review);
 
         return review;
     }
 
     @Override
     @Transactional
-    public List<Review> updateReviews(UUID performanceCycleUuid,
-                                      UUID colleagueUuid,
-                                      ReviewType type,
-                                      List<ReviewBodyRequest> reviews) {
+    public List<Review> updateReviews(List<Review> reviews) {
         List<Review> results = new ArrayList<>();
         IntStream.range(0, reviews.size())
                 .forEach(idx -> {
+                    var review = reviews.get(idx);
                     var reviewBefore = reviewDAO.getReview(
-                            performanceCycleUuid,
-                            colleagueUuid,
-                            type,
+                            review.getPerformanceCycleUuid(),
+                            review.getColleagueUuid(),
+                            review.getType(),
                             idx + 1);
-                    var review = Review.builder()
-                            .uuid(UUID.randomUUID())
-                            .performanceCycleUuid(performanceCycleUuid)
-                            .colleagueUuid(colleagueUuid)
-                            .type(type)
-                            .number(idx + 1)
-                            .properties(new MapProperties(reviews.get(idx).getReviewProperties()))
-                            .groupObjectiveUuid(reviews.get(idx).getGroupObjectiveUuid())
-                            .status(DRAFT)
-                            .build();
                     if (null == reviewBefore) {
+                        review.setUuid(UUID.randomUUID());
+                        review.setNumber(idx + 1);
                         try {
                             reviewDAO.createReview(review);
                         } catch (DuplicateKeyException e) {
@@ -232,7 +207,7 @@ public class ReviewServiceImpl implements ReviewService {
                         }
                     } else {
                         review.setUuid(reviewBefore.getUuid());
-                        review.setStatus(reviewBefore.getStatus());
+                        review.setNumber(reviewBefore.getNumber());
                         reviewDAO.updateReview(review);
                     }
                     results.add(review);

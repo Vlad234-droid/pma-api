@@ -22,6 +22,5 @@ public class Review {
     ReviewType type;
     Integer number;
     MapProperties properties;
-    UUID groupObjectiveUuid;
     ReviewStatus status;
 }

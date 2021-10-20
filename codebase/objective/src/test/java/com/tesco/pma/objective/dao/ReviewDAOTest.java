@@ -194,7 +194,6 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .returns(OBJECTIVE, from(Review::getType))
                 .returns(NUMBER_1, from(Review::getNumber))
                 .returns(REVIEW_PROPERTIES_INIT, from(Review::getProperties))
-                .returns(GROUP_OBJECTIVE_UUID_2, from(Review::getGroupObjectiveUuid))
                 .returns(DRAFT, from(Review::getStatus));
     }
 
@@ -217,7 +216,6 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .type(OBJECTIVE)
                 .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
-                .groupObjectiveUuid(GROUP_OBJECTIVE_UUID_2)
                 .status(ReviewStatus.DRAFT)
                 .build();
 
@@ -269,7 +267,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .type(OBJECTIVE)
                 .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_UPDATE)
-                .groupObjectiveUuid(GROUP_OBJECTIVE_UUID)
+                .status(DRAFT)
                 .build();
 
         final var result = instance.updateReview(review);
@@ -340,7 +338,6 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .type(OBJECTIVE)
                 .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
-                .groupObjectiveUuid(GROUP_OBJECTIVE_UUID_2)
                 .status(ReviewStatus.DRAFT)
                 .build();
 

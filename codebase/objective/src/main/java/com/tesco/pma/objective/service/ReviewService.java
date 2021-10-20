@@ -3,11 +3,10 @@ package com.tesco.pma.objective.service;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.objective.domain.GroupObjective;
-import com.tesco.pma.objective.domain.ReviewStatus;
 import com.tesco.pma.objective.domain.Review;
+import com.tesco.pma.objective.domain.ReviewStatus;
 import com.tesco.pma.objective.domain.ReviewType;
 import com.tesco.pma.objective.domain.WorkingGroupObjective;
-import com.tesco.pma.objective.domain.request.ReviewBodyRequest;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -59,32 +58,29 @@ public interface ReviewService {
     /**
      * Creates review.
      *
-     * @param review a review.
+     * @param review a review
      * @return created review.
      * @throws DatabaseConstraintViolationException review already exist.
      */
-    Review createReview(@NotNull Review review);
+    Review createReview(Review review);
 
     /**
      * Creates reviews.
      *
-     * @param reviews list of reviews.
+     * @param reviews list of review
      * @return created reviews.
      * @throws DatabaseConstraintViolationException review already exist.
      */
-    List<Review> createReviews(@NotNull UUID performanceCycleUuid,
-                               @NotNull UUID colleagueUuid,
-                               @NotNull ReviewType type,
-                               List<ReviewBodyRequest> reviews);
+    List<Review> createReviews(List<Review> reviews);
 
     /**
      * Updates existing review.
      *
-     * @param review a review.
+     * @param review a review
      * @return updated review.
      * @throws NotFoundException if review doesn't exist.
      */
-    Review updateReview(@NotNull Review review);
+    Review updateReview(Review review);
 
     /**
      * Create/update reviews.
@@ -93,10 +89,7 @@ public interface ReviewService {
      * @return created/updated reviews.
      * @throws DatabaseConstraintViolationException review already exist.
      */
-    List<Review> updateReviews(@NotNull UUID performanceCycleUuid,
-                               @NotNull UUID colleagueUuid,
-                               @NotNull ReviewType type,
-                               List<ReviewBodyRequest> reviews);
+    List<Review> updateReviews(List<Review> reviews);
 
     /**
      * Updates review status.

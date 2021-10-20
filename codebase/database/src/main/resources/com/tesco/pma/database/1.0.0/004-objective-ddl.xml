@@ -70,11 +70,11 @@
     </changeSet>
 
     <changeSet author="ypashynskyi" id="3">
-        <createTable tableName="review_types"
+        <createTable tableName="review_type"
                      remarks="Dictionary of review's types">
             <column name="id" type="integer"
                     remarks="A unique identifier for type">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="review_types_pk"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="review_type_pk"/>
             </column>
             <column name="code" type="VARCHAR(30)"
                     remarks="Shortname of type">
@@ -88,39 +88,39 @@
     </changeSet>
 
     <changeSet author="ypashynskyi" id="4">
-        <comment>Init table review_types</comment>
-        <insert tableName="review_types">
+        <comment>Init table review_type</comment>
+        <insert tableName="review_type">
             <column name="id" value="1"/>
             <column name="code" value="OBJECTIVE"/>
             <column name="description" value="Objective review"/>
         </insert>
-        <insert tableName="review_types">
+        <insert tableName="review_type">
             <column name="id" value="2"/>
             <column name="code" value="QUARTER"/>
             <column name="description"
                     value="Quarter review"/>
         </insert>
-        <insert tableName="review_types">
+        <insert tableName="review_type">
             <column name="id" value="3"/>
             <column name="code" value="MYR"/>
             <column name="description" value="Mid year review"/>
         </insert>
-        <insert tableName="review_types">
+        <insert tableName="review_type">
             <column name="id" value="4"/>
             <column name="code" value="EYR"/>
             <column name="description" value="End of year review"/>
         </insert>
         <rollback>
-            <delete tableName="review_types">
+            <delete tableName="review_type">
                 <where>code = 'OBJECTIVE'</where>
             </delete>
-            <delete tableName="review_types">
+            <delete tableName="review_type">
                 <where>code = 'QUARTER'</where>
             </delete>
-            <delete tableName="review_types">
+            <delete tableName="review_type">
                 <where>code = 'MYR'</where>
             </delete>
-            <delete tableName="review_types">
+            <delete tableName="review_type">
                 <where>code = 'EYR'</where>
             </delete>
         </rollback>
@@ -164,7 +164,7 @@
         <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="review"
                                  constraintName="review_type_id_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
-                                 referencedColumnNames="id" referencedTableName="review_types"
+                                 referencedColumnNames="id" referencedTableName="review_type"
                                  validate="true"/>
         <addUniqueConstraint columnNames="performance_cycle_uuid, colleague_uuid, type_id, number"
                              constraintName="review_unique"

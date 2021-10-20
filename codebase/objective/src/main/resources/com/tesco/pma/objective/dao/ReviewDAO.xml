@@ -21,7 +21,6 @@
         <result property="properties" column="properties"
                 typeHandler="com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler"
                 javaType="com.tesco.pma.api.MapProperties"/>
-        <result property="groupObjectiveUuid" column="group_objective_uuid"/>
         <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.objective.domain.ReviewStatus"/>
@@ -109,29 +108,19 @@
     <insert id="createReview" flushCache="true">
         INSERT INTO review
         (uuid,
-        colleague_uuid,
-        performance_cycle_uuid,
-        type_id,
-        number,
-        properties,
-        status_id)
+         colleague_uuid,
+         performance_cycle_uuid,
+         type_id,
+         number,
+         properties,
+         status_id)
         VALUES (#{review.uuid},
-        #{review.colleagueUuid},
-        #{review.performanceCycleUuid},
-        #{review.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.objective.domain.ReviewType},
-        #{review.number},
-        #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-        #{review.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.objective.domain.ReviewStatus});
-        <choose>
-            <when test="review.groupObjectiveUuid != null">
-                INSERT INTO review_link
-                (review_uuid,
-                group_objective_uuid)
-                VALUES (#{review.uuid},
-                #{review.groupObjectiveUuid}
-                );
-            </when>
-        </choose>
+                #{review.colleagueUuid},
+                #{review.performanceCycleUuid},
+                #{review.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.objective.domain.ReviewType},
+                #{review.number},
+                #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+                #{review.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.objective.domain.ReviewStatus});
     </insert>
 
     <select id="getReviewByUuid" resultMap="reviewResultMap">
@@ -141,11 +130,8 @@
                r.type_id,
                r.number,
                r.properties,
-               r.status_id,
-               rl.group_objective_uuid
+               r.status_id
         FROM review r
-                 LEFT JOIN review_link rl
-                           ON (r.uuid = rl.review_uuid)
         WHERE r.uuid = #{reviewUuid}
     </select>
 
@@ -156,11 +142,8 @@
                r.type_id,
                r.number,
                r.properties,
-               r.status_id,
-               rl.group_objective_uuid
+               r.status_id
         FROM review r
-                 LEFT JOIN review_link rl
-                           ON (r.uuid = rl.review_uuid)
         WHERE r.colleague_uuid = #{colleagueUuid}
           and r.performance_cycle_uuid = #{performanceCycleUuid}
           and r.type_id = #{type.id}
@@ -174,18 +157,14 @@
                r.type_id,
                r.number,
                r.properties,
-               r.status_id,
-               rl.group_objective_uuid
+               r.status_id
         FROM review r
-                 LEFT JOIN review_link rl
-                           ON (r.uuid = rl.review_uuid)
         WHERE r.colleague_uuid = #{colleagueUuid}
           and r.performance_cycle_uuid = #{performanceCycleUuid}
           and r.type_id = #{type.id}
         order by r.number
     </select>
 
-    <!-- cascade delete -->
     <delete id="deleteReview">
         DELETE
         FROM review
@@ -195,29 +174,12 @@
     <update id="updateReview" flushCache="true">
         UPDATE review
         SET properties =
-        #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler}
+                #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+            status_id  = #{review.status.id}
         WHERE performance_cycle_uuid = #{review.performanceCycleUuid}
-        and colleague_uuid = #{review.colleagueUuid}
-        and type_id = #{review.type.id}
-        and number = #{review.number};
-        <choose>
-            <when test="review.groupObjectiveUuid == null">
-                DELETE
-                FROM review_link
-                WHERE review_uuid = #{review.uuid};
-            </when>
-            <otherwise>
-                INSERT INTO review_link
-                (review_uuid,
-                group_objective_uuid)
-                VALUES (#{review.uuid},
-                #{review.groupObjectiveUuid}) ON CONFLICT (review_uuid)
-                DO
-                UPDATE
-                SET group_objective_uuid = EXCLUDED.group_objective_uuid
-                where review_link.group_objective_uuid != EXCLUDED.group_objective_uuid;
-            </otherwise>
-        </choose>
+          and colleague_uuid = #{review.colleagueUuid}
+          and type_id = #{review.type.id}
+          and number = #{review.number};
     </update>
 
     <update id="updateReviewStatus" flushCache="true">

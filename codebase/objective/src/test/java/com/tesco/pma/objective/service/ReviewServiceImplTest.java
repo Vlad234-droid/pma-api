@@ -80,8 +80,7 @@ class ReviewServiceImplTest {
         final var res = objectiveService.updateReview(expectedReview);
 
         assertThat(res)
-                .returns(expectedReview.getProperties(), from(Review::getProperties))
-                .returns(expectedReview.getGroupObjectiveUuid(), from(Review::getGroupObjectiveUuid));
+                .returns(expectedReview.getProperties(), from(Review::getProperties));
     }
 
     @Test
