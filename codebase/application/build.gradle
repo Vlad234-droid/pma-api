@@ -29,6 +29,7 @@ dependencies {
     implementation project(':organisation')
     implementation project(':profile')
     implementation project(':cep')
+    implementation project(':notes')
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-web")
