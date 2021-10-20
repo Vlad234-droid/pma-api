@@ -2,12 +2,10 @@ package com.tesco.pma.objective.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import com.tesco.pma.api.MapProperties;
 import com.tesco.pma.dao.AbstractDAOTest;
-import com.tesco.pma.dao.TestConfig;
-import com.tesco.pma.objective.dao.config.ReviewTypeHandlerConfig;
 import com.tesco.pma.objective.domain.GroupObjective;
 import com.tesco.pma.objective.domain.Review;
-import com.tesco.pma.objective.domain.ReviewProperties;
 import com.tesco.pma.objective.domain.ReviewStatus;
 import com.tesco.pma.objective.domain.WorkingGroupObjective;
 import org.assertj.core.api.Assertions;
@@ -15,7 +13,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -32,7 +29,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
 import static org.assertj.core.api.InstanceOfAssertFactories.type;
 
-@SpringBootTest(classes = {TestConfig.class, ReviewTypeHandlerConfig.class})
 class ReviewDAOTest extends AbstractDAOTest {
 
     private static final UUID GROUP_OBJECTIVE_UUID = UUID.fromString("aab9ab0b-f50f-4442-8900-b03777ee0012");
@@ -65,13 +61,13 @@ class ReviewDAOTest extends AbstractDAOTest {
     private static final Integer VERSION_3 = 3;
     private static final String USER_INIT = "Init user";
     private static final String TIME_INIT = "2021-09-20 10:45:12.448057";
-    private static final ReviewProperties REVIEW_PROPERTIES_INIT = new ReviewProperties(
+    private static final MapProperties REVIEW_PROPERTIES_INIT = new MapProperties(
             Map.of(TITLE_PROPERTY_NAME, TITLE_INIT,
                     DESCRIPTION_PROPERTY_NAME, DESCRIPTION_INIT,
                     MEETS_PROPERTY_NAME, MEETS_INIT,
                     EXCEEDS_PROPERTY_NAME, EXCEEDS_INIT
             ));
-    private static final ReviewProperties REVIEW_PROPERTIES_UPDATE = new ReviewProperties(
+    private static final MapProperties REVIEW_PROPERTIES_UPDATE = new MapProperties(
             Map.of(TITLE_PROPERTY_NAME, TITLE_UPDATE,
                     DESCRIPTION_PROPERTY_NAME, DESCRIPTION_UPDATE,
                     MEETS_PROPERTY_NAME, MEETS_UPDATE,

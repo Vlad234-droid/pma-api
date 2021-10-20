@@ -3,7 +3,7 @@ package com.tesco.pma.objective.service.rest;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.objective.domain.GroupObjective;
 import com.tesco.pma.objective.domain.Review;
-import com.tesco.pma.objective.domain.ReviewProperties;
+import com.tesco.pma.api.MapProperties;
 import com.tesco.pma.objective.domain.ReviewStatus;
 import com.tesco.pma.objective.domain.ReviewType;
 import com.tesco.pma.objective.domain.WorkingGroupObjective;
@@ -56,12 +56,12 @@ public class ReviewEndpoint {
      */
     @Operation(summary = "Create a review", description = "Review created", tags = {"review"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
-    @PostMapping(path = "/performance-cycles/{performanceCycleUuid}/colleagues/{colleagueUuid}/types/{type}/numbers/{number}",
+    @PostMapping(path = "/colleagues/{colleagueUuid}/performance-cycles/{performanceCycleUuid}/review-types/{type}/numbers/{number}",
             produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @Validated({ValidationGroup.WithoutId.class, Default.class})
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<Review> createReview(@PathVariable("performanceCycleUuid") UUID performanceCycleUuid,
-                                             @PathVariable("colleagueUuid") UUID colleagueUuid,
+    public RestResponse<Review> createReview(@PathVariable("colleagueUuid") UUID colleagueUuid,
+                                             @PathVariable("performanceCycleUuid") UUID performanceCycleUuid,
                                              @PathVariable("type") ReviewType type,
                                              @PathVariable("number") Integer number,
                                              @RequestBody @Valid ReviewBodyRequest reviewBodyRequest) {
@@ -70,9 +70,60 @@ public class ReviewEndpoint {
         review.setColleagueUuid(colleagueUuid);
         review.setType(type);
         review.setNumber(number);
-        review.setGroupObjectiveUuid(reviewBodyRequest.getLinkedReviewUuid());
-        review.setProperties(new ReviewProperties(reviewBodyRequest.getReviewProperties()));
+        review.setGroupObjectiveUuid(reviewBodyRequest.getGroupObjectiveUuid());
+        review.setProperties(new MapProperties(reviewBodyRequest.getReviewProperties()));
         return success(reviewService.createReview(review));
+    }
+
+    /**
+     * POST call to create a list of reviews.
+     *
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
+     * @param type                 a review type
+     * @param reviewBodyRequests   a list of ReviewBodyRequest
+     * @return a RestResponse parameterized with Reviews
+     */
+    @Operation(summary = "Create a list of reviews", description = "Reviews created", tags = {"review"})
+    @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
+    @PostMapping(path = "/colleagues/{colleagueUuid}/performance-cycles/{performanceCycleUuid}/review-types/{type}",
+            produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @Validated({ValidationGroup.WithoutId.class, Default.class})
+    @ResponseStatus(HttpStatus.CREATED)
+    public RestResponse<List<Review>> createReviews(@PathVariable("colleagueUuid") UUID colleagueUuid,
+                                                    @PathVariable("performanceCycleUuid") UUID performanceCycleUuid,
+                                                    @PathVariable("type") ReviewType type,
+                                                    @RequestBody @Valid List<ReviewBodyRequest> reviewBodyRequests) {
+        return success(reviewService.createReviews(
+                performanceCycleUuid,
+                colleagueUuid,
+                type,
+                reviewBodyRequests));
+    }
+
+    /**
+     * POST call to update a list of reviews.
+     *
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
+     * @param type                 a review type
+     * @param reviewBodyRequests   a list of ReviewBodyRequest
+     * @return a RestResponse parameterized with Reviews
+     */
+    @Operation(summary = "Update list of reviews", description = "Update list of reviews", tags = {"review"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Reviews updated")
+    @PutMapping(path = "/colleagues/{colleagueUuid}/performance-cycles/{performanceCycleUuid}/review-types/{type}",
+            produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @Validated({ValidationGroup.WithoutId.class, Default.class})
+    public RestResponse<List<Review>> updateReviews(@PathVariable("colleagueUuid") UUID colleagueUuid,
+                                                    @PathVariable("performanceCycleUuid") UUID performanceCycleUuid,
+                                                    @PathVariable("type") ReviewType type,
+                                                    @RequestBody @Valid List<ReviewBodyRequest> reviewBodyRequests) {
+        return success(reviewService.updateReviews(
+                performanceCycleUuid,
+                colleagueUuid,
+                type,
+                reviewBodyRequests));
     }
 
     /**
@@ -101,10 +152,10 @@ public class ReviewEndpoint {
     @Operation(summary = "Get a review by its performanceCycleUuid, colleagueUuid, review type and number", tags = {"review"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the Review")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Review not found", content = @Content)
-    @GetMapping(path = "/performance-cycles/{performanceCycleUuid}/colleagues/{colleagueUuid}/types/{type}/numbers/{number}",
+    @GetMapping(path = "/colleagues/{colleagueUuid}/performance-cycles/{performanceCycleUuid}/review-types/{type}/numbers/{number}",
             produces = APPLICATION_JSON_VALUE)
-    public RestResponse<Review> getReview(@PathVariable("performanceCycleUuid") UUID performanceCycleUuid,
-                                          @PathVariable("colleagueUuid") UUID colleagueUuid,
+    public RestResponse<Review> getReview(@PathVariable("colleagueUuid") UUID colleagueUuid,
+                                          @PathVariable("performanceCycleUuid") UUID performanceCycleUuid,
                                           @PathVariable("type") ReviewType type,
                                           @PathVariable("number") Integer number) {
         return success(reviewService.getReview(performanceCycleUuid, colleagueUuid, type, number));
@@ -121,10 +172,10 @@ public class ReviewEndpoint {
     @Operation(summary = "Get a list of reviews by its performanceCycleUuid, colleagueUuid, review type", tags = {"review"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found reviews")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Reviews not found", content = @Content)
-    @GetMapping(path = "/performance-cycles/{performanceCycleUuid}/colleagues/{colleagueUuid}/types/{type}/reviews",
+    @GetMapping(path = "/colleagues/{colleagueUuid}/performance-cycles/{performanceCycleUuid}/review-types/{type}/reviews",
             produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<Review>> getReviews(@PathVariable("performanceCycleUuid") UUID performanceCycleUuid,
-                                                 @PathVariable("colleagueUuid") UUID colleagueUuid,
+    public RestResponse<List<Review>> getReviews(@PathVariable("colleagueUuid") UUID colleagueUuid,
+                                                 @PathVariable("performanceCycleUuid") UUID performanceCycleUuid,
                                                  @PathVariable("type") ReviewType type) {
         return success(reviewService.getReviews(performanceCycleUuid, colleagueUuid, type));
     }
@@ -142,11 +193,11 @@ public class ReviewEndpoint {
     @Operation(summary = "Update existing review", description = "Update existing review", tags = {"review"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Review updated")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Review not found", content = @Content)
-    @PutMapping(path = "/performance-cycles/{performanceCycleUuid}/colleagues/{colleagueUuid}/numbers/{number}/types/{type}",
+    @PutMapping(path = "/colleagues/{colleagueUuid}/performance-cycles/{performanceCycleUuid}/review-types/{type}/numbers/{number}",
             consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @Validated({ValidationGroup.WithoutId.class, Default.class})
-    public RestResponse<Review> updateReview(@PathVariable("performanceCycleUuid") UUID performanceCycleUuid,
-                                             @PathVariable("colleagueUuid") UUID colleagueUuid,
+    public RestResponse<Review> updateReview(@PathVariable("colleagueUuid") UUID colleagueUuid,
+                                             @PathVariable("performanceCycleUuid") UUID performanceCycleUuid,
                                              @PathVariable("type") ReviewType type,
                                              @PathVariable("number") Integer number,
                                              @RequestBody @Valid ReviewBodyRequest reviewBodyRequest) {
@@ -155,8 +206,8 @@ public class ReviewEndpoint {
         review.setColleagueUuid(colleagueUuid);
         review.setType(type);
         review.setNumber(number);
-        review.setGroupObjectiveUuid(reviewBodyRequest.getLinkedReviewUuid());
-        review.setProperties(new ReviewProperties(reviewBodyRequest.getReviewProperties()));
+        review.setGroupObjectiveUuid(reviewBodyRequest.getGroupObjectiveUuid());
+        review.setProperties(new MapProperties(reviewBodyRequest.getReviewProperties()));
         return success(reviewService.updateReview(review));
     }
 
@@ -176,11 +227,11 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Review status updated")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Review not found", content = @Content)
     @PutMapping(
-            path = "/performance-cycles/{perfCycleUuid}/colleagues/{colleagueUuid}/numbers/{number}/types/{type}/statuses/{status}",
+            path = "/colleagues/{colleagueUuid}/performance-cycles/{perfCycleUuid}/review-types/{type}/numbers/{number}/statuses/{status}",
             produces = APPLICATION_JSON_VALUE)
     @Validated({ValidationGroup.WithoutId.class, Default.class})
-    public RestResponse<ReviewStatus> updateReviewStatus(@PathVariable("perfCycleUuid") UUID performanceCycleUuid,
-                                                         @PathVariable("colleagueUuid") UUID colleagueUuid,
+    public RestResponse<ReviewStatus> updateReviewStatus(@PathVariable("colleagueUuid") UUID colleagueUuid,
+                                                         @PathVariable("perfCycleUuid") UUID performanceCycleUuid,
                                                          @PathVariable("type") ReviewType type,
                                                          @PathVariable("number") Integer number,
                                                          @PathVariable("status") ReviewStatus status,

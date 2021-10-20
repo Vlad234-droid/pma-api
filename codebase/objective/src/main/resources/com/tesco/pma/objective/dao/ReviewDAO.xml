@@ -19,8 +19,8 @@
                 javaType="com.tesco.pma.objective.domain.ReviewType"/>
         <result property="number" column="number"/>
         <result property="properties" column="properties"
-                typeHandler="com.tesco.pma.objective.dao.utils.ReviewPropertiesJsonbTypeHandler"
-                javaType="com.tesco.pma.objective.domain.ReviewProperties"/>
+                typeHandler="com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler"
+                javaType="com.tesco.pma.api.MapProperties"/>
         <result property="groupObjectiveUuid" column="group_objective_uuid"/>
         <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
@@ -120,7 +120,7 @@
         #{review.performanceCycleUuid},
         #{review.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.objective.domain.ReviewType},
         #{review.number},
-        #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.objective.dao.utils.ReviewPropertiesJsonbTypeHandler},
+        #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
         #{review.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.objective.domain.ReviewStatus});
         <choose>
             <when test="review.groupObjectiveUuid != null">
@@ -153,6 +153,7 @@
         SELECT r.uuid,
                r.colleague_uuid,
                r.performance_cycle_uuid,
+               r.type_id,
                r.number,
                r.properties,
                r.status_id,
@@ -170,6 +171,7 @@
         SELECT r.uuid,
                r.colleague_uuid,
                r.performance_cycle_uuid,
+               r.type_id,
                r.number,
                r.properties,
                r.status_id,
@@ -193,7 +195,7 @@
     <update id="updateReview" flushCache="true">
         UPDATE review
         SET properties =
-        #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.objective.dao.utils.ReviewPropertiesJsonbTypeHandler}
+        #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler}
         WHERE performance_cycle_uuid = #{review.performanceCycleUuid}
         and colleague_uuid = #{review.colleagueUuid}
         and type_id = #{review.type.id}

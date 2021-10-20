@@ -83,7 +83,7 @@ public interface ReviewDAO {
      */
     Review getReview(@Param("performanceCycleUuid") UUID performanceCycleUuid,
                      @Param("colleagueUuid") UUID colleagueUuid,
-                     @Param("reviewType") ReviewType type,
+                     @Param("type") ReviewType type,
                      @Param("number") Integer number);
 
     /**
@@ -96,7 +96,7 @@ public interface ReviewDAO {
      */
     List<Review> getReviews(@Param("performanceCycleUuid") UUID performanceCycleUuid,
                             @Param("colleagueUuid") UUID colleagueUuid,
-                            @Param("reviewType") ReviewType type);
+                            @Param("type") ReviewType type);
 
     /**
      * Creates a review

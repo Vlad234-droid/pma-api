@@ -7,6 +7,7 @@ import com.tesco.pma.objective.domain.ReviewStatus;
 import com.tesco.pma.objective.domain.Review;
 import com.tesco.pma.objective.domain.ReviewType;
 import com.tesco.pma.objective.domain.WorkingGroupObjective;
+import com.tesco.pma.objective.domain.request.ReviewBodyRequest;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -65,6 +66,18 @@ public interface ReviewService {
     Review createReview(@NotNull Review review);
 
     /**
+     * Creates reviews.
+     *
+     * @param reviews list of reviews.
+     * @return created reviews.
+     * @throws DatabaseConstraintViolationException review already exist.
+     */
+    List<Review> createReviews(@NotNull UUID performanceCycleUuid,
+                               @NotNull UUID colleagueUuid,
+                               @NotNull ReviewType type,
+                               List<ReviewBodyRequest> reviews);
+
+    /**
      * Updates existing review.
      *
      * @param review a review.
@@ -72,6 +85,18 @@ public interface ReviewService {
      * @throws NotFoundException if review doesn't exist.
      */
     Review updateReview(@NotNull Review review);
+
+    /**
+     * Create/update reviews.
+     *
+     * @param reviews list of reviews.
+     * @return created/updated reviews.
+     * @throws DatabaseConstraintViolationException review already exist.
+     */
+    List<Review> updateReviews(@NotNull UUID performanceCycleUuid,
+                               @NotNull UUID colleagueUuid,
+                               @NotNull ReviewType type,
+                               List<ReviewBodyRequest> reviews);
 
     /**
      * Updates review status.

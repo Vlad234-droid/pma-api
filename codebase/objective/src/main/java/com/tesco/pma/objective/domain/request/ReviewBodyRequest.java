@@ -11,5 +11,5 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ReviewBodyRequest {
     Map<String, String> reviewProperties;
-    UUID linkedReviewUuid;
+    UUID groupObjectiveUuid;
 }
