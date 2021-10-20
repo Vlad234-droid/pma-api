@@ -2,6 +2,7 @@ package com.tesco.pma.notes.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.dao.AbstractDAOTest;
+import com.tesco.pma.notes.model.Folder;
 import com.tesco.pma.notes.model.Note;
 import com.tesco.pma.notes.model.NoteStatus;
 import org.junit.jupiter.api.Assertions;
@@ -14,9 +15,9 @@ import org.springframework.test.context.DynamicPropertySource;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class INoteDaoTest extends AbstractDAOTest {
+public class IFolderDaoTest extends AbstractDAOTest {
 
     protected static final String BASE_PATH_TO_DATA_SET = "db_init_scripts/";
     protected static final UUID FOLDER_UUID = UUID.fromString("56141037-6e2d-45f0-b47f-4875e68dd1d7");
@@ -33,14 +34,17 @@ public class INoteDaoTest extends AbstractDAOTest {
     @Autowired
     private INoteDao noteDao;
 
+    @Autowired
+    private IFolderDao folderDao;
+
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml"})
     void create() {
 
-        var note = createNote(UUID.randomUUID(), FOLDER_UUID, OWNER_UUID);
-        var noteCreatedCount = noteDao.create(note);
+        var folder = createFolder(UUID.randomUUID(), OWNER_UUID);
+        var folderCreatedCount = folderDao.create(folder);
 
-        assertEquals(1, noteCreatedCount);
+        assertEquals(1, folderCreatedCount);
 
     }
 
@@ -50,22 +54,31 @@ public class INoteDaoTest extends AbstractDAOTest {
     void createDuplicate() {
 
         Assertions.assertThrows(DuplicateKeyException.class, () -> {
-            var note = createNote(NOTE_UUID, FOLDER_UUID, OWNER_UUID);
-            noteDao.create(note);
+            var folder = createFolder(FOLDER_UUID, OWNER_UUID);
+            folderDao.create(folder);
         });
 
     }
 
-    private Note createNote(UUID id, UUID folderId, UUID ownerId){
-        var note = new Note();
-        note.setId(id);
-        note.setFolderUuid(folderId);
-        note.setOwnerColleagueUuid(ownerId);
-        note.setTitle("Title");
-        note.setContent("Content");
-        note.setStatus(NoteStatus.CREATED);
-        note.setUpdateDate(OffsetDateTime.now());
-        return note;
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml",
+            BASE_PATH_TO_DATA_SET + "notes_entries_init.xml"})
+    void deleteFolderWithNoteReferenced() {
+        assertEquals(1, noteDao.findByOwnerColleagueUuid(OWNER_UUID).size());
+
+        var folderDeleted = folderDao.delete(FOLDER_UUID);
+
+        assertEquals(1, folderDeleted);
+        assertEquals(0, noteDao.findByOwnerColleagueUuid(OWNER_UUID).size());
+
+    }
+
+    private Folder createFolder(UUID id, UUID ownerId){
+        var folder = new Folder();
+        folder.setId(id);
+        folder.setOwnerColleagueUuid(ownerId);
+        folder.setTitle("Title");
+        return folder;
     }
 
 

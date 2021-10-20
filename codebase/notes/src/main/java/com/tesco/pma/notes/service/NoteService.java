@@ -1,11 +1,15 @@
 package com.tesco.pma.notes.service;
 
+import com.tesco.pma.exception.AlreadyExistsException;
+import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.notes.dao.IFolderDao;
 import com.tesco.pma.notes.dao.INoteDao;
 import com.tesco.pma.notes.model.Folder;
 import com.tesco.pma.notes.model.Note;
+import com.tesco.pma.rest.HttpStatusCodes;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +27,16 @@ public class NoteService {
     @Transactional
     public void createNote(Note note){
         log.debug("Creating a Note {} for {}", note.getTitle(), note.getOwnerColleagueUuid().toString());
-        //TODO check if current user is the owner of the folder being created
+        //TODO check if current user is the owner of the note being created
         //TODO check if the current user is a line manager of the reference colleague (if presented)
-        noteDao.create(note);
+
+        try {
+            if (1 != noteDao.create(note)) {
+                throw new RuntimeException("Note " + note.getId() + " hasn't been created");
+            }
+        } catch (DuplicateKeyException e){
+            throw new AlreadyExistsException(HttpStatusCodes.BAD_REQUEST, "Note " + note.getId() + " already exists");
+        }
     }
 
     @Transactional
@@ -35,7 +46,10 @@ public class NoteService {
 
     @Transactional
     public int updateNote(Note note){
-        return noteDao.update(note);
+        if (1 == noteDao.update(note)) {
+            return 1;
+        }
+        throw new NotFoundException(HttpStatusCodes.NOT_FOUND, "Note "+ note.getId().toString()+" not found");
     }
 
     @Transactional
