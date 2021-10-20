@@ -18,7 +18,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(path = "/folder")
+@RequestMapping(path = "/notes/folders")
 public class FoldersController {
 
     private final NoteService noteService;
@@ -28,8 +28,7 @@ public class FoldersController {
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse<?> createFolder(@RequestBody Folder folder){
-        noteService.createFolder(folder);
-        return RestResponse.success();
+        return RestResponse.success(noteService.createFolder(folder));
     }
 
     @Operation(summary = "Find a folder", tags = {"Notes"})
@@ -45,8 +44,7 @@ public class FoldersController {
     @PutMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public RestResponse<?> update(@RequestBody Folder folder){
-        noteService.updateFolder(folder);
-        return RestResponse.success();
+        return RestResponse.success(noteService.updateFolder(folder));
     }
 
     @Operation(summary = "Delete a Note", tags = {"Notes"})

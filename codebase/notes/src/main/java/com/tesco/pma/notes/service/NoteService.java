@@ -25,7 +25,7 @@ public class NoteService {
     private final INoteDao noteDao;
 
     @Transactional
-    public void createNote(Note note){
+    public Note createNote(Note note){
         log.debug("Creating a Note {} for {}", note.getTitle(), note.getOwnerColleagueUuid().toString());
         //TODO check if current user is the owner of the note being created
         //TODO check if the current user is a line manager of the reference colleague (if presented)
@@ -37,6 +37,7 @@ public class NoteService {
         } catch (DuplicateKeyException e){
             throw new AlreadyExistsException(HttpStatusCodes.BAD_REQUEST, "Note " + note.getId() + " already exists");
         }
+        return note;
     }
 
     @Transactional
@@ -45,23 +46,24 @@ public class NoteService {
     }
 
     @Transactional
-    public int updateNote(Note note){
+    public Note updateNote(Note note){
         if (1 == noteDao.update(note)) {
-            return 1;
+            return note;
         }
         throw new NotFoundException(HttpStatusCodes.NOT_FOUND, "Note "+ note.getId().toString()+" not found");
     }
 
     @Transactional
-    public int deleteNote(UUID uuid){
-        return noteDao.delete(uuid);
+    public void deleteNote(UUID uuid){
+        noteDao.delete(uuid);
     }
 
     @Transactional
-    public void createFolder(Folder folder){
+    public Folder createFolder(Folder folder){
         log.debug("Creating folder {} for {}", folder.getTitle(), folder.getOwnerColleagueUuid().toString());
         //TODO check if current user is the owner of the folder being created
         folderDao.create(folder);
+        return folder;
     }
 
     @Transactional
@@ -70,13 +72,14 @@ public class NoteService {
     }
 
     @Transactional
-    public int updateFolder(Folder folder){
-        return folderDao.update(folder);
+    public Folder updateFolder(Folder folder){
+        folderDao.update(folder);
+        return folder;
     }
 
     @Transactional
-    public int deleteFolder(UUID uuid){
-        return folderDao.delete(uuid);
+    public void deleteFolder(UUID uuid){
+        folderDao.delete(uuid);
     }
 
 }

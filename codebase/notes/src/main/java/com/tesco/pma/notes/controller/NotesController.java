@@ -18,7 +18,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(path = "/note")
+@RequestMapping(path = "/notes")
 public class NotesController {
 
     private final NoteService noteService;
@@ -27,18 +27,16 @@ public class NotesController {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Create a new Note")
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<?> createNote(@RequestBody Note note){
-        noteService.createNote(note);
-        return RestResponse.success();
+    public RestResponse<Note> createNote(@RequestBody Note note){
+        return RestResponse.success(noteService.createNote(note));
     }
 
     @Operation(summary = "Update a Note", tags = {"Notes"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Update a Note")
     @PutMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public RestResponse<?> update(@RequestBody Note note){
-        noteService.updateNote(note);
-        return RestResponse.success();
+    public RestResponse<Note> update(@RequestBody Note note){
+        return RestResponse.success(noteService.updateNote(note));
     }
 
     @Operation(summary = "Find a Note", tags = {"Notes"})
