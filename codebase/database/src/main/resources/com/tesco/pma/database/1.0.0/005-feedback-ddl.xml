@@ -9,7 +9,7 @@
     -->
     <changeSet id="1" author="Stanislav.Eurich">
         <createTable tableName="feedback">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="colleague_uuid" type="${uuid_type}" remarks="Author. Colleague from whom feedback is written or requested.">
@@ -52,7 +52,7 @@
     -->
     <changeSet id="3" author="Stanislav.Eurich">
         <createTable tableName="feedback_item" remarks="The Feedback Item. Answers for questions, comments or free form feedback.">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="code" type="varchar(50)" remarks="Item code. Examples: whatWellDone, whatFocusOn, comment or question1, etc.">

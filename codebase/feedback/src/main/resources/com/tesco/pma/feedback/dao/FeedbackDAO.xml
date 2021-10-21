@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.feedback.dao.FeedbackDAO">
+
+    <resultMap id="feedback" type="com.tesco.pma.feedback.api.Feedback">
+        <id column="id" property="id"/>
+        <result column="colleague_uuid" property="colleagueUuid"/>
+        <result column="target_type" property="targetType"/>
+        <result column="target_id" property="targetId"/>
+        <result column="read" property="read"/>
+        <result column="status" property="status"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_time" property="updatedTime"/>
+        <collection property="feedbackItems" ofType="com.tesco.pma.feedback.api.FeedbackItem">
+            <id column="fi_id" property="id"/>
+            <result column="fi_code" property="code"/>
+            <result column="fi_content" property="content"/>
+            <result column="fi_feedback_id" property="feedbackId"/>
+        </collection>
+    </resultMap>
+
+    <select id="getById" flushCache="true" resultMap="feedback">
+        SELECT
+        f.id,
+        f.colleague_uuid,
+        f.target_type,
+        f.target_id,
+        f.read,
+        f.status,
+        f.created_time,
+        f.updated_time,
+        fi.id as fi_id,
+        fi.code as fi_code,
+        fi.content as fi_content,
+        fi.feedback_id as fi_feedback_id
+        FROM feedback f
+        JOIN feedback_item fi
+        ON f.id = fi.feedback_id
+        WHERE f.id = #{id}
+    </select>
+
+    <select id="findAll" flushCache="true" resultMap="feedback">
+        SELECT
+        f.id,
+        f.colleague_uuid,
+        f.target_type,
+        f.target_id,
+        f.read,
+        f.status,
+        f.created_time,
+        f.updated_time,
+        fi.id as fi_id,
+        fi.code as fi_code,
+        fi.content as fi_content,
+        fi.feedback_id as fi_feedback_id
+        FROM feedback f
+        LEFT JOIN feedback_item fi
+        ON f.id = fi.feedback_id
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id" flushCache="true">
+        INSERT INTO feedback (colleague_uuid, target_type, target_id, status)
+        VALUES (#{feedback.colleagueUuid}, #{feedback.targetType}, #{feedback.targetId}, #{feedback.status})
+    </insert>
+
+    <update id="markAsRead">
+        UPDATE feedback f SET read = true WHERE f.id = #{feedbackId}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE feedback f SET status = #{status}, modified_time = now() WHERE f.id = #{feedbackId}
+    </update>
+</mapper>

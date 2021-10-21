@@ -49,9 +49,9 @@ spring:
       is-auto-commit: false
       # MyBatis config
       mybatis-session:
-        type-aliases-package: com.tesco.pma.api, com.tesco.pma.colleague.profile.domain, com.tesco.pma.organisation.api
+        type-aliases-package: com.tesco.pma.api, com.tesco.pma.colleague.profile.domain, com.tesco.pma.organisation.api, com.tesco.pma.feedback.api
         configuration-properties:
-          base-package: com.tesco.pma.dao, com.tesco.pma.colleague.profile.dao, com.tesco.pma.organisation.dao
+          base-package: com.tesco.pma.dao, com.tesco.pma.colleague.profile.dao, com.tesco.pma.organisation.dao, com.tesco.pma.feedback.dao
           batchSize: 500
     camunda:
       # TODO: change database

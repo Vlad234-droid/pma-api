@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.feedback.dao.FeedbackItemDAO">
+
+    <insert id="insert" flushCache="true" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO feedback_item (code, content, feedback_id)
+        VALUES (#{feedbackItem.code}, #{feedbackItem.content}, #{feedbackItem.feedbackId})
+    </insert>
+
+</mapper>
