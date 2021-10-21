@@ -34,7 +34,7 @@ public class FoldersController {
     @Operation(summary = "Find a folder", tags = {"Notes"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Find a folder")
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public RestResponse<List<Folder>> get(@RequestParam UUID ownerId){
         return RestResponse.success(noteService.findFolderByOwnerColleagueUuid(ownerId));
     }
