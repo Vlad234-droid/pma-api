@@ -11,6 +11,9 @@ dependencies {
 
     implementation project(':service')
 
+    implementation("org.springdoc:springdoc-openapi-core:${openApiCoreVersion}")
+    implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
+
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 

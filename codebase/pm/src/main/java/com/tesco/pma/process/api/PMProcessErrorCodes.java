@@ -21,7 +21,15 @@ public enum PMProcessErrorCodes implements ErrorCodeAware {
     /**
      * Specified value is wrong
      */
-    WRONG_VALUE
+    WRONG_VALUE,
+    /**
+     * Process metadata not found
+     */
+    PROCESS_METADATA_NOT_FOUND,
+    /**
+     * Process metadata already exists
+     */
+    PROCESS_METADATA_ALREADY_EXISTS
     ;
 
 

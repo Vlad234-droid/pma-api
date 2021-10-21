@@ -1,22 +1,24 @@
 package com.tesco.pma.process.service;
 
-import java.util.Map;
-import java.util.UUID;
-
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.process.api.PMRuntimeProcess;
 import com.tesco.pma.process.api.PMProcessErrorCodes;
+import com.tesco.pma.process.api.PMProcessMetadata;
 import com.tesco.pma.process.api.PMProcessStatus;
+import com.tesco.pma.process.api.PMRuntimeProcess;
+import com.tesco.pma.process.api.ProcessMetadataResponse;
 import com.tesco.pma.process.dao.PMRuntimeProcessDAO;
-
+import com.tesco.pma.process.dao.PMRuntimeProcessMetadataDAO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 14.10.2021 Time: 19:15
@@ -29,6 +31,7 @@ public class PMProcessServiceImpl implements PMProcessService {
     private static final String STATUS_FILTER = "status_filter";
 
     private final PMRuntimeProcessDAO dao;
+    private final PMRuntimeProcessMetadataDAO metadataDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Override
@@ -64,4 +67,27 @@ public class PMProcessServiceImpl implements PMProcessService {
                             Map.of(ID, uuid, STATUS, status, STATUS_FILTER, statusFilter)));
         }
     }
+
+    @Override
+    public List<ProcessMetadataResponse> getProcessMetadata(UUID uuid) {
+        var metadata = metadataDAO.readMetadata(uuid);
+        if (metadata == null) {
+            throw new NotFoundException(PMProcessErrorCodes.PROCESS_METADATA_NOT_FOUND.getCode(),
+                    messageSourceAccessor.getMessage(PMProcessErrorCodes.PROCESS_METADATA_NOT_FOUND, Map.of(ID, uuid)));
+        }
+        return metadata;
+    }
+
+    @Override
+    public void saveProcessMetadata(UUID processUuid, PMProcessMetadata metadata) {
+        try {
+            metadataDAO.saveProcessMetadata(processUuid, metadata);
+        } catch (DuplicateKeyException ex) {
+            throw new DatabaseConstraintViolationException(PMProcessErrorCodes.PROCESS_METADATA_ALREADY_EXISTS.getCode(),
+                    messageSourceAccessor.getMessage(PMProcessErrorCodes.PROCESS_METADATA_ALREADY_EXISTS,
+                            Map.of(ID, processUuid)), null, ex);
+        }
+    }
+
+
 }
