@@ -52,12 +52,12 @@ spring:
         type-aliases-package: com.tesco.pma.api,
                               com.tesco.pma.colleague.profile.domain,
                               com.tesco.pma.organisation.api,
-                              com.tesco.pma.objective.domain
+                              com.tesco.pma.review.domain
         configuration-properties:
           base-package: com.tesco.pma.dao,
                         com.tesco.pma.colleague.profile.dao,
                         com.tesco.pma.organisation.dao,
-                        com.tesco.pma.objective.dao
+                        com.tesco.pma.review.dao
           batchSize: 500
     camunda:
       # TODO: change database
