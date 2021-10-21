@@ -49,9 +49,15 @@ spring:
       is-auto-commit: false
       # MyBatis config
       mybatis-session:
-        type-aliases-package: com.tesco.pma.api, com.tesco.pma.colleague.profile.domain, com.tesco.pma.organisation.api
+        type-aliases-package: com.tesco.pma.api,
+                              com.tesco.pma.colleague.profile.domain,
+                              com.tesco.pma.organisation.api,
+                              com.tesco.pma.review.domain
         configuration-properties:
-          base-package: com.tesco.pma.dao, com.tesco.pma.colleague.profile.dao, com.tesco.pma.organisation.dao
+          base-package: com.tesco.pma.dao,
+                        com.tesco.pma.colleague.profile.dao,
+                        com.tesco.pma.organisation.dao,
+                        com.tesco.pma.review.dao
           batchSize: 500
     camunda:
       # TODO: change database
@@ -76,7 +82,8 @@ spring:
     basename: >
       com/tesco/pma/exception/AppExceptionMessage,
       com/tesco/pma/colleague/profile/exception/AppExceptionMessage,
-      com/tesco/pma/organisation/service/AppConfigEntryMessages
+      com/tesco/pma/organisation/service/AppConfigEntryMessages,
+      com/tesco/pma/review/exception/AppExceptionMessage
     encoding: UTF-8
   async-executor:
     core-pool-size: 2

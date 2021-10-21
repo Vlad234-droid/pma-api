@@ -3,7 +3,10 @@ package com.tesco.pma.dao.config;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.tesco.pma.dao.serializer.MapJsonbCombinedSerializer;
 import com.tesco.pma.dao.utils.UuidTypeHandler;
+import com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,6 +32,13 @@ public class TypeHandlerConfig {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         objectMapper.setTimeZone(TimeZone.getTimeZone("UTC"));
         return objectMapper;
+    }
+
+    @Bean
+    public MapJsonbTypeHandler mapJsonbTypeHandler(@Qualifier("jsonbObjectMapper") ObjectMapper objectMapper) {
+
+        return new MapJsonbTypeHandler(configureSerializer(objectMapper, new MapJsonbCombinedSerializer()
+                .getSimpleModule()));
     }
 
     private ObjectMapper configureSerializer(ObjectMapper objectMapper, Module module) {
