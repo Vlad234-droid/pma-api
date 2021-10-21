@@ -27,25 +27,25 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(path = "/process-metadata")
-public class TimelineEndpoint {
+@RequestMapping(path = "/processes")
+public class PMProcessEndpoint {
 
     private final PMProcessService processService;
 
-    @Operation(summary = "Get process metadata by process identifier",
-            tags = {"process-metadata"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the process metadata")
-    @GetMapping(value = "{processUuid}", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<TimelineResponse>> getProcessMetadata(@PathVariable UUID processUuid) {
+    @Operation(summary = "Get process timeline by process identifier",
+            tags = {"processes"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the process timeline")
+    @GetMapping(value = "{processUuid}/timeline", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<List<TimelineResponse>> getTimeline(@PathVariable UUID processUuid) {
         return RestResponse.success(processService.getProcessMetadata(processUuid));
     }
 
-    @Operation(summary = "Create process metadata",
-            tags = {"process-metadata"})
-    @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Created process metadata")
-    @PostMapping(path = "/{processUuid}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @Operation(summary = "Store process metadata",
+            tags = {"processes"})
+    @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Store process metadata")
+    @PostMapping(path = "/processes/{processUuid}/metadata", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<?> createProcessMetadata(@PathVariable("processUuid") UUID processUuid,
+    public RestResponse<?> storeProcessMetadata(@PathVariable("processUuid") UUID processUuid,
                                                  @RequestBody PMProcessMetadata metadata) {
         processService.saveProcessMetadata(processUuid, metadata);
         return RestResponse.success();

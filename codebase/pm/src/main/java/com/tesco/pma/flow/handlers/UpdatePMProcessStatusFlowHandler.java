@@ -17,7 +17,6 @@ import com.tesco.pma.flow.PMProcessFlowVariables;
 import com.tesco.pma.process.api.PMProcessErrorCodes;
 import com.tesco.pma.process.api.PMProcessStatus;
 import com.tesco.pma.process.service.PMProcessService;
-import com.tesco.pma.service.deployment.ProcessMetadataService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,20 +29,14 @@ import lombok.extern.slf4j.Slf4j;
 public class UpdatePMProcessStatusFlowHandler extends AbstractUpdateStatusFlowHandler {
 
     @Autowired
-    ProcessMetadataService processMetadataService; // todo replace
-
-    @Autowired
     PMProcessService pmProcessService;
 
     @Override
     protected void execute(ExecutionContext context) {
-        log.info("New status {}", getStatusValue());
-        log.info("Old statuses {}", getOldStatusValues());
+        log.info("New status {}; old statuses {}", getStatusValue(), getOldStatusValues());
 
         pmProcessService.updateStatus(context.getVariable(PMProcessFlowVariables.PM_PROCESS_ID),
                 getStatus(), DictionaryFilter.includeFilter(getOldStatuses()));
-
-        log.info("Timeline {}", processMetadataService.getTimelines());
     }
 
     private PMProcessStatus getStatus() {

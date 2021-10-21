@@ -9,9 +9,8 @@ import java.util.UUID;
 
 public interface PMRuntimeProcessMetadataDAO {
 
-
     int saveProcessMetadata(@Param("processUuid") UUID processUuid,
                      @Param("metadata") PMProcessMetadata metadata);
 
-   List<TimelineResponse> readMetadata(@Param("processUuid") UUID processUuid);
+    List<TimelineResponse> readMetadata(@Param("processUuid") UUID processUuid);
 }

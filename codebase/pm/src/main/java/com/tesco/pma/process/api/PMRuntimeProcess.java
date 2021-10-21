@@ -23,7 +23,6 @@ public class PMRuntimeProcess implements Identified<UUID>, StatusAware<PMProcess
     private UUID bpmProcessId;
     private String bpmProcessName;
     private Instant lastUpdateTime;
-    private UUID metadataId;
 
     public PMRuntimeProcess(UUID id, UUID colleagueUuid, PMProcessStatus status, UUID bpmProcessId,
                             String bpmProcessName, Instant lastUpdateTime) {

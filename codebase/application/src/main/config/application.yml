@@ -201,6 +201,9 @@ camunda:
       enabled: false
     id-generator: strong
 #    deployment-resource-pattern: classpath:*.bpmn
+#   todo: remove in production
+    auto-deployment-enabled: true
+    deployment-resource-pattern: classpath:com/tesco/pma/flow/pm_v1.bpmn, com/tesco/pma/flow/forms/pm_o_1.form, com/tesco/pma/flow/forms/pm_o_2.form
 
 ---
 spring:
