@@ -1,6 +1,6 @@
 package com.tesco.pma.process.rest;
 
-
+import com.tesco.pma.process.api.PMProcessMetadata;
 import com.tesco.pma.process.api.TimelineResponse;
 import com.tesco.pma.process.service.PMProcessService;
 import com.tesco.pma.rest.HttpStatusCodes;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -50,4 +51,11 @@ public class PMProcessEndpoint {
         return RestResponse.success();
     }
 
+    @Operation(summary = "Get process metadata by process key, e.g., GROUPS_HO_S_WL1",
+            tags = {"processes"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the process metadata")
+    @GetMapping(value = "metadata", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<PMProcessMetadata> getMetadata(@RequestParam(name = "process-key") String processKey) {
+        return RestResponse.success(processService.getProcessMetadataByKey(processKey));
+    }
 }
