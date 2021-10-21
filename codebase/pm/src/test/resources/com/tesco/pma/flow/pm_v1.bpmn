@@ -38,6 +38,10 @@
           <camunda:property name="pm_review_type" value="objective" />
           <camunda:property name="pm_type" value="review" />
         </camunda:properties>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="groovy">println "\nPlease fill objectives" +
+"\n ${execution.getCurrentActivityName()}"</camunda:script>
+        </camunda:executionListener>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0gba6dp</bpmn:incoming>
       <bpmn:incoming>Flow_0ap3lod</bpmn:incoming>
@@ -49,10 +53,6 @@
         <camunda:field name="statusValue">
           <camunda:string>started</camunda:string>
         </camunda:field>
-        <camunda:executionListener event="end">
-          <camunda:script scriptFormat="groovy">println "\nPlease fill objectives" +
-"\n ${execution.getCurrentActivityName()}"</camunda:script>
-        </camunda:executionListener>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1j07w5j</bpmn:incoming>
       <bpmn:outgoing>Flow_0gba6dp</bpmn:outgoing>
