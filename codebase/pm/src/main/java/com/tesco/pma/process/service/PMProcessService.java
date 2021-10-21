@@ -1,10 +1,13 @@
 package com.tesco.pma.process.service;
 
-import java.util.UUID;
-
 import com.tesco.pma.api.DictionaryFilter;
-import com.tesco.pma.process.api.PMRuntimeProcess;
+import com.tesco.pma.process.api.PMProcessMetadata;
 import com.tesco.pma.process.api.PMProcessStatus;
+import com.tesco.pma.process.api.PMRuntimeProcess;
+import com.tesco.pma.process.api.ProcessMetadataResponse;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 14.10.2021 Time: 18:47
@@ -36,4 +39,21 @@ public interface PMProcessService {
      * @param statusFilter filter of statuses
      */
     void updateStatus(UUID uuid, PMProcessStatus status, DictionaryFilter<PMProcessStatus> statusFilter);
+
+    /**
+     * Returns process metadata by uuid
+     *
+     * @param uuid process identifier
+     * @return the metadata of the process
+     * @throws com.tesco.pma.exception.NotFoundException if the was not found
+     */
+    List<ProcessMetadataResponse> getProcessMetadata(UUID uuid);
+
+    /**
+     * Stores process metadata for existing process
+     *
+     * @param processUuid process UUID
+     * @param metadata    process metadata
+     */
+    void saveProcessMetadata(UUID processUuid, PMProcessMetadata metadata);
 }

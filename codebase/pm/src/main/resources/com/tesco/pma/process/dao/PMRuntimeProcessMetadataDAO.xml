@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.process.dao.PMRuntimeProcessMetadataDAO">
+
+    <resultMap id="processMetadataResultMap" type="com.tesco.pma.process.api.ProcessMetadataResponse">
+        <result property="reviewUuid" column="rw_uuid"/>
+        <result property="code" column="code"/>
+        <result property="description" column="description"/>
+        <result property="status" column="status"/>
+        <result property="type" column="type"/>
+    </resultMap>
+
+    <insert id="saveProcessMetadata" parameterType="com.tesco.pma.process.api.PMProcessMetadata">
+        insert into pm_process_metadata (rt_process_uuid, metadata)
+        values (#{processUuid},
+                #{metadata, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.ProcessMetadataJsonbTypeHandler})
+    </insert>
+
+    <select id="readMetadata" resultMap="processMetadataResultMap">
+        select yyy.*,
+               rs.description as status,
+               rt.description as type
+        from
+            (select json_extract_path_text(yy.xx, 'id') as rw_uuid,
+                    json_extract_path_text(yy.xx, 'code') as code,
+                    json_extract_path_text(yy.xx, 'description') as description,
+                    json_extract_path_text(yy.xx, 'properties', 'pm_review_start_time') as start_time
+             from (select json_array_elements((metadata->'cycle'->'reviews')::json) xx
+                   from pm_process_metadata
+                   where rt_process_uuid = #{processUuid})
+                      yy) yyy
+                left join review rw on rw.uuid = yyy.rw_uuid::uuid
+                join review_status rs on rw.status_id = rs.id
+                join review_types rt on rw.type_id = rt.id
+    </select>
+
+</mapper>
