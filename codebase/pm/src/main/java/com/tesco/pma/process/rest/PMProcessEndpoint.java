@@ -1,7 +1,6 @@
 package com.tesco.pma.process.rest;
 
 
-import com.tesco.pma.process.api.PMProcessMetadata;
 import com.tesco.pma.process.api.TimelineResponse;
 import com.tesco.pma.process.service.PMProcessService;
 import com.tesco.pma.rest.HttpStatusCodes;
@@ -46,7 +45,7 @@ public class PMProcessEndpoint {
     @PostMapping(path = "/processes/{processUuid}/metadata", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse<?> storeProcessMetadata(@PathVariable("processUuid") UUID processUuid,
-                                                 @RequestBody PMProcessMetadata metadata) {
+                                                 @RequestBody String metadata) {
         processService.saveProcessMetadata(processUuid, metadata);
         return RestResponse.success();
     }

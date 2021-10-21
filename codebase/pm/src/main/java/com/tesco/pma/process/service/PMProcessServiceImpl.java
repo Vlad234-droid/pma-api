@@ -5,7 +5,6 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.process.api.PMProcessErrorCodes;
-import com.tesco.pma.process.api.PMProcessMetadata;
 import com.tesco.pma.process.api.PMProcessStatus;
 import com.tesco.pma.process.api.PMRuntimeProcess;
 import com.tesco.pma.process.api.TimelineResponse;
@@ -79,7 +78,7 @@ public class PMProcessServiceImpl implements PMProcessService {
     }
 
     @Override
-    public void saveProcessMetadata(UUID processUuid, PMProcessMetadata metadata) {
+    public void saveProcessMetadata(UUID processUuid, String metadata) {
         try {
             metadataDAO.saveProcessMetadata(processUuid, metadata);
         } catch (DuplicateKeyException ex) {
