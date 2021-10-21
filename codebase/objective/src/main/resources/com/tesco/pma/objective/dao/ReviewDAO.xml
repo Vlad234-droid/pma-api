@@ -20,7 +20,7 @@
         <result property="number" column="number"/>
         <result property="properties" column="properties"
                 typeHandler="com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler"
-                javaType="com.tesco.pma.api.MapProperties"/>
+                javaType="com.tesco.pma.api.MapJson"/>
         <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.objective.domain.ReviewStatus"/>

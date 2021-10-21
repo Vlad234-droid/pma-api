@@ -1,10 +1,10 @@
 package com.tesco.pma.dao.utils.jsonb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tesco.pma.api.MapProperties;
+import com.tesco.pma.api.MapJson;
 
-public class MapJsonbTypeHandler extends JsonbTypeHandler<MapProperties> {
+public class MapJsonbTypeHandler extends JsonbTypeHandler<MapJson> {
     public MapJsonbTypeHandler(ObjectMapper objectMapper) {
-        super(MapProperties.class, objectMapper);
+        super(MapJson.class, objectMapper);
     }
 }

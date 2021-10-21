@@ -2,7 +2,7 @@ package com.tesco.pma.objective.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.tesco.pma.api.MapProperties;
+import com.tesco.pma.api.MapJson;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.objective.domain.GroupObjective;
 import com.tesco.pma.objective.domain.Review;
@@ -61,13 +61,13 @@ class ReviewDAOTest extends AbstractDAOTest {
     private static final Integer VERSION_3 = 3;
     private static final String USER_INIT = "Init user";
     private static final String TIME_INIT = "2021-09-20 10:45:12.448057";
-    private static final MapProperties REVIEW_PROPERTIES_INIT = new MapProperties(
+    private static final MapJson REVIEW_PROPERTIES_INIT = new MapJson(
             Map.of(TITLE_PROPERTY_NAME, TITLE_INIT,
                     DESCRIPTION_PROPERTY_NAME, DESCRIPTION_INIT,
                     MEETS_PROPERTY_NAME, MEETS_INIT,
                     EXCEEDS_PROPERTY_NAME, EXCEEDS_INIT
             ));
-    private static final MapProperties REVIEW_PROPERTIES_UPDATE = new MapProperties(
+    private static final MapJson REVIEW_PROPERTIES_UPDATE = new MapJson(
             Map.of(TITLE_PROPERTY_NAME, TITLE_UPDATE,
                     DESCRIPTION_PROPERTY_NAME, DESCRIPTION_UPDATE,
                     MEETS_PROPERTY_NAME, MEETS_UPDATE,

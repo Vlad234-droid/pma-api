@@ -12,7 +12,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class MapProperties implements Jsonb {
+public class MapJson implements Jsonb {
 
-    Map<String, String> mapProperties;
+    Map<String, String> mapJson;
 }

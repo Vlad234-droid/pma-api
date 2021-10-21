@@ -1,6 +1,6 @@
 package com.tesco.pma.objective.domain;
 
-import com.tesco.pma.api.MapProperties;
+import com.tesco.pma.api.MapJson;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +21,6 @@ public class Review {
     UUID colleagueUuid;
     ReviewType type;
     Integer number;
-    MapProperties properties;
+    MapJson properties;
     ReviewStatus status;
 }

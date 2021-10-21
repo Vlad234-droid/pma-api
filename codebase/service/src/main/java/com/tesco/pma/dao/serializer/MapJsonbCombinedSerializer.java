@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.tesco.pma.api.MapProperties;
+import com.tesco.pma.api.MapJson;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -17,10 +17,10 @@ import java.util.Map;
 
 public class MapJsonbCombinedSerializer {
 
-    public static class ReviewPropertiesJsonbDeserializer extends JsonDeserializer<MapProperties> {
+    public static class ReviewPropertiesJsonbDeserializer extends JsonDeserializer<MapJson> {
 
         @Override
-        public MapProperties deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+        public MapJson deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
             var objectCodec = jsonParser.getCodec();
             final JsonNode listOrObjectNode = objectCodec.readTree(jsonParser);
             final Map<String, String> result = new HashMap<>();
@@ -32,37 +32,37 @@ public class MapJsonbCombinedSerializer {
                 JsonNode value = listOrObjectNode.get(name);
                 result.put(name, value.asText());
             }
-            return new MapProperties(result);
+            return new MapJson(result);
         }
 
         @Override
-        public Class<MapProperties> handledType() {
-            return MapProperties.class;
+        public Class<MapJson> handledType() {
+            return MapJson.class;
         }
     }
 
-    public static class ReviewPropertiesJsonbSerializer extends JsonSerializer<MapProperties> {
+    public static class ReviewPropertiesJsonbSerializer extends JsonSerializer<MapJson> {
 
         @Override
-        public void serialize(MapProperties value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        public void serialize(MapJson value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
             gen.writeStartObject();
-            var reviewPropertyValues = value.getMapProperties();
+            var reviewPropertyValues = value.getMapJson();
             for (var ci : reviewPropertyValues.keySet()) {
-                gen.writeObjectField(ci, value.getMapProperties().get(ci));
+                gen.writeObjectField(ci, value.getMapJson().get(ci));
             }
             gen.writeEndObject();
         }
 
         @Override
-        public Class<MapProperties> handledType() {
-            return MapProperties.class;
+        public Class<MapJson> handledType() {
+            return MapJson.class;
         }
     }
 
     public SimpleModule getSimpleModule() {
         var module = new SimpleModule(ReviewPropertiesJsonbSerializer.class.getSimpleName());
         module.addSerializer(new MapJsonbCombinedSerializer.ReviewPropertiesJsonbSerializer());
-        module.addDeserializer(MapProperties.class, new MapJsonbCombinedSerializer.ReviewPropertiesJsonbDeserializer());
+        module.addDeserializer(MapJson.class, new MapJsonbCombinedSerializer.ReviewPropertiesJsonbDeserializer());
         return module;
     }
 }
