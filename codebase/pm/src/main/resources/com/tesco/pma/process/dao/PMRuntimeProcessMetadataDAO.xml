@@ -14,7 +14,7 @@
     <insert id="saveProcessMetadata" parameterType="com.tesco.pma.process.api.PMProcessMetadata">
         insert into pm_process_metadata (rt_process_uuid, metadata)
         values (#{processUuid},
-                #{metadata})
+                #{metadata}::jsonb)
     </insert>
 
     <select id="readMetadata" resultMap="processMetadataResultMap">

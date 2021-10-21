@@ -1,7 +1,6 @@
 package com.tesco.pma.process.service;
 
 import com.tesco.pma.api.DictionaryFilter;
-import com.tesco.pma.process.api.PMProcessMetadata;
 import com.tesco.pma.process.api.PMProcessStatus;
 import com.tesco.pma.process.api.PMRuntimeProcess;
 import com.tesco.pma.process.api.TimelineResponse;
@@ -55,5 +54,5 @@ public interface PMProcessService {
      * @param processUuid process UUID
      * @param metadata    process metadata
      */
-    void saveProcessMetadata(UUID processUuid, PMProcessMetadata metadata);
+    void saveProcessMetadata(UUID processUuid, String metadata);
 }
