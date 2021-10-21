@@ -1,10 +1,13 @@
 package com.tesco.pma.notes.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tesco.pma.exception.AlreadyExistsException;
+import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.notes.model.Note;
 import com.tesco.pma.notes.model.NoteStatus;
 import com.tesco.pma.notes.service.NoteService;
 import com.tesco.pma.rest.AbstractEndpointTest;
+import com.tesco.pma.rest.HttpStatusCodes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = NotesController.class, properties = {
@@ -58,6 +62,39 @@ public class NotesControllerTest extends AbstractEndpointTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath(ownerColleagueUuidExpression).value(is(note.getOwnerColleagueUuid().toString())));
+
+    }
+
+    @Test
+    void update() throws Exception {
+
+        var note = createNote(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
+
+        when(noteService.updateNote(note)).thenReturn(note);
+
+        mvc.perform(put("/notes")
+                        .accept(APPLICATION_JSON)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(note)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andExpect(jsonPath(ownerColleagueUuidExpression).value(is(note.getOwnerColleagueUuid().toString())));
+
+    }
+
+    @Test
+    void updateNotFound() throws Exception {
+
+        var note = createNote(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
+
+        when(noteService.updateNote(note)).thenThrow(new NotFoundException(HttpStatusCodes.NOT_FOUND, "Not found"));
+
+        mvc.perform(put("/notes")
+                        .accept(APPLICATION_JSON)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(note)))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(APPLICATION_JSON));
 
     }
 

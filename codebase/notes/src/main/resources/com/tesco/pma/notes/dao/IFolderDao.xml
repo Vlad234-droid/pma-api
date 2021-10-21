@@ -9,7 +9,7 @@
         <result column="owner_uuid" property="ownerColleagueUuid"/>
     </resultMap>
 
-    <insert id="create" flushCache="true">
+    <insert id="create" flushCache="true" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO note_folders (id, title, owner_uuid)
         VALUES (#{folder.id}, #{folder.title}, #{folder.ownerColleagueUuid})
     </insert>

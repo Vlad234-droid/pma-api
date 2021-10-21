@@ -14,6 +14,7 @@ dependencies {
     implementation project(':service')
 
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter:${springBootVersion}")
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:${springBootMybatisVersion}")
 
@@ -23,15 +24,15 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-core:${openApiCoreVersion}")
     implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
 
-//    testImplementation("org.springframework.boot:spring-boot-starter-test") {
-//        exclude group: 'junit' // excluding junit 4
-//    }
 //
 //    testCompile project(':service').sourceSets.test.output
 
     testCompile project(':service').sourceSets.test.output
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude group: 'junit' // excluding junit 4
+    }
+
     testImplementation "com.github.database-rider:rider-junit5:${databaseRiderVersion}"
 //
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"

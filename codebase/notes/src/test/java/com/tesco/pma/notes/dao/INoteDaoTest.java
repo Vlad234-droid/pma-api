@@ -56,6 +56,23 @@ public class INoteDaoTest extends AbstractDAOTest {
 
     }
 
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml",
+            BASE_PATH_TO_DATA_SET + "notes_entries_init.xml"})
+    void update() {
+
+        var note = createNote(NOTE_UUID, FOLDER_UUID, OWNER_UUID);
+        note.setTitle("New Title");
+        var noteCreatedCount = noteDao.update(note);
+
+        assertEquals(1, noteCreatedCount);
+
+        assertEquals("New Title", noteDao.findByOwnerColleagueUuid(OWNER_UUID).stream()
+                .filter(f -> note.getId().equals(NOTE_UUID))
+                .findAny().get().getTitle());
+
+    }
+
     private Note createNote(UUID id, UUID folderId, UUID ownerId){
         var note = new Note();
         note.setId(id);

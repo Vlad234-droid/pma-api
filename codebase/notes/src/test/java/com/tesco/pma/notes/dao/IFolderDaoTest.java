@@ -22,7 +22,9 @@ public class IFolderDaoTest extends AbstractDAOTest {
     protected static final String BASE_PATH_TO_DATA_SET = "db_init_scripts/";
     protected static final UUID FOLDER_UUID = UUID.fromString("56141037-6e2d-45f0-b47f-4875e68dd1d7");
     protected static final UUID OWNER_UUID = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
+    protected static final UUID OWNER_UUID_2 = UUID.fromString("3d14c7dd-867c-4996-9f16-378435298e58");
     protected static final UUID NOTE_UUID = UUID.fromString("f0977373-5afe-4410-b3a4-ef5b16d7d272");
+
 
     @DynamicPropertySource
     static void postgresqlProperties(DynamicPropertyRegistry registry) {
@@ -61,6 +63,22 @@ public class IFolderDaoTest extends AbstractDAOTest {
     }
 
     @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml"})
+    void update() {
+
+        var folder = createFolder(FOLDER_UUID, OWNER_UUID);
+        folder.setTitle("New Title");
+        var folderCreatedCount = folderDao.update(folder);
+
+        assertEquals(1, folderCreatedCount);
+
+        assertEquals("New Title", folderDao.findByOwnerColleagueUuid(OWNER_UUID).stream()
+                .filter(f -> folder.getId().equals(FOLDER_UUID))
+                .findAny().get().getTitle());
+
+    }
+
+    @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml",
             BASE_PATH_TO_DATA_SET + "notes_entries_init.xml"})
     void deleteFolderWithNoteReferenced() {
@@ -70,6 +88,17 @@ public class IFolderDaoTest extends AbstractDAOTest {
 
         assertEquals(1, folderDeleted);
         assertEquals(0, noteDao.findByOwnerColleagueUuid(OWNER_UUID).size());
+
+    }
+
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml"})
+    public void findByOwnerColleagueUuid(){
+
+        var folders = folderDao.findByOwnerColleagueUuid(OWNER_UUID_2);
+
+        assertEquals(1, folders.size());
 
     }
 
