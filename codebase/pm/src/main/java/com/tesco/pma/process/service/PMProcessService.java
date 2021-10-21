@@ -4,7 +4,7 @@ import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.process.api.PMProcessMetadata;
 import com.tesco.pma.process.api.PMProcessStatus;
 import com.tesco.pma.process.api.PMRuntimeProcess;
-import com.tesco.pma.process.api.ProcessMetadataResponse;
+import com.tesco.pma.process.api.TimelineResponse;
 
 import java.util.List;
 import java.util.UUID;
@@ -47,7 +47,7 @@ public interface PMProcessService {
      * @return the metadata of the process
      * @throws com.tesco.pma.exception.NotFoundException if the was not found
      */
-    List<ProcessMetadataResponse> getProcessMetadata(UUID uuid);
+    List<TimelineResponse> getProcessMetadata(UUID uuid);
 
     /**
      * Stores process metadata for existing process

@@ -1,7 +1,7 @@
 package com.tesco.pma.process.dao;
 
 import com.tesco.pma.process.api.PMProcessMetadata;
-import com.tesco.pma.process.api.ProcessMetadataResponse;
+import com.tesco.pma.process.api.TimelineResponse;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -13,5 +13,5 @@ public interface PMRuntimeProcessMetadataDAO {
     int saveProcessMetadata(@Param("processUuid") UUID processUuid,
                      @Param("metadata") PMProcessMetadata metadata);
 
-   List<ProcessMetadataResponse> readMetadata(@Param("processUuid") UUID processUuid);
+   List<TimelineResponse> readMetadata(@Param("processUuid") UUID processUuid);
 }

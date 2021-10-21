@@ -2,7 +2,7 @@ package com.tesco.pma.process.rest;
 
 
 import com.tesco.pma.process.api.PMProcessMetadata;
-import com.tesco.pma.process.api.ProcessMetadataResponse;
+import com.tesco.pma.process.api.TimelineResponse;
 import com.tesco.pma.process.service.PMProcessService;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
@@ -36,7 +36,7 @@ public class TimelineEndpoint {
             tags = {"process-metadata"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the process metadata")
     @GetMapping(value = "{processUuid}", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<ProcessMetadataResponse>> getProcessMetadata(@PathVariable UUID processUuid) {
+    public RestResponse<List<TimelineResponse>> getProcessMetadata(@PathVariable UUID processUuid) {
         return RestResponse.success(processService.getProcessMetadata(processUuid));
     }
 
