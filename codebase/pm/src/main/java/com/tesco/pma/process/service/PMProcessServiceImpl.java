@@ -8,7 +8,7 @@ import com.tesco.pma.process.api.PMProcessErrorCodes;
 import com.tesco.pma.process.api.PMProcessMetadata;
 import com.tesco.pma.process.api.PMProcessStatus;
 import com.tesco.pma.process.api.PMRuntimeProcess;
-import com.tesco.pma.process.api.ProcessMetadataResponse;
+import com.tesco.pma.process.api.TimelineResponse;
 import com.tesco.pma.process.dao.PMRuntimeProcessDAO;
 import com.tesco.pma.process.dao.PMRuntimeProcessMetadataDAO;
 import lombok.RequiredArgsConstructor;
@@ -69,7 +69,7 @@ public class PMProcessServiceImpl implements PMProcessService {
     }
 
     @Override
-    public List<ProcessMetadataResponse> getProcessMetadata(UUID uuid) {
+    public List<TimelineResponse> getProcessMetadata(UUID uuid) {
         var metadata = metadataDAO.readMetadata(uuid);
         if (metadata == null) {
             throw new NotFoundException(PMProcessErrorCodes.PROCESS_METADATA_NOT_FOUND.getCode(),

@@ -12,7 +12,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProcessMetadataResponse {
+public class TimelineResponse {
     String reviewUuid;
     String code;
     String description;
