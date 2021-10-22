@@ -26,4 +26,29 @@ public class UserManagementServiceImpl implements UserManagementService {
         return List.of();
     }
 
+    @Override
+    public void createAccount(Account account) {
+
+    }
+
+    @Override
+    public void grantRole(Role role) {
+
+    }
+
+    @Override
+    public void revokeRole(Role role) {
+
+    }
+
+    @Override
+    public void disableAccount(Account account) {
+
+    }
+
+    @Override
+    public void enableAccount(Account account) {
+
+    }
+
 }

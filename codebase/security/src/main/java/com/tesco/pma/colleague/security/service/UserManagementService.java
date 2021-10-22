@@ -22,4 +22,34 @@ public interface UserManagementService {
      */
     List<Account> getAccounts();
 
+    /**
+     *
+     * @param account
+     */
+    void createAccount(Account account);
+
+    /**
+     *
+     * @param role
+     */
+    void grantRole(Role role);
+
+    /**
+     *
+     * @param role
+     */
+    void revokeRole(Role role);
+
+    /**
+     *
+     * @param account
+     */
+    void disableAccount(Account account);
+
+    /**
+     *
+     * @param account
+     */
+    void enableAccount(Account account);
+
 }
