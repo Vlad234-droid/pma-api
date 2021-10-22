@@ -1,7 +1,6 @@
 package com.tesco.pma.notes.controller;
 
 import com.tesco.pma.notes.model.Folder;
-import com.tesco.pma.notes.model.Note;
 import com.tesco.pma.notes.service.NoteService;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
@@ -19,7 +18,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/notes/folders")
-public class FoldersController {
+public class FoldersEndpoint {
 
     private final NoteService noteService;
 
@@ -36,7 +35,7 @@ public class FoldersController {
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public RestResponse<List<Folder>> get(@RequestParam UUID ownerId){
-        return RestResponse.success(noteService.findFolderByOwnerColleagueUuid(ownerId));
+        return RestResponse.success(noteService.findFolderByOwner(ownerId));
     }
 
     @Operation(summary = "Update a Folder", tags = {"Notes"})

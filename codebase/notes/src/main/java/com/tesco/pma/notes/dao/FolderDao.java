@@ -6,11 +6,11 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.UUID;
 
-public interface IFolderDao {
+public interface FolderDao {
 
     int create(@Param("folder") Folder folder);
 
-    List<Folder> findByOwnerColleagueUuid(@Param("colleagueUuid") UUID colleagueUuid);
+    List<Folder> findByOwner(@Param("colleagueUuid") UUID colleagueUuid);
 
     int update(@Param("folder") Folder folder);
 

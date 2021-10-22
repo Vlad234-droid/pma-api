@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.tesco.pma.notes.dao.INoteDao">
+<mapper namespace="com.tesco.pma.notes.dao.NoteDao">
 
     <resultMap id="noteStructure" type="com.tesco.pma.notes.model.Note">
         <id column="id" property="id"/>
@@ -25,7 +25,7 @@
         #{note.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.notes.model.NoteStatus} )
     </insert>
 
-    <select id="findByOwnerColleagueUuid" resultMap="noteStructure">
+    <select id="findByOwner" resultMap="noteStructure">
         SELECT id, title, content, owner_uuid, reference_uuid, folder_uuid, update_date, status_id
         FROM notes
         WHERE notes.owner_uuid = #{colleagueUuid}

@@ -7,11 +7,11 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.UUID;
 
-public interface INoteDao {
+public interface NoteDao {
 
     int create(@Param("note") Note note);
 
-    List<Note> findByOwnerColleagueUuid(@Param("colleagueUuid") UUID colleagueUuid);
+    List<Note> findByOwner(@Param("colleagueUuid") UUID colleagueUuid);
 
     int update(@Param("note") Note note);
 

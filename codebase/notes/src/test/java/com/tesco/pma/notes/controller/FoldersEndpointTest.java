@@ -3,8 +3,6 @@ package com.tesco.pma.notes.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.notes.model.Folder;
-import com.tesco.pma.notes.model.Note;
-import com.tesco.pma.notes.model.NoteStatus;
 import com.tesco.pma.notes.service.NoteService;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import com.tesco.pma.rest.HttpStatusCodes;
@@ -23,10 +21,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = FoldersController.class, properties = {
+@WebMvcTest(controllers = FoldersEndpoint.class, properties = {
         "tesco.application.security.enabled=false",
 })
-public class FoldersControllerTest extends AbstractEndpointTest {
+public class FoldersEndpointTest extends AbstractEndpointTest {
 
     private UUID colleagueUuid = UUID.randomUUID();
 
@@ -93,7 +91,7 @@ public class FoldersControllerTest extends AbstractEndpointTest {
     @Test
     void findByColleagueUUID() throws Exception {
 
-        when(noteService.findFolderByOwnerColleagueUuid(colleagueUuid))
+        when(noteService.findFolderByOwner(colleagueUuid))
                 .thenReturn(new ArrayList<>());
 
         mvc.perform(get("/notes/folders?ownerId={colleagueUuid}", colleagueUuid)

@@ -1,25 +1,19 @@
 package com.tesco.pma.notes.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tesco.pma.exception.AlreadyExistsException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.notes.model.Note;
 import com.tesco.pma.notes.model.NoteStatus;
 import com.tesco.pma.notes.service.NoteService;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import com.tesco.pma.rest.HttpStatusCodes;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.is;
@@ -31,10 +25,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = NotesController.class, properties = {
+@WebMvcTest(controllers = NotesEndpoint.class, properties = {
         "tesco.application.security.enabled=false",
 })
-public class NotesControllerTest extends AbstractEndpointTest {
+public class NotesEndpointTest extends AbstractEndpointTest {
 
     private UUID colleagueUuid = UUID.randomUUID();
 
@@ -101,7 +95,7 @@ public class NotesControllerTest extends AbstractEndpointTest {
     @Test
     void findByColleagueUUID() throws Exception {
 
-        when(noteService.findNoteByOwnerColleagueUuid(colleagueUuid))
+        when(noteService.findNoteByOwner(colleagueUuid))
                 .thenReturn(new ArrayList<>());
 
         mvc.perform(get("/notes?ownerId={colleagueUuid}", colleagueUuid)

@@ -16,7 +16,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class INoteDaoTest extends AbstractDAOTest {
+public class NoteDaoTest extends AbstractDAOTest {
 
     protected static final String BASE_PATH_TO_DATA_SET = "db_init_scripts/";
     protected static final UUID FOLDER_UUID = UUID.fromString("56141037-6e2d-45f0-b47f-4875e68dd1d7");
@@ -31,7 +31,7 @@ public class INoteDaoTest extends AbstractDAOTest {
     }
 
     @Autowired
-    private INoteDao noteDao;
+    private NoteDao noteDao;
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml"})
@@ -67,7 +67,7 @@ public class INoteDaoTest extends AbstractDAOTest {
 
         assertEquals(1, noteCreatedCount);
 
-        assertEquals("New Title", noteDao.findByOwnerColleagueUuid(OWNER_UUID).stream()
+        assertEquals("New Title", noteDao.findByOwner(OWNER_UUID).stream()
                 .filter(f -> note.getId().equals(NOTE_UUID))
                 .findAny().get().getTitle());
 

@@ -1,6 +1,5 @@
 package com.tesco.pma.notes.controller;
 
-import com.tesco.pma.notes.model.Folder;
 import com.tesco.pma.notes.model.Note;
 import com.tesco.pma.notes.service.NoteService;
 import com.tesco.pma.rest.HttpStatusCodes;
@@ -19,7 +18,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/notes")
-public class NotesController {
+public class NotesEndpoint {
 
     private final NoteService noteService;
 
@@ -44,7 +43,7 @@ public class NotesController {
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public RestResponse<List<Note>> get(@RequestParam UUID ownerId){
-        return RestResponse.success(noteService.findNoteByOwnerColleagueUuid(ownerId));
+        return RestResponse.success(noteService.findNoteByOwner(ownerId));
     }
 
     @Operation(summary = "Delete a Note", tags = {"Notes"})

@@ -3,8 +3,6 @@ package com.tesco.pma.notes.dao;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.notes.model.Folder;
-import com.tesco.pma.notes.model.Note;
-import com.tesco.pma.notes.model.NoteStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +10,11 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
-import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class IFolderDaoTest extends AbstractDAOTest {
+public class FolderDaoTest extends AbstractDAOTest {
 
     protected static final String BASE_PATH_TO_DATA_SET = "db_init_scripts/";
     protected static final UUID FOLDER_UUID = UUID.fromString("56141037-6e2d-45f0-b47f-4875e68dd1d7");
@@ -34,10 +31,10 @@ public class IFolderDaoTest extends AbstractDAOTest {
     }
 
     @Autowired
-    private INoteDao noteDao;
+    private NoteDao noteDao;
 
     @Autowired
-    private IFolderDao folderDao;
+    private FolderDao folderDao;
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml"})
@@ -72,7 +69,7 @@ public class IFolderDaoTest extends AbstractDAOTest {
 
         assertEquals(1, folderCreatedCount);
 
-        assertEquals("New Title", folderDao.findByOwnerColleagueUuid(OWNER_UUID).stream()
+        assertEquals("New Title", folderDao.findByOwner(OWNER_UUID).stream()
                 .filter(f -> folder.getId().equals(FOLDER_UUID))
                 .findAny().get().getTitle());
 
@@ -82,12 +79,12 @@ public class IFolderDaoTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml",
             BASE_PATH_TO_DATA_SET + "notes_entries_init.xml"})
     void deleteFolderWithNoteReferenced() {
-        assertEquals(1, noteDao.findByOwnerColleagueUuid(OWNER_UUID).size());
+        assertEquals(1, noteDao.findByOwner(OWNER_UUID).size());
 
         var folderDeleted = folderDao.delete(FOLDER_UUID);
 
         assertEquals(1, folderDeleted);
-        assertEquals(0, noteDao.findByOwnerColleagueUuid(OWNER_UUID).size());
+        assertEquals(0, noteDao.findByOwner(OWNER_UUID).size());
 
     }
 
@@ -96,7 +93,7 @@ public class IFolderDaoTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml"})
     public void findByOwnerColleagueUuid(){
 
-        var folders = folderDao.findByOwnerColleagueUuid(OWNER_UUID_2);
+        var folders = folderDao.findByOwner(OWNER_UUID_2);
 
         assertEquals(1, folders.size());
 
