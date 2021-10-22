@@ -46,7 +46,7 @@ public class PMProcessEndpoint {
     @PostMapping(path = "/{processUuid}/metadata", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse<?> storeProcessMetadata(@PathVariable("processUuid") UUID processUuid,
-                                                 @RequestBody String metadata) {
+                                                @RequestBody String metadata) {
         processService.saveProcessMetadata(processUuid, metadata);
         return RestResponse.success();
     }
