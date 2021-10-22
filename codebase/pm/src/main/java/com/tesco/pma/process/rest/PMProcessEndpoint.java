@@ -43,7 +43,7 @@ public class PMProcessEndpoint {
     @Operation(summary = "Store process metadata",
             tags = {"processes"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Store process metadata")
-    @PostMapping(path = "/processes/{processUuid}/metadata", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/{processUuid}/metadata", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse<?> storeProcessMetadata(@PathVariable("processUuid") UUID processUuid,
                                                  @RequestBody String metadata) {
