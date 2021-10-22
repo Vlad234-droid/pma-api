@@ -18,3 +18,5 @@ include 'application'
 
 include 'profile'
 include 'cep'
+include 'security'
+
