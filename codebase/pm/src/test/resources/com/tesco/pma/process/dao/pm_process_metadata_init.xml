@@ -1,0 +1,24 @@
+<dataset>
+    <pm_process uuid="4f2ab073-2c31-11ec-916b-0242391d2e7a"
+                colleague_uuid="cf2ab073-2c31-11ec-916b-0242391d2e7c"
+                status_id="1"
+                bpm_process_id="bf2ab073-2c31-11ec-916b-0242391d2e7c"
+                bpm_process_name="PROCESS_NAME"
+                last_update_time="2021-10-13 23:15:10.0"/>
+
+    <review uuid="c72f45f4-6a65-453c-abda-4dcaec115660"
+            type_id="1"
+            number="1"
+            status_id="1"/>
+
+    <review uuid="0e450edd-5e89-41e9-8dc7-0028187294ed"
+            type_id="1"
+            number="1"
+            status_id="1"/>
+
+    <review uuid="bbf90a58-0492-407e-912f-da8710706878"
+            type_id="1"
+            number="1"
+            status_id="1"/>
+
+</dataset>

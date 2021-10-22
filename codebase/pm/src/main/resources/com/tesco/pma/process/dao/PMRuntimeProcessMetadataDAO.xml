@@ -4,7 +4,7 @@
 <mapper namespace="com.tesco.pma.process.dao.PMRuntimeProcessMetadataDAO">
 
     <resultMap id="processMetadataResultMap" type="com.tesco.pma.process.api.TimelineResponse">
-        <result property="reviewUuid" column="rw_uuid"/>
+        <result property="cycleUuid" column="cycle"/>
         <result property="code" column="code"/>
         <result property="description" column="description"/>
         <result property="status" column="status"/>
@@ -18,21 +18,26 @@
     </insert>
 
     <select id="readMetadata" resultMap="processMetadataResultMap">
-        select yyy.*,
+        select yyy.code as code,
+               yyy.description as description,
+               rt.description as type,
                rs.description as status,
-               rt.description as type
+               yyy.cycle_id as cycle
         from
             (select json_extract_path_text(yy.xx, 'id') as rw_uuid,
                     json_extract_path_text(yy.xx, 'code') as code,
                     json_extract_path_text(yy.xx, 'description') as description,
-                    json_extract_path_text(yy.xx, 'properties', 'pm_review_start_time') as start_time
-             from (select json_array_elements((metadata->'cycle'->'reviews')::json) xx
+                    json_extract_path_text(yy.xx, 'reviewType', 'code') as rw_type_code,
+                    json_extract_path_text(yy.xx, 'properties', 'pm_review_start_time') as start_time,
+                    yy.cycle_id as cycle_id
+             from (select json_array_elements((metadata->'cycle'->'reviews')::json) as xx,
+                          rt_process_uuid as cycle_id
                    from pm_process_metadata
                    where rt_process_uuid = #{processUuid})
                       yy) yyy
-                left join review rw on rw.uuid = yyy.rw_uuid::uuid
-                join review_status rs on rw.status_id = rs.id
-                join review_type rt on rw.type_id = rt.id
+                left join review_type rt on LOWER(rt.code) = LOWER(yyy.rw_type_code)
+                left join review rw on rw.performance_cycle_uuid = yyy.cycle_id and rt.id = rw.type_id
+                left join review_status rs on rw.status_id = rs.id
     </select>
 
 </mapper>

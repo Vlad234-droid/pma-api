@@ -13,7 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TimelineResponse {
-    String reviewUuid;
+    String cycleUuid;
     String code;
     String description;
     String type;
