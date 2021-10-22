@@ -83,5 +83,19 @@ public interface ConfigEntryService {
      */
     List<ConfigEntryResponse> getUnpublishedChildStructureByCompositeKey(String compositeKey);
 
+    /**
+     * Gets list of colleagues by composite key
+     *
+     * @param compositeKey - key
+     * @return list of colleagues
+     */
     List<Colleague> findColleaguesByCompositeKey(String compositeKey);
+
+    /**
+     * Get colleague by iam id
+     *
+     * @param iamId colleague iam identifier
+     * @return colleague object
+     */
+    Colleague getColleagueByIamId(String iamId);
 }

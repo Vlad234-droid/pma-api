@@ -221,6 +221,19 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
 
     }
 
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues-config.xml"})
+    void getColleagueByIamId() {
+        var colleague = dao.getColleagueByIamId("TPX1");
+
+        assertNotNull(colleague);
+        assertEquals(UUID.fromString("c409869b-2acf-45cd-8cc6-e13af2e6f935"), colleague.getUuid());
+        assertNotNull(colleague.getCountry());
+        assertNotNull(colleague.getDepartment());
+        assertNotNull(colleague.getJob());
+        assertNotNull(colleague.getWorkLevel());
+    }
+
     @ParameterizedTest
     @MethodSource("provideArgsForGettingColleagues")
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues-config.xml"})
@@ -307,8 +320,7 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
                         Set.of(e31)),
                 Arguments.of(
                         "roi/ho_c",
-                        Set.of(e12,
-                                e22)),
+                        Set.of(e12, e22)),
                 Arguments.of(
                         "roi/ho_c/salaried",
                         Set.of(e12, e22)),

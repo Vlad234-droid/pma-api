@@ -181,6 +181,11 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
         return dao.findColleaguesByTypes(searchKey);
     }
 
+    @Override
+    public Colleague getColleagueByIamId(String iamId) {
+        return dao.getColleagueByIamId(iamId);
+    }
+
     private String buildCompositeKeySearchTerm(String key) {
         if (key.contains("/#v")) {
             var versionPosition = key.indexOf("/#v");

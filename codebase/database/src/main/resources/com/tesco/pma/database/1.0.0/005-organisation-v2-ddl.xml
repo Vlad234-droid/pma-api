@@ -33,6 +33,8 @@
                     remarks="This specifies the information about colleague's job related data."/>
             <column name="iam_source" type="varchar(100)"
                     remarks="Name of the source of IAM data."/>
+            <column name="iam_id" type="varchar(100)"
+                    remarks="Users identifier into IAM."/>
         </createTable>
         <createIndex tableName="colleague" indexName="colleague_work_level_idx" unique="false">
             <column name="work_level"/>
@@ -51,6 +53,9 @@
         </createIndex>
         <createIndex tableName="colleague" indexName="colleague_job_idx" unique="false">
             <column name="job_id"/>
+        </createIndex>
+        <createIndex tableName="colleague" indexName="colleague_ima_id_idx" unique="true">
+            <column name="iam_id"/>
         </createIndex>
         <createIndex tableName="colleague" indexName="colleague_iam_source_idx" unique="false">
             <column name="iam_source"/>

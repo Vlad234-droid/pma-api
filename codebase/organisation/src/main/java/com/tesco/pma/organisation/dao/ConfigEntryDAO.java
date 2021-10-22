@@ -121,6 +121,20 @@ public interface ConfigEntryDAO {
         return set;
     }
 
+    /**
+     * Gets list of colleagues by types key
+     *
+     * @param key - types
+     * @return list of colleagues
+     */
     List<Colleague> findColleaguesByTypes(@Param("key") String key);
+
+    /**
+     * Get colleague by iam id
+     *
+     * @param iamId colleague iam identifier
+     * @return colleague object
+     */
+    Colleague getColleagueByIamId(@Param("iamId") String iamId);
 
 }

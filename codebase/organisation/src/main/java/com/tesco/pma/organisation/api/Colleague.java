@@ -18,6 +18,7 @@ public class Colleague {
     private String salaryFrequency;
     private Job job;
     private String iamSource;
+    private String iamId;
 
     @Data
     public static class Job { //NOPMD
