@@ -42,4 +42,10 @@
         order by yyy.rn
     </select>
 
+    <select id="getFullMetadata" resultType="string">
+        select metadata
+        from pm_process_metadata
+        where rt_process_uuid = #{uuid}
+    </select>
+
 </mapper>

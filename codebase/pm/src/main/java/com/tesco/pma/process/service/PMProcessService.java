@@ -50,6 +50,15 @@ public interface PMProcessService {
     List<TimelineResponse> getProcessMetadata(UUID uuid);
 
     /**
+     * Returns process metadata by uuid
+     *
+     * @param uuid process identifier
+     * @return the metadata of the process
+     * @throws com.tesco.pma.exception.NotFoundException if the was not found
+     */
+    String getFullMetadata(UUID uuid);
+
+    /**
      * Stores process metadata for existing process
      *
      * @param processUuid process UUID

@@ -58,4 +58,14 @@ public class PMProcessEndpoint {
     public RestResponse<PMProcessMetadata> getMetadata(@RequestParam(name = "process-key") String processKey) {
         return RestResponse.success(processService.getProcessMetadataByKey(processKey));
     }
+
+    @Operation(summary = "Get full metadata from db by process key",
+            tags = {"processes"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the process metadata")
+    @GetMapping(value = "{processUuid}/metadata", produces = APPLICATION_JSON_VALUE)
+    public String getFullMetadata(@PathVariable UUID processUuid) {
+        return processService.getFullMetadata(processUuid);
+    }
+
+
 }
