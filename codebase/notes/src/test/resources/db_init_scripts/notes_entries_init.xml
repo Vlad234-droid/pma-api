@@ -4,6 +4,6 @@
            content="content"
            owner_uuid="3fa85f64-5717-4562-b3fc-2c963f66afa6"
            folder_uuid="56141037-6e2d-45f0-b47f-4875e68dd1d7"
-           status_id="1" update_date="[now+1d]"/>
+           status_id="1" update_time="[now+1d]"/>
 
 </dataset>

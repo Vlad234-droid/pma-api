@@ -11,6 +11,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -81,7 +82,7 @@ public class NoteDaoTest extends AbstractDAOTest {
         note.setTitle("Title");
         note.setContent("Content");
         note.setStatus(NoteStatus.CREATED);
-        note.setUpdateDate(OffsetDateTime.now());
+        note.setUpdateTime(Instant.now());
         return note;
     }
 

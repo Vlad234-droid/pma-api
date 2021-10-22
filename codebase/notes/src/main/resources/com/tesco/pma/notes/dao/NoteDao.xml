@@ -7,11 +7,11 @@
         <id column="id" property="id"/>
         <result column="title" property="title"/>
         <result column="content" property="content"/>
-        <result column="status" property="status"/>
+        <result column="status_id" property="status"/>
         <result column="owner_uuid" property="ownerColleagueUuid"/>
         <result column="reference_uuid" property="referenceColleagueUuid"/>
         <result column="folder_uuid" property="folderUuid"/>
-        <result column="update_date" property="updateDate" typeHandler="org.apache.ibatis.type.OffsetDateTimeTypeHandler"/>
+        <result column="update_time" property="updateTime" typeHandler="org.apache.ibatis.type.InstantTypeHandler"/>
 
         <result property="status" column="status_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.notes.model.NoteStatus"/>
@@ -19,9 +19,9 @@
 
 
     <insert id="create" flushCache="true">
-        INSERT INTO notes (id, title, content, owner_uuid, reference_uuid, folder_uuid, update_date, status_id)
+        INSERT INTO notes (id, title, content, owner_uuid, reference_uuid, folder_uuid, update_time, status_id)
         VALUES (#{note.id}, #{note.title}, #{note.content}, #{note.ownerColleagueUuid}, #{note.referenceColleagueUuid},
-        #{note.folderUuid}, #{note.updateDate},
+        #{note.folderUuid}, #{note.updateTime},
         #{note.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.notes.model.NoteStatus} )
     </insert>
 
@@ -35,7 +35,7 @@
         UPDATE notes
         SET title = (#{note.title}), content = (#{note.content}), owner_uuid = (#{note.ownerColleagueUuid}),
             reference_uuid = (#{note.referenceColleagueUuid}), folder_uuid = (#{note.folderUuid}),
-            update_date = (#{note.updateDate}),
+            update_time = (#{note.updateTime}),
             status_id = (#{note.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler})
         WHERE id = #{note.id}
     </update>

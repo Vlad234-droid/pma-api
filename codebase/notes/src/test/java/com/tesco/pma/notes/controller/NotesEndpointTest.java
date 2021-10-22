@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.notes.model.Note;
 import com.tesco.pma.notes.model.NoteStatus;
-import com.tesco.pma.notes.service.NoteService;
+import com.tesco.pma.notes.service.NotesService;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import com.tesco.pma.rest.HttpStatusCodes;
 import org.junit.jupiter.api.Test;
@@ -40,14 +40,14 @@ public class NotesEndpointTest extends AbstractEndpointTest {
     protected MockMvc mvc;
 
     @MockBean
-    private NoteService noteService;
+    private NotesService notesService;
 
     @Test
     void create() throws Exception {
 
         var note = createNote(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
 
-        when(noteService.createNote(note)).thenReturn(note);
+        when(notesService.createNote(note)).thenReturn(note);
 
         mvc.perform(post("/notes")
                         .accept(APPLICATION_JSON)
@@ -64,7 +64,7 @@ public class NotesEndpointTest extends AbstractEndpointTest {
 
         var note = createNote(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
 
-        when(noteService.updateNote(note)).thenReturn(note);
+        when(notesService.updateNote(note)).thenReturn(note);
 
         mvc.perform(put("/notes")
                         .accept(APPLICATION_JSON)
@@ -81,7 +81,7 @@ public class NotesEndpointTest extends AbstractEndpointTest {
 
         var note = createNote(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
 
-        when(noteService.updateNote(note)).thenThrow(new NotFoundException(HttpStatusCodes.NOT_FOUND, "Not found"));
+        when(notesService.updateNote(note)).thenThrow(new NotFoundException(HttpStatusCodes.NOT_FOUND, "Not found"));
 
         mvc.perform(put("/notes")
                         .accept(APPLICATION_JSON)
@@ -95,7 +95,7 @@ public class NotesEndpointTest extends AbstractEndpointTest {
     @Test
     void findByColleagueUUID() throws Exception {
 
-        when(noteService.findNoteByOwner(colleagueUuid))
+        when(notesService.findNoteByOwner(colleagueUuid))
                 .thenReturn(new ArrayList<>());
 
         mvc.perform(get("/notes?ownerId={colleagueUuid}", colleagueUuid)
@@ -113,7 +113,7 @@ public class NotesEndpointTest extends AbstractEndpointTest {
         note.setTitle("Title");
         note.setContent("Content");
         note.setStatus(NoteStatus.CREATED);
-        note.setUpdateDate(null);
+        note.setUpdateTime(null);
         return note;
     }
 

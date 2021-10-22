@@ -3,7 +3,7 @@ package com.tesco.pma.notes.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.notes.model.Folder;
-import com.tesco.pma.notes.service.NoteService;
+import com.tesco.pma.notes.service.NotesService;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import com.tesco.pma.rest.HttpStatusCodes;
 import org.junit.jupiter.api.Test;
@@ -36,14 +36,14 @@ public class FoldersEndpointTest extends AbstractEndpointTest {
     protected MockMvc mvc;
 
     @MockBean
-    private NoteService noteService;
+    private NotesService notesService;
 
     @Test
     void create() throws Exception {
 
         var folder = createFolder(UUID.randomUUID(), UUID.randomUUID());
 
-        when(noteService.createFolder(folder)).thenReturn(folder);
+        when(notesService.createFolder(folder)).thenReturn(folder);
 
         mvc.perform(post("/notes/folders")
                         .accept(APPLICATION_JSON)
@@ -60,7 +60,7 @@ public class FoldersEndpointTest extends AbstractEndpointTest {
 
         var folder = createFolder(UUID.randomUUID(), UUID.randomUUID());
 
-        when(noteService.updateFolder(folder)).thenReturn(folder);
+        when(notesService.updateFolder(folder)).thenReturn(folder);
 
         mvc.perform(put("/notes/folders")
                         .accept(APPLICATION_JSON)
@@ -77,7 +77,7 @@ public class FoldersEndpointTest extends AbstractEndpointTest {
 
         var folder = createFolder(UUID.randomUUID(), UUID.randomUUID());
 
-        when(noteService.updateFolder(folder)).thenThrow(new NotFoundException(HttpStatusCodes.NOT_FOUND, "Not found"));
+        when(notesService.updateFolder(folder)).thenThrow(new NotFoundException(HttpStatusCodes.NOT_FOUND, "Not found"));
 
         mvc.perform(put("/notes/folders")
                         .accept(APPLICATION_JSON)
@@ -91,7 +91,7 @@ public class FoldersEndpointTest extends AbstractEndpointTest {
     @Test
     void findByColleagueUUID() throws Exception {
 
-        when(noteService.findFolderByOwner(colleagueUuid))
+        when(notesService.findFolderByOwner(colleagueUuid))
                 .thenReturn(new ArrayList<>());
 
         mvc.perform(get("/notes/folders?ownerId={colleagueUuid}", colleagueUuid)

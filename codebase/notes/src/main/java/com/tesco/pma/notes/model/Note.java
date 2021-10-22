@@ -2,6 +2,7 @@ package com.tesco.pma.notes.model;
 
 import lombok.Data;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -13,7 +14,7 @@ public class Note {
     private UUID ownerColleagueUuid;
     private UUID referenceColleagueUuid;
     private NoteStatus status;
-    private OffsetDateTime updateDate;
+    private Instant updateTime;
     private UUID folderUuid;
 
     private String title;

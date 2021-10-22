@@ -1,8 +1,12 @@
 package com.tesco.pma.notes.service;
 
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.exception.AlreadyExistsException;
+import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.notes.dao.FolderDao;
 import com.tesco.pma.notes.dao.NoteDao;
+import com.tesco.pma.notes.exception.NotesErrorCodes;
 import com.tesco.pma.notes.model.Folder;
 import com.tesco.pma.notes.model.Note;
 import com.tesco.pma.rest.HttpStatusCodes;
@@ -16,16 +20,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
 @Service
 @AllArgsConstructor
-public class NoteService {
+public class NotesService {
 
     private final FolderDao folderDao;
     private final NoteDao noteDao;
     private final UserService userService;
+    private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Transactional
     public Note createNote(Note note){
@@ -48,10 +54,14 @@ public class NoteService {
 
     @Transactional
     public Note updateNote(Note note){
+        checkCurrentUser(note.getOwnerColleagueUuid());
+
         if (1 == noteDao.update(note)) {
             return note;
         }
-        throw new NotFoundException(HttpStatusCodes.NOT_FOUND, "Note "+ note.getId().toString()+" not found");
+
+        throw new NotFoundException(NotesErrorCodes.NOTE_NOT_FOUND.getCode(),
+                messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_NOT_FOUND, Map.of("id", note.getId())));
     }
 
     @Transactional
@@ -78,10 +88,14 @@ public class NoteService {
 
     @Transactional
     public Folder updateFolder(Folder folder){
+        checkCurrentUser(folder.getOwnerColleagueUuid());
+
         if (1 == folderDao.update(folder)) {
             return folder;
         }
-        throw new NotFoundException(HttpStatusCodes.NOT_FOUND, "Note "+ folder.getId().toString()+" not found");
+
+        throw new NotFoundException(NotesErrorCodes.FOLDER_NOT_FOUND.getCode(),
+                messageSourceAccessor.getMessage(NotesErrorCodes.FOLDER_NOT_FOUND, Map.of("id", folder.getId())));
     }
 
     @Transactional
@@ -93,11 +107,13 @@ public class NoteService {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
         var user = userService.findUserByAuthentication(authentication, EnumSet.of(UserIncludes.SUBSIDIARY_PERMISSIONS)) //TODO includes?
-                .orElseThrow(()->new NotFoundException(HttpStatusCodes.BAD_REQUEST ,"Current user not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorCodes.USER_NOT_FOUND.getCode(),
+                        messageSourceAccessor.getMessage(ErrorCodes.USER_NOT_FOUND,
+                                Map.of("param_name", "colleague ID", "param_value", colleagueUuid))));
 
         if(!user.getColleagueUuid().equals(colleagueUuid)){
             //TODO find/create appropriate exception
-            throw new RuntimeException("Given colleague uuid is mismatched with the current user's uuid");
+            throw new RuntimeException(messageSourceAccessor.getMessage(ErrorCodes.USER_NOT_AUTHORIZED));
         }
     }
 

@@ -15,7 +15,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="title" type="VARCHAR">
+            <column name="title" type="VARCHAR(100)">
                 <constraints nullable="false"/>
             </column>
 
@@ -45,15 +45,15 @@
                 <constraints nullable="true"/>
             </column>
 
-            <column name="update_date" type="timestamptz">
+            <column name="update_time" type="timestamptz">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="title" type="VARCHAR">
+            <column name="title" type="VARCHAR(100)">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="content" type="VARCHAR">
+            <column name="content" type="VARCHAR(500)">
                 <constraints nullable="false"/>
             </column>
         </createTable>

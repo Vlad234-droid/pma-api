@@ -1,7 +1,7 @@
 package com.tesco.pma.notes.controller;
 
 import com.tesco.pma.notes.model.Note;
-import com.tesco.pma.notes.service.NoteService;
+import com.tesco.pma.notes.service.NotesService;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,14 +20,14 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RequestMapping(path = "/notes")
 public class NotesEndpoint {
 
-    private final NoteService noteService;
+    private final NotesService notesService;
 
     @Operation(summary = "Create a Note", tags = {"Notes"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Create a new Note")
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse<Note> createNote(@RequestBody Note note){
-        return RestResponse.success(noteService.createNote(note));
+        return RestResponse.success(notesService.createNote(note));
     }
 
     @Operation(summary = "Update a Note", tags = {"Notes"})
@@ -35,7 +35,7 @@ public class NotesEndpoint {
     @PutMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public RestResponse<Note> update(@RequestBody Note note){
-        return RestResponse.success(noteService.updateNote(note));
+        return RestResponse.success(notesService.updateNote(note));
     }
 
     @Operation(summary = "Find a Note", tags = {"Notes"})
@@ -43,7 +43,7 @@ public class NotesEndpoint {
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public RestResponse<List<Note>> get(@RequestParam UUID ownerId){
-        return RestResponse.success(noteService.findNoteByOwner(ownerId));
+        return RestResponse.success(notesService.findNoteByOwner(ownerId));
     }
 
     @Operation(summary = "Delete a Note", tags = {"Notes"})
@@ -51,7 +51,7 @@ public class NotesEndpoint {
     @DeleteMapping(value = "/{id}",produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public RestResponse<?> delete(@PathVariable("id") UUID uuid){
-        noteService.deleteNote(uuid);
+        notesService.deleteNote(uuid);
         return RestResponse.success();
     }
 
