@@ -7,7 +7,6 @@
         <id column="id" property="id"/>
         <result column="title" property="title"/>
         <result column="content" property="content"/>
-        <result column="status_id" property="status"/>
         <result column="owner_uuid" property="ownerColleagueUuid"/>
         <result column="reference_uuid" property="referenceColleagueUuid"/>
         <result column="folder_uuid" property="folderUuid"/>
@@ -26,7 +25,7 @@
     </insert>
 
     <select id="findByOwner" resultMap="noteStructure">
-        SELECT id, title, content, owner_uuid, reference_uuid, folder_uuid, update_date, status_id
+        SELECT id, title, content, owner_uuid, reference_uuid, folder_uuid, update_time, status_id
         FROM notes
         WHERE notes.owner_uuid = #{colleagueUuid}
     </select>
