@@ -49,19 +49,27 @@ spring:
       is-auto-commit: false
       # MyBatis config
       mybatis-session:
-        type-aliases-package: com.tesco.pma.api, com.tesco.pma.colleague.profile.domain, com.tesco.pma.organisation.api
+        type-aliases-package: com.tesco.pma.api,
+                              com.tesco.pma.colleague.profile.domain,
+                              com.tesco.pma.organisation.api,
+                              com.tesco.pma.review.domain,
+                              com.tesco.pma.process.api
         configuration-properties:
-          base-package: com.tesco.pma.dao, com.tesco.pma.colleague.profile.dao, com.tesco.pma.organisation.dao
+          base-package: com.tesco.pma.dao,
+                        com.tesco.pma.colleague.profile.dao,
+                        com.tesco.pma.organisation.dao,
+                        com.tesco.pma.review.dao,
+                        com.tesco.pma.process.dao
           batchSize: 500
     camunda:
-      # TODO: change database
-      driver-class-name: org.h2.Driver
-      jdbc-url: jdbc:h2:mem:camunda;MODE=Oracle;DB_CLOSE_DELAY=-1
-      #jdbc-url: jdbc:h2:tcp://localhost//opt/h2/db/demo;MODE=Oracle;DB_CLOSE_DELAY=-1
-      username: sa
-      password:
+      # Camunda database config
+      driver-class-name: org.postgresql.Driver
+      jdbc-url: ${PMA_DB_URL}
+      schema: ${PMA_DB_SCHEMA}
+      username: ${PMA_DB_USERNAME}
+      password: ${PMA_DB_PASSWORD}
       type: com.zaxxer.hikari.HikariDataSource
-      connection-test-query: SELECT 1 FROM DUAL
+      connection-test-query: SELECT 1
       minimum-idle: 10
       maximum-pool-size: 10
       pool-name: camunda_ds_pool
@@ -76,7 +84,9 @@ spring:
     basename: >
       com/tesco/pma/exception/AppExceptionMessage,
       com/tesco/pma/colleague/profile/exception/AppExceptionMessage,
-      com/tesco/pma/organisation/service/AppConfigEntryMessages
+      com/tesco/pma/organisation/service/AppConfigEntryMessages,
+      com/tesco/pma/review/exception/AppExceptionMessage,
+      com/tesco/pma/process/service/AppPMProcessMessages
     encoding: UTF-8
   async-executor:
     core-pool-size: 2
@@ -191,6 +201,9 @@ camunda:
       enabled: false
     id-generator: strong
 #    deployment-resource-pattern: classpath:*.bpmn
+#   todo: remove in production
+    auto-deployment-enabled: true
+    deployment-resource-pattern: classpath:com/tesco/pma/flow/pm_v1.bpmn, com/tesco/pma/flow/forms/pm_o_1.form, com/tesco/pma/flow/forms/pm_o_2.form
 
 ---
 spring:

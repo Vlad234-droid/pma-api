@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-// TODO revise class usage
 public class DictionaryFilter<T extends DictionaryItem<? extends Serializable>> {
 
     final boolean include;
@@ -18,6 +17,14 @@ public class DictionaryFilter<T extends DictionaryItem<? extends Serializable>> 
         if (items != null && !items.isEmpty()) {
             this.items.addAll(items);
         }
+    }
+
+    public boolean isInclude() {
+        return include;
+    }
+
+    public Set<T> getItems() {
+        return Collections.unmodifiableSet(items);
     }
 
     public boolean isEmpty() {
@@ -77,7 +84,7 @@ public class DictionaryFilter<T extends DictionaryItem<? extends Serializable>> 
 
     @SafeVarargs
     protected static <T extends DictionaryItem<? extends Serializable>> Set<T> convert(T... items) {
-        return items != null ? new HashSet<T>(Arrays.asList(items)) : Collections.emptySet();
+        return items != null ? new HashSet<>(Arrays.asList(items)) : Collections.emptySet();
     }
 
 }

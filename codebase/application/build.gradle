@@ -28,6 +28,7 @@ dependencies {
     implementation project(':pm')
     implementation project(':organisation')
     implementation project(':profile')
+    implementation project(':review')
     implementation project(':cep')
     implementation project(':security')
 

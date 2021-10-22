@@ -1,0 +1,23 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet author="imatviichuk" id="1">
+        <createTable remarks="General PM process metadata"
+                     tableName="pm_process_metadata">
+            <column name="rt_process_uuid" type="${uuid_type}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="metadata" type="jsonb"/>
+
+        </createTable>
+<!--
+        <addForeignKeyConstraint baseColumnNames="rt_process_uuid" baseTableName="pm_process_metadata"
+                                 constraintName="metadata_rt_process_fk"
+                                 deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
+                                 referencedColumnNames="uuid" referencedTableName="pm_process" validate="true"/>
+-->
+    </changeSet>
+
+</databaseChangeLog>
