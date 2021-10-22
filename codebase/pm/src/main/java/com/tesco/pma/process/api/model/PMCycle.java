@@ -1,0 +1,27 @@
+package com.tesco.pma.process.api.model;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.tesco.pma.api.DictionaryItem;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+/**
+ * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 20.10.2021 Time: 11:44
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class PMCycle extends PMElement {
+    public static final String PM_CYCLE = "cycle";
+    public static final String PM_CYCLE_PREFIX = PM_PREFIX + PM_CYCLE + "_";
+
+    public static final String PM_CYCLE_TYPE = PM_CYCLE_PREFIX + "type";
+    public static final String PM_CYCLE_START_TIME = PM_CYCLE_PREFIX + "start_time";
+    public static final String PM_CYCLE_END_TIME = PM_CYCLE_PREFIX + "end_time";
+    public static final String PM_CYCLE_MAX = PM_CYCLE_PREFIX + "max";
+
+    private DictionaryItem<Integer> cycleType;
+    private List<PMReview> reviews = new ArrayList<>();
+}
