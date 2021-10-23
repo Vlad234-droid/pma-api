@@ -7,7 +7,7 @@
         <createTable remarks="General PM process metadata"
                      tableName="pm_process_metadata">
             <column name="rt_process_uuid" type="${uuid_type}">
-                <constraints nullable="false"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pm_process_metadata_pk"/>
             </column>
             <column name="metadata" type="jsonb"/>
 
