@@ -21,7 +21,7 @@
         select yyy.code as code,
                yyy.description as description,
                rt.description as type,
-               rs.description as status,
+               rs.code as status,
                yyy.cycle_id as cycle
         from
             (select json_extract_path_text(yy.xx, 'id') as rw_uuid,
