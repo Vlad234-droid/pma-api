@@ -24,6 +24,13 @@ public class WorkRelationship {
 
     public enum WorkLevel {
         WL1, WL2, WL3, WL4, WL5;
+
+        public static WorkLevel getByCode(String code) {
+            for (WorkLevel wl : values()) {
+                return wl.name().equalsIgnoreCase(code) ? wl : null;
+            }
+            return null;
+        }
     }
 
     UUID locationUUID;

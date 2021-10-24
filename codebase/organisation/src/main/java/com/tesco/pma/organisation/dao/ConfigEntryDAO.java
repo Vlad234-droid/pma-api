@@ -132,6 +132,14 @@ public interface ConfigEntryDAO {
     /**
      * Get colleague by iam id
      *
+     * @param colleagueUuid colleague identifier
+     * @return colleague object
+     */
+    Colleague getColleague(@Param("colleagueUuid") UUID colleagueUuid);
+
+    /**
+     * Get colleague by iam id
+     *
      * @param iamId colleague iam identifier
      * @return colleague object
      */

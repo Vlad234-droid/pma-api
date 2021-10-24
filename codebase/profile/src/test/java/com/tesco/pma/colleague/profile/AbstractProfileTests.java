@@ -2,7 +2,6 @@ package com.tesco.pma.colleague.profile;
 
 import com.tesco.pma.colleague.profile.domain.AttributeType;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
-import com.tesco.pma.colleague.api.Colleague;
 import org.jeasy.random.EasyRandom;
 
 import java.util.List;
@@ -42,8 +41,8 @@ public abstract class AbstractProfileTests {
         return NAMES[index - 1];
     }
 
-    protected Colleague randomColleague() {
-        return RANDOM.nextObject(Colleague.class);
+    protected com.tesco.pma.organisation.api.Colleague randomColleague() {
+        return RANDOM.nextObject(com.tesco.pma.organisation.api.Colleague.class);
     }
 
 }
