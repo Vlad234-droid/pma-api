@@ -12,7 +12,7 @@
             <column name="metadata" type="jsonb"/>
 
         </createTable>
-<!--
+<!-- todo
         <addForeignKeyConstraint baseColumnNames="rt_process_uuid" baseTableName="pm_process_metadata"
                                  constraintName="metadata_rt_process_fk"
                                  deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
