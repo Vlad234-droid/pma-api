@@ -20,20 +20,163 @@
         </collection>
     </resultMap>
 
+    <sql id="getSortField">
+        <choose>
+            <when test="sort.field == 'id'">
+                id
+            </when>
+            <when test="sort.field == 'colleague-uuid'">
+                colleague_uuid
+            </when>
+            <when test="sort.field == 'target-type'">
+                target_type
+            </when>
+            <when test="sort.field == 'target-id'">
+                target_id
+            </when>
+            <when test="sort.field == 'read'">
+                read
+            </when>
+            <when test="sort.field == 'status'">
+                status
+            </when>
+            <when test="sort.field == 'created-time'">
+                created_time
+            </when>
+            <when test="sort.field == 'updated-time'">
+                updated_time
+            </when>
+            <otherwise>
+                updated_time
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="getFilterField">
+        <choose>
+            <when test="filter.property == 'id'">
+                id
+            </when>
+            <when test="filter.property == 'colleague-uuid'">
+                colleague_uuid
+            </when>
+            <when test="filter.property == 'target-type'">
+                UPPER(target_type)
+            </when>
+            <when test="filter.property == 'target-id'">
+                target_id
+            </when>
+            <when test="filter.property == 'read'">
+                read
+            </when>
+            <when test="filter.property == 'status'">
+                UPPER(status)
+            </when>
+            <when test="filter.property == 'created-time'">
+                created_time
+            </when>
+            <when test="filter.property == 'updated-time'">
+                updated_time
+            </when>
+            <otherwise>
+                updated_time
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="prepareValues">
+        <foreach item="value" collection="filter.value" separator="," open="(" close=")">
+            <choose>
+                <when test="filter.property == 'target-type' or filter.property == 'status'">
+                    UPPER(#{value})
+                </when>
+                <when test="filter.property == 'uuid'">
+                    #{value}::uuid
+                </when>
+                <otherwise>
+                    #{value}
+                </otherwise>
+            </choose>
+        </foreach>
+    </sql>
+
+    <sql id="getExpression">
+        <choose>
+            <when test="filter.operand.name == 'EQUALS' and filter.property != 'created-time' and filter.property != 'updated-time'">
+                <choose>
+                    <when test="filter.property == 'target-type' or filter.property == 'status'">
+                        <include refid="getFilterField"/>
+                        = UPPER('${filter.value}')
+                    </when>
+                    <otherwise>
+                        <include refid="getFilterField"/>
+                        = '${filter.value}'
+                    </otherwise>
+                </choose>
+            </when>
+
+            <when test="filter.operand.name == 'NOT_EQUALS' and filter.property != 'created-time' and filter.property != 'updated-time'">
+                <choose>
+                    <when test="filter.property == 'target-type' or filter.property == 'status'">
+                        <include refid="getFilterField"/>
+                        != UPPER('${filter.value}')
+                    </when>
+                    <otherwise>
+                        <include refid="getFilterField"/>
+                        != '${filter.value}'
+                    </otherwise>
+                </choose>
+            </when>
+
+            <when test="filter.operand.name == 'IN' and filter.property != 'creation-time' and filter.property != 'last-update-time'">
+                <include refid="getFilterField"/>
+                IN
+                <include refid="prepareValues"/>
+            </when>
+            <when test="filter.operand.name == 'NOT_IN' and filter.property != 'creation-time' and filter.property != 'last-update-time'">
+                <include refid="getFilterField"/>
+                NOT IN
+                <include refid="prepareValues"/>
+            </when>
+            <when test="filter.operand.name == 'NULL'">
+                <if test="filter.value == 'true'">
+                    <include refid="getFilterField"/>
+                    IS NULL
+                </if>
+                <if test="filter.value == 'false'">
+                    <include refid="getFilterField"/>
+                    IS NOT NULL
+                </if>
+            </when>
+            <when test="filter.operand.name == 'LESS_THAN' and (filter.property != 'created-time' and filter.property != 'updated-time')">
+                <include refid="getFilterField"/> &lt; '${filter.value}'
+            </when>
+            <when test="filter.operand.name == 'LESS_THAN_EQUALS' and (filter.property != 'created-time' and filter.property != 'updated-time')">
+                <include refid="getFilterField"/> &lt;= '${filter.value}'
+            </when>
+            <when test="filter.operand.name == 'GREATER_THAN' and (filter.property != 'created-time' and filter.property != 'updated-time')">
+                <include refid="getFilterField"/> &gt; '${filter.value}'
+            </when>
+            <when test="filter.operand.name == 'GREATER_THAN_EQUALS' and (filter.property != 'created-time' and filter.property != 'updated-time')">
+                <include refid="getFilterField"/> &gt;= '${filter.value}'
+            </when>
+        </choose>
+    </sql>
+
     <select id="getById" flushCache="true" resultMap="feedback">
         SELECT
-        f.id,
-        f.colleague_uuid,
-        f.target_type,
-        f.target_id,
-        f.read,
-        f.status,
-        f.created_time,
-        f.updated_time,
-        fi.id as fi_id,
-        fi.code as fi_code,
-        fi.content as fi_content,
-        fi.feedback_id as fi_feedback_id
+            f.id,
+            f.colleague_uuid,
+            f.target_type,
+            f.target_id,
+            f.read,
+            f.status,
+            f.created_time,
+            f.updated_time,
+            fi.id as fi_id,
+            fi.code as fi_code,
+            fi.content as fi_content,
+            fi.feedback_id as fi_feedback_id
         FROM feedback f
         JOIN feedback_item fi
         ON f.id = fi.feedback_id
@@ -42,21 +185,46 @@
 
     <select id="findAll" flushCache="true" resultMap="feedback">
         SELECT
-        f.id,
-        f.colleague_uuid,
-        f.target_type,
-        f.target_id,
-        f.read,
-        f.status,
-        f.created_time,
-        f.updated_time,
-        fi.id as fi_id,
-        fi.code as fi_code,
-        fi.content as fi_content,
-        fi.feedback_id as fi_feedback_id
+            f.id,
+            f.colleague_uuid,
+            f.target_type,
+            f.target_id,
+            f.read,
+            f.status,
+            f.created_time,
+            f.updated_time,
+            fi.id as fi_id,
+            fi.code as fi_code,
+            fi.content as fi_content,
+            fi.feedback_id as fi_feedback_id
         FROM feedback f
         LEFT JOIN feedback_item fi
         ON f.id = fi.feedback_id
+        WHERE 1 = 1
+        <if test="!requestQuery.filters.isEmpty()">
+            <foreach collection="requestQuery.filters" item="filter" index="index" open=" AND " separator=" AND ">
+                <include refid="getExpression"/>
+            </foreach>
+        </if>
+        <if test="requestQuery.search != null and requestQuery.search != ''">
+            AND fi.content LIKE '%'||UPPER(#{requestQuery.search})||'%'
+        </if>
+
+        <if test="requestQuery.sort.isEmpty()">
+            ORDER BY f.created_time DESC
+        </if>
+        <if test="!requestQuery.sort.isEmpty()">
+            ORDER BY
+            <foreach collection="requestQuery.sort" item="sort" index="index" separator=",">
+                <include refid="getSortField"/>
+                ${sort.order.name}
+            </foreach>
+        </if>
+
+        LIMIT #{requestQuery.limit}
+        <if test="requestQuery.offset != null">
+            OFFSET #{requestQuery.offset}
+        </if>
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id" flushCache="true">
@@ -64,11 +232,20 @@
         VALUES (#{feedback.colleagueUuid}, #{feedback.targetType}, #{feedback.targetId}, #{feedback.status})
     </insert>
 
-    <update id="markAsRead">
-        UPDATE feedback f SET read = true WHERE f.id = #{feedbackId}
+    <update id="update">
+        UPDATE feedback f
+        SET
+            colleague_uuid = #{feedback.colleagueUuid},
+            target_type = #{feedback.targetType},
+            target_id = #{feedback.targetId},
+            read = #{feedback.read},
+            status = #{feedback.status},
+            updated_time = now()
+        WHERE f.id = #{feedback.id}
     </update>
 
-    <update id="updateStatus">
-        UPDATE feedback f SET status = #{status}, modified_time = now() WHERE f.id = #{feedbackId}
+    <update id="markAsRead">
+        UPDATE feedback f SET read = true WHERE f.id = #{id}
     </update>
+
 </mapper>

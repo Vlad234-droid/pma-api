@@ -8,4 +8,11 @@
         VALUES (#{feedbackItem.code}, #{feedbackItem.content}, #{feedbackItem.feedbackId})
     </insert>
 
+    <update id="update">
+        UPDATE feedback_item
+        SET
+            code = #{feedbackItem.code},
+            content = #{feedbackItem.content}
+        WHERE id = #{feedbackItem.id}
+    </update>
 </mapper>

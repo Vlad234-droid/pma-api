@@ -14,4 +14,11 @@ public interface FeedbackItemService {
      */
     FeedbackItem create(FeedbackItem feedbackItem);
 
+    /**
+     * Update a feedbackItem.
+     *
+     * @param feedbackItem the entity to save.
+     * @return the persisted entity.
+     */
+    FeedbackItem update(FeedbackItem feedbackItem);
 }

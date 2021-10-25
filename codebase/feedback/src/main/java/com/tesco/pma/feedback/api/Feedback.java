@@ -55,7 +55,7 @@ public class Feedback implements Serializable {
     @Schema(defaultValue = "now")
     private Instant createdTime;
 
-    private Instant modifiedTime;
+    private Instant updatedTime;
 
     private Set<FeedbackItem> feedbackItems = new HashSet<>();
 }

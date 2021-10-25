@@ -28,4 +28,10 @@ public class FeedbackItemServiceImpl implements FeedbackItemService {
         return feedbackItem;
     }
 
+    @Override
+    public FeedbackItem update(FeedbackItem feedbackItem) {
+        feedbackItemDAO.update(feedbackItem);
+        return feedbackItem;
+    }
+
 }

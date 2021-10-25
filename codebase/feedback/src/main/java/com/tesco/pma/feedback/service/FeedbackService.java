@@ -1,6 +1,8 @@
 package com.tesco.pma.feedback.service;
 
 import com.tesco.pma.feedback.api.Feedback;
+import com.tesco.pma.pagination.RequestQuery;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -20,16 +22,17 @@ public interface FeedbackService {
     /**
      * Partially updates a feedback.
      *
-     * @param feedbackId
+     * @param id the id of the entity.
      */
-    void markAsRead(Long feedbackId);
+    void markAsRead(Long id);
 
     /**
      * Get all the feedbacks.
      *
      * @return the list of entities.
+     * @param requestQuery
      */
-    List<Feedback> findAll();
+    List<Feedback> findAll(RequestQuery requestQuery);
 
     /**
      * Get the "id" feedback.
@@ -39,4 +42,11 @@ public interface FeedbackService {
      */
     Optional<Feedback> findOne(Long id);
 
+    /**
+     * Update feedback.
+     *
+     * @param feedback the entity to update.
+     * @return the persisted entity.
+     */
+    Feedback update(Feedback feedback);
 }

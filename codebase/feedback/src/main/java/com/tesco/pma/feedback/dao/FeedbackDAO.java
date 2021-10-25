@@ -1,8 +1,8 @@
 package com.tesco.pma.feedback.dao;
 
 import com.tesco.pma.feedback.api.Feedback;
-import com.tesco.pma.feedback.api.FeedbackStatus;
-import org.apache.ibatis.annotations.*;
+import com.tesco.pma.pagination.RequestQuery;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -20,8 +20,9 @@ public interface FeedbackDAO {
      * Find all
      *
      * @return a list of Feedbacks
+     * @param requestQuery filtering, sorting and pagination
      */
-    List<Feedback> findAll();
+    List<Feedback> findAll(@Param("requestQuery") RequestQuery requestQuery);
 
 
     /**
@@ -35,18 +36,16 @@ public interface FeedbackDAO {
     /**
      * Mark feedback as read.
      *
-     * @param feedbackId a Feedback identifier
+     * @param id a Feedback identifier
      * @return number of updated entities
      */
-    int markAsRead(@Param("feedbackId") Long feedbackId);
+    int markAsRead(@Param("id") Long id);
 
     /**
-     * Update feedback status.
+     * Update feedback.
      *
-     * @param feedbackId a Feedback identifier
-     * @param status a Feedback status
+     * @param feedback a Feedback
      * @return number of updated entities
      */
-    int updateStatus(@Param("feedbackId") Long feedbackId, @Param("status") FeedbackStatus status);
-
+    int update(@Param("feedback") Feedback feedback);
 }
