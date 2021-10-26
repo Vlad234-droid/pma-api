@@ -4,7 +4,7 @@
 <mapper namespace="com.tesco.pma.feedback.dao.FeedbackDAO">
 
     <resultMap id="feedback" type="com.tesco.pma.feedback.api.Feedback">
-        <id column="id" property="id"/>
+        <id column="uuid" property="uuid"/>
         <result column="colleague_uuid" property="colleagueUuid"/>
         <result column="target_type" property="targetType"/>
         <result column="target_id" property="targetId"/>
@@ -13,17 +13,17 @@
         <result column="created_time" property="createdTime"/>
         <result column="updated_time" property="updatedTime"/>
         <collection property="feedbackItems" ofType="com.tesco.pma.feedback.api.FeedbackItem">
-            <id column="fi_id" property="id"/>
+            <id column="fi_uuid" property="uuid"/>
             <result column="fi_code" property="code"/>
             <result column="fi_content" property="content"/>
-            <result column="fi_feedback_id" property="feedbackId"/>
+            <result column="fi_feedback_uuid" property="feedbackUuid"/>
         </collection>
     </resultMap>
 
     <sql id="getSortField">
         <choose>
-            <when test="sort.field == 'id'">
-                id
+            <when test="sort.field == 'uuid'">
+                uuid
             </when>
             <when test="sort.field == 'colleague-uuid'">
                 colleague_uuid
@@ -54,8 +54,8 @@
 
     <sql id="getFilterField">
         <choose>
-            <when test="filter.property == 'id'">
-                id
+            <when test="filter.property == 'uuid'">
+                uuid
             </when>
             <when test="filter.property == 'colleague-uuid'">
                 colleague_uuid
@@ -128,12 +128,12 @@
                 </choose>
             </when>
 
-            <when test="filter.operand.name == 'IN' and filter.property != 'creation-time' and filter.property != 'last-update-time'">
+            <when test="filter.operand.name == 'IN' and filter.property != 'created-time' and filter.property != 'updated-time'">
                 <include refid="getFilterField"/>
                 IN
                 <include refid="prepareValues"/>
             </when>
-            <when test="filter.operand.name == 'NOT_IN' and filter.property != 'creation-time' and filter.property != 'last-update-time'">
+            <when test="filter.operand.name == 'NOT_IN' and filter.property != 'created-time' and filter.property != 'updated-time'">
                 <include refid="getFilterField"/>
                 NOT IN
                 <include refid="prepareValues"/>
@@ -163,9 +163,9 @@
         </choose>
     </sql>
 
-    <select id="getById" flushCache="true" resultMap="feedback">
+    <select id="getByUuid" flushCache="true" resultMap="feedback">
         SELECT
-            f.id,
+            f.uuid,
             f.colleague_uuid,
             f.target_type,
             f.target_id,
@@ -173,19 +173,19 @@
             f.status,
             f.created_time,
             f.updated_time,
-            fi.id as fi_id,
+            fi.uuid as fi_uuid,
             fi.code as fi_code,
             fi.content as fi_content,
-            fi.feedback_id as fi_feedback_id
+            fi.feedback_uuid as fi_feedback_uuid
         FROM feedback f
         JOIN feedback_item fi
-        ON f.id = fi.feedback_id
-        WHERE f.id = #{id}
+        ON f.uuid = fi.feedback_uuid
+        WHERE f.uuid = #{uuid}
     </select>
 
     <select id="findAll" flushCache="true" resultMap="feedback">
         SELECT
-            f.id,
+            f.uuid,
             f.colleague_uuid,
             f.target_type,
             f.target_id,
@@ -193,13 +193,13 @@
             f.status,
             f.created_time,
             f.updated_time,
-            fi.id as fi_id,
+            fi.uuid as fi_uuid,
             fi.code as fi_code,
             fi.content as fi_content,
-            fi.feedback_id as fi_feedback_id
+            fi.feedback_uuid as fi_feedback_uuid
         FROM feedback f
         LEFT JOIN feedback_item fi
-        ON f.id = fi.feedback_id
+        ON f.uuid = fi.feedback_uuid
         WHERE 1 = 1
         <if test="!requestQuery.filters.isEmpty()">
             <foreach collection="requestQuery.filters" item="filter" index="index" open=" AND " separator=" AND ">
@@ -227,9 +227,9 @@
         </if>
     </select>
 
-    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id" flushCache="true">
-        INSERT INTO feedback (colleague_uuid, target_type, target_id, status)
-        VALUES (#{feedback.colleagueUuid}, #{feedback.targetType}, #{feedback.targetId}, #{feedback.status})
+    <insert id="insert" useGeneratedKeys="true" keyProperty="uuid" keyColumn="uuid" flushCache="true">
+        INSERT INTO feedback (uuid, colleague_uuid, target_type, target_id, status)
+        VALUES (#{feedback.uuid}, #{feedback.colleagueUuid}, #{feedback.targetType}, #{feedback.targetId}, #{feedback.status})
     </insert>
 
     <update id="update">
@@ -241,11 +241,11 @@
             read = #{feedback.read},
             status = #{feedback.status},
             updated_time = now()
-        WHERE f.id = #{feedback.id}
+        WHERE f.uuid = #{feedback.uuid}
     </update>
 
     <update id="markAsRead">
-        UPDATE feedback f SET read = true WHERE f.id = #{id}
+        UPDATE feedback f SET read = true WHERE f.uuid = #{uuid}
     </update>
 
 </mapper>

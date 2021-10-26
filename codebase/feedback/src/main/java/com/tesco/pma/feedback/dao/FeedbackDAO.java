@@ -5,16 +5,17 @@ import com.tesco.pma.pagination.RequestQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface FeedbackDAO {
 
     /**
-     * Get by id
+     * Get by uuid
      *
-     * @param id - unique identifier
+     * @param uuid - unique identifier
      * @return feedback
      */
-    Feedback getById(@Param("id") Long id);
+    Feedback getByUuid(@Param("uuid") UUID uuid);
 
     /**
      * Find all
@@ -36,10 +37,10 @@ public interface FeedbackDAO {
     /**
      * Mark feedback as read.
      *
-     * @param id a Feedback identifier
+     * @param uuid a Feedback identifier
      * @return number of updated entities
      */
-    int markAsRead(@Param("id") Long id);
+    int markAsRead(@Param("uuid") UUID uuid);
 
     /**
      * Update feedback.

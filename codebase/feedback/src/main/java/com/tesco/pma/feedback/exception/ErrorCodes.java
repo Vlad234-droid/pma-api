@@ -7,7 +7,7 @@ public enum ErrorCodes implements ErrorCodeAware {
     /**
      * Entity not found
      */
-    ENTITY_NOT_FOUND;
+    FEEDBACK_NOT_FOUND;
 
     @Override
     public String getCode() {

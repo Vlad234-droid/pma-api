@@ -5,6 +5,7 @@ import com.tesco.pma.pagination.RequestQuery;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Service Interface for managing {@link com.tesco.pma.feedback.api.Feedback}.
@@ -22,25 +23,25 @@ public interface FeedbackService {
     /**
      * Partially updates a feedback.
      *
-     * @param id the id of the entity.
+     * @param uuid the uuid of the entity.
      */
-    void markAsRead(Long id);
+    void markAsRead(UUID uuid);
 
     /**
      * Get all the feedbacks.
      *
      * @return the list of entities.
-     * @param requestQuery
+     * @param requestQuery filter, sort, offset
      */
     List<Feedback> findAll(RequestQuery requestQuery);
 
     /**
-     * Get the "id" feedback.
+     * Get the "uuid" feedback.
      *
-     * @param id the id of the entity.
+     * @param uuid the uuid of the entity.
      * @return the entity.
      */
-    Optional<Feedback> findOne(Long id);
+    Optional<Feedback> findOne(UUID uuid);
 
     /**
      * Update feedback.

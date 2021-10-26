@@ -16,7 +16,7 @@ import java.util.UUID;
 @Data
 public class Feedback implements Serializable {
 
-    private Long id;
+    private UUID uuid;
 
     /**
      * Author. Colleague from whom feedback is written or requested.

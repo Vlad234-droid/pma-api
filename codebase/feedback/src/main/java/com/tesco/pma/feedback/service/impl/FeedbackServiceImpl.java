@@ -23,11 +23,9 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class FeedbackServiceImpl implements FeedbackService {
 
-    private static final String ENTITY_NAME = "entityName";
     private static final String PARAM_NAME = "paramName";
     private static final String PARAM_VALUE = "paramValue";
 
@@ -36,12 +34,14 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Override
+    @Transactional
     public Feedback create(Feedback feedback) {
         log.debug("Request to save Feedback : {}", feedback);
+        feedback.setUuid(UUID.randomUUID());
         if (1 == feedbackDAO.insert(feedback)) {
             Set<FeedbackItem> feedbackItems = feedback.getFeedbackItems()
                     .stream()
-                    .peek(feedbackItem -> feedbackItem.setFeedbackId(feedback.getId()))
+                    .peek(feedbackItem -> feedbackItem.setFeedbackUuid(feedback.getUuid()))
                     .map(feedbackItemService::create)
                     .collect(Collectors.toSet());
             feedback.setFeedbackItems(feedbackItems);
@@ -53,38 +53,37 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
+    @Transactional
     public Feedback update(Feedback feedback) {
         if (1 == feedbackDAO.update(feedback)) {
             for (FeedbackItem feedbackItem : feedback.getFeedbackItems()) {
-                feedbackItem.setFeedbackId(feedback.getId());
+                feedbackItem.setFeedbackUuid(feedback.getUuid());
             }
             Set<FeedbackItem> nonExistFeedbackItems = feedback.getFeedbackItems()
                     .stream()
-                    .filter(feedbackItem -> Objects.isNull(feedbackItem.getId()))
+                    .filter(feedbackItem -> Objects.isNull(feedbackItem.getUuid()))
                     .map(feedbackItemService::create)
                     .collect(Collectors.toSet());
             Set<FeedbackItem> feedbackItems = feedback.getFeedbackItems()
                     .stream()
-                    .filter(feedbackItem -> Objects.nonNull(feedbackItem.getId()))
+                    .filter(feedbackItem -> Objects.nonNull(feedbackItem.getUuid()))
                     .map(feedbackItemService::update)
                     .collect(Collectors.toSet());
             feedbackItems.addAll(nonExistFeedbackItems);
             feedback.setFeedbackItems(feedbackItems);
         } else {
-            String message = messageSourceAccessor.getMessage(ErrorCodes.ENTITY_NOT_FOUND,
-                    Map.of(ENTITY_NAME, "Feedback",
-                            PARAM_NAME, "id",
-                            PARAM_VALUE, feedback.getId()
-                    ));
-            throw new NotFoundException(ErrorCodes.ENTITY_NOT_FOUND.getCode(), message);
+            String message = messageSourceAccessor.getMessage(ErrorCodes.FEEDBACK_NOT_FOUND,
+                    Map.of(PARAM_NAME, "uuid", PARAM_VALUE, feedback.getUuid()));
+            throw new NotFoundException(ErrorCodes.FEEDBACK_NOT_FOUND.getCode(), message);
         }
         return feedback;
     }
 
     @Override
-    public void markAsRead(Long id) {
-        log.debug("Request to mark as read Feedback with id: {}", id);
-        feedbackDAO.markAsRead(id);
+    @Transactional
+    public void markAsRead(UUID uuid) {
+        log.debug("Request to mark as read Feedback with uuid: {}", uuid);
+        feedbackDAO.markAsRead(uuid);
     }
 
     @Override
@@ -96,9 +95,9 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Feedback> findOne(Long id) {
-        log.debug("Request to get Feedback : {}", id);
-        return Optional.ofNullable(feedbackDAO.getById(id));
+    public Optional<Feedback> findOne(UUID uuid) {
+        log.debug("Request to get Feedback : {}", uuid);
+        return Optional.ofNullable(feedbackDAO.getByUuid(uuid));
     }
 
 }

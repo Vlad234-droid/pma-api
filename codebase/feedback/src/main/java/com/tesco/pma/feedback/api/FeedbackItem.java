@@ -6,6 +6,7 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * A POJO for the FeedbackItem entity and DTO.
@@ -14,7 +15,7 @@ import java.io.Serializable;
 @Schema(description = "The Feedback Item. Answers for questions, comments or free form feedback.")
 public class FeedbackItem implements Serializable {
 
-    private Long id;
+    private UUID uuid;
 
     /**
      * Item code. For example, whatWellDone, whatFocusOn, comment or question1, etc.
@@ -34,5 +35,6 @@ public class FeedbackItem implements Serializable {
      * Link to feedback.
      */
     @NotNull
-    private Long feedbackId;
+    @Schema(description = "Link to feedback", required = true)
+    private UUID feedbackUuid;
 }

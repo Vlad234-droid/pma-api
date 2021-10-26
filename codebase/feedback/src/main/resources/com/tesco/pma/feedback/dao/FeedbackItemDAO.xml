@@ -3,9 +3,9 @@
 
 <mapper namespace="com.tesco.pma.feedback.dao.FeedbackItemDAO">
 
-    <insert id="insert" flushCache="true" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO feedback_item (code, content, feedback_id)
-        VALUES (#{feedbackItem.code}, #{feedbackItem.content}, #{feedbackItem.feedbackId})
+    <insert id="insert" flushCache="true" useGeneratedKeys="true" keyColumn="uuid" keyProperty="uuid">
+        INSERT INTO feedback_item (uuid, code, content, feedback_uuid)
+        VALUES (#{feedbackItem.uuid}, #{feedbackItem.code}, #{feedbackItem.content}, #{feedbackItem.feedbackUuid})
     </insert>
 
     <update id="update">
@@ -13,6 +13,6 @@
         SET
             code = #{feedbackItem.code},
             content = #{feedbackItem.content}
-        WHERE id = #{feedbackItem.id}
+        WHERE uuid = #{feedbackItem.uuid}
     </update>
 </mapper>
