@@ -3,6 +3,7 @@ package com.tesco.pma.colleague.security.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.tesco.pma.api.Identified;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ import java.util.HashSet;
 @NoArgsConstructor
 @JsonIgnoreProperties({"id"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder(alphabetic = true)
 public class Account implements Identified<Integer> {
 
     private Integer id;
@@ -43,6 +45,7 @@ public class Account implements Identified<Integer> {
     @JsonProperty("employeeNumber")
     private String employeeNumber;
 
+    @JsonProperty(value = "roles")
     private Collection<Role> roles = new HashSet<>();
 
 }

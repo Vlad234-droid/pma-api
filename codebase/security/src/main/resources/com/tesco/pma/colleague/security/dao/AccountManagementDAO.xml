@@ -25,18 +25,17 @@
                r.name    as role_name,
                r.role_id as role_id
         FROM pm_account a
-                 LEFT JOIN pm_account_role ar on a.id = ar.account_id
-                 LEFT JOIN pm_role r on r.id = ar.role_id
+                 LEFT JOIN pm_account_role ar on a.name = ar.account_name
+                 LEFT JOIN pm_role r on r.role_id = ar.role_id
+        ORDER BY name;
     </select>
 
     <insert id="create">
-        INSERT INTO pm_account (name, iam_id, status, type, last_login, employee_number)
-        VALUES (#{account.name},
-                #{account.iamId},
-                #{account.status},
-                #{account.type},
-                #{account.lastLogin},
-                #{account.employeeNumber})
+        INSERT INTO pm_account (name, iam_id, status, type)
+        VALUES (#{request.name},
+                #{request.iamId},
+                #{request.status},
+                #{request.type})
     </insert>
 
     <update id="disableAccount" flushCache="true">
@@ -50,5 +49,23 @@
         SET status = (#{request.status})
         WHERE name = (#{request.name})
     </update>
+
+    <insert id="assignRole" flushCache="true">
+        INSERT INTO pm_account_role (account_name, role_id)
+        VALUES (#{accountName},
+                #{role})
+    </insert>
+
+    <delete id="removeRole" flushCache="true">
+        DELETE
+        FROM pm_account_role
+        WHERE account_name = #{accountName}
+          AND role_id = #{role}
+    </delete>
+
+<!--    AND rp.uuid in-->
+<!--    <foreach item="rpUuid" collection="reportingPeriodUuids" separator="," open="(" close=")">-->
+<!--        #{rpUuid, jdbcType=OTHER, typeHandler=com.tesco.gpg.dao.utils.UuidTypeHandler}-->
+<!--    </foreach>;-->
 
 </mapper>

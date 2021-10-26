@@ -1,9 +1,6 @@
 package com.tesco.pma.colleague.security.service;
 
-import com.tesco.pma.colleague.security.domain.Account;
-import com.tesco.pma.colleague.security.domain.DisableAccountRequest;
-import com.tesco.pma.colleague.security.domain.EnableAccountRequest;
-import com.tesco.pma.colleague.security.domain.Role;
+import com.tesco.pma.colleague.security.domain.*;
 
 import java.util.List;
 
@@ -26,21 +23,21 @@ public interface UserManagementService {
 
     /**
      *
-     * @param account
+     * @param request
      */
-    void createAccount(Account account);
+    void createAccount(CreateAccountRequest request);
 
     /**
      *
-     * @param role
+     * @param request
      */
-    void grantRole(Role role);
+    void grantRole(AssignRoleRequest request);
 
     /**
      *
-     * @param role
+     * @param request
      */
-    void revokeRole(Role role);
+    void revokeRole(RemoveRoleRequest request);
 
     /**
      *

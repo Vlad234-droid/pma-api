@@ -2,10 +2,7 @@ package com.tesco.pma.colleague.security.service;
 
 import com.tesco.pma.colleague.security.dao.AccountManagementDAO;
 import com.tesco.pma.colleague.security.dao.RoleManagementDAO;
-import com.tesco.pma.colleague.security.domain.Account;
-import com.tesco.pma.colleague.security.domain.DisableAccountRequest;
-import com.tesco.pma.colleague.security.domain.EnableAccountRequest;
-import com.tesco.pma.colleague.security.domain.Role;
+import com.tesco.pma.colleague.security.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -34,18 +31,25 @@ public class UserManagementServiceImpl implements UserManagementService {
     }
 
     @Override
-    public void createAccount(Account account) {
-        int inserted = accountManagementDAO.create(account);
+    public void createAccount(CreateAccountRequest request) {
+        int inserted = accountManagementDAO.create(request);
+        for (String role : request.getRoles()) {
+            accountManagementDAO.assignRole(request.getName(), role);
+        }
     }
 
     @Override
-    public void grantRole(Role role) {
-
+    public void grantRole(AssignRoleRequest request) {
+        for (String role : request.getRoles()) {
+            accountManagementDAO.assignRole(request.getAccountName(), role);
+        }
     }
 
     @Override
-    public void revokeRole(Role role) {
-
+    public void revokeRole(RemoveRoleRequest request) {
+        for (String role : request.getRoles()) {
+            accountManagementDAO.removeRole(request.getName(), role);
+        }
     }
 
     @Override

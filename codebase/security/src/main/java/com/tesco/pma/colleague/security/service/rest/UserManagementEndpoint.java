@@ -1,9 +1,6 @@
 package com.tesco.pma.colleague.security.service.rest;
 
-import com.tesco.pma.colleague.security.domain.Account;
-import com.tesco.pma.colleague.security.domain.DisableAccountRequest;
-import com.tesco.pma.colleague.security.domain.EnableAccountRequest;
-import com.tesco.pma.colleague.security.domain.Role;
+import com.tesco.pma.colleague.security.domain.*;
 import com.tesco.pma.colleague.security.service.UserManagementService;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
@@ -45,8 +42,8 @@ public class UserManagementEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
     @PostMapping(path = "/user-management/accounts", consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<Void> createAccount(@RequestBody @Valid Account account) {
-        userManagementService.createAccount(account);
+    public RestResponse<Void> createAccount(@RequestBody @Valid CreateAccountRequest request) {
+        userManagementService.createAccount(request);
         return RestResponse.success();
     }
 
@@ -80,8 +77,8 @@ public class UserManagementEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
     @PostMapping(path = "/role-management/roles", consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<Void> grantRole(@RequestBody @Valid Role role) {
-        userManagementService.grantRole(role);
+    public RestResponse<Void> grantRole(@RequestBody @Valid AssignRoleRequest request) {
+        userManagementService.grantRole(request);
         return RestResponse.success();
     }
 
@@ -89,8 +86,8 @@ public class UserManagementEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
     @DeleteMapping(path = "/role-management/roles", consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<Void> revokeRole(@RequestBody @Valid Role role) {
-        userManagementService.revokeRole(role);
+    public RestResponse<Void> revokeRole(@RequestBody @Valid RemoveRoleRequest request) {
+        userManagementService.revokeRole(request);
         return RestResponse.success();
     }
 
