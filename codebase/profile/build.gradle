@@ -5,6 +5,7 @@ plugins {
 dependencies {
     implementation project(':api')
     implementation project(':service')
+    implementation project(':organisation')
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"

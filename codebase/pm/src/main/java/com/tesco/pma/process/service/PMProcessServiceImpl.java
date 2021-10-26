@@ -127,6 +127,11 @@ public class PMProcessServiceImpl implements PMProcessService {
     }
 
     @Override
+    public String getFullMetadata(UUID uuid) {
+        return metadataDAO.getFullMetadata(uuid);
+    }
+
+    @Override
     public void saveProcessMetadata(UUID processUuid, String metadata) {
         try {
             metadataDAO.saveProcessMetadata(processUuid, metadata);

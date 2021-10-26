@@ -12,4 +12,6 @@ public interface PMRuntimeProcessMetadataDAO {
                      @Param("metadata") String metadata);
 
     List<TimelineResponse> readMetadata(@Param("processUuid") UUID processUuid);
+
+    String getFullMetadata(@Param("uuid") UUID uuid);
 }
