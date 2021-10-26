@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.colleague.security.dao.AccountManagementDAO">
+
+    <resultMap id="accountsResultMap" type="com.tesco.pma.colleague.security.domain.Account">
+        <result property="name" column="name"/>
+        <result property="type" column="type"/>
+        <result property="iamId" column="iam_id"/>
+        <result property="status" column="status"/>
+        <result property="type" column="type"/>
+        <result property="lastLogin" column="last_login"/>
+        <result property="employeeNumber" column="employee_number"/>
+        <collection property="roles" ofType="com.tesco.pma.colleague.security.domain.Role">
+            <result property="name" column="role_name"/>
+            <result property="roleId" column="role_id"/>
+        </collection>
+    </resultMap>
+
+    <select id="get" resultMap="accountsResultMap">
+        SELECT a.name    as name,
+               a.type    as type,
+               a.status  as status,
+               a.iam_id  as iam_id,
+               r.name    as role_name,
+               r.role_id as role_id
+        FROM pm_account a
+                 LEFT JOIN pm_account_role ar on a.id = ar.account_id
+                 LEFT JOIN pm_role r on r.id = ar.role_id
+    </select>
+
+    <insert id="create">
+        INSERT INTO pm_account (name, iam_id, status, type, last_login, employee_number)
+        VALUES (#{account.name},
+                #{account.iamId},
+                #{account.status},
+                #{account.type},
+                #{account.lastLogin},
+                #{account.employeeNumber})
+    </insert>
+
+    <update id="disableAccount" flushCache="true">
+        UPDATE pm_account
+        SET status = (#{request.status})
+        WHERE name = (#{request.name})
+    </update>
+
+    <update id="enableAccount" flushCache="true">
+        UPDATE pm_account
+        SET status = (#{request.status})
+        WHERE name = (#{request.name})
+    </update>
+
+</mapper>

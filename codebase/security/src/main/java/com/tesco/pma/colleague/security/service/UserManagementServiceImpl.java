@@ -1,6 +1,10 @@
 package com.tesco.pma.colleague.security.service;
 
+import com.tesco.pma.colleague.security.dao.AccountManagementDAO;
+import com.tesco.pma.colleague.security.dao.RoleManagementDAO;
 import com.tesco.pma.colleague.security.domain.Account;
+import com.tesco.pma.colleague.security.domain.DisableAccountRequest;
+import com.tesco.pma.colleague.security.domain.EnableAccountRequest;
 import com.tesco.pma.colleague.security.domain.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,19 +20,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserManagementServiceImpl implements UserManagementService {
 
+    private final AccountManagementDAO accountManagementDAO;
+    private final RoleManagementDAO roleManagementDAO;
+
     @Override
     public List<Role> getRoles() {
-        return List.of();
+        return roleManagementDAO.get();
     }
 
     @Override
     public List<Account> getAccounts() {
-        return List.of();
+        return accountManagementDAO.get();
     }
 
     @Override
     public void createAccount(Account account) {
-
+        int inserted = accountManagementDAO.create(account);
     }
 
     @Override
@@ -42,13 +49,13 @@ public class UserManagementServiceImpl implements UserManagementService {
     }
 
     @Override
-    public void disableAccount(Account account) {
-
+    public void disableAccount(DisableAccountRequest request) {
+        int updated = accountManagementDAO.disableAccount(request);
     }
 
     @Override
-    public void enableAccount(Account account) {
-
+    public void enableAccount(EnableAccountRequest request) {
+        int updated = accountManagementDAO.enableAccount(request);
     }
 
 }

@@ -1,6 +1,8 @@
 package com.tesco.pma.colleague.security.service;
 
 import com.tesco.pma.colleague.security.domain.Account;
+import com.tesco.pma.colleague.security.domain.DisableAccountRequest;
+import com.tesco.pma.colleague.security.domain.EnableAccountRequest;
 import com.tesco.pma.colleague.security.domain.Role;
 
 import java.util.List;
@@ -42,14 +44,14 @@ public interface UserManagementService {
 
     /**
      *
-     * @param account
+     * @param request
      */
-    void disableAccount(Account account);
+    void disableAccount(DisableAccountRequest request);
 
     /**
      *
-     * @param account
+     * @param request
      */
-    void enableAccount(Account account);
+    void enableAccount(EnableAccountRequest request);
 
 }

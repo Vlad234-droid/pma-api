@@ -1,37 +1,49 @@
 package com.tesco.pma.colleague.security.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tesco.pma.api.Identified;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Collection;
+import java.util.HashSet;
 
 /**
+ *
  * Used to give the account to a particular resource under a particular role.
+ *
+ * <p>For more information:
+ *  @see <a href="https://github.dev.global.tesco.org/97-TeamTools/Colleague-Authentication-and-Access/wiki/Data-Collections">here</a>
  */
 @Data
-public class Account {
+@NoArgsConstructor
+@JsonIgnoreProperties({"id"})
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Account implements Identified<Integer> {
+
+    private Integer id;
 
     @JsonProperty("accountName")
     private String name;
 
-    @JsonProperty("accountID")
-    private String id;
+    @JsonProperty("accountType")
+    private String type;
+
+    @JsonProperty("iamId")
+    private String iamId;
 
     @JsonProperty("accountStatus")
     private String status;
 
-    @JsonProperty("accountType")
-    private String type;
-
     @JsonProperty("lastLogin")
     private String lastLogin;
 
-    @JsonProperty("roleId")
-    private String roleId;
-
-    @JsonProperty("roleName")
-    private String roleName;
-
     @JsonProperty("employeeNumber")
     private String employeeNumber;
+
+    private Collection<Role> roles = new HashSet<>();
 
 }
 

@@ -1,6 +1,8 @@
 package com.tesco.pma.colleague.security.service.rest;
 
 import com.tesco.pma.colleague.security.domain.Account;
+import com.tesco.pma.colleague.security.domain.DisableAccountRequest;
+import com.tesco.pma.colleague.security.domain.EnableAccountRequest;
 import com.tesco.pma.colleague.security.domain.Role;
 import com.tesco.pma.colleague.security.service.UserManagementService;
 import com.tesco.pma.rest.HttpStatusCodes;
@@ -17,6 +19,12 @@ import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+/**
+ *
+ * <p>For more information:
+ *  @see <a href="https://github.dev.global.tesco.org/97-TeamTools/Colleague-Authentication-and-Access/wiki/REST-Provisioning-APIs">here</a>
+ *
+ */
 @RestController
 @RequestMapping(path = "/security", produces = APPLICATION_JSON_VALUE)
 @Validated
@@ -44,10 +52,10 @@ public class UserManagementEndpoint {
 
     @Operation(summary = "Disable an account", description = "Disable an account", tags = "security")
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
-    @DeleteMapping(path = "/user-management/accounts", consumes = APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "/user-management/accounts", consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<Void> disableAccount(@RequestBody @Valid Account account) {
-        userManagementService.disableAccount(account);
+    public RestResponse<Void> disableAccount(@RequestBody @Valid DisableAccountRequest request) {
+        userManagementService.disableAccount(request);
         return RestResponse.success();
     }
 
@@ -55,8 +63,8 @@ public class UserManagementEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
     @PutMapping(path = "/user-management/accounts", consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<Void> enableAccount(@RequestBody @Valid Account account) {
-        userManagementService.enableAccount(account);
+    public RestResponse<Void> enableAccount(@RequestBody @Valid EnableAccountRequest request) {
+        userManagementService.enableAccount(request);
         return RestResponse.success();
     }
 
