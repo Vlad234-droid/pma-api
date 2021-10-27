@@ -7,6 +7,8 @@ import com.tesco.pma.colleague.security.exception.ErrorCodes;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.organisation.api.Colleague;
+import com.tesco.pma.organisation.service.ConfigEntryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Implementation of {@link UserManagementService}.
@@ -27,10 +30,12 @@ public class UserManagementServiceImpl implements UserManagementService {
     private final AccountManagementDAO accountManagementDAO;
     private final RoleManagementDAO roleManagementDAO;
 
+    private final ConfigEntryService configEntryService;
+
     private final NamedMessageSourceAccessor messages;
 
-    private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     private static final String ACCOUNT_NAME_PARAMETER_NAME = "accountName";
+    private static final String IAM_ID_PARAMETER_NAME = "iamId";
     private static final String ROLE_NAME_PARAMETER_NAME = "roleName";
 
     @Override
@@ -50,8 +55,8 @@ public class UserManagementServiceImpl implements UserManagementService {
     public void createAccount(CreateAccountRequest request) {
 
         // TODO
-        if (!accountExists(request)) {
-            throw colleagueNotFound(request.getStatus());
+        if (findColleagueByIamIdOrAccountName(request.getName(), request.getIamId()).isEmpty()) {
+            throw colleagueNotFound(request.getName(), request.getIamId());
         }
 
         int inserted = accountManagementDAO.create(request);
@@ -88,21 +93,33 @@ public class UserManagementServiceImpl implements UserManagementService {
         int updated = accountManagementDAO.enableAccount(request);
     }
 
-    // TODO
-    private boolean accountExists(CreateAccountRequest request) {
-        return true;
+    /**
+     *  To check the account through PMA database and Colleague Facts API
+     *
+     * @param accountName
+     * @param iamId
+     * @return
+     */
+    private Optional<Colleague> findColleagueByIamIdOrAccountName(String accountName, String iamId) {
+        Colleague colleague = configEntryService.getColleagueByIamId(iamId);
+        if (colleague == null) {
+            colleague = configEntryService.getColleagueByIamId(accountName);
+        }
+
+        return Optional.ofNullable(colleague);
     }
 
-    private NotFoundException colleagueNotFound(String colleague) {
-        return new NotFoundException(ErrorCodes.COLLEAGUE_NOT_FOUND.getCode(),
-                messages.getMessage(ErrorCodes.COLLEAGUE_NOT_FOUND,
-                        Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleague)));
+    private NotFoundException colleagueNotFound(String accountName, String iamId) {
+        return new NotFoundException(ErrorCodes.SECURITY_COLLEAGUE_NOT_FOUND.getCode(),
+                messages.getMessage(ErrorCodes.SECURITY_COLLEAGUE_NOT_FOUND,
+                        Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName,
+                                IAM_ID_PARAMETER_NAME, iamId)));
     }
 
     private DatabaseConstraintViolationException duplicatedRole(DuplicateKeyException e,
                                                                 String accountName, String roleName) {
-        return new DatabaseConstraintViolationException(ErrorCodes.DUPLICATED_ROLE.name(),
-                messages.getMessage(ErrorCodes.DUPLICATED_ROLE,
+        return new DatabaseConstraintViolationException(ErrorCodes.SECURITY_DUPLICATED_ROLE.name(),
+                messages.getMessage(ErrorCodes.SECURITY_DUPLICATED_ROLE,
                         Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName,
                                 ROLE_NAME_PARAMETER_NAME, roleName
                         )), null, e);

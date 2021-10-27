@@ -7,12 +7,12 @@ public enum ErrorCodes implements ErrorCodeAware {
     /**
      * Colleague not found in PMA database and Colleague Facts API
      */
-    COLLEAGUE_NOT_FOUND,
+    SECURITY_COLLEAGUE_NOT_FOUND,
 
     /**
      * Role for account already added
      */
-    DUPLICATED_ROLE;
+    SECURITY_DUPLICATED_ROLE;
 
     @Override
     public String getCode() {
