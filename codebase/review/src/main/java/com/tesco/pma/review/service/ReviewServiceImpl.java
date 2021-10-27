@@ -180,38 +180,48 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public List<Review> updateReviews(List<Review> reviews) {
+    public List<Review> updateReviews(UUID performanceCycleUuid,
+                                      UUID colleagueUuid,
+                                      ReviewType type,
+                                      List<Review> reviews) {
         List<Review> results = new ArrayList<>();
-        IntStream.range(0, reviews.size())
-                .forEach(idx -> {
-                    var review = reviews.get(idx);
-                    var reviewBefore = reviewDAO.getReview(
-                            review.getPerformanceCycleUuid(),
-                            review.getColleagueUuid(),
-                            review.getType(),
-                            idx + 1);
-                    if (null == reviewBefore) {
-                        review.setUuid(UUID.randomUUID());
-                        review.setNumber(idx + 1);
-                        try {
-                            reviewDAO.createReview(review);
-                        } catch (DuplicateKeyException e) {
-                            throw databaseConstraintViolation(
-                                    REVIEW_ALREADY_EXISTS,
-                                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, review.getColleagueUuid(),
-                                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, review.getPerformanceCycleUuid(),
-                                            TYPE_PARAMETER_NAME, review.getType(),
-                                            NUMBER_PARAMETER_NAME, review.getNumber()),
-                                    e);
+        for (int idx = 0; idx < reviews.size(); idx++) {
+            var review = reviews.get(idx);
+            review.setPerformanceCycleUuid(performanceCycleUuid);
+            review.setColleagueUuid(colleagueUuid);
+            review.setType(type);
+            var reviewBefore = reviewDAO.getReview(
+                    review.getPerformanceCycleUuid(),
+                    review.getColleagueUuid(),
+                    review.getType(),
+                    idx + 1);
+            if (null == reviewBefore) {
+                review.setUuid(UUID.randomUUID());
+                review.setNumber(idx + 1);
+                try {
+                    reviewDAO.createReview(review);
+                } catch (DuplicateKeyException e) {
+                    throw databaseConstraintViolation(
+                            REVIEW_ALREADY_EXISTS,
+                            Map.of(COLLEAGUE_UUID_PARAMETER_NAME, review.getColleagueUuid(),
+                                    PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, review.getPerformanceCycleUuid(),
+                                    TYPE_PARAMETER_NAME, review.getType(),
+                                    NUMBER_PARAMETER_NAME, review.getNumber()),
+                            e);
 
-                        }
-                    } else {
-                        review.setUuid(reviewBefore.getUuid());
-                        review.setNumber(reviewBefore.getNumber());
-                        reviewDAO.updateReview(review);
-                    }
-                    results.add(review);
-                });
+                }
+            } else {
+                review.setUuid(reviewBefore.getUuid());
+                review.setNumber(reviewBefore.getNumber());
+                reviewDAO.updateReview(review);
+            }
+            results.add(review);
+        }
+        reviewDAO.deleteReviews(
+                performanceCycleUuid,
+                colleagueUuid,
+                type,
+                reviews.size() + 1);
         return results;
     }
 

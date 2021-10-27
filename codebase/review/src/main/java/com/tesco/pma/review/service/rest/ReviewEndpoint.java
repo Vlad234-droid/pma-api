@@ -107,12 +107,11 @@ public class ReviewEndpoint {
                                                     @PathVariable("performanceCycleUuid") UUID performanceCycleUuid,
                                                     @PathVariable("type") ReviewType type,
                                                     @RequestBody List<Review> reviews) {
-        reviews.forEach(review -> {
-            review.setPerformanceCycleUuid(performanceCycleUuid);
-            review.setColleagueUuid(colleagueUuid);
-            review.setType(type);
-        });
-        return success(reviewService.updateReviews(reviews));
+        return success(reviewService.updateReviews(
+                performanceCycleUuid,
+                colleagueUuid,
+                type,
+                reviews));
     }
 
     /**

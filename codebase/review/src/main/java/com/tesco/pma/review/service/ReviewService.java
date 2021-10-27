@@ -85,11 +85,17 @@ public interface ReviewService {
     /**
      * Create/update reviews.
      *
-     * @param reviews list of reviews.
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
+     * @param type                 a review type
+     * @param reviews              list of reviews.
      * @return created/updated reviews.
      * @throws DatabaseConstraintViolationException review already exist.
      */
-    List<Review> updateReviews(List<Review> reviews);
+    List<Review> updateReviews(@NotNull UUID performanceCycleUuid,
+                               @NotNull UUID colleagueUuid,
+                               @NotNull ReviewType type,
+                               List<Review> reviews);
 
     /**
      * Updates review status.

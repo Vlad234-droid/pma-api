@@ -108,19 +108,19 @@
     <insert id="createReview" flushCache="true">
         INSERT INTO review
         (uuid,
-        colleague_uuid,
-        performance_cycle_uuid,
-        type_id,
-        number,
-        properties,
-        status_id)
+         colleague_uuid,
+         performance_cycle_uuid,
+         type_id,
+         number,
+         properties,
+         status_id)
         VALUES (#{review.uuid},
-        #{review.colleagueUuid},
-        #{review.performanceCycleUuid},
-        #{review.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.review.domain.ReviewType},
-        #{review.number},
-        #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-        #{review.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.review.domain.ReviewStatus});
+                #{review.colleagueUuid},
+                #{review.performanceCycleUuid},
+                #{review.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.review.domain.ReviewType},
+                #{review.number},
+                #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+                #{review.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.review.domain.ReviewStatus});
     </insert>
 
     <select id="getReviewByUuid" resultMap="reviewResultMap">
@@ -169,6 +169,15 @@
         DELETE
         FROM review
         WHERE uuid = #{reviewUuid}
+    </delete>
+
+    <delete id="deleteReviews">
+        DELETE
+        FROM review r
+        WHERE r.colleague_uuid = #{colleagueUuid}
+          and r.performance_cycle_uuid = #{performanceCycleUuid}
+          and r.type_id = #{type.id}
+          and r.number >= #{startNumber}
     </delete>
 
     <update id="updateReview" flushCache="true">

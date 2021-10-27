@@ -141,6 +141,20 @@ public interface ReviewDAO {
     int deleteReview(@Param("reviewUuid") UUID reviewUuid);
 
     /**
+     * Delete reviews with number >= startNumber
+     *
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
+     * @param type                 a review type
+     * @param startNumber          a start sequence number of review
+     * @return number of deleted reviews
+     */
+    int deleteReviews(@Param("performanceCycleUuid") UUID performanceCycleUuid,
+                      @Param("colleagueUuid") UUID colleagueUuid,
+                      @Param("type") ReviewType type,
+                      @Param("startNumber") Integer startNumber);
+
+    /**
      * Insert or update a working group objective
      *
      * @param workingGroupObjective a WorkingGroupObjective
