@@ -42,12 +42,9 @@ public class FeedbackEndpoint {
     @PostMapping("/feedbacks")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new feedback with items", tags = {"feedback"})
-    @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Feedback has already an UUID")
+    @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Feedback created")
     public RestResponse<Feedback> createFeedback(@Valid @RequestBody Feedback feedback) throws URISyntaxException {
         log.debug("REST request to save Feedback : {}", feedback);
-        if (feedback.getUuid() != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A new feedback cannot already have an UUID");
-        }
         return RestResponse.success(feedbackService.create(feedback));
     }
 
@@ -63,6 +60,7 @@ public class FeedbackEndpoint {
      */
     @PutMapping("/feedbacks/{uuid}")
     @Operation(summary = "Updates an existing feedback", tags = {"feedback"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Feedback updated")
     @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Invalid UUID")
     public RestResponse<Feedback> updateFeedback(
             @PathVariable(value = "uuid", required = false) final UUID uuid,
@@ -92,6 +90,7 @@ public class FeedbackEndpoint {
     @PutMapping(value = "/feedbacks/{uuid}/read")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Mark an existing feedback as read", tags = {"feedback"})
+    @ApiResponse(responseCode = HttpStatusCodes.NO_CONTENT, description = "Mark as read successfully")
     public RestResponse<Void> markAsRead(
             @PathVariable(value = "uuid", required = true) final UUID uuid
     ) throws URISyntaxException {

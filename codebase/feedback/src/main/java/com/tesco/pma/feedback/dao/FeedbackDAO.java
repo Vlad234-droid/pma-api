@@ -1,6 +1,8 @@
 package com.tesco.pma.feedback.dao;
 
+import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.feedback.api.Feedback;
+import com.tesco.pma.feedback.api.FeedbackStatus;
 import com.tesco.pma.pagination.RequestQuery;
 import org.apache.ibatis.annotations.Param;
 
@@ -46,7 +48,8 @@ public interface FeedbackDAO {
      * Update feedback.
      *
      * @param feedback a Feedback
+     * @param statusFilter previous status filter
      * @return number of updated entities
      */
-    int update(@Param("feedback") Feedback feedback);
+    int update(@Param("feedback") Feedback feedback, @Param("statusFilter") DictionaryFilter<FeedbackStatus> statusFilter);
 }

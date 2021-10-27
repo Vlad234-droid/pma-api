@@ -6,10 +6,14 @@
     <resultMap id="feedback" type="com.tesco.pma.feedback.api.Feedback">
         <id column="uuid" property="uuid"/>
         <result column="colleague_uuid" property="colleagueUuid"/>
-        <result column="target_type" property="targetType"/>
+        <result column="target_type_id" property="targetType"
+                typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.feedback.api.FeedbackTargetType"/>
         <result column="target_id" property="targetId"/>
         <result column="read" property="read"/>
-        <result column="status" property="status"/>
+        <result column="status_id" property="status"
+                typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.feedback.api.FeedbackStatus"/>
         <result column="created_time" property="createdTime"/>
         <result column="updated_time" property="updatedTime"/>
         <collection property="feedbackItems" ofType="com.tesco.pma.feedback.api.FeedbackItem">
@@ -20,6 +24,15 @@
         </collection>
     </resultMap>
 
+    <sql id="addStatusIdCondition">
+        <if test="statusFilter != null and !statusFilter.isEmpty()">
+            AND STATUS_ID <if test="!statusFilter.isInclude()">NOT</if> IN
+            <foreach collection="statusFilter.getItems()" item="s" index="i" open="(" separator="," close=")">
+                #{s.id}
+            </foreach>
+        </if>
+    </sql>
+
     <sql id="getSortField">
         <choose>
             <when test="sort.field == 'uuid'">
@@ -29,7 +42,7 @@
                 colleague_uuid
             </when>
             <when test="sort.field == 'target-type'">
-                target_type
+                target_type_id
             </when>
             <when test="sort.field == 'target-id'">
                 target_id
@@ -38,7 +51,7 @@
                 read
             </when>
             <when test="sort.field == 'status'">
-                status
+                status_id
             </when>
             <when test="sort.field == 'created-time'">
                 created_time
@@ -164,39 +177,38 @@
     </sql>
 
     <select id="getByUuid" flushCache="true" resultMap="feedback">
-        SELECT
-            f.uuid,
-            f.colleague_uuid,
-            f.target_type,
-            f.target_id,
-            f.read,
-            f.status,
-            f.created_time,
-            f.updated_time,
-            fi.uuid as fi_uuid,
-            fi.code as fi_code,
-            fi.content as fi_content,
-            fi.feedback_uuid as fi_feedback_uuid
+        SELECT f.uuid,
+               f.colleague_uuid,
+               f.target_type_id,
+               f.target_id,
+               f.read,
+               f.status_id,
+               f.created_time,
+               f.updated_time,
+               fi.uuid          as fi_uuid,
+               fi.code          as fi_code,
+               fi.content       as fi_content,
+               fi.feedback_uuid as fi_feedback_uuid
         FROM feedback f
-        JOIN feedback_item fi
-        ON f.uuid = fi.feedback_uuid
+                 JOIN feedback_item fi
+                      ON f.uuid = fi.feedback_uuid
         WHERE f.uuid = #{uuid}
     </select>
 
     <select id="findAll" flushCache="true" resultMap="feedback">
         SELECT
-            f.uuid,
-            f.colleague_uuid,
-            f.target_type,
-            f.target_id,
-            f.read,
-            f.status,
-            f.created_time,
-            f.updated_time,
-            fi.uuid as fi_uuid,
-            fi.code as fi_code,
-            fi.content as fi_content,
-            fi.feedback_uuid as fi_feedback_uuid
+        f.uuid,
+        f.colleague_uuid,
+        f.target_type_id,
+        f.target_id,
+        f.read,
+        f.status_id,
+        f.created_time,
+        f.updated_time,
+        fi.uuid as fi_uuid,
+        fi.code as fi_code,
+        fi.content as fi_content,
+        fi.feedback_uuid as fi_feedback_uuid
         FROM feedback f
         LEFT JOIN feedback_item fi
         ON f.uuid = fi.feedback_uuid
@@ -228,24 +240,35 @@
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="uuid" keyColumn="uuid" flushCache="true">
-        INSERT INTO feedback (uuid, colleague_uuid, target_type, target_id, status)
-        VALUES (#{feedback.uuid}, #{feedback.colleagueUuid}, #{feedback.targetType}, #{feedback.targetId}, #{feedback.status})
+        INSERT INTO feedback (uuid,
+                              colleague_uuid,
+                              target_type_id,
+                              target_id,
+                              status_id)
+        VALUES (#{feedback.uuid},
+                #{feedback.colleagueUuid},
+                #{feedback.targetType, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.feedback.api.FeedbackTargetType},
+                #{feedback.targetId},
+                #{feedback.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.feedback.api.FeedbackStatus})
     </insert>
 
     <update id="update">
         UPDATE feedback f
         SET
             colleague_uuid = #{feedback.colleagueUuid},
-            target_type = #{feedback.targetType},
-            target_id = #{feedback.targetId},
-            read = #{feedback.read},
-            status = #{feedback.status},
-            updated_time = now()
+            target_type_id = #{feedback.targetType, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.feedback.api.FeedbackTargetType},
+            target_id      = #{feedback.targetId},
+            read           = #{feedback.read},
+            status_id      = #{feedback.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.feedback.api.FeedbackStatus},
+            updated_time   = now()
         WHERE f.uuid = #{feedback.uuid}
+            <include refid="addStatusIdCondition" />
     </update>
 
     <update id="markAsRead">
-        UPDATE feedback f SET read = true WHERE f.uuid = #{uuid}
+        UPDATE feedback f
+        SET read = true
+        WHERE f.uuid = #{uuid}
     </update>
 
 </mapper>

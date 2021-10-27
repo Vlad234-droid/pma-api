@@ -1,10 +1,12 @@
 package com.tesco.pma.feedback.service.impl;
 
+import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.feedback.api.Feedback;
 import com.tesco.pma.feedback.api.FeedbackItem;
+import com.tesco.pma.feedback.api.FeedbackStatus;
 import com.tesco.pma.feedback.dao.FeedbackDAO;
 import com.tesco.pma.feedback.exception.ErrorCodes;
 import com.tesco.pma.feedback.service.FeedbackItemService;
@@ -12,9 +14,11 @@ import com.tesco.pma.feedback.service.FeedbackService;
 import com.tesco.pma.pagination.RequestQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ConstraintViolationException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,6 +32,13 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     private static final String PARAM_NAME = "paramName";
     private static final String PARAM_VALUE = "paramValue";
+    private static final Map<FeedbackStatus, Collection<FeedbackStatus>> UPDATE_STATUS_RULE_MAP;
+
+    static {
+        UPDATE_STATUS_RULE_MAP = Map.of(
+                FeedbackStatus.COMPLETED, Set.of(FeedbackStatus.PENDING)
+        );
+    }
 
     private final FeedbackDAO feedbackDAO;
     private final FeedbackItemService feedbackItemService;
@@ -37,17 +48,18 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Transactional
     public Feedback create(Feedback feedback) {
         log.debug("Request to save Feedback : {}", feedback);
-        feedback.setUuid(UUID.randomUUID());
-        if (1 == feedbackDAO.insert(feedback)) {
+        try {
+            feedback.setUuid(UUID.randomUUID());
+            feedbackDAO.insert(feedback);
             Set<FeedbackItem> feedbackItems = feedback.getFeedbackItems()
                     .stream()
                     .peek(feedbackItem -> feedbackItem.setFeedbackUuid(feedback.getUuid()))
                     .map(feedbackItemService::create)
                     .collect(Collectors.toSet());
             feedback.setFeedbackItems(feedbackItems);
-        } else {
+        } catch (DuplicateKeyException | ConstraintViolationException ex) {
             String message = messageSourceAccessor.getMessage(com.tesco.pma.exception.ErrorCodes.CONSTRAINT_VIOLATION);
-            throw new DatabaseConstraintViolationException(com.tesco.pma.exception.ErrorCodes.CONSTRAINT_VIOLATION.getCode(), message, null);
+            throw new DatabaseConstraintViolationException(com.tesco.pma.exception.ErrorCodes.CONSTRAINT_VIOLATION.getCode(), message, null, ex);
         }
         return feedback;
     }
@@ -55,7 +67,8 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     @Transactional
     public Feedback update(Feedback feedback) {
-        if (1 == feedbackDAO.update(feedback)) {
+        DictionaryFilter<FeedbackStatus> statusFilter = DictionaryFilter.includeFilter(UPDATE_STATUS_RULE_MAP.get(feedback.getStatus()));
+        if (1 == feedbackDAO.update(feedback, statusFilter)) {
             for (FeedbackItem feedbackItem : feedback.getFeedbackItems()) {
                 feedbackItem.setFeedbackUuid(feedback.getUuid());
             }

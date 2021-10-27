@@ -46,10 +46,10 @@ public class Feedback implements Serializable {
     private Boolean read;
 
     /**
-     * Status: DRAFT, SUBMITTED, PENDING, PENDING_DRAFT, COMPLETED.
+     * Status: DRAFT, SUBMITTED, PENDING, COMPLETED.
      */
     @NotNull
-    @Schema(description = "Status: DRAFT, SUBMITTED, PENDING, PENDING_DRAFT, COMPLETED.", required = true)
+    @Schema(description = "Status: DRAFT, SUBMITTED, PENDING, COMPLETED.", required = true)
     private FeedbackStatus status;
 
     @Schema(defaultValue = "now")
