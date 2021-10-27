@@ -32,18 +32,25 @@ public interface AccountManagementDAO {
 
     /**
      *
-     * @param accountName
-     * @param role
+     * @param accountId
+     * @param roleId
      * @return
      */
-    int assignRole(@Param("accountName") final String accountName, @Param("role") final String role);
+    int assignRole(@Param("accountId") final long accountId, @Param("roleId") final int roleId);
 
     /**
      *
-     * @param accountName
-     * @param role
+     * @param accountId
+     * @param roleId
      * @return
      */
-    int removeRole(@Param("accountName") final String accountName, @Param("role") final String role);
+    int removeRole(@Param("accountId") final long accountId, @Param("roleId") final int roleId);
+
+    /**
+     *
+     * @param name
+     * @return
+     */
+    Account findAccountByName(@Param("name") String name);
 
 }

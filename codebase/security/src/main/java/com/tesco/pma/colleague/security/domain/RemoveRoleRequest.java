@@ -11,7 +11,7 @@ import java.util.HashSet;
 @NoArgsConstructor
 public class RemoveRoleRequest {
     @JsonProperty("accountName")
-    private String name;
+    private String accountName;
     @JsonProperty("role")
     private Collection<String> roles = new HashSet<>();
 }

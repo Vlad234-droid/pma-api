@@ -3,30 +3,38 @@
 
 <mapper namespace="com.tesco.pma.colleague.security.dao.AccountManagementDAO">
 
-    <resultMap id="accountsResultMap" type="com.tesco.pma.colleague.security.domain.Account">
+    <resultMap id="accountResultMap" type="com.tesco.pma.colleague.security.domain.Account">
         <result property="name" column="name"/>
         <result property="type" column="type"/>
-        <result property="iamId" column="iam_id"/>
         <result property="status" column="status"/>
-        <result property="type" column="type"/>
+        <result property="iamId" column="iam_id"/>
         <result property="lastLogin" column="last_login"/>
         <result property="employeeNumber" column="employee_number"/>
+    </resultMap>
+
+    <resultMap id="accountsResultMap" type="com.tesco.pma.colleague.security.domain.Account"
+               extends="accountResultMap">
         <collection property="roles" ofType="com.tesco.pma.colleague.security.domain.Role">
-            <result property="name" column="role_name"/>
-            <result property="roleId" column="role_id"/>
+            <result property="id" column="role_id"/>
+            <result property="code" column="role_code"/>
         </collection>
     </resultMap>
 
+    <select id="findAccountByName" resultMap="accountResultMap">
+        SELECT * FROM pm_account WHERE name = #{name}
+    </select>
+
     <select id="get" resultMap="accountsResultMap">
-        SELECT a.name    as name,
-               a.type    as type,
-               a.status  as status,
-               a.iam_id  as iam_id,
-               r.name    as role_name,
-               r.role_id as role_id
+        SELECT a.name            as name,
+               a.type            as type,
+               a.status          as status,
+               a.iam_id          as iam_id,
+               a.employee_number as employee_number,
+               r.id              as role_id,
+               r.code            as role_code
         FROM pm_account a
-                 LEFT JOIN pm_account_role ar on a.name = ar.account_name
-                 LEFT JOIN pm_role r on r.role_id = ar.role_id
+                 LEFT JOIN pm_account_role ar on a.id = ar.account_id
+                 LEFT JOIN pm_role r on ar.role_id = r.id
         ORDER BY name;
     </select>
 
@@ -51,21 +59,16 @@
     </update>
 
     <insert id="assignRole" flushCache="true">
-        INSERT INTO pm_account_role (account_name, role_id)
-        VALUES (#{accountName},
-                #{role})
+        INSERT INTO pm_account_role (account_id, role_id)
+        VALUES (#{accountId},
+                #{roleId})
     </insert>
 
     <delete id="removeRole" flushCache="true">
         DELETE
         FROM pm_account_role
-        WHERE account_name = #{accountName}
-          AND role_id = #{role}
+        WHERE account_id = #{accountId}
+          AND role_id = #{roleId}
     </delete>
-
-<!--    AND rp.uuid in-->
-<!--    <foreach item="rpUuid" collection="reportingPeriodUuids" separator="," open="(" close=")">-->
-<!--        #{rpUuid, jdbcType=OTHER, typeHandler=com.tesco.gpg.dao.utils.UuidTypeHandler}-->
-<!--    </foreach>;-->
 
 </mapper>

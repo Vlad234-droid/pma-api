@@ -23,9 +23,9 @@ import java.util.HashSet;
 @JsonIgnoreProperties({"id"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder(alphabetic = true)
-public class Account implements Identified<Integer> {
+public class Account implements Identified<Long> {
 
-    private Integer id;
+    private Long id;
 
     @JsonProperty("accountName")
     private String name;

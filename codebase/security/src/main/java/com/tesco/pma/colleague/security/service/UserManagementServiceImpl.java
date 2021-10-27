@@ -10,11 +10,13 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.organisation.api.Colleague;
 import com.tesco.pma.organisation.service.ConfigEntryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -55,29 +57,48 @@ public class UserManagementServiceImpl implements UserManagementService {
     public void createAccount(CreateAccountRequest request) {
 
         // TODO
-        if (findColleagueByIamIdOrAccountName(request.getName(), request.getIamId()).isEmpty()) {
+        if (!findColleagueByIamIdOrAccountName(request.getName(), request.getIamId()).isEmpty()) {
             throw colleagueNotFound(request.getName(), request.getIamId());
         }
 
         int inserted = accountManagementDAO.create(request);
-        for (String role : request.getRoles()) {
-            accountManagementDAO.assignRole(request.getName(), role);
+
+        if (!request.getRoles().isEmpty()) {
+            updateRoles(true, request.getName(), request.getRoles());
         }
     }
 
     @Override
     @Transactional
     public void grantRole(AssignRoleRequest request) {
-        for (String role : request.getRoles()) {
-            accountManagementDAO.assignRole(request.getAccountName(), role);
-        }
+        updateRoles(true, request.getAccountName(), request.getRoles());
     }
 
     @Override
     @Transactional
     public void revokeRole(RemoveRoleRequest request) {
-        for (String role : request.getRoles()) {
-            accountManagementDAO.removeRole(request.getName(), role);
+        updateRoles(false, request.getAccountName(), request.getRoles());
+    }
+
+    private void updateRoles(boolean granted, String accountName, Collection<String> roles) {
+        Optional<Account> optionalAccount = findAccountByName(accountName);
+        if (optionalAccount.isEmpty()) {
+            // TODO
+            throw new NotFoundException("", "");
+        }
+
+        try {
+            long accountId = optionalAccount.get().getId();
+            for (String roleId : roles) {
+                if (granted) {
+                    accountManagementDAO.assignRole(accountId, Integer.parseInt(roleId));
+                } else {
+                    accountManagementDAO.removeRole(accountId, Integer.parseInt(roleId));
+                }
+            }
+        } catch (DataIntegrityViolationException e) {
+            // TODO
+            throw new DatabaseConstraintViolationException("", "", "");
         }
     }
 
@@ -91,6 +112,11 @@ public class UserManagementServiceImpl implements UserManagementService {
     @Transactional
     public void enableAccount(EnableAccountRequest request) {
         int updated = accountManagementDAO.enableAccount(request);
+    }
+
+    private Optional<Account> findAccountByName(String name) {
+        Account account = accountManagementDAO.findAccountByName(name);
+        return Optional.ofNullable(account);
     }
 
     /**

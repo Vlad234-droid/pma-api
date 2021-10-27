@@ -1,9 +1,7 @@
 package com.tesco.pma.colleague.security.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.tesco.pma.api.DictionaryItem;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,32 +15,17 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-@JsonIgnoreProperties({"id", "code"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder(alphabetic = true)
 public class Role implements DictionaryItem<Integer> {
 
+    @JsonProperty("roleID")
     private Integer id;
 
     @JsonProperty("roleName")
-    private String name;
-
-    @JsonProperty("roleID")
-    private String roleId;
+    private String code;
 
     @JsonProperty("roleDescription")
     private String description;
-
-    @JsonProperty("roleOwner")
-    private String owner;
-
-    @JsonProperty("parentRoleId")
-    private String parentRoleId;
-
-    @Override
-    public String getCode() {
-        return String.valueOf(id);
-    }
 
 }
 

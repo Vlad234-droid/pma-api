@@ -4,10 +4,9 @@
 <mapper namespace="com.tesco.pma.colleague.security.dao.RoleManagementDAO">
 
     <resultMap id="rolesResultMap" type="com.tesco.pma.colleague.security.domain.Role">
-        <result property="roleId" column="role_id"/>
-        <result property="name" column="name"/>
+        <result property="id" column="id"/>
+        <result property="code" column="code"/>
         <result property="description" column="description"/>
-        <result property="owner" column="owner"/>
     </resultMap>
 
     <select id="get" resultMap="rolesResultMap">
