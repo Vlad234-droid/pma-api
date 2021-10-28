@@ -568,7 +568,7 @@
             OR lower(c.last_name) like '%${fullName}%'
         )
         <if test="managerId!=null">
-            AND c.managerUuid = #{managerId}
+            AND c.manager_uuid = #{managerId}
         </if>
     </select>
 
@@ -590,7 +590,7 @@
             AND lower(c.last_name) like '%${lastName}%'
         )
         <if test="managerId!=null">
-            AND c.managerUuid = #{managerId}
+            AND c.manager_uuid = #{managerId}
         </if>
     </select>
 </mapper>
