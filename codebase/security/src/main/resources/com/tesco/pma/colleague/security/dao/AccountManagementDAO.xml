@@ -5,8 +5,12 @@
 
     <resultMap id="accountResultMap" type="com.tesco.pma.colleague.security.domain.Account">
         <result property="name" column="name"/>
-        <result property="type" column="type"/>
-        <result property="status" column="status"/>
+        <result property="type" column="type_id"
+                typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.colleague.security.domain.AccountType"/>
+        <result property="status" column="status_id"
+                typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.colleague.security.domain.AccountStatus"/>
         <result property="iamId" column="iam_id"/>
         <result property="lastLogin" column="last_login"/>
         <result property="employeeNumber" column="employee_number"/>
@@ -26,8 +30,8 @@
 
     <select id="get" resultMap="accountsResultMap">
         SELECT a.name            as name,
-               a.type            as type,
-               a.status          as status,
+               a.type_id         as type_id,
+               a.status_id       as status_id,
                a.iam_id          as iam_id,
                a.employee_number as employee_number,
                a.last_login      as last_login,
@@ -40,24 +44,26 @@
     </select>
 
     <insert id="create">
-        INSERT INTO pm_account (name, iam_id, status, type, last_login)
-        VALUES (#{request.name},
-                #{request.iamId},
-                #{request.status},
-                #{request.type},
+        INSERT INTO pm_account (name, iam_id, status_id, type_id, last_login)
+        VALUES (#{name},
+                #{iamId},
+                #{status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.colleague.security.domain.AccountStatus},
+                #{type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.colleague.security.domain.AccountType},
                 #{now})
     </insert>
 
     <update id="disableAccount" flushCache="true">
         UPDATE pm_account
-        SET status = (#{request.status})
-        WHERE name = (#{request.name})
+        SET status_id = #{status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.colleague.security.domain.AccountStatus},
+            last_login = #{now}
+        WHERE name = #{name}
     </update>
 
     <update id="enableAccount" flushCache="true">
         UPDATE pm_account
-        SET status = (#{request.status})
-        WHERE name = (#{request.name})
+        SET status_id = #{status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.colleague.security.domain.AccountStatus},
+            last_login = #{now}
+        WHERE name = #{name}
     </update>
 
     <insert id="assignRole" flushCache="true">

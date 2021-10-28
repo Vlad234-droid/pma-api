@@ -32,13 +32,13 @@ public class Account implements Identified<Long> {
     private String name;
 
     @JsonProperty("accountType")
-    private String type;
+    private AccountType type;
 
     @JsonProperty("iamId")
     private String iamId;
 
     @JsonProperty("status")
-    private String status;
+    private AccountStatus status;
 
     @JsonProperty("lastLogin")
     private Instant lastLogin;

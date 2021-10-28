@@ -1,11 +1,12 @@
 package com.tesco.pma.colleague.security.dao;
 
-import com.tesco.pma.colleague.security.domain.*;
+import com.tesco.pma.colleague.security.domain.Account;
+import com.tesco.pma.colleague.security.domain.AccountStatus;
+import com.tesco.pma.colleague.security.domain.AccountType;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
 
 import static java.time.Instant.now;
 
@@ -13,20 +14,30 @@ public interface AccountManagementDAO {
 
     /**
      *
-     * @param request
+     * @param name
+     * @param iamId
+     * @param status
+     * @param type
      * @return
      */
-    default int create(final CreateAccountRequest request) {
-        return create(request, now());
+    default int create(String name, String iamId, AccountStatus status, AccountType type) {
+        return create(name, iamId, status, type,now());
     }
 
     /**
      *
-     * @param request
+     * @param name
+     * @param iamId
+     * @param status
+     * @param type
      * @param now
      * @return
      */
-    int create(@Param("request") final CreateAccountRequest request, @Param("now") Instant now);
+    int create(@Param("name") String name,
+               @Param("iamId") String iamId,
+               @Param("status") AccountStatus status,
+               @Param("type") AccountType type,
+               @Param("now") Instant now);
 
     /**
      * Returns a list of accounts
@@ -37,17 +48,41 @@ public interface AccountManagementDAO {
 
     /**
      *
-     * @param request
+     * @param name
+     * @param status
      * @return
      */
-    int disableAccount(@Param("request") final DisableAccountRequest request);
+    default int disableAccount(String name, AccountStatus status) {
+        return disableAccount(name, status, now());
+    }
 
     /**
      *
-     * @param request
+     * @param name
+     * @param status
+     * @param now
      * @return
      */
-    int enableAccount(@Param("request") final EnableAccountRequest request);
+    int disableAccount(@Param("name") String name, @Param("status") AccountStatus status, @Param("now") Instant now);
+
+    /**
+     *
+     * @param name
+     * @param status
+     * @return
+     */
+    default int enableAccount(String name, AccountStatus status) {
+        return enableAccount(name, status, now());
+    }
+
+    /**
+     *
+     * @param name
+     * @param status
+     * @param now
+     * @return
+     */
+    int enableAccount(@Param("name") String name, @Param("status") AccountStatus status, @Param("now") Instant now);
 
     /**
      *

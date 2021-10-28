@@ -60,10 +60,10 @@
             <column name="iam_id" type="VARCHAR(30)">
                 <constraints nullable="false"/>
             </column>
-            <column name="status" type="VARCHAR(30)">
+            <column name="status_id" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
-            <column name="type" type="VARCHAR(30)">
+            <column name="type_id" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
             <column name="last_login" type="TIMESTAMPTZ">
