@@ -145,4 +145,24 @@ public interface ConfigEntryDAO {
      */
     Colleague getColleagueByIamId(@Param("iamId") String iamId);
 
+    /**
+     * Get colleague suggestions
+     *
+     * @param firstName
+     * @return list colleagues
+     */
+    List<Colleague> findColleagueSuggestions(@Param("firstName") String firstName,
+                                             @Param("middleName") String middleName,
+                                             @Param("lastName") String lastName,
+                                             @Param("managerId") UUID managerId);
+
+    /**
+     * Get colleague suggestions by full name
+     *
+     * @param fullName
+     * @return list colleagues
+     */
+    List<Colleague> findColleagueSuggestionsByFullName(@Param("fullName") String fullName,
+                                                       @Param("managerId") UUID managerId);
+
 }

@@ -16,6 +16,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
 
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-security")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude group: 'junit' // excluding junit 4

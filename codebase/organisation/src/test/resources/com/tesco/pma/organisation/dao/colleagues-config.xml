@@ -21,9 +21,9 @@
     <department id="4" name="Stores" business_type="Stores"/>
 
     <colleague uuid="c409869b-2acf-45cd-8cc6-e13af2e6f935"
-               first_name="first_name"
-               middle_name="middle_name"
-               last_name="last_name"
+               first_name="Ron"
+               middle_name="Johnson"
+               last_name="Rodgers"
                email="test@test"
                primary_entity="Tesco Bank"
                salary_frequency="Annual"
@@ -35,9 +35,9 @@
                department_id="4"/>
 
     <colleague uuid="119e0d2b-1dc2-409f-8198-ecd66e59d47a"
-               first_name="first_name"
-               middle_name="middle_name"
-               last_name="last_name"
+               first_name="John"
+               middle_name="Michael"
+               last_name="Dow"
                email="test@test"
                primary_entity="Tesco Bank"
                salary_frequency="Annual"
@@ -49,9 +49,9 @@
                department_id="4"/>
 
     <colleague uuid="45fd1870-9745-41c0-90b5-a902cfca6961"
-               first_name="first_name"
-               middle_name="middle_name"
-               last_name="last_name"
+               first_name="Jane"
+               middle_name="Henry"
+               last_name="Dow"
                email="test@test"
                primary_entity="Tesco Bank"
                salary_frequency="HOURLY"
