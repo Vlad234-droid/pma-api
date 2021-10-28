@@ -30,6 +30,7 @@
                a.status          as status,
                a.iam_id          as iam_id,
                a.employee_number as employee_number,
+               a.last_login      as last_login,
                r.id              as role_id,
                r.code            as role_code
         FROM pm_account a
@@ -39,11 +40,12 @@
     </select>
 
     <insert id="create">
-        INSERT INTO pm_account (name, iam_id, status, type)
+        INSERT INTO pm_account (name, iam_id, status, type, last_login)
         VALUES (#{request.name},
                 #{request.iamId},
                 #{request.status},
-                #{request.type})
+                #{request.type},
+                #{now})
     </insert>
 
     <update id="disableAccount" flushCache="true">

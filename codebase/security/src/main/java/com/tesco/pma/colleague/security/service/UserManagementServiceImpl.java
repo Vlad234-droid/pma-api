@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link UserManagementService}.
@@ -49,7 +50,24 @@ public class UserManagementServiceImpl implements UserManagementService {
     @Override
     @Transactional(readOnly = true)
     public List<Account> getAccounts() {
-        return accountManagementDAO.get();
+        return refinementAccounts(accountManagementDAO.get());
+    }
+
+    private List<Account> refinementAccounts(List<Account> accounts) {
+        return accounts.stream().peek(account -> {
+            Collection<Role> roles = account.getRoles();
+            if (roles.isEmpty()) {
+                account.setRoles(null);
+            } else if (roles.size() == 1) {
+                String role = roles.stream()
+                        .map(r -> r.getId() + "/" + r.getCode())
+                        .collect(Collectors.joining());
+                account.setRole(role);
+                account.setRoles(null);
+            } else {
+                account.setRole(account.getRoles());
+            }
+        }).collect(Collectors.toList());
     }
 
     @Override

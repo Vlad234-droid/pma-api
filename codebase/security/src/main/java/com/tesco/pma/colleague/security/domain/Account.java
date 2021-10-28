@@ -8,6 +8,7 @@ import com.tesco.pma.api.Identified;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -20,7 +21,7 @@ import java.util.HashSet;
  */
 @Data
 @NoArgsConstructor
-@JsonIgnoreProperties({"id"})
+@JsonIgnoreProperties({"id", "roles"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder(alphabetic = true)
 public class Account implements Identified<Long> {
@@ -36,14 +37,17 @@ public class Account implements Identified<Long> {
     @JsonProperty("iamId")
     private String iamId;
 
-    @JsonProperty("accountStatus")
+    @JsonProperty("status")
     private String status;
 
     @JsonProperty("lastLogin")
-    private String lastLogin;
+    private Instant lastLogin;
 
     @JsonProperty("employeeNumber")
     private String employeeNumber;
+
+    @JsonProperty(value = "role")
+    private Object role;
 
     @JsonProperty(value = "roles")
     private Collection<Role> roles = new HashSet<>();
