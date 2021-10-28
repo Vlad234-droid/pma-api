@@ -1,6 +1,7 @@
 <dataset>
 
     <config_entry_type id="1" code="BU" description="bu desc"/>
+    <config_entry_type id="2" code="l2" description="Level 2"/>
 
     <config_entry uuid="56141037-6e2d-45f0-b47f-4875e68dd1d7" name="CE1" version="1" type_id="1" parent_uuid="[null]"
                   composite_key="BU/CE1/#v1"/>

@@ -46,6 +46,10 @@
                job_id="2"
                country_code="UK"
                work_level="WL1"
+               manager_uuid="c409869b-2acf-45cd-8cc6-e13af2e6f935"
+               employment_type="ET"
+               hire_date="2020-01-01"
+               leaving_date="2021-01-01"
                department_id="4"/>
 
     <colleague uuid="45fd1870-9745-41c0-90b5-a902cfca6961"
