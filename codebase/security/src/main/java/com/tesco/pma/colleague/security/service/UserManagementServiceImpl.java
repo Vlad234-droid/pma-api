@@ -79,11 +79,8 @@ public class UserManagementServiceImpl implements UserManagementService {
             throw colleagueNotFound(request.getName(), request.getIamId());
         }
 
-        AccountStatus status = AccountStatus.getAccountStatus(request.getStatus())
-                .orElse(AccountStatus.ACTIVE);
-        AccountType type = AccountType.getAccountType(request.getType())
-                .orElse(AccountType.USER);
-        int inserted = accountManagementDAO.create(request.getName(), request.getIamId(), status, type);
+        int inserted = accountManagementDAO.create(request.getName(), request.getIamId(),
+                request.getStatus(), request.getType());
 
         if (!request.getRoles().isEmpty()) {
             updateRoles(true, request.getName(), request.getRoles());
@@ -126,14 +123,12 @@ public class UserManagementServiceImpl implements UserManagementService {
 
     @Override
     @Transactional
-    public void disableAccount(DisableAccountRequest request) {
-        int updated = accountManagementDAO.disableAccount(request.getName(), AccountStatus.INACTIVE);
-    }
-
-    @Override
-    @Transactional
-    public void enableAccount(EnableAccountRequest request) {
-        int updated = accountManagementDAO.enableAccount(request.getName(), AccountStatus.ACTIVE);
+    public void changeAccountStatus(ChangeAccountStatusRequest request) {
+        if (AccountStatus.ENABLED.equals(request.getStatus())) {
+            int updated = accountManagementDAO.enableAccount(request.getName(), AccountStatus.ENABLED);
+        } else {
+            int updated = accountManagementDAO.disableAccount(request.getName(), AccountStatus.DISABLED);
+        }
     }
 
     private Optional<Account> findAccountByName(String name) {
@@ -142,7 +137,7 @@ public class UserManagementServiceImpl implements UserManagementService {
     }
 
     /**
-     *  To check the account through PMA database and Colleague Facts API
+     * To check the account through PMA database and Colleague Facts API
      *
      * @param accountName
      * @param iamId

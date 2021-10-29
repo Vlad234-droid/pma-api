@@ -23,14 +23,14 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  *
  */
 @RestController
-@RequestMapping(path = "/security", produces = APPLICATION_JSON_VALUE)
+@RequestMapping(produces = APPLICATION_JSON_VALUE)
 @Validated
 @RequiredArgsConstructor
 public class UserManagementEndpoint {
 
     private final UserManagementService userManagementService;
 
-    @Operation(summary = "Get users, their status and access levels", description = "Get users, their status and access levels", tags = "security")
+    @Operation(summary = "Get users, their status and access levels", description = "Get users, their status and access levels", tags = "user-management")
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Users, their status and access levels found")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Users, their status and access levels found not found")
     @GetMapping(value = "/user-management/accounts")
@@ -38,7 +38,7 @@ public class UserManagementEndpoint {
         return RestResponse.success(userManagementService.getAccounts());
     }
 
-    @Operation(summary = "Create an Account", description = "Create an Account", tags = "security")
+    @Operation(summary = "Create an Account", description = "Create an Account", tags = "user-management")
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
     @PostMapping(path = "/user-management/accounts", consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
@@ -47,44 +47,35 @@ public class UserManagementEndpoint {
         return RestResponse.success();
     }
 
-    @Operation(summary = "Disable an account", description = "Disable an account", tags = "security")
-    @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
-    @PatchMapping(path = "/user-management/accounts", consumes = APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<Void> disableAccount(@RequestBody @Valid DisableAccountRequest request) {
-        userManagementService.disableAccount(request);
-        return RestResponse.success();
-    }
-
-    @Operation(summary = "Enable an account", description = "Enable an account", tags = "security")
+    @Operation(summary = "Enable / Disable an account", description = "Enable / Disable an account", tags = "user-management")
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
     @PutMapping(path = "/user-management/accounts", consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<Void> enableAccount(@RequestBody @Valid EnableAccountRequest request) {
-        userManagementService.enableAccount(request);
+    public RestResponse<Void> changeAccountStatus(@RequestBody @Valid ChangeAccountStatusRequest request) {
+        userManagementService.changeAccountStatus(request);
         return RestResponse.success();
     }
 
-    @Operation(summary = "Get available access levels & metadata", description = "Available access levels & metadata", tags = "security")
+    @Operation(summary = "Get available access levels & metadata", description = "Available access levels & metadata", tags = "user-management")
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Available access levels & metadata found")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Available access levels & metadata not found")
-    @GetMapping(value = "/role-management/roles")
+    @GetMapping(value = "/user-management/roles")
     public RestResponse<List<Role>> getRoles() {
         return RestResponse.success(userManagementService.getRoles());
     }
 
-    @Operation(summary = "Add access to an account", description = "Add access to an account", tags = "security")
+    @Operation(summary = "Add access to an account", description = "Add access to an account", tags = "user-management")
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
-    @PostMapping(path = "/role-management/roles", consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/user-management/roles", consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse<Void> grantRole(@RequestBody @Valid AssignRoleRequest request) {
         userManagementService.grantRole(request);
         return RestResponse.success();
     }
 
-    @Operation(summary = "Remove access from an account", description = "Remove access from an account", tags = "security")
+    @Operation(summary = "Remove access from an account", description = "Remove access from an account", tags = "user-management")
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
-    @DeleteMapping(path = "/role-management/roles", consumes = APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/user-management/roles", consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse<Void> revokeRole(@RequestBody @Valid RemoveRoleRequest request) {
         userManagementService.revokeRole(request);

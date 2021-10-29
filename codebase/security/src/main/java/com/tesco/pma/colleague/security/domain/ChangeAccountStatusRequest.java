@@ -6,9 +6,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class EnableAccountRequest {
+public class ChangeAccountStatusRequest {
     @JsonProperty("accountName")
     private String name;
     @JsonProperty("status")
-    private String status;
+    private AccountStatus status;
 }

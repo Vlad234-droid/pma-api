@@ -9,7 +9,7 @@ import org.springframework.test.context.DynamicPropertySource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-// TODO
+// TODO Implement all tests
 class AccountManagementDAOTest extends AbstractDAOTest {
 
     @DynamicPropertySource
@@ -18,6 +18,7 @@ class AccountManagementDAOTest extends AbstractDAOTest {
         registry.add("spring.datasource.default.password", CONTAINER::getPassword);
         registry.add("spring.datasource.default.username", CONTAINER::getUsername);
     }
+
 
     @BeforeEach
     void setUp() {
@@ -32,6 +33,10 @@ class AccountManagementDAOTest extends AbstractDAOTest {
     }
 
     @Test
+    void testCreate() {
+    }
+
+    @Test
     void get() {
     }
 
@@ -40,7 +45,15 @@ class AccountManagementDAOTest extends AbstractDAOTest {
     }
 
     @Test
+    void testDisableAccount() {
+    }
+
+    @Test
     void enableAccount() {
+    }
+
+    @Test
+    void testEnableAccount() {
     }
 
     @Test
@@ -49,6 +62,10 @@ class AccountManagementDAOTest extends AbstractDAOTest {
 
     @Test
     void removeRole() {
+    }
+
+    @Test
+    void findAccountByName() {
     }
 
 }

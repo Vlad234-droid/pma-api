@@ -9,8 +9,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 @WebMvcTest(controllers = UserManagementEndpoint.class)
-// TODO
+// TODO Implement all tests
 class UserManagementEndpointTest extends AbstractEndpointTest {
+
 
     @BeforeEach
     void setUp() {
@@ -29,11 +30,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void disableAccount() {
-    }
-
-    @Test
-    void enableAccount() {
+    void changeAccountStatus() {
     }
 
     @Test

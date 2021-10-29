@@ -12,7 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 @SpringBootTest(classes = LocalTestConfig.class)
 @ExtendWith(MockitoExtension.class)
-// TODO
+// TODO Implement all tests
 class UserManagementServiceTest {
 
     @BeforeEach
@@ -44,11 +44,7 @@ class UserManagementServiceTest {
     }
 
     @Test
-    void disableAccount() {
-    }
-
-    @Test
-    void enableAccount() {
+    void changeAccountStatus() {
     }
 
 }

@@ -43,12 +43,6 @@ public interface UserManagementService {
      *
      * @param request
      */
-    void disableAccount(DisableAccountRequest request);
-
-    /**
-     *
-     * @param request
-     */
-    void enableAccount(EnableAccountRequest request);
+    void changeAccountStatus(ChangeAccountStatusRequest request);
 
 }
