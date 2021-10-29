@@ -1,6 +1,7 @@
 package com.tesco.pma.review.service;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.review.LocalTestConfig;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
 import com.tesco.pma.review.dao.ReviewDAO;
@@ -14,8 +15,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.UUID;
+
+import static com.tesco.pma.review.domain.ReviewType.OBJECTIVE;
+import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_FOR_COLLEAGUE;
 import static org.assertj.core.api.Assertions.from;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -25,7 +32,7 @@ import static org.mockito.Mockito.when;
 class ReviewServiceImplTest {
 
     final static String REVIEW_NOT_FOUND_MESSAGE =
-            "Review not found for reviewUuid=ddb9ab0b-f50f-4442-8900-b03777ee0011";
+            "Review not found for colleagueUuid=ddb9ab0b-f50f-4442-8900-b03777ee0011, performanceCycleUuid=ddb9ab0b-f50f-4442-8900-b03777ee0012, type=OBJECTIVE and number=1";
 
     @Autowired
     private NamedMessageSourceAccessor messages;
@@ -39,18 +46,22 @@ class ReviewServiceImplTest {
     @SpyBean
     private ReviewServiceImpl reviewService;
 
-//    @Test
-//    void getReviewByUuidShouldReturnReview() {
-//        final var reviewUuid = UUID.randomUUID();
-//        final var expectedReview = Review.builder().build();
-//
-//        when(mockReviewDAO.getReviewByUuid(any(UUID.class)))
-//                .thenReturn(expectedReview);
-//
-//        final var res = reviewService.getReviewByUuid(reviewUuid);
-//
-//        assertThat(res).isSameAs(expectedReview);
-//    }
+    @Test
+    void getReviewByUuidShouldReturnReview() {
+        final var randomUUID = UUID.randomUUID();
+        final var expectedReview = Review.builder().build();
+
+        when(mockReviewDAO.getReview(any(), any(), any(), any()))
+                .thenReturn(expectedReview);
+
+        final var res = reviewService.getReview(
+                randomUUID,
+                randomUUID,
+                OBJECTIVE,
+                1);
+
+        assertThat(res).isSameAs(expectedReview);
+    }
 
     @Test
     void updateReviewShouldReturnUpdatedReview() {
@@ -80,16 +91,21 @@ class ReviewServiceImplTest {
         assertThat(res).isSameAs(expectedReview);
     }
 
-//    @Test
-//    void deleteReviewNotExists() {
-//        final var reviewUuid = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
-//        when(mockReviewDAO.deleteReviewByUuid(any(UUID.class)))
-//                .thenReturn(0);
-//        final var exception = assertThrows(NotFoundException.class,
-//                () -> reviewService.deleteReviewByUuid(reviewUuid));
-//
-//        assertEquals(REVIEW_NOT_FOUND_BY_UUID.getCode(), exception.getCode());
-//        assertEquals(REVIEW_NOT_FOUND_MESSAGE, exception.getMessage());
-//
-//    }
+    @Test
+    void deleteReviewNotExists() {
+        final var colleagueUuid = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
+        final var performanceCycleUuid = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0012");
+        when(mockReviewDAO.deleteReview(any(), any(), any(), any()))
+                .thenReturn(0);
+        final var exception = assertThrows(NotFoundException.class,
+                () -> reviewService.deleteReview(
+                        performanceCycleUuid,
+                        colleagueUuid,
+                        OBJECTIVE,
+                        1));
+
+        assertEquals(REVIEW_NOT_FOUND_FOR_COLLEAGUE.getCode(), exception.getCode());
+        assertEquals(REVIEW_NOT_FOUND_MESSAGE, exception.getMessage());
+
+    }
 }
