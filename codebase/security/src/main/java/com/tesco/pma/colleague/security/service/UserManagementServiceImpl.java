@@ -59,13 +59,9 @@ public class UserManagementServiceImpl implements UserManagementService {
             if (roles.isEmpty()) {
                 account.setRoles(null);
             } else if (roles.size() == 1) {
-                String role = roles.stream()
-                        .map(r -> r.getId() + "/" + r.getCode())
-                        .collect(Collectors.joining());
-                account.setRole(role);
+                String roleId = String.valueOf(roles.iterator().next().getId());
+                account.setRole(roleId);
                 account.setRoles(null);
-            } else {
-                account.setRole(account.getRoles());
             }
         }).collect(Collectors.toList());
     }

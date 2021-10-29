@@ -21,7 +21,7 @@ import java.util.HashSet;
  */
 @Data
 @NoArgsConstructor
-@JsonIgnoreProperties({"id", "roles"})
+@JsonIgnoreProperties({"id"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder(alphabetic = true)
 public class Account implements Identified<Long> {
@@ -47,7 +47,7 @@ public class Account implements Identified<Long> {
     private String employeeNumber;
 
     @JsonProperty(value = "role")
-    private Object role;
+    private String role;
 
     @JsonProperty(value = "roles")
     private Collection<Role> roles = new HashSet<>();
