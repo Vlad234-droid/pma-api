@@ -19,17 +19,17 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.IntStream;
 
 import static com.tesco.pma.review.domain.ReviewStatus.APPROVED;
 import static com.tesco.pma.review.domain.ReviewStatus.COMPLETED;
+import static com.tesco.pma.review.domain.ReviewStatus.DECLINED;
 import static com.tesco.pma.review.domain.ReviewStatus.DRAFT;
-import static com.tesco.pma.review.domain.ReviewStatus.RETURNED;
 import static com.tesco.pma.review.domain.ReviewStatus.WAITING_FOR_APPROVAL;
 import static com.tesco.pma.review.exception.ErrorCodes.BUSINESS_UNIT_NOT_EXISTS;
 import static com.tesco.pma.review.exception.ErrorCodes.GROUP_OBJECTIVES_NOT_FOUND;
@@ -37,7 +37,6 @@ import static com.tesco.pma.review.exception.ErrorCodes.GROUP_OBJECTIVE_ALREADY_
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND_FOR_STATUS_UPDATE;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_ALREADY_EXISTS;
-import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_BY_UUID;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_FOR_COLLEAGUE;
 import static java.time.Instant.now;
 
@@ -68,22 +67,12 @@ public class ReviewServiceImpl implements ReviewService {
 
     static {
         UPDATE_STATUS_RULE_MAP = Map.of(
-                WAITING_FOR_APPROVAL, List.of(DRAFT),
+                WAITING_FOR_APPROVAL, List.of(DRAFT, DECLINED),
                 APPROVED, List.of(WAITING_FOR_APPROVAL),
-                RETURNED, List.of(WAITING_FOR_APPROVAL, APPROVED),
+                DECLINED, List.of(WAITING_FOR_APPROVAL),
                 COMPLETED, List.of(APPROVED),
-                DRAFT, List.of(RETURNED)
+                DRAFT, Collections.EMPTY_LIST
         );
-    }
-
-    @Override
-    public Review getReviewByUuid(UUID reviewUuid) {
-        var res = reviewDAO.getReviewByUuid(reviewUuid);
-        if (res == null) {
-            throw notFound(REVIEW_NOT_FOUND_BY_UUID,
-                    Map.of(REVIEW_UUID_PARAMETER_NAME, reviewUuid));
-        }
-        return res;
     }
 
     @Override
@@ -127,33 +116,6 @@ public class ReviewServiceImpl implements ReviewService {
                             NUMBER_PARAMETER_NAME, review.getNumber()),
                     e);
         }
-    }
-
-    @Override
-    @Transactional
-    public List<Review> createReviews(List<Review> reviews) {
-        List<Review> results = new ArrayList<>();
-        IntStream.range(0, reviews.size())
-                .forEach(idx -> {
-                    var review = reviews.get(idx);
-                    review.setUuid(UUID.randomUUID());
-                    review.setNumber(idx + 1);
-                    try {
-                        reviewDAO.createReview(review);
-                        results.add(review);
-                    } catch (DuplicateKeyException e) {
-                        throw databaseConstraintViolation(
-                                REVIEW_ALREADY_EXISTS,
-                                Map.of(COLLEAGUE_UUID_PARAMETER_NAME, review.getColleagueUuid(),
-                                        PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, review.getPerformanceCycleUuid(),
-                                        TYPE_PARAMETER_NAME, review.getType(),
-                                        NUMBER_PARAMETER_NAME, review.getNumber()),
-                                e);
-
-                    }
-
-                });
-        return results;
     }
 
     @Override
@@ -227,45 +189,63 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public ReviewStatus updateReviewStatus(UUID performanceCycleUuid,
-                                           UUID colleagueUuid,
-                                           ReviewType type,
-                                           Integer number,
-                                           ReviewStatus status,
-                                           String reason,
-                                           String loggedUserName) {
-        var actualReview = reviewDAO.getReview(
-                performanceCycleUuid,
-                colleagueUuid,
-                type,
-                number);
-        var prevStatuses = UPDATE_STATUS_RULE_MAP.get(status);
-        if (1 == reviewDAO.updateReviewStatus(
-                performanceCycleUuid,
-                colleagueUuid,
-                type,
-                number,
-                status,
-                prevStatuses)) {
-            reviewAuditLogDAO.logLogReviewUpdating(actualReview, status, reason, loggedUserName);
-            return status;
-        } else {
-            throw notFound(REVIEWS_NOT_FOUND_FOR_STATUS_UPDATE,
-                    Map.of(STATUS_PARAMETER_NAME, status,
-                            COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
-                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
-                            TYPE_PARAMETER_NAME, type,
-                            NUMBER_PARAMETER_NAME, number,
-                            PREV_STATUSES_PARAMETER_NAME, prevStatuses));
-        }
+    public ReviewStatus updateReviewsStatus(UUID performanceCycleUuid,
+                                            UUID colleagueUuid,
+                                            ReviewType type,
+                                            List<Review> reviews,
+                                            ReviewStatus status,
+                                            String reason,
+                                            String loggedUserName) {
+        reviews.forEach(review -> {
+            var actualReview = reviewDAO.getReview(
+                    performanceCycleUuid,
+                    colleagueUuid,
+                    type,
+                    review.getNumber());
+            var prevStatuses = UPDATE_STATUS_RULE_MAP.get(status);
+            if (1 == reviewDAO.updateReviewStatus(
+                    performanceCycleUuid,
+                    colleagueUuid,
+                    type,
+                    review.getNumber(),
+                    status,
+                    prevStatuses)) {
+                reviewAuditLogDAO.logLogReviewUpdating(actualReview, status, reason, loggedUserName);
+            } else {
+                throw notFound(REVIEWS_NOT_FOUND_FOR_STATUS_UPDATE,
+                        Map.of(STATUS_PARAMETER_NAME, status,
+                                COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
+                                PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
+                                TYPE_PARAMETER_NAME, type,
+                                NUMBER_PARAMETER_NAME, review.getNumber(),
+                                PREV_STATUSES_PARAMETER_NAME, prevStatuses));
+            }
+        });
+        return status;
     }
 
     @Override
     @Transactional
-    public void deleteReview(UUID reviewUuid) {
-        if (1 != reviewDAO.deleteReview(reviewUuid)) {
-            throw notFound(REVIEW_NOT_FOUND_BY_UUID,
-                    Map.of(REVIEW_UUID_PARAMETER_NAME, reviewUuid));
+    public void deleteReview(UUID performanceCycleUuid,
+                             UUID colleagueUuid,
+                             ReviewType type,
+                             Integer number) {
+        if (1 == reviewDAO.deleteReview(
+                performanceCycleUuid,
+                colleagueUuid,
+                type,
+                number)) {
+            reviewDAO.renumerateReviews(
+                    performanceCycleUuid,
+                    colleagueUuid,
+                    type,
+                    number + 1);
+        } else {
+            throw notFound(REVIEW_NOT_FOUND_FOR_COLLEAGUE,
+                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
+                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
+                            TYPE_PARAMETER_NAME, type,
+                            NUMBER_PARAMETER_NAME, number));
         }
     }
 

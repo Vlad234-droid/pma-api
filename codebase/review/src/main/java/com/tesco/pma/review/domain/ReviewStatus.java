@@ -11,7 +11,7 @@ public enum ReviewStatus implements DictionaryItem<Integer> {
     DRAFT(1, "Review is saved as draft"),
     WAITING_FOR_APPROVAL(2, "Review was submitted but not yet approved"),
     APPROVED(3, "Review was approved"),
-    RETURNED(4, "Review was returned"),
+    DECLINED(4, "Review was declined"),
     COMPLETED(5, "Review is completed");
 
     private final Integer id;

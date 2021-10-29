@@ -123,18 +123,6 @@
                 #{review.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.review.domain.ReviewStatus});
     </insert>
 
-    <select id="getReviewByUuid" resultMap="reviewResultMap">
-        SELECT r.uuid,
-               r.colleague_uuid,
-               r.performance_cycle_uuid,
-               r.type_id,
-               r.number,
-               r.properties,
-               r.status_id
-        FROM review r
-        WHERE r.uuid = #{reviewUuid}
-    </select>
-
     <select id="getReview" resultMap="reviewResultMap">
         SELECT r.uuid,
                r.colleague_uuid,
@@ -167,8 +155,11 @@
 
     <delete id="deleteReview">
         DELETE
-        FROM review
-        WHERE uuid = #{reviewUuid}
+        FROM review r
+        WHERE r.colleague_uuid = #{colleagueUuid}
+          and r.performance_cycle_uuid = #{performanceCycleUuid}
+          and r.type_id = #{type.id}
+          and r.number = #{number}
     </delete>
 
     <delete id="deleteReviews">
@@ -179,6 +170,15 @@
           and r.type_id = #{type.id}
           and r.number >= #{startNumber}
     </delete>
+
+    <update id="renumerateReviews" flushCache="true">
+        update review
+        set number = number - 1
+        WHERE colleague_uuid = #{colleagueUuid}
+          and performance_cycle_uuid = #{performanceCycleUuid}
+          and type_id = #{type.id}
+          and number >= #{startNumber}
+    </update>
 
     <update id="updateReview" flushCache="true">
         UPDATE review
