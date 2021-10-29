@@ -3,6 +3,10 @@ package com.tesco.pma.colleague.security.service;
 import com.tesco.pma.colleague.security.dao.AccountManagementDAO;
 import com.tesco.pma.colleague.security.dao.RoleManagementDAO;
 import com.tesco.pma.colleague.security.domain.*;
+import com.tesco.pma.colleague.security.domain.request.AssignRoleRequest;
+import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
+import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
+import com.tesco.pma.colleague.security.domain.request.RemoveRoleRequest;
 import com.tesco.pma.colleague.security.exception.ErrorCodes;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
@@ -16,10 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -78,21 +79,37 @@ public class UserManagementServiceImpl implements UserManagementService {
         int inserted = accountManagementDAO.create(request.getName(), request.getIamId(),
                 request.getStatus(), request.getType());
 
-        if (!request.getRoles().isEmpty()) {
-            updateRoles(true, request.getName(), request.getRoles());
+        Collection<String> roles = getRoles(request.getRole());
+        if (!roles.isEmpty()) {
+            updateRoles(true, request.getName(), roles);
         }
+
     }
 
     @Override
     @Transactional
     public void grantRole(AssignRoleRequest request) {
-        updateRoles(true, request.getAccountName(), request.getRoles());
+        Collection<String> roles = getRoles(request.getRole());
+        updateRoles(true, request.getAccountName(), roles);
     }
 
     @Override
     @Transactional
     public void revokeRole(RemoveRoleRequest request) {
-        updateRoles(false, request.getAccountName(), request.getRoles());
+        Collection<String> roles = getRoles(request.getRole());
+        updateRoles(false, request.getAccountName(), roles);
+    }
+
+    private Collection<String> getRoles(Object role) {
+        Collection<String> retValue = new HashSet<>();
+        if (role != null) {
+            if (Collection.class.isAssignableFrom(role.getClass())) {
+                retValue.addAll((Collection) role);
+            } else if (role instanceof String) {
+                retValue.add((String) role);
+            }
+        }
+        return retValue;
     }
 
     private void updateRoles(boolean granted, String accountName, Collection<String> roles) {

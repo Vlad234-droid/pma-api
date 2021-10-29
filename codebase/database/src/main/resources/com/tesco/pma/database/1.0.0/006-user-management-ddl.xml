@@ -73,6 +73,8 @@
                 <constraints nullable="true"/>
             </column>
         </createTable>
+        <addUniqueConstraint columnNames="name" constraintName="pm_account_name_uc"
+                             tableName="pm_account"/>
     </changeSet>
 
     <changeSet author="akuzmin" id="4">

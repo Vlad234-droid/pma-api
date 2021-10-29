@@ -1,11 +1,8 @@
-package com.tesco.pma.colleague.security.domain;
+package com.tesco.pma.colleague.security.domain.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Collection;
-import java.util.HashSet;
 
 @Data
 @NoArgsConstructor
@@ -13,5 +10,5 @@ public class RemoveRoleRequest {
     @JsonProperty("accountName")
     private String accountName;
     @JsonProperty("role")
-    private Collection<String> roles = new HashSet<>();
+    private Object role;
 }

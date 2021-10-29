@@ -1,6 +1,10 @@
 package com.tesco.pma.colleague.security.service;
 
 import com.tesco.pma.colleague.security.domain.*;
+import com.tesco.pma.colleague.security.domain.request.AssignRoleRequest;
+import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
+import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
+import com.tesco.pma.colleague.security.domain.request.RemoveRoleRequest;
 
 import java.util.List;
 

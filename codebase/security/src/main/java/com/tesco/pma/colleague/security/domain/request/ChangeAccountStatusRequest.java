@@ -1,6 +1,7 @@
-package com.tesco.pma.colleague.security.domain;
+package com.tesco.pma.colleague.security.domain.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tesco.pma.colleague.security.domain.AccountStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
