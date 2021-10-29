@@ -27,7 +27,9 @@ public class WorkRelationship {
 
         public static WorkLevel getByCode(String code) {
             for (WorkLevel wl : values()) {
-                if (wl.name().equalsIgnoreCase(code)) return wl;
+                if (wl.name().equalsIgnoreCase(code)) {
+                    return wl;
+                }
             }
             return null;
         }
