@@ -2,7 +2,9 @@ package com.tesco.pma.colleague.security.service;
 
 import com.tesco.pma.colleague.security.dao.AccountManagementDAO;
 import com.tesco.pma.colleague.security.dao.RoleManagementDAO;
-import com.tesco.pma.colleague.security.domain.*;
+import com.tesco.pma.colleague.security.domain.Account;
+import com.tesco.pma.colleague.security.domain.AccountStatus;
+import com.tesco.pma.colleague.security.domain.Role;
 import com.tesco.pma.colleague.security.domain.request.AssignRoleRequest;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
 import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
@@ -14,7 +16,6 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.organisation.api.Colleague;
 import com.tesco.pma.organisation.service.ConfigEntryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,11 +74,15 @@ public class UserManagementServiceImpl implements UserManagementService {
 
         // TODO Remove ! after testing
         if (!findColleagueByIamIdOrAccountName(request.getName(), request.getIamId()).isEmpty()) {
-            throw colleagueNotFound(request.getName(), request.getIamId());
+            throw colleagueNotFoundException(request.getName(), request.getIamId());
         }
 
-        int inserted = accountManagementDAO.create(request.getName(), request.getIamId(),
-                request.getStatus(), request.getType());
+        try {
+            int inserted = accountManagementDAO.create(request.getName(), request.getIamId(),
+                    request.getStatus(), request.getType());
+        } catch (DuplicateKeyException e) {
+            throw duplicatedAccountException(e, request.getName());
+        }
 
         Collection<String> roles = getRoles(request.getRole());
         if (!roles.isEmpty()) {
@@ -115,23 +120,22 @@ public class UserManagementServiceImpl implements UserManagementService {
     private void updateRoles(boolean granted, String accountName, Collection<String> roles) {
         Optional<Account> optionalAccount = findAccountByName(accountName);
         if (optionalAccount.isEmpty()) {
-            // TODO
-            throw new NotFoundException("", "");
+            throw accountNotFoundException(accountName);
         }
 
-        try {
-            long accountId = optionalAccount.get().getId();
-            for (String roleId : roles) {
+        long accountId = optionalAccount.get().getId();
+        for (String roleId : roles) {
+            try {
                 if (granted) {
                     accountManagementDAO.assignRole(accountId, Integer.parseInt(roleId));
                 } else {
                     accountManagementDAO.removeRole(accountId, Integer.parseInt(roleId));
                 }
+            } catch (DuplicateKeyException e) {
+                throw duplicatedRoleException(e, accountName, roleId);
             }
-        } catch (DataIntegrityViolationException e) {
-            // TODO
-            throw new DatabaseConstraintViolationException("", "", "");
         }
+
     }
 
     @Override
@@ -165,15 +169,28 @@ public class UserManagementServiceImpl implements UserManagementService {
         return Optional.ofNullable(colleague);
     }
 
-    private NotFoundException colleagueNotFound(String accountName, String iamId) {
+    private NotFoundException colleagueNotFoundException(String accountName, String iamId) {
         return new NotFoundException(ErrorCodes.SECURITY_COLLEAGUE_NOT_FOUND.getCode(),
                 messages.getMessage(ErrorCodes.SECURITY_COLLEAGUE_NOT_FOUND,
                         Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName,
                                 IAM_ID_PARAMETER_NAME, iamId)));
     }
 
-    private DatabaseConstraintViolationException duplicatedRole(DuplicateKeyException e,
-                                                                String accountName, String roleName) {
+    private NotFoundException accountNotFoundException(String accountName) {
+        return new NotFoundException(ErrorCodes.SECURITY_ACCOUNT_NOT_FOUND.getCode(),
+                messages.getMessage(ErrorCodes.SECURITY_ACCOUNT_NOT_FOUND,
+                        Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName)));
+    }
+
+    private DatabaseConstraintViolationException duplicatedAccountException(DuplicateKeyException e,
+                                                                            String accountName) {
+        throw new DatabaseConstraintViolationException(ErrorCodes.SECURITY_ACCOUNT_ALREADY_EXISTS.name(),
+                messages.getMessage(ErrorCodes.SECURITY_ACCOUNT_ALREADY_EXISTS,
+                        Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName)), null, e);
+    }
+
+    private DatabaseConstraintViolationException duplicatedRoleException(DuplicateKeyException e,
+                                                                         String accountName, String roleName) {
         return new DatabaseConstraintViolationException(ErrorCodes.SECURITY_DUPLICATED_ROLE.name(),
                 messages.getMessage(ErrorCodes.SECURITY_DUPLICATED_ROLE,
                         Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName,
