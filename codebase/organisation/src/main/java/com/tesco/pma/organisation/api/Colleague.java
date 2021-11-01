@@ -2,10 +2,11 @@ package com.tesco.pma.organisation.api;
 
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
-public class Colleague {
+public class Colleague { //NOPMD
     private UUID uuid;
     private String firstName;
     private String middleName;
@@ -19,6 +20,11 @@ public class Colleague {
     private Job job;
     private String iamSource;
     private String iamId;
+    private UUID managerUuid;
+    private String employmentType;
+    private LocalDate hireDate;
+    private LocalDate leavingDate;
+    private boolean manager;
 
     @Data
     public static class Job { //NOPMD
