@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 // TODO Implement all tests
 class AccountManagementDAOTest extends AbstractDAOTest {
 

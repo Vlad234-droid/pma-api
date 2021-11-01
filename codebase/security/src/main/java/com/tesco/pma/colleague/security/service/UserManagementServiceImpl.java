@@ -92,7 +92,7 @@ public class UserManagementServiceImpl implements UserManagementService {
         }
 
         try {
-            int inserted = accountManagementDAO.create(request.getName(), request.getIamId(),
+            accountManagementDAO.create(request.getName(), request.getIamId(),
                     request.getStatus(), request.getType());
         } catch (DuplicateKeyException e) {
             throw duplicatedAccountException(e, request.getName());
@@ -123,9 +123,9 @@ public class UserManagementServiceImpl implements UserManagementService {
     @Transactional
     public void changeAccountStatus(ChangeAccountStatusRequest request) {
         if (AccountStatus.ENABLED.equals(request.getStatus())) {
-            int updated = accountManagementDAO.enableAccount(request.getName(), AccountStatus.ENABLED);
+            accountManagementDAO.enableAccount(request.getName(), AccountStatus.ENABLED);
         } else {
-            int updated = accountManagementDAO.disableAccount(request.getName(), AccountStatus.DISABLED);
+            accountManagementDAO.disableAccount(request.getName(), AccountStatus.DISABLED);
         }
     }
 

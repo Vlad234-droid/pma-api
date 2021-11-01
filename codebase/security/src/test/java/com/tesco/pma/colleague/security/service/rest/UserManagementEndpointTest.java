@@ -48,6 +48,8 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
     @MockBean
     private UserManagementService mockUserManagementService;
 
+    public static final String URL_TEMPLATE = "/user-management/accounts";
+
     @BeforeEach
     void setUp() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -64,7 +66,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
         when(mockUserManagementService.getAccounts(anyInt()))
                 .thenReturn(randomObjects(Account.class, 3));
 
-        mvc.perform(get("/user-management/accounts")
+        mvc.perform(get(URL_TEMPLATE)
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON));
@@ -80,7 +82,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
 
         // when
         ResultActions resultActions = mvc.perform(
-                post("/user-management/accounts")
+                post(URL_TEMPLATE)
                         .contentType(APPLICATION_JSON)
                         .content(createAccountRequestJsonTester.write(createAccountRequest).getJson()));
 
@@ -98,7 +100,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
 
         // when
         ResultActions resultActions = mvc.perform(
-                post("/user-management/accounts")
+                post(URL_TEMPLATE)
                         .contentType(APPLICATION_JSON)
                         .content(createAccountRequestJsonTester.write(createAccountRequest).getJson()));
 
@@ -115,7 +117,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
 
         // when
         ResultActions resultActions = mvc.perform(
-                put("/user-management/accounts")
+                put(URL_TEMPLATE)
                         .contentType(APPLICATION_JSON)
                         .content(changeAccountStatusRequestJsonTester.write(changeAccountStatusRequest).getJson()));
 
@@ -133,7 +135,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
 
         // when
         ResultActions resultActions = mvc.perform(
-                put("/user-management/accounts")
+                put(URL_TEMPLATE)
                         .contentType(APPLICATION_JSON)
                         .content(changeAccountStatusRequestJsonTester.write(changeAccountStatusRequest).getJson()));
 
@@ -149,7 +151,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
         when(mockUserManagementService.getRoles())
                 .thenReturn(randomObjects(Role.class, 3));
 
-        mvc.perform(get("/user-management/roles")
+        mvc.perform(get(URL_TEMPLATE)
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON));
