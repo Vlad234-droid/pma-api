@@ -4,6 +4,7 @@
 <mapper namespace="com.tesco.pma.colleague.security.dao.AccountManagementDAO">
 
     <resultMap id="accountResultMap" type="com.tesco.pma.colleague.security.domain.Account">
+        <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="type" column="type_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
@@ -30,17 +31,14 @@
 
     <select id="getCount" resultType="long">
         SELECT COUNT(*)
-        FROM (SELECT a.name            as name,
-                     a.type_id         as type_id,
-                     a.status_id       as status_id,
-                     a.iam_id          as iam_id,
-                     a.employee_number as employee_number
+        FROM (SELECT a.id as id
               FROM pm_account a) aa
         WHERE 1 = 1;
     </select>
 
     <select id="get" resultMap="accountsResultMap">
         SELECT
+        a.id as id,
         a.name as name,
         a.type_id as type_id,
         a.status_id as status_id,
@@ -64,8 +62,9 @@
     </select>
 
     <insert id="create">
-        INSERT INTO pm_account (name, iam_id, status_id, type_id, last_login)
-        VALUES (#{name},
+        INSERT INTO pm_account (id, name, iam_id, status_id, type_id, last_login)
+        VALUES (#{id},
+                #{name},
                 #{iamId},
                 #{status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.colleague.security.domain.AccountStatus},
                 #{type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.colleague.security.domain.AccountType},

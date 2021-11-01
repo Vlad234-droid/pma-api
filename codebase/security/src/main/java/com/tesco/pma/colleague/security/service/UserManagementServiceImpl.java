@@ -28,7 +28,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
+
 
 /**
  * Implementation of {@link UserManagementService}.
@@ -49,7 +51,7 @@ public class UserManagementServiceImpl implements UserManagementService {
     private static final String IAM_ID_PARAMETER_NAME = "iamId";
     private static final String ROLE_NAME_PARAMETER_NAME = "roleName";
 
-    @Value("${tesco.application.onboarding.iam.page.size:50}")
+    @Value("${tesco.application.user-management.page.size:50}")
     private int defaultPageLimit;
 
     @Override
@@ -160,7 +162,7 @@ public class UserManagementServiceImpl implements UserManagementService {
             throw accountNotFoundException(accountName);
         }
 
-        long accountId = optionalAccount.get().getId();
+        UUID accountId = optionalAccount.get().getId();
         for (String roleId : roles) {
             try {
                 if (granted) {

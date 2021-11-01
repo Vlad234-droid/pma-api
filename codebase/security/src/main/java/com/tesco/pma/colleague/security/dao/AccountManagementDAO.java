@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 import static java.time.Instant.now;
 
@@ -23,12 +24,13 @@ public interface AccountManagementDAO {
      * @return Count of inserted records
      */
     default int create(String name, String iamId, AccountStatus status, AccountType type) {
-        return create(name, iamId, status, type, now());
+        return create(UUID.randomUUID(), name, iamId, status, type, now());
     }
 
     /**
      * Create account
      *
+     * @param id
      * @param name
      * @param iamId
      * @param status
@@ -36,11 +38,8 @@ public interface AccountManagementDAO {
      * @param now
      * @return Count of inserted records
      */
-    int create(@Param("name") String name,
-               @Param("iamId") String iamId,
-               @Param("status") AccountStatus status,
-               @Param("type") AccountType type,
-               @Param("now") Instant now);
+    int create(@Param("id") UUID id, @Param("name") String name, @Param("iamId") String iamId,
+               @Param("status") AccountStatus status, @Param("type") AccountType type, @Param("now") Instant now);
 
     /**
      * Returns users, their status and access levels
@@ -99,7 +98,7 @@ public interface AccountManagementDAO {
      * @param roleId
      * @return Count of updated records
      */
-    int assignRole(@Param("accountId") final long accountId, @Param("roleId") final int roleId);
+    int assignRole(@Param("accountId") final UUID accountId, @Param("roleId") final int roleId);
 
     /**
      * Remove access
@@ -108,7 +107,7 @@ public interface AccountManagementDAO {
      * @param roleId
      * @return Count of updated records
      */
-    int removeRole(@Param("accountId") final long accountId, @Param("roleId") final int roleId);
+    int removeRole(@Param("accountId") final UUID accountId, @Param("roleId") final int roleId);
 
     /**
      * Find account by account name

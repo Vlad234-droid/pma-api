@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.UUID;
 
 /**
  * Used to give the account to a particular resource under a particular role.
@@ -23,9 +24,9 @@ import java.util.HashSet;
 @JsonIgnoreProperties({"id"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder(alphabetic = true)
-public class Account implements Identified<Long> {
+public class Account implements Identified<UUID> {
 
-    private Long id;
+    private UUID id;
 
     @JsonProperty("accountName")
     private String name;

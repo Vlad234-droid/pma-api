@@ -51,7 +51,7 @@
     <changeSet author="akuzmin" id="3">
         <createTable remarks="List of accounts"
                      tableName="pm_account">
-            <column autoIncrement="true" name="id" type="INTEGER">
+            <column name="id" type="${uuid_type}">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pm_account_pk"/>
             </column>
             <column name="name" type="VARCHAR(50)">
@@ -80,10 +80,7 @@
     <changeSet author="akuzmin" id="4">
         <createTable remarks="List of roles for account"
                      tableName="pm_account_role">
-            <column autoIncrement="true" name="id" type="INTEGER">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pm_account_role_pk"/>
-            </column>
-            <column name="account_id" type="INTEGER">
+            <column name="account_id" type="${uuid_type}">
                 <constraints nullable="false"/>
             </column>
             <column name="role_id" type="INTEGER">
