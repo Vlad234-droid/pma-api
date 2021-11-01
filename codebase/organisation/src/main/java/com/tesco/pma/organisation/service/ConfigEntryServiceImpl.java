@@ -9,6 +9,7 @@ import com.tesco.pma.organisation.api.ConfigEntryErrorCodes;
 import com.tesco.pma.organisation.api.ConfigEntryResponse;
 import com.tesco.pma.organisation.api.WorkingConfigEntry;
 import com.tesco.pma.organisation.dao.ConfigEntryDAO;
+import com.tesco.pma.organisation.dao.ConfigEntryTypeDAO;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
@@ -35,6 +36,7 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
     private static final String COMPOSITE_KEY_VERSION_FORMAT = "%s#v%d";
     private static final String ID = "id";
     private final ConfigEntryDAO dao;
+    private final ConfigEntryTypeDAO configEntryTypeDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Override
@@ -103,7 +105,7 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
     @Transactional
     public void createConfigEntry(ConfigEntry configEntry) {
         configEntry.setUuid(UUID.randomUUID());
-        configEntry.setType(dao.findConfigEntryType(configEntry.getType().getId()));
+        configEntry.setType(configEntryTypeDAO.findConfigEntryType(configEntry.getType().getId()));
         var parentUuid = configEntry.getParentUuid();
         if (parentUuid == null) {
             configEntry.setVersion(1);

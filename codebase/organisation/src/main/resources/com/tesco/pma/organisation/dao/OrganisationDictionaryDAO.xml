@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.organisation.dao.OrganisationDictionaryDAO">
+
+    <select id="findOrganisationDictionary" resultType="com.tesco.pma.organisation.api.OrganisationDictionary">
+        SELECT code, name, level
+        FROM organisation_dictionary
+        WHERE code = #{code}
+    </select>
+
+    <select id="findAllOrganisationDictionaries" resultType="com.tesco.pma.organisation.api.OrganisationDictionary">
+        SELECT code, name, level
+        FROM organisation_dictionary
+    </select>
+
+    <insert id="create">
+        INSERT INTO organisation_dictionary(code, name, level)
+        VALUES (#{od.code}, #{od.name}, #{od.level})
+    </insert>
+
+    <update id="update">
+        UPDATE organisation_dictionary
+        SET name = #{od.name}, level = #{od.level}
+        WHERE code = #{od.code}
+    </update>
+
+    <delete id="delete">
+        DELETE
+        FROM organisation_dictionary
+        WHERE code = #{code}
+    </delete>
+</mapper>
