@@ -108,32 +108,20 @@
     <insert id="createReview" flushCache="true">
         INSERT INTO review
         (uuid,
-        colleague_uuid,
-        performance_cycle_uuid,
-        type_id,
-        number,
-        properties,
-        status_id)
+         colleague_uuid,
+         performance_cycle_uuid,
+         type_id,
+         number,
+         properties,
+         status_id)
         VALUES (#{review.uuid},
-        #{review.colleagueUuid},
-        #{review.performanceCycleUuid},
-        #{review.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.review.domain.ReviewType},
-        #{review.number},
-        #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-        #{review.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.review.domain.ReviewStatus});
+                #{review.colleagueUuid},
+                #{review.performanceCycleUuid},
+                #{review.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.review.domain.ReviewType},
+                #{review.number},
+                #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+                #{review.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.review.domain.ReviewStatus});
     </insert>
-
-    <select id="getReviewByUuid" resultMap="reviewResultMap">
-        SELECT r.uuid,
-               r.colleague_uuid,
-               r.performance_cycle_uuid,
-               r.type_id,
-               r.number,
-               r.properties,
-               r.status_id
-        FROM review r
-        WHERE r.uuid = #{reviewUuid}
-    </select>
 
     <select id="getReview" resultMap="reviewResultMap">
         SELECT r.uuid,
@@ -167,9 +155,30 @@
 
     <delete id="deleteReview">
         DELETE
-        FROM review
-        WHERE uuid = #{reviewUuid}
+        FROM review r
+        WHERE r.colleague_uuid = #{colleagueUuid}
+          and r.performance_cycle_uuid = #{performanceCycleUuid}
+          and r.type_id = #{type.id}
+          and r.number = #{number}
     </delete>
+
+    <delete id="deleteReviews">
+        DELETE
+        FROM review r
+        WHERE r.colleague_uuid = #{colleagueUuid}
+          and r.performance_cycle_uuid = #{performanceCycleUuid}
+          and r.type_id = #{type.id}
+          and r.number >= #{startNumber}
+    </delete>
+
+    <update id="renumerateReviews" flushCache="true">
+        update review
+        set number = number - 1
+        WHERE colleague_uuid = #{colleagueUuid}
+          and performance_cycle_uuid = #{performanceCycleUuid}
+          and type_id = #{type.id}
+          and number >= #{startNumber}
+    </update>
 
     <update id="updateReview" flushCache="true">
         UPDATE review

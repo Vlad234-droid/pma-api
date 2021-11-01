@@ -65,14 +65,6 @@ public interface ReviewDAO {
     int getMaxVersionGroupObjective(@Param("businessUnitUuid") UUID businessUnitUuid);
 
     /**
-     * Returns a review
-     *
-     * @param reviewUuid an identifier
-     * @return a Review
-     */
-    Review getReviewByUuid(@Param("reviewUuid") UUID reviewUuid);
-
-    /**
      * Returns a review by performance cycle, colleague, review type and sequence number.
      *
      * @param performanceCycleUuid an identifier of performance cycle
@@ -133,12 +125,47 @@ public interface ReviewDAO {
                            @Param("prevReviewStatuses") Collection<ReviewStatus> prevReviewStatuses);
 
     /**
-     * Delete a review
+     * Delete a review by business key
      *
-     * @param reviewUuid an identifier of review
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
+     * @param type                 a review type
+     * @param number               a sequence number of review
      * @return number of deleted reviews
      */
-    int deleteReview(@Param("reviewUuid") UUID reviewUuid);
+    int deleteReview(@Param("performanceCycleUuid") UUID performanceCycleUuid,
+                     @Param("colleagueUuid") UUID colleagueUuid,
+                     @Param("type") ReviewType type,
+                     @Param("number") Integer number);
+
+    /**
+     * Delete reviews with number >= startNumber
+     *
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
+     * @param type                 a review type
+     * @param startNumber          a start sequence number of review
+     * @return number of deleted reviews
+     */
+    int deleteReviews(@Param("performanceCycleUuid") UUID performanceCycleUuid,
+                      @Param("colleagueUuid") UUID colleagueUuid,
+                      @Param("type") ReviewType type,
+                      @Param("startNumber") Integer startNumber);
+
+    /**
+     * Re-numerate reviews with number >= startNumber using the following formula:
+     * number=number-1
+     *
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
+     * @param type                 a review type
+     * @param startNumber          a start sequence number of review
+     * @return number of updated reviews
+     */
+    int renumerateReviews(@Param("performanceCycleUuid") UUID performanceCycleUuid,
+                          @Param("colleagueUuid") UUID colleagueUuid,
+                          @Param("type") ReviewType type,
+                          @Param("startNumber") Integer startNumber);
 
     /**
      * Insert or update a working group objective

@@ -35,7 +35,6 @@ class ReviewDAOTest extends AbstractDAOTest {
     private static final UUID GROUP_OBJECTIVE_UUID_2 = UUID.fromString("aab9ab0b-f50f-4442-8900-b03777ee0011");
     private static final UUID GROUP_OBJECTIVE_UUID_NOT_EXIST = UUID.fromString("aab9ab0b-f50f-4442-8900-000000000000");
     private static final UUID REVIEW_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
-    private static final UUID REVIEW_UUID_NOT_EXIST = UUID.fromString("ddb9ab0b-f50f-4442-8900-000000000000");
     private static final UUID BUSINESS_UNIT_UUID = UUID.fromString("ffb9ab0b-f50f-4442-8900-b03777ee00ef");
     private static final UUID BUSINESS_UNIT_UUID_2 = UUID.fromString("ffb9ab0b-f50f-4442-8900-b03777ee00ec");
     private static final UUID BUSINESS_UNIT_UUID_NOT_EXIST = UUID.fromString("ffb9ab0b-f50f-4442-8900-000000000000");
@@ -43,6 +42,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     private static final UUID COLLEAGUE_UUID_NOT_EXIST = UUID.fromString("ccb9ab0b-f50f-4442-8900-000000000000");
     private static final UUID PERFORMANCE_CYCLE_UUID = UUID.fromString("0c5d9cb1-22cf-4fcd-a19a-9e70df6bc941");
     private static final Integer NUMBER_1 = 1;
+    private static final Integer NUMBER_2 = 2;
     private static final String TITLE_PROPERTY_NAME = "title";
     private static final String TITLE_1 = "Title #1";
     private static final String TITLE_UPDATE = "Title update";
@@ -185,7 +185,11 @@ class ReviewDAOTest extends AbstractDAOTest {
     @Test
     @DataSet({"group_objective_init.xml", "review_init.xml"})
     void getReview() {
-        final var result = instance.getReviewByUuid(REVIEW_UUID);
+        final var result = instance.getReview(
+                PERFORMANCE_CYCLE_UUID,
+                COLLEAGUE_UUID,
+                OBJECTIVE,
+                NUMBER_1);
 
         assertThat(result)
                 .asInstanceOf(type(Review.class))
@@ -198,9 +202,13 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet("review_init.xml")
+    @DataSet({"group_objective_init.xml", "review_init.xml"})
     void getReviewNotExist() {
-        final var result = instance.getReviewByUuid(REVIEW_UUID_NOT_EXIST);
+        final var result = instance.getReview(
+                PERFORMANCE_CYCLE_UUID,
+                COLLEAGUE_UUID_NOT_EXIST,
+                OBJECTIVE,
+                NUMBER_1);
 
         assertThat(result).isNull();
     }
@@ -245,14 +253,50 @@ class ReviewDAOTest extends AbstractDAOTest {
     @Test
     @DataSet({"group_objective_init.xml", "review_init.xml"})
     void deleteReviewNotExist() {
-        final var result = instance.deleteReview(REVIEW_UUID_NOT_EXIST);
+        final var result = instance.deleteReview(
+                PERFORMANCE_CYCLE_UUID,
+                COLLEAGUE_UUID_NOT_EXIST,
+                OBJECTIVE,
+                NUMBER_1);
         assertThat(result).isZero();
     }
 
     @Test
-    @DataSet("review_init.xml")
+    @DataSet({"group_objective_init.xml", "review_init.xml"})
     void deleteReviewSucceeded() {
-        final var result = instance.deleteReview(REVIEW_UUID);
+        final var result = instance.deleteReview(
+                PERFORMANCE_CYCLE_UUID,
+                COLLEAGUE_UUID,
+                OBJECTIVE,
+                NUMBER_1);
+        assertThat(result).isOne();
+    }
+
+    @Test
+    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    void deleteReviewsSucceeded() {
+        final var result = instance.deleteReviews(
+                PERFORMANCE_CYCLE_UUID,
+                COLLEAGUE_UUID,
+                OBJECTIVE,
+                NUMBER_1);
+        assertThat(result).isEqualTo(2);
+    }
+
+    @Test
+    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @ExpectedDataSet("review_delete_renumerate_expected_1.xml")
+    void deleteAndRenumerateReviewsSucceeded() {
+        instance.deleteReview(
+                PERFORMANCE_CYCLE_UUID,
+                COLLEAGUE_UUID,
+                OBJECTIVE,
+                NUMBER_1);
+        final var result = instance.renumerateReviews(
+                PERFORMANCE_CYCLE_UUID,
+                COLLEAGUE_UUID,
+                OBJECTIVE,
+                NUMBER_2);
         assertThat(result).isOne();
     }
 
@@ -312,25 +356,6 @@ class ReviewDAOTest extends AbstractDAOTest {
     @DataSet({"group_objective_init.xml", "review_init.xml"})
     @ExpectedDataSet("review_unlink_group_objective_expected.xml")
     void updateReviewUnlinkGroupObjective() {
-        final var review = Review.builder()
-                .uuid(REVIEW_UUID)
-                .colleagueUuid(COLLEAGUE_UUID)
-                .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
-                .type(OBJECTIVE)
-                .number(NUMBER_1)
-                .properties(REVIEW_PROPERTIES_INIT)
-                .status(ReviewStatus.DRAFT)
-                .build();
-
-        final var result = instance.updateReview(review);
-
-        assertThat(result).isOne();
-    }
-
-    @Test
-    @DataSet({"group_objective_init.xml", "review_without_group_objective_init.xml"})
-    @ExpectedDataSet("review_unlink_group_objective_expected.xml")
-    void updateReviewLinkGroupObjective() {
         final var review = Review.builder()
                 .uuid(REVIEW_UUID)
                 .colleagueUuid(COLLEAGUE_UUID)
