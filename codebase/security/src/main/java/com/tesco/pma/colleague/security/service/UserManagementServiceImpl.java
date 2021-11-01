@@ -15,7 +15,9 @@ import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.organisation.api.Colleague;
 import com.tesco.pma.organisation.service.ConfigEntryService;
+import com.tesco.pma.pagination.RequestQuery;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +45,9 @@ public class UserManagementServiceImpl implements UserManagementService {
     private static final String IAM_ID_PARAMETER_NAME = "iamId";
     private static final String ROLE_NAME_PARAMETER_NAME = "roleName";
 
+    @Value("${tesco.application.onboarding.iam.page.size:50}")
+    private int defaultPageLimit;
+
     @Override
     @Transactional(readOnly = true)
     public List<Role> getRoles() {
@@ -51,8 +56,21 @@ public class UserManagementServiceImpl implements UserManagementService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Account> getAccounts() {
-        return refinementAccounts(accountManagementDAO.get());
+    public List<Account> getAccounts(int page) {
+        Integer offset = (page - 1) * defaultPageLimit;
+        RequestQuery requestQuery = new RequestQuery();
+        requestQuery.setOffset(offset);
+        requestQuery.setLimit(defaultPageLimit);
+        List<Account> accounts = accountManagementDAO.get(requestQuery);
+        return refinementAccounts(accounts);
+    }
+
+    @Override
+    public long getTotalNumberOfPages() {
+        long count = accountManagementDAO.getCount();
+        long modulo = count % defaultPageLimit;
+        long pages = count / defaultPageLimit;
+        return pages + (modulo > 0 ? 1 : 0);
     }
 
     private List<Account> refinementAccounts(List<Account> accounts) {

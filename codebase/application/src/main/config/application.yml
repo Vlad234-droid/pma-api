@@ -192,6 +192,10 @@ tesco:
       # sample events
       E_START_1: com.tesco.pma.bpm.action.RunFlowByEventAction
       E_START_2: com.tesco.pma.bpm.action.RunFlowByEventAction
+    onboarding:
+      iam:
+        page:
+          size: 100
 
 camunda:
   bpm:

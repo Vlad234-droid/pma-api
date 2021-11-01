@@ -1,11 +1,13 @@
 package com.tesco.pma.colleague.security.service.rest;
 
-import com.tesco.pma.colleague.security.domain.*;
+import com.tesco.pma.colleague.security.domain.Account;
+import com.tesco.pma.colleague.security.domain.Role;
 import com.tesco.pma.colleague.security.domain.request.AssignRoleRequest;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
 import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
 import com.tesco.pma.colleague.security.domain.request.RemoveRoleRequest;
 import com.tesco.pma.colleague.security.service.UserManagementService;
+import com.tesco.pma.colleague.security.service.rest.response.RestResponseWrapper;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -37,9 +40,11 @@ public class UserManagementEndpoint {
     @Operation(summary = "Get users, their status and access levels", description = "Get users, their status and access levels", tags = "user-management")
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Users, their status and access levels found")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Users, their status and access levels found not found")
-    @GetMapping(value = "/user-management/accounts")
-    public RestResponse<List<Account>> getAccounts() {
-        return RestResponse.success(userManagementService.getAccounts());
+    @GetMapping(path = "/user-management/accounts")
+    public RestResponseWrapper<List<Account>> getAccounts(@RequestParam(required = false, defaultValue = "1") int page) {
+        return new RestResponseWrapper<>(
+                RestResponse.success(userManagementService.getAccounts(page)),
+                userManagementService.getTotalNumberOfPages());
     }
 
     @Operation(summary = "Create an Account", description = "Create an Account", tags = "user-management")

@@ -3,6 +3,7 @@ package com.tesco.pma.colleague.security.dao;
 import com.tesco.pma.colleague.security.domain.Account;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.AccountType;
+import com.tesco.pma.pagination.RequestQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.Instant;
@@ -42,9 +43,10 @@ public interface AccountManagementDAO {
     /**
      * Returns a list of accounts
      *
+     * @param requestQuery
      * @return a list of accounts
      */
-    List<Account> get();
+    List<Account> get(@Param("requestQuery") RequestQuery requestQuery);
 
     /**
      *
@@ -107,4 +109,9 @@ public interface AccountManagementDAO {
      */
     Account findAccountByName(@Param("name") String name);
 
+    /**
+     *
+     * @return
+     */
+    long getCount();
 }

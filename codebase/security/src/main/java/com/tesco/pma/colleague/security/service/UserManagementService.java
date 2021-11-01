@@ -23,7 +23,13 @@ public interface UserManagementService {
      *
      * @return
      */
-    List<Account> getAccounts();
+    List<Account> getAccounts(int page);
+
+    /**
+     *
+     * @return
+     */
+    long getTotalNumberOfPages();
 
     /**
      *

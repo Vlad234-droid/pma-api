@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -48,7 +49,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
     @Test
     void getAccountsShouldReturnAllAccounts() throws Exception {
 
-        when(mockUserManagementService.getAccounts())
+        when(mockUserManagementService.getAccounts(anyInt()))
                 .thenReturn(randomObjects(Account.class, 3));
 
         mvc.perform(get("/user-management/accounts")
