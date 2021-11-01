@@ -12,6 +12,7 @@ import com.tesco.pma.service.security.SubsidiaryPermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.stereotype.Service;
@@ -127,6 +128,11 @@ public class UserServiceImpl implements UserService {
         }
 
         return Optional.ofNullable(user);
+    }
+
+    @Override
+    public Optional<User> currentUser(Collection<UserIncludes> includes){
+        return findUserByAuthentication(SecurityContextHolder.getContext().getAuthentication(), includes);
     }
 
     private Optional<User> findUserByColleagueUuidInternal(final UUID colleagueUuid, final Collection<UserIncludes> includes) {

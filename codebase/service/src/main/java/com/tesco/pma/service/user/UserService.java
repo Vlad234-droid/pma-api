@@ -52,4 +52,12 @@ public interface UserService {
      * @return Optional with user, {@link Optional#empty()} if not found.
      */
     Optional<User> findUserByAuthentication(@NotNull Authentication authentication, Collection<UserIncludes> includes);
+
+    /**
+     * Takes {@link Authentication} from the current security context and finds user by it.
+     *
+     * @param includes       additional data to be included.
+     * @return Optional with user, {@link Optional#empty()} if not found.
+     */
+    Optional<User> currentUser(Collection<UserIncludes> includes);
 }

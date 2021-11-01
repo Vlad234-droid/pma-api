@@ -6,9 +6,11 @@ import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.notes.dao.FolderDao;
 import com.tesco.pma.notes.dao.NoteDao;
+import com.tesco.pma.notes.exception.NoteIntegrityException;
 import com.tesco.pma.notes.exception.NotesErrorCodes;
 import com.tesco.pma.notes.model.Folder;
 import com.tesco.pma.notes.model.Note;
+import com.tesco.pma.organisation.dao.ConfigEntryDAO;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.service.user.UserIncludes;
 import com.tesco.pma.service.user.UserService;
@@ -19,6 +21,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -34,13 +38,13 @@ public class NotesService {
     private final NoteDao noteDao;
     private final UserService userService;
     private final NamedMessageSourceAccessor messageSourceAccessor;
+    private final ConfigEntryDAO configEntryDAO;
 
     @Transactional
     public Note createNote(Note note){
         log.debug("Creating a Note {} for {}", note.getTitle(), note.getOwnerColleagueUuid().toString());
-        //TODO check if the current user is a line manager of the reference colleague (if present)
-
         checkCurrentUser(note.getOwnerColleagueUuid());
+        checkReferenceColleague(note.getOwnerColleagueUuid(), note.getReferenceColleagueUuid());
         note.setId(UUID.randomUUID());
 
         if (0 == noteDao.create(note)) {
@@ -57,6 +61,7 @@ public class NotesService {
     @Transactional
     public Note updateNote(Note note){
         checkCurrentUser(note.getOwnerColleagueUuid());
+        checkReferenceColleague(note.getOwnerColleagueUuid(), note.getReferenceColleagueUuid());
 
         if (1 == noteDao.update(note)) {
             return note;
@@ -106,16 +111,44 @@ public class NotesService {
     }
 
     private void checkCurrentUser(UUID colleagueUuid){
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        var user = userService.findUserByAuthentication(authentication, EnumSet.of(UserIncludes.SUBSIDIARY_PERMISSIONS)) //TODO includes?
-                .orElseThrow(() -> new NotFoundException(ErrorCodes.USER_NOT_FOUND.getCode(),
-                        messageSourceAccessor.getMessage(ErrorCodes.USER_NOT_FOUND,
-                                Map.of("param_name", "colleague ID", "param_value", colleagueUuid))));
-
-        if(!user.getColleagueUuid().equals(colleagueUuid)){
+        if(!getCurrentUserUuid().equals(colleagueUuid)){
             throw new BadCredentialsException(messageSourceAccessor.getMessage(ErrorCodes.USER_NOT_AUTHORIZED));
         }
+    }
+
+    private void checkReferenceColleague(UUID managerUuid, UUID referenceColleagueId){
+
+        if(referenceColleagueId == null || managerUuid == null){
+            return;
+        }
+
+        if(managerUuid.equals(referenceColleagueId)){
+            throw new NoteIntegrityException(NotesErrorCodes.NOTE_OWNER_REFERENCE_COLLISION.getCode(),
+                    messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_OWNER_REFERENCE_COLLISION, Map.of("id", managerUuid)));
+        }
+
+        var referenceColleague = configEntryDAO.getColleague(referenceColleagueId);
+
+        if(referenceColleague == null){
+            throw new NotFoundException(ErrorCodes.USER_NOT_FOUND.getCode(),
+                    messageSourceAccessor.getMessage(ErrorCodes.USER_NOT_FOUND,
+                            Map.of("param_name", "colleague ID", "param_value", referenceColleagueId.toString())));
+        }
+
+        if(!managerUuid.equals(referenceColleague.getManagerUuid())){
+            throw new NoteIntegrityException(NotesErrorCodes.NOT_A_LINE_MANAGER.getCode(),
+                    messageSourceAccessor.getMessage(NotesErrorCodes.NOT_A_LINE_MANAGER, Map.of("curId", managerUuid, "refId", referenceColleagueId)));
+        }
+    }
+
+    private UUID getCurrentUserUuid(){
+
+        var user = userService.currentUser(EnumSet.of(UserIncludes.SUBSIDIARY_PERMISSIONS)) //TODO includes?
+                .orElseThrow(() -> new NotFoundException(ErrorCodes.USER_NOT_FOUND.getCode(),
+                        messageSourceAccessor.getMessage(ErrorCodes.USER_NOT_FOUND,
+                                Map.of("param_name", "Authentication", "param_value", ""))));
+
+        return user.getColleagueUuid();
     }
 
 }
