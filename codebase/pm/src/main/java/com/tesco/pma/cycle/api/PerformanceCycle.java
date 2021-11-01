@@ -1,6 +1,5 @@
 package com.tesco.pma.cycle.api;
 
-import com.tesco.pma.process.api.PMProcessMetadata;
 import com.tesco.pma.process.api.model.PMCycleType;
 import lombok.Data;
 

@@ -17,8 +17,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.tesco.pma.cycle.api.PMCycleStatus.*;
-import static com.tesco.pma.cycle.exception.ErrorCodes.*;
+import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
+import static com.tesco.pma.cycle.api.PMCycleStatus.DRAFT;
+import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
+import static com.tesco.pma.cycle.api.PMCycleStatus.REMOVED;
+import static com.tesco.pma.cycle.exception.ErrorCodes.CYCLES_NOT_FOUND;
+import static com.tesco.pma.cycle.exception.ErrorCodes.CYCLE_ALREADY_EXISTS;
+import static com.tesco.pma.cycle.exception.ErrorCodes.CYCLE_NOT_FOUND_BY_UUID;
+import static com.tesco.pma.cycle.exception.ErrorCodes.CYCLE_NOT_FOUND_FOR_STATUS_UPDATE;
 
 @Service
 @RequiredArgsConstructor
