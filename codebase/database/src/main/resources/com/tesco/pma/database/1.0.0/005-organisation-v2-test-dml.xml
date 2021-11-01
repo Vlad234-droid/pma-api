@@ -1,0 +1,76 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet id="1" author="vshatokhin">
+        <insert tableName="job">
+            <column name="id">300000600015282</column>
+            <column name="code">Office-0316</column>
+            <column name="name">Customer Assistant</column>
+            <column name="cost_category">Stores Non Management</column>
+        </insert>
+        <rollback>
+            <delete tableName="job">
+                <where>id = '300000600015282'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="2" author="vshatokhin">
+        <insert tableName="department">
+            <column name="id">300001051375877</column>
+            <column name="name">Kesgrave Metro</column>
+            <column name="business_type">Store</column>
+        </insert>
+        <rollback>
+            <delete tableName="department">
+                <where>id = '300001051375877'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="3" author="vshatokhin">
+        <insert tableName="country">
+            <column name="code">GB</column>
+            <column name="name">The United Kingdom of Great Britain and Northern Ireland</column>
+        </insert>
+        <rollback>
+            <delete tableName="country">
+                <where>code = 'GB'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="4" author="vshatokhin">
+        <insert tableName="work_level">
+            <column name="code">WL3</column>
+            <column name="name">Work Level 3</column>
+        </insert>
+        <rollback>
+            <delete tableName="work_level">
+                <where>code = 'WL3'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="5" author="vshatokhin">
+        <insert tableName="colleague">
+            <column name="uuid">10000000-0000-0000-0000-000000000001</column>
+            <column name="country_code">GB</column>
+            <column name="first_name">William</column>
+            <column name="middle_name">Jeffrey</column>
+            <column name="last_name">Smith</column>
+            <column name="email">william.smith3@tesco.com</column>
+            <column name="work_level">WL3</column>
+            <column name="primary_entity">Tesco PLC</column>
+            <column name="department_id">300001051375877</column>
+            <column name="salary_frequency">ANNUAL</column>
+            <column name="job_id">300000600015282</column>
+            <column name="iam_source">OracleHCM</column>
+            <column name="iam_id">UKE12345</column>
+        </insert>
+        <rollback>
+            <delete tableName="colleague">
+                <where>uuid = '10000000-0000-0000-0000-000000000001'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

@@ -33,6 +33,13 @@ spring:
   application:
     index: ${random.uuid}
   datasource:
+    default:
+      mybatis-session:
+        type-aliases-package: com.tesco.pma.api, com.tesco.pma.process.api
+        configuration-properties:
+          base-package: com.tesco.pma.dao, com.tesco.pma.process.dao
+          batchSize: 100
+    postgres-version: 11.11
     camunda:
       driver-class-name: org.h2.Driver
       jdbc-url: jdbc:h2:mem:camunda-test;MODE=Oracle;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
@@ -45,6 +52,10 @@ spring:
       maximum-pool-size: 10
       pool-name: camunda_ds_pool
       is-auto-commit: false
+  liquibase:
+    enabled: true
+    change-log: 'classpath:/com/tesco/pma/database/changelog-master.xml'
+    labels: '!integration'
 server:
   port: 8083
   servlet:
@@ -63,4 +74,4 @@ camunda:
       enabled: false
     id-generator: strong
     auto-deployment-enabled: true
-    deployment-resource-pattern: classpath:com/tesco/demo/flow/diagram_1.bpmn
+    deployment-resource-pattern: classpath:com/tesco/demo/flow/diagram_1.bpmn, com/tesco/pma/flow/pm_v1.bpmn, com/tesco/pma/flow/forms/pm_o_1.form, com/tesco/pma/flow/forms/pm_o_2.form

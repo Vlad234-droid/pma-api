@@ -17,6 +17,7 @@ include 'organisation'
 include 'application'
 
 include 'profile'
+include 'review'
 include 'cep'
 
 include 'notes'

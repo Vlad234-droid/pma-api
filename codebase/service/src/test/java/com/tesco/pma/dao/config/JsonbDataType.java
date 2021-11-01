@@ -1,7 +1,9 @@
 package com.tesco.pma.dao.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.datatype.AbstractDataType;
 import org.dbunit.dataset.datatype.TypeCastException;
@@ -14,19 +16,25 @@ import java.sql.Types;
 
 class JsonbDataType extends AbstractDataType {
 
+    private static final ObjectMapper SORTED_MAPPER = new ObjectMapper();
+
+    static {
+        SORTED_MAPPER.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+    }
+
     public JsonbDataType() {
         super("jsonb", Types.OTHER, String.class, false);
     }
 
     @Override
-    public Object typeCast(Object obj) {
+    public Object typeCast(Object obj) throws TypeCastException {
         if (obj == null || obj == ITable.NO_VALUE) {
             return null;
         }
         try {
-            return new ObjectMapper().readTree(obj.toString()).asText();
+            return convertNode(SORTED_MAPPER.readTree(obj.toString()));
         } catch (JsonProcessingException e) {
-            return new TypeCastException(e);
+            throw new TypeCastException(e);
         }
     }
 
@@ -44,5 +52,10 @@ class JsonbDataType extends AbstractDataType {
         jsonObj.setValue(value == null ? null : value.toString());
 
         statement.setObject(column, jsonObj);
+    }
+
+    private String convertNode(final JsonNode node) throws JsonProcessingException {
+        final Object obj = SORTED_MAPPER.treeToValue(node, Object.class);
+        return SORTED_MAPPER.writeValueAsString(obj);
     }
 }

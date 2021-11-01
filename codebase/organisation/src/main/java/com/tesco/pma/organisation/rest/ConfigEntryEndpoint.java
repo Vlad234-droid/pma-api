@@ -1,6 +1,7 @@
 package com.tesco.pma.organisation.rest;
 
 
+import com.tesco.pma.organisation.api.Colleague;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.ConfigEntryResponse;
 import com.tesco.pma.organisation.service.ConfigEntryService;
@@ -109,5 +110,12 @@ public class ConfigEntryEndpoint {
     public RestResponse<?> unpublishEntryConfigStructure(@PathVariable UUID entryUuid) {
         configEntryService.unpublishConfigEntry(entryUuid);
         return RestResponse.success();
+    }
+
+    @Operation(summary = "Get colleagues by composite key", tags = {"config-entry"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Colleagues list")
+    @GetMapping(value = "/colleagues", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<List<Colleague>> findColleaguesByCompositeKey(@RequestParam String compositeKey) {
+        return RestResponse.success(configEntryService.findColleaguesByCompositeKey(compositeKey));
     }
 }

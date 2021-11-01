@@ -12,6 +12,21 @@
         <association property="type" autoMapping="true" columnPrefix="t_"/>
     </resultMap>
 
+    <resultMap id="colleagueMap" type="com.tesco.pma.organisation.api.Colleague">
+        <id column="uuid" property="uuid"/>
+        <result column="first_name" property="firstName"/>
+        <result column="middle_name" property="middleName"/>
+        <result column="last_name" property="lastName"/>
+        <result column="email" property="email"/>
+        <result column="primary_entity" property="primaryEntity"/>
+        <result column="salary_frequency" property="salaryFrequency"/>
+        <result column="iam_source" property="iamSource"/>
+        <result column="iam_id" property="iamId"/>
+        <association property="job" autoMapping="true" columnPrefix="j_"/>
+        <association property="country" autoMapping="true" columnPrefix="co_"/>
+        <association property="workLevel" autoMapping="true" columnPrefix="wl_"/>
+        <association property="department" autoMapping="true" columnPrefix="d_"/>
+    </resultMap>
 
     <select id="findRootConfigEntry" resultMap="configEntryStructure">
         with recursive orgs as (
@@ -38,8 +53,10 @@
     </select>
 
     <select id="getMaxVersionForRootEntry" resultType="int">
-        SELECT COALESCE(MAX(version), 0) FROM config_entry
-        WHERE name = #{name} AND type_id = #{typeId}
+        SELECT COALESCE(MAX(version), 0)
+        FROM config_entry
+        WHERE name = #{name}
+          AND type_id = #{typeId}
     </select>
 
     <select id="findConfigEntryParentStructure" resultMap="configEntryStructure">
@@ -167,4 +184,369 @@
         FROM config_entry
         WHERE uuid = #{uuid};
     </delete>
+
+    <select id="findColleaguesByTypes" resultMap="colleagueMap">
+        SELECT c.uuid,
+        c.first_name,
+        c.middle_name,
+        c.last_name,
+        c.email,
+        c.primary_entity,
+        c.salary_frequency,
+        c.iam_source,
+        c.iam_id,
+        j.id as j_id,
+        j.code as j_code,
+        j.name as j_name,
+        j.cost_category as j_costCategory,
+        co.code as co_code,
+        co.name as co_name,
+        wl.code as wl_code,
+        wl.name as wl_name,
+        d.id as d_id,
+        d.name as d_name,
+        d.business_type as d_businessType
+        FROM colleague c
+        JOIN job j ON j.id = c.job_id
+        JOIN country co ON co.code = c.country_code
+        JOIN work_level wl ON wl.code = c.work_level
+        JOIN department d ON d.id = c.department_id
+        <where>
+            <choose>
+                <when test="key == 'group'">
+                    wl.code IN ('WL3', 'WL4', 'WL5')
+                    AND co.code IN ('GB', 'IE', 'IN')
+                    AND d.business_type != 'Bank'
+                </when>
+                <when test="key == 'group/ho'">
+                    wl.code IN ('WL3', 'WL4', 'WL5')
+                    AND co.code IN ('GB', 'IE', 'IN')
+                    AND d.business_type IN ('Office', 'office','stores','Distribution')
+                </when>
+                <when test="key == 'group/ho/salaried'">
+                    wl.code IN ('WL3', 'WL4', 'WL5')
+                    AND co.code IN ('GB', 'IE', 'IN')
+                    AND d.business_type IN ('Office', 'office','stores','Distribution')
+                    AND c.salary_frequency = 'Annual'
+                </when>
+                <when test="key == 'group/ho/salaried/wl3'">
+                    wl.code = 'WL3'
+                    AND co.code IN ('GB', 'IE', 'IN')
+                    AND d.business_type IN ('Office', 'office','stores','Distribution')
+                    AND c.salary_frequency = 'Annual'
+                </when>
+                <when test="key == 'group/ho/salaried/wl4'">
+                    wl.code = 'WL4'
+                    AND co.code IN ('GB', 'IE', 'IN')
+                    AND d.business_type IN ('Office', 'office','stores','Distribution')
+                    AND c.salary_frequency = 'Annual'
+                </when>
+                <when test="key == 'group/ho/salaried/wl5'">
+                    wl.code = 'WL5'
+                    AND co.code IN ('GB', 'IE', 'IN')
+                    AND d.business_type IN ('Office', 'office','stores','Distribution')
+                    AND c.salary_frequency = 'Annual'
+                </when>
+                <when test="key == 'uk'">
+                    co.code = 'GB'
+                </when>
+                <when test="key == 'uk/ho'">
+                    co.code = 'GB'
+                    AND d.business_type IN ('Office', 'office')
+                </when>
+                <when test="key == 'uk/ho/salaried'">
+                    co.code = 'GB'
+                    AND d.business_type IN ('Office', 'office')
+                    AND c.salary_frequency = 'Annual'
+                </when>
+                <when test="key == 'uk/ho/salaried/wl1'">
+                    co.code = 'GB'
+                    AND d.business_type IN ('Office', 'office')
+                    AND c.salary_frequency = 'Annual'
+                    AND wl.code = 'WL1'
+                </when>
+                <when test="key == 'uk/ho/salaried/wl2'">
+                    co.code = 'GB'
+                    AND d.business_type IN ('Office', 'office')
+                    AND c.salary_frequency = 'Annual'
+                    AND wl.code = 'WL2'
+                </when>
+                <when test="key == 'uk/channels'">
+                    co.code = 'UK'
+                    AND d.business_type = 'Stores'
+                </when>
+                <when test="key == 'uk/channels/salaried'">
+                    co.code = 'UK'
+                    AND d.business_type = 'Stores'
+                    AND c.salary_frequency = 'Annual'
+                </when>
+                <when test="key == 'uk/channels/salaried/wl2_on_bonus'">
+                    co.code = 'UK'
+                    AND d.business_type = 'Stores'
+                    AND c.salary_frequency = 'Annual'
+                    AND wl.code = 'WL2'
+                </when>
+                <when test="key == 'uk/channels/salaried/wl2_tl'">
+                    co.code = 'UK'
+                    AND d.business_type = 'Stores'
+                    AND c.salary_frequency = 'Annual'
+                    AND wl.code = 'WL2'
+                    AND j.name IN ('Team Leader', 'Shift Leader')
+                </when>
+                <when test="key == 'uk/channels/salaried/wl1'">
+                    co.code = 'UK'
+                    AND d.business_type = 'Stores'
+                    AND c.salary_frequency = 'Annual'
+                    AND wl.code = 'WL1'
+                </when>
+                <when test="key == 'uk/channels/hp'">
+                    co.code = 'UK'
+                    AND d.business_type = 'Stores'
+                    AND c.salary_frequency = 'HOURLY'
+                </when>
+                <when test="key == 'uk/channels/hp/colleague'">
+                    co.code = 'UK'
+                    AND d.business_type = 'Stores'
+                    AND c.salary_frequency = 'HOURLY'
+                </when>
+                <when test="key == 'roi/ho_c'">
+                    co.code = 'IE'
+                    AND d.business_type IN ('Office', 'office', 'stores')
+                </when>
+                <when test="key == 'roi/ho_c/salaried'">
+                    co.code = 'IE'
+                    AND d.business_type IN ('Office', 'office', 'stores')
+                    AND c.salary_frequency = 'Annual'
+                </when>
+                <when test="key == 'roi/ho_c/salaried/wl1'">
+                    co.code = 'IE'
+                    AND d.business_type IN ('Office', 'office', 'stores')
+                    AND c.salary_frequency = 'Annual'
+                    AND wl.code = 'WL1'
+                </when>
+                <when test="key == 'roi/ho_c/salaried/wl2'">
+                    co.code = 'IE'
+                    AND d.business_type IN ('Office', 'office', 'stores')
+                    AND c.salary_frequency = 'Annual'
+                    AND wl.code = 'WL2'
+                </when>
+                <when test="key == 'india'">
+                    co.code = 'IN'
+                </when>
+                <when test="key == 'india/ho'">
+                    co.code = 'IN'
+                    AND d.business_type IN ('Office', 'office')
+                </when>
+                <when test="key == 'india/ho/salaried'">
+                    co.code = 'IN'
+                    AND d.business_type IN ('Office', 'office')
+                    AND c.salary_frequency = 'Annual'
+                </when>
+                <when test="key == 'india/ho/salaried/wl1'">
+                    co.code = 'IN'
+                    AND d.business_type IN ('Office', 'office')
+                    AND c.salary_frequency = 'Annual'
+                    AND wl.code = 'WL1'
+                </when>
+                <when test="key == 'india/ho/salaried/wl2'">
+                    co.code = 'IN'
+                    AND d.business_type IN ('Office', 'office')
+                    AND c.salary_frequency = 'Annual'
+                    AND wl.code = 'WL2'
+                </when>
+                <when test="key == 'uk_m'">
+                    c.iam_source = 'UKMaintenance'
+                </when>
+                <when test="key == 'uk_m/salaried'">
+                    c.iam_source = 'UKMaintenance'
+                    AND c.salary_frequency = 'Annual'
+                </when>
+                <when test="key == 'uk_m/salaried/wl1'">
+                    c.iam_source = 'UKMaintenance'
+                    AND c.salary_frequency = 'Annual'
+                    AND wl.code = 'WL1'
+                </when>
+                <when test="key == 'uk_m/salaried/wl2'">
+                    c.iam_source = 'UKMaintenance'
+                    AND c.salary_frequency = 'Annual'
+                    AND wl.code = 'WL2'
+                </when>
+                <when test="key == 'uk_h_c'">
+                    c.iam_source = 'UK Hospitality'
+                </when>
+                <when test="key == 'uk_h_c/ho'">
+                    c.iam_source = 'UK Hospitality'
+                    AND d.business_type IN ('Office', 'office')
+                </when>
+                <when test="key == 'uk_h_c/ho/salaried'">
+                    c.iam_source = 'UK Hospitality'
+                    AND d.business_type IN ('Office', 'office')
+                    AND c.salary_frequency = 'Annual'
+                </when>
+                <when test="key == 'uk_h_c/ho/salaried/wl1'">
+                    c.iam_source = 'UK Hospitality'
+                    AND d.business_type IN ('Office', 'office')
+                    AND c.salary_frequency = 'Annual'
+                    AND wl.code = 'WL1'
+                </when>
+                <when test="key == 'uk_h_c/ho/salaried/wl2'">
+                    c.iam_source = 'UK Hospitality'
+                    AND d.business_type IN ('Office', 'office')
+                    AND c.salary_frequency = 'Annual'
+                    AND wl.code = 'WL2'
+                </when>
+                <when test="key == 'uk_h_c/ho/hp'">
+                    c.iam_source = 'UK Hospitality'
+                    AND d.business_type IN ('Office', 'office')
+                    AND c.salary_frequency = 'HOURLY'
+                </when>
+                <when test="key == 'uk_h_c/ho/hp/colleague'">
+                    c.iam_source = 'UK Hospitality'
+                    AND d.business_type IN ('Office', 'office')
+                    AND c.salary_frequency = 'HOURLY'
+                </when>
+                <when test="key == 'uk_d'">
+                    d.business_type IN ('depot', 'distribution')
+                </when>
+                <when test="key == 'uk_d/salaried'">
+                    d.business_type IN ('depot', 'distribution')
+                    AND c.salary_frequency = 'Annual'
+                </when>
+                <when test="key == 'uk_d/salaried/wl1'">
+                    d.business_type IN ('depot', 'distribution')
+                    AND c.salary_frequency = 'Annual'
+                    AND wl.code = 'WL1'
+                </when>
+                <when test="key == 'uk_d/salaried/wl2'">
+                    d.business_type IN ('depot', 'distribution')
+                    AND c.salary_frequency = 'Annual'
+                    AND wl.code = 'WL2'
+                </when>
+                <when test="key == 'uk_d/hp_none_prod'">
+                    d.business_type IN ('depot', 'distribution')
+                    AND c.salary_frequency = 'HOURLY'
+                    AND j.name IN ('Warehouse clerical', 'People advisor', 'Planning clerk', 'People safety trainer',
+                    'Warehouse service co-ordinator','Store service co-ordinator')
+                </when>
+                <when test="key == 'uk_d/hp_none_prod/colleague'">
+                    d.business_type IN ('depot', 'distribution')
+                    AND c.salary_frequency = 'HOURLY'
+                    AND j.name IN ('Warehouse clerical', 'People advisor', 'Planning clerk', 'People safety trainer',
+                    'Warehouse service co-ordinator','Store service co-ordinator')
+                </when>
+                <when test="key == 'uk_d/hp_prod'">
+                    d.business_type IN ('depot', 'distribution')
+                    AND c.salary_frequency = 'HOURLY'
+                    AND j.name = 'Warehouse operative'
+                </when>
+                <when test="key == 'uk_d/hp_prod/colleague'">
+                    d.business_type IN ('depot', 'distribution')
+                    AND c.salary_frequency = 'HOURLY'
+                    AND j.name = 'Warehouse operative'
+                </when>
+                <when test="key == 'tb'">
+                    c.primary_entity = 'Tesco Bank'
+                </when>
+                <when test="key == 'tb/ho'">
+                    c.primary_entity = 'Tesco Bank'
+                    AND d.business_type IN ('Office', 'office')
+                </when>
+                <when test="key == 'tb/ho/salaried'">
+                    c.primary_entity = 'Tesco Bank'
+                    AND d.business_type IN ('Office', 'office')
+                    AND c.salary_frequency = 'Annual'
+                </when>
+                <when test="key == 'tb/ho/salaried/wl1'">
+                    c.primary_entity = 'Tesco Bank'
+                    AND d.business_type IN ('Office', 'office')
+                    AND c.salary_frequency = 'Annual'
+                    AND wl.code = 'WL1'
+                </when>
+                <when test="key == 'tb/ho/salaried/wl2'">
+                    c.primary_entity = 'Tesco Bank'
+                    AND d.business_type IN ('Office', 'office')
+                    AND c.salary_frequency = 'Annual'
+                    AND wl.code = 'WL2'
+                </when>
+                <when test="key == 'tb/ho/salaried/wl3'">
+                    c.primary_entity = 'Tesco Bank'
+                    AND d.business_type IN ('Office', 'office')
+                    AND c.salary_frequency = 'Annual'
+                    AND wl.code = 'WL3'
+                </when>
+                <when test="key == 'tb/ho/salaried/wl4'">
+                    c.primary_entity = 'Tesco Bank'
+                    AND d.business_type IN ('Office', 'office')
+                    AND c.salary_frequency = 'Annual'
+                    AND wl.code = 'WL4'
+                </when>
+                <when test="key == 'tb/ho/salaried/wl5'">
+                    c.primary_entity = 'Tesco Bank'
+                    AND d.business_type IN ('Office', 'office')
+                    AND c.salary_frequency = 'Annual'
+                    AND wl.code = 'WL5'
+                </when>
+
+                <otherwise>1!=1</otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <select id="getColleague" resultMap="colleagueMap">
+        SELECT c.uuid,
+        c.first_name,
+        c.middle_name,
+        c.last_name,
+        c.email,
+        c.primary_entity,
+        c.salary_frequency,
+        c.iam_source,
+        c.iam_id,
+        j.id as j_id,
+        j.code as j_code,
+        j.name as j_name,
+        j.cost_category as j_costCategory,
+        co.code as co_code,
+        co.name as co_name,
+        wl.code as wl_code,
+        wl.name as wl_name,
+        d.id as d_id,
+        d.name as d_name,
+        d.business_type as d_businessType
+        FROM colleague c
+        JOIN job j ON j.id = c.job_id
+        JOIN country co ON co.code = c.country_code
+        JOIN work_level wl ON wl.code = c.work_level
+        JOIN department d ON d.id = c.department_id
+        WHERE c.uuid = #{colleagueUuid}
+    </select>
+
+    <select id="getColleagueByIamId" resultMap="colleagueMap">
+        SELECT c.uuid,
+        c.first_name,
+        c.middle_name,
+        c.last_name,
+        c.email,
+        c.primary_entity,
+        c.salary_frequency,
+        c.iam_source,
+        c.iam_id,
+        j.id as j_id,
+        j.code as j_code,
+        j.name as j_name,
+        j.cost_category as j_costCategory,
+        co.code as co_code,
+        co.name as co_name,
+        wl.code as wl_code,
+        wl.name as wl_name,
+        d.id as d_id,
+        d.name as d_name,
+        d.business_type as d_businessType
+        FROM colleague c
+        JOIN job j ON j.id = c.job_id
+        JOIN country co ON co.code = c.country_code
+        JOIN work_level wl ON wl.code = c.work_level
+        JOIN department d ON d.id = c.department_id
+        WHERE c.iam_id = #{iamId}
+    </select>
 </mapper>

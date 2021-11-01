@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 2,
+  "exporter": {
+    "name": "form-js (https://demo.bpmn.io)",
+    "version": "0.4.1"
+  },
+  "components": [
+    {
+      "values": [
+        {
+          "label": "Approved",
+          "value": "true"
+        },
+        {
+          "label": "Declined",
+          "value": "false"
+        }
+      ],
+      "key": "approved",
+      "type": "radio",
+      "id": "Field_1q90ywt",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "key": "reason",
+      "label": "Line manager declining reason",
+      "type": "textfield",
+      "id": "Field_0x6v3ef",
+      "validate": {
+        "required": false,
+        "minLength": 10,
+        "maxLength": 1000
+      }
+    }
+  ],
+  "type": "default",
+  "id": "lm_objectives_approval_form"
+}
