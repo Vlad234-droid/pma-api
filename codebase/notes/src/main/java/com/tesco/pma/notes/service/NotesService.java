@@ -1,28 +1,23 @@
 package com.tesco.pma.notes.service;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.exception.AlreadyExistsException;
 import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.notes.dao.FolderDao;
 import com.tesco.pma.notes.dao.NoteDao;
 import com.tesco.pma.notes.exception.NoteIntegrityException;
 import com.tesco.pma.notes.exception.NotesErrorCodes;
+import com.tesco.pma.notes.exception.UnknownDataManipulationException;
 import com.tesco.pma.notes.model.Folder;
 import com.tesco.pma.notes.model.Note;
 import com.tesco.pma.organisation.dao.ConfigEntryDAO;
-import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.service.user.UserIncludes;
 import com.tesco.pma.service.user.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -48,7 +43,7 @@ public class NotesService {
         note.setId(UUID.randomUUID());
 
         if (0 == noteDao.create(note)) {
-            throw new RuntimeException("Note " + note.getId() + " hasn't been created");
+            throw new UnknownDataManipulationException(messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_HAS_NOT_BEEN_CREATED));
         }
 
         return note;
@@ -87,7 +82,7 @@ public class NotesService {
         folder.setId(UUID.randomUUID());
 
         if (0 == folderDao.create(folder)) {
-            throw new RuntimeException("Folder " + folder.getId() + " hasn't been created");
+            throw new UnknownDataManipulationException(messageSourceAccessor.getMessage(NotesErrorCodes.FOLDER_HAS_NOT_BEEN_CREATED));
         }
 
         return folder;
