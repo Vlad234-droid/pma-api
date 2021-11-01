@@ -15,7 +15,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -24,9 +32,8 @@ import java.util.Set;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
- *
- * <p>For more information:
- *  @see <a href="https://github.dev.global.tesco.org/97-TeamTools/Colleague-Authentication-and-Access/wiki/REST-Provisioning-APIs">here</a>
+ * For more information:
+ * @see <a href="https://github.dev.global.tesco.org/97-TeamTools/Colleague-Authentication-and-Access/wiki/REST-Provisioning-APIs">here</a>
  *
  */
 @RestController
@@ -37,7 +44,8 @@ public class UserManagementEndpoint {
 
     private final UserManagementService userManagementService;
 
-    @Operation(summary = "Get users, their status and access levels", description = "Get users, their status and access levels", tags = "user-management")
+    @Operation(summary = "Get users, their status and access levels", description = "Get users, their status and access levels",
+            tags = "user-management")
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Users, their status and access levels found")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Users, their status and access levels found not found")
     @GetMapping(path = "/user-management/accounts")
@@ -65,7 +73,8 @@ public class UserManagementEndpoint {
         return RestResponse.success();
     }
 
-    @Operation(summary = "Get available access levels & metadata", description = "Available access levels & metadata", tags = "user-management")
+    @Operation(summary = "Get available access levels & metadata", description = "Available access levels & metadata",
+            tags = "user-management")
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Available access levels & metadata found")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Available access levels & metadata not found")
     @GetMapping(value = "/user-management/roles")

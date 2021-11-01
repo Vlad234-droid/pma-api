@@ -23,7 +23,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -55,9 +59,8 @@ public class UserManagementServiceImpl implements UserManagementService {
     }
 
     /**
-     *
-     * <p>For more information:
-     *  @see <a href="https://github.dev.global.tesco.org/97-TeamTools/Colleague-Authentication-and-Access/wiki/API-pagination-options">here</a>
+     * For more information:
+     * @see <a href="https://github.dev.global.tesco.org/97-TeamTools/Colleague-Authentication-and-Access/wiki/API-pagination-options">here</a>
      *
      */
     @Override
@@ -79,19 +82,6 @@ public class UserManagementServiceImpl implements UserManagementService {
         return pages + (modulo > 0 ? 1 : 0);
     }
 
-    private List<Account> refinementAccounts(List<Account> accounts) {
-        return accounts.stream().peek(account -> {
-            Collection<Role> roles = account.getRoles();
-            if (roles.isEmpty()) {
-                account.setRoles(null);
-            } else if (roles.size() == 1) {
-                String roleId = String.valueOf(roles.iterator().next().getId());
-                account.setRole(roleId);
-                account.setRoles(null);
-            }
-        }).collect(Collectors.toList());
-    }
-
     @Override
     @Transactional
     public void createAccount(CreateAccountRequest request) {
@@ -108,7 +98,7 @@ public class UserManagementServiceImpl implements UserManagementService {
             throw duplicatedAccountException(e, request.getName());
         }
 
-        Collection<String> roles = getRoles(request.getRole());
+        Collection<String> roles = refinementRoles(request.getRole());
         if (!roles.isEmpty()) {
             updateRoles(true, request.getName(), roles);
         }
@@ -118,18 +108,41 @@ public class UserManagementServiceImpl implements UserManagementService {
     @Override
     @Transactional
     public void grantRole(AssignRoleRequest request) {
-        Collection<String> roles = getRoles(request.getRole());
+        Collection<String> roles = refinementRoles(request.getRole());
         updateRoles(true, request.getAccountName(), roles);
     }
 
     @Override
     @Transactional
     public void revokeRole(RemoveRoleRequest request) {
-        Collection<String> roles = getRoles(request.getRole());
+        Collection<String> roles = refinementRoles(request.getRole());
         updateRoles(false, request.getAccountName(), roles);
     }
 
-    private Collection<String> getRoles(Object role) {
+    @Override
+    @Transactional
+    public void changeAccountStatus(ChangeAccountStatusRequest request) {
+        if (AccountStatus.ENABLED.equals(request.getStatus())) {
+            int updated = accountManagementDAO.enableAccount(request.getName(), AccountStatus.ENABLED);
+        } else {
+            int updated = accountManagementDAO.disableAccount(request.getName(), AccountStatus.DISABLED);
+        }
+    }
+
+    private List<Account> refinementAccounts(List<Account> accounts) {
+        return accounts.stream().peek(account -> {
+            Collection<Role> roles = account.getRoles();
+            if (roles.isEmpty()) {
+                account.setRoles(null);
+            } else if (roles.size() == 1) {
+                String roleId = String.valueOf(roles.iterator().next().getId());
+                account.setRole(roleId);
+                account.setRoles(null);
+            }
+        }).collect(Collectors.toList());
+    }
+
+    private Collection<String> refinementRoles(Object role) {
         Collection<String> retValue = new HashSet<>();
         if (role != null) {
             if (Collection.class.isAssignableFrom(role.getClass())) {
@@ -160,16 +173,6 @@ public class UserManagementServiceImpl implements UserManagementService {
             }
         }
 
-    }
-
-    @Override
-    @Transactional
-    public void changeAccountStatus(ChangeAccountStatusRequest request) {
-        if (AccountStatus.ENABLED.equals(request.getStatus())) {
-            int updated = accountManagementDAO.enableAccount(request.getName(), AccountStatus.ENABLED);
-        } else {
-            int updated = accountManagementDAO.disableAccount(request.getName(), AccountStatus.DISABLED);
-        }
     }
 
     private Optional<Account> findAccountByName(String name) {
@@ -206,20 +209,20 @@ public class UserManagementServiceImpl implements UserManagementService {
                         Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName)));
     }
 
-    private DatabaseConstraintViolationException duplicatedAccountException(DuplicateKeyException e,
+    private DatabaseConstraintViolationException duplicatedAccountException(DuplicateKeyException exception,
                                                                             String accountName) {
         throw new DatabaseConstraintViolationException(ErrorCodes.SECURITY_ACCOUNT_ALREADY_EXISTS.name(),
                 messages.getMessage(ErrorCodes.SECURITY_ACCOUNT_ALREADY_EXISTS,
-                        Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName)), null, e);
+                        Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName)), null, exception);
     }
 
-    private DatabaseConstraintViolationException duplicatedRoleException(DuplicateKeyException e,
+    private DatabaseConstraintViolationException duplicatedRoleException(DuplicateKeyException exception,
                                                                          String accountName, String roleName) {
         return new DatabaseConstraintViolationException(ErrorCodes.SECURITY_DUPLICATED_ROLE.name(),
                 messages.getMessage(ErrorCodes.SECURITY_DUPLICATED_ROLE,
                         Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName,
                                 ROLE_NAME_PARAMETER_NAME, roleName
-                        )), null, e);
+                        )), null, exception);
     }
 
 }

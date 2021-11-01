@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- *
  * Used to give the user access to a particular resource under a particular role.
  *
  * <p>For more information:

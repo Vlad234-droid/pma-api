@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /**
- *
  * Used to give the account to a particular resource under a particular role.
  *
  * <p>For more information:

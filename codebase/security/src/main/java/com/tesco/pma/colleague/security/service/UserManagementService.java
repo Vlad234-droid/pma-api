@@ -1,6 +1,7 @@
 package com.tesco.pma.colleague.security.service;
 
-import com.tesco.pma.colleague.security.domain.*;
+import com.tesco.pma.colleague.security.domain.Account;
+import com.tesco.pma.colleague.security.domain.Role;
 import com.tesco.pma.colleague.security.domain.request.AssignRoleRequest;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
 import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
@@ -16,21 +17,21 @@ public interface UserManagementService {
     /**
      * Returns an available access levels & metadata
      *
-     * @return
+     * @return An available access levels & metadata
      */
     List<Role> getRoles();
 
     /**
      * Returns users, their status and access levels
      *
-     * @return
+     * @return Users, their status and access levels
      */
     List<Account> getAccounts(int page);
 
     /**
      * Get total number of pages
      *
-     * @return
+     * @return Total number of pages
      */
     long getTotalNumberOfPages();
 

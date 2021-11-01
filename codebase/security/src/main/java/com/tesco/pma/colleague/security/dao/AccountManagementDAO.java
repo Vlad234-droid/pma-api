@@ -20,10 +20,10 @@ public interface AccountManagementDAO {
      * @param iamId
      * @param status
      * @param type
-     * @return
+     * @return Count of inserted records
      */
     default int create(String name, String iamId, AccountStatus status, AccountType type) {
-        return create(name, iamId, status, type,now());
+        return create(name, iamId, status, type, now());
     }
 
     /**
@@ -34,7 +34,7 @@ public interface AccountManagementDAO {
      * @param status
      * @param type
      * @param now
-     * @return
+     * @return Count of inserted records
      */
     int create(@Param("name") String name,
                @Param("iamId") String iamId,
@@ -55,7 +55,7 @@ public interface AccountManagementDAO {
      *
      * @param name
      * @param status
-     * @return
+     * @return Count of updated records
      */
     default int disableAccount(String name, AccountStatus status) {
         return disableAccount(name, status, now());
@@ -67,7 +67,7 @@ public interface AccountManagementDAO {
      * @param name
      * @param status
      * @param now
-     * @return
+     * @return Count of updated records
      */
     int disableAccount(@Param("name") String name, @Param("status") AccountStatus status, @Param("now") Instant now);
 
@@ -76,7 +76,7 @@ public interface AccountManagementDAO {
      *
      * @param name
      * @param status
-     * @return
+     * @return Count of updated records
      */
     default int enableAccount(String name, AccountStatus status) {
         return enableAccount(name, status, now());
@@ -88,7 +88,7 @@ public interface AccountManagementDAO {
      * @param name
      * @param status
      * @param now
-     * @return
+     * @return Count of updated records
      */
     int enableAccount(@Param("name") String name, @Param("status") AccountStatus status, @Param("now") Instant now);
 
@@ -97,7 +97,7 @@ public interface AccountManagementDAO {
      *
      * @param accountId
      * @param roleId
-     * @return
+     * @return Count of updated records
      */
     int assignRole(@Param("accountId") final long accountId, @Param("roleId") final int roleId);
 
@@ -106,7 +106,7 @@ public interface AccountManagementDAO {
      *
      * @param accountId
      * @param roleId
-     * @return
+     * @return Count of updated records
      */
     int removeRole(@Param("accountId") final long accountId, @Param("roleId") final int roleId);
 
@@ -114,14 +114,14 @@ public interface AccountManagementDAO {
      * Find account by account name
      *
      * @param name
-     * @return
+     * @return Account
      */
     Account findAccountByName(@Param("name") String name);
 
     /**
      * Get total number of accounts
      *
-     * @return
+     * @return Total number of accounts
      */
     long getCount();
 }
