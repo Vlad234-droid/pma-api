@@ -6,6 +6,7 @@
     <resultMap id="feedback" type="com.tesco.pma.feedback.api.Feedback">
         <id column="uuid" property="uuid"/>
         <result column="colleague_uuid" property="colleagueUuid"/>
+        <result column="target_colleague_uuid" property="targetColleagueUuid"/>
         <result column="target_type_id" property="targetType"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.feedback.api.FeedbackTargetType"/>
@@ -41,6 +42,9 @@
             <when test="sort.field == 'colleague-uuid'">
                 colleague_uuid
             </when>
+            <when test="sort.field == 'target-colleague-uuid'">
+                target_colleague_uuid
+            </when>
             <when test="sort.field == 'target-type'">
                 target_type_id
             </when>
@@ -73,8 +77,11 @@
             <when test="filter.property == 'colleague-uuid'">
                 colleague_uuid
             </when>
+            <when test="filter.property == 'target-colleague-uuid'">
+                target_colleague_uuid
+            </when>
             <when test="filter.property == 'target-type'">
-                UPPER(target_type)
+                target_type_id
             </when>
             <when test="filter.property == 'target-id'">
                 target_id
@@ -83,7 +90,7 @@
                 read
             </when>
             <when test="filter.property == 'status'">
-                UPPER(status)
+                status_id
             </when>
             <when test="filter.property == 'created-time'">
                 created_time
@@ -100,9 +107,6 @@
     <sql id="prepareValues">
         <foreach item="value" collection="filter.value" separator="," open="(" close=")">
             <choose>
-                <when test="filter.property == 'target-type' or filter.property == 'status'">
-                    UPPER(#{value})
-                </when>
                 <when test="filter.property == 'uuid'">
                     #{value}::uuid
                 </when>
@@ -116,29 +120,13 @@
     <sql id="getExpression">
         <choose>
             <when test="filter.operand.name == 'EQUALS' and filter.property != 'created-time' and filter.property != 'updated-time'">
-                <choose>
-                    <when test="filter.property == 'target-type' or filter.property == 'status'">
-                        <include refid="getFilterField"/>
-                        = UPPER('${filter.value}')
-                    </when>
-                    <otherwise>
-                        <include refid="getFilterField"/>
-                        = '${filter.value}'
-                    </otherwise>
-                </choose>
+                <include refid="getFilterField"/>
+                = '${filter.value}'
             </when>
 
             <when test="filter.operand.name == 'NOT_EQUALS' and filter.property != 'created-time' and filter.property != 'updated-time'">
-                <choose>
-                    <when test="filter.property == 'target-type' or filter.property == 'status'">
-                        <include refid="getFilterField"/>
-                        != UPPER('${filter.value}')
-                    </when>
-                    <otherwise>
-                        <include refid="getFilterField"/>
-                        != '${filter.value}'
-                    </otherwise>
-                </choose>
+                <include refid="getFilterField"/>
+                != '${filter.value}'
             </when>
 
             <when test="filter.operand.name == 'IN' and filter.property != 'created-time' and filter.property != 'updated-time'">
@@ -179,6 +167,7 @@
     <select id="getByUuid" flushCache="true" resultMap="feedback">
         SELECT f.uuid,
                f.colleague_uuid,
+               f.target_colleague_uuid,
                f.target_type_id,
                f.target_id,
                f.read,
@@ -196,22 +185,22 @@
     </select>
 
     <select id="findAll" flushCache="true" resultMap="feedback">
-        SELECT
-        f.uuid,
-        f.colleague_uuid,
-        f.target_type_id,
-        f.target_id,
-        f.read,
-        f.status_id,
-        f.created_time,
-        f.updated_time,
-        fi.uuid as fi_uuid,
-        fi.code as fi_code,
-        fi.content as fi_content,
-        fi.feedback_uuid as fi_feedback_uuid
+        SELECT f.uuid,
+               f.colleague_uuid,
+               f.target_colleague_uuid,
+               f.target_type_id,
+               f.target_id,
+               f.read,
+               f.status_id,
+               f.created_time,
+               f.updated_time,
+               fi.uuid          as fi_uuid,
+               fi.code          as fi_code,
+               fi.content       as fi_content,
+               fi.feedback_uuid as fi_feedback_uuid
         FROM feedback f
-        LEFT JOIN feedback_item fi
-        ON f.uuid = fi.feedback_uuid
+                 LEFT JOIN feedback_item fi
+                           ON f.uuid = fi.feedback_uuid
         WHERE 1 = 1
         <if test="!requestQuery.filters.isEmpty()">
             <foreach collection="requestQuery.filters" item="filter" index="index" open=" AND " separator=" AND ">
@@ -242,11 +231,13 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="uuid" keyColumn="uuid" flushCache="true">
         INSERT INTO feedback (uuid,
                               colleague_uuid,
+                              target_colleague_uuid,
                               target_type_id,
                               target_id,
                               status_id)
         VALUES (#{feedback.uuid},
                 #{feedback.colleagueUuid},
+                #{feedback.targetColleagueUuid},
                 #{feedback.targetType, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.feedback.api.FeedbackTargetType},
                 #{feedback.targetId},
                 #{feedback.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.feedback.api.FeedbackStatus})
@@ -254,15 +245,15 @@
 
     <update id="update">
         UPDATE feedback f
-        SET
-            colleague_uuid = #{feedback.colleagueUuid},
-            target_type_id = #{feedback.targetType, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.feedback.api.FeedbackTargetType},
-            target_id      = #{feedback.targetId},
-            read           = #{feedback.read},
-            status_id      = #{feedback.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.feedback.api.FeedbackStatus},
-            updated_time   = now()
+        SET colleague_uuid        = #{feedback.colleagueUuid},
+            target_colleague_uuid = #{feedback.targetColleagueUuid},
+            target_type_id        = #{feedback.targetType, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.feedback.api.FeedbackTargetType},
+            target_id             = #{feedback.targetId},
+            read                  = #{feedback.read},
+            status_id             = #{feedback.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.feedback.api.FeedbackStatus},
+            updated_time          = now()
         WHERE f.uuid = #{feedback.uuid}
-            <include refid="addStatusIdCondition" />
+        <include refid="addStatusIdCondition" />
     </update>
 
     <update id="markAsRead">

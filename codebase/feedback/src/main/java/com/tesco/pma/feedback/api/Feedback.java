@@ -3,7 +3,6 @@ package com.tesco.pma.feedback.api;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
@@ -21,34 +20,36 @@ public class Feedback implements Serializable {
     /**
      * Author. Colleague from whom feedback is written or requested.
      */
-    @NotNull
     @Schema(description = "Author. Colleague from whom feedback is written or requested.", required = true)
     private UUID colleagueUuid;
 
     /**
+     * Colleague to whom feedback is given.
+     */
+    @Schema(description = "Colleague to whom feedback is given.", required = true)
+    private UUID targetColleagueUuid;
+
+    /**
      * Target type: COLLEAGUE, GOAL, OBJECTIVE, VALUE_BEHAVIOR, OTHER.
      */
-    @NotNull
-    @Schema(description = "Target type: COLLEAGUE, GOAL, OBJECTIVE, VALUE_BEHAVIOR, OTHER.", required = true)
+    @Schema(description = "Target type: GOAL, OBJECTIVE, VALUE_BEHAVIOR, OTHER.")
     private FeedbackTargetType targetType;
 
     /**
      * Object identifier that is feedback given on/to or requested about.
      */
-    @NotNull
-    @Schema(description = "Object identifier that is feedback given on/to or requested about/from.", required = true)
+    @Schema(description = "Object identifier that is feedback given on/to or requested about/from.")
     private String targetId;
 
     /**
      * Checkbox. False for Unread feedback.
      */
-    @Schema(description = "Checkbox. False for Unread feedback.", required = true, defaultValue = "false")
+    @Schema(description = "Checkbox. False for Unread feedback.", defaultValue = "false")
     private Boolean read;
 
     /**
      * Status: DRAFT, SUBMITTED, PENDING, COMPLETED.
      */
-    @NotNull
     @Schema(description = "Status: DRAFT, SUBMITTED, PENDING, COMPLETED.", required = true)
     private FeedbackStatus status;
 

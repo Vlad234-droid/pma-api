@@ -4,7 +4,6 @@ import com.tesco.pma.feedback.api.Feedback;
 import com.tesco.pma.pagination.RequestQuery;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -30,8 +29,8 @@ public interface FeedbackService {
     /**
      * Get all the feedbacks.
      *
-     * @return the list of entities.
      * @param requestQuery filter, sort, offset
+     * @return the list of entities.
      */
     List<Feedback> findAll(RequestQuery requestQuery);
 
@@ -41,7 +40,7 @@ public interface FeedbackService {
      * @param uuid the uuid of the entity.
      * @return the entity.
      */
-    Optional<Feedback> findOne(UUID uuid);
+    Feedback findOne(UUID uuid);
 
     /**
      * Update feedback.

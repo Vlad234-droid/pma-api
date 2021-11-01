@@ -35,7 +35,8 @@ public class FeedbackItemServiceImpl implements FeedbackItemService {
             feedbackItemDAO.insert(feedbackItem);
         } catch (DuplicateKeyException | ConstraintViolationException ex) {
             String message = messageSourceAccessor.getMessage(ErrorCodes.CONSTRAINT_VIOLATION.getCode());
-            throw new DatabaseConstraintViolationException(com.tesco.pma.exception.ErrorCodes.CONSTRAINT_VIOLATION.getCode(), message, null, ex);
+            throw new DatabaseConstraintViolationException(
+                    com.tesco.pma.exception.ErrorCodes.CONSTRAINT_VIOLATION.getCode(), message, null, ex);
         }
         return feedbackItem;
     }

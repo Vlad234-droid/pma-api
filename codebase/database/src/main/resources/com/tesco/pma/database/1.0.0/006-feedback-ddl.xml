@@ -69,26 +69,21 @@
         <comment>Init table feedback_target_type</comment>
         <insert tableName="feedback_target_type">
             <column name="id" value="1"/>
-            <column name="code" value="COLLEAGUE"/>
-            <column name="description" value="Feedback is given for colleague"/>
-        </insert>
-        <insert tableName="feedback_target_type">
-            <column name="id" value="2"/>
             <column name="code" value="GOAL"/>
             <column name="description" value="Feedback is given on or requested about goal"/>
         </insert>
         <insert tableName="feedback_target_type">
-            <column name="id" value="3"/>
+            <column name="id" value="2"/>
             <column name="code" value="OBJECTIVE"/>
             <column name="description" value="Feedback is given on or requested about objective"/>
         </insert>
         <insert tableName="feedback_target_type">
-            <column name="id" value="4"/>
+            <column name="id" value="3"/>
             <column name="code" value="VALUE_BEHAVIOR"/>
             <column name="description" value="Feedback is given on or requested about value and behavior"/>
         </insert>
         <insert tableName="feedback_target_type">
-            <column name="id" value="5"/>
+            <column name="id" value="4"/>
             <column name="code" value="OTHER"/>
             <column name="description" value="Feedback is given on or requested about anything else"/>
         </insert>
@@ -108,14 +103,17 @@
             <column name="colleague_uuid" type="${uuid_type}" remarks="Author. Colleague from whom feedback is written or requested.">
                 <constraints nullable="false" />
             </column>
-            <column name="target_type_id" type="integer" remarks="Target type dictionary id: COLLEAGUE, GOAL, OBJECTIVE, VALUE_BEHAVIOR, OTHER.">
-                <constraints nullable="false"
+            <column name="target_colleague_uuid" type="${uuid_type}" remarks="Colleague to whom feedback is given.">
+                <constraints nullable="false" />
+            </column>
+            <column name="target_type_id" type="integer" remarks="Target type dictionary id: GOAL, OBJECTIVE, VALUE_BEHAVIOR, OTHER.">
+                <constraints nullable="true"
                              foreignKeyName="fk_feedback__target_type_id"
                              referencedTableName="feedback_target_type"
                              referencedColumnNames="id" />
             </column>
             <column name="target_id" type="varchar(255)" remarks="Object identifier that is feedback given on/to or requested about/from.">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
             <column name="read" type="boolean" remarks="Checkbox. False for Unread feedback." defaultValueBoolean="false">
                 <constraints nullable="false" />
@@ -133,11 +131,6 @@
                 <constraints nullable="true" />
             </column>
         </createTable>
-<!--        <addForeignKeyConstraint baseColumnNames="colleague_uuid"-->
-<!--                                 baseTableName="feedback"-->
-<!--                                 constraintName="fk_feedback__colleague_uuid"-->
-<!--                                 referencedColumnNames="uuid"-->
-<!--                                 referencedTableName="colleague"/>-->
     </changeSet>
 
     <!--

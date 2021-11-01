@@ -2,6 +2,7 @@
     <feedback
             uuid="b5eedbaa-d313-449e-880e-640e6446304a"
             colleague_uuid="be245be1-1f43-4d5f-85dc-db6e2cce0c2a"
+            target_colleague_uuid="bc7e9e13-4e6a-46c2-bc67-af03fc3afd2e"
             target_type_id="1"
             target_id="f48c8772-4661-4373-8151-ea89796bb3e6"
             read="false"
@@ -29,7 +30,8 @@
     <feedback
             uuid="7ed4dd94-143d-4e66-93b9-1f9cd0f3a1fd"
             colleague_uuid="be245be1-1f43-4d5f-85dc-db6e2cce0c2a"
-            target_type_id="3"
+            target_colleague_uuid="bc7e9e13-4e6a-46c2-bc67-af03fc3afd2e"
+            target_type_id="2"
             target_id="86ea0246-cbb4-43d0-bfa1-41d453013905"
             read="true"
             status_id="4"

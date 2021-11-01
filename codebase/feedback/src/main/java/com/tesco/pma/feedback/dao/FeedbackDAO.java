@@ -22,8 +22,8 @@ public interface FeedbackDAO {
     /**
      * Find all
      *
-     * @return a list of Feedbacks
      * @param requestQuery filtering, sorting and pagination
+     * @return a list of Feedbacks
      */
     List<Feedback> findAll(@Param("requestQuery") RequestQuery requestQuery);
 

@@ -3,7 +3,6 @@ package com.tesco.pma.feedback.api;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.UUID;
@@ -20,7 +19,6 @@ public class FeedbackItem implements Serializable {
     /**
      * Item code. For example, whatWellDone, whatFocusOn, comment or question1, etc.
      */
-    @NotNull
     @Schema(description = "Item code. For example, whatWellDone, whatFocusOn, comment or question1, etc.", required = true)
     private String code;
 
@@ -34,7 +32,6 @@ public class FeedbackItem implements Serializable {
     /**
      * Link to feedback.
      */
-    @NotNull
     @Schema(description = "Link to feedback", required = true)
     private UUID feedbackUuid;
 }

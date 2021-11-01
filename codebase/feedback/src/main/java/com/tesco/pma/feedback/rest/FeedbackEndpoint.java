@@ -12,14 +12,18 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -36,7 +40,8 @@ public class FeedbackEndpoint {
      * {@code POST  /feedbacks} : Create a new feedback.
      *
      * @param feedback the feedback to create.
-     * @return the {@link RestResponse} with status {@code 201 (Created)} and with body the new feedback, or with status {@code 400 (Bad Request)} if the feedback has already an UUID.
+     * @return the {@link RestResponse} with status {@code 201 (Created)} and with body the new feedback,
+     * or with status {@code 400 (Bad Request)} if the feedback has already an UUID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/feedbacks")
@@ -51,7 +56,7 @@ public class FeedbackEndpoint {
     /**
      * {@code PUT  /feedbacks/:uuid} : Updates an existing feedback.
      *
-     * @param uuid the uuid of the feedback to save.
+     * @param uuid     the uuid of the feedback to save.
      * @param feedback the feedback to update.
      * @return the {@link RestResponse} with status {@code 200 (OK)} and with body the updated feedback,
      * or with status {@code 400 (Bad Request)} if the feedback is not valid,
@@ -102,8 +107,8 @@ public class FeedbackEndpoint {
     /**
      * {@code GET  /feedbacks} : get all the feedbacks.
      *
-     * @return the {@link RestResponse} with status {@code 200 (OK)} and the list of feedbacks in body.
      * @param requestQuery filter, sort, offset
+     * @return the {@link RestResponse} with status {@code 200 (OK)} and the list of feedbacks in body.
      */
     @GetMapping("/feedbacks")
     @Operation(summary = "Get all feedbacks with all items", tags = {"feedback"})
@@ -122,8 +127,8 @@ public class FeedbackEndpoint {
     @Operation(summary = "Get feedback by UUID with all items", tags = {"feedback"})
     public RestResponse<Feedback> getFeedback(@PathVariable UUID uuid) {
         log.debug("REST request to get Feedback : {}", uuid);
-        Optional<Feedback> feedback = feedbackService.findOne(uuid);
-        return feedback.map(RestResponse::success).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Feedback feedback = feedbackService.findOne(uuid);
+        return RestResponse.success(feedback);
     }
 
 }

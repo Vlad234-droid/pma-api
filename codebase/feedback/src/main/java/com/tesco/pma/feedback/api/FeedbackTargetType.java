@@ -10,11 +10,10 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum FeedbackTargetType  implements DictionaryItem<Integer> {
-    COLLEAGUE(1, "Feedback is given for colleague"),
-    GOAL(2, "Feedback is given on or requested about goal"),
-    OBJECTIVE(3, "Feedback is given on or requested about objective"),
-    VALUE_BEHAVIOR(4, "Feedback is given on or requested about value and behavior"),
-    OTHER(5, "Feedback is given on or requested about anything else");
+    GOAL(1, "Feedback is given on or requested about goal"),
+    OBJECTIVE(2, "Feedback is given on or requested about objective"),
+    VALUE_BEHAVIOR(3, "Feedback is given on or requested about value and behavior"),
+    OTHER(4, "Feedback is given on or requested about anything else");
 
     private final Integer id;
     private final String description;
