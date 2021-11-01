@@ -100,7 +100,7 @@ public class UserManagementServiceImpl implements UserManagementService {
             throw duplicatedAccountException(e, request.getName());
         }
 
-        Collection<String> roles = refinementRoles(request.getRole());
+        Collection<String> roles = remappingRoles(request.getRole());
         if (!roles.isEmpty()) {
             updateRoles(true, request.getName(), roles);
         }
@@ -110,14 +110,14 @@ public class UserManagementServiceImpl implements UserManagementService {
     @Override
     @Transactional
     public void grantRole(AssignRoleRequest request) {
-        Collection<String> roles = refinementRoles(request.getRole());
+        Collection<String> roles = remappingRoles(request.getRole());
         updateRoles(true, request.getAccountName(), roles);
     }
 
     @Override
     @Transactional
     public void revokeRole(RemoveRoleRequest request) {
-        Collection<String> roles = refinementRoles(request.getRole());
+        Collection<String> roles = remappingRoles(request.getRole());
         updateRoles(false, request.getAccountName(), roles);
     }
 
@@ -144,7 +144,12 @@ public class UserManagementServiceImpl implements UserManagementService {
         }).collect(Collectors.toList());
     }
 
-    private Collection<String> refinementRoles(Object role) {
+    /**
+     *
+     * @param role - Acceptable values in input json are String or list of String
+     * @return
+     */
+    private Collection<String> remappingRoles(Object role) {
         Collection<String> retValue = new HashSet<>();
         if (role != null) {
             if (Collection.class.isAssignableFrom(role.getClass())) {
