@@ -1,0 +1,194 @@
+<dataset>
+
+    <job id="1" code="TL" name="Team lead" cost_category="cc"/>
+    <job id="2" code="SL" name="Shift Leader" cost_category="cc"/>
+
+    <country name="India" code="IN"/>
+    <country name="GB" code="GB"/>
+    <country name="UK" code="UK"/>
+    <country name="IE" code="IE"/>
+
+    <work_level name="WL1" code="WL1"/>
+    <work_level name="WL2" code="WL2"/>
+    <work_level name="WL3" code="WL3"/>
+    <work_level name="WL4" code="WL4"/>
+    <work_level name="WL5" code="WL5"/>
+    <work_level name="WL6" code="WL6"/>
+
+    <department id="1" name="Bank" business_type="Bank"/>
+    <department id="2" name="Office" business_type="Office"/>
+    <department id="3" name="Distribution" business_type="Distribution"/>
+    <department id="4" name="Stores" business_type="Stores"/>
+
+    <colleague uuid="c409869b-2acf-45cd-8cc6-e13af2e6f935"
+               first_name="first_name"
+               middle_name="middle_name"
+               last_name="last_name"
+               email="test@test"
+               primary_entity="Tesco Bank"
+               salary_frequency="Annual"
+               iam_source="Test"
+               iam_id="TPX1"
+               job_id="2"
+               country_code="UK"
+               work_level="WL2"
+               department_id="4"/>
+
+    <colleague uuid="119e0d2b-1dc2-409f-8198-ecd66e59d47a"
+               first_name="first_name"
+               middle_name="middle_name"
+               last_name="last_name"
+               email="test@test"
+               primary_entity="Tesco Bank"
+               salary_frequency="Annual"
+               iam_source="Test"
+               iam_id="TPX2"
+               job_id="2"
+               country_code="UK"
+               work_level="WL1"
+               manager_uuid="c409869b-2acf-45cd-8cc6-e13af2e6f935"
+               employment_type="ET"
+               hire_date="2020-01-01"
+               leaving_date="2021-01-01"
+               department_id="4"/>
+
+    <colleague uuid="45fd1870-9745-41c0-90b5-a902cfca6961"
+               first_name="first_name"
+               middle_name="middle_name"
+               last_name="last_name"
+               email="test@test"
+               primary_entity="Tesco Bank"
+               salary_frequency="HOURLY"
+               iam_source="Test"
+               iam_id="TPX3"
+               job_id="2"
+               country_code="UK"
+               work_level="WL1"
+               department_id="4"/>
+
+    <colleague uuid="b919b9f4-7a25-42e0-805d-e351c4e33ff9"
+               first_name="first_name"
+               middle_name="middle_name"
+               last_name="last_name"
+               email="test@test"
+               primary_entity="Tesco Bank"
+               salary_frequency="Annual"
+               iam_source="Test"
+               iam_id="TPX4"
+               job_id="2"
+               country_code="GB"
+               work_level="WL3"
+               department_id="3"/>
+
+    <colleague uuid="03121555-7246-4b03-b2ed-718cf81d4d31"
+               first_name="first_name"
+               middle_name="middle_name"
+               last_name="last_name"
+               email="test@test"
+               primary_entity="Tesco Bank"
+               salary_frequency="Annual"
+               iam_source="Test"
+               iam_id="TPX5"
+               job_id="2"
+               country_code="GB"
+               work_level="WL4"
+               department_id="3"/>
+
+    <colleague uuid="1efbf78b-d413-4dbb-990d-b05affb4d11e"
+               first_name="first_name"
+               middle_name="middle_name"
+               last_name="last_name"
+               email="test@test"
+               primary_entity="Tesco Bank"
+               salary_frequency="Annual"
+               iam_source="Test"
+               iam_id="TPX6"
+               job_id="2"
+               country_code="GB"
+               work_level="WL5"
+               department_id="3"/>
+
+    <colleague uuid="b5c74f42-665d-4c9e-9b00-2682eaabe592"
+               first_name="first_name"
+               middle_name="middle_name"
+               last_name="last_name"
+               email="test@test"
+               primary_entity="Tesco Bank"
+               salary_frequency="Annual"
+               iam_source="Test"
+               iam_id="TPX7"
+               job_id="2"
+               country_code="GB"
+               work_level="WL1"
+               department_id="2"/>
+
+    <colleague uuid="71eb5890-4f41-4d70-a3a0-0071fcfd2edb"
+               first_name="first_name"
+               middle_name="middle_name"
+               last_name="last_name"
+               email="test@test"
+               primary_entity="Tesco Bank"
+               salary_frequency="Annual"
+               iam_source="Test"
+               iam_id="TPX8"
+               job_id="2"
+               country_code="GB"
+               work_level="WL2"
+               department_id="2"/>
+
+    <colleague uuid="b5f79bef-7905-400f-8cb6-d0ebe41b961c"
+               first_name="first_name"
+               middle_name="middle_name"
+               last_name="last_name"
+               email="test@test"
+               primary_entity="Tesco Bank"
+               salary_frequency="Annual"
+               iam_source="Test"
+               iam_id="TPX9"
+               job_id="2"
+               country_code="IE"
+               work_level="WL1"
+               department_id="2"/>
+
+    <colleague uuid="1e0f2f8a-5d8f-428b-a7c1-9bc0fe214a85"
+               first_name="first_name"
+               middle_name="middle_name"
+               last_name="last_name"
+               email="test@test"
+               primary_entity="Tesco Bank"
+               salary_frequency="Annual"
+               iam_source="Test"
+               iam_id="TPX10"
+               job_id="2"
+               country_code="IE"
+               work_level="WL2"
+               department_id="2"/>
+
+    <colleague uuid="3ca4807c-b08b-4d53-b3a4-0c3d26868720"
+               first_name="first_name"
+               middle_name="middle_name"
+               last_name="last_name"
+               email="test@test"
+               primary_entity="Tesco Bank"
+               salary_frequency="Annual"
+               iam_source="UKMaintenance"
+               iam_id="TPX11"
+               job_id="2"
+               country_code="IN"
+               work_level="WL1"
+               department_id="2"/>
+
+    <colleague uuid="2c8ba89a-2756-42cc-9504-e136cdb94782"
+               first_name="first_name"
+               middle_name="middle_name"
+               last_name="last_name"
+               email="test@test"
+               primary_entity="Tesco Bank"
+               salary_frequency="Annual"
+               iam_source="UKMaintenance"
+               iam_id="TPX12"
+               job_id="2"
+               country_code="IN"
+               work_level="WL2"
+               department_id="2"/>
+</dataset>

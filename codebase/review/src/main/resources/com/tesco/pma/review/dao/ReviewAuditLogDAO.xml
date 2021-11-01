@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.review.dao.ReviewAuditLogDAO">
+
+    <insert id="intLogReviewUpdating" flushCache="true">
+        INSERT INTO review_change_status_hi (review_uuid,
+        new_status_id,
+        old_status_id,
+        change_reason,
+        updated_by,
+        updated_time)
+        VALUES (#{review.uuid},
+        #{newStatus, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.review.domain.ReviewStatus},
+        #{review.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.review.domain.newStatus, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.review.domain.ReviewStatus},
+        #{changeReason},
+        #{updatedBy},
+        #{updatedTime});
+    </insert>
+
+</mapper>

@@ -8,6 +8,7 @@ data:
   PMA_DB_URL: {{ .Values.PMA_DB_URL }}
   PMA_DB_SCHEMA: {{ .Values.PMA_DB_SCHEMA }}
   PMA_DB_USERNAME: {{ .Values.PMA_DB_USERNAME }}
+  SECURITY_ENABLED: {{ .Values.SECURITY_ENABLED | quote }}
 kind: ConfigMap
 metadata:
   name: pma-api-config

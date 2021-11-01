@@ -2,21 +2,19 @@ package com.tesco.pma.colleague.profile.service;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
-import com.tesco.pma.exception.ExternalSystemException;
 import com.tesco.pma.colleague.profile.AbstractProfileTests;
 import com.tesco.pma.colleague.profile.LocalTestConfig;
 import com.tesco.pma.colleague.profile.dao.ProfileAttributeDAO;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
-import com.tesco.pma.service.colleague.ColleagueApiService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import com.tesco.pma.organisation.dao.ConfigEntryDAO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -25,7 +23,6 @@ import java.util.UUID;
 
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -45,23 +42,15 @@ class ProfileServiceImplTest extends AbstractProfileTests {
     private NamedMessageSourceAccessor messages;
 
     @MockBean
-    private ProfileAttributeDAO mockProfileDAO;
+    private ConfigEntryDAO configEntryDAO;
 
     @MockBean
-    private ColleagueApiService mockColleagueApiService;
+    private ProfileAttributeDAO mockProfileDAO;
 
+    @SpyBean
     private ProfileServiceImpl profileService;
 
     private final UUID colleagueUuid = COLLEAGUE_UUID_1;
-
-    @BeforeEach
-    void setUp() {
-        profileService = new ProfileServiceImpl(mockProfileDAO, mockColleagueApiService, messages);
-    }
-
-    @AfterEach
-    void tearDown() {
-    }
 
     @Test
     void findProfileByColleagueUuidShouldReturnProfile() {
@@ -69,27 +58,11 @@ class ProfileServiceImplTest extends AbstractProfileTests {
         when(mockProfileDAO.get(any(UUID.class)))
                 .thenReturn(profileAttributes(3));
 
-        when(mockColleagueApiService.findColleagueByUuid(any(UUID.class)))
+        when(configEntryDAO.getColleague(any(UUID.class)))
                 .thenReturn(randomColleague());
 
         Optional<ColleagueProfile> profileResponse = profileService.findProfileByColleagueUuid(colleagueUuid);
         assertThat(profileResponse).isPresent();
-
-    }
-
-    @Test
-    void findProfileByColleagueUuidShouldReturnExternalSystemException() {
-
-        when(mockProfileDAO.get(any(UUID.class)))
-                .thenReturn(profileAttributes(3));
-
-        when(mockColleagueApiService.findColleagueByUuid(any(UUID.class)))
-                .thenThrow(ExternalSystemException.class);
-
-        assertThatExceptionOfType(ExternalSystemException.class)
-                .isThrownBy(() -> profileService.findProfileByColleagueUuid(colleagueUuid))
-                .withNoCause();
-
     }
 
     @Test

@@ -8,6 +8,7 @@ import com.tesco.pma.organisation.api.ConfigEntryResponse;
 import com.tesco.pma.api.GeneralDictionaryItem;
 import com.tesco.pma.organisation.api.WorkingConfigEntry;
 import com.tesco.pma.organisation.dao.ConfigEntryDAO;
+import com.tesco.pma.organisation.dao.ConfigEntryTypeDAO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -37,9 +38,10 @@ public class ConfigEntryServiceTest {
     private static final String CHILD_NAME_1_1 = "child_1_1";
 
     private final ConfigEntryDAO dao = Mockito.mock(ConfigEntryDAO.class);
+    private final ConfigEntryTypeDAO configEntryTypeDAO = Mockito.mock(ConfigEntryTypeDAO.class);
     private final NamedMessageSourceAccessor accessor = Mockito.mock(NamedMessageSourceAccessor.class);
 
-    private final ConfigEntryService service = new ConfigEntryServiceImpl(dao, accessor);
+    private final ConfigEntryService service = new ConfigEntryServiceImpl(dao, configEntryTypeDAO, accessor);
 
     @Test
     void getStructure() {
@@ -139,12 +141,12 @@ public class ConfigEntryServiceTest {
     void createConfigEntryWithoutParent() {
         var configEntry = new ConfigEntry();
         configEntry.setType(getConfigEntryType());
-        Mockito.when(dao.findConfigEntryType(1)).thenReturn(getConfigEntryType());
+        Mockito.when(configEntryTypeDAO.findConfigEntryType(1)).thenReturn(getConfigEntryType());
 
         service.createConfigEntry(configEntry);
 
         Mockito.verify(dao).createConfigEntry(Mockito.argThat(a -> a.getVersion() == 1));
-        Mockito.verify(dao).findConfigEntryType(1);
+        Mockito.verify(configEntryTypeDAO).findConfigEntryType(1);
         Mockito.verifyNoMoreInteractions(dao);
     }
 
@@ -152,13 +154,13 @@ public class ConfigEntryServiceTest {
     void createConfigEntryWithoutParentAndDuplicateKey() {
         var configEntry = new ConfigEntry();
         configEntry.setType(getConfigEntryType());
-        Mockito.when(dao.findConfigEntryType(1)).thenReturn(getConfigEntryType());
+        Mockito.when(configEntryTypeDAO.findConfigEntryType(1)).thenReturn(getConfigEntryType());
         Mockito.when(dao.createConfigEntry(Mockito.any(ConfigEntry.class))).thenThrow(DuplicateKeyException.class);
 
         Assertions.assertThrows(DatabaseConstraintViolationException.class, () -> service.createConfigEntry(configEntry));
 
         Mockito.verify(dao).createConfigEntry(Mockito.argThat(a -> a.getVersion() == 1));
-        Mockito.verify(dao).findConfigEntryType(1);
+        Mockito.verify(configEntryTypeDAO).findConfigEntryType(1);
         Mockito.verify(accessor).getMessage(ConfigEntryErrorCodes.CONFIG_ENTRY_ALREADY_EXISTS);
         Mockito.verifyNoMoreInteractions(dao);
     }
@@ -171,7 +173,7 @@ public class ConfigEntryServiceTest {
                 thenReturn(new ArrayList<>(List.of(getConfigEntry(ROOT_UUID, ROOT_NAME, null),
                         getConfigEntry(CHILD_UUID_1, CHILD_NAME_1, ROOT_UUID),
                         getConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, CHILD_UUID_1))));
-        Mockito.when(dao.findConfigEntryType(1))
+        Mockito.when(configEntryTypeDAO.findConfigEntryType(1))
                 .thenReturn(getConfigEntryType());
         Mockito.when(dao.getMaxVersionForRootEntry(ROOT_NAME, 1)).thenReturn(4);
 
@@ -220,6 +222,13 @@ public class ConfigEntryServiceTest {
         service.deleteConfigEntry(ROOT_UUID);
 
         Mockito.verify(dao).deleteConfigEntry(ROOT_UUID);
+    }
+
+    @Test
+    void findColleaguesByCompositeKey() {
+        service.findColleaguesByCompositeKey("BU/root/BU/child_1/BU/child_2/BU/child_3/#v1");
+
+        Mockito.verify(dao).findColleaguesByTypes("root/child_1/child_2/child_3");
     }
 
     @Test

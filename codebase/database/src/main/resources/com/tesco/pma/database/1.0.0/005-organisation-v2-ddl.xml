@@ -1,0 +1,307 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet author="mdiadia" id="1">
+        <createTable tableName="colleague" remarks="Colleague table">
+            <column name="uuid" type="${uuid_type}"
+                    remarks="A unique identifier for every colleague.">
+                <constraints primaryKey="true" primaryKeyName="colleague_pk" nullable="false"/>
+            </column>
+            <column name="country_code" type="CHAR(2)"
+                    remarks="ISO 3166-1 alpha-2 country code.">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="varchar(100)"
+                    remarks="This value denotes the first name of a colleague."/>
+            <column name="middle_name" type="varchar(100)"
+                    remarks="This value denotes the middle name of a colleague."/>
+            <column name="last_name" type="varchar(100)"
+                    remarks="This value denotes the last name of a colleague."/>
+            <column name="email" type="varchar(100)"
+                    remarks="This value denotes the work email of a colleague."/>
+            <column name="work_level" type="varchar(100)"
+                    remarks="The colleague career level based on grade code."/>
+            <column name="primary_entity" type="varchar(100)"
+                    remarks="Whether the colleague is hired by Tesco PLC or Subsidiaries."/>
+            <column name="department_id" type="varchar(100)"
+                    remarks="This specifies the information about colleague's department related data."/>
+            <column name="salary_frequency" type="varchar(100)"
+                    remarks="HCM indicator for frequency of salary payment to the colleague"/>
+            <column name="job_id" type="varchar(100)"
+                    remarks="This specifies the information about colleague's job related data."/>
+            <column name="iam_source" type="varchar(100)"
+                    remarks="Name of the source of IAM data."/>
+            <column name="iam_id" type="varchar(100)"
+                    remarks="Users identifier into IAM."/>
+        </createTable>
+        <createIndex tableName="colleague" indexName="colleague_work_level_idx" unique="false">
+            <column name="work_level"/>
+        </createIndex>
+        <createIndex tableName="colleague" indexName="colleague_primary_entity_idx" unique="false">
+            <column name="primary_entity"/>
+        </createIndex>
+        <createIndex tableName="colleague" indexName="colleague_country_code_idx" unique="false">
+            <column name="country_code"/>
+        </createIndex>
+        <createIndex tableName="colleague" indexName="colleague_department_idx" unique="false">
+            <column name="department_id"/>
+        </createIndex>
+        <createIndex tableName="colleague" indexName="colleague_salary_frequency_idx" unique="false">
+            <column name="salary_frequency"/>
+        </createIndex>
+        <createIndex tableName="colleague" indexName="colleague_job_idx" unique="false">
+            <column name="job_id"/>
+        </createIndex>
+        <createIndex tableName="colleague" indexName="colleague_ima_id_idx" unique="true">
+            <column name="iam_id"/>
+        </createIndex>
+        <createIndex tableName="colleague" indexName="colleague_iam_source_idx" unique="false">
+            <column name="iam_source"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="mdiadia" id="2">
+        <createTable tableName="job" remarks="Job table">
+            <column name="id" type="varchar(100)"
+                    remarks="HCM job identifier of a colleague.">
+                <constraints primaryKey="true" primaryKeyName="job_pk" nullable="false"/>
+            </column>
+            <column name="code" type="varchar(100)"
+                    remarks="This is the code to identify the job a colleague belongs to."/>
+            <column name="name" type="varchar(200)"
+                    remarks="HCM job name of a colleague."/>
+            <column name="cost_category" type="varchar(200)"
+                    remarks="This field specifies the job cost category for payroll costing."/>
+        </createTable>
+
+        <createIndex tableName="job" indexName="job_name_idx" unique="false">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="mdiadia" id="3">
+        <createTable tableName="department" remarks="Department table">
+            <column name="id" type="varchar(100)"
+                    remarks="HCM department identifier of a colleague.">
+                <constraints primaryKey="true" primaryKeyName="department_pk" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(200)"
+                    remarks="HCM department name of a colleague."/>
+            <column name="business_type" type="varchar(100)"
+                    remarks="This field specifies business type of a colleague's department."/>
+        </createTable>
+
+        <createIndex tableName="department" indexName="department_business_type_idx" unique="false">
+            <column name="business_type"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="mdiadia" id="4">
+        <createTable tableName="country" remarks="Country table">
+            <column name="code" type="varchar(100)" remarks="Country code">
+                <constraints primaryKey="true" primaryKeyName="country_pk" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(200)"
+                    remarks="Country name"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="mdiadia" id="5">
+        <createTable tableName="work_level" remarks="Work level table">
+            <column name="code" type="varchar(100)" remarks="Work level code">
+                <constraints primaryKey="true" primaryKeyName="work_level_pk" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(200)"
+                    remarks="Work level name"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="mdiadia" id="6">
+        <createTable tableName="organisation_dictionary" remarks="Organisation dictionary table">
+            <column name="code" type="varchar(100)" remarks="Organisation dictionary code">
+                <constraints primaryKey="true" primaryKeyName="organisation_dictionary_pk" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(200)"
+                    remarks="Organisation dictionary name"/>
+            <column name="level" type="integer"
+                    remarks="Organisation dictionary level"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="7" author="mdiadia">
+        <addForeignKeyConstraint baseColumnNames="work_level" baseTableName="colleague"
+                                 constraintName="work_level_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="code" referencedTableName="work_level" validate="true"/>
+    </changeSet>
+
+    <changeSet id="8" author="mdiadia">
+        <addForeignKeyConstraint baseColumnNames="country_code" baseTableName="colleague"
+                                 constraintName="country_code_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="code" referencedTableName="country" validate="true"/>
+    </changeSet>
+
+    <changeSet id="9" author="mdiadia">
+        <addForeignKeyConstraint baseColumnNames="department_id" baseTableName="colleague"
+                                 constraintName="department_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="department" validate="true"/>
+    </changeSet>
+
+    <changeSet id="10" author="mdiadia">
+        <addForeignKeyConstraint baseColumnNames="job_id" baseTableName="colleague"
+                                 constraintName="job_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="job" validate="true"/>
+    </changeSet>
+
+    <changeSet id="11" author="mdiadia">
+        <insert tableName="organisation_dictionary">
+            <column name="code">group</column>
+            <column name="name">GROUP</column>
+            <column name="level">1</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">uk</column>
+            <column name="name">UK</column>
+            <column name="level">1</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">roi</column>
+            <column name="name">ROI</column>
+            <column name="level">1</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">india</column>
+            <column name="name">India</column>
+            <column name="level">1</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">uk_m</column>
+            <column name="name">UK-Maintenance</column>
+            <column name="level">1</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">uk_h_c</column>
+            <column name="name">UK-Hospitality/ Cafes*</column>
+            <column name="level">1</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">uk_d</column>
+            <column name="name">UK-Distribution</column>
+            <column name="level">1</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">tb</column>
+            <column name="name">Tesco Bank</column>
+            <column name="level">1</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">ho_c</column>
+            <column name="name">Head office &amp; Channels</column>
+            <column name="level">2</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">ho</column>
+            <column name="name">Head Office</column>
+            <column name="level">2</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">channels</column>
+            <column name="name">Channels</column>
+            <column name="level">2</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">hp</column>
+            <column name="name">Hourly Paid</column>
+            <column name="level">3</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">salaried</column>
+            <column name="name">Salaried</column>
+            <column name="level">3</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">hp_none_prod</column>
+            <column name="name">Hourly paid - None productive</column>
+            <column name="level">3</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">hp_prod</column>
+            <column name="name">Hourly paid - Productive</column>
+            <column name="level">3</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">wl1</column>
+            <column name="name">WL1</column>
+            <column name="level">4</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">wl2</column>
+            <column name="name">WL2</column>
+            <column name="level">4</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">wl3</column>
+            <column name="name">WL3</column>
+            <column name="level">4</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">wl4</column>
+            <column name="name">WL4</column>
+            <column name="level">4</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">wl5</column>
+            <column name="name">WL5</column>
+            <column name="level">4</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">wl6</column>
+            <column name="name">WL6</column>
+            <column name="level">4</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">wl2_on_bonus</column>
+            <column name="name">WL2 on bonus</column>
+            <column name="level">4</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">wl2_tl</column>
+            <column name="name">WL2 Team Lead</column>
+            <column name="level">4</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">colleague</column>
+            <column name="name">Colleague</column>
+            <column name="level">4</column>
+        </insert>
+        <rollback>
+            <delete tableName="organisation_dictionary">
+                <where>code in ('group','uk','roi','india','uk_m','uk_h_c','uk_d','tb','ho_c',
+                    'ho','channels','hp', 'salaried','hp_none_prod','hp_prod','wl1','wl2','wl3',
+                    'wl4','wl5','wl6','wl2_on_bonus','wl2_tl','colleague')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="12" author="mdiadia">
+        <addColumn tableName="colleague">
+            <column name="manager_uuid" type="${uuid_type}" remarks="A manager identifier for every colleague."/>
+            <column name="employment_type" type="varchar(100)" remarks="Employment type of colleague"/>
+            <column name="hire_date" type="TIMESTAMPTZ" remarks="Hiring date of colleague"/>
+            <column name="leaving_date" type="TIMESTAMPTZ" remarks="Leaving date of colleague"/>
+            <column name="is_manager" type="boolean" remarks="Indicates that colleague a manager"/>
+        </addColumn>
+
+        <addForeignKeyConstraint baseColumnNames="manager_uuid" baseTableName="colleague"
+                                 constraintName="manager_uuid_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="uuid" referencedTableName="colleague" validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>
