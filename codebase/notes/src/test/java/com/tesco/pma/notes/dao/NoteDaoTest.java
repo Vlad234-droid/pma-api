@@ -74,6 +74,16 @@ public class NoteDaoTest extends AbstractDAOTest {
 
     }
 
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml",
+            BASE_PATH_TO_DATA_SET + "notes_entries_init.xml"})
+    public void findByFolderTest(){
+
+        var notes = noteDao.findByFolder(FOLDER_UUID);
+
+        assertEquals(1, notes.size());
+    }
+
     private Note createNote(UUID id, UUID folderId, UUID ownerId){
         var note = new Note();
         note.setId(id);

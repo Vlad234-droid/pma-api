@@ -13,6 +13,8 @@ public interface NoteDao {
 
     List<Note> findByOwner(@Param("colleagueUuid") UUID colleagueUuid);
 
+    List<Note> findByFolder(@Param("folderUuid") UUID folderUuid);
+
     int update(@Param("note") Note note);
 
     int delete(@Param("id") UUID uuid);

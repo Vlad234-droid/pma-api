@@ -30,6 +30,12 @@
         WHERE notes.owner_uuid = #{colleagueUuid}
     </select>
 
+    <select id="findByFolder" resultMap="noteStructure">
+        SELECT id, title, content, owner_uuid, reference_uuid, folder_uuid, update_time, status_id
+        FROM notes
+        WHERE notes.folder_uuid = #{folderUuid}
+    </select>
+
     <update id="update" flushCache="true">
         UPDATE notes
         SET title = (#{note.title}), content = (#{note.content}), owner_uuid = (#{note.ownerColleagueUuid}),
