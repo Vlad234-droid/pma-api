@@ -59,7 +59,8 @@ spring:
                         com.tesco.pma.colleague.profile.dao,
                         com.tesco.pma.organisation.dao,
                         com.tesco.pma.review.dao,
-                        com.tesco.pma.process.dao
+                        com.tesco.pma.process.dao,
+                        com.tesco.pma.cycle.dao
           batchSize: 500
     camunda:
       # Camunda database config
