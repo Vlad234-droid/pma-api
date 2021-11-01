@@ -14,42 +14,49 @@ import java.util.List;
 public interface UserManagementService {
 
     /**
+     * Returns an available access levels & metadata
      *
      * @return
      */
     List<Role> getRoles();
 
     /**
+     * Returns users, their status and access levels
      *
      * @return
      */
     List<Account> getAccounts(int page);
 
     /**
+     * Get total number of pages
      *
      * @return
      */
     long getTotalNumberOfPages();
 
     /**
+     * Create account
      *
      * @param request
      */
     void createAccount(CreateAccountRequest request);
 
     /**
+     * Add access
      *
      * @param request
      */
     void grantRole(AssignRoleRequest request);
 
     /**
+     * Remove access
      *
      * @param request
      */
     void revokeRole(RemoveRoleRequest request);
 
     /**
+     * Enable / Disable account
      *
      * @param request
      */

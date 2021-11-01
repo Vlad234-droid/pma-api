@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface RoleManagementDAO {
 
     /**
-     * Returns a list of roles
+     * Returns an available access levels & metadata
      *
      * @return a list of roles
      */

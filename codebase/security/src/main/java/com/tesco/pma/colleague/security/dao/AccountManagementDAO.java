@@ -14,6 +14,7 @@ import static java.time.Instant.now;
 public interface AccountManagementDAO {
 
     /**
+     * Create account
      *
      * @param name
      * @param iamId
@@ -26,6 +27,7 @@ public interface AccountManagementDAO {
     }
 
     /**
+     * Create account
      *
      * @param name
      * @param iamId
@@ -41,7 +43,7 @@ public interface AccountManagementDAO {
                @Param("now") Instant now);
 
     /**
-     * Returns a list of accounts
+     * Returns users, their status and access levels
      *
      * @param requestQuery
      * @return a list of accounts
@@ -49,6 +51,7 @@ public interface AccountManagementDAO {
     List<Account> get(@Param("requestQuery") RequestQuery requestQuery);
 
     /**
+     * Disable account
      *
      * @param name
      * @param status
@@ -59,6 +62,7 @@ public interface AccountManagementDAO {
     }
 
     /**
+     * Disable account
      *
      * @param name
      * @param status
@@ -68,6 +72,7 @@ public interface AccountManagementDAO {
     int disableAccount(@Param("name") String name, @Param("status") AccountStatus status, @Param("now") Instant now);
 
     /**
+     * Enable account
      *
      * @param name
      * @param status
@@ -78,6 +83,7 @@ public interface AccountManagementDAO {
     }
 
     /**
+     * Enable account
      *
      * @param name
      * @param status
@@ -87,6 +93,7 @@ public interface AccountManagementDAO {
     int enableAccount(@Param("name") String name, @Param("status") AccountStatus status, @Param("now") Instant now);
 
     /**
+     * Add access
      *
      * @param accountId
      * @param roleId
@@ -95,6 +102,7 @@ public interface AccountManagementDAO {
     int assignRole(@Param("accountId") final long accountId, @Param("roleId") final int roleId);
 
     /**
+     * Remove access
      *
      * @param accountId
      * @param roleId
@@ -103,6 +111,7 @@ public interface AccountManagementDAO {
     int removeRole(@Param("accountId") final long accountId, @Param("roleId") final int roleId);
 
     /**
+     * Find account by account name
      *
      * @param name
      * @return
@@ -110,6 +119,7 @@ public interface AccountManagementDAO {
     Account findAccountByName(@Param("name") String name);
 
     /**
+     * Get total number of accounts
      *
      * @return
      */

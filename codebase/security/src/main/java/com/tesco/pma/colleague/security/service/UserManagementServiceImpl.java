@@ -54,6 +54,12 @@ public class UserManagementServiceImpl implements UserManagementService {
         return roleManagementDAO.get();
     }
 
+    /**
+     *
+     * <p>For more information:
+     *  @see <a href="https://github.dev.global.tesco.org/97-TeamTools/Colleague-Authentication-and-Access/wiki/API-pagination-options">here</a>
+     *
+     */
     @Override
     @Transactional(readOnly = true)
     public List<Account> getAccounts(int page) {
