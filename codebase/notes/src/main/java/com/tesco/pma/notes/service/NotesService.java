@@ -54,8 +54,12 @@ public class NotesService {
         return note;
     }
 
-    public List<Note> findNoteByOwner(UUID uuid){
-       return noteDao.findByOwner(uuid);
+    public List<Note> findNoteByOwner(UUID ownerId){
+       return noteDao.findByOwner(ownerId);
+    }
+
+    public List<Note> findNoteByFolder(UUID folderId){
+        return noteDao.findByFolder(folderId);
     }
 
     @Transactional

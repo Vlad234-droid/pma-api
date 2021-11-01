@@ -32,18 +32,26 @@ public class NotesEndpoint {
 
     @Operation(summary = "Update a Note", tags = {"Notes"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Update a Note")
-    @PutMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public RestResponse<Note> update(@RequestBody Note note){
+    public RestResponse<Note> update(@PathVariable("id") UUID uuid, @RequestBody Note note){
         return RestResponse.success(notesService.updateNote(note));
     }
 
-    @Operation(summary = "Find a Note", tags = {"Notes"})
+    @Operation(summary = "Find Notes", tags = {"Notes"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Find Note")
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public RestResponse<List<Note>> get(@RequestParam UUID ownerId){
         return RestResponse.success(notesService.findNoteByOwner(ownerId));
+    }
+
+    @Operation(summary = "Find Notes by Folder", tags = {"Notes"})
+    @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Find Note")
+    @GetMapping(produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public RestResponse<List<Note>> findByFolder(@RequestParam UUID folderId){
+        return RestResponse.success(notesService.findNoteByFolder(folderId));
     }
 
     @Operation(summary = "Delete a Note", tags = {"Notes"})
