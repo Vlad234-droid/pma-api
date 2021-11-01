@@ -14,6 +14,8 @@ import com.tesco.pma.service.user.UserIncludes;
 import com.tesco.pma.service.user.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -112,8 +114,7 @@ public class NotesService {
                                 Map.of("param_name", "colleague ID", "param_value", colleagueUuid))));
 
         if(!user.getColleagueUuid().equals(colleagueUuid)){
-            //TODO find/create appropriate exception
-            throw new RuntimeException(messageSourceAccessor.getMessage(ErrorCodes.USER_NOT_AUTHORIZED));
+            throw new BadCredentialsException(messageSourceAccessor.getMessage(ErrorCodes.USER_NOT_AUTHORIZED));
         }
     }
 
