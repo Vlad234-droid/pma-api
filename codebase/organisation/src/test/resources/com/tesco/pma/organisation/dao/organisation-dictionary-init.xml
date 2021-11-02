@@ -1,0 +1,6 @@
+<dataset>
+    <organisation_dictionary code="uk" name="UK" level="1"/>
+    <organisation_dictionary code="ho" name="Head Office" level="2"/>
+    <organisation_dictionary code="salaried" name="Salaried" level="3"/>
+    <organisation_dictionary code="wl1" name="Work level 1" level="4"/>
+</dataset>
