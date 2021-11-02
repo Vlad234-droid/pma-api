@@ -55,7 +55,6 @@ public class UserManagementServiceImpl implements UserManagementService {
     private int defaultPageLimit;
 
     @Override
-    @Transactional(readOnly = true)
     public List<Role> getRoles() {
         return roleManagementDAO.get();
     }
@@ -66,7 +65,6 @@ public class UserManagementServiceImpl implements UserManagementService {
      *
      */
     @Override
-    @Transactional(readOnly = true)
     public List<Account> getAccounts(int page) {
         Integer offset = (page - 1) * defaultPageLimit;
         RequestQuery requestQuery = new RequestQuery();
