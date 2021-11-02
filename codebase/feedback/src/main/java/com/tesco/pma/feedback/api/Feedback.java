@@ -45,7 +45,7 @@ public class Feedback implements Serializable {
      * Checkbox. False for Unread feedback.
      */
     @Schema(description = "Checkbox. False for Unread feedback.", defaultValue = "false")
-    private Boolean read;
+    private Boolean read = Boolean.FALSE;
 
     /**
      * Status: DRAFT, SUBMITTED, PENDING, COMPLETED.

@@ -115,7 +115,7 @@
             <column name="target_id" type="varchar(255)" remarks="Object identifier that is feedback given on/to or requested about/from.">
                 <constraints nullable="true" />
             </column>
-            <column name="read" type="boolean" remarks="Checkbox. False for Unread feedback." defaultValueBoolean="false">
+            <column name="read" type="boolean" remarks="Checkbox. False for Unread feedback.">
                 <constraints nullable="false" />
             </column>
             <column name="status_id" type="integer" remarks="Status dictionary id: DRAFT, SUBMITTED, PENDING, COMPLETED.">
@@ -124,7 +124,7 @@
                              referencedTableName="feedback_status"
                              referencedColumnNames="id"/>
             </column>
-            <column name="created_time" type="timestamptz" defaultValueComputed="NOW()">
+            <column name="created_time" type="timestamptz">
                 <constraints nullable="false" />
             </column>
             <column name="updated_time" type="timestamptz">

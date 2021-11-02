@@ -18,6 +18,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -58,6 +59,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         log.debug("Request to save Feedback : {}", feedback);
         try {
             feedback.setUuid(UUID.randomUUID());
+            feedback.setCreatedTime(Instant.now());
             feedbackDAO.insert(feedback);
             Set<FeedbackItem> feedbackItems = feedback.getFeedbackItems()
                     .stream()
