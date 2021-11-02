@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.camunda.bpm.model.bpmn.instance.Task;
+import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperties;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperty;
@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.tesco.pma.process.api.model.PMElement.PM_TYPE;
+import static com.tesco.pma.process.api.model.PMForm.PM_FORM_KEY;
 import static com.tesco.pma.process.api.model.PMReview.DEFAULT_PM_REVIEW_MAX;
 import static com.tesco.pma.process.api.model.PMReview.DEFAULT_PM_REVIEW_MIN;
 import static com.tesco.pma.process.api.model.PMReview.PM_REVIEW;
@@ -32,15 +33,15 @@ import static com.tesco.pma.process.api.model.PMReview.PM_REVIEW_TYPE;
 @Slf4j
 @AllArgsConstructor
 public class PMProcessModelParser {
-    private static final Pattern FORM_NAME_PATTERN = Pattern.compile("(([\\w-_]+)\\.(form|json))$");
+    private static final Pattern FORM_NAME_PATTERN = Pattern.compile("(([\\w\\-_/]+)\\.(form|json))$");
 
-    private ResourceProvider resourceProvider;
+    private final ResourceProvider resourceProvider;
 
-    public void parse(PMCycle cycle, Collection<Task> tasks) {
+    public void parse(PMCycle cycle, Collection<Activity> tasks) {
         tasks.forEach(task -> processTask(cycle, task));
     }
 
-    private void processTask(PMCycle cycle, Task task) {
+    private void processTask(PMCycle cycle, Activity task) {
         var extensionElements = task.getExtensionElements();
         if (extensionElements != null) {
             var propsQuery = extensionElements.getElementsQuery().filterByType(CamundaProperties.class);
@@ -60,8 +61,9 @@ public class PMProcessModelParser {
         }
     }
 
-    private PMReview parseReview(Task task, CamundaProperties props, String type) {
-        var pmReview = new PMReview(task.getId(), task.getName(), task.getName(), new GeneralDictionaryItem(null, type, null));
+    private PMReview parseReview(Activity task, CamundaProperties props, String type) {
+        var name = defaultValue(unwrap(task.getName()), task.getId());
+        var pmReview = new PMReview(task.getId(), name, name, new GeneralDictionaryItem(null, type, null));
 
         props.getCamundaProperties().forEach(property -> {
             var key = property.getCamundaName().toLowerCase();
@@ -71,11 +73,16 @@ public class PMProcessModelParser {
             pmReview.getProperties().put(key, property.getCamundaValue());
         });
         pmReview.getProperties().putIfAbsent(PM_REVIEW_MIN, DEFAULT_PM_REVIEW_MIN);
-        pmReview.getProperties().put(PM_REVIEW_MAX, DEFAULT_PM_REVIEW_MAX);
+        pmReview.getProperties().putIfAbsent(PM_REVIEW_MAX, DEFAULT_PM_REVIEW_MAX);
 
+        String formKey;
         if (task instanceof UserTask) {
             var userTask = (UserTask) task;
-            var formKey = userTask.getCamundaFormKey();
+            formKey = userTask.getCamundaFormKey();
+        } else {
+            formKey = pmReview.getProperties().get(PM_FORM_KEY);
+        }
+        if (!StringUtils.isBlank(formKey)) {
             try {
                 var formName = getFormName(formKey);
                 var formJson = resourceProvider.resourceToString(formName);
@@ -91,5 +98,16 @@ public class PMProcessModelParser {
     String getFormName(String key) {
         var matcher = FORM_NAME_PATTERN.matcher(key);
         return matcher.find() ? matcher.group(1) : null;
+    }
+
+    static String defaultValue(String checking, String defaultValue) {
+        return StringUtils.isBlank(checking) ? defaultValue : checking.trim();
+    }
+
+    static String unwrap(String original) {
+        if (!StringUtils.isBlank(original)) {
+            return original.trim().replaceAll("[\\r|\\n]", " ").replaceAll(" +", " ");
+        }
+        return null;
     }
 }

@@ -10,21 +10,21 @@ import lombok.Getter;
 @Getter
 public enum PMProcessStatus implements DictionaryItem<Integer> {
     /**
-     * PM process is registered for the colleague
+     * PM process is registered for the business key
      */
-    REGISTERED(1, "PM process is registered for the colleague"),
+    REGISTERED(1, "PM process is registered for the business key"),
     /**
-     * PM process is started for the colleague
+     * PM process is started for the business key
      */
-    STARTED(2, "PM process is started for the colleague"),
+    STARTED(2, "PM process is started for the business key"),
     /**
-     * The review is started
+     * PM process is suspended
      */
-    IN_REVIEW(3, "The review is started"),
+    SUSPENDED(3, "PM process is suspended"),
     /**
-     * Process is waiting for the next review
+     * PM process is terminated
      */
-    WAITING_NEXT_REVIEW(4, "Process is waiting for the next review"),
+    TERMINATED(4, "PM process is terminated"),
     /**
      * PM process completed
      */
