@@ -1,14 +1,27 @@
 package com.tesco.pma.colleague.security.dao;
 
+import com.github.database.rider.core.api.dataset.DataSet;
+import com.tesco.pma.colleague.security.domain.AccountStatus;
+import com.tesco.pma.colleague.security.domain.AccountType;
 import com.tesco.pma.dao.AbstractDAOTest;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import com.tesco.pma.pagination.RequestQuery;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+
 // TODO Implement all tests
+@DataSet({"com/tesco/pma/colleague/security/dao/accounts_init.xml"})
 class AccountManagementDAOTest extends AbstractDAOTest {
+
+    @Autowired
+    private AccountManagementDAO instance;
 
     @DynamicPropertySource
     static void postgresqlProperties(DynamicPropertyRegistry registry) {
@@ -17,53 +30,69 @@ class AccountManagementDAOTest extends AbstractDAOTest {
         registry.add("spring.datasource.default.username", CONTAINER::getUsername);
     }
 
+    @Test
+    void shouldGetAccounts() {
 
-    @BeforeEach
-    void setUp() {
-    }
+        RequestQuery requestQuery = new RequestQuery();
+        requestQuery.setOffset(0);
+        requestQuery.setLimit(10);
 
-    @AfterEach
-    void tearDown() {
+        final var result = instance.get(requestQuery);
+
+        assertThat(result).isNotEmpty();
+        assertThat(result.size()).isEqualTo(3);
     }
 
     @Test
-    void create() {
+    void createSucceeded() {
+        final int inserted = instance.create("string 4", "string 4", AccountStatus.ENABLED, AccountType.USER);
+        assertThat(inserted).isEqualTo(1);
     }
 
     @Test
-    void testCreate() {
+    void createThrowDuplicatedAccountException() {
+
+        assertThatCode(() -> instance.create("string 3", "string 3",
+                AccountStatus.ENABLED, AccountType.USER))
+                .isExactlyInstanceOf(DuplicateKeyException.class)
+                .hasMessageContaining("string 3");
     }
 
     @Test
-    void get() {
+    void findAccountByNameSucceeded() {
+        var account= instance.findAccountByName("string 1");
+
+        assertThat(account.getId()).isEqualTo(UUID.fromString("a3d51c49-0ab3-448e-ae31-2c865e27c6ea"));
+        assertThat(account.getStatus()).isEqualTo(AccountStatus.ENABLED);
+        assertThat(account.getType()).isEqualTo(AccountType.USER);
+   }
+
+    @Test
+    void disableAccountSucceeded() {
+        final int updated = instance.disableAccount("string 1",AccountStatus.DISABLED);
+
+        assertThat(updated).isEqualTo(1);
     }
 
     @Test
-    void disableAccount() {
+    void enableAccountSucceeded() {
+        final int updated = instance.enableAccount("string 1",AccountStatus.ENABLED);
+
+        assertThat(updated).isEqualTo(1);
     }
 
     @Test
-    void testDisableAccount() {
+    void assignRoleSucceeded() {
+        final int updated = instance.assignRole(UUID.fromString("3c9d0dcd-318b-4094-9743-98e8460aac7e"), 2);
+
+        assertThat(updated).isEqualTo(1);
     }
 
     @Test
-    void enableAccount() {
-    }
+    void removeRoleSucceeded() {
+        final int updated = instance.removeRole(UUID.fromString("3c9d0dcd-318b-4094-9743-98e8460aac7e"), 1);
 
-    @Test
-    void testEnableAccount() {
-    }
-
-    @Test
-    void assignRole() {
-    }
-
-    @Test
-    void removeRole() {
-    }
-
-    @Test
-    void findAccountByName() {
+        assertThat(updated).isEqualTo(1);
     }
 
 }
