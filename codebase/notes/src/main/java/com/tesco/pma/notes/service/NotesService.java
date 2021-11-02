@@ -3,8 +3,8 @@ package com.tesco.pma.notes.service;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.notes.dao.FolderDao;
-import com.tesco.pma.notes.dao.NoteDao;
+import com.tesco.pma.notes.dao.FoldersDao;
+import com.tesco.pma.notes.dao.NotesDao;
 import com.tesco.pma.notes.exception.NoteIntegrityException;
 import com.tesco.pma.notes.exception.NotesErrorCodes;
 import com.tesco.pma.notes.exception.UnknownDataManipulationException;
@@ -30,21 +30,19 @@ import java.util.UUID;
 @AllArgsConstructor
 public class NotesService {
 
-    private final FolderDao folderDao;
-    private final NoteDao noteDao;
-    private final UserService userService;
+    private final FoldersDao foldersDao;
+    private final NotesDao notesDao;
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final ConfigEntryDAO configEntryDAO;
 
     @Transactional
     public Note createNote(Note note){
         log.debug("Creating a Note {} for {}", note.getTitle(), note.getOwnerColleagueUuid().toString());
-        checkCurrentUser(note.getOwnerColleagueUuid());
         checkReferenceColleague(note.getOwnerColleagueUuid(), note.getReferenceColleagueUuid());
         note.setId(UUID.randomUUID());
 
         try {
-            if (0 == noteDao.create(note)) {
+            if (0 == notesDao.create(note)) {
                 throw new UnknownDataManipulationException(messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_HAS_NOT_BEEN_CREATED));
             }
         } catch (DataIntegrityViolationException e){
@@ -55,20 +53,19 @@ public class NotesService {
     }
 
     public List<Note> findNoteByOwner(UUID ownerId){
-       return noteDao.findByOwner(ownerId);
+       return notesDao.findByOwner(ownerId);
     }
 
     public List<Note> findNoteByFolder(UUID folderId){
-        return noteDao.findByFolder(folderId);
+        return notesDao.findByFolder(folderId);
     }
 
     @Transactional
     public Note updateNote(Note note){
-        checkCurrentUser(note.getOwnerColleagueUuid());
         checkReferenceColleague(note.getOwnerColleagueUuid(), note.getReferenceColleagueUuid());
 
         try {
-            if (1 == noteDao.update(note)) {
+            if (1 == notesDao.update(note)) {
                 return note;
             }
         } catch (DataIntegrityViolationException e) {
@@ -81,17 +78,16 @@ public class NotesService {
 
     @Transactional
     public void deleteNote(UUID uuid){
-        noteDao.delete(uuid);
+        notesDao.delete(uuid);
     }
 
     @Transactional
     public Folder createFolder(Folder folder){
         log.debug("Creating folder {} for {}", folder.getTitle(), folder.getOwnerColleagueUuid().toString());
-        checkCurrentUser(folder.getOwnerColleagueUuid());
         folder.setId(UUID.randomUUID());
 
         try {
-            if (0 == folderDao.create(folder)) {
+            if (0 == foldersDao.create(folder)) {
                 throw new UnknownDataManipulationException(messageSourceAccessor.getMessage(NotesErrorCodes.FOLDER_HAS_NOT_BEEN_CREATED));
             }
         } catch (DataIntegrityViolationException e) {
@@ -102,15 +98,13 @@ public class NotesService {
     }
 
     public List<Folder> findFolderByOwner(UUID uuid){
-        return folderDao.findByOwner(uuid);
+        return foldersDao.findByOwner(uuid);
     }
 
     @Transactional
     public Folder updateFolder(Folder folder){
-        checkCurrentUser(folder.getOwnerColleagueUuid());
-
         try {
-            if (1 == folderDao.update(folder)) {
+            if (1 == foldersDao.update(folder)) {
                 return folder;
             }
         } catch (DataIntegrityViolationException e) {
@@ -123,13 +117,7 @@ public class NotesService {
 
     @Transactional
     public void deleteFolder(UUID uuid){
-        folderDao.delete(uuid);
-    }
-
-    private void checkCurrentUser(UUID colleagueUuid){
-        if(!getCurrentUserUuid().equals(colleagueUuid)){
-            throw new BadCredentialsException(messageSourceAccessor.getMessage(ErrorCodes.USER_NOT_AUTHORIZED));
-        }
+        foldersDao.delete(uuid);
     }
 
     private void checkReferenceColleague(UUID managerUuid, UUID referenceColleagueId){
@@ -155,16 +143,6 @@ public class NotesService {
             throw new NoteIntegrityException(NotesErrorCodes.NOT_A_LINE_MANAGER.getCode(),
                     messageSourceAccessor.getMessage(NotesErrorCodes.NOT_A_LINE_MANAGER, Map.of("curId", managerUuid, "refId", referenceColleagueId)));
         }
-    }
-
-    private UUID getCurrentUserUuid(){
-
-        var user = userService.currentUser(EnumSet.of(UserIncludes.SUBSIDIARY_PERMISSIONS)) //TODO includes?
-                .orElseThrow(() -> new NotFoundException(ErrorCodes.USER_NOT_FOUND.getCode(),
-                        messageSourceAccessor.getMessage(ErrorCodes.USER_NOT_FOUND,
-                                Map.of("param_name", "Authentication", "param_value", ""))));
-
-        return user.getColleagueUuid();
     }
 
 }

@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.UUID;
 
-public interface FolderDao {
+public interface FoldersDao {
 
     int create(@Param("folder") Folder folder);
 

@@ -2,7 +2,6 @@ package com.tesco.pma.notes.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.dao.AbstractDAOTest;
-import com.tesco.pma.notes.exception.NoteIntegrityException;
 import com.tesco.pma.notes.model.Note;
 import com.tesco.pma.notes.model.NoteStatus;
 import org.junit.jupiter.api.Assertions;
@@ -14,12 +13,11 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class NoteDaoTest extends AbstractDAOTest {
+public class NotesDaoTest extends AbstractDAOTest {
 
     protected static final String BASE_PATH_TO_DATA_SET = "db_init_scripts/";
     protected static final UUID FOLDER_UUID = UUID.fromString("56141037-6e2d-45f0-b47f-4875e68dd1d7");
@@ -34,14 +32,14 @@ public class NoteDaoTest extends AbstractDAOTest {
     }
 
     @Autowired
-    private NoteDao noteDao;
+    private NotesDao notesDao;
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml"})
     void create() {
 
         var note = createNote(UUID.randomUUID(), FOLDER_UUID, OWNER_UUID);
-        var noteCreatedCount = noteDao.create(note);
+        var noteCreatedCount = notesDao.create(note);
 
         assertEquals(1, noteCreatedCount);
 
@@ -54,7 +52,7 @@ public class NoteDaoTest extends AbstractDAOTest {
 
         Assertions.assertThrows(DuplicateKeyException.class, () -> {
             var note = createNote(NOTE_UUID, FOLDER_UUID, OWNER_UUID);
-            noteDao.create(note);
+            notesDao.create(note);
         });
 
     }
@@ -72,7 +70,7 @@ public class NoteDaoTest extends AbstractDAOTest {
 
         Assertions.assertThrows(DataIntegrityViolationException.class, () -> {
             var note = createNote(UUID.randomUUID(), FOLDER_UUID, OWNER_UUID, titleTooLong.toString());
-            noteDao.create(note);
+            notesDao.create(note);
         });
 
     }
@@ -84,11 +82,11 @@ public class NoteDaoTest extends AbstractDAOTest {
 
         var note = createNote(NOTE_UUID, FOLDER_UUID, OWNER_UUID);
         note.setTitle("New Title");
-        var noteCreatedCount = noteDao.update(note);
+        var noteCreatedCount = notesDao.update(note);
 
         assertEquals(1, noteCreatedCount);
 
-        assertEquals("New Title", noteDao.findByOwner(OWNER_UUID).stream()
+        assertEquals("New Title", notesDao.findByOwner(OWNER_UUID).stream()
                 .filter(f -> note.getId().equals(NOTE_UUID))
                 .findAny().get().getTitle());
 
@@ -99,7 +97,7 @@ public class NoteDaoTest extends AbstractDAOTest {
             BASE_PATH_TO_DATA_SET + "notes_entries_init.xml"})
     public void findByFolderTest(){
 
-        var notes = noteDao.findByFolder(FOLDER_UUID);
+        var notes = notesDao.findByFolder(FOLDER_UUID);
 
         assertEquals(1, notes.size());
     }

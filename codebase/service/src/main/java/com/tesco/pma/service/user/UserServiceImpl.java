@@ -130,11 +130,6 @@ public class UserServiceImpl implements UserService {
         return Optional.ofNullable(user);
     }
 
-    @Override
-    public Optional<User> currentUser(Collection<UserIncludes> includes){
-        return findUserByAuthentication(SecurityContextHolder.getContext().getAuthentication(), includes);
-    }
-
     private Optional<User> findUserByColleagueUuidInternal(final UUID colleagueUuid, final Collection<UserIncludes> includes) {
         final var users = findUsersByColleagueUuidsInternal(List.of(colleagueUuid), includes);
         return users.isEmpty() ? Optional.empty() : Optional.of(users.iterator().next());
