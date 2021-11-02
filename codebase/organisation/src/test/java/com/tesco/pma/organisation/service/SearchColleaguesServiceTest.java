@@ -38,40 +38,4 @@ public class SearchColleaguesServiceTest {
                 .findColleagueSuggestionsByFullName(Mockito.eq(fullNameVal), Mockito.eq(null));
     }
 
-    @Test
-    public void getAllSuggestionsTest_fullname_splitted(){
-        List<Colleague> expectedResult = new ArrayList<>();
-
-        Mockito.when(configEntryDAO.findColleagueSuggestions(
-                    Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any()))
-                .thenReturn(expectedResult);
-
-        var fullNameVal = "Full Name";
-        var result = searchColleaguesService.getAllSuggestions(fullNameVal);
-
-        assertEquals(expectedResult, result);
-
-        Mockito.verify(configEntryDAO, Mockito.times(1))
-                .findColleagueSuggestions(
-                        Mockito.eq("Full"), Mockito.eq(null), Mockito.eq("Name"), Mockito.eq(null));
-    }
-
-    @Test
-    public void getAllSuggestionsTest_fullname_middlename_splitted(){
-        List<Colleague> expectedResult = new ArrayList<>();
-
-        Mockito.when(configEntryDAO.findColleagueSuggestions(
-                        Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any()))
-                .thenReturn(expectedResult);
-
-        var fullNameVal = "Full Middle Name";
-        var result = searchColleaguesService.getAllSuggestions(fullNameVal);
-
-        assertEquals(expectedResult, result);
-
-        Mockito.verify(configEntryDAO, Mockito.times(1))
-                .findColleagueSuggestions(
-                        Mockito.eq("Full"), Mockito.eq("Middle"), Mockito.eq("Name"), Mockito.eq(null));
-    }
-
 }

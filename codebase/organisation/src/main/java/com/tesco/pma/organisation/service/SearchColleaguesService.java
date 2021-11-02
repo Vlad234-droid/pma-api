@@ -9,13 +9,11 @@ import com.tesco.pma.service.user.UserIncludes;
 import com.tesco.pma.service.user.UserService;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -37,18 +35,7 @@ public class SearchColleaguesService {
     private List<Colleague> getSuggestions(String fullName, boolean isAmongSubordinates){
         UUID managerId = isAmongSubordinates? currentUserUUID(): null;
         fullName = fullName.trim();
-
-        if(!fullName.contains(StringUtils.SPACE)){
-            return configEntryDAO.findColleagueSuggestionsByFullName(fullName, managerId);
-        }
-
-        var fullNameArr = fullName.split(StringUtils.SPACE);
-
-        if (fullNameArr.length == 2) {
-            return configEntryDAO.findColleagueSuggestions(fullNameArr[0], null, fullNameArr[1], managerId);
-        }
-
-        return configEntryDAO.findColleagueSuggestions(fullNameArr[0], fullNameArr[1], fullNameArr[2], managerId);
+        return configEntryDAO.findColleagueSuggestionsByFullName(fullName, managerId);
     }
 
     @NonNull

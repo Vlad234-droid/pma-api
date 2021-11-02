@@ -234,14 +234,6 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
         assertEquals(2, dao.findColleagueSuggestionsByFullName("ohn", null).size());
     }
 
-    @Test
-    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues-config.xml"})
-    void findColleagueSuggestions() {
-        assertEquals(9, dao.findColleagueSuggestions("first", null, "last", null).size());
-        assertEquals(9, dao.findColleagueSuggestions("first", "middle", "last", null).size());
-        assertEquals(2, dao.findColleagueSuggestions(null, null, "dow", null).size());
-    }
-
     @ParameterizedTest
     @MethodSource("provideArgsForGettingColleagues")
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues-config.xml"})
