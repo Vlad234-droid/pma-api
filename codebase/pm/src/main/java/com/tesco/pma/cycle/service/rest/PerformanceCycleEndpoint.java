@@ -11,10 +11,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,7 +31,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(path = "/performance-cycle")
+@RequestMapping(path = "/pm-cycles")
 public class PerformanceCycleEndpoint {
 
     private final PerformanceCycleService service;
@@ -53,7 +54,7 @@ public class PerformanceCycleEndpoint {
     @Operation(summary = "Update performance cycle status", tags = {"performance-cycle"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Updated performance cycle status")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle not found", content = @Content)
-    @PutMapping(value = "/{cycleUuid}/statuses/{status}", produces = APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/{cycleUuid}/statuses/{status}", produces = APPLICATION_JSON_VALUE)
     public RestResponse<PerformanceCycle> updateCycleStatus(@PathVariable("cycleUuid") UUID cycleUuid,
                                                             @PathVariable("status") PMCycleStatus status) {
 
@@ -67,6 +68,23 @@ public class PerformanceCycleEndpoint {
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     public RestResponse<List<PerformanceCycle>> getAllPerformanceCyclesForStatus(@RequestParam("status") PMCycleStatus status) {
         return success(service.getAllPerformanceCyclesForStatus(status));
+    }
+
+    @Operation(summary = "Get performance cycle by UUID", tags = {"performance-cycle"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found performance cycle by UUID")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle not found",
+            content = @Content)
+    @GetMapping(value = "/{uuid}", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<PerformanceCycle> getPerformanceCycleByUUID(@PathVariable("uuid") UUID uuid) {
+        return success(service.getPerformanceCycle(uuid));
+    }
+
+    @Operation(summary = "Soft delete performance cycle by UUID", tags = {"performance-cycle"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Removed performance cycle")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle not found")
+    @DeleteMapping(value = "/{uuid}", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<?> removePerformanceCycle(@PathVariable("uuid") UUID uuid) {
+        return success(service.updateStatus(uuid, PMCycleStatus.REMOVED));
     }
 
 

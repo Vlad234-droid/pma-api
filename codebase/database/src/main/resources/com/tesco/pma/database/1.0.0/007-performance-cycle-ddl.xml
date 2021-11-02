@@ -130,6 +130,12 @@
             <column name="creation_time" type="TIMESTAMPTZ">
                 <constraints nullable="false"/>
             </column>
+            <column name="start_time" type="TIMESTAMPTZ">
+                <constraints nullable="true"/>
+            </column>
+            <column name="end_time" type="TIMESTAMPTZ">
+                <constraints nullable="true"/>
+            </column>
             <column name="properties" type="VARCHAR">
                 <constraints nullable="true"/>
             </column>

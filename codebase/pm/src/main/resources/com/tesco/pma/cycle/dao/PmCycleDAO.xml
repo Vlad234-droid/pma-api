@@ -13,9 +13,10 @@
                 javaType="com.tesco.pma.cycle.api.PMCycleStatus"/>
         <result property="type" column="type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.process.api.model.PMCycleType"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
         <result property="properties" column="properties"/>
     </resultMap>
-
 
     <insert id="createCycle" flushCache="true" parameterType="com.tesco.pma.cycle.api.PerformanceCycle">
         INSERT INTO pm_cycle
@@ -27,6 +28,8 @@
          status_id,
          created_by,
          creation_time,
+         start_time,
+         end_time,
          properties)
         VALUES (#{cycle.uuid},
                 #{cycle.organisationKey},
@@ -36,6 +39,8 @@
                 #{cycle.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus},
                 #{cycle.createdBy},
                 now(),
+                #{cycle.startTime},
+                #{cycle.endTime},
                 #{cycle.properties});
     </insert>
 
@@ -45,5 +50,22 @@
         WHERE pmc.uuid = #{uuid}
     </select>
 
+    <update id="updateCycleStatus">
+        UPDATE pm_cycle pmc
+        SET status_id=#{status.id}
+        WHERE pmc.uuid = #{uuid}
+        <if test="prevStatuses != null and !prevStatuses.isEmpty()">
+            AND pmc.status_id IN
+            <foreach item="prevStatus" collection="prevStatuses" separator="," open="(" close=")">
+                #{prevStatus.id}
+            </foreach>
+        </if>
+    </update>
+
+    <select id="getAllPmCyclesForStatus" resultMap="cycleResultMap">
+        SELECT *
+        FROM pm_cycle
+        WHERE status_id = #{status.id}
+    </select>
 
 </mapper>

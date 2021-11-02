@@ -12,7 +12,7 @@ public interface PmCycleDAO {
 
     int createCycle(@Param("cycle") PerformanceCycle cycle);
 
-    int updateCycleStatus(@Param("cycleUuid") UUID cycleUuid,
+    int updateCycleStatus(@Param("uuid") UUID uuid,
                           @Param("status") PMCycleStatus status,
                           @Param("prevStatuses") Collection<PMCycleStatus> prevStatuses);
 
