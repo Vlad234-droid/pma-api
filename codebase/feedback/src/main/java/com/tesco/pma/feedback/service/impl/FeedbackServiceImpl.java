@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -65,7 +64,7 @@ public class FeedbackServiceImpl implements FeedbackService {
             Set<FeedbackItem> feedbackItems = feedback.getFeedbackItems()
                     .stream()
                     .peek(feedbackItem -> feedbackItem.setFeedbackUuid(feedback.getUuid()))
-                    .map(feedbackItemService::create)
+                    .map(feedbackItemService::save)
                     .collect(Collectors.toSet());
             feedback.setFeedbackItems(feedbackItems);
         } catch (DuplicateKeyException ex) {
@@ -82,20 +81,11 @@ public class FeedbackServiceImpl implements FeedbackService {
         DictionaryFilter<FeedbackStatus> statusFilter = UPDATE_STATUS_RULE_MAP.get(feedback.getStatus());
         feedback.setUpdatedTime(Instant.now());
         if (1 == feedbackDAO.update(feedback, statusFilter)) {
-            for (FeedbackItem feedbackItem : feedback.getFeedbackItems()) {
-                feedbackItem.setFeedbackUuid(feedback.getUuid());
-            }
-            Set<FeedbackItem> nonExistFeedbackItems = feedback.getFeedbackItems()
-                    .stream()
-                    .filter(feedbackItem -> Objects.isNull(feedbackItem.getUuid()))
-                    .map(feedbackItemService::create)
-                    .collect(Collectors.toSet());
             Set<FeedbackItem> feedbackItems = feedback.getFeedbackItems()
                     .stream()
-                    .filter(feedbackItem -> Objects.nonNull(feedbackItem.getUuid()))
-                    .map(feedbackItemService::update)
+                    .peek(feedbackItem -> feedbackItem.setFeedbackUuid(feedback.getUuid()))
+                    .map(feedbackItemService::save)
                     .collect(Collectors.toSet());
-            feedbackItems.addAll(nonExistFeedbackItems);
             feedback.setFeedbackItems(feedbackItems);
         } else {
             String message = messageSourceAccessor.getMessage(ErrorCodes.FEEDBACK_NOT_FOUND,

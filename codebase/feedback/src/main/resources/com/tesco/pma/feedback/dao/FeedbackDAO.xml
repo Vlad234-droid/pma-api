@@ -234,13 +234,19 @@
                               target_colleague_uuid,
                               target_type_id,
                               target_id,
-                              status_id)
+                              read,
+                              status_id,
+                              created_time,
+                              updated_time)
         VALUES (#{feedback.uuid},
                 #{feedback.colleagueUuid},
                 #{feedback.targetColleagueUuid},
                 #{feedback.targetType, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.feedback.api.FeedbackTargetType},
                 #{feedback.targetId},
-                #{feedback.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.feedback.api.FeedbackStatus})
+                #{feedback.read},
+                #{feedback.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.feedback.api.FeedbackStatus},
+                #{feedback.createdTime},
+                #{feedback.updatedTime})
     </insert>
 
     <update id="update">

@@ -3,16 +3,13 @@
 
 <mapper namespace="com.tesco.pma.feedback.dao.FeedbackItemDAO">
 
-    <insert id="insert" flushCache="true" useGeneratedKeys="true" keyColumn="uuid" keyProperty="uuid">
+    <insert id="save" flushCache="true" useGeneratedKeys="true" keyColumn="uuid" keyProperty="uuid">
         INSERT INTO feedback_item (uuid, code, content, feedback_uuid)
         VALUES (#{feedbackItem.uuid}, #{feedbackItem.code}, #{feedbackItem.content}, #{feedbackItem.feedbackUuid})
+        ON CONFLICT (uuid)
+            DO UPDATE SET code    = #{feedbackItem.code},
+                          content = #{feedbackItem.content}
+        WHERE feedback_item.uuid = #{feedbackItem.uuid}
     </insert>
 
-    <update id="update">
-        UPDATE feedback_item
-        SET
-            code = #{feedbackItem.code},
-            content = #{feedbackItem.content}
-        WHERE uuid = #{feedbackItem.uuid}
-    </update>
 </mapper>

@@ -6,18 +6,11 @@ import org.apache.ibatis.annotations.Param;
 public interface FeedbackItemDAO {
 
     /**
-     * Insert feedback item
+     * Upsert feedback item
      *
      * @param feedbackItem a FeedbackItem
      * @return number of inserted entities
      */
-    int insert(@Param("feedbackItem") FeedbackItem feedbackItem);
+    int save(@Param("feedbackItem") FeedbackItem feedbackItem);
 
-    /**
-     * Update feedback item
-     *
-     * @param feedbackItem a FeedbackItem
-     * @return number of updated entities
-     */
-    int update(@Param("feedbackItem") FeedbackItem feedbackItem);
 }

@@ -14,6 +14,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -88,6 +89,7 @@ public class FeedbackDAOTest extends AbstractDAOTest {
         //given
         Feedback feedback = TestDataUtil.buildFeedback();
         feedback.setUuid(UUID.randomUUID());
+        feedback.setCreatedTime(Instant.now());
 
         //when
         int result = underTest.insert(feedback);
@@ -117,6 +119,7 @@ public class FeedbackDAOTest extends AbstractDAOTest {
         //given
         Feedback feedback = TestDataUtil.buildFeedback();
         feedback.setUuid(TestDataUtil.FEEDBACK_UUID_LAST);
+        feedback.setCreatedTime(Instant.now());
 
         //when and then
         assertThatCode(() -> underTest.insert(feedback))

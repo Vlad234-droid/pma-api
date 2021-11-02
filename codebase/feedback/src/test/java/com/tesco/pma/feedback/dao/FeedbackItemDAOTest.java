@@ -35,7 +35,7 @@ class FeedbackItemDAOTest extends AbstractDAOTest {
         feedbackItem.setUuid(UUID.randomUUID());
 
         //when
-        int result = underTest.insert(feedbackItem);
+        int result = underTest.save(feedbackItem);
 
         //then
         assertEquals(1, result);
@@ -49,7 +49,7 @@ class FeedbackItemDAOTest extends AbstractDAOTest {
         feedbackItem.setUuid(TestDataUtil.FEEDBACK_ITEM_UUID);
 
         //when
-        int result = underTest.update(feedbackItem);
+        int result = underTest.save(feedbackItem);
 
         //then
         assertEquals(1, result);
