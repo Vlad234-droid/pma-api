@@ -40,9 +40,9 @@ public class FoldersEndpoint {
 
     @Operation(summary = "Update a Folder", tags = {"Notes"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Update a Folder")
-    @PutMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public RestResponse<?> update(@RequestBody Folder folder){
+    public RestResponse<?> update(@PathVariable("id") UUID uuid, @RequestBody Folder folder){
         return RestResponse.success(notesService.updateFolder(folder));
     }
 

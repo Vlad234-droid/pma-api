@@ -62,7 +62,7 @@ public class FoldersEndpointTest extends AbstractEndpointTest {
 
         when(notesService.updateFolder(folder)).thenReturn(folder);
 
-        mvc.perform(put("/notes/folders")
+        mvc.perform(put("/notes/folders/{id}", folder.getId())
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(folder)))
@@ -79,7 +79,7 @@ public class FoldersEndpointTest extends AbstractEndpointTest {
 
         when(notesService.updateFolder(folder)).thenThrow(new NotFoundException(HttpStatusCodes.NOT_FOUND, "Not found"));
 
-        mvc.perform(put("/notes/folders")
+        mvc.perform(put("/notes/folders/{id}", folder.getId())
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(folder)))

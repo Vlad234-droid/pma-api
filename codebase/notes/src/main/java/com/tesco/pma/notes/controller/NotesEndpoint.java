@@ -40,15 +40,15 @@ public class NotesEndpoint {
 
     @Operation(summary = "Find Notes", tags = {"Notes"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Find Note")
-    @GetMapping(produces = APPLICATION_JSON_VALUE)
+    @GetMapping(produces = APPLICATION_JSON_VALUE, params = "ownerId")
     @ResponseStatus(HttpStatus.OK)
-    public RestResponse<List<Note>> get(@RequestParam UUID ownerId){
+    public RestResponse<List<Note>> findByOwner(@RequestParam UUID ownerId){
         return RestResponse.success(notesService.findNoteByOwner(ownerId));
     }
 
     @Operation(summary = "Find Notes by Folder", tags = {"Notes"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Find Note")
-    @GetMapping(produces = APPLICATION_JSON_VALUE)
+    @GetMapping(produces = APPLICATION_JSON_VALUE, params = "folderId")
     @ResponseStatus(HttpStatus.OK)
     public RestResponse<List<Note>> findByFolder(@RequestParam UUID folderId){
         return RestResponse.success(notesService.findNoteByFolder(folderId));
