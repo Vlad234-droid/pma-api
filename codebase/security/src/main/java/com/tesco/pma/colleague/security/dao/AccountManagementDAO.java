@@ -117,10 +117,4 @@ public interface AccountManagementDAO {
      */
     Account findAccountByName(@Param("name") String name);
 
-    /**
-     * Get total number of accounts
-     *
-     * @return Total number of accounts
-     */
-    long getCount();
 }

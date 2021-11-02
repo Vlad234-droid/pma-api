@@ -75,11 +75,11 @@ public class UserManagementServiceImpl implements UserManagementService {
     }
 
     @Override
-    public long getTotalNumberOfPages() {
-        long count = accountManagementDAO.getCount();
-        long modulo = count % defaultPageLimit;
-        long pages = count / defaultPageLimit;
-        return pages + (modulo > 0 ? 1 : 0);
+    public int getNextPageToken(int currentPageToken, int currentSelectionOfAccountsSize) {
+        if (currentSelectionOfAccountsSize == defaultPageLimit) {
+            return currentPageToken + 1;
+        }
+        return 0;
     }
 
     @Override

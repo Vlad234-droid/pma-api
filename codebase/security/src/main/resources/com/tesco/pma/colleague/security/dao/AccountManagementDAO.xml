@@ -29,13 +29,6 @@
         SELECT * FROM pm_account WHERE name = #{name}
     </select>
 
-    <select id="getCount" resultType="long">
-        SELECT COUNT(*)
-        FROM (SELECT a.id as id
-              FROM pm_account a) aa
-        WHERE 1 = 1;
-    </select>
-
     <select id="get" resultMap="accountsResultMap">
         SELECT
         a.id as id,

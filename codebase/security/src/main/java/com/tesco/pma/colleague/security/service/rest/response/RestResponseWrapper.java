@@ -12,7 +12,7 @@ import java.util.Collection;
 public class RestResponseWrapper<T> {
 
     RestResponse<T> original;
-    long pageCount;
+    int nextPage;
 
     @JsonValue
     public ExtendedRestResponse<T> toJson() {
@@ -20,7 +20,7 @@ public class RestResponseWrapper<T> {
                 original.isSuccess(),
                 original.getData(),
                 original.getErrors(),
-                String.valueOf(pageCount));
+                nextPage > 0 ? String.valueOf(nextPage) : null);
     }
 
     @Value
@@ -29,7 +29,7 @@ public class RestResponseWrapper<T> {
         boolean success;
         T data;
         Collection<ApiError> errors;
-        String pageCount;
+        String nextPage;
     }
 
 }

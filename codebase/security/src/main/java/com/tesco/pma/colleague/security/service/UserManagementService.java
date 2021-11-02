@@ -29,11 +29,11 @@ public interface UserManagementService {
     List<Account> getAccounts(int page);
 
     /**
-     * Get total number of pages
+     * Get next page number
      *
-     * @return Total number of pages
+     * @return Next page number
      */
-    long getTotalNumberOfPages();
+    int getNextPageToken(int currentPageToken, int currentSelectionOfAccountsSize);
 
     /**
      * Create account

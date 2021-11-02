@@ -48,10 +48,10 @@ public class UserManagementEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Users, their status and access levels found")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Users, their status and access levels found not found")
     @GetMapping(path = "/user-management/accounts")
-    public RestResponseWrapper<List<Account>> getAccounts(@RequestParam(required = false, defaultValue = "1") int page) {
-        return new RestResponseWrapper<>(
-                RestResponse.success(userManagementService.getAccounts(page)),
-                userManagementService.getTotalNumberOfPages());
+    public RestResponseWrapper<List<Account>> getAccounts(@RequestParam(required = false, defaultValue = "1") int nextPageToken) {
+        List<Account> accounts = userManagementService.getAccounts(nextPageToken);
+        int nextPage = userManagementService.getNextPageToken(nextPageToken, accounts.size());
+        return new RestResponseWrapper<>(RestResponse.success(accounts), nextPage);
     }
 
     @Operation(summary = "Create an Account", description = "Create an Account", tags = "user-management")
