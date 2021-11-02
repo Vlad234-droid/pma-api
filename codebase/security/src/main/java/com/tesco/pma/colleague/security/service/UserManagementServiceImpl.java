@@ -86,10 +86,10 @@ public class UserManagementServiceImpl implements UserManagementService {
     @Transactional
     public void createAccount(CreateAccountRequest request) {
 
-        // TODO Remove ! after testing
-        if (!findColleagueByIamIdOrAccountName(request.getName(), request.getIamId()).isEmpty()) {
-            throw colleagueNotFoundException(request.getName(), request.getIamId());
-        }
+        // TODO Waiting for qualification of requirements
+        // if (!findColleagueByIamIdOrAccountName(request.getName(), request.getIamId()).isEmpty()) {
+        //    throw colleagueNotFoundException(request.getName(), request.getIamId());
+        // }
 
         try {
             accountManagementDAO.create(request.getName(), request.getIamId(),
