@@ -2,11 +2,13 @@ package com.tesco.pma.notes.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.dao.AbstractDAOTest;
+import com.tesco.pma.notes.exception.NoteIntegrityException;
 import com.tesco.pma.notes.model.Note;
 import com.tesco.pma.notes.model.NoteStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -60,6 +62,24 @@ public class NoteDaoTest extends AbstractDAOTest {
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml",
             BASE_PATH_TO_DATA_SET + "notes_entries_init.xml"})
+    void createWhenTitleTooLong() {
+
+        var titleTooLong = new StringBuilder();
+
+        for(int i = 0; i<12; i++){
+            titleTooLong.append("1234567890");
+        }
+
+        Assertions.assertThrows(DataIntegrityViolationException.class, () -> {
+            var note = createNote(UUID.randomUUID(), FOLDER_UUID, OWNER_UUID, titleTooLong.toString());
+            noteDao.create(note);
+        });
+
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml",
+            BASE_PATH_TO_DATA_SET + "notes_entries_init.xml"})
     void update() {
 
         var note = createNote(NOTE_UUID, FOLDER_UUID, OWNER_UUID);
@@ -85,11 +105,15 @@ public class NoteDaoTest extends AbstractDAOTest {
     }
 
     private Note createNote(UUID id, UUID folderId, UUID ownerId){
+        return createNote(id, folderId, ownerId, "Title");
+    }
+
+    private Note createNote(UUID id, UUID folderId, UUID ownerId, String title){
         var note = new Note();
         note.setId(id);
         note.setFolderUuid(folderId);
         note.setOwnerColleagueUuid(ownerId);
-        note.setTitle("Title");
+        note.setTitle(title);
         note.setContent("Content");
         note.setStatus(NoteStatus.CREATED);
         note.setUpdateTime(Instant.now());

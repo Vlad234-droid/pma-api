@@ -15,6 +15,7 @@ import com.tesco.pma.service.user.UserIncludes;
 import com.tesco.pma.service.user.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,8 +43,12 @@ public class NotesService {
         checkReferenceColleague(note.getOwnerColleagueUuid(), note.getReferenceColleagueUuid());
         note.setId(UUID.randomUUID());
 
-        if (0 == noteDao.create(note)) {
-            throw new UnknownDataManipulationException(messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_HAS_NOT_BEEN_CREATED));
+        try {
+            if (0 == noteDao.create(note)) {
+                throw new UnknownDataManipulationException(messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_HAS_NOT_BEEN_CREATED));
+            }
+        } catch (DataIntegrityViolationException e){
+            throw new NoteIntegrityException(NotesErrorCodes.NOTE_INTEGRITY_VIOLATION.getCode(), e.getMessage());
         }
 
         return note;
@@ -62,8 +67,12 @@ public class NotesService {
         checkCurrentUser(note.getOwnerColleagueUuid());
         checkReferenceColleague(note.getOwnerColleagueUuid(), note.getReferenceColleagueUuid());
 
-        if (1 == noteDao.update(note)) {
-            return note;
+        try {
+            if (1 == noteDao.update(note)) {
+                return note;
+            }
+        } catch (DataIntegrityViolationException e) {
+            throw new NoteIntegrityException(NotesErrorCodes.NOTE_INTEGRITY_VIOLATION.getCode(), e.getMessage());
         }
 
         throw new NotFoundException(NotesErrorCodes.NOTE_NOT_FOUND.getCode(),
@@ -81,8 +90,12 @@ public class NotesService {
         checkCurrentUser(folder.getOwnerColleagueUuid());
         folder.setId(UUID.randomUUID());
 
-        if (0 == folderDao.create(folder)) {
-            throw new UnknownDataManipulationException(messageSourceAccessor.getMessage(NotesErrorCodes.FOLDER_HAS_NOT_BEEN_CREATED));
+        try {
+            if (0 == folderDao.create(folder)) {
+                throw new UnknownDataManipulationException(messageSourceAccessor.getMessage(NotesErrorCodes.FOLDER_HAS_NOT_BEEN_CREATED));
+            }
+        } catch (DataIntegrityViolationException e) {
+            throw new NoteIntegrityException(NotesErrorCodes.FOLDER_INTEGRITY_VIOLATION.getCode(), e.getMessage());
         }
 
         return folder;
@@ -96,8 +109,12 @@ public class NotesService {
     public Folder updateFolder(Folder folder){
         checkCurrentUser(folder.getOwnerColleagueUuid());
 
-        if (1 == folderDao.update(folder)) {
-            return folder;
+        try {
+            if (1 == folderDao.update(folder)) {
+                return folder;
+            }
+        } catch (DataIntegrityViolationException e) {
+            throw new NoteIntegrityException(NotesErrorCodes.FOLDER_INTEGRITY_VIOLATION.getCode(), e.getMessage());
         }
 
         throw new NotFoundException(NotesErrorCodes.FOLDER_NOT_FOUND.getCode(),
