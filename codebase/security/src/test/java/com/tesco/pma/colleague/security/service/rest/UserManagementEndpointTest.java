@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tesco.pma.colleague.security.domain.Account;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.Role;
+import com.tesco.pma.colleague.security.domain.request.AssignRoleRequest;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
 import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
+import com.tesco.pma.colleague.security.domain.request.RemoveRoleRequest;
 import com.tesco.pma.colleague.security.service.UserManagementService;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import org.jeasy.random.EasyRandom;
@@ -41,6 +43,8 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
 
     private JacksonTester<CreateAccountRequest> createAccountRequestJsonTester;
     private JacksonTester<ChangeAccountStatusRequest> changeAccountStatusRequestJsonTester;
+    private JacksonTester<AssignRoleRequest> assignRoleRequestJsonTester;
+    private JacksonTester<RemoveRoleRequest> removeRoleRequestJsonTester;
 
     @Autowired
     protected MockMvc mvc;
@@ -48,7 +52,8 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
     @MockBean
     private UserManagementService mockUserManagementService;
 
-    public static final String URL_TEMPLATE = "/user-management/accounts";
+    public static final String ACCOUNTS_URL_TEMPLATE = "/user-management/accounts";
+    public static final String ROLES_URL_TEMPLATE = "/user-management/roles";
 
     @BeforeEach
     void setUp() {
@@ -66,7 +71,21 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
         when(mockUserManagementService.getAccounts(anyInt()))
                 .thenReturn(randomObjects(Account.class, 3));
 
-        mvc.perform(get(URL_TEMPLATE)
+        mvc.perform(get(ACCOUNTS_URL_TEMPLATE)
+                        .accept(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON));
+
+    }
+
+    @Test
+    void getAccountsWithNextPageTokenShouldReturnAllAccounts() throws Exception {
+
+        when(mockUserManagementService.getAccounts(anyInt()))
+                .thenReturn(randomObjects(Account.class, 3));
+
+        mvc.perform(get(ACCOUNTS_URL_TEMPLATE)
+                        .param("nextPageToken", "10")
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON));
@@ -82,7 +101,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
 
         // when
         ResultActions resultActions = mvc.perform(
-                post(URL_TEMPLATE)
+                post(ACCOUNTS_URL_TEMPLATE)
                         .contentType(APPLICATION_JSON)
                         .content(createAccountRequestJsonTester.write(createAccountRequest).getJson()));
 
@@ -100,7 +119,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
 
         // when
         ResultActions resultActions = mvc.perform(
-                post(URL_TEMPLATE)
+                post(ACCOUNTS_URL_TEMPLATE)
                         .contentType(APPLICATION_JSON)
                         .content(createAccountRequestJsonTester.write(createAccountRequest).getJson()));
 
@@ -117,7 +136,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
 
         // when
         ResultActions resultActions = mvc.perform(
-                put(URL_TEMPLATE)
+                put(ACCOUNTS_URL_TEMPLATE)
                         .contentType(APPLICATION_JSON)
                         .content(changeAccountStatusRequestJsonTester.write(changeAccountStatusRequest).getJson()));
 
@@ -135,7 +154,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
 
         // when
         ResultActions resultActions = mvc.perform(
-                put(URL_TEMPLATE)
+                put(ACCOUNTS_URL_TEMPLATE)
                         .contentType(APPLICATION_JSON)
                         .content(changeAccountStatusRequestJsonTester.write(changeAccountStatusRequest).getJson()));
 
@@ -151,7 +170,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
         when(mockUserManagementService.getRoles())
                 .thenReturn(randomObjects(Role.class, 3));
 
-        mvc.perform(get(URL_TEMPLATE)
+        mvc.perform(get(ACCOUNTS_URL_TEMPLATE)
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON));
@@ -159,12 +178,77 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void grantRole() {
+    void grantRoleWithOneRoleShouldReturnStatusCreated() throws Exception {
+
+        // given
+        AssignRoleRequest assignRoleRequest = randomObject(AssignRoleRequest.class);
+        assignRoleRequest.setRole("1");
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                post(ROLES_URL_TEMPLATE)
+                        .contentType(APPLICATION_JSON)
+                        .content(assignRoleRequestJsonTester.write(assignRoleRequest).getJson()));
+
+        // then
+        andExpect(resultActions, status().isCreated());
+
     }
 
     @Test
-    void revokeRole() {
+    void grantRoleWithManyRolesShouldReturnStatusCreated() throws Exception {
+
+        // given
+        AssignRoleRequest assignRoleRequest = randomObject(AssignRoleRequest.class);
+        assignRoleRequest.setRole(List.of("1", "2", "3"));
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                post(ROLES_URL_TEMPLATE)
+                        .contentType(APPLICATION_JSON)
+                        .content(assignRoleRequestJsonTester.write(assignRoleRequest).getJson()));
+
+        // then
+        andExpect(resultActions, status().isCreated());
+
     }
+
+    @Test
+    void revokeRoleWithOneRoleShouldReturnStatusCreated() throws Exception {
+
+        // given
+        RemoveRoleRequest removeRoleRequest = randomObject(RemoveRoleRequest.class);
+        removeRoleRequest.setRole("1");
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                post(ROLES_URL_TEMPLATE)
+                        .contentType(APPLICATION_JSON)
+                        .content(removeRoleRequestJsonTester.write(removeRoleRequest).getJson()));
+
+        // then
+        andExpect(resultActions, status().isCreated());
+
+    }
+
+    @Test
+    void revokeRoleWithManyRolesShouldReturnStatusCreated() throws Exception {
+
+        // given
+        RemoveRoleRequest removeRoleRequest = randomObject(RemoveRoleRequest.class);
+        removeRoleRequest.setRole(List.of("1", "2", "3"));
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                delete(ROLES_URL_TEMPLATE)
+                        .contentType(APPLICATION_JSON)
+                        .content(removeRoleRequestJsonTester.write(removeRoleRequest).getJson()));
+
+        // then
+        andExpect(resultActions, status().isCreated());
+
+    }
+
 
     private <T> T randomObject(Class<T> type) {
         return RANDOM.nextObject(type);
