@@ -251,7 +251,7 @@
             target_id             = #{feedback.targetId},
             read                  = #{feedback.read},
             status_id             = #{feedback.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.feedback.api.FeedbackStatus},
-            updated_time          = now()
+            updated_time          = #{feedback.updatedTime}
         WHERE f.uuid = #{feedback.uuid}
         <include refid="addStatusIdCondition" />
     </update>

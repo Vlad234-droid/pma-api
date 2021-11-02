@@ -60,6 +60,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         try {
             feedback.setUuid(UUID.randomUUID());
             feedback.setCreatedTime(Instant.now());
+            feedback.setUpdatedTime(Instant.now());
             feedbackDAO.insert(feedback);
             Set<FeedbackItem> feedbackItems = feedback.getFeedbackItems()
                     .stream()
@@ -79,6 +80,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Transactional
     public Feedback update(Feedback feedback) {
         DictionaryFilter<FeedbackStatus> statusFilter = UPDATE_STATUS_RULE_MAP.get(feedback.getStatus());
+        feedback.setUpdatedTime(Instant.now());
         if (1 == feedbackDAO.update(feedback, statusFilter)) {
             for (FeedbackItem feedbackItem : feedback.getFeedbackItems()) {
                 feedbackItem.setFeedbackUuid(feedback.getUuid());
