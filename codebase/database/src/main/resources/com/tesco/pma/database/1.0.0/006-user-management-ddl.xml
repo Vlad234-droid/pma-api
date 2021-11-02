@@ -22,35 +22,83 @@
         <comment>Init table pm_role</comment>
         <insert tableName="pm_role">
             <column name="id" value="1"/>
+            <column name="code" value="GG-UK-TescoGlobal-PMA-Colleague"/>
+            <column name="description" value="Gives access to the Colleague role on PMA on TescoGlobal"/>
+        </insert>
+        <insert tableName="pm_role">
+            <column name="id" value="2"/>
+            <column name="code" value="GG-UK-TescoGlobal-PMA-LineManager"/>
+            <column name="description" value="Gives access to the Line Manager role on PMA on TescoGlobal"/>
+        </insert>
+        <insert tableName="pm_role">
+            <column name="id" value="3"/>
+            <column name="code" value="GG-UK-TescoGlobal-PMA-PeopleTeam"/>
+            <column name="description" value="Gives access to the People Team role on PMA on TescoGlobal"/>
+        </insert>
+        <insert tableName="pm_role">
+            <column name="id" value="4"/>
+            <column name="code" value="GG-UK-TescoGlobal-PMA-TalentAdmin"/>
+            <column name="description" value="Gives access to the Talent Admin role on PMA on TescoGlobal"/>
+        </insert>
+        <insert tableName="pm_role">
+            <column name="id" value="5"/>
+            <column name="code" value="GG-UK-TescoGlobal-PMA-ProcessManager"/>
+            <column name="description" value="Gives access to the Process Manager role on PMA on TescoGlobal"/>
+        </insert>
+        <insert tableName="pm_role">
+            <column name="id" value="6"/>
+            <column name="code" value="GG-UK-TescoGlobal-PMA-Admin"/>
+            <column name="description" value="Gives access to the Admin role on PMA on TescoGlobal"/>
+        </insert>
+        <insert tableName="pm_role">
+            <column name="id" value="7"/>
             <column name="code" value="GG-UK-TescoGlobal-PMA-PPE-Colleague"/>
             <column name="description" value="Gives access to the PPE Colleague role on PMA on TescoGlobal"/>
         </insert>
         <insert tableName="pm_role">
-            <column name="id" value="2"/>
+            <column name="id" value="8"/>
             <column name="code" value="GG-UK-TescoGlobal-PMA-PPE-LineManager"/>
             <column name="description" value="Gives access to the PPE Line Manager role on PMA on TescoGlobal"/>
         </insert>
         <insert tableName="pm_role">
-            <column name="id" value="3"/>
+            <column name="id" value="9"/>
             <column name="code" value="GG-UK-TescoGlobal-PMA-PPE-PeopleTeam"/>
             <column name="description" value="Gives access to the PPE People Team role on PMA on TescoGlobal"/>
         </insert>
         <insert tableName="pm_role">
-            <column name="id" value="4"/>
+            <column name="id" value="10"/>
             <column name="code" value="GG-UK-TescoGlobal-PMA-PPE-TalentAdmin"/>
             <column name="description" value="Gives access to the PPE Talent Admin role on PMA on TescoGlobal"/>
         </insert>
         <insert tableName="pm_role">
-            <column name="id" value="5"/>
+            <column name="id" value="11"/>
             <column name="code" value="GG-UK-TescoGlobal-PMA-PPE-ProcessManager"/>
             <column name="description" value="Gives access to the PPE Process Manager role on PMA on TescoGlobal"/>
         </insert>
         <insert tableName="pm_role">
-            <column name="id" value="6"/>
-            <column name="code" value="GG-UK-TescoGlobal-PMA-PPE-Administrator"/>
-            <column name="description" value="Gives access to the PPE Administrator role on PMA on TescoGlobal"/>
+            <column name="id" value="12"/>
+            <column name="code" value="GG-UK-TescoGlobal-PMA-PPE-Admin"/>
+            <column name="description" value="Gives access to the PPE Admin role on PMA on TescoGlobal"/>
         </insert>
         <rollback>
+            <delete tableName="pm_role">
+                <where>name = 'GG-UK-TescoGlobal-PMA-Colleague'</where>
+            </delete>
+            <delete tableName="pm_role">
+                <where>name = 'GG-UK-TescoGlobal-PMA-LineManager'</where>
+            </delete>
+            <delete tableName="pm_role">
+                <where>name = 'GG-UK-TescoGlobal-PMA-PeopleTeam'</where>
+            </delete>
+            <delete tableName="pm_role">
+                <where>name = 'GG-UK-TescoGlobal-PMA-TalentAdmin'</where>
+            </delete>
+            <delete tableName="pm_role">
+                <where>name = 'GG-UK-TescoGlobal-PMA-ProcessManager'</where>
+            </delete>
+            <delete tableName="pm_role">
+                <where>name = 'GG-UK-TescoGlobal-PMA-Admin'</where>
+            </delete>
             <delete tableName="pm_role">
                 <where>name = 'GG-UK-TescoGlobal-PMA-PPE-Colleague'</where>
             </delete>
@@ -67,7 +115,7 @@
                 <where>name = 'GG-UK-TescoGlobal-PMA-PPE-ProcessManager'</where>
             </delete>
             <delete tableName="pm_role">
-                <where>name = 'GG-UK-TescoGlobal-PMA-PPE-Administrator'</where>
+                <where>name = 'GG-UK-TescoGlobal-PMA-PPE-Admin'</where>
             </delete>
         </rollback>
     </changeSet>
