@@ -5,9 +5,14 @@ import com.tesco.pma.error.ErrorCodeAware;
 public enum ErrorCodes implements ErrorCodeAware {
 
     /**
-     * Entity not found
+     * Feedback not found
      */
-    FEEDBACK_NOT_FOUND;
+    FEEDBACK_NOT_FOUND,
+
+    /**
+     * Feedback item not found
+     */
+    FEEDBACK_ITEM_NOT_FOUND;
 
     @Override
     public String getCode() {
