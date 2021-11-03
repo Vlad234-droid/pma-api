@@ -5,21 +5,21 @@ import com.tesco.pma.error.ErrorCodeAware;
 public enum ErrorCodes implements ErrorCodeAware {
 
     /**
-     * Cycle not found by uuid
+     * Cycle configuration not found by uuid
      */
-    CYCLE_NOT_FOUND_BY_UUID,
+    CYCLE_CONFIGURATION_NOT_FOUND_BY_UUID,
     /**
-     * Cycles not found
+     * Cycle configurations not found
      */
-    CYCLES_NOT_FOUND,
+    CYCLE_CONFIGURATIONS_NOT_FOUND,
     /**
-     * Cycles not found for status update
+     * Cycle configuration not found for status update
      */
-    CYCLE_NOT_FOUND_FOR_STATUS_UPDATE,
+    CYCLE_CONFIGURATION_NOT_FOUND_FOR_STATUS_UPDATE,
     /**
-     * Cycle already exists
+     * Cycle configuration already exists
      */
-    CYCLE_ALREADY_EXISTS;
+    CYCLE_CONFIGURATION_ALREADY_EXISTS;
 
     @Override
     public String getCode() {
