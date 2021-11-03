@@ -40,6 +40,7 @@
             <result property="status" column="review_status_id"
                     typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                     javaType="com.tesco.pma.review.domain.ReviewStatus"/>
+            <result property="number" column="review_number"/>
         </collection>
     </resultMap>
 
@@ -178,7 +179,8 @@
                d.business_type as business_type,
                r.uuid          as review_uuid,
                r.type_id       as review_type_id,
-               r.status_id     as review_status_id
+               r.status_id     as review_status_id,
+               r.number        as review_number
         from colleague c
                  inner join job j
                             on (j.id = c.job_id)

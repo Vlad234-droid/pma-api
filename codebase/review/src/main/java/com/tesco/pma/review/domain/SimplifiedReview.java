@@ -18,4 +18,5 @@ public class SimplifiedReview {
     UUID uuid;
     ReviewType type;
     ReviewStatus status;
+    Integer number;
 }
