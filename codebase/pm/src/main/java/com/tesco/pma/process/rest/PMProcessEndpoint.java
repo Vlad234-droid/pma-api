@@ -1,7 +1,7 @@
 package com.tesco.pma.process.rest;
 
 import com.tesco.pma.process.api.PMProcessMetadata;
-import com.tesco.pma.process.api.TimelineResponse;
+import com.tesco.pma.process.api.PMTimelinePoint;
 import com.tesco.pma.process.service.PMProcessService;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
@@ -36,8 +36,8 @@ public class PMProcessEndpoint {
             tags = {"processes"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the process timeline")
     @GetMapping(value = "{processUuid}/timeline", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<TimelineResponse>> getTimeline(@PathVariable UUID processUuid) {
-        return RestResponse.success(processService.getProcessMetadata(processUuid));
+    public RestResponse<List<PMTimelinePoint>> getTimeline(@PathVariable UUID processUuid) {
+        return RestResponse.success(processService.getProcessTimeline(processUuid));
     }
 
     @Operation(summary = "Store process metadata",
@@ -47,7 +47,7 @@ public class PMProcessEndpoint {
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse<?> storeProcessMetadata(@PathVariable("processUuid") UUID processUuid,
                                                 @RequestBody String metadata) {
-        processService.saveProcessMetadata(processUuid, metadata);
+        processService.saveMetadata(processUuid, metadata);
         return RestResponse.success();
     }
 
@@ -63,8 +63,8 @@ public class PMProcessEndpoint {
             tags = {"processes"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the process metadata")
     @GetMapping(value = "{processUuid}/metadata", produces = APPLICATION_JSON_VALUE)
-    public String getFullMetadata(@PathVariable UUID processUuid) {
-        return processService.getFullMetadata(processUuid);
+    public String getMetadata(@PathVariable UUID processUuid) {
+        return processService.getMetadata(processUuid);
     }
 
 

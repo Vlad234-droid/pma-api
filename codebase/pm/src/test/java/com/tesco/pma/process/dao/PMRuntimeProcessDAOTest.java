@@ -26,14 +26,9 @@ class PMRuntimeProcessDAOTest extends AbstractDAOTest {
     private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/process/dao/";
     private static final UUID PM_UUID = UUID.fromString("4f2ab073-2c31-11ec-916b-0242391d2e7a");
     private static final UUID NEW_UUID = UUID.fromString("4f2ab073-2c31-11ec-916b-0242391d2e7c");
-    private static final UUID CL_UUID = UUID.fromString("cf2ab073-2c31-11ec-916b-0242391d2e7c");
     private static final UUID BPM_UUID = UUID.fromString("bf2ab073-2c31-11ec-916b-0242391d2e7c");
     private static final UUID NEW_BPM_UUID = UUID.fromString("cf2ab073-2c31-11ec-916b-0242391d2e7c");
-    private static final String BPM_PROCESS_NAME = "PROCESS_NAME";
-
-    private static final UUID F1_OLD_UUID = UUID.fromString("10000000-0000-0000-0000-000000000000");
-    private static final UUID F1_NEW_UUID = UUID.fromString("10000000-0000-0000-0000-000000000001");
-    private static final UUID F1_CL_UUID = UUID.fromString("10000000-0000-0000-0000-000000000001");
+    private static final String BUSINESS_KEY = "PROCESS_NAME";
 
     @Autowired
     private PMRuntimeProcessDAO dao;
@@ -47,7 +42,8 @@ class PMRuntimeProcessDAOTest extends AbstractDAOTest {
 
     @Test
     void create() {
-        assertEquals(1, dao.create(new PMRuntimeProcess(NEW_UUID, CL_UUID, PMProcessStatus.STARTED, NEW_BPM_UUID, BPM_PROCESS_NAME, null)));
+        assertEquals(1, dao.create(new PMRuntimeProcess(NEW_UUID, PMProcessStatus.STARTED, NEW_BPM_UUID,
+                BUSINESS_KEY, null)));
 
         var actual = dao.read(NEW_UUID);
         checkProcess(actual, NEW_UUID, PMProcessStatus.STARTED, NEW_BPM_UUID);
@@ -86,19 +82,18 @@ class PMRuntimeProcessDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "pm_process_init.xml"})
-    void findByColleagueAndProcessName() {
-        List<PMRuntimeProcess> processes = dao.findByColleagueAndProcessName(F1_CL_UUID, BPM_PROCESS_NAME);
-        assertEquals(2, processes.size());
+    void findByBusinessKey() {
+        List<PMRuntimeProcess> processes = dao.findByBusinessKey(BUSINESS_KEY);
+        assertEquals(3, processes.size());
         assertTrue(processes.get(0).getLastUpdateTime().isAfter(processes.get(1).getLastUpdateTime()));
     }
 
     private void checkProcess(PMRuntimeProcess actual, UUID pmUuid, PMProcessStatus registered, UUID bpmUuid) {
         assertNotNull(actual);
         assertEquals(pmUuid, actual.getId());
-        assertEquals(CL_UUID, actual.getColleagueUuid());
         assertEquals(registered, actual.getStatus());
         assertEquals(bpmUuid, actual.getBpmProcessId());
-        assertEquals(BPM_PROCESS_NAME, actual.getBpmProcessName());
+        assertEquals(BUSINESS_KEY, actual.getBusinessKey());
         assertNotNull(actual.getLastUpdateTime());
     }
 

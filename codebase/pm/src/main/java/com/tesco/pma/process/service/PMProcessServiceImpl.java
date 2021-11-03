@@ -8,10 +8,9 @@ import com.tesco.pma.process.api.PMProcessErrorCodes;
 import com.tesco.pma.process.api.PMProcessMetadata;
 import com.tesco.pma.process.api.PMProcessStatus;
 import com.tesco.pma.process.api.PMRuntimeProcess;
-import com.tesco.pma.process.api.TimelineResponse;
+import com.tesco.pma.process.api.PMTimelinePoint;
 import com.tesco.pma.process.api.model.PMCycle;
 import com.tesco.pma.process.dao.PMRuntimeProcessDAO;
-import com.tesco.pma.process.dao.PMRuntimeProcessMetadataDAO;
 import com.tesco.pma.process.model.PMProcessModelParser;
 import com.tesco.pma.process.model.ResourceProvider;
 
@@ -21,13 +20,14 @@ import org.apache.commons.io.IOUtils;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.bpm.model.bpmn.instance.Task;
+import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -41,15 +41,15 @@ public class PMProcessServiceImpl implements PMProcessService {
     private static final String ID = "id";
     private static final String STATUS = "status";
     private static final String STATUS_FILTER = "status_filter";
-    private static final String FORMS_PATH = "/com/tesco/pma/flow/forms/";
+    private static final String FORMS_PATH = "/com/tesco/pma/flow/";
 
     private final PMRuntimeProcessDAO dao;
-    private final PMRuntimeProcessMetadataDAO metadataDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final ProcessEngine processEngine;
 
     private final ResourceProvider resourceProvider = new FormsResourceProvider();
 
+    //todo implement provider
     private static class FormsResourceProvider implements ResourceProvider {
         @Override
         public InputStream read(String resourceName) throws IOException {
@@ -59,7 +59,7 @@ public class PMProcessServiceImpl implements PMProcessService {
         @Override
         public String resourceToString(final String resourceName) throws IOException {
             try (InputStream is = getClass().getResourceAsStream(FORMS_PATH + resourceName)) {
-                return IOUtils.toString(is);
+                return IOUtils.toString(is, StandardCharsets.UTF_8);
             }
         }
     }
@@ -69,7 +69,7 @@ public class PMProcessServiceImpl implements PMProcessService {
     public void register(PMRuntimeProcess process) {
         process.setId(UUID.randomUUID());
         process.setStatus(PMProcessStatus.REGISTERED);
-        //todo check not null colleagueUuid, bpmProcessName, bpmProcessId
+        //todo check not null businessKey, bpmProcessId
         try {
             dao.create(process);
         } catch (DuplicateKeyException ex) {
@@ -106,35 +106,35 @@ public class PMProcessServiceImpl implements PMProcessService {
 
         var metadata = new PMProcessMetadata();
         var cycle = new PMCycle();
-        cycle.setCode(processDefinition.getName());
+        cycle.setCode(processDefinition.getKey());
         metadata.setCycle(cycle);
 
         var parser = new PMProcessModelParser(resourceProvider);
-        var tasks = model.getModelElementsByType(Task.class);
+        var tasks = model.getModelElementsByType(Activity.class);
         parser.parse(cycle, tasks);
 
         return metadata;
     }
 
     @Override
-    public List<TimelineResponse> getProcessMetadata(UUID uuid) {
-        var metadata = metadataDAO.readMetadata(uuid);
-        if (metadata == null) {
+    public List<PMTimelinePoint> getProcessTimeline(UUID uuid) {
+        var timeline = dao.readTimeline(uuid);
+        if (timeline == null) {
             throw new NotFoundException(PMProcessErrorCodes.PROCESS_METADATA_NOT_FOUND.getCode(),
                     messageSourceAccessor.getMessage(PMProcessErrorCodes.PROCESS_METADATA_NOT_FOUND, Map.of(ID, uuid)));
         }
-        return metadata;
+        return timeline;
     }
 
     @Override
-    public String getFullMetadata(UUID uuid) {
-        return metadataDAO.getFullMetadata(uuid);
+    public String getMetadata(UUID uuid) {
+        return dao.getMetadata(uuid);
     }
 
     @Override
-    public void saveProcessMetadata(UUID processUuid, String metadata) {
+    public void saveMetadata(UUID processUuid, String metadata) {
         try {
-            metadataDAO.saveProcessMetadata(processUuid, metadata);
+            dao.saveMetadata(processUuid, metadata);
         } catch (DuplicateKeyException ex) {
             throw new DatabaseConstraintViolationException(PMProcessErrorCodes.PROCESS_METADATA_ALREADY_EXISTS.getCode(),
                     messageSourceAccessor.getMessage(PMProcessErrorCodes.PROCESS_METADATA_ALREADY_EXISTS,

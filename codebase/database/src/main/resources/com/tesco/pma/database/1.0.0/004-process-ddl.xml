@@ -32,13 +32,13 @@
         </insert>
         <insert tableName="pm_process_status">
             <column name="id" value="3"/>
-            <column name="code" value="IN_REVIEW"/>
-            <column name="description" value="The review is started"/>
+            <column name="code" value="SUSPENDED"/>
+            <column name="description" value="The process is suspended"/>
         </insert>
         <insert tableName="pm_process_status">
             <column name="id" value="4"/>
-            <column name="code" value="WAITING_NEXT_REVIEW"/>
-            <column name="description" value="Process is waiting for the next review"/>
+            <column name="code" value="TERMINATED"/>
+            <column name="description" value="Process is terminated"/>
         </insert>
         <insert tableName="pm_process_status">
             <column name="id" value="5"/>
@@ -57,12 +57,12 @@
         </rollback>
         <rollback>
             <delete tableName="pm_process_status">
-                <where>code = 'IN_REVIEW'</where>
+                <where>code = 'SUSPENDED'</where>
             </delete>
         </rollback>
         <rollback>
             <delete tableName="pm_process_status">
-                <where>code = 'WAITING_NEXT_REVIEW'</where>
+                <where>code = 'TERMINATED'</where>
             </delete>
         </rollback>
         <rollback>
@@ -106,8 +106,8 @@
         </insert>
         <insert tableName="pm_review_status">
             <column name="id" value="4"/>
-            <column name="code" value="RETURNED"/>
-            <column name="description" value="Returned back to fix"/>
+            <column name="code" value="DECLINED"/>
+            <column name="description" value="Declined to fix"/>
         </insert>
         <insert tableName="pm_review_status">
             <column name="id" value="5"/>
@@ -131,7 +131,7 @@
         </rollback>
         <rollback>
             <delete tableName="pm_review_status">
-                <where>code = 'RETURNED'</where>
+                <where>code = 'DECLINED'</where>
             </delete>
         </rollback>
         <rollback>
@@ -147,16 +147,13 @@
             <column name="uuid" type="${uuid_type}">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pm_process_pk"/>
             </column>
-            <column name="colleague_uuid" type="${uuid_type}">
-                <constraints nullable="false"/>
-            </column>
             <column name="status_id" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
             <column name="bpm_process_id" type="${uuid_type}">
                 <constraints nullable="false"/>
             </column>
-            <column name="bpm_process_name" type="VARCHAR">
+            <column name="business_key" type="VARCHAR(100)">
                 <constraints nullable="false"/>
             </column>
             <column name="last_update_time" type="TIMESTAMPTZ">
@@ -167,11 +164,6 @@
                                  constraintName="process_status_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="pm_process_status" validate="true"/>
-        <createIndex tableName="pm_process" indexName="pm_pn_cid_lut_i">
-            <column name="colleague_uuid"/>
-            <column name="bpm_process_name"/>
-            <column name="last_update_time"/>
-        </createIndex>
     </changeSet>
 
     <changeSet author="vshatokhin" id="6">
