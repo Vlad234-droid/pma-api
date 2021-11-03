@@ -19,7 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 import com.tesco.pma.bpm.camunda.flow.AbstractCamundaSpringBootTest;
 import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
 import com.tesco.pma.process.api.PMProcessMetadata;
-import com.tesco.pma.process.api.model.PMCycle;
+import com.tesco.pma.process.api.model.PMCycleElement;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -98,7 +98,7 @@ class FlowModelTest extends AbstractCamundaSpringBootTest {
         assertNotNull(model);
 
         var metadata = new PMProcessMetadata();
-        var cycle = new PMCycle();
+        var cycle = new PMCycleElement();
         cycle.setCode(processDefinition.getName());
         metadata.setCycle(cycle);
 

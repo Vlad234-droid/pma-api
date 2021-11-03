@@ -28,6 +28,7 @@ class PMRuntimeProcessDAOTest extends AbstractDAOTest {
     private static final UUID NEW_UUID = UUID.fromString("4f2ab073-2c31-11ec-916b-0242391d2e7c");
     private static final UUID BPM_UUID = UUID.fromString("bf2ab073-2c31-11ec-916b-0242391d2e7c");
     private static final UUID NEW_BPM_UUID = UUID.fromString("cf2ab073-2c31-11ec-916b-0242391d2e7c");
+    private static final UUID CYCLE_UUID = UUID.fromString("10000000-0000-0000-0000-000000000000");
     private static final String BUSINESS_KEY = "PROCESS_NAME";
 
     @Autowired
@@ -42,8 +43,8 @@ class PMRuntimeProcessDAOTest extends AbstractDAOTest {
 
     @Test
     void create() {
-        assertEquals(1, dao.create(new PMRuntimeProcess(NEW_UUID, PMProcessStatus.STARTED, NEW_BPM_UUID,
-                BUSINESS_KEY, null)));
+        assertEquals(1, dao.create(new PMRuntimeProcess(NEW_UUID, PMProcessStatus.STARTED, CYCLE_UUID,
+                NEW_BPM_UUID, BUSINESS_KEY, null)));
 
         var actual = dao.read(NEW_UUID);
         checkProcess(actual, NEW_UUID, PMProcessStatus.STARTED, NEW_BPM_UUID);
@@ -51,7 +52,7 @@ class PMRuntimeProcessDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({BASE_PATH_TO_DATA_SET + "pm_process_init.xml"})
+    @DataSet({BASE_PATH_TO_DATA_SET + "pm_rt_process_init.xml"})
     void read() {
         var actual = dao.read(PM_UUID);
         checkProcess(actual, PM_UUID, PMProcessStatus.REGISTERED, BPM_UUID);
@@ -59,7 +60,7 @@ class PMRuntimeProcessDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({BASE_PATH_TO_DATA_SET + "pm_process_init.xml"})
+    @DataSet({BASE_PATH_TO_DATA_SET + "pm_rt_process_init.xml"})
     void updateStatusFailed() {
         assertEquals(0, dao.updateStatus(PM_UUID, PMProcessStatus.COMPLETED,
                 DictionaryFilter.includeFilter(PMProcessStatus.STARTED)));
@@ -70,7 +71,7 @@ class PMRuntimeProcessDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({BASE_PATH_TO_DATA_SET + "pm_process_init.xml"})
+    @DataSet({BASE_PATH_TO_DATA_SET + "pm_rt_process_init.xml"})
     void updateStatus() {
         assertEquals(1, dao.updateStatus(PM_UUID, PMProcessStatus.STARTED,
                 DictionaryFilter.includeFilter(PMProcessStatus.REGISTERED)));
@@ -81,7 +82,7 @@ class PMRuntimeProcessDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({BASE_PATH_TO_DATA_SET + "pm_process_init.xml"})
+    @DataSet({BASE_PATH_TO_DATA_SET + "pm_rt_process_init.xml"})
     void findByBusinessKey() {
         List<PMRuntimeProcess> processes = dao.findByBusinessKey(BUSINESS_KEY);
         assertEquals(3, processes.size());
@@ -92,6 +93,7 @@ class PMRuntimeProcessDAOTest extends AbstractDAOTest {
         assertNotNull(actual);
         assertEquals(pmUuid, actual.getId());
         assertEquals(registered, actual.getStatus());
+        assertEquals(CYCLE_UUID, actual.getCycleUuid());
         assertEquals(bpmUuid, actual.getBpmProcessId());
         assertEquals(BUSINESS_KEY, actual.getBusinessKey());
         assertNotNull(actual.getLastUpdateTime());

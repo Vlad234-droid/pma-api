@@ -1,9 +1,9 @@
 package com.tesco.pma.cycle.service;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.cycle.api.PMCycleConfigurationStatus;
-import com.tesco.pma.cycle.api.PMCycleConfiguration;
-import com.tesco.pma.cycle.dao.PmCycleConfigurationDAO;
+import com.tesco.pma.cycle.api.PMCycleStatus;
+import com.tesco.pma.cycle.api.PMCycle;
+import com.tesco.pma.cycle.dao.PMCycleDAO;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
@@ -17,20 +17,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.tesco.pma.cycle.api.PMCycleConfigurationStatus.ACTIVE;
-import static com.tesco.pma.cycle.api.PMCycleConfigurationStatus.DRAFT;
-import static com.tesco.pma.cycle.api.PMCycleConfigurationStatus.INACTIVE;
-import static com.tesco.pma.cycle.api.PMCycleConfigurationStatus.REMOVED;
-import static com.tesco.pma.cycle.exception.ErrorCodes.CYCLE_CONFIGURATIONS_NOT_FOUND;
-import static com.tesco.pma.cycle.exception.ErrorCodes.CYCLE_CONFIGURATION_ALREADY_EXISTS;
-import static com.tesco.pma.cycle.exception.ErrorCodes.CYCLE_CONFIGURATION_NOT_FOUND_BY_UUID;
-import static com.tesco.pma.cycle.exception.ErrorCodes.CYCLE_CONFIGURATION_NOT_FOUND_FOR_STATUS_UPDATE;
+import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
+import static com.tesco.pma.cycle.api.PMCycleStatus.DRAFT;
+import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
+import static com.tesco.pma.cycle.api.PMCycleStatus.COMPLETED;
+import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND;
+import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_ALREADY_EXISTS;
+import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_BY_UUID;
+import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_FOR_STATUS_UPDATE;
 
 @Service
 @RequiredArgsConstructor
-public class PMCycleConfigurationServiceImpl implements PMCycleConfigurationService {
+public class PMCycleServiceImpl implements PMCycleService {
 
-    private final PmCycleConfigurationDAO cycleDAO;
+    private final PMCycleDAO cycleDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
     public static final String NOT_IMPLEMENTED_YET = "Not implemented yet";
@@ -40,77 +40,77 @@ public class PMCycleConfigurationServiceImpl implements PMCycleConfigurationServ
     private static final String STATUS_PARAMETER_NAME = "status";
     private static final String PREV_STATUSES_PARAMETER_NAME = "prevStatuses";
 
-    private static final Map<PMCycleConfigurationStatus, Collection<PMCycleConfigurationStatus>> UPDATE_STATUS_RULE_MAP;
+    private static final Map<PMCycleStatus, Collection<PMCycleStatus>> UPDATE_STATUS_RULE_MAP;
 
     static {
         UPDATE_STATUS_RULE_MAP = Map.of(
                 ACTIVE, List.of(INACTIVE, DRAFT),
                 INACTIVE, List.of(ACTIVE, DRAFT),
                 DRAFT, List.of(ACTIVE, INACTIVE),
-                REMOVED, List.of(ACTIVE, INACTIVE, DRAFT)
+                COMPLETED, List.of(ACTIVE, INACTIVE, DRAFT)
         );
     }
 
     @Override
-    public PMCycleConfiguration create(@NotNull PMCycleConfiguration config) {
-        config.setUuid(UUID.randomUUID());
+    public PMCycle create(@NotNull PMCycle cycle) {
+        cycle.setUuid(UUID.randomUUID());
         try {
-            cycleDAO.createCycle(config);
-            return config;
+            cycleDAO.create(cycle);
+            return cycle;
         } catch (DuplicateKeyException e) {
             throw databaseConstraintViolation(
-                    CYCLE_CONFIGURATION_ALREADY_EXISTS,
-                    Map.of(ORG_KEY_PARAMETER_NAME, config.getEntryConfigKey(),
-                            TEMPLATE_UUID_PARAMETER_NAME, config.getTemplateUUID()), e);
+                    PM_CYCLE_ALREADY_EXISTS,
+                    Map.of(ORG_KEY_PARAMETER_NAME, cycle.getEntryConfigKey(),
+                            TEMPLATE_UUID_PARAMETER_NAME, cycle.getTemplateUUID()), e);
         }
     }
 
     @Override
-    public PMCycleConfiguration publish(@NotNull PMCycleConfiguration config) {
+    public PMCycle publish(@NotNull PMCycle cycle) {
         throw new UnsupportedOperationException(NOT_IMPLEMENTED_YET);
     }
 
     @Override
-    public PMCycleConfiguration updateStatus(UUID uuid, PMCycleConfigurationStatus status) {
+    public PMCycle updateStatus(UUID uuid, PMCycleStatus status) {
 
-        var cycle = cycleDAO.getPmCycle(uuid);
+        var cycle = cycleDAO.read(uuid);
         if (null == cycle) {
-            throw notFound(CYCLE_CONFIGURATION_NOT_FOUND_BY_UUID,
+            throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID,
                     Map.of(CYCLE_UUID_PARAMETER_NAME, uuid));
         }
 
         cycle.setStatus(status);
         var prevStatuses = UPDATE_STATUS_RULE_MAP.get(status);
 
-        if (1 == cycleDAO.updateCycleStatus(uuid, status, prevStatuses)) {
+        if (1 == cycleDAO.updateStatus(uuid, status, prevStatuses)) {
             return cycle;
         } else {
-            throw notFound(CYCLE_CONFIGURATION_NOT_FOUND_FOR_STATUS_UPDATE,
+            throw notFound(PM_CYCLE_NOT_FOUND_FOR_STATUS_UPDATE,
                     Map.of(STATUS_PARAMETER_NAME, status,
                             PREV_STATUSES_PARAMETER_NAME, prevStatuses));
         }
     }
 
     @Override
-    public PMCycleConfiguration getPMCycleConfigByUUID(UUID uuid) {
-        var res = cycleDAO.getPmCycle(uuid);
+    public PMCycle get(UUID uuid) {
+        var res = cycleDAO.read(uuid);
         if (res == null) {
-            throw notFound(CYCLE_CONFIGURATION_NOT_FOUND_BY_UUID,
+            throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID,
                     Map.of(CYCLE_UUID_PARAMETER_NAME, uuid));
         }
         return res;
     }
 
     @Override
-    public PMCycleConfiguration updatePerformanceCycle(PMCycleConfiguration uuid, Collection<PMCycleConfigurationStatus> oldStatuses) {
+    public PMCycle update(PMCycle uuid, Collection<PMCycleStatus> oldStatuses) {
         throw new UnsupportedOperationException(NOT_IMPLEMENTED_YET);
     }
 
     @Override
-    public List<PMCycleConfiguration> getAllPMCycleConfigForStatus(PMCycleConfigurationStatus status) {
-        var results = cycleDAO.getAllPmCyclesForStatus(status);
+    public List<PMCycle> getByStatus(PMCycleStatus status) {
+        var results = cycleDAO.getByStatus(status);
         if (results == null) {
-            throw notFound(CYCLE_CONFIGURATIONS_NOT_FOUND,
+            throw notFound(PM_CYCLE_NOT_FOUND,
                     Map.of(STATUS_PARAMETER_NAME, status));
         }
         return results;

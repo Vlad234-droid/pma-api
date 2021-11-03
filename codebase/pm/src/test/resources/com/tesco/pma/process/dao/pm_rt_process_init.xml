@@ -1,21 +1,24 @@
 <dataset>
-    <pm_process uuid="4f2ab073-2c31-11ec-916b-0242391d2e7a"
+    <pm_rt_process uuid="4f2ab073-2c31-11ec-916b-0242391d2e7a"
                 status_id="1"
+                cycle_uuid="10000000-0000-0000-0000-000000000000"
                 bpm_process_id="bf2ab073-2c31-11ec-916b-0242391d2e7c"
                 business_key="PROCESS_NAME"
                 last_update_time="2021-10-13 23:15:10.0" />
 
-    <pm_process_hi uuid="4f2ab073-2c31-11ec-916b-0242391d2e7a"
+    <pm_rt_process_hi uuid="4f2ab073-2c31-11ec-916b-0242391d2e7a"
                 status_id="1" update_time="2021-10-13 23:15:10.0" />
 
-    <pm_process uuid="10000000-0000-0000-0000-000000000000"
+    <pm_rt_process uuid="10000000-0000-0000-0000-000000000000"
                 status_id="5"
+                cycle_uuid="10000000-0000-0000-0000-000000000000"
                 bpm_process_id="10000000-0000-0000-0000-000000000000"
                 business_key="PROCESS_NAME"
                 last_update_time="2020-10-13 23:15:20.0" />
 
-    <pm_process uuid="10000000-0000-0000-0000-000000000001"
+    <pm_rt_process uuid="10000000-0000-0000-0000-000000000001"
                 status_id="1"
+                cycle_uuid="10000000-0000-0000-0000-000000000000"
                 bpm_process_id="10000000-0000-0000-0000-000000000001"
                 business_key="PROCESS_NAME"
                 last_update_time="2021-10-13 23:15:30.0" />

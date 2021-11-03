@@ -1,6 +1,5 @@
 package com.tesco.pma.cycle.api;
 
-import com.tesco.pma.process.api.model.PMCycleType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,14 +15,14 @@ import java.util.UUID;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class PMCycleConfiguration {
+public class PMCycle {
     UUID uuid;
     String entryConfigKey;
     UUID templateUUID;
 
     String name;
     UUID createdBy;
-    PMCycleConfigurationStatus status;
+    PMCycleStatus status;
     PMCycleType type;
 
     Instant startTime;

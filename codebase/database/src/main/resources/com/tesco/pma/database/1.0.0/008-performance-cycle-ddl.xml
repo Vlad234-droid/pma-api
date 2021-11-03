@@ -5,8 +5,8 @@
 
 
     <changeSet author="imatviichuk" id="1">
-        <createTable remarks="PM cycle config status dictionary"
-                     tableName="pm_cycle_config_status">
+        <createTable remarks="PM cycle status dictionary"
+                     tableName="pm_cycle_status">
             <column name="id" type="INTEGER">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pm_cycle_status_pk"/>
             </column>
@@ -20,45 +20,45 @@
     </changeSet>
 
     <changeSet author="imatviichuk" id="2">
-        <comment>Init table pm_cycle_config_status</comment>
-        <insert tableName="pm_cycle_config_status">
+        <comment>Init table pm_cycle_status</comment>
+        <insert tableName="pm_cycle_status">
             <column name="id" value="1"/>
             <column name="code" value="ACTIVE"/>
-            <column name="description" value="Performance cycle config is active"/>
+            <column name="description" value="Performance cycle is active"/>
         </insert>
-        <insert tableName="pm_cycle_config_status">
+        <insert tableName="pm_cycle_status">
             <column name="id" value="2"/>
             <column name="code" value="INACTIVE"/>
-            <column name="description" value="Performance cycle config is inactive"/>
+            <column name="description" value="Performance cycle is inactive"/>
         </insert>
-        <insert tableName="pm_cycle_config_status">
+        <insert tableName="pm_cycle_status">
             <column name="id" value="3"/>
-            <column name="code" value="REMOVED"/>
-            <column name="description" value="Performance cycle config is removed"/>
+            <column name="code" value="COMPLETED"/>
+            <column name="description" value="Performance cycle is completed"/>
         </insert>
-        <insert tableName="pm_cycle_config_status">
+        <insert tableName="pm_cycle_status">
             <column name="id" value="4"/>
             <column name="code" value="DRAFT"/>
-            <column name="description" value="Performance cycle config in draft"/>
+            <column name="description" value="Performance cycle in draft"/>
         </insert>
 
         <rollback>
-            <delete tableName="pm_cycle_config_status">
+            <delete tableName="pm_cycle_status">
                 <where>code = 'ACTIVE'</where>
             </delete>
         </rollback>
         <rollback>
-            <delete tableName="pm_cycle_config_status">
+            <delete tableName="pm_cycle_status">
                 <where>code = 'INACTIVE'</where>
             </delete>
         </rollback>
         <rollback>
-            <delete tableName="pm_cycle_config_status">
+            <delete tableName="pm_cycle_status">
                 <where>code = 'REMOVED'</where>
             </delete>
         </rollback>
         <rollback>
-            <delete tableName="pm_cycle_config_status">
+            <delete tableName="pm_cycle_status">
                 <where>code = 'DRAFT'</where>
             </delete>
         </rollback>
@@ -104,8 +104,8 @@
     </changeSet>
 
     <changeSet author="imatviichuk" id="5">
-        <createTable remarks="Performance cycle configuration"
-                     tableName="pm_cycle_config">
+        <createTable remarks="Performance cycle"
+                     tableName="pm_cycle">
             <column name="uuid" type="${uuid_type}">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pm_cycle_pk"/>
             </column>
@@ -139,20 +139,23 @@
             <column name="properties" type="VARCHAR">
                 <constraints nullable="true"/>
             </column>
+            <column name="metadata" type="jsonb">
+                <constraints nullable="true"/> <!-- todo false -->
+            </column>
 
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="pm_cycle_config"
-                                 constraintName="performance_cycle_config_status_fk" deferrable="false"
+        <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="pm_cycle"
+                                 constraintName="pm_cycle_status_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
-                                 referencedColumnNames="id" referencedTableName="pm_cycle_config_status" validate="true"/>
-        <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="pm_cycle_config"
+                                 referencedColumnNames="id" referencedTableName="pm_cycle_status" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="pm_cycle"
                                  constraintName="performance_cycle_type_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="pm_cycle_type" validate="true"/>
 
         <addUniqueConstraint columnNames="entry_config_key, template_uuid"
-                             constraintName="cycle_config_unique"
-                             tableName="pm_cycle_config"/>
+                             constraintName="pm_cycle_config_uk"
+                             tableName="pm_cycle"/>
 
         <!-- todo        add foreignKey constraints  -->
     </changeSet>

@@ -19,7 +19,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="start_time" type="TIMESTAMPTZ">
-                <constraints nullable="true"/>
+                <constraints nullable="false"/>
             </column>
             <column name="end_time" type="TIMESTAMPTZ">
                 <constraints nullable="true"/>
@@ -32,11 +32,7 @@
         <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="pm_colleague_cycle"
                                  constraintName="colleague_cycle_status_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
-                                 referencedColumnNames="id" referencedTableName="pm_cycle_config_status" validate="true"/>
-
-        <addUniqueConstraint columnNames="colleague_uuid, cycle_config_uuid"
-                             constraintName="colleague_cycle_unique"
-                             tableName="pm_colleague_cycle"/>
+                                 referencedColumnNames="id" referencedTableName="pm_cycle_status" validate="true"/>
 
         <!-- todo        add foreignKey constraints  -->
     </changeSet>

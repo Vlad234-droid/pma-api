@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.tesco.pma.cycle.dao.PmCycleConfigurationDAO">
-    <resultMap id="cycleConfigResultMap" type="com.tesco.pma.cycle.api.PMCycleConfiguration">
+<mapper namespace="com.tesco.pma.cycle.dao.PMCycleDAO">
+    <resultMap id="cycleResultMap" type="com.tesco.pma.cycle.api.PMCycle">
         <id property="uuid" column="uuid"/>
         <result property="entryConfigKey" column="entry_config_key"/>
         <result property="templateUUID" column="template_uuid"/>
@@ -10,16 +10,16 @@
         <result property="createdBy" column="created_by"/>
         <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.cycle.api.PMCycleConfigurationStatus"/>
+                javaType="com.tesco.pma.cycle.api.PMCycleStatus"/>
         <result property="type" column="type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.process.api.model.PMCycleType"/>
+                javaType="com.tesco.pma.cycle.api.PMCycleType"/>
         <result property="startTime" column="start_time"/>
         <result property="endTime" column="end_time"/>
         <result property="properties" column="properties"/>
     </resultMap>
 
-    <insert id="createCycle" flushCache="true" parameterType="com.tesco.pma.cycle.api.PMCycleConfiguration">
-        INSERT INTO pm_cycle_config
+    <insert id="create" flushCache="true" parameterType="com.tesco.pma.cycle.api.PMCycle">
+        INSERT INTO pm_cycle
         (uuid,
          entry_config_key,
          template_uuid,
@@ -31,27 +31,27 @@
          start_time,
          end_time,
          properties)
-        VALUES (#{config.uuid},
-                #{config.entryConfigKey},
-                #{config.templateUUID},
-                #{config.name},
-                #{config.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.process.api.model.PMCycleType},
-                #{config.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleConfigurationStatus},
-                #{config.createdBy},
+        VALUES (#{cycle.uuid},
+                #{cycle.entryConfigKey},
+                #{cycle.templateUUID},
+                #{cycle.name},
+                #{cycle.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleType},
+                #{cycle.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus},
+                #{cycle.createdBy},
                 now(),
-                #{config.startTime},
-                #{config.endTime},
-                #{config.properties});
+                #{cycle.startTime},
+                #{cycle.endTime},
+                #{cycle.properties});
     </insert>
 
-    <select id="getPmCycle" resultMap="cycleConfigResultMap">
+    <select id="read" resultMap="cycleResultMap">
         SELECT *
-        FROM pm_cycle_config
+        FROM pm_cycle
         WHERE uuid = #{uuid}
     </select>
 
-    <update id="updateCycleStatus">
-        UPDATE pm_cycle_config
+    <update id="updateStatus">
+        UPDATE pm_cycle
         SET status_id=#{status.id}
         WHERE uuid = #{uuid}
         <if test="prevStatuses != null and !prevStatuses.isEmpty()">
@@ -62,9 +62,9 @@
         </if>
     </update>
 
-    <select id="getAllPmCyclesForStatus" resultMap="cycleConfigResultMap">
+    <select id="getByStatus" resultMap="cycleResultMap">
         SELECT *
-        FROM pm_cycle_config
+        FROM pm_cycle
         WHERE status_id = #{status.id}
     </select>
 

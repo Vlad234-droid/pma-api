@@ -54,8 +54,8 @@ spring:
                               com.tesco.pma.organisation.api,
                               com.tesco.pma.review.domain,
                               com.tesco.pma.process.api,
-                              com.tesco.pma.feedback.api,
-                              com.tesco.pma.cycle.api
+                              com.tesco.pma.cycle.api,
+                              com.tesco.pma.feedback.api
         configuration-properties:
           base-package: com.tesco.pma.dao,
                         com.tesco.pma.colleague.profile.dao,

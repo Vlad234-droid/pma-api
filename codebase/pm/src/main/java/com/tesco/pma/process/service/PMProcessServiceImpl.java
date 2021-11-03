@@ -9,7 +9,7 @@ import com.tesco.pma.process.api.PMProcessMetadata;
 import com.tesco.pma.process.api.PMProcessStatus;
 import com.tesco.pma.process.api.PMRuntimeProcess;
 import com.tesco.pma.process.api.PMTimelinePoint;
-import com.tesco.pma.process.api.model.PMCycle;
+import com.tesco.pma.process.api.model.PMCycleElement;
 import com.tesco.pma.process.dao.PMRuntimeProcessDAO;
 import com.tesco.pma.process.model.PMProcessModelParser;
 import com.tesco.pma.process.model.ResourceProvider;
@@ -105,7 +105,7 @@ public class PMProcessServiceImpl implements PMProcessService {
         var model = getModel(processDefinition);
 
         var metadata = new PMProcessMetadata();
-        var cycle = new PMCycle();
+        var cycle = new PMCycleElement();
         cycle.setCode(processDefinition.getKey());
         metadata.setCycle(cycle);
 

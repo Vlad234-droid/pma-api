@@ -1,7 +1,7 @@
 package com.tesco.pma.process.api;
 
 import com.tesco.pma.api.Jsonb;
-import com.tesco.pma.process.api.model.PMCycle;
+import com.tesco.pma.process.api.model.PMCycleElement;
 
 import lombok.Data;
 
@@ -10,5 +10,5 @@ import lombok.Data;
  */
 @Data
 public class PMProcessMetadata implements Jsonb {
-    private PMCycle cycle;
+    private PMCycleElement cycle;
 }

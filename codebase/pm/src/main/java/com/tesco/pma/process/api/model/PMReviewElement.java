@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class PMReview extends PMElement {
+public class PMReviewElement extends PMElement {
     public static final String PM_REVIEW = "review";
     public static final String PM_REVIEW_PREFIX = PM_PREFIX + PM_REVIEW + "_";
     public static final String PM_REVIEW_TYPE = PM_REVIEW_PREFIX + "type";
@@ -29,9 +29,9 @@ public class PMReview extends PMElement {
     public static final String DEFAULT_PM_REVIEW_MAX = "1";
 
     private DictionaryItem<Integer> reviewType;
-    private PMForm form;
+    private PMFormElement form;
 
-    public PMReview(String id, String code, String description, DictionaryItem<Integer> type) {
+    public PMReviewElement(String id, String code, String description, DictionaryItem<Integer> type) {
         super(id, code, description, type);
     }
 }
