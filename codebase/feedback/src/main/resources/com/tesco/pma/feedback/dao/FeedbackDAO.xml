@@ -268,4 +268,13 @@
         WHERE f.uuid = #{uuid}
     </update>
 
+    <insert id="insertOrUpdateFeedbackItem" flushCache="true" useGeneratedKeys="true" keyColumn="uuid" keyProperty="uuid">
+        INSERT INTO feedback_item (uuid, code, content, feedback_uuid)
+        VALUES (#{feedbackItem.uuid}, #{feedbackItem.code}, #{feedbackItem.content}, #{feedbackItem.feedbackUuid})
+        ON CONFLICT (uuid)
+            DO UPDATE SET code    = #{feedbackItem.code},
+                          content = #{feedbackItem.content}
+        WHERE feedback_item.uuid = #{feedbackItem.uuid}
+    </insert>
+
 </mapper>

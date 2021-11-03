@@ -1,4 +1,4 @@
-package com.tesco.pma.feedback.service.impl;
+package com.tesco.pma.feedback.service;
 
 import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
@@ -9,8 +9,6 @@ import com.tesco.pma.feedback.api.FeedbackItem;
 import com.tesco.pma.feedback.api.FeedbackStatus;
 import com.tesco.pma.feedback.dao.FeedbackDAO;
 import com.tesco.pma.feedback.exception.ErrorCodes;
-import com.tesco.pma.feedback.service.FeedbackItemService;
-import com.tesco.pma.feedback.service.FeedbackService;
 import com.tesco.pma.pagination.RequestQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +47,6 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     private final FeedbackDAO feedbackDAO;
-    private final FeedbackItemService feedbackItemService;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Override
@@ -64,7 +61,7 @@ public class FeedbackServiceImpl implements FeedbackService {
             Set<FeedbackItem> feedbackItems = feedback.getFeedbackItems()
                     .stream()
                     .peek(feedbackItem -> feedbackItem.setFeedbackUuid(feedback.getUuid()))
-                    .map(feedbackItemService::save)
+                    .map(this::save)
                     .collect(Collectors.toSet());
             feedback.setFeedbackItems(feedbackItems);
         } catch (DuplicateKeyException ex) {
@@ -84,7 +81,7 @@ public class FeedbackServiceImpl implements FeedbackService {
             Set<FeedbackItem> feedbackItems = feedback.getFeedbackItems()
                     .stream()
                     .peek(feedbackItem -> feedbackItem.setFeedbackUuid(feedback.getUuid()))
-                    .map(feedbackItemService::save)
+                    .map(this::save)
                     .collect(Collectors.toSet());
             feedback.setFeedbackItems(feedbackItems);
         } else {
@@ -120,6 +117,18 @@ public class FeedbackServiceImpl implements FeedbackService {
             throw new NotFoundException(ErrorCodes.FEEDBACK_NOT_FOUND.getCode(), message);
         }
         return feedback;
+    }
+
+    @Override
+    public FeedbackItem save(FeedbackItem feedbackItem) {
+        log.debug("Request to save FeedbackItem : {}", feedbackItem);
+        feedbackItem.setUuid(UUID.randomUUID());
+        if (1 != feedbackDAO.insertOrUpdateFeedbackItem(feedbackItem)) {
+            String message = messageSourceAccessor.getMessage(ErrorCodes.FEEDBACK_ITEM_NOT_FOUND,
+                    Map.of(PARAM_NAME, "uuid", PARAM_VALUE, feedbackItem.getUuid()));
+            throw new NotFoundException(ErrorCodes.FEEDBACK_ITEM_NOT_FOUND.getCode(), message);
+        }
+        return feedbackItem;
     }
 
 }

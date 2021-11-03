@@ -2,10 +2,11 @@ package com.tesco.pma.feedback.service;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
+import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.feedback.api.Feedback;
+import com.tesco.pma.feedback.api.FeedbackItem;
 import com.tesco.pma.feedback.api.FeedbackStatus;
 import com.tesco.pma.feedback.dao.FeedbackDAO;
-import com.tesco.pma.feedback.service.impl.FeedbackServiceImpl;
 import com.tesco.pma.feedback.util.TestDataUtil;
 import com.tesco.pma.pagination.RequestQuery;
 import org.junit.jupiter.api.Test;
@@ -19,8 +20,14 @@ import org.springframework.dao.DuplicateKeyException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = FeedbackServiceImpl.class)
 @ExtendWith(MockitoExtension.class)
@@ -33,13 +40,10 @@ class FeedbackServiceTest {
     private FeedbackDAO feedbackDAO;
 
     @MockBean
-    private FeedbackItemService feedbackItemService;
-
-    @MockBean
     private NamedMessageSourceAccessor messageSourceAccessor;
 
     @Test
-    void create() {
+    void createFeedback() {
         //given
         Feedback feedback = TestDataUtil.buildFeedback();
 
@@ -51,7 +55,7 @@ class FeedbackServiceTest {
     }
 
     @Test
-    void createShouldThrowDatabaseConstraintViolationException() {
+    void shouldThrowDatabaseConstraintViolationExceptionWhenCreateFeedbackWithDuplicateKey() {
         //given
         Feedback feedback = TestDataUtil.buildFeedback();
         when(feedbackDAO.insert(feedback)).thenThrow(DuplicateKeyException.class);
@@ -70,7 +74,7 @@ class FeedbackServiceTest {
     }
 
     @Test
-    void findAll() {
+    void findAllFeedbacks() {
         //given
         RequestQuery requestQuery = new RequestQuery();
         Feedback feedback1 = TestDataUtil.buildFeedback();
@@ -91,7 +95,7 @@ class FeedbackServiceTest {
     }
 
     @Test
-    void findOne() {
+    void findOneFeedback() {
         //given
         Feedback feedback = TestDataUtil.buildFeedback();
         when(feedbackDAO.getByUuid(TestDataUtil.FEEDBACK_UUID_LAST)).thenReturn(feedback);
@@ -105,7 +109,7 @@ class FeedbackServiceTest {
     }
 
     @Test
-    void update() {
+    void updateFeedback() {
         //given
         Feedback feedback = TestDataUtil.buildFeedback();
         feedback.setUuid(TestDataUtil.FEEDBACK_UUID_LAST);
@@ -118,4 +122,45 @@ class FeedbackServiceTest {
         //then
         assertEquals(result.getStatus(), FeedbackStatus.COMPLETED);
     }
+
+    @Test
+    void insertFeedbackItem() {
+        //given
+        FeedbackItem feedbackItem = TestDataUtil.buildFeedbackItem();
+        when(feedbackDAO.insertOrUpdateFeedbackItem(feedbackItem)).thenReturn(1);
+
+        //when
+        FeedbackItem result = underTest.save(feedbackItem);
+
+        //then
+        assertNotNull(result.getUuid());
+    }
+
+    @Test
+    void updateFeedbackItem() {
+        //given
+        String content = "New content";
+        FeedbackItem feedbackItem = TestDataUtil.buildFeedbackItem();
+        feedbackItem.setUuid(TestDataUtil.FEEDBACK_ITEM_UUID);
+        feedbackItem.setContent(content);
+        when(feedbackDAO.insertOrUpdateFeedbackItem(feedbackItem)).thenReturn(1);
+
+        //when
+        FeedbackItem result = underTest.save(feedbackItem);
+
+        //then
+        assertEquals(result.getContent(), content);
+    }
+
+    @Test
+    void saveFeedbackItemShouldThrowNotFoundException() {
+        //given
+        FeedbackItem feedbackItem = TestDataUtil.buildFeedbackItem();
+        feedbackItem.setUuid(TestDataUtil.FEEDBACK_ITEM_UUID);
+        when(feedbackDAO.insertOrUpdateFeedbackItem(feedbackItem)).thenReturn(0);
+
+        //then
+        assertThrows(NotFoundException.class, () -> underTest.save(feedbackItem));
+    }
+
 }

@@ -4,6 +4,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.feedback.api.Feedback;
+import com.tesco.pma.feedback.api.FeedbackItem;
 import com.tesco.pma.feedback.api.FeedbackStatus;
 import com.tesco.pma.feedback.api.FeedbackTargetType;
 import com.tesco.pma.feedback.util.TestDataUtil;
@@ -39,7 +40,7 @@ public class FeedbackDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "feedback_init.xml"})
-    void shouldFindAllFeedbacksWithItems() {
+    void findAllFeedbacksWithItems() {
         //given
         RequestQuery requestQuery = new RequestQuery();
 
@@ -56,7 +57,7 @@ public class FeedbackDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "feedback_init.xml"})
-    void shouldGetOneFeedbackByUuidWithItems() {
+    void getOneFeedbackByUuid() {
         //given
 
         //when
@@ -71,7 +72,7 @@ public class FeedbackDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "feedback_init.xml"})
-    void shouldMarkAsRead() {
+    void markAsRead() {
         //given
 
         //when
@@ -85,7 +86,7 @@ public class FeedbackDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "feedback_init.xml"})
-    void shouldInsertFeedback() {
+    void insertFeedback() {
         //given
         Feedback feedback = TestDataUtil.buildFeedback();
         feedback.setUuid(UUID.randomUUID());
@@ -100,7 +101,7 @@ public class FeedbackDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "feedback_init.xml"})
-    void shouldUpdateFeedback() {
+    void updateFeedback() {
         //given
         DictionaryFilter<FeedbackStatus> statusFilter = DictionaryFilter.includeFilter();
         Feedback feedback = TestDataUtil.buildFeedback();
@@ -125,6 +126,34 @@ public class FeedbackDAOTest extends AbstractDAOTest {
         assertThatCode(() -> underTest.insert(feedback))
                 .isExactlyInstanceOf(DuplicateKeyException.class)
                 .hasMessageContaining(TestDataUtil.FEEDBACK_UUID_LAST.toString());
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "feedback_init.xml"})
+    void insertFeedbackItem() {
+        //given
+        FeedbackItem feedbackItem = TestDataUtil.buildFeedbackItem();
+        feedbackItem.setUuid(UUID.randomUUID());
+
+        //when
+        int result = underTest.insertOrUpdateFeedbackItem(feedbackItem);
+
+        //then
+        assertEquals(1, result);
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "feedback_init.xml"})
+    void updateFeedbackItem() {
+        //given
+        FeedbackItem feedbackItem = TestDataUtil.buildFeedbackItem();
+        feedbackItem.setUuid(TestDataUtil.FEEDBACK_ITEM_UUID);
+
+        //when
+        int result = underTest.insertOrUpdateFeedbackItem(feedbackItem);
+
+        //then
+        assertEquals(1, result);
     }
 
 }
