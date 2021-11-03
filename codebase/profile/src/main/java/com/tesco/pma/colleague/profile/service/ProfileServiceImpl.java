@@ -1,5 +1,6 @@
 package com.tesco.pma.colleague.profile.service;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 
+import com.tesco.pma.colleague.profile.parser.XlsxParser;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -122,6 +124,12 @@ public class ProfileServiceImpl implements ProfileService {
             }
         });
         return results;
+    }
+
+    @Override
+    public void importColleagues(InputStream inputStream) {
+        var parser = new XlsxParser();
+        parser.parse(inputStream);
     }
 
     private Colleague findColleagueByColleagueUuid(UUID colleagueUuid) {

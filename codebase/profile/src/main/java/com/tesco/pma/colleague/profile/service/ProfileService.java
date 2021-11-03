@@ -4,6 +4,7 @@ import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 
 import javax.validation.constraints.NotNull;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,4 +46,5 @@ public interface ProfileService {
      */
     List<TypedAttribute> deleteProfileAttributes(@NotNull UUID colleagueUuid, List<TypedAttribute> profileAttributes);
 
+    void importColleagues(InputStream inputStream);
 }

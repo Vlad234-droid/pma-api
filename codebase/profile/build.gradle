@@ -26,6 +26,12 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-core:${openApiCoreVersion}")
     implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
 
+    implementation("org.apache.poi:poi:${poiVersion}")
+    implementation("org.apache.poi:poi-ooxml:${poiVersion}")
+    implementation("com.github.pjfanning:excel-streaming-reader:${excelStreamingReaderVersion}") {
+        exclude group: 'com.h2database'
+    }
+
     // Caching
     // TODO Add an implementation of caching to code
 //    implementation 'org.springframework.boot:spring-boot-starter-cache'
