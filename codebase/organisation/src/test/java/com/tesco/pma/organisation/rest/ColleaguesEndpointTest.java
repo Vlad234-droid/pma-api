@@ -5,12 +5,14 @@ import com.tesco.pma.organisation.service.ConfigEntryService;
 import com.tesco.pma.organisation.service.SearchColleaguesService;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -34,7 +36,7 @@ public class ColleaguesEndpointTest extends AbstractEndpointTest {
     @Test
     void getSuggestionsFullNameTest() throws Exception {
 
-        when(searchColleaguesService.getAllSuggestions(anyString())).thenReturn(new ArrayList<>());
+        when(searchColleaguesService.getSuggestions(anyString(), Mockito.any())).thenReturn(new ArrayList<>());
 
         mvc.perform(get("/colleagues/suggestions?fullName={fullNameVal}", "John")
                         .accept(APPLICATION_JSON))
@@ -45,12 +47,19 @@ public class ColleaguesEndpointTest extends AbstractEndpointTest {
     @Test
     void getSuggestionsAmongSubordinatesFullNameTest() throws Exception {
 
-        when(searchColleaguesService.getSuggestionsSubordinates(anyString())).thenReturn(new ArrayList<>());
+        var managerId = UUID.randomUUID();
+        var fullName = "John Dow";
 
-        mvc.perform(get("/colleagues/suggestions/subordinates?fullName={fullNameVal}", "John")
+        when(searchColleaguesService.getSuggestions(anyString(), Mockito.eq(managerId))).thenReturn(new ArrayList<>());
+
+
+        mvc.perform(get("/colleagues/suggestions?fullName={fullNameVal}&managerId={uuid}", fullName, managerId.toString())
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON));
+
+        Mockito.verify(searchColleaguesService, Mockito.times(1))
+                .getSuggestions(Mockito.eq(fullName), Mockito.eq(managerId));
     }
 
 }

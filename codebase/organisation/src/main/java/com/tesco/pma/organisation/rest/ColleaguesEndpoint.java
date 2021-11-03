@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
@@ -28,16 +29,17 @@ public class ColleaguesEndpoint {
 
     @Operation(summary = "Autocomplete search among colleagues by full name", tags = {"colleagues"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Search among colleagues by full name")
-    @GetMapping(value = "/suggestions", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/suggestions", produces = APPLICATION_JSON_VALUE, params = {"fullName"})
     public RestResponse<List<Colleague>> getSuggestionsFullName(@RequestParam String fullName) {
-        return RestResponse.success(searchColleaguesService.getAllSuggestions(fullName));
+        return RestResponse.success(searchColleaguesService.getSuggestions(fullName, null));
     }
 
-    @Operation(summary = "Autocomplete search among subordinate colleagues by full name", tags = {"colleagues"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Search among colleagues by full name")
-    @GetMapping(value = "/suggestions/subordinates", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<Colleague>> getSuggestionsAmongSubordinatesFullName(@RequestParam String fullName) {
-        return RestResponse.success(searchColleaguesService.getSuggestionsSubordinates(fullName));
+    @Operation(summary = "Autocomplete search among colleagues by full name and manager ID", tags = {"colleagues"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Search among colleagues by full name and manager ID")
+    @GetMapping(value = "/suggestions", produces = APPLICATION_JSON_VALUE, params = {"fullName", "managerId"})
+    public RestResponse<List<Colleague>> getSuggestionsAmongSubordinatesFullName(@RequestParam String fullName,
+                                                                                 @RequestParam UUID managerId) {
+        return RestResponse.success(searchColleaguesService.getSuggestions(fullName, managerId));
     }
 
 }

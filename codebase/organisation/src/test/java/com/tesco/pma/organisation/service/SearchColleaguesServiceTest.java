@@ -15,12 +15,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SearchColleaguesServiceTest {
 
-    private final UserService userService = Mockito.mock(UserService.class);
     private final ConfigEntryDAO configEntryDAO = Mockito.mock(ConfigEntryDAO.class);
-    private final NamedMessageSourceAccessor messageSourceAccessor = Mockito.mock(NamedMessageSourceAccessor.class);
 
-    private final SearchColleaguesService searchColleaguesService =
-            new SearchColleaguesService(userService, configEntryDAO, messageSourceAccessor);
+    private final SearchColleaguesService searchColleaguesService = new SearchColleaguesService(configEntryDAO);
 
     @Test
     public void getAllSuggestionsTest(){
@@ -30,7 +27,7 @@ public class SearchColleaguesServiceTest {
                 .thenReturn(expectedResult);
 
         var fullNameVal = "FullName";
-        var result = searchColleaguesService.getAllSuggestions(fullNameVal);
+        var result = searchColleaguesService.getSuggestions(fullNameVal, null);
 
         assertEquals(expectedResult, result);
 
