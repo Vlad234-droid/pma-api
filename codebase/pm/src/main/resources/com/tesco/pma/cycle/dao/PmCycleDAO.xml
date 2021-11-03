@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.tesco.pma.cycle.dao.PmCycleDAO">
-    <resultMap id="cycleResultMap" type="com.tesco.pma.cycle.api.PerformanceCycle">
+    <resultMap id="cycleResultMap" type="com.tesco.pma.cycle.api.PMCycle">
         <id property="uuid" column="uuid"/>
         <result property="organisationKey" column="organisation_key"/>
         <result property="templateUUID" column="template_uuid"/>
@@ -18,7 +18,7 @@
         <result property="properties" column="properties"/>
     </resultMap>
 
-    <insert id="createCycle" flushCache="true" parameterType="com.tesco.pma.cycle.api.PerformanceCycle">
+    <insert id="createCycle" flushCache="true" parameterType="com.tesco.pma.cycle.api.PMCycle">
         INSERT INTO pm_cycle
         (uuid,
          organisation_key,

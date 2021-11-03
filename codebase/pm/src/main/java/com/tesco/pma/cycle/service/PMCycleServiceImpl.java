@@ -2,7 +2,7 @@ package com.tesco.pma.cycle.service;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMCycleStatus;
-import com.tesco.pma.cycle.api.PerformanceCycle;
+import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.dao.PmCycleDAO;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
@@ -28,7 +28,7 @@ import static com.tesco.pma.cycle.exception.ErrorCodes.CYCLE_NOT_FOUND_FOR_STATU
 
 @Service
 @RequiredArgsConstructor
-public class PerformanceCycleServiceImpl implements PerformanceCycleService {
+public class PMCycleServiceImpl implements PMCycleService {
 
     private final PmCycleDAO cycleDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
@@ -52,7 +52,7 @@ public class PerformanceCycleServiceImpl implements PerformanceCycleService {
     }
 
     @Override
-    public PerformanceCycle create(@NotNull PerformanceCycle cycle) {
+    public PMCycle create(@NotNull PMCycle cycle) {
         cycle.setUuid(UUID.randomUUID());
         try {
             cycleDAO.createCycle(cycle);
@@ -66,12 +66,12 @@ public class PerformanceCycleServiceImpl implements PerformanceCycleService {
     }
 
     @Override
-    public PerformanceCycle publish(@NotNull PerformanceCycle cycle) {
+    public PMCycle publish(@NotNull PMCycle cycle) {
         throw new UnsupportedOperationException(NOT_IMPLEMENTED_YET);
     }
 
     @Override
-    public PerformanceCycle updateStatus(UUID uuid, PMCycleStatus status) {
+    public PMCycle updateStatus(UUID uuid, PMCycleStatus status) {
 
         var cycle = cycleDAO.getPmCycle(uuid);
         if (null == cycle) {
@@ -92,7 +92,7 @@ public class PerformanceCycleServiceImpl implements PerformanceCycleService {
     }
 
     @Override
-    public PerformanceCycle getPerformanceCycle(UUID uuid) {
+    public PMCycle getPerformanceCycle(UUID uuid) {
         var res = cycleDAO.getPmCycle(uuid);
         if (res == null) {
             throw notFound(CYCLE_NOT_FOUND_BY_UUID,
@@ -102,13 +102,13 @@ public class PerformanceCycleServiceImpl implements PerformanceCycleService {
     }
 
     @Override
-    public PerformanceCycle updatePerformanceCycle(PerformanceCycle uuid, Collection<PMCycleStatus> oldStatuses) {
+    public PMCycle updatePerformanceCycle(PMCycle uuid, Collection<PMCycleStatus> oldStatuses) {
         throw new UnsupportedOperationException(NOT_IMPLEMENTED_YET);
     }
 
     @Override
-    public List<PerformanceCycle> getAllPerformanceCyclesForStatus(PMCycleStatus status) {
-        List<PerformanceCycle> results = cycleDAO.getAllPmCyclesForStatus(status);
+    public List<PMCycle> getAllPerformanceCyclesForStatus(PMCycleStatus status) {
+        List<PMCycle> results = cycleDAO.getAllPmCyclesForStatus(status);
         if (results == null) {
             throw notFound(CYCLES_NOT_FOUND,
                     Map.of(STATUS_PARAMETER_NAME, status));

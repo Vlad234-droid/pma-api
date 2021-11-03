@@ -16,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class PerformanceCycle {
+public class PMCycle {
     UUID uuid;
     String organisationKey;
     UUID templateUUID;
