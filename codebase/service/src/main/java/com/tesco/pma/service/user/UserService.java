@@ -52,5 +52,4 @@ public interface UserService {
      * @return Optional with user, {@link Optional#empty()} if not found.
      */
     Optional<User> findUserByAuthentication(@NotNull Authentication authentication, Collection<UserIncludes> includes);
-
 }
