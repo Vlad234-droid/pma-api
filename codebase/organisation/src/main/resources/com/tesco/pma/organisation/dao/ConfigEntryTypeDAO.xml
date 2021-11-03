@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.organisation.dao.ConfigEntryTypeDAO">
+
+    <select id="findConfigEntryType" resultType="com.tesco.pma.api.GeneralDictionaryItem">
+        SELECT id, code, description
+        FROM config_entry_type
+        WHERE id = #{id}
+    </select>
+
+    <select id="findAllConfigEntryTypes" resultType="com.tesco.pma.api.GeneralDictionaryItem">
+        SELECT id, code, description
+        FROM config_entry_type
+    </select>
+
+    <insert id="create">
+        INSERT INTO config_entry_type(code, description)
+        VALUES (#{cet.code}, #{cet.description})
+    </insert>
+
+    <update id="update">
+        UPDATE config_entry_type
+        SET code = #{cet.code}, description = #{cet.description}
+        WHERE id = #{cet.id}
+    </update>
+
+    <delete id="delete">
+        DELETE
+        FROM config_entry_type
+        WHERE id = #{id}
+    </delete>
+</mapper>

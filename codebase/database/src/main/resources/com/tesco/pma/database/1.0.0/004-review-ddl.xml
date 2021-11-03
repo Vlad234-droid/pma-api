@@ -42,8 +42,8 @@
         </insert>
         <insert tableName="review_status">
             <column name="id" value="4"/>
-            <column name="code" value="RETURNED"/>
-            <column name="description" value="Review was returned"/>
+            <column name="code" value="DECLINED"/>
+            <column name="description" value="Review was declined"/>
         </insert>
         <insert tableName="review_status">
             <column name="id" value="5"/>

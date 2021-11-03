@@ -6,7 +6,7 @@
     <changeSet author="mdiadia" id="1">
         <createTable remarks="Dictionary of config entry types"
                      tableName="config_entry_type">
-            <column name="id" type="INTEGER">
+            <column name="id" type="INTEGER" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="config_entry_type_pk"/>
             </column>
             <column name="code" type="VARCHAR(30)">
