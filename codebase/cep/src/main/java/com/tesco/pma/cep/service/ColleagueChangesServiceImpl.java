@@ -2,27 +2,28 @@ package com.tesco.pma.cep.service;
 
 import com.tesco.pma.cep.domain.ColleagueChangeEventPayload;
 import com.tesco.pma.cep.domain.DeliveryMode;
+import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
+import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.exception.InvalidPayloadException;
+import com.tesco.pma.logging.LogFormatter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+
+import static com.tesco.pma.cep.exception.ErrorCodes.COLLEAGUE_NOT_FOUND;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
     private final CEPSubscribeProperties cepSubscribeProperties;
-
-    /**
-     *
-     * @param cepSubscribeProperties
-     */
-    public ColleagueChangesServiceImpl(CEPSubscribeProperties cepSubscribeProperties) {
-        this.cepSubscribeProperties = cepSubscribeProperties;
-    }
+    private final ProfileService profileService;
 
     @Override
     public void processColleagueChangeEvent(String feedId,
@@ -33,6 +34,60 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
         log.info(String.format("Processing colleague change event %s for feed delivery mode %s",
                 colleagueChangeEventPayload, feedDeliveryMode));
+
+        Optional<ColleagueProfile> optionalColleagueProfile = profileService.findProfileByColleagueUuid(colleagueChangeEventPayload.colleagueUUID());
+        if (optionalColleagueProfile.isEmpty()) {
+            log.error(LogFormatter.formatMessage(COLLEAGUE_NOT_FOUND, "Colleague '{}' not found"),
+                    colleagueChangeEventPayload.colleagueUUID());
+            return;
+        }
+
+        var updated = 0;
+
+        switch (colleagueChangeEventPayload.eventType()) {
+            case JOINER:
+                updated = processJoinerEventType(colleagueChangeEventPayload, feedDeliveryMode);
+                break;
+            case LEAVER:
+                updated = processLeaverEventType(colleagueChangeEventPayload, feedDeliveryMode);
+                break;
+            case MOVER:
+                updated = processMoverEventType(colleagueChangeEventPayload, feedDeliveryMode);
+                break;
+            case REINSTATEMENT:
+                updated = processReinstatementEventType(colleagueChangeEventPayload, feedDeliveryMode);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid event type " + colleagueChangeEventPayload.eventType());
+        }
+
+        if (updated == 0) {
+            // TODO
+        }
+    }
+
+    private int processJoinerEventType(ColleagueChangeEventPayload colleagueChangeEventPayload,
+                                       DeliveryMode feedDeliveryMode) {
+        return profileService.updateColleague(colleagueChangeEventPayload.colleagueUUID(),
+                colleagueChangeEventPayload.changedAttributes());
+    }
+
+    // TODO
+    private int processLeaverEventType(ColleagueChangeEventPayload colleagueChangeEventPayload,
+                                       DeliveryMode feedDeliveryMode) {
+        return processJoinerEventType(colleagueChangeEventPayload, feedDeliveryMode);
+    }
+
+    // TODO
+    private int processMoverEventType(ColleagueChangeEventPayload colleagueChangeEventPayload,
+                                      DeliveryMode feedDeliveryMode) {
+        return processJoinerEventType(colleagueChangeEventPayload, feedDeliveryMode);
+    }
+
+    // TODO
+    private int processReinstatementEventType(ColleagueChangeEventPayload colleagueChangeEventPayload,
+                                              DeliveryMode feedDeliveryMode) {
+        return processJoinerEventType(colleagueChangeEventPayload, feedDeliveryMode);
     }
 
     private DeliveryMode resolveDeliveryModeByFeedId(String feedId) {

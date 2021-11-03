@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.colleague.profile.dao.ColleagueDAO">
+
+    <update id="update" flushCache="true">
+        UPDATE colleague
+        SET first_name       = #{colleague.firstName},
+            middle_name      = #{colleague.middleName},
+            last_name        = #{colleague.lastName},
+            email            = #{colleague.email},
+            primary_entity   = #{colleague.primaryEntity},
+            salary_frequency = #{colleague.salaryFrequency},
+            iam_source       = #{colleague.iamSource},
+            iam_id           = #{colleague.iamId},
+            manager_uuid     = #{colleague.managerUuid},
+            employment_type  = #{colleague.employmentType},
+            hire_date        = #{colleague.hireDate},
+            leaving_date     = #{colleague.leavingDate},
+            is_manager       = #{colleague.manager}
+            WHERE uuid = #{colleague.uuid}
+    </update>
+
+</mapper>

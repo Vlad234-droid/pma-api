@@ -1,18 +1,5 @@
 package com.tesco.pma.colleague.profile.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.function.Predicate;
-
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-
 import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.api.Contact;
 import com.tesco.pma.colleague.api.ExternalSystems;
@@ -21,6 +8,7 @@ import com.tesco.pma.colleague.api.Profile;
 import com.tesco.pma.colleague.api.workrelationships.Department;
 import com.tesco.pma.colleague.api.workrelationships.Job;
 import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
+import com.tesco.pma.colleague.profile.dao.ColleagueDAO;
 import com.tesco.pma.colleague.profile.dao.ProfileAttributeDAO;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
@@ -29,8 +17,21 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.organisation.dao.ConfigEntryDAO;
-
+import com.tesco.pma.service.colleague.ColleagueApiService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.function.Predicate;
 
 /**
  * Implementation of {@link ProfileService}.
@@ -42,7 +43,9 @@ import lombok.RequiredArgsConstructor;
 public class ProfileServiceImpl implements ProfileService {
 
     private final ConfigEntryDAO configEntryDAO;
+    private final ColleagueDAO colleagueDAO;
     private final ProfileAttributeDAO profileAttributeDAO;
+    private final ColleagueApiService colleagueApiService;
     private final NamedMessageSourceAccessor messages;
 
     private static final Predicate<com.tesco.pma.colleague.api.workrelationships.WorkRelationship>
@@ -122,6 +125,13 @@ public class ProfileServiceImpl implements ProfileService {
             }
         });
         return results;
+    }
+
+    @Override
+    public int updateColleague(UUID colleagueUuid, Collection<String> changedAttributes) {
+        Colleague colleague = colleagueApiService.findColleagueByUuid(colleagueUuid);
+        int updated = colleagueDAO.update(remapping(colleague));
+        return updated;
     }
 
     private Colleague findColleagueByColleagueUuid(UUID colleagueUuid) {
@@ -210,5 +220,13 @@ public class ProfileServiceImpl implements ProfileService {
         return new NotFoundException(ErrorCodes.PROFILE_NOT_FOUND.getCode(),
                 messages.getMessage(ErrorCodes.PROFILE_NOT_FOUND, Map.of("param_name", paramName, "param_value", paramValue)));
     }
+
+    private com.tesco.pma.organisation.api.Colleague remapping(Colleague colleague) {
+        com.tesco.pma.organisation.api.Colleague retValue = new com.tesco.pma.organisation.api.Colleague();
+        retValue.setFirstName(colleague.getProfile().getFirstName());
+        retValue.setLastName(colleague.getProfile().getLastName());
+        return retValue;
+    }
+
 
 }
