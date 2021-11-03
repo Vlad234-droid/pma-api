@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.tesco.pma.cycle.dao.PmCycleDAO">
-    <resultMap id="cycleResultMap" type="com.tesco.pma.cycle.api.PMCycle">
+<mapper namespace="com.tesco.pma.cycle.dao.PmCycleConfigurationDAO">
+    <resultMap id="cycleConfigResultMap" type="com.tesco.pma.cycle.api.PMCycleConfiguration">
         <id property="uuid" column="uuid"/>
-        <result property="organisationKey" column="organisation_key"/>
+        <result property="entryConfigKey" column="entry_config_key"/>
         <result property="templateUUID" column="template_uuid"/>
         <result property="name" column="name"/>
         <result property="createdBy" column="created_by"/>
         <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.cycle.api.PMCycleStatus"/>
+                javaType="com.tesco.pma.cycle.api.PMCycleConfigurationStatus"/>
         <result property="type" column="type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.process.api.model.PMCycleType"/>
         <result property="startTime" column="start_time"/>
@@ -18,10 +18,10 @@
         <result property="properties" column="properties"/>
     </resultMap>
 
-    <insert id="createCycle" flushCache="true" parameterType="com.tesco.pma.cycle.api.PMCycle">
-        INSERT INTO pm_cycle
+    <insert id="createCycle" flushCache="true" parameterType="com.tesco.pma.cycle.api.PMCycleConfiguration">
+        INSERT INTO pm_cycle_config
         (uuid,
-         organisation_key,
+         entry_config_key,
          template_uuid,
          name,
          type_id,
@@ -31,40 +31,40 @@
          start_time,
          end_time,
          properties)
-        VALUES (#{cycle.uuid},
-                #{cycle.organisationKey},
-                #{cycle.templateUUID},
-                #{cycle.name},
-                #{cycle.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.process.api.model.PMCycleType},
-                #{cycle.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus},
-                #{cycle.createdBy},
+        VALUES (#{config.uuid},
+                #{config.entryConfigKey},
+                #{config.templateUUID},
+                #{config.name},
+                #{config.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.process.api.model.PMCycleType},
+                #{config.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleConfigurationStatus},
+                #{config.createdBy},
                 now(),
-                #{cycle.startTime},
-                #{cycle.endTime},
-                #{cycle.properties});
+                #{config.startTime},
+                #{config.endTime},
+                #{config.properties});
     </insert>
 
-    <select id="getPmCycle" resultMap="cycleResultMap">
+    <select id="getPmCycle" resultMap="cycleConfigResultMap">
         SELECT *
-        FROM pm_cycle pmc
-        WHERE pmc.uuid = #{uuid}
+        FROM pm_cycle_config
+        WHERE uuid = #{uuid}
     </select>
 
     <update id="updateCycleStatus">
-        UPDATE pm_cycle pmc
+        UPDATE pm_cycle_config
         SET status_id=#{status.id}
-        WHERE pmc.uuid = #{uuid}
+        WHERE uuid = #{uuid}
         <if test="prevStatuses != null and !prevStatuses.isEmpty()">
-            AND pmc.status_id IN
+            AND status_id IN
             <foreach item="prevStatus" collection="prevStatuses" separator="," open="(" close=")">
                 #{prevStatus.id}
             </foreach>
         </if>
     </update>
 
-    <select id="getAllPmCyclesForStatus" resultMap="cycleResultMap">
+    <select id="getAllPmCyclesForStatus" resultMap="cycleConfigResultMap">
         SELECT *
-        FROM pm_cycle
+        FROM pm_cycle_config
         WHERE status_id = #{status.id}
     </select>
 

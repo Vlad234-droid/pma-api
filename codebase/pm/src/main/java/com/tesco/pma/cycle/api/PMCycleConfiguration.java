@@ -16,14 +16,14 @@ import java.util.UUID;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class PMCycle {
+public class PMCycleConfiguration {
     UUID uuid;
-    String organisationKey;
+    String entryConfigKey;
     UUID templateUUID;
 
     String name;
     UUID createdBy;
-    PMCycleStatus status;
+    PMCycleConfigurationStatus status;
     PMCycleType type;
 
     Instant startTime;
