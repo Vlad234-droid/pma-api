@@ -53,14 +53,16 @@ spring:
                               com.tesco.pma.colleague.profile.domain,
                               com.tesco.pma.organisation.api,
                               com.tesco.pma.review.domain,
-                              com.tesco.pma.process.api
+                              com.tesco.pma.process.api,
+                              com.tesco.pma.feedback.api
         configuration-properties:
           base-package: com.tesco.pma.dao,
                         com.tesco.pma.colleague.profile.dao,
                         com.tesco.pma.organisation.dao,
                         com.tesco.pma.review.dao,
                         com.tesco.pma.process.dao,
-                        com.tesco.pma.cycle.dao
+                        com.tesco.pma.cycle.dao,
+                        com.tesco.pma.feedback.dao
           batchSize: 500
     camunda:
       # Camunda database config
@@ -87,6 +89,7 @@ spring:
       com/tesco/pma/colleague/profile/exception/AppExceptionMessage,
       com/tesco/pma/organisation/service/AppConfigEntryMessages,
       com/tesco/pma/review/exception/AppExceptionMessage,
+      com/tesco/pma/feedback/exception/AppExceptionMessage,
       com/tesco/pma/process/service/AppPMProcessMessages
     encoding: UTF-8
   async-executor:
