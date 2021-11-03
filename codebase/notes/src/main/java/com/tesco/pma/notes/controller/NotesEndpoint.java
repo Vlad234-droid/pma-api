@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class NotesEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Create a new Note")
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isCurrentUser(#note.ownerColleagueUuid)")
     public RestResponse<Note> createNote(@RequestBody Note note){
         return RestResponse.success(notesService.createNote(note));
     }
@@ -34,6 +36,7 @@ public class NotesEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Update a Note")
     @PutMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isCurrentUser(#note.ownerColleagueUuid)")
     public RestResponse<Note> update(@PathVariable("id") UUID uuid, @RequestBody Note note){
         return RestResponse.success(notesService.updateNote(note));
     }

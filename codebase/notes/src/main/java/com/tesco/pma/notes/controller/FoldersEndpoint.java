@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class FoldersEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Create a new Folder")
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isCurrentUser(#folder.ownerColleagueUuid)")
     public RestResponse<?> createFolder(@RequestBody Folder folder){
         return RestResponse.success(notesService.createFolder(folder));
     }
@@ -42,6 +44,7 @@ public class FoldersEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Update a Folder")
     @PutMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isCurrentUser(#folder.ownerColleagueUuid)")
     public RestResponse<?> update(@PathVariable("id") UUID uuid, @RequestBody Folder folder){
         return RestResponse.success(notesService.updateFolder(folder));
     }

@@ -77,6 +77,14 @@ public class PmaMethodSecurityExpressionOperations implements MethodSecurityExpr
         return hasRole(VIEWER);
     }
 
+    public boolean isCurrentUser(UUID userId){
+        if(userId==null){
+            return false;
+        }
+
+        return userId.equals(retrieveUserDetails().getColleagueUuid());
+    }
+
     /**
      * Check if user has {@link UserRoleNames#SUBSIDIARY_MANAGER} role and is a Manager of a particular Subsidiary.
      *
