@@ -39,7 +39,7 @@ public class PMCycleConfigurationEndpoint {
     /**
      * POST call to create a Performance Cycle Configuration.
      *
-     * @param cycle a PMCycleConfiguration
+     * @param config a PMCycleConfiguration
      * @return a RestResponse parameterized with PMCycleConfiguration
      */
     @Operation(summary = "Create performance cycle configuration",
@@ -83,7 +83,8 @@ public class PMCycleConfigurationEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle configurations for the status not found",
             content = @Content)
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<PMCycleConfiguration>> getAllPMCycleConfigForStatus(@RequestParam("status") PMCycleConfigurationStatus status) {
+    public RestResponse<List<PMCycleConfiguration>> getAllPMCycleConfigForStatus(
+            @RequestParam("status") PMCycleConfigurationStatus status) {
         return success(service.getAllPMCycleConfigForStatus(status));
     }
 

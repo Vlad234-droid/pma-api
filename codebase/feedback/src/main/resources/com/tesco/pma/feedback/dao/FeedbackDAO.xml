@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.feedback.dao.FeedbackDAO">
+
+    <resultMap id="feedback" type="com.tesco.pma.feedback.api.Feedback">
+        <id column="uuid" property="uuid"/>
+        <result column="colleague_uuid" property="colleagueUuid"/>
+        <result column="target_colleague_uuid" property="targetColleagueUuid"/>
+        <result column="target_type_id" property="targetType"
+                typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.feedback.api.FeedbackTargetType"/>
+        <result column="target_id" property="targetId"/>
+        <result column="read" property="read"/>
+        <result column="status_id" property="status"
+                typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.feedback.api.FeedbackStatus"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_time" property="updatedTime"/>
+        <collection property="feedbackItems" ofType="com.tesco.pma.feedback.api.FeedbackItem">
+            <id column="fi_uuid" property="uuid"/>
+            <result column="fi_code" property="code"/>
+            <result column="fi_content" property="content"/>
+            <result column="fi_feedback_uuid" property="feedbackUuid"/>
+        </collection>
+    </resultMap>
+
+    <sql id="addStatusIdCondition">
+        <if test="statusFilter != null and !statusFilter.isEmpty()">
+            AND STATUS_ID <if test="!statusFilter.isInclude()">NOT</if> IN
+            <foreach collection="statusFilter.getItems()" item="s" index="i" open="(" separator="," close=")">
+                #{s.id}
+            </foreach>
+        </if>
+    </sql>
+
+    <sql id="getSortField">
+        <choose>
+            <when test="sort.field == 'uuid'">
+                uuid
+            </when>
+            <when test="sort.field == 'colleague-uuid'">
+                colleague_uuid
+            </when>
+            <when test="sort.field == 'target-colleague-uuid'">
+                target_colleague_uuid
+            </when>
+            <when test="sort.field == 'target-type'">
+                target_type_id
+            </when>
+            <when test="sort.field == 'target-id'">
+                target_id
+            </when>
+            <when test="sort.field == 'read'">
+                read
+            </when>
+            <when test="sort.field == 'status'">
+                status_id
+            </when>
+            <when test="sort.field == 'created-time'">
+                created_time
+            </when>
+            <when test="sort.field == 'updated-time'">
+                updated_time
+            </when>
+            <otherwise>
+                updated_time
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="getFilterField">
+        <choose>
+            <when test="filter.property == 'uuid'">
+                uuid
+            </when>
+            <when test="filter.property == 'colleague-uuid'">
+                colleague_uuid
+            </when>
+            <when test="filter.property == 'target-colleague-uuid'">
+                target_colleague_uuid
+            </when>
+            <when test="filter.property == 'target-type'">
+                target_type_id
+            </when>
+            <when test="filter.property == 'target-id'">
+                target_id
+            </when>
+            <when test="filter.property == 'read'">
+                read
+            </when>
+            <when test="filter.property == 'status'">
+                status_id
+            </when>
+            <when test="filter.property == 'created-time'">
+                created_time
+            </when>
+            <when test="filter.property == 'updated-time'">
+                updated_time
+            </when>
+            <otherwise>
+                updated_time
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="prepareValues">
+        <foreach item="value" collection="filter.value" separator="," open="(" close=")">
+            <choose>
+                <when test="filter.property == 'uuid'">
+                    #{value}::uuid
+                </when>
+                <otherwise>
+                    #{value}
+                </otherwise>
+            </choose>
+        </foreach>
+    </sql>
+
+    <sql id="getExpression">
+        <choose>
+            <when test="filter.operand.name == 'EQUALS' and filter.property != 'created-time' and filter.property != 'updated-time'">
+                <include refid="getFilterField"/>
+                = '${filter.value}'
+            </when>
+
+            <when test="filter.operand.name == 'NOT_EQUALS' and filter.property != 'created-time' and filter.property != 'updated-time'">
+                <include refid="getFilterField"/>
+                != '${filter.value}'
+            </when>
+
+            <when test="filter.operand.name == 'IN' and filter.property != 'created-time' and filter.property != 'updated-time'">
+                <include refid="getFilterField"/>
+                IN
+                <include refid="prepareValues"/>
+            </when>
+            <when test="filter.operand.name == 'NOT_IN' and filter.property != 'created-time' and filter.property != 'updated-time'">
+                <include refid="getFilterField"/>
+                NOT IN
+                <include refid="prepareValues"/>
+            </when>
+            <when test="filter.operand.name == 'NULL'">
+                <if test="filter.value == 'true'">
+                    <include refid="getFilterField"/>
+                    IS NULL
+                </if>
+                <if test="filter.value == 'false'">
+                    <include refid="getFilterField"/>
+                    IS NOT NULL
+                </if>
+            </when>
+            <when test="filter.operand.name == 'LESS_THAN' and (filter.property != 'created-time' and filter.property != 'updated-time')">
+                <include refid="getFilterField"/> &lt; '${filter.value}'
+            </when>
+            <when test="filter.operand.name == 'LESS_THAN_EQUALS' and (filter.property != 'created-time' and filter.property != 'updated-time')">
+                <include refid="getFilterField"/> &lt;= '${filter.value}'
+            </when>
+            <when test="filter.operand.name == 'GREATER_THAN' and (filter.property != 'created-time' and filter.property != 'updated-time')">
+                <include refid="getFilterField"/> &gt; '${filter.value}'
+            </when>
+            <when test="filter.operand.name == 'GREATER_THAN_EQUALS' and (filter.property != 'created-time' and filter.property != 'updated-time')">
+                <include refid="getFilterField"/> &gt;= '${filter.value}'
+            </when>
+        </choose>
+    </sql>
+
+    <select id="getByUuid" flushCache="true" resultMap="feedback">
+        SELECT f.uuid,
+               f.colleague_uuid,
+               f.target_colleague_uuid,
+               f.target_type_id,
+               f.target_id,
+               f.read,
+               f.status_id,
+               f.created_time,
+               f.updated_time,
+               fi.uuid          as fi_uuid,
+               fi.code          as fi_code,
+               fi.content       as fi_content,
+               fi.feedback_uuid as fi_feedback_uuid
+        FROM feedback f
+                 JOIN feedback_item fi
+                      ON f.uuid = fi.feedback_uuid
+        WHERE f.uuid = #{uuid}
+    </select>
+
+    <select id="findAll" flushCache="true" resultMap="feedback">
+        SELECT f.uuid,
+               f.colleague_uuid,
+               f.target_colleague_uuid,
+               f.target_type_id,
+               f.target_id,
+               f.read,
+               f.status_id,
+               f.created_time,
+               f.updated_time,
+               fi.uuid          as fi_uuid,
+               fi.code          as fi_code,
+               fi.content       as fi_content,
+               fi.feedback_uuid as fi_feedback_uuid
+        FROM feedback f
+                 LEFT JOIN feedback_item fi
+                           ON f.uuid = fi.feedback_uuid
+        WHERE 1 = 1
+        <if test="!requestQuery.filters.isEmpty()">
+            <foreach collection="requestQuery.filters" item="filter" index="index" open=" AND " separator=" AND ">
+                <include refid="getExpression"/>
+            </foreach>
+        </if>
+        <if test="requestQuery.search != null and requestQuery.search != ''">
+            AND fi.content LIKE '%'||UPPER(#{requestQuery.search})||'%'
+        </if>
+
+        <if test="requestQuery.sort.isEmpty()">
+            ORDER BY f.created_time DESC
+        </if>
+        <if test="!requestQuery.sort.isEmpty()">
+            ORDER BY
+            <foreach collection="requestQuery.sort" item="sort" index="index" separator=",">
+                <include refid="getSortField"/>
+                ${sort.order.name}
+            </foreach>
+        </if>
+
+        LIMIT #{requestQuery.limit}
+        <if test="requestQuery.offset != null">
+            OFFSET #{requestQuery.offset}
+        </if>
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="uuid" keyColumn="uuid" flushCache="true">
+        INSERT INTO feedback (uuid,
+                              colleague_uuid,
+                              target_colleague_uuid,
+                              target_type_id,
+                              target_id,
+                              read,
+                              status_id,
+                              created_time,
+                              updated_time)
+        VALUES (#{feedback.uuid},
+                #{feedback.colleagueUuid},
+                #{feedback.targetColleagueUuid},
+                #{feedback.targetType, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.feedback.api.FeedbackTargetType},
+                #{feedback.targetId},
+                #{feedback.read},
+                #{feedback.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.feedback.api.FeedbackStatus},
+                #{feedback.createdTime},
+                #{feedback.updatedTime})
+    </insert>
+
+    <update id="update">
+        UPDATE feedback f
+        SET colleague_uuid        = #{feedback.colleagueUuid},
+            target_colleague_uuid = #{feedback.targetColleagueUuid},
+            target_type_id        = #{feedback.targetType, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.feedback.api.FeedbackTargetType},
+            target_id             = #{feedback.targetId},
+            read                  = #{feedback.read},
+            status_id             = #{feedback.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.feedback.api.FeedbackStatus},
+            updated_time          = #{feedback.updatedTime}
+        WHERE f.uuid = #{feedback.uuid}
+        <include refid="addStatusIdCondition" />
+    </update>
+
+    <update id="markAsRead">
+        UPDATE feedback f
+        SET read = true
+        WHERE f.uuid = #{uuid}
+    </update>
+
+    <insert id="insertOrUpdateFeedbackItem" flushCache="true" useGeneratedKeys="true" keyColumn="uuid" keyProperty="uuid">
+        INSERT INTO feedback_item (uuid, code, content, feedback_uuid)
+        VALUES (#{feedbackItem.uuid}, #{feedbackItem.code}, #{feedbackItem.content}, #{feedbackItem.feedbackUuid})
+        ON CONFLICT (uuid)
+            DO UPDATE SET code    = #{feedbackItem.code},
+                          content = #{feedbackItem.content}
+        WHERE feedback_item.uuid = #{feedbackItem.uuid}
+    </insert>
+
+</mapper>
