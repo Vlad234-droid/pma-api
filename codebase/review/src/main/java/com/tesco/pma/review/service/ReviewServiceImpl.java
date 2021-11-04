@@ -6,6 +6,7 @@ import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
 import com.tesco.pma.review.dao.ReviewDAO;
+import com.tesco.pma.review.domain.ColleagueReviews;
 import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStatus;
@@ -35,6 +36,7 @@ import static com.tesco.pma.review.exception.ErrorCodes.BUSINESS_UNIT_NOT_EXISTS
 import static com.tesco.pma.review.exception.ErrorCodes.GROUP_OBJECTIVES_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.GROUP_OBJECTIVE_ALREADY_EXISTS;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND;
+import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND_BY_MANAGER;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND_FOR_STATUS_UPDATE;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_ALREADY_EXISTS;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_FOR_COLLEAGUE;
@@ -51,8 +53,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewAuditLogDAO reviewAuditLogDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
-    private static final String REVIEW_UUID_PARAMETER_NAME = "reviewUuid";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
+    private static final String MANAGER_UUID_PARAMETER_NAME = "managerUuid";
     private static final String PERFORMANCE_CYCLE_UUID_PARAMETER_NAME = "performanceCycleUuid";
     private static final String TYPE_PARAMETER_NAME = "type";
     private static final String BUSINESS_UNIT_UUID_PARAMETER_NAME = "businessUnitUuid";
@@ -71,7 +73,7 @@ public class ReviewServiceImpl implements ReviewService {
                 APPROVED, List.of(WAITING_FOR_APPROVAL),
                 DECLINED, List.of(WAITING_FOR_APPROVAL),
                 COMPLETED, List.of(APPROVED),
-                DRAFT, Collections.EMPTY_LIST
+                DRAFT, Collections.emptyList()
         );
     }
 
@@ -96,6 +98,16 @@ public class ReviewServiceImpl implements ReviewService {
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
                             TYPE_PARAMETER_NAME, type));
+        }
+        return results;
+    }
+
+    @Override
+    public List<ColleagueReviews> getTeamReviews(UUID managerUuid) {
+        List<ColleagueReviews> results = reviewDAO.getTeamReviews(managerUuid);
+        if (results == null) {
+            throw notFound(REVIEWS_NOT_FOUND_BY_MANAGER,
+                    Map.of(MANAGER_UUID_PARAMETER_NAME, managerUuid));
         }
         return results;
     }
