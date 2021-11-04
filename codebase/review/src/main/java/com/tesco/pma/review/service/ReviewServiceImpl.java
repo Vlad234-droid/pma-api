@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -74,7 +73,7 @@ public class ReviewServiceImpl implements ReviewService {
                 APPROVED, List.of(WAITING_FOR_APPROVAL),
                 DECLINED, List.of(WAITING_FOR_APPROVAL),
                 COMPLETED, List.of(APPROVED),
-                DRAFT, Collections.EMPTY_LIST
+                DRAFT, Collections.emptyList()
         );
     }
 
