@@ -14,10 +14,10 @@
 
     <resultMap id="pmProcess" type="com.tesco.pma.process.api.PMRuntimeProcess">
         <id column="uuid" property="id"/>
-        <result column="colleague_uuid" property="colleagueUuid"/>
         <result column="status_id" property="status" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.process.api.PMProcessStatus" />
+        <result column="cycle_uuid" property="cycleUuid"/>
         <result column="bpm_process_id" property="bpmProcessId"/>
-        <result column="bpm_process_name" property="bpmProcessName"/>
+        <result column="business_key" property="businessKey"/>
         <result column="last_update_time" property="lastUpdateTime"/>
     </resultMap>
 
@@ -28,40 +28,40 @@
     </resultMap>
 
     <select id="read" resultMap="pmProcess">
-        select * from pm_process where uuid = #{uuid}
+        select * from pm_rt_process where uuid = #{uuid}
     </select>
 
-    <select id="findByColleagueAndProcessName" resultMap="pmProcess">
-        select * from pm_process where colleague_uuid = #{colleagueUuid} and bpm_process_name = #{processName}
+    <select id="findByBusinessKey" resultMap="pmProcess">
+        select * from pm_rt_process where business_key = #{businessKey}
         order by last_update_time desc
     </select>
 
     <select id="readHistory" resultMap="pmProcessHistory">
-        select * from pm_process_hi where uuid = #{uuid}
+        select * from pm_rt_process_hi where uuid = #{uuid}
         order by update_time
     </select>
 
     <insert id="createInt" parameterType="com.tesco.pma.process.api.PMRuntimeProcess" useGeneratedKeys="true" keyColumn="uuid" keyProperty="id">
-        insert into pm_process (uuid, colleague_uuid, status_id, bpm_process_id, bpm_process_name, last_update_time)
+        insert into pm_rt_process (uuid, status_id, cycle_uuid, bpm_process_id, business_key, last_update_time)
         values (
             #{process.id},
-            #{process.colleagueUuid},
             #{process.status.id},
+            #{process.cycleUuid},
             #{process.bpmProcessId},
-            #{process.bpmProcessName},
+            #{process.businessKey},
             #{process.lastUpdateTime}
         )
     </insert>
 
     <update id="updateStatusInt">
-        UPDATE pm_process
+        UPDATE pm_rt_process
         SET status_id = #{status.id}, last_update_time = #{updateTime}
         WHERE uuid = #{uuid}
             <include refid="addStatusIdCondition" />
     </update>
 
     <insert id="createHistoryRecord">
-        insert into pm_process_hi (uuid, status_id, update_time)
+        insert into pm_rt_process_hi (uuid, status_id, update_time)
         values (
             #{uuid},
             #{status.id},

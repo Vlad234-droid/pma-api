@@ -26,6 +26,24 @@
                 javaType="com.tesco.pma.review.domain.ReviewStatus"/>
     </resultMap>
 
+    <resultMap id="colleagueReviewsResultMap" type="com.tesco.pma.review.domain.ColleagueReviews">
+        <id property="uuid" column="uuid"/>
+        <result property="firstName" column="first_name"/>
+        <result property="lastName" column="last_name"/>
+        <result property="jobName" column="job_name"/>
+        <result property="businessType" column="business_type"/>
+        <collection property="reviews" ofType="com.tesco.pma.review.domain.SimplifiedReview">
+            <id property="uuid" column="review_uuid"/>
+            <result property="type" column="review_type_id"
+                    typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                    javaType="com.tesco.pma.review.domain.ReviewType"/>
+            <result property="status" column="review_status_id"
+                    typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                    javaType="com.tesco.pma.review.domain.ReviewStatus"/>
+            <result property="number" column="review_number"/>
+        </collection>
+    </resultMap>
+
     <resultMap id="workingGroupObjectiveResultMap" type="com.tesco.pma.review.domain.WorkingGroupObjective">
         <id property="businessUnitUuid" column="business_unit_uuid"/>
         <id property="version" column="version"/>
@@ -151,6 +169,27 @@
           and r.performance_cycle_uuid = #{performanceCycleUuid}
           and r.type_id = #{type.id}
         order by r.number
+    </select>
+
+    <select id="getTeamReviews" resultMap="colleagueReviewsResultMap">
+        select c.uuid,
+               c.first_name,
+               c.last_name,
+               j.name          as job_name,
+               d.business_type as business_type,
+               r.uuid          as review_uuid,
+               r.type_id       as review_type_id,
+               r.status_id     as review_status_id,
+               r.number        as review_number
+        from colleague c
+                 inner join job j
+                            on (j.id = c.job_id)
+                 inner join department d
+                            on (d.id = c.department_id)
+                 left join review r
+                           on (c.uuid = r.colleague_uuid)
+        where c.manager_uuid = #{managerUuid}
+        order by c.last_name, c.first_name, r.type_id, r.status_id, r.uuid
     </select>
 
     <delete id="deleteReview">
