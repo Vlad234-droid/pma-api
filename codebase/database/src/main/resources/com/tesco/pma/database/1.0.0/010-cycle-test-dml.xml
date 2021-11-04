@@ -9,7 +9,19 @@
             <column name="uuid">3fa85f64-5717-4562-b3fc-2c963f66afa6</column>
             <column name="entry_config_key">type_1</column>
             <column name="template_uuid">3fa85f64-5717-4562-b3fc-2c963f66afa5</column>
-            <column name="name">test_cycle</column>
+            <column name="name">test_cycle_1</column>
+            <column name="status_id">1</column>
+            <column name="type_id">1</column>
+            <column name="created_by">3fa85f64-5717-4562-b3fc-2c963f66afa4</column>
+            <column name="creation_time">2021-10-04 17:03:23.020000</column>
+            <column name="start_time">2021-10-04 17:03:23.020000</column>
+            <column name="end_time">2021-12-04 17:03:29.770000</column>
+        </insert>
+        <insert tableName="pm_cycle">
+            <column name="uuid">3fa85f64-5717-4562-b3fc-2c963f66afa9</column>
+            <column name="entry_config_key">type_2</column>
+            <column name="template_uuid">3fa85f64-5717-4562-b3fc-2c963f66afa5</column>
+            <column name="name">test_cycle_2</column>
             <column name="status_id">1</column>
             <column name="type_id">1</column>
             <column name="created_by">3fa85f64-5717-4562-b3fc-2c963f66afa4</column>
@@ -19,7 +31,8 @@
         </insert>
         <rollback>
             <delete tableName="pm_cycle">
-                <where>uuid = '3fa85f64-5717-4562-b3fc-2c963f66afa6'</where>
+                <where>uuid in ('3fa85f64-5717-4562-b3fc-2c963f66afa6',
+                    '3fa85f64-5717-4562-b3fc-2c963f66afa9')</where>
             </delete>
         </rollback>
     </changeSet>
@@ -41,10 +54,19 @@
             <column name="start_time">2021-11-04 17:06:23.055000</column>
             <column name="end_time">2021-12-04 17:06:35.739000</column>
         </insert>
+        <insert tableName="pm_colleague_cycle">
+            <column name="uuid">3fa85f64-5717-4562-b3fc-2c963f66afa1</column>
+            <column name="colleague_uuid">10000000-0000-0000-0000-000000000001</column>
+            <column name="cycle_config_uuid">3fa85f64-5717-4562-b3fc-2c963f66afa9</column>
+            <column name="status_id">1</column>
+            <column name="start_time">2021-11-04 17:06:23.055000</column>
+            <column name="end_time">2021-12-04 17:06:35.739000</column>
+        </insert>
         <rollback>
             <delete tableName="pm_colleague_cycle">
                 <where>uuid in ('3fa85f64-5717-4562-b3fc-2c963f66afa2',
-                    '3fa85f64-5717-4562-b3fc-2c963f66afa3')</where>
+                    '3fa85f64-5717-4562-b3fc-2c963f66afa3',
+                    '3fa85f64-5717-4562-b3fc-2c963f66afa1')</where>
             </delete>
         </rollback>
     </changeSet>
