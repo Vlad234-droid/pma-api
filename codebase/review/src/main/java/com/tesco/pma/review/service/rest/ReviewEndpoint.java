@@ -59,7 +59,7 @@ public class ReviewEndpoint {
             produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse<Review> createReview(@PathVariable("colleagueUuid") UUID colleagueUuid,
-                                             @PathVariable("cycleUuid") UUID cycleUuid,
+                                             @PathVariable("cycleUuid") String cycleUuid,
                                              @PathVariable("type") ReviewType type,
                                              @PathVariable("number") Integer number,
                                              @RequestBody Review review) {
