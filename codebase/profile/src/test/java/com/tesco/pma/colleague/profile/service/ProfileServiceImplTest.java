@@ -1,5 +1,6 @@
 package com.tesco.pma.colleague.profile.service;
 
+import com.tesco.pma.colleague.profile.dao.ColleagueDAO;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.colleague.profile.AbstractProfileTests;
@@ -8,6 +9,7 @@ import com.tesco.pma.colleague.profile.dao.ProfileAttributeDAO;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.organisation.dao.ConfigEntryDAO;
+import com.tesco.pma.service.colleague.ColleagueApiService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -45,7 +47,13 @@ class ProfileServiceImplTest extends AbstractProfileTests {
     private ConfigEntryDAO configEntryDAO;
 
     @MockBean
+    private ColleagueDAO colleagueDAO;
+
+    @MockBean
     private ProfileAttributeDAO mockProfileDAO;
+
+    @MockBean
+    private ColleagueApiService colleagueApiService;
 
     @SpyBean
     private ProfileServiceImpl profileService;

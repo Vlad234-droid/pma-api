@@ -35,16 +35,16 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         log.info(String.format("Processing colleague change event %s for feed delivery mode %s",
                 colleagueChangeEventPayload, feedDeliveryMode));
 
-        Optional<ColleagueProfile> optionalColleagueProfile = profileService.findProfileByColleagueUuid(colleagueChangeEventPayload.colleagueUUID());
+        Optional<ColleagueProfile> optionalColleagueProfile = profileService.findProfileByColleagueUuid(colleagueChangeEventPayload.getColleagueUuid());
         if (optionalColleagueProfile.isEmpty()) {
             log.error(LogFormatter.formatMessage(COLLEAGUE_NOT_FOUND, "Colleague '{}' not found"),
-                    colleagueChangeEventPayload.colleagueUUID());
+                    colleagueChangeEventPayload.getColleagueUuid());
             return;
         }
 
         var updated = 0;
 
-        switch (colleagueChangeEventPayload.eventType()) {
+        switch (colleagueChangeEventPayload.getEventType()) {
             case JOINER:
                 updated = processJoinerEventType(colleagueChangeEventPayload, feedDeliveryMode);
                 break;
@@ -58,7 +58,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
                 updated = processReinstatementEventType(colleagueChangeEventPayload, feedDeliveryMode);
                 break;
             default:
-                throw new IllegalArgumentException("Invalid event type " + colleagueChangeEventPayload.eventType());
+                throw new IllegalArgumentException("Invalid event type " + colleagueChangeEventPayload.getEventType());
         }
 
         if (updated == 0) {
@@ -68,8 +68,8 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
     private int processJoinerEventType(ColleagueChangeEventPayload colleagueChangeEventPayload,
                                        DeliveryMode feedDeliveryMode) {
-        return profileService.updateColleague(colleagueChangeEventPayload.colleagueUUID(),
-                colleagueChangeEventPayload.changedAttributes());
+        return profileService.updateColleague(colleagueChangeEventPayload.getColleagueUuid(),
+                colleagueChangeEventPayload.getChangedAttributes());
     }
 
     // TODO

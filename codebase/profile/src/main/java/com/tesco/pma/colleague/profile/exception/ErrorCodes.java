@@ -17,7 +17,12 @@ public enum ErrorCodes implements ErrorCodeAware {
     /**
      * Profile attribute name already exists
      */
-    PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS;
+    PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS,
+
+    /**
+     * Duplicate key exception
+     */
+    DUPLICATE_KEY_EXCEPTION;
 
     @Override
     public String getCode() {

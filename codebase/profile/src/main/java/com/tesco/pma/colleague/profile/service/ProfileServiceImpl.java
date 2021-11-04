@@ -16,9 +16,12 @@ import com.tesco.pma.colleague.profile.exception.ErrorCodes;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.logging.LogFormatter;
 import com.tesco.pma.organisation.dao.ConfigEntryDAO;
 import com.tesco.pma.service.colleague.ColleagueApiService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +32,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -39,6 +43,7 @@ import java.util.function.Predicate;
 @Service
 @Validated
 @RequiredArgsConstructor
+@Slf4j
 //todo @CacheConfig(cacheNames = "aggregatedColleagues")
 public class ProfileServiceImpl implements ProfileService {
 
@@ -130,25 +135,31 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public int updateColleague(UUID colleagueUuid, Collection<String> changedAttributes) {
         Colleague colleague = colleagueApiService.findColleagueByUuid(colleagueUuid);
-        int updated = colleagueDAO.update(remapping(colleague));
+        int updated = 0;
+        try {
+            updated = colleagueDAO.update(mappingSourceToDestination(colleague));
+        } catch (DuplicateKeyException exception) {
+            String message = String.format("Duplicate key exception = %s", exception.getMessage());
+            log.error(LogFormatter.formatMessage(ErrorCodes.DUPLICATE_KEY_EXCEPTION, message));
+        }
         return updated;
     }
 
     private Colleague findColleagueByColleagueUuid(UUID colleagueUuid) {
-        com.tesco.pma.organisation.api.Colleague oc = configEntryDAO.getColleague(colleagueUuid);
+        com.tesco.pma.organisation.api.Colleague destination = configEntryDAO.getColleague(colleagueUuid);
         //todo try to download and insert colleagueApiService.findColleagueByUuid(colleagueUuid)
-        return oc != null ? getColleague(oc, colleagueUuid) : null;
+        return destination != null ? mappingDestinationToSource(destination, colleagueUuid) : null;
     }
 
-    private Colleague getColleague(com.tesco.pma.organisation.api.Colleague oc, UUID colleagueUuid) {
-        var colleague = new Colleague();
-        colleague.setColleagueUUID(colleagueUuid);
-        colleague.setCountryCode(oc.getCountry().getCode());
-        colleague.setProfile(getProfile(oc));
-        colleague.setWorkRelationships(Collections.singletonList(getWorkRelationship(oc)));
-        colleague.setExternalSystems(getExternalSystems(oc));
-        colleague.setContact(getContact(oc));
-        return colleague;
+    private Colleague mappingDestinationToSource(com.tesco.pma.organisation.api.Colleague destination, UUID colleagueUuid) {
+        var source = new Colleague();
+        source.setColleagueUUID(colleagueUuid);
+        source.setCountryCode(destination.getCountry().getCode());
+        source.setProfile(getProfile(destination));
+        source.setWorkRelationships(Collections.singletonList(getWorkRelationship(destination)));
+        source.setExternalSystems(getExternalSystems(destination));
+        source.setContact(getContact(destination));
+        return source;
     }
 
     private Contact getContact(com.tesco.pma.organisation.api.Colleague oc) {
@@ -216,17 +227,81 @@ public class ProfileServiceImpl implements ProfileService {
         return profileAttributeDAO.get(colleagueUuid);
     }
 
+    private com.tesco.pma.organisation.api.Colleague mappingSourceToDestination(Colleague source) {
+        com.tesco.pma.organisation.api.Colleague destination = new com.tesco.pma.organisation.api.Colleague();
+
+        destination.setUuid(source.getColleagueUUID());
+
+        final var profile = source.getProfile();
+        if (Objects.nonNull(profile)) {
+            BeanUtils.copyProperties(profile, destination);
+        }
+
+        final var contact = source.getContact();
+        if (Objects.nonNull(contact)) {
+            destination.setEmail(contact.getEmail());
+
+            final var addresses = contact.getAddresses();
+            if (Objects.nonNull(addresses)) {
+                com.tesco.pma.organisation.api.Colleague.Country country = new com.tesco.pma.organisation.api.Colleague.Country();
+                country.setCode(addresses.getCountryCode());
+                destination.setCountry(country);
+            }
+        }
+
+        final var externalSystems = source.getExternalSystems();
+        if (Objects.nonNull(externalSystems) && Objects.nonNull(externalSystems.getIam())) {
+            destination.setIamId(externalSystems.getIam().getId());
+            destination.setIamSource(externalSystems.getIam().getSource());
+        }
+
+        final var serviceDates = source.getServiceDates();
+        if (Objects.nonNull(serviceDates)) {
+            destination.setHireDate(serviceDates.getHireDate());
+            destination.setLeavingDate(serviceDates.getLeavingDate());
+        }
+
+        mappingWorkRelationshipProperties(source, destination);
+
+        return destination;
+    }
+
+    private void mappingWorkRelationshipProperties(Colleague source,
+                                                   com.tesco.pma.organisation.api.Colleague destination) {
+        if (Objects.nonNull(source.getWorkRelationships())) {
+            Optional<WorkRelationship> optionalWorkRelationship = source.getWorkRelationships().stream().findFirst();
+
+            if (optionalWorkRelationship.isPresent()) {
+                WorkRelationship workRelationship = optionalWorkRelationship.get();
+
+                destination.setPrimaryEntity(workRelationship.getPrimaryEntity());
+                destination.setSalaryFrequency(workRelationship.getSalaryFrequency());
+                destination.setEmploymentType(workRelationship.getEmploymentType());
+
+                destination.setManagerUuid(workRelationship.getManagerUUID());
+                destination.setManager(workRelationship.getIsManager());
+
+                com.tesco.pma.organisation.api.Colleague.WorkLevel workLevel =
+                        new com.tesco.pma.organisation.api.Colleague.WorkLevel();
+                workLevel.setCode(workRelationship.getWorkLevel().name());
+                destination.setWorkLevel(workLevel);
+
+                com.tesco.pma.organisation.api.Colleague.Department department =
+                        new com.tesco.pma.organisation.api.Colleague.Department();
+                department.setId(workRelationship.getDepartment().getId());
+                destination.setDepartment(department);
+
+                com.tesco.pma.organisation.api.Colleague.Job job = new com.tesco.pma.organisation.api.Colleague.Job();
+                job.setId(workRelationship.getJob().getId());
+                destination.setJob(job);
+            }
+        }
+
+    }
+
     private NotFoundException notFound(String paramName, Object paramValue) {
         return new NotFoundException(ErrorCodes.PROFILE_NOT_FOUND.getCode(),
                 messages.getMessage(ErrorCodes.PROFILE_NOT_FOUND, Map.of("param_name", paramName, "param_value", paramValue)));
     }
-
-    private com.tesco.pma.organisation.api.Colleague remapping(Colleague colleague) {
-        com.tesco.pma.organisation.api.Colleague retValue = new com.tesco.pma.organisation.api.Colleague();
-        retValue.setFirstName(colleague.getProfile().getFirstName());
-        retValue.setLastName(colleague.getProfile().getLastName());
-        return retValue;
-    }
-
 
 }

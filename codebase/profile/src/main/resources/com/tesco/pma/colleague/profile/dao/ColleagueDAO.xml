@@ -17,8 +17,12 @@
             employment_type  = #{colleague.employmentType},
             hire_date        = #{colleague.hireDate},
             leaving_date     = #{colleague.leavingDate},
-            is_manager       = #{colleague.manager}
-            WHERE uuid = #{colleague.uuid}
+            is_manager       = #{colleague.manager},
+            country_code     = #{colleague.country.code},
+            work_level       = #{colleague.workLevel.code},
+            department_id    = #{colleague.department.id},
+            job_id           = #{colleague.job.id}
+        WHERE uuid = #{colleague.uuid}
     </update>
 
 </mapper>
