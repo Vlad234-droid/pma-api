@@ -209,7 +209,10 @@ camunda:
 #    deployment-resource-pattern: classpath:*.bpmn
 #   todo: remove in production
     auto-deployment-enabled: true
-    deployment-resource-pattern: classpath:com/tesco/pma/flow/pm_v1.bpmn, com/tesco/pma/flow/forms/pm_o_1.form, com/tesco/pma/flow/forms/pm_o_2.form
+    deployment-resource-pattern: classpath:com/tesco/pma/flow/type_1.bpmn,
+                                           com/tesco/pma/flow/type_2.bpmn,
+                                           com/tesco/pma/flow/forms/type_1_objective.form,
+                                           com/tesco/pma/flow/forms/type_2_objective.form
 
 ---
 spring:

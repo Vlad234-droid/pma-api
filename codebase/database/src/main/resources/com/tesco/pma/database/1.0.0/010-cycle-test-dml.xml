@@ -16,6 +16,99 @@
             <column name="creation_time">2021-10-04 17:03:23.020000</column>
             <column name="start_time">2021-10-04 17:03:23.020000</column>
             <column name="end_time">2021-12-04 17:03:29.770000</column>
+            <column name="metadata"><![CDATA[
+{
+  "cycle": {
+    "id": null,
+    "code": "type_1",
+    "description": null,
+    "type": null,
+    "properties": {},
+    "cycleType": null,
+    "reviews": [
+      {
+        "id": "Activity_1xk9nhh",
+        "code": "End of Year Review",
+        "description": "End of Year Review",
+        "type": {
+          "id": null,
+          "code": "review",
+          "description": null
+        },
+        "properties": {
+          "pm_review_type": "eyr",
+          "pm_type": "review",
+          "pm_review_min": "1",
+          "pm_review_max": "1"
+        },
+        "reviewType": {
+          "id": null,
+          "code": "eyr",
+          "description": null
+        },
+        "form": null
+      },
+      {
+        "id": "Activity_1scuf3c",
+        "code": "Mid Year Review",
+        "description": "Mid Year Review",
+        "type": {
+          "id": null,
+          "code": "review",
+          "description": null
+        },
+        "properties": {
+          "pm_review_type": "myr",
+          "pm_type": "review",
+          "pm_review_min": "1",
+          "pm_review_max": "1"
+        },
+        "reviewType": {
+          "id": null,
+          "code": "myr",
+          "description": null
+        },
+        "form": null
+      },
+      {
+        "id": "Activity_1bu82ro",
+        "code": "Objectives",
+        "description": "Objectives",
+        "type": {
+          "id": null,
+          "code": "review",
+          "description": null
+        },
+        "properties": {
+          "pm_review_type": "objective",
+          "pm_type": "review",
+          "pm_review_min": "3",
+          "pm_review_max": "3",
+          "pm_form_key": "forms/type_1_objective.form"
+        },
+        "reviewType": {
+          "id": null,
+          "code": "objective",
+          "description": null
+        },
+        "form": {
+          "id": null,
+          "code": "forms/type_1_objective.form",
+          "description": null,
+          "type": {
+            "id": null,
+            "code": "form",
+            "description": null
+          },
+          "properties": {},
+          "key": "forms/type_1_objective.form",
+          "json": "{\n  \"schemaVersion\": 2,\n  \"components\": [\n    {\n      \"key\": \"title\",\n      \"label\": \"Objective title\",\n      \"type\": \"textfield\",\n      \"id\": \"Field_141o520\",\n      \"validate\": {\n        \"minLength\": 10,\n        \"required\": true,\n        \"maxLength\": 100\n      }\n    },\n    {\n      \"key\": \"description\",\n      \"label\": \"Objective description\",\n      \"type\": \"textfield\",\n      \"id\": \"Field_05qgsfz\",\n      \"validate\": {\n        \"required\": true,\n        \"minLength\": 10,\n        \"maxLength\": 500\n      }\n    },\n    {\n      \"key\": \"how_archieved\",\n      \"label\": \"How do I know I've ACHIEVED this objective?\",\n      \"type\": \"textfield\",\n      \"id\": \"Field_17nyw6d\",\n      \"validate\": {\n        \"required\": true,\n        \"maxLength\": 500,\n        \"minLength\": 10\n      }\n    },\n    {\n      \"key\": \"how_over_achieved\",\n      \"label\": \"How do I know I've OVER-ACHIEVED this objective?\",\n      \"type\": \"textfield\",\n      \"id\": \"Field_1ug5wco\",\n      \"validate\": {\n        \"required\": true,\n        \"minLength\": 10,\n        \"maxLength\": 500\n      }\n    },\n    {\n      \"values\": [\n        {\n          \"label\": \"Magnetic Value\",\n          \"value\": \"Magnetic Value\"\n        },\n        {\n          \"label\": \"I love my Tesco Clubcard\",\n          \"value\": \"I love my Tesco Clubcard\"\n        },\n        {\n          \"label\": \"Easily the most convenient\",\n          \"value\": \"Easily the most convenient\"\n        },\n        {\n          \"label\": \"Save to invest\",\n          \"value\": \"Save to invest\"\n        },\n        {\n          \"label\": \"Other\",\n          \"value\": \"Other\"\n        }\n      ],\n      \"key\": \"strategic_priority\",\n      \"label\": \"Strategic priority\",\n      \"type\": \"select\",\n      \"id\": \"Field_1ribi5m\",\n      \"validate\": {\n        \"required\": true\n      }\n    }\n  ],\n  \"exporter\": {\n    \"name\": \"form-js (https://demo.bpmn.io)\",\n    \"version\": \"0.4.1\"\n  },\n  \"type\": \"default\",\n  \"id\": \"type_1_objective_form\"\n}"
+        }
+      }
+    ]
+  }
+}
+            ]]></column>
         </insert>
         <insert tableName="pm_cycle">
             <column name="uuid">3fa85f64-5717-4562-b3fc-2c963f66afa9</column>
@@ -28,6 +121,98 @@
             <column name="creation_time">2021-10-04 17:03:23.020000</column>
             <column name="start_time">2021-10-04 17:03:23.020000</column>
             <column name="end_time">2021-12-04 17:03:29.770000</column>
+            <column name="metadata"><![CDATA[
+{
+  "cycle": {
+    "id": null,
+    "code": "type_2",
+    "description": null,
+    "type": null,
+    "properties": {},
+    "cycleType": null,
+    "reviews": [
+      {
+        "id": "Activity_1xk9nhh",
+        "code": "End of Year Review",
+        "description": "End of Year Review",
+        "type": {
+          "id": null,
+          "code": "review",
+          "description": null
+        },
+        "properties": {
+          "pm_review_type": "eyr",
+          "pm_type": "review",
+          "pm_review_min": "1",
+          "pm_review_max": "1"
+        },
+        "reviewType": {
+          "id": null,
+          "code": "eyr",
+          "description": null
+        },
+        "form": null
+      },
+      {
+        "id": "Activity_1scuf3c",
+        "code": "Mid Year Review",
+        "description": "Mid Year Review",
+        "type": {
+          "id": null,
+          "code": "review",
+          "description": null
+        },
+        "properties": {
+          "pm_review_type": "myr",
+          "pm_type": "review",
+          "pm_review_min": "1",
+          "pm_review_max": "1"
+        },
+        "reviewType": {
+          "id": null,
+          "code": "myr",
+          "description": null
+        },
+        "form": null
+      },
+      {
+        "id": "Activity_1bu82ro",
+        "code": "Objectives",
+        "description": "Objectives",
+        "type": {
+          "id": null,
+          "code": "review",
+          "description": null
+        },
+        "properties": {
+          "pm_review_type": "objective",
+          "pm_type": "review",
+          "pm_review_min": "3",
+          "pm_review_max": "5",
+          "pm_form_key": "forms/type_2_objective.form"
+        },
+        "reviewType": {
+          "id": null,
+          "code": "objective",
+          "description": null
+        },
+        "form": {
+          "id": null,
+          "code": "forms/type_2_objective.form",
+          "description": null,
+          "type": {
+            "id": null,
+            "code": "form",
+            "description": null
+          },
+          "properties": {},
+          "key": "forms/type_2_objective.form",
+          "json": "{\n  \"schemaVersion\": 2,\n  \"components\": [\n    {\n      \"key\": \"title\",\n      \"label\": \"Objective title\",\n      \"type\": \"textfield\",\n      \"id\": \"Field_141o520\",\n      \"validate\": {\n        \"minLength\": 10,\n        \"required\": true,\n        \"maxLength\": 100\n      }\n    },\n    {\n      \"key\": \"description\",\n      \"label\": \"Objective description\",\n      \"type\": \"textfield\",\n      \"id\": \"Field_05qgsfz\",\n      \"validate\": {\n        \"required\": true,\n        \"minLength\": 10,\n        \"maxLength\": 500\n      }\n    },\n    {\n      \"key\": \"how_archieved\",\n      \"label\": \"How do I know I've ACHIEVED this objective?\",\n      \"type\": \"textfield\",\n      \"id\": \"Field_17nyw6d\",\n      \"validate\": {\n        \"required\": true,\n        \"maxLength\": 500,\n        \"minLength\": 10\n      }\n    },\n    {\n      \"key\": \"how_over_achieved\",\n      \"label\": \"How do I know I've OVER-ACHIEVED this objective?\",\n      \"type\": \"textfield\",\n      \"id\": \"Field_1ug5wco\",\n      \"validate\": {\n        \"required\": true,\n        \"minLength\": 10,\n        \"maxLength\": 500\n      }\n    },\n    {\n      \"values\": [\n        {\n          \"label\": \"Magnetic Value\",\n          \"value\": \"Magnetic Value\"\n        },\n        {\n          \"label\": \"I love my Tesco Clubcard\",\n          \"value\": \"I love my Tesco Clubcard\"\n        },\n        {\n          \"label\": \"Easily the most convenient\",\n          \"value\": \"Easily the most convenient\"\n        },\n        {\n          \"label\": \"Save to invest\",\n          \"value\": \"Save to invest\"\n        },\n        {\n          \"label\": \"Functional strategic priority\",\n          \"value\": \"Functional strategic priority\"\n        },\n        {\n          \"label\": \"Other\",\n          \"value\": \"Other\"\n        }\n      ],\n      \"key\": \"strategic_priority\",\n      \"label\": \"Strategic priority\",\n      \"type\": \"select\",\n      \"id\": \"Field_1ribi5m\",\n      \"validate\": {\n        \"required\": true\n      }\n    }\n  ],\n  \"exporter\": {\n    \"name\": \"form-js (https://demo.bpmn.io)\",\n    \"version\": \"0.4.1\"\n  },\n  \"type\": \"default\",\n  \"id\": \"type_2_objective_form\"\n}"
+        }
+      }
+    ]
+  }
+}            ]]></column>
         </insert>
         <rollback>
             <delete tableName="pm_cycle">

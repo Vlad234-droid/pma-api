@@ -1,10 +1,11 @@
 package com.tesco.pma.process.model;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
+import com.tesco.pma.bpm.camunda.flow.AbstractCamundaSpringBootTest;
+import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
+import com.tesco.pma.cycle.api.model.PMCycleElement;
+import com.tesco.pma.cycle.api.model.PMCycleMetadata;
+import com.tesco.pma.cycle.api.model.PMFormElement;
+import com.tesco.pma.cycle.api.model.PMReviewElement;
 import org.apache.commons.io.IOUtils;
 import org.camunda.bpm.engine.repository.Deployment;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
@@ -16,13 +17,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.tesco.pma.bpm.camunda.flow.AbstractCamundaSpringBootTest;
-import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
-import com.tesco.pma.cycle.api.model.PMCycleMetadata;
-import com.tesco.pma.cycle.api.model.PMCycleElement;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 15.10.2021 Time: 11:10
@@ -36,6 +39,10 @@ class FlowModelTest extends AbstractCamundaSpringBootTest {
     private static final String FORMS_PATH = "/com/tesco/pma/flow/";
     private static final String FORM_1 = "forms/pm_o_1.form";
     private static final String FORM_2 = "pm_o_2.form";
+    private static final String PROCESS_NAME_TYPE_1 = "type_1";
+    private static final String PROCESS_NAME_TYPE_2 = "type_2";
+    private static final String FORM_TYPE_1_OBJECTIVE = "forms/type_1_objective.form";
+    private static final String FORM_TYPE_2_OBJECTIVE = "forms/type_2_objective.form";
 
     private final ResourceProvider resourceProvider = new FormsResourceProvider();
     private final PMProcessModelParser parser = new PMProcessModelParser(resourceProvider);
@@ -56,12 +63,22 @@ class FlowModelTest extends AbstractCamundaSpringBootTest {
 
     @Test
     void readModel() {
-        checkModel(PROCESS_NAME);
+        checkModel(PROCESS_NAME, FORM_1);
     }
 
     @Test
     void readModel2() {
-        checkModel(PROCESS_NAME_2);
+        checkModel(PROCESS_NAME_2, FORM_1);
+    }
+
+    @Test
+    void readType1() {
+        checkModel(PROCESS_NAME_TYPE_1, FORM_TYPE_1_OBJECTIVE);
+    }
+
+    @Test
+    void readType2() {
+        checkModel(PROCESS_NAME_TYPE_2, FORM_TYPE_2_OBJECTIVE);
     }
 
     @Test
@@ -92,7 +109,7 @@ class FlowModelTest extends AbstractCamundaSpringBootTest {
         Assertions.assertEquals(expected, PMProcessModelParser.defaultValue("Set objectives ", ""));
     }
 
-    private void checkModel(String processName) {
+    private void checkModel(String processName, String formName) {
         var processDefinition = getProcessDefinition(processName);
         var model = getModel(processDefinition);
         assertNotNull(model);
@@ -106,6 +123,14 @@ class FlowModelTest extends AbstractCamundaSpringBootTest {
         parser.parse(cycle, tasks);
 
         assertEquals(3, cycle.getReviews().size());
+
+        Optional<PMReviewElement> oObjective =
+                cycle.getReviews().stream().filter(r -> "OBJECTIVE".equalsIgnoreCase(r.getReviewType().getCode()))
+                        .findFirst();
+        assertTrue(oObjective.isPresent());
+        PMFormElement form = oObjective.get().getForm();
+        assertNotNull(form);
+        assertTrue(form.getKey().contains(formName));
     }
 
     private BpmnModelInstance getModel(ProcessDefinition processDefinition) {
