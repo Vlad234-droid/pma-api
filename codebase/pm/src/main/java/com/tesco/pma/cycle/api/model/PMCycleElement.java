@@ -1,4 +1,4 @@
-package com.tesco.pma.process.api.model;
+package com.tesco.pma.cycle.api.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PMCycle extends PMElement {
+public class PMCycleElement extends PMElement {
     public static final String PM_CYCLE = "cycle";
     public static final String PM_CYCLE_PREFIX = PM_PREFIX + PM_CYCLE + "_";
 
@@ -23,5 +23,5 @@ public class PMCycle extends PMElement {
     public static final String PM_CYCLE_MAX = PM_CYCLE_PREFIX + "max";
 
     private DictionaryItem<Integer> cycleType;
-    private List<PMReview> reviews = new ArrayList<>();
+    private List<PMReviewElement> reviews = new ArrayList<>();
 }

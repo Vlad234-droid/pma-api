@@ -1,4 +1,4 @@
-package com.tesco.pma.process.api.model;
+package com.tesco.pma.cycle.api.model;
 
 import com.tesco.pma.api.GeneralDictionaryItem;
 
@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PMForm extends PMElement {
+public class PMFormElement extends PMElement {
     public static final String PM_FORM = "form";
     public static final String PM_FORM_PREFIX = PMElement.PM_PREFIX + PM_FORM + "_";
     public static final String PM_FORM_KEY = PM_FORM_PREFIX + "key";
@@ -20,7 +20,7 @@ public class PMForm extends PMElement {
     private String key;
     private String json;
 
-    public PMForm(String key, String code, String json) {
+    public PMFormElement(String key, String code, String json) {
         super(null, code, null, new GeneralDictionaryItem(null, PM_FORM, null));
         this.key = key;
         this.json = json;

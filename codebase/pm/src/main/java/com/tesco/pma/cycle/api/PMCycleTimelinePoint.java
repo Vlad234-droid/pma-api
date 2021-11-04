@@ -1,4 +1,4 @@
-package com.tesco.pma.process.api;
+package com.tesco.pma.cycle.api;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PMTimelinePoint {
+public class PMCycleTimelinePoint {
     String cycleUuid;
     String code;
     String description;
