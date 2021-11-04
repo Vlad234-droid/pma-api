@@ -44,9 +44,17 @@
             <column name="code">WL3</column>
             <column name="name">Work Level 3</column>
         </insert>
+        <insert tableName="work_level">
+            <column name="code">WL4</column>
+            <column name="name">Work Level 4</column>
+        </insert>
+        <insert tableName="work_level">
+            <column name="code">WL5</column>
+            <column name="name">Work Level 5</column>
+        </insert>
         <rollback>
             <delete tableName="work_level">
-                <where>code = 'WL3'</where>
+                <where>code in ('WL3', 'WL4', 'WL5')</where>
             </delete>
         </rollback>
     </changeSet>
@@ -65,10 +73,56 @@
             <column name="job_id">300000600015282</column>
             <column name="iam_source">OracleHCM</column>
             <column name="iam_id">UKE12345</column>
+            <column name="manager_uuid">null</column>
+            <column name="employment_type">R</column>
+            <column name="hire_date">2020-01-01</column>
+            <column name="leaving_date">null</column>
+            <column name="is_manager">true</column>
+        </insert>
+        <insert tableName="colleague">
+            <column name="uuid">20000000-0000-0000-0000-000000000002</column>
+            <column name="country_code">GB</column>
+            <column name="first_name">Alex</column>
+            <column name="middle_name">Jeffrey</column>
+            <column name="last_name">Smith</column>
+            <column name="email">alex.smith4@tesco.com</column>
+            <column name="work_level">WL4</column>
+            <column name="primary_entity">Tesco PLC</column>
+            <column name="department_id">300001051375877</column>
+            <column name="salary_frequency">ANNUAL</column>
+            <column name="job_id">300000600015282</column>
+            <column name="iam_source">OracleHCM</column>
+            <column name="iam_id">UKE11111</column>
+            <column name="manager_uuid">10000000-0000-0000-0000-000000000001</column>
+            <column name="employment_type">R</column>
+            <column name="hire_date">2020-01-01</column>
+            <column name="leaving_date">null</column>
+            <column name="is_manager">false</column>
+        </insert>
+        <insert tableName="colleague">
+            <column name="uuid">30000000-0000-0000-0000-000000000003</column>
+            <column name="country_code">GB</column>
+            <column name="first_name">Joe</column>
+            <column name="middle_name">Jeffrey</column>
+            <column name="last_name">Smith</column>
+            <column name="email">joe.smith5@tesco.com</column>
+            <column name="work_level">WL5</column>
+            <column name="primary_entity">Tesco PLC</column>
+            <column name="department_id">300001051375877</column>
+            <column name="salary_frequency">ANNUAL</column>
+            <column name="job_id">300000600015282</column>
+            <column name="iam_source">OracleHCM</column>
+            <column name="iam_id">UKE22222</column>
+            <column name="manager_uuid">10000000-0000-0000-0000-000000000001</column>
+            <column name="employment_type">R</column>
+            <column name="hire_date">2020-01-01</column>
+            <column name="leaving_date">null</column>
+            <column name="is_manager">false</column>
         </insert>
         <rollback>
             <delete tableName="colleague">
-                <where>uuid = '10000000-0000-0000-0000-000000000001'</where>
+                <where>uuid in('10000000-0000-0000-0000-000000000001',
+                '20000000-0000-0000-0000-000000000002', '30000000-0000-0000-0000-000000000003')</where>
             </delete>
         </rollback>
     </changeSet>
