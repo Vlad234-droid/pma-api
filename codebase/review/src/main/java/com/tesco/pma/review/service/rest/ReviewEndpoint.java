@@ -5,6 +5,7 @@ import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
+import com.tesco.pma.review.domain.ColleagueReviews;
 import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStatus;
@@ -47,7 +48,7 @@ public class ReviewEndpoint {
      *
      * @param cycleUuid     an identifier of performance cycle
      * @param colleagueUuid an identifier of colleague
-     * @param number        a sequence number ща review
+     * @param number        a sequence number of review
      * @param type          a review type
      * @param review        a Review
      * @return a RestResponse parameterized with Review
@@ -58,7 +59,7 @@ public class ReviewEndpoint {
             produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse<Review> createReview(@PathVariable("colleagueUuid") UUID colleagueUuid,
-                                             @PathVariable("cycleUuid") String cycleUuid,
+                                             @PathVariable("cycleUuid") UUID cycleUuid,
                                              @PathVariable("type") ReviewType type,
                                              @PathVariable("number") Integer number,
                                              @RequestBody Review review) {
@@ -131,6 +132,21 @@ public class ReviewEndpoint {
                                                  @PathVariable("cycleUuid") String cycleUuid,
                                                  @PathVariable("type") ReviewType type) {
         return success(reviewService.getReviews(getPMCycleUuid(colleagueUuid, cycleUuid), colleagueUuid, type));
+    }
+
+    /**
+     * Get call using a Path param and return a list of colleagues reviews as JSON.
+     *
+     * @param managerUuid an identifier of colleague
+     * @return a RestResponse parameterized with list of colleagues reviews
+     */
+    @Operation(summary = "Get a list of colleagues reviews by managerUuid", tags = {"review"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found reviews")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Reviews not found", content = @Content)
+    @GetMapping(path = "/managers/{managerUuid}/reviews",
+            produces = APPLICATION_JSON_VALUE)
+    public RestResponse<List<ColleagueReviews>> getTeamReviews(@PathVariable("managerUuid") UUID managerUuid) {
+        return success(reviewService.getTeamReviews(managerUuid));
     }
 
     /**
