@@ -83,9 +83,8 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found all performance cycles with status")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycles for the status not found",
             content = @Content)
-    @GetMapping(value = "/pm-cycles", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<PMCycle>> getByStatus(
-            @RequestParam("status") PMCycleStatus status) {
+    @GetMapping(value = "/pm-cycles/statuses/{status}", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<List<PMCycle>> getByStatus(@PathVariable("status") PMCycleStatus status) {
         return success(service.getByStatus(status));
     }
 

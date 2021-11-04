@@ -1,9 +1,10 @@
 package com.tesco.pma.cycle.service;
 
+import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleTimelinePoint;
+import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.dao.PMCycleDAO;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
@@ -16,17 +17,23 @@ import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
+import static com.tesco.pma.api.DictionaryFilter.includeFilter;
 import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
+import static com.tesco.pma.cycle.api.PMCycleStatus.COMPLETED;
 import static com.tesco.pma.cycle.api.PMCycleStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
 import static com.tesco.pma.cycle.api.PMCycleStatus.COMPLETED;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_ALREADY_EXISTS;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_METADATA_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND;
+import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_ALREADY_EXISTS;
+import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_BY_UUID;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_FOR_STATUS_UPDATE;
+import static java.util.Set.of;
 
 @Service
 @RequiredArgsConstructor
@@ -43,14 +50,14 @@ public class PMCycleServiceImpl implements PMCycleService {
     private static final String PREV_STATUSES_PARAMETER_NAME = "prevStatuses";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
 
-    private static final Map<PMCycleStatus, Collection<PMCycleStatus>> UPDATE_STATUS_RULE_MAP;
+    private static final Map<PMCycleStatus, DictionaryFilter<PMCycleStatus>> UPDATE_STATUS_RULE_MAP;
 
     static {
         UPDATE_STATUS_RULE_MAP = Map.of(
-                ACTIVE, List.of(INACTIVE, DRAFT),
-                INACTIVE, List.of(ACTIVE, DRAFT),
-                DRAFT, List.of(ACTIVE, INACTIVE),
-                COMPLETED, List.of(ACTIVE, INACTIVE, DRAFT)
+                ACTIVE, includeFilter(of(INACTIVE, DRAFT)),
+                INACTIVE, includeFilter(of(ACTIVE, DRAFT)),
+                DRAFT, includeFilter(of(ACTIVE, INACTIVE)),
+                COMPLETED, includeFilter(of(ACTIVE, INACTIVE, DRAFT))
         );
     }
 
@@ -83,14 +90,15 @@ public class PMCycleServiceImpl implements PMCycleService {
         }
 
         cycle.setStatus(status);
-        var prevStatuses = UPDATE_STATUS_RULE_MAP.get(status);
 
-        if (1 == cycleDAO.updateStatus(uuid, status, prevStatuses)) {
+        DictionaryFilter<PMCycleStatus> statusFilter = UPDATE_STATUS_RULE_MAP.get(status);
+
+        if (1 == cycleDAO.updateStatus(uuid, status, statusFilter)) {
             return cycle;
         } else {
             throw notFound(PM_CYCLE_NOT_FOUND_FOR_STATUS_UPDATE,
                     Map.of(STATUS_PARAMETER_NAME, status,
-                            PREV_STATUSES_PARAMETER_NAME, prevStatuses));
+                            PREV_STATUSES_PARAMETER_NAME, statusFilter));
         }
     }
 
@@ -121,12 +129,13 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     @Override
     public PMCycle getCurrentByColleague(UUID colleagueUuid) {
-        PMCycle result = cycleDAO.getCurrentByColleague(colleagueUuid);
+        DictionaryFilter<PMCycleStatus> activeFilter = DictionaryFilter.includeFilter(Set.of(ACTIVE));
+        List<PMCycle> result = cycleDAO.getByColleague(colleagueUuid, activeFilter);
         if (result == null) {
             throw notFound(PM_CYCLE_NOT_FOUND,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid));
         }
-        return result;
+        return result.iterator().next();
     }
 
     @Override
