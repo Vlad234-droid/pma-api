@@ -257,7 +257,8 @@ class ReviewDAOTest extends AbstractDAOTest {
                 PERFORMANCE_CYCLE_UUID,
                 COLLEAGUE_UUID_NOT_EXIST,
                 OBJECTIVE,
-                NUMBER_1);
+                NUMBER_1,
+                OBJECTIVE.getStatusesForDelete());
         assertThat(result).isZero();
     }
 
@@ -268,19 +269,9 @@ class ReviewDAOTest extends AbstractDAOTest {
                 PERFORMANCE_CYCLE_UUID,
                 COLLEAGUE_UUID,
                 OBJECTIVE,
-                NUMBER_1);
+                NUMBER_1,
+                OBJECTIVE.getStatusesForDelete());
         assertThat(result).isOne();
-    }
-
-    @Test
-    @DataSet({"group_objective_init.xml", "review_init.xml"})
-    void deleteReviewsSucceeded() {
-        final var result = instance.deleteReviews(
-                PERFORMANCE_CYCLE_UUID,
-                COLLEAGUE_UUID,
-                OBJECTIVE,
-                NUMBER_1);
-        assertThat(result).isEqualTo(2);
     }
 
     @Test
@@ -291,7 +282,8 @@ class ReviewDAOTest extends AbstractDAOTest {
                 PERFORMANCE_CYCLE_UUID,
                 COLLEAGUE_UUID,
                 OBJECTIVE,
-                NUMBER_1);
+                NUMBER_1,
+                OBJECTIVE.getStatusesForDelete());
         final var result = instance.renumerateReviews(
                 PERFORMANCE_CYCLE_UUID,
                 COLLEAGUE_UUID,
@@ -314,7 +306,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .status(DRAFT)
                 .build();
 
-        final var result = instance.updateReview(review);
+        final var result = instance.updateReview(review, OBJECTIVE.getStatusesForUpdate());
 
         assertThat(result).isOne();
     }
@@ -331,7 +323,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .status(WAITING_FOR_APPROVAL)
                 .build();
 
-        final var result = instance.updateReview(review);
+        final var result = instance.updateReview(review, OBJECTIVE.getStatusesForUpdate());
 
         assertThat(result).isZero();
     }
@@ -366,7 +358,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .status(ReviewStatus.DRAFT)
                 .build();
 
-        final var result = instance.updateReview(review);
+        final var result = instance.updateReview(review, OBJECTIVE.getStatusesForUpdate());
 
         assertThat(result).isOne();
     }

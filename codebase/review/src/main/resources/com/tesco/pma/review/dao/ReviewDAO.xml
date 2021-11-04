@@ -157,18 +157,15 @@
         DELETE
         FROM review r
         WHERE r.colleague_uuid = #{colleagueUuid}
-          and r.performance_cycle_uuid = #{performanceCycleUuid}
-          and r.type_id = #{type.id}
-          and r.number = #{number}
-    </delete>
-
-    <delete id="deleteReviews">
-        DELETE
-        FROM review r
-        WHERE r.colleague_uuid = #{colleagueUuid}
-          and r.performance_cycle_uuid = #{performanceCycleUuid}
-          and r.type_id = #{type.id}
-          and r.number >= #{startNumber}
+        and r.performance_cycle_uuid = #{performanceCycleUuid}
+        and r.type_id = #{type.id}
+        and r.number = #{number}
+        <if test="allowedReviewStatuses != null and !allowedReviewStatuses.isEmpty()">
+            and r.status_id in
+            <foreach item="allowedStatus" collection="allowedReviewStatuses" separator="," open="(" close=")">
+                #{allowedStatus.id}
+            </foreach>
+        </if>
     </delete>
 
     <update id="renumerateReviews" flushCache="true">
@@ -183,12 +180,18 @@
     <update id="updateReview" flushCache="true">
         UPDATE review
         SET properties =
-                #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-            status_id  = #{review.status.id}
+        #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+        status_id = #{review.status.id}
         WHERE performance_cycle_uuid = #{review.performanceCycleUuid}
-          and colleague_uuid = #{review.colleagueUuid}
-          and type_id = #{review.type.id}
-          and number = #{review.number};
+        and colleague_uuid = #{review.colleagueUuid}
+        and type_id = #{review.type.id}
+        and number = #{review.number}
+        <if test="allowedReviewStatuses != null and !allowedReviewStatuses.isEmpty()">
+            and status_id in
+            <foreach item="allowedStatus" collection="allowedReviewStatuses" separator="," open="(" close=")">
+                #{allowedStatus.id}
+            </foreach>
+        </if>
     </update>
 
     <update id="updateReviewStatus" flushCache="true">
