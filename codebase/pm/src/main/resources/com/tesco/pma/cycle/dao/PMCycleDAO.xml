@@ -16,6 +16,7 @@
         <result property="startTime" column="start_time"/>
         <result property="endTime" column="end_time"/>
         <result property="properties" column="properties"/>
+        <result property="jsonMetadata" column="metadata"/>
     </resultMap>
 
     <resultMap id="cycleTimeline" type="com.tesco.pma.cycle.api.PMCycleTimelinePoint">
@@ -24,6 +25,7 @@
         <result property="description" column="description"/>
         <result property="status" column="status"/>
         <result property="type" column="type"/>
+        <result property="startDate" column="start_time"/>
     </resultMap>
 
     <sql id="addStatusIdCondition">
@@ -61,7 +63,7 @@
                 #{cycle.startTime},
                 #{cycle.endTime},
                 #{cycle.properties},
-                #{cycle.jsonMetadata},
+                #{cycle.jsonMetadata}
                 );
     </insert>
 
@@ -86,19 +88,20 @@
 
     <select id="getByColleague" resultMap="cycleResultMap">
         select aa.* from (select
-            pcc.uuid as uuid,
-            pmc.entry_config_key as entry_config_key,
-            pmc.template_uuid as template_uuid,
-            pmc.name as name,
-            pmc.type_id as type_id,
-            pcc.status_id as status_id,
-            pmc.created_by as created_by,
-            pmc.creation_time as creation_time,
-            pcc.start_time as start_time,
-            pcc.end_time as end_time,
-            pcc.properties as properties
+            pmc.uuid,
+            pmc.entry_config_key,
+            pmc.template_uuid,
+            pmc.name,
+            pmc.type_id,
+            pcc.status_id,
+            pmc.created_by,
+            pmc.creation_time,
+            pcc.start_time,
+            pcc.end_time,
+            pcc.properties,
+            pmc.metadata
             from pm_cycle pmc
-            join pm_colleague_cycle pcc on pmc.uuid = pcc.cycle_config_uuid
+            join pm_colleague_cycle pcc on pmc.uuid = pcc.cycle_uuid
             where pcc.colleague_uuid = #{colleagueUuid}) aa
         where 1 = 1
         <include refid="addStatusIdCondition"/>
@@ -115,7 +118,8 @@
         yyy.description as description,
         rt.description as type,
         rs.code as status,
-        yyy.cycle_id as cycle
+        yyy.cycle_id as cycle,
+        yyy.start_time
         from
         (select json_extract_path_text(yy.xx, 'id') as rw_uuid,
         json_extract_path_text(yy.xx, 'code') as code,
@@ -132,6 +136,6 @@
         inner join review_type rt on LOWER(rt.code) = LOWER(yyy.rw_type_code)
         left join review rw on rw.performance_cycle_uuid = yyy.cycle_id and rt.id = rw.type_id
         left join review_status rs on rw.status_id = rs.id
-        order by yyy.rn
+        order by yyy.start_time
     </select>
 </mapper>

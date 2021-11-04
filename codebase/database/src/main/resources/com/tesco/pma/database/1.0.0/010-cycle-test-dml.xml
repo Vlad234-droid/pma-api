@@ -38,6 +38,7 @@
         "properties": {
           "pm_review_type": "eyr",
           "pm_type": "review",
+          "pm_review_start_time": "2022-03-15",
           "pm_review_min": "1",
           "pm_review_max": "1"
         },
@@ -60,6 +61,7 @@
         "properties": {
           "pm_review_type": "myr",
           "pm_type": "review",
+          "pm_review_start_time": "2021-10-01",
           "pm_review_min": "1",
           "pm_review_max": "1"
         },
@@ -82,6 +84,7 @@
         "properties": {
           "pm_review_type": "objective",
           "pm_type": "review",
+          "pm_review_start_time": "2021-04-01",
           "pm_review_min": "3",
           "pm_review_max": "3",
           "pm_form_key": "forms/type_1_objective.form"
@@ -107,8 +110,7 @@
       }
     ]
   }
-}
-            ]]></column>
+}            ]]></column>
         </insert>
         <insert tableName="pm_cycle">
             <column name="uuid">3fa85f64-5717-4562-b3fc-2c963f66afa9</column>
@@ -143,6 +145,7 @@
         "properties": {
           "pm_review_type": "eyr",
           "pm_type": "review",
+          "pm_review_start_time": "2022-03-15",
           "pm_review_min": "1",
           "pm_review_max": "1"
         },
@@ -165,6 +168,7 @@
         "properties": {
           "pm_review_type": "myr",
           "pm_type": "review",
+          "pm_review_start_time": "2021-10-01",
           "pm_review_min": "1",
           "pm_review_max": "1"
         },
@@ -187,6 +191,7 @@
         "properties": {
           "pm_review_type": "objective",
           "pm_type": "review",
+          "pm_review_start_time": "2021-04-01",
           "pm_review_min": "3",
           "pm_review_max": "5",
           "pm_form_key": "forms/type_2_objective.form"
@@ -226,7 +231,7 @@
         <insert tableName="pm_colleague_cycle">
             <column name="uuid">3fa85f64-5717-4562-b3fc-2c963f66afa3</column>
             <column name="colleague_uuid">10000000-0000-0000-0000-000000000002</column>
-            <column name="cycle_config_uuid">3fa85f64-5717-4562-b3fc-2c963f66afa6</column>
+            <column name="cycle_uuid">3fa85f64-5717-4562-b3fc-2c963f66afa6</column>
             <column name="status_id">1</column>
             <column name="start_time">2021-10-04 17:06:23.055000</column>
             <column name="end_time">2021-12-04 17:06:35.739000</column>
@@ -234,7 +239,7 @@
         <insert tableName="pm_colleague_cycle">
             <column name="uuid">3fa85f64-5717-4562-b3fc-2c963f66afa2</column>
             <column name="colleague_uuid">10000000-0000-0000-0000-000000000003</column>
-            <column name="cycle_config_uuid">3fa85f64-5717-4562-b3fc-2c963f66afa6</column>
+            <column name="cycle_uuid">3fa85f64-5717-4562-b3fc-2c963f66afa6</column>
             <column name="status_id">1</column>
             <column name="start_time">2021-11-04 17:06:23.055000</column>
             <column name="end_time">2021-12-04 17:06:35.739000</column>
@@ -242,7 +247,7 @@
         <insert tableName="pm_colleague_cycle">
             <column name="uuid">3fa85f64-5717-4562-b3fc-2c963f66afa1</column>
             <column name="colleague_uuid">10000000-0000-0000-0000-000000000001</column>
-            <column name="cycle_config_uuid">3fa85f64-5717-4562-b3fc-2c963f66afa9</column>
+            <column name="cycle_uuid">3fa85f64-5717-4562-b3fc-2c963f66afa9</column>
             <column name="status_id">1</column>
             <column name="start_time">2021-11-04 17:06:23.055000</column>
             <column name="end_time">2021-12-04 17:06:35.739000</column>

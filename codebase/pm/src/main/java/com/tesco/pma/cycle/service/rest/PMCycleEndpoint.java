@@ -1,9 +1,11 @@
 package com.tesco.pma.cycle.service.rest;
 
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.PMCycleTimelinePoint;
 import com.tesco.pma.cycle.service.PMCycleService;
+import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,7 +13,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -23,8 +28,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_METADATA_NOT_FOUND;
 import static com.tesco.pma.rest.RestResponse.success;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -33,7 +40,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 public class PMCycleEndpoint {
 
+    private static final String CYCLE_UUID_PARAMETER_NAME = "cycleUuid";
+    private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
+
     private final PMCycleService service;
+    private final NamedMessageSourceAccessor messageSourceAccessor;
 
     /**
      * POST call to create a Performance Cycle .
@@ -62,7 +73,7 @@ public class PMCycleEndpoint {
     @Operation(summary = "Update performance cycle status",
             tags = {"performance-cycle"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Updated performance cycle  status")
-    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle  not found",
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle not found",
             content = @Content)
     @PatchMapping(value = "/pm-cycles/{uuid}/statuses/{status}", produces = APPLICATION_JSON_VALUE)
     public RestResponse<PMCycle> updateStatus(@PathVariable("uuid") UUID uuid,
@@ -116,17 +127,29 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the cycle timeline")
     @GetMapping(value = "/colleagues/{colleagueUuid}/timeline", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     public RestResponse<List<PMCycleTimelinePoint>> getTimelineByColleague(@PathVariable UUID colleagueUuid) {
-        var uuid = service.getCurrentByColleague(colleagueUuid);
-        return RestResponse.success(service.getCycleTimeline(uuid.getUuid()));
+        var cycle = service.getCurrentByColleague(colleagueUuid);
+        return RestResponse.success(service.getCycleTimeline(cycle.getUuid()));
     }
 
     @Operation(summary = "Get full metadata for colleague",
             tags = {"performance-cycle"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the cycle metadata")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle not found",
+            content = @Content)
     @GetMapping(value = "/colleagues/{colleagueUuid}/metadata", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    public RestResponse<String> getMetadataByColleague(@PathVariable UUID colleagueUuid) {
+    public ResponseEntity<Object> getMetadataByColleague(@PathVariable UUID colleagueUuid) {
         var cycle = service.getCurrentByColleague(colleagueUuid);
-        return RestResponse.success(cycle.getJsonMetadata());
+        var metadata = cycle.getJsonMetadata();
+        if (StringUtils.isBlank(metadata)) {
+            throw new NotFoundException(PM_CYCLE_METADATA_NOT_FOUND.getCode(),
+                    messageSourceAccessor.getMessage(PM_CYCLE_METADATA_NOT_FOUND,
+                            Map.of(CYCLE_UUID_PARAMETER_NAME, cycle.getUuid(),
+                                    COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid)));
+        }
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonMetadataToRestResponse(metadata));
     }
 
     // todo remove after UAT metadata should be stored with cycle together
@@ -140,5 +163,9 @@ public class PMCycleEndpoint {
                                              @RequestBody String metadata) {
         service.updateJsonMetadata(uuid, metadata);
         return RestResponse.success();
+    }
+
+    private String jsonMetadataToRestResponse(String jsonMetadata) {
+        return "{\"success\": true, \"data\": " + jsonMetadata + "}";
     }
 }

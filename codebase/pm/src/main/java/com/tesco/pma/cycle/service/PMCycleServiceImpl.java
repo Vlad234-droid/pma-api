@@ -29,6 +29,7 @@ import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_ALREADY_EXISTS;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_METADATA_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_BY_UUID;
+import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_COLLEAGUE;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_FOR_STATUS_UPDATE;
 import static java.util.Set.of;
 
@@ -128,8 +129,8 @@ public class PMCycleServiceImpl implements PMCycleService {
     public PMCycle getCurrentByColleague(UUID colleagueUuid) {
         DictionaryFilter<PMCycleStatus> activeFilter = DictionaryFilter.includeFilter(Set.of(ACTIVE));
         List<PMCycle> result = cycleDAO.getByColleague(colleagueUuid, activeFilter);
-        if (result == null) {
-            throw notFound(PM_CYCLE_NOT_FOUND,
+        if (result == null || result.isEmpty()) {
+            throw notFound(PM_CYCLE_NOT_FOUND_COLLEAGUE,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid));
         }
         return result.iterator().next();
@@ -139,7 +140,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     public List<PMCycle> getByColleague(UUID colleagueUuid) {
         var results = cycleDAO.getByColleague(colleagueUuid);
         if (results == null || results.isEmpty()) {
-            throw notFound(PM_CYCLE_NOT_FOUND,
+            throw notFound(PM_CYCLE_NOT_FOUND_COLLEAGUE,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid));
         }
         return results;

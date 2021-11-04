@@ -9,6 +9,7 @@
           <camunda:property name="pm_review_type" value="objective" />
           <camunda:property name="pm_type" value="review" />
           <camunda:property name="pm_form_key" value="forms/type_2_objective.form" />
+          <camunda:property name="pm_review_start_time" value="2021-04-01" />
         </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1c2mhm6</bpmn:incoming>
@@ -78,6 +79,7 @@
         <camunda:properties>
           <camunda:property name="pm_type" value="review" />
           <camunda:property name="pm_review_type" value="eyr" />
+          <camunda:property name="pm_review_start_time" value="2022-03-15" />
         </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_10o56ax</bpmn:incoming>
@@ -91,6 +93,7 @@
         <camunda:properties>
           <camunda:property name="pm_type" value="review" />
           <camunda:property name="pm_review_type" value="myr" />
+          <camunda:property name="pm_review_start_time" value="2021-10-01" />
         </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_10nqhon</bpmn:incoming>

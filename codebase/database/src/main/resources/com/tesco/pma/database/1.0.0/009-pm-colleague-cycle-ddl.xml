@@ -12,7 +12,7 @@
             <column name="colleague_uuid" type="${uuid_type}">
                 <constraints nullable="false"/>
             </column>
-            <column name="cycle_config_uuid" type="${uuid_type}">
+            <column name="cycle_uuid" type="${uuid_type}">
                 <constraints nullable="false"/>
             </column>
             <column name="status_id" type="INTEGER">
