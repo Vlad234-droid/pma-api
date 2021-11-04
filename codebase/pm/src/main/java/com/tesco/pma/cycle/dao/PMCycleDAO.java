@@ -2,6 +2,7 @@ package com.tesco.pma.cycle.dao;
 
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.PMCycle;
+import com.tesco.pma.cycle.api.PMCycleTimelinePoint;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
@@ -28,4 +29,8 @@ public interface PMCycleDAO {
     PMCycle getCurrentByColleague(UUID colleagueUuid);
 
     List<PMCycle> getByColleague(UUID colleagueUuid);
+
+    int updateMetadata(@Param("uuid") UUID uuid, @Param("metadata") String metadata);
+
+    List<PMCycleTimelinePoint> readTimeline(@Param("uuid") UUID uuid);
 }

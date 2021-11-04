@@ -2,6 +2,7 @@ package com.tesco.pma.cycle.service;
 
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
+import com.tesco.pma.cycle.api.PMCycleTimelinePoint;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 
@@ -87,5 +88,23 @@ public interface PMCycleService {
      * @throws NotFoundException if PMCycle doesn't found
      */
     List<PMCycle> getByColleague(@NotNull UUID colleagueUuid);
+
+    /**
+     * Returns cycle timeline by uuid
+     *
+     * @param uuid process identifier
+     * @return the timeline of the process
+     * @throws com.tesco.pma.exception.NotFoundException if the was not found
+     */
+    List<PMCycleTimelinePoint> getCycleTimeline(@NotNull UUID uuid);
+
+    /**
+     * todo remove after UAT
+     * Stores cycle metadata for the cycle
+     *
+     * @param uuid process UUID
+     * @param metadata    process metadata
+     */
+    void updateJsonMetadata(@NotNull UUID uuid, @NotNull String metadata);
 }
 

@@ -2,20 +2,17 @@ package com.tesco.pma.process.service;
 
 import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.cycle.api.model.PMCycleElement;
+import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.process.api.PMProcessErrorCodes;
-import com.tesco.pma.process.api.PMProcessMetadata;
 import com.tesco.pma.process.api.PMProcessStatus;
 import com.tesco.pma.process.api.PMRuntimeProcess;
-import com.tesco.pma.process.api.PMTimelinePoint;
-import com.tesco.pma.process.api.model.PMCycleElement;
 import com.tesco.pma.process.dao.PMRuntimeProcessDAO;
 import com.tesco.pma.process.model.PMProcessModelParser;
 import com.tesco.pma.process.model.ResourceProvider;
-
 import lombok.RequiredArgsConstructor;
-
 import org.apache.commons.io.IOUtils;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
@@ -28,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -100,11 +96,11 @@ public class PMProcessServiceImpl implements PMProcessService {
 
     // todo remove after
     @Override
-    public PMProcessMetadata getProcessMetadataByKey(String processKey) {
+    public PMCycleMetadata getProcessMetadataByKey(String processKey) {
         var processDefinition = getProcessDefinition(processKey);
         var model = getModel(processDefinition);
 
-        var metadata = new PMProcessMetadata();
+        var metadata = new PMCycleMetadata();
         var cycle = new PMCycleElement();
         cycle.setCode(processDefinition.getKey());
         metadata.setCycle(cycle);
@@ -114,32 +110,6 @@ public class PMProcessServiceImpl implements PMProcessService {
         parser.parse(cycle, tasks);
 
         return metadata;
-    }
-
-    @Override
-    public List<PMTimelinePoint> getProcessTimeline(UUID uuid) {
-        var timeline = dao.readTimeline(uuid);
-        if (timeline == null) {
-            throw new NotFoundException(PMProcessErrorCodes.PROCESS_METADATA_NOT_FOUND.getCode(),
-                    messageSourceAccessor.getMessage(PMProcessErrorCodes.PROCESS_METADATA_NOT_FOUND, Map.of(ID, uuid)));
-        }
-        return timeline;
-    }
-
-    @Override
-    public String getMetadata(UUID uuid) {
-        return dao.getMetadata(uuid);
-    }
-
-    @Override
-    public void saveMetadata(UUID processUuid, String metadata) {
-        try {
-            dao.saveMetadata(processUuid, metadata);
-        } catch (DuplicateKeyException ex) {
-            throw new DatabaseConstraintViolationException(PMProcessErrorCodes.PROCESS_METADATA_ALREADY_EXISTS.getCode(),
-                    messageSourceAccessor.getMessage(PMProcessErrorCodes.PROCESS_METADATA_ALREADY_EXISTS,
-                            Map.of(ID, processUuid)), null, ex);
-        }
     }
 
     private BpmnModelInstance getModel(ProcessDefinition processDefinition) {

@@ -19,7 +19,11 @@ public enum ErrorCodes implements ErrorCodeAware {
     /**
      * Cycle already exists
      */
-    PM_CYCLE_ALREADY_EXISTS;
+    PM_CYCLE_ALREADY_EXISTS,
+    /**
+     * Cycle's metadata was not found
+     */
+    PM_CYCLE_METADATA_NOT_FOUND;
 
     @Override
     public String getCode() {

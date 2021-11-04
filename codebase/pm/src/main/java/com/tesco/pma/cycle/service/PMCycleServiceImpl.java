@@ -3,6 +3,7 @@ package com.tesco.pma.cycle.service;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.PMCycle;
+import com.tesco.pma.cycle.api.PMCycleTimelinePoint;
 import com.tesco.pma.cycle.dao.PMCycleDAO;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
@@ -21,8 +22,9 @@ import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
 import static com.tesco.pma.cycle.api.PMCycleStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
 import static com.tesco.pma.cycle.api.PMCycleStatus.COMPLETED;
-import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_ALREADY_EXISTS;
+import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_METADATA_NOT_FOUND;
+import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_BY_UUID;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_FOR_STATUS_UPDATE;
 
@@ -135,6 +137,22 @@ public class PMCycleServiceImpl implements PMCycleService {
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid));
         }
         return results;
+    }
+
+    @Override
+    public List<PMCycleTimelinePoint> getCycleTimeline(UUID uuid) {
+        var timeline = cycleDAO.readTimeline(uuid);
+        if (timeline == null) {
+            throw new NotFoundException(PM_CYCLE_METADATA_NOT_FOUND.getCode(),
+                    messageSourceAccessor.getMessage(PM_CYCLE_METADATA_NOT_FOUND,
+                            Map.of(CYCLE_UUID_PARAMETER_NAME, uuid)));
+        }
+        return timeline;
+    }
+
+    @Override
+    public void updateJsonMetadata(UUID uuid, String metadata) {
+        cycleDAO.updateMetadata(uuid, metadata);
     }
 
     //TODO refactor to common solution (include @com.tesco.pma.review.service.ReviewServiceImpl)

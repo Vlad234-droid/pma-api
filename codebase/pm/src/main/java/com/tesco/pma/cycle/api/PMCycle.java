@@ -29,4 +29,6 @@ public class PMCycle {
     Instant endTime;
 
     String properties;
+
+    String jsonMetadata;
 }

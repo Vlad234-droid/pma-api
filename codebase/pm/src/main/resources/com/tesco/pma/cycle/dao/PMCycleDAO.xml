@@ -18,6 +18,15 @@
         <result property="properties" column="properties"/>
     </resultMap>
 
+    <resultMap id="cycleTimeline" type="com.tesco.pma.cycle.api.PMCycleTimelinePoint">
+        <result property="cycleUuid" column="cycle"/>
+        <result property="code" column="code"/>
+        <result property="description" column="description"/>
+        <result property="status" column="status"/>
+        <result property="type" column="type"/>
+    </resultMap>
+
+
     <insert id="create" flushCache="true" parameterType="com.tesco.pma.cycle.api.PMCycle">
         INSERT INTO pm_cycle
         (uuid,
@@ -30,7 +39,9 @@
          creation_time,
          start_time,
          end_time,
-         properties)
+         properties,
+         metadata
+        )
         VALUES (#{cycle.uuid},
                 #{cycle.entryConfigKey},
                 #{cycle.templateUUID},
@@ -41,7 +52,9 @@
                 now(),
                 #{cycle.startTime},
                 #{cycle.endTime},
-                #{cycle.properties});
+                #{cycle.properties},
+                #{cycle.jsonMetadata},
+                );
     </insert>
 
     <select id="read" resultMap="cycleResultMap">
@@ -68,4 +81,34 @@
         WHERE status_id = #{status.id}
     </select>
 
+    <insert id="updateMetadata" parameterType="com.tesco.pma.cycle.api.model.PMCycleMetadata">
+        update pm_cycle
+        set metadata = #{metadata}::jsonb
+        WHERE uuid = #{uuid}
+    </insert>
+
+    <select id="readTimeline" resultMap="cycleTimeline">
+        select yyy.code as code,
+        yyy.description as description,
+        rt.description as type,
+        rs.code as status,
+        yyy.cycle_id as cycle
+        from
+        (select json_extract_path_text(yy.xx, 'id') as rw_uuid,
+        json_extract_path_text(yy.xx, 'code') as code,
+        json_extract_path_text(yy.xx, 'description') as description,
+        json_extract_path_text(yy.xx, 'reviewType', 'code') as rw_type_code,
+        json_extract_path_text(yy.xx, 'properties', 'pm_review_start_time') as start_time,
+        yy.cycle_id as cycle_id,
+        row_number() over () as rn
+        from (select json_array_elements((metadata->'cycle'->'reviews')::json) as xx,
+        uuid as cycle_id
+        from pm_cycle
+        WHERE uuid = #{uuid}
+        )yy) yyy
+        inner join review_type rt on LOWER(rt.code) = LOWER(yyy.rw_type_code)
+        left join review rw on rw.performance_cycle_uuid = yyy.cycle_id and rt.id = rw.type_id
+        left join review_status rs on rw.status_id = rs.id
+        order by yyy.rn
+    </select>
 </mapper>

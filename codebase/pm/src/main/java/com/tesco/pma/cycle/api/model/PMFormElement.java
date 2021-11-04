@@ -1,4 +1,4 @@
-package com.tesco.pma.process.api.model;
+package com.tesco.pma.cycle.api.model;
 
 import com.tesco.pma.api.GeneralDictionaryItem;
 

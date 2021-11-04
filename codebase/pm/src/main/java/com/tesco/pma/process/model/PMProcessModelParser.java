@@ -11,21 +11,21 @@ import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperties;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperty;
 
 import com.tesco.pma.api.GeneralDictionaryItem;
-import com.tesco.pma.process.api.model.PMCycleElement;
-import com.tesco.pma.process.api.model.PMFormElement;
-import com.tesco.pma.process.api.model.PMReviewElement;
+import com.tesco.pma.cycle.api.model.PMCycleElement;
+import com.tesco.pma.cycle.api.model.PMFormElement;
+import com.tesco.pma.cycle.api.model.PMReviewElement;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.tesco.pma.process.api.model.PMElement.PM_TYPE;
-import static com.tesco.pma.process.api.model.PMFormElement.PM_FORM_KEY;
-import static com.tesco.pma.process.api.model.PMReviewElement.DEFAULT_PM_REVIEW_MAX;
-import static com.tesco.pma.process.api.model.PMReviewElement.DEFAULT_PM_REVIEW_MIN;
-import static com.tesco.pma.process.api.model.PMReviewElement.PM_REVIEW;
-import static com.tesco.pma.process.api.model.PMReviewElement.PM_REVIEW_MAX;
-import static com.tesco.pma.process.api.model.PMReviewElement.PM_REVIEW_MIN;
-import static com.tesco.pma.process.api.model.PMReviewElement.PM_REVIEW_TYPE;
+import static com.tesco.pma.cycle.api.model.PMElement.PM_TYPE;
+import static com.tesco.pma.cycle.api.model.PMFormElement.PM_FORM_KEY;
+import static com.tesco.pma.cycle.api.model.PMReviewElement.DEFAULT_PM_REVIEW_MAX;
+import static com.tesco.pma.cycle.api.model.PMReviewElement.DEFAULT_PM_REVIEW_MIN;
+import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW;
+import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MAX;
+import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MIN;
+import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_TYPE;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 15.10.2021 Time: 15:45

@@ -1,16 +1,14 @@
 package com.tesco.pma.process.dao;
 
+import com.tesco.pma.api.DictionaryFilter;
+import com.tesco.pma.api.StatusHistoryRecord;
+import com.tesco.pma.process.api.PMProcessStatus;
+import com.tesco.pma.process.api.PMRuntimeProcess;
+import org.apache.ibatis.annotations.Param;
+
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
-
-import com.tesco.pma.process.api.PMTimelinePoint;
-import org.apache.ibatis.annotations.Param;
-
-import com.tesco.pma.api.StatusHistoryRecord;
-import com.tesco.pma.api.DictionaryFilter;
-import com.tesco.pma.process.api.PMRuntimeProcess;
-import com.tesco.pma.process.api.PMProcessStatus;
 
 import static java.time.Instant.now;
 
@@ -57,13 +55,6 @@ public interface PMRuntimeProcessDAO {
     List<StatusHistoryRecord<UUID, PMProcessStatus>> readHistory(@Param("uuid") UUID uuid);
 
     List<PMRuntimeProcess> findByBusinessKey(@Param("businessKey") String businessKey);
-
-    int saveMetadata(@Param("processUuid") UUID processUuid,
-                     @Param("metadata") String metadata);
-
-    List<PMTimelinePoint> readTimeline(@Param("processUuid") UUID processUuid);
-
-    String getMetadata(@Param("uuid") UUID uuid);
 
     //todo: find methods
 
