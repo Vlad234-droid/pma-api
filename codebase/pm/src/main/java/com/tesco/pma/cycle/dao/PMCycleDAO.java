@@ -24,4 +24,8 @@ public interface PMCycleDAO {
 
     int update(@Param("cycle") PMCycle cycle,
                @Param("prevStatuses") Collection<PMCycleStatus> prevStatuses);
+
+    PMCycle getCurrentByColleague(UUID colleagueUuid);
+
+    List<PMCycle> getByColleague(UUID colleagueUuid);
 }

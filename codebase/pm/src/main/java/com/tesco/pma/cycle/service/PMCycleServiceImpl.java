@@ -39,6 +39,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     private static final String CYCLE_UUID_PARAMETER_NAME = "cycleUuid";
     private static final String STATUS_PARAMETER_NAME = "status";
     private static final String PREV_STATUSES_PARAMETER_NAME = "prevStatuses";
+    private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
 
     private static final Map<PMCycleStatus, Collection<PMCycleStatus>> UPDATE_STATUS_RULE_MAP;
 
@@ -112,6 +113,26 @@ public class PMCycleServiceImpl implements PMCycleService {
         if (results == null) {
             throw notFound(PM_CYCLE_NOT_FOUND,
                     Map.of(STATUS_PARAMETER_NAME, status));
+        }
+        return results;
+    }
+
+    @Override
+    public PMCycle getCurrentByColleague(UUID colleagueUuid) {
+        PMCycle result = cycleDAO.getCurrentByColleague(colleagueUuid);
+        if (result == null) {
+            throw notFound(PM_CYCLE_NOT_FOUND,
+                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid));
+        }
+        return result;
+    }
+
+    @Override
+    public List<PMCycle> getByColleague(UUID colleagueUuid) {
+        var results = cycleDAO.getByColleague(colleagueUuid);
+        if (results == null || results.isEmpty()) {
+            throw notFound(PM_CYCLE_NOT_FOUND,
+                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid));
         }
         return results;
     }

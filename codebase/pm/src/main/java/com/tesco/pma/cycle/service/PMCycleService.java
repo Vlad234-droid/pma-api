@@ -67,5 +67,25 @@ public interface PMCycleService {
      * @throws NotFoundException if PMCycle doesn't found
      */
     List<PMCycle> getByStatus(@NotNull PMCycleStatus status);
+
+    /**
+     * Returns the current active performance cycle
+     *
+     * @param colleagueUuid Colleague identifier
+     * @return performance cycle
+     *
+     * @throws NotFoundException if PMCycle doesn't found
+     */
+    PMCycle getCurrentByColleague(@NotNull UUID colleagueUuid);
+
+    /**
+     * Get list of PMCycle's for an employee
+     *
+     * @param colleagueUuid Colleague identifier
+     * @return found list of PMCycle's
+     *
+     * @throws NotFoundException if PMCycle doesn't found
+     */
+    List<PMCycle> getByColleague(@NotNull UUID colleagueUuid);
 }
 
