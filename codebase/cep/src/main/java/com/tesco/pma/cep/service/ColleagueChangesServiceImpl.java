@@ -35,7 +35,8 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         log.info(String.format("Processing colleague change event %s for feed delivery mode %s",
                 colleagueChangeEventPayload, feedDeliveryMode));
 
-        Optional<ColleagueProfile> optionalColleagueProfile = profileService.findProfileByColleagueUuid(colleagueChangeEventPayload.getColleagueUuid());
+        Optional<ColleagueProfile> optionalColleagueProfile = profileService.findProfileByColleagueUuid(
+                colleagueChangeEventPayload.getColleagueUuid());
         if (optionalColleagueProfile.isEmpty()) {
             log.error(LogFormatter.formatMessage(COLLEAGUE_NOT_FOUND, "Colleague '{}' not found"),
                     colleagueChangeEventPayload.getColleagueUuid());
