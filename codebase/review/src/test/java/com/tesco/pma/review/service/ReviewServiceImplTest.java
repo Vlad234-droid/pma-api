@@ -85,7 +85,10 @@ class ReviewServiceImplTest {
 
     @Test
     void createReviewShouldReturnCreatedReview() {
-        final var expectedReview = Review.builder().build();
+        final var expectedReview = Review.builder()
+                .type(OBJECTIVE)
+                .status(DRAFT)
+                .build();
 
         when(mockReviewDAO.createReview(any(Review.class)))
                 .thenReturn(1);

@@ -46,21 +46,14 @@ public enum ReviewType implements DictionaryItem<Integer> {
             return List.of(DRAFT, DECLINED, APPROVED);
         }
     },
-    QUARTER(2, "Quarter review") {
+    MYR(2, "Mid year review") {
         // TODO: 11/3/2021 should be implemented after receiving requirements
         @Override
         public List<ReviewStatus> getPrevStatusesForChangeStatus(ReviewStatus newStatus) {
             return null;
         }
     },
-    MYR(3, "Mid year review") {
-        // TODO: 11/3/2021 should be implemented after receiving requirements
-        @Override
-        public List<ReviewStatus> getPrevStatusesForChangeStatus(ReviewStatus newStatus) {
-            return null;
-        }
-    },
-    EYR(4, "End of year review") {
+    EYR(3, "End of year review") {
         // TODO: 11/3/2021 should be implemented after receiving requirements
         @Override
         public List<ReviewStatus> getPrevStatusesForChangeStatus(ReviewStatus newStatus) {
@@ -77,6 +70,10 @@ public enum ReviewType implements DictionaryItem<Integer> {
     }
 
     public abstract List<ReviewStatus> getPrevStatusesForChangeStatus(ReviewStatus newStatus);
+
+    public List<ReviewStatus> getStatusesForCreate() {
+        return List.of(DRAFT, WAITING_FOR_APPROVAL);
+    }
 
     public List<ReviewStatus> getStatusesForUpdate() {
         return List.of(DRAFT, DECLINED);

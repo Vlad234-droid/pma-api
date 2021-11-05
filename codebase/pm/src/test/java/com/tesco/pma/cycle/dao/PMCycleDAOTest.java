@@ -21,6 +21,7 @@ class PMCycleDAOTest extends AbstractDAOTest {
 
     private static final UUID COLLEAGUE_UUID = UUID.fromString("d1810821-d1a9-48b5-9745-d0841151911f");
     private static final UUID COLLEAGUE_ACTIVE_CYCLE_UUID = UUID.fromString("98c23a14-8a46-41f0-bfcf-312a17c7dae2");
+    private static final UUID PM_ACTIVE_CYCLE_UUID = UUID.fromString("5d8a71fe-9cc6-4f3a-9ab6-75f08e6886d4");
 
 
     @Autowired
@@ -49,7 +50,7 @@ class PMCycleDAOTest extends AbstractDAOTest {
         assertThat(byColleague.size()).isEqualTo(1);
 
         assertThat(byColleague.get(0))
-                .returns(COLLEAGUE_ACTIVE_CYCLE_UUID, from(PMCycle::getUuid));
+                .returns(PM_ACTIVE_CYCLE_UUID, from(PMCycle::getUuid));
     }
 
 }

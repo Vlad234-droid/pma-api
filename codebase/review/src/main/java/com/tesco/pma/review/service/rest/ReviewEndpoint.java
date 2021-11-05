@@ -1,5 +1,6 @@
 package com.tesco.pma.review.service.rest;
 
+import com.tesco.pma.configuration.CaseInsensitiveEnumEditor;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
@@ -18,8 +19,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -302,7 +305,7 @@ public class ReviewEndpoint {
     }
 
     private UUID getPMCycleUuid(UUID colleagueUuid, String cycleUuid) {
-        if (cycleUuid.equals(CURRENT_PARAMETER_NAME)) {
+        if (cycleUuid.equalsIgnoreCase(CURRENT_PARAMETER_NAME)) {
             return pmCycleService.getCurrentByColleague(colleagueUuid).getUuid();
         } else {
             try {
@@ -311,5 +314,11 @@ public class ReviewEndpoint {
                 throw new InvalidParameterException(HttpStatusCodes.BAD_REQUEST, e.getMessage(), "cycleUuid"); // NOPMD
             }
         }
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(ReviewType.class, new CaseInsensitiveEnumEditor(ReviewType.class));
+        binder.registerCustomEditor(ReviewStatus.class, new CaseInsensitiveEnumEditor(ReviewStatus.class));
     }
 }

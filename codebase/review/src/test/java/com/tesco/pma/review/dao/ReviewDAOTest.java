@@ -183,7 +183,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void getReview() {
         final var result = instance.getReview(
                 PERFORMANCE_CYCLE_UUID,
@@ -202,7 +202,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void getReviewNotExist() {
         final var result = instance.getReview(
                 PERFORMANCE_CYCLE_UUID,
@@ -214,7 +214,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "cleanup.xml"})
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "cleanup.xml"})
     @ExpectedDataSet("review_create_expected_1.xml")
     void createReviewSucceeded() {
         final var review = Review.builder()
@@ -233,7 +233,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void createReviewAlreadyExist() {
 
         final var review = Review.builder()
@@ -251,7 +251,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void deleteReviewNotExist() {
         final var result = instance.deleteReview(
                 PERFORMANCE_CYCLE_UUID,
@@ -263,7 +263,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void deleteReviewSucceeded() {
         final var result = instance.deleteReview(
                 PERFORMANCE_CYCLE_UUID,
@@ -293,7 +293,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     @ExpectedDataSet("review_update_expected_1.xml")
     void updateReviewSucceeded() {
         final var review = Review.builder()
@@ -312,7 +312,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void updateReviewNotExist() {
         final var review = Review.builder()
                 .colleagueUuid(COLLEAGUE_UUID_NOT_EXIST)
@@ -329,7 +329,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     @ExpectedDataSet("review_update_status_1.xml")
     void updateReviewStatusSucceeded() {
 
@@ -345,7 +345,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     @ExpectedDataSet("review_unlink_group_objective_expected.xml")
     void updateReviewUnlinkGroupObjective() {
         final var review = Review.builder()

@@ -96,26 +96,17 @@
         </insert>
         <insert tableName="review_type">
             <column name="id" value="2"/>
-            <column name="code" value="QUARTER"/>
-            <column name="description"
-                    value="Quarter review"/>
-        </insert>
-        <insert tableName="review_type">
-            <column name="id" value="3"/>
             <column name="code" value="MYR"/>
             <column name="description" value="Mid year review"/>
         </insert>
         <insert tableName="review_type">
-            <column name="id" value="4"/>
+            <column name="id" value="3"/>
             <column name="code" value="EYR"/>
             <column name="description" value="End of year review"/>
         </insert>
         <rollback>
             <delete tableName="review_type">
                 <where>code = 'OBJECTIVE'</where>
-            </delete>
-            <delete tableName="review_type">
-                <where>code = 'QUARTER'</where>
             </delete>
             <delete tableName="review_type">
                 <where>code = 'MYR'</where>
@@ -165,6 +156,11 @@
                                  constraintName="review_type_id_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
                                  referencedColumnNames="id" referencedTableName="review_type"
+                                 validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="performance_cycle_uuid" baseTableName="review"
+                                 constraintName="performance_cycle_uuid_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="uuid" referencedTableName="pm_cycle"
                                  validate="true"/>
         <addUniqueConstraint columnNames="performance_cycle_uuid, colleague_uuid, type_id, number"
                              constraintName="review_unique"

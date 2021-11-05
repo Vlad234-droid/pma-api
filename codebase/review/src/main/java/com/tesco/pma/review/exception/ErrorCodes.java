@@ -51,7 +51,11 @@ public enum ErrorCodes implements ErrorCodeAware {
     /**
      * Allowed statuses not found
      */
-    ALLOWED_STATUSES_NOT_FOUND;
+    ALLOWED_STATUSES_NOT_FOUND,
+    /**
+     * Status not allowed for operation
+     */
+    REVIEW_STATUS_NOT_ALLOWED;
 
     @Override
     public String getCode() {
