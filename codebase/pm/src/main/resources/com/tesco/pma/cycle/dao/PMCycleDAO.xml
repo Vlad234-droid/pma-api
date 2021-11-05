@@ -19,13 +19,19 @@
         <result property="jsonMetadata" column="metadata"/>
     </resultMap>
 
-    <resultMap id="cycleTimeline" type="com.tesco.pma.cycle.api.PMCycleTimelinePoint">
+    <resultMap id="cycleTimelineMap" type="com.tesco.pma.cycle.api.PMCycleTimelinePoint">
         <result property="cycleUuid" column="cycle"/>
         <result property="code" column="code"/>
         <result property="description" column="description"/>
-        <result property="status" column="status"/>
-        <result property="type" column="type"/>
+        <result property="type" column="type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.api.ReviewType"/>
         <result property="startDate" column="start_time"/>
+    </resultMap>
+
+    <resultMap id="reviewCountMap" type="com.tesco.pma.cycle.api.ReviewCounter">
+        <result property="count" column="cnt"/>
+        <result property="status" column="status_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.api.ReviewStatus"/>
     </resultMap>
 
     <sql id="addStatusIdCondition">
@@ -113,11 +119,10 @@
         WHERE uuid = #{uuid}
     </insert>
 
-    <select id="readTimeline" resultMap="cycleTimeline">
+    <select id="readTimeline" resultMap="cycleTimelineMap">
         select yyy.code as code,
         yyy.description as description,
-        rt.description as type,
-        rs.code as status,
+        rt.id as type_id,
         yyy.cycle_id as cycle,
         yyy.start_time
         from
@@ -134,8 +139,17 @@
         WHERE uuid = #{uuid}
         )yy) yyy
         inner join review_type rt on LOWER(rt.code) = LOWER(yyy.rw_type_code)
-        left join review rw on rw.performance_cycle_uuid = yyy.cycle_id and rt.id = rw.type_id
-        left join review_status rs on rw.status_id = rs.id
         order by yyy.start_time
+    </select>
+
+    <select id="getReviewsCountByStatus" resultMap="reviewCountMap">
+        select count(*) as cnt,
+               status_id
+        from review rw
+                 join review_type rt on rw.type_id = rt.id and LOWER(rt.code)=LOWER(#{type})
+        where rw.performance_cycle_uuid=#{pmc_uuid}
+          and rw.colleague_uuid=#{colleague_uuid}
+        group by status_id
+        order by cnt DESC
     </select>
 </mapper>

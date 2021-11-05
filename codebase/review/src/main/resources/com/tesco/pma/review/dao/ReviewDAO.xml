@@ -16,14 +16,14 @@
         <result property="colleagueUuid" column="colleague_uuid"/>
         <result property="performanceCycleUuid" column="performance_cycle_uuid"/>
         <result property="type" column="type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.review.domain.ReviewType"/>
+                javaType="com.tesco.pma.api.ReviewType"/>
         <result property="number" column="number"/>
         <result property="properties" column="properties"
                 typeHandler="com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler"
                 javaType="com.tesco.pma.api.MapJson"/>
         <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.review.domain.ReviewStatus"/>
+                javaType="com.tesco.pma.api.ReviewStatus"/>
     </resultMap>
 
     <resultMap id="colleagueReviewsResultMap" type="com.tesco.pma.review.domain.ColleagueReviews">
@@ -36,10 +36,10 @@
             <id property="uuid" column="review_uuid"/>
             <result property="type" column="review_type_id"
                     typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                    javaType="com.tesco.pma.review.domain.ReviewType"/>
+                    javaType="com.tesco.pma.api.ReviewType"/>
             <result property="status" column="review_status_id"
                     typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                    javaType="com.tesco.pma.review.domain.ReviewStatus"/>
+                    javaType="com.tesco.pma.api.ReviewStatus"/>
             <result property="number" column="review_number"/>
         </collection>
     </resultMap>
@@ -135,10 +135,10 @@
         VALUES (#{review.uuid},
                 #{review.colleagueUuid},
                 #{review.performanceCycleUuid},
-                #{review.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.review.domain.ReviewType},
+                #{review.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.api.ReviewType},
                 #{review.number},
                 #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-                #{review.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.review.domain.ReviewStatus});
+                #{review.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.api.ReviewStatus});
     </insert>
 
     <select id="getReview" resultMap="reviewResultMap">

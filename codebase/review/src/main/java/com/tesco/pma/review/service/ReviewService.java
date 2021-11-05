@@ -5,8 +5,8 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.review.domain.ColleagueReviews;
 import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.Review;
-import com.tesco.pma.review.domain.ReviewStatus;
-import com.tesco.pma.review.domain.ReviewType;
+import com.tesco.pma.api.ReviewStatus;
+import com.tesco.pma.api.ReviewType;
 import com.tesco.pma.review.domain.WorkingGroupObjective;
 
 import javax.validation.constraints.NotNull;

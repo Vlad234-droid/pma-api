@@ -1,6 +1,8 @@
 package com.tesco.pma.review.domain;
 
 import com.tesco.pma.api.MapJson;
+import com.tesco.pma.api.ReviewStatus;
+import com.tesco.pma.api.ReviewType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
