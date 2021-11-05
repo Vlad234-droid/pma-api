@@ -1,9 +1,11 @@
 package com.tesco.pma.cycle.dao;
 
 import com.tesco.pma.api.DictionaryFilter;
+import com.tesco.pma.api.ReviewType;
 import com.tesco.pma.cycle.api.PMCycle;
-import com.tesco.pma.cycle.api.PMCycleTimelinePoint;
 import com.tesco.pma.cycle.api.PMCycleStatus;
+import com.tesco.pma.cycle.api.PMCycleTimelinePoint;
+import com.tesco.pma.cycle.api.ReviewCounter;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.Instant;
@@ -46,4 +48,8 @@ public interface PMCycleDAO {
     List<PMCycleTimelinePoint> readTimeline(@Param("uuid") UUID uuid);
 
     int updateMetadata(@Param("uuid") UUID uuid, @Param("metadata") String metadata);
+
+    List<ReviewCounter> getReviewsCountByStatus(@Param("type") ReviewType reviewType,
+                                          @Param("pmc_uuid") UUID performanceCycleUUID,
+                                          @Param("colleague_uuid") UUID colleagueUUID);
 }

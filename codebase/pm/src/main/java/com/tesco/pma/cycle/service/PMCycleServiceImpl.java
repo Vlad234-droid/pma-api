@@ -3,8 +3,9 @@ package com.tesco.pma.cycle.service;
 import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMCycle;
-import com.tesco.pma.cycle.api.PMCycleTimelinePoint;
 import com.tesco.pma.cycle.api.PMCycleStatus;
+import com.tesco.pma.cycle.api.PMCycleTimelinePoint;
+import com.tesco.pma.cycle.api.ReviewCounter;
 import com.tesco.pma.cycle.dao.PMCycleDAO;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.tesco.pma.api.DictionaryFilter.includeFilter;
 import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
@@ -160,6 +162,18 @@ public class PMCycleServiceImpl implements PMCycleService {
     @Override
     public void updateJsonMetadata(UUID uuid, String metadata) {
         cycleDAO.updateMetadata(uuid, metadata);
+    }
+
+    @Override
+    public List<PMCycleTimelinePoint> getCycleTimelineByColleague(UUID colleagueUuid) {
+        PMCycle currentCycleByColleague = getCurrentByColleague(colleagueUuid);
+        List<PMCycleTimelinePoint> cycleTimeline = getCycleTimeline(currentCycleByColleague.getUuid());
+
+        return cycleTimeline.stream()
+                .peek(ctp -> ctp.setStatus(cycleDAO.getReviewsCountByStatus(ctp.getType(),
+                        currentCycleByColleague.getUuid(),
+                        colleagueUuid).stream().findFirst().orElse(new ReviewCounter()).getStatus()))
+                .collect(Collectors.toList());
     }
 
     //TODO refactor to common solution (include @com.tesco.pma.review.service.ReviewServiceImpl)
