@@ -145,7 +145,7 @@ public class ProfileServiceImpl implements ProfileService {
         var serviceDates = new ServiceDates();
         serviceDates.setHireDate(oc.getHireDate());
         serviceDates.setLeavingDate(oc.getLeavingDate());
-        return null;
+        return serviceDates;
     }
 
     private Contact getContact(com.tesco.pma.organisation.api.Colleague oc) {
