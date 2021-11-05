@@ -49,6 +49,62 @@ class ColleagueDAOTest extends AbstractDAOTest {
                 .hasMessageContaining("ERROR: insert or update on table \"colleague\" violates foreign key constraint");
     }
 
+    @Test
+    void insertJobWithExistsId() {
+        var job = getJob("1");
+        final int inserted = dao.insertJob(job);
+        assertThat(inserted).isEqualTo(1);
+    }
+
+    @Test
+    void insertJobWithNotExistsId() {
+        var job = getJob("3");
+        final int inserted = dao.insertJob(job);
+        assertThat(inserted).isEqualTo(1);
+    }
+
+    @Test
+    void insertCountryWithExistsCode() {
+        var country = getCountry("GB");
+        final int inserted = dao.insertCountry(country);
+        assertThat(inserted).isEqualTo(1);
+    }
+
+    @Test
+    void insertCountryWithNotExistsCode() {
+        var country = getCountry("ZZ");
+        final int inserted = dao.insertCountry(country);
+        assertThat(inserted).isEqualTo(1);
+    }
+
+    @Test
+    void insertWorkLevelWithExistsCode() {
+        var workLevel = getWorkLevel("WL1");
+        final int inserted = dao.insertWorkLevel(workLevel);
+        assertThat(inserted).isEqualTo(1);
+    }
+
+    @Test
+    void insertWorkLevelWithNotExistsCode() {
+        var workLevel = getWorkLevel("WL7");
+        final int inserted = dao.insertWorkLevel(workLevel);
+        assertThat(inserted).isEqualTo(1);
+    }
+
+    @Test
+    void insertDepartmentWithExistsId() {
+        var department = getDepartment("1");
+        final int inserted = dao.insertDepartment(department);
+        assertThat(inserted).isEqualTo(1);
+    }
+
+    @Test
+    void insertDepartmentWithNotExistsId() {
+        var department = getDepartment("5");
+        final int inserted = dao.insertDepartment(department);
+        assertThat(inserted).isEqualTo(1);
+    }
+
     private Colleague getCorrectColleague() {
         var colleague = new Colleague();
         colleague.setUuid(COLLEAGUE_UUID_1);
@@ -77,28 +133,34 @@ class ColleagueDAOTest extends AbstractDAOTest {
         return colleague;
     }
 
-
     private Colleague.Job getJob(String id) {
         Colleague.Job job = new Colleague.Job();
         job.setId(id);
+        job.setCode("TL" + id);
+        job.setName("Team lead" + id);
+        job.setCostCategory("cc" + id);
         return job;
     }
 
     private Colleague.Country getCountry(String code) {
         Colleague.Country country = new Colleague.Country();
         country.setCode(code);
+        country.setName(code);
         return country;
     }
 
     private Colleague.WorkLevel getWorkLevel(String code) {
         Colleague.WorkLevel workLevel = new Colleague.WorkLevel();
         workLevel.setCode(code);
+        workLevel.setName(code);
         return workLevel;
     }
 
     private Colleague.Department getDepartment(String id) {
         Colleague.Department department = new Colleague.Department();
         department.setId(id);
+        department.setName(id);
+        department.setBusinessType(id);
         return department;
     }
 
