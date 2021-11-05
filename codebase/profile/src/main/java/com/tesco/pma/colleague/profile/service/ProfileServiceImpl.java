@@ -1,23 +1,11 @@
 package com.tesco.pma.colleague.profile.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.function.Predicate;
-
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-
 import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.api.Contact;
 import com.tesco.pma.colleague.api.ExternalSystems;
 import com.tesco.pma.colleague.api.IamSourceSystem;
 import com.tesco.pma.colleague.api.Profile;
+import com.tesco.pma.colleague.api.service.ServiceDates;
 import com.tesco.pma.colleague.api.workrelationships.Department;
 import com.tesco.pma.colleague.api.workrelationships.Job;
 import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
@@ -29,8 +17,19 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.organisation.dao.ConfigEntryDAO;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.function.Predicate;
 
 /**
  * Implementation of {@link ProfileService}.
@@ -138,7 +137,15 @@ public class ProfileServiceImpl implements ProfileService {
         colleague.setWorkRelationships(Collections.singletonList(getWorkRelationship(oc)));
         colleague.setExternalSystems(getExternalSystems(oc));
         colleague.setContact(getContact(oc));
+        colleague.setServiceDates(getServiceDates(oc));
         return colleague;
+    }
+
+    private ServiceDates getServiceDates(com.tesco.pma.organisation.api.Colleague oc) {
+        var serviceDates = new ServiceDates();
+        serviceDates.setHireDate(oc.getHireDate());
+        serviceDates.setLeavingDate(oc.getLeavingDate());
+        return null;
     }
 
     private Contact getContact(com.tesco.pma.organisation.api.Colleague oc) {
@@ -172,6 +179,9 @@ public class ProfileServiceImpl implements ProfileService {
         wr.setWorkLevel(WorkRelationship.WorkLevel.getByCode(oc.getWorkLevel().getCode()));
         wr.setPrimaryEntity(oc.getPrimaryEntity());
         wr.setSalaryFrequency(oc.getSalaryFrequency());
+        wr.setManagerUUID(oc.getManagerUuid());
+        wr.setIsManager(oc.isManager());
+        wr.setEmploymentType(oc.getEmploymentType());
         wr.setDepartment(getDepartment(oc));
         wr.setJob(getJob(oc));
         return wr;
