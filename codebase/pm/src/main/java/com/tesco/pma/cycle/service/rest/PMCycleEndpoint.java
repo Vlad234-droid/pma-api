@@ -127,8 +127,7 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the cycle timeline")
     @GetMapping(value = "/colleagues/{colleagueUuid}/timeline", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     public RestResponse<List<PMCycleTimelinePoint>> getTimelineByColleague(@PathVariable UUID colleagueUuid) {
-        var cycle = service.getCurrentByColleague(colleagueUuid);
-        return RestResponse.success(service.getCycleTimeline(cycle.getUuid()));
+        return RestResponse.success(service.getCycleTimelineByColleague(colleagueUuid));
     }
 
     @Operation(summary = "Get full metadata for colleague",

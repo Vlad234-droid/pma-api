@@ -1,6 +1,5 @@
-package com.tesco.pma.review.domain;
+package com.tesco.pma.api;
 
-import com.tesco.pma.api.DictionaryItem;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
