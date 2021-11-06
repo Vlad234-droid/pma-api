@@ -19,9 +19,12 @@ import org.springframework.test.context.DynamicPropertySource;
 
 import java.sql.Timestamp;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.tesco.pma.api.ReviewStatus.APPROVED;
+import static com.tesco.pma.api.ReviewStatus.DECLINED;
 import static com.tesco.pma.api.ReviewStatus.DRAFT;
 import static com.tesco.pma.api.ReviewStatus.WAITING_FOR_APPROVAL;
 import static com.tesco.pma.api.ReviewType.OBJECTIVE;
@@ -258,7 +261,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 COLLEAGUE_UUID_NOT_EXIST,
                 OBJECTIVE,
                 NUMBER_1,
-                OBJECTIVE.getStatusesForDelete());
+                List.of(DRAFT, DECLINED, APPROVED));
         assertThat(result).isZero();
     }
 
@@ -270,7 +273,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 COLLEAGUE_UUID,
                 OBJECTIVE,
                 NUMBER_1,
-                OBJECTIVE.getStatusesForDelete());
+                List.of(DRAFT, DECLINED, APPROVED));
         assertThat(result).isOne();
     }
 
@@ -283,7 +286,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 COLLEAGUE_UUID,
                 OBJECTIVE,
                 NUMBER_1,
-                OBJECTIVE.getStatusesForDelete());
+                List.of(DRAFT, DECLINED, APPROVED));
         final var result = instance.renumerateReviews(
                 PERFORMANCE_CYCLE_UUID,
                 COLLEAGUE_UUID,
@@ -306,7 +309,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .status(DRAFT)
                 .build();
 
-        final var result = instance.updateReview(review, OBJECTIVE.getStatusesForUpdate());
+        final var result = instance.updateReview(review, List.of(DRAFT, DECLINED, APPROVED));
 
         assertThat(result).isOne();
     }
@@ -323,7 +326,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .status(WAITING_FOR_APPROVAL)
                 .build();
 
-        final var result = instance.updateReview(review, OBJECTIVE.getStatusesForUpdate());
+        final var result = instance.updateReview(review, List.of(DRAFT, DECLINED, APPROVED));
 
         assertThat(result).isZero();
     }
@@ -358,7 +361,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .status(ReviewStatus.DRAFT)
                 .build();
 
-        final var result = instance.updateReview(review, OBJECTIVE.getStatusesForUpdate());
+        final var result = instance.updateReview(review, List.of(DRAFT, DECLINED, APPROVED));
 
         assertThat(result).isOne();
     }

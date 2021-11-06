@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,12 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.tesco.pma.api.ReviewStatus.APPROVED;
+import static com.tesco.pma.api.ReviewStatus.COMPLETED;
+import static com.tesco.pma.api.ReviewStatus.DECLINED;
+import static com.tesco.pma.api.ReviewStatus.DRAFT;
+import static com.tesco.pma.api.ReviewStatus.WAITING_FOR_APPROVAL;
+import static com.tesco.pma.api.ReviewType.OBJECTIVE;
 import static com.tesco.pma.review.exception.ErrorCodes.ALLOWED_STATUSES_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.BUSINESS_UNIT_NOT_EXISTS;
 import static com.tesco.pma.review.exception.ErrorCodes.GROUP_OBJECTIVES_NOT_FOUND;
@@ -151,6 +158,7 @@ public class ReviewServiceImpl implements ReviewService {
                     review.getType(),
                     idx + 1);
             if (null == reviewBefore) {
+                review.setNumber(idx + 1);
                 intCreateReview(review);
             } else {
                 review.setUuid(reviewBefore.getUuid());
@@ -178,7 +186,7 @@ public class ReviewServiceImpl implements ReviewService {
                                             String reason,
                                             String loggedUserName) {
         reviews.forEach(review -> {
-            var prevStatuses = type.getPrevStatusesForChangeStatus(status);
+            var prevStatuses = getPrevStatusesForChangeStatus(type, status);
             if (0 == prevStatuses.size()) {
                 throw notFound(ALLOWED_STATUSES_NOT_FOUND,
                         Map.of(OPERATION_PARAMETER_NAME, CHANGE_STATUS_OPERATION_NAME));
@@ -360,8 +368,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private List<ReviewStatus> getAllowedStatusesForUpdate(ReviewType reviewType, ReviewStatus newStatus) {
-        var allowedStatusesForUpdate = reviewType.getStatusesForUpdate();
-        var prevStatusesForChangeStatus = reviewType.getPrevStatusesForChangeStatus(newStatus);
+        var allowedStatusesForUpdate = getStatusesForUpdate(reviewType);
+        var prevStatusesForChangeStatus = getPrevStatusesForChangeStatus(reviewType, newStatus);
         return allowedStatusesForUpdate.stream()
                 .filter(prevStatusesForChangeStatus::contains)
                 .collect(Collectors.toList());
@@ -370,7 +378,7 @@ public class ReviewServiceImpl implements ReviewService {
     public Review intCreateReview(Review review) {
         review.setUuid(UUID.randomUUID());
         try {
-            var allowedStatuses = review.getType().getStatusesForCreate();
+            var allowedStatuses = getStatusesForCreate();
             if (0 == allowedStatuses.size()) {
                 throw notFound(ALLOWED_STATUSES_NOT_FOUND,
                         Map.of(OPERATION_PARAMETER_NAME, CREATE_OPERATION_NAME));
@@ -420,7 +428,7 @@ public class ReviewServiceImpl implements ReviewService {
                                  UUID colleagueUuid,
                                  ReviewType type,
                                  Integer number) {
-        var allowedStatuses = type.getStatusesForDelete();
+        var allowedStatuses = getStatusesForDelete(type);
         if (0 == allowedStatuses.size()) {
             throw notFound(ALLOWED_STATUSES_NOT_FOUND,
                     Map.of(OPERATION_PARAMETER_NAME, DELETE_OPERATION_NAME));
@@ -437,6 +445,48 @@ public class ReviewServiceImpl implements ReviewService {
                             TYPE_PARAMETER_NAME, type,
                             NUMBER_PARAMETER_NAME, number,
                             ALLOWED_STATUSES_PARAMETER_NAME, allowedStatuses));
+        }
+    }
+
+    private List<ReviewStatus> getStatusesForCreate() {
+        return List.of(DRAFT, WAITING_FOR_APPROVAL);
+    }
+
+    private List<ReviewStatus> getStatusesForUpdate(ReviewType reviewType) {
+        if (reviewType.equals(OBJECTIVE)) {
+            return List.of(DRAFT, DECLINED, APPROVED);
+        } else {
+            return List.of(DRAFT, DECLINED);
+        }
+    }
+
+    private List<ReviewStatus> getStatusesForDelete(ReviewType reviewType) {
+        if (reviewType.equals(OBJECTIVE)) {
+            return List.of(DRAFT, DECLINED, APPROVED);
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    private List<ReviewStatus> getPrevStatusesForChangeStatus(ReviewType reviewType, ReviewStatus newStatus) {
+        if (reviewType.equals(OBJECTIVE)) {
+            switch (newStatus) {
+                case DRAFT:
+                    return List.of(DRAFT);
+                case WAITING_FOR_APPROVAL:
+                    return List.of(DRAFT, WAITING_FOR_APPROVAL, DECLINED);
+                case APPROVED:
+                    return List.of(WAITING_FOR_APPROVAL, APPROVED);
+                case DECLINED:
+                    return List.of(WAITING_FOR_APPROVAL, DECLINED);
+                case COMPLETED:
+                    return List.of(APPROVED, COMPLETED);
+                default:
+                    return Collections.emptyList();
+            }
+        } else {
+            // TODO: 11/6/2021 should be implemented after receiving requirements
+            return Collections.emptyList();
         }
     }
 }
