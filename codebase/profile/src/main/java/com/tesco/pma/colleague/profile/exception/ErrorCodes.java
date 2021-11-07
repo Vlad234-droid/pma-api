@@ -22,7 +22,7 @@ public enum ErrorCodes implements ErrorCodeAware {
     /**
      * Duplicate key exception
      */
-    DUPLICATE_KEY_EXCEPTION;
+    DATA_INTEGRITY_VIOLATION_EXCEPTION;
 
     @Override
     public String getCode() {

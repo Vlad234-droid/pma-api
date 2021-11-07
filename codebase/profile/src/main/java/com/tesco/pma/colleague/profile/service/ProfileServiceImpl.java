@@ -14,6 +14,7 @@ import com.tesco.pma.organisation.dao.ConfigEntryDAO;
 import com.tesco.pma.service.colleague.ColleagueApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -121,15 +122,25 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    // TODO To optimize logic for update only changed attributes
     public int updateColleague(UUID colleagueUuid, Collection<String> changedAttributes) {
-        Colleague colleague = colleagueApiService.findColleagueByUuid(colleagueUuid);
         int updated = 0;
-        try {
-            updated = colleagueDAO.update(colleagueFactsApiToLocal(colleague));
-        } catch (DuplicateKeyException exception) {
-            String message = String.format("Duplicate key exception = %s", exception.getMessage());
-            log.error(LogFormatter.formatMessage(ErrorCodes.DUPLICATE_KEY_EXCEPTION, message));
+
+        com.tesco.pma.organisation.api.Colleague existingLocalColleague = configEntryDAO.getColleague(colleagueUuid);
+        Colleague colleague = colleagueApiService.findColleagueByUuid(colleagueUuid);
+        if (existingLocalColleague == null || colleague == null) {
+            return updated;
         }
+
+        try {
+            com.tesco.pma.organisation.api.Colleague changedLocalColleague = colleagueFactsApiToLocal(colleague);
+            updateDictionaries(existingLocalColleague, changedLocalColleague);
+            updated = colleagueDAO.update(changedLocalColleague);
+        } catch (DataIntegrityViolationException exception) {
+            String message = String.format("Data integrity violation exception = %s", exception.getMessage());
+            log.error(LogFormatter.formatMessage(ErrorCodes.DATA_INTEGRITY_VIOLATION_EXCEPTION, message));
+        }
+
         return updated;
     }
 
@@ -141,6 +152,33 @@ public class ProfileServiceImpl implements ProfileService {
 
     private List<TypedAttribute> findProfileAttributes(UUID colleagueUuid) {
         return profileAttributeDAO.get(colleagueUuid);
+    }
+
+    private void updateDictionaries(com.tesco.pma.organisation.api.Colleague existingLocalColleague,
+                                    com.tesco.pma.organisation.api.Colleague changedLocalColleague) {
+        // Country
+        com.tesco.pma.organisation.api.Colleague.Country changedCountry = changedLocalColleague.getCountry();
+        if (changedCountry != null && !existingLocalColleague.getCountry().getCode().equals(changedCountry.getCode())) {
+            colleagueDAO.insertCountry(changedCountry);
+        }
+
+        // Department
+        com.tesco.pma.organisation.api.Colleague.Department changedDepartment = changedLocalColleague.getDepartment();
+        if (changedDepartment != null && !existingLocalColleague.getDepartment().getId().equals(changedDepartment.getId())) {
+            colleagueDAO.insertDepartment(changedDepartment);
+        }
+
+        // Job
+        com.tesco.pma.organisation.api.Colleague.Job changedJob = changedLocalColleague.getJob();
+        if (changedJob != null && !existingLocalColleague.getJob().getCode().equals(changedJob.getId())) {
+            colleagueDAO.insertJob(changedJob);
+        }
+
+        // Work level
+        com.tesco.pma.organisation.api.Colleague.WorkLevel changedWorkLevel = changedLocalColleague.getWorkLevel();
+        if (changedWorkLevel != null && !existingLocalColleague.getWorkLevel().getCode().equals(changedWorkLevel.getCode())) {
+            colleagueDAO.insertWorkLevel(changedWorkLevel);
+        }
     }
 
     private NotFoundException notFound(String paramName, Object paramValue) {
