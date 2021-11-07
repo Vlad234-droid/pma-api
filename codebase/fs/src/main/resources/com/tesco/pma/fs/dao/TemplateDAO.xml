@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.fs.dao.TemplateDAO">
+
+    <!--resultMap id="profileAttributesResultMap" type="com.tesco.pma.colleague.profile.domain.TypedAttribute">
+        <id property="colleagueUuid" column="colleague_uuid"/>
+        <result property="name" column="name"/>
+        <result property="value" column="value"/>
+        <result property="type" column="type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.colleague.profile.domain.AttributeType"/>
+    </resultMap>
+
+    <insert id="create" flushCache="true">
+        INSERT INTO profile_attributes (colleague_uuid, name, value, type_id)
+        VALUES (#{profileAttribute.colleagueUuid},
+                #{profileAttribute.name},
+                #{profileAttribute.value},
+                #{profileAttribute.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.colleague.profile.domain.AttributeType})
+    </insert>
+
+    <select id="get" resultMap="profileAttributesResultMap">
+        SELECT *
+        FROM profile_attributes
+        WHERE colleague_uuid = #{colleagueUuid}
+    </select>
+
+    <update id="update" flushCache="true">
+        UPDATE profile_attributes
+        SET value = (#{profileAttribute.value})
+        WHERE colleague_uuid = #{profileAttribute.colleagueUuid} AND name = #{profileAttribute.name}
+    </update>
+
+    <delete id="delete">
+        DELETE
+        FROM profile_attributes
+        WHERE colleague_uuid = #{profileAttribute.colleagueUuid} AND name = #{profileAttribute.name}
+    </delete-->
+
+    <resultMap id="templateResultMap" type="com.tesco.pma.fs.domain.ProcessTemplate">
+        <id property="uuid" column="uuid"/>
+        <result property="path" column="path"/>
+        <result property="version" column="version"/>
+        <result property="type" column="type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.fs.domain.ProcessTemplateType"/>
+        <result property="status" column="status_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.fs.domain.ProcessTemplateStatus"/>
+        <result property="description" column="description"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="createdTime" column="created_time"/>
+        <result property="fileName" column="file_name"/>
+        <result property="fileDate" column="file_date"/>
+        <result property="fileLength" column="file_length"/>
+        <result property="fileContent" column="file_content" javaType="byte[]" jdbcType="BLOB" typeHandler="org.apache.ibatis.type.BlobTypeHandler"/>
+    </resultMap>
+
+    <select id="readTemplateByUuid" resultMap="templateResultMap">
+        SELECT uuid, path, version, type_id, status_id, description,
+               created_by, created_time, file_name, file_date, file_length, file_content
+        FROM process_template
+        WHERE uuid = #{templateUuid}
+    </select>
+
+    <insert id="saveTemplate" flushCache="true">
+        INSERT INTO process_template (uuid, path, version, type_id, status_id, description,
+                                      created_by, created_time, file_name, file_date, file_length, file_content)
+        VALUES (#{uuid},
+                #{path},
+                #{version},
+                #{type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, jdbcType=INTEGER},
+                #{status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, jdbcType=INTEGER},
+                #{description},
+                #{createdBy},
+                #{createdTime},
+                #{fileName},
+                #{fileDate},
+                #{fileLength},
+                #{fileContent, javaType=byte[], jdbcType=BLOB, typeHandler=org.apache.ibatis.type.BlobTypeHandler})
+    </insert>
+
+    <select id="getMaxVersionForTemplate" resultType="int">
+        SELECT COALESCE(MAX(version), 0) FROM process_template
+        WHERE path = #{path} AND file_name = #{fileName}
+    </select>
+
+</mapper>

@@ -12,7 +12,12 @@ public enum ErrorCodes implements ErrorCodeAware {
     /**
      * Failed to upload file
      */
-    ERROR_FILE_UPLOAD_FAILED;
+    ERROR_FILE_UPLOAD_FAILED,
+
+    /**
+     * Failed to register file
+     */
+    ERROR_FILE_REGISTRATION_FAILED;
 
     @Override
     public String getCode() {
