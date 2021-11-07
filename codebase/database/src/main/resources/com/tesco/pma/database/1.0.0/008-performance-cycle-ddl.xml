@@ -1,0 +1,163 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+
+    <changeSet author="imatviichuk" id="1">
+        <createTable remarks="PM cycle status dictionary"
+                     tableName="pm_cycle_status">
+            <column name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pm_cycle_status_pk"/>
+            </column>
+            <column name="code" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="imatviichuk" id="2">
+        <comment>Init table pm_cycle_status</comment>
+        <insert tableName="pm_cycle_status">
+            <column name="id" value="1"/>
+            <column name="code" value="ACTIVE"/>
+            <column name="description" value="Performance cycle is active"/>
+        </insert>
+        <insert tableName="pm_cycle_status">
+            <column name="id" value="2"/>
+            <column name="code" value="INACTIVE"/>
+            <column name="description" value="Performance cycle is inactive"/>
+        </insert>
+        <insert tableName="pm_cycle_status">
+            <column name="id" value="3"/>
+            <column name="code" value="COMPLETED"/>
+            <column name="description" value="Performance cycle is completed"/>
+        </insert>
+        <insert tableName="pm_cycle_status">
+            <column name="id" value="4"/>
+            <column name="code" value="DRAFT"/>
+            <column name="description" value="Performance cycle in draft"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="pm_cycle_status">
+                <where>code = 'ACTIVE'</where>
+            </delete>
+        </rollback>
+        <rollback>
+            <delete tableName="pm_cycle_status">
+                <where>code = 'INACTIVE'</where>
+            </delete>
+        </rollback>
+        <rollback>
+            <delete tableName="pm_cycle_status">
+                <where>code = 'REMOVED'</where>
+            </delete>
+        </rollback>
+        <rollback>
+            <delete tableName="pm_cycle_status">
+                <where>code = 'DRAFT'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="imatviichuk" id="3">
+        <createTable remarks="PM cycle type dictionary"
+                     tableName="pm_cycle_type">
+            <column name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pm_cycle_type_pk"/>
+            </column>
+            <column name="code" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="imatviichuk" id="4">
+        <comment>Init table pm_cycle_type</comment>
+        <insert tableName="pm_cycle_type">
+            <column name="id" value="1"/>
+            <column name="code" value="FISCAL"/>
+            <column name="description" value="Fiscal year start"/>
+        </insert>
+        <insert tableName="pm_cycle_type">
+            <column name="id" value="2"/>
+            <column name="code" value="HIRING_DATE"/>
+            <column name="description" value="Hiring date"/>
+        </insert>
+        <rollback>
+            <delete tableName="pm_cycle_type">
+                <where>code = 'FISCAL'</where>
+            </delete>
+        </rollback>
+        <rollback>
+            <delete tableName="pm_cycle_type">
+                <where>code = 'HIRING_DATE'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="imatviichuk" id="5">
+        <createTable remarks="Performance cycle"
+                     tableName="pm_cycle">
+            <column name="uuid" type="${uuid_type}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pm_cycle_pk"/>
+            </column>
+            <column name="entry_config_key" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="template_uuid" type="${uuid_type}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="${uuid_type}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creation_time" type="TIMESTAMPTZ">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_time" type="TIMESTAMPTZ">
+                <constraints nullable="true"/>
+            </column>
+            <column name="end_time" type="TIMESTAMPTZ">
+                <constraints nullable="true"/>
+            </column>
+            <column name="properties" type="VARCHAR">
+                <constraints nullable="true"/>
+            </column>
+            <column name="metadata" type="jsonb">
+                <constraints nullable="true"/> <!-- todo false -->
+            </column>
+
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="pm_cycle"
+                                 constraintName="pm_cycle_status_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="pm_cycle_status" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="pm_cycle"
+                                 constraintName="performance_cycle_type_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="pm_cycle_type" validate="true"/>
+
+        <addUniqueConstraint columnNames="entry_config_key, template_uuid"
+                             constraintName="pm_cycle_config_uk"
+                             tableName="pm_cycle"/>
+
+        <!-- todo        add foreignKey constraints  -->
+    </changeSet>
+
+</databaseChangeLog>

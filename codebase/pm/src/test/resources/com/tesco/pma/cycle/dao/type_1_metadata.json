@@ -1,0 +1,94 @@
+{
+  "cycle": {
+    "id": null,
+    "code": "type_1",
+    "description": null,
+    "type": null,
+    "properties": {},
+    "cycleType": null,
+    "reviews": [
+      {
+        "id": "Activity_1xk9nhh",
+        "code": "End of Year Review",
+        "description": "End of Year Review",
+        "type": {
+          "id": null,
+          "code": "review",
+          "description": null
+        },
+        "properties": {
+          "pm_review_type": "eyr",
+          "pm_type": "review",
+          "pm_review_start_time": "2022-03-15",
+          "pm_review_min": "1",
+          "pm_review_max": "1"
+        },
+        "reviewType": {
+          "id": null,
+          "code": "eyr",
+          "description": null
+        },
+        "form": null
+      },
+      {
+        "id": "Activity_1scuf3c",
+        "code": "Mid Year Review",
+        "description": "Mid Year Review",
+        "type": {
+          "id": null,
+          "code": "review",
+          "description": null
+        },
+        "properties": {
+          "pm_review_type": "myr",
+          "pm_type": "review",
+          "pm_review_start_time": "2021-10-01",
+          "pm_review_min": "1",
+          "pm_review_max": "1"
+        },
+        "reviewType": {
+          "id": null,
+          "code": "myr",
+          "description": null
+        },
+        "form": null
+      },
+      {
+        "id": "Activity_1bu82ro",
+        "code": "Objectives",
+        "description": "Objectives",
+        "type": {
+          "id": null,
+          "code": "review",
+          "description": null
+        },
+        "properties": {
+          "pm_review_type": "objective",
+          "pm_type": "review",
+          "pm_review_start_time": "2021-04-01",
+          "pm_review_min": "3",
+          "pm_review_max": "3",
+          "pm_form_key": "forms/type_1_objective.form"
+        },
+        "reviewType": {
+          "id": null,
+          "code": "objective",
+          "description": null
+        },
+        "form": {
+          "id": null,
+          "code": "forms/type_1_objective.form",
+          "description": null,
+          "type": {
+            "id": null,
+            "code": "form",
+            "description": null
+          },
+          "properties": {},
+          "key": "forms/type_1_objective.form",
+          "json": "{\"schemaVersion\": 2,\"components\": [{\"key\": \"title\",\"label\": \"Objective title\",\"type\": \"textfield\",\"id\": \"Field_141o520\",\"validate\": {\"minLength\": 10,\"required\": true,\"maxLength\": 100}},{\"key\": \"description\",\"label\": \"Objective description\",\"type\": \"textfield\",\"id\": \"Field_05qgsfz\",\"validate\": {\"required\": true,\"minLength\": 10,\"maxLength\": 500}},{\"key\": \"how_archieved\",\"label\": \"How do I know I've ACHIEVED this objective?\",\"type\": \"textfield\",\"id\": \"Field_17nyw6d\",\"validate\": {\"required\": true,\"maxLength\": 500,\"minLength\": 10}},{\"key\": \"how_over_achieved\",\"label\": \"How do I know I've OVER-ACHIEVED this objective?\",\"type\": \"textfield\",\"id\": \"Field_1ug5wco\",\"validate\": {\"required\": true,\"minLength\": 10,\"maxLength\": 500}},{\"values\": [{\"label\": \"Magnetic Value\",\"value\": \"Magnetic Value\"},{\"label\": \"I love my Tesco Clubcard\",\"value\": \"I love my Tesco Clubcard\"},{\"label\": \"Easily the most convenient\",\"value\": \"Easily the most convenient\"},{\"label\": \"Save to invest\",\"value\": \"Save to invest\"},{\"label\": \"Other\",\"value\": \"Other\"}],\"key\": \"strategic_priority\",\"label\": \"Strategic priority\",\"type\": \"select\",\"id\": \"Field_1ribi5m\",\"validate\": {\"required\": true}}],\"exporter\": {\"name\": \"form-js (https://demo.bpmn.io)\",\"version\": \"0.4.1\"},\"type\": \"default\",\"id\": \"type_1_objective_form\"}"
+        }
+      }
+    ]
+  }
+}
