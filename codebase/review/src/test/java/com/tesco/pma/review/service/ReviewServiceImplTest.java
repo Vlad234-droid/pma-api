@@ -1,6 +1,7 @@
 package com.tesco.pma.review.service;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.review.LocalTestConfig;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
@@ -42,6 +43,9 @@ class ReviewServiceImplTest {
 
     @MockBean
     private ReviewAuditLogDAO mockReviewAuditLogDAO;
+
+    @MockBean
+    private PMCycleService pmCycleService;
 
     @SpyBean
     private ReviewServiceImpl reviewService;
