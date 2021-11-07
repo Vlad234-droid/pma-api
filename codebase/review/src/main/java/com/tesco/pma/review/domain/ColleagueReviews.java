@@ -1,5 +1,6 @@
 package com.tesco.pma.review.domain;
 
+import com.tesco.pma.cycle.api.PMCycleTimelinePoint;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,5 +22,5 @@ public class ColleagueReviews {
     String lastName;
     String jobName;
     String businessType;
-    List<SimplifiedReview> reviews;
+    List<PMCycleTimelinePoint> timeline;
 }

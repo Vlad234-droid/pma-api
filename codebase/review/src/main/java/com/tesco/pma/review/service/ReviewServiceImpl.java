@@ -1,6 +1,7 @@
 package com.tesco.pma.review.service;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
@@ -52,6 +53,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewDAO reviewDAO;
     private final ReviewAuditLogDAO reviewAuditLogDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
+    private final PMCycleService pmCycleService;
 
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     private static final String MANAGER_UUID_PARAMETER_NAME = "managerUuid";
@@ -108,6 +110,10 @@ public class ReviewServiceImpl implements ReviewService {
         if (results == null) {
             throw notFound(REVIEWS_NOT_FOUND_BY_MANAGER,
                     Map.of(MANAGER_UUID_PARAMETER_NAME, managerUuid));
+        } else {
+            results.forEach(colleagueReviews -> {
+                colleagueReviews.setTimeline(pmCycleService.getCycleTimelineByColleague(colleagueReviews.getUuid()));
+            });
         }
         return results;
     }
