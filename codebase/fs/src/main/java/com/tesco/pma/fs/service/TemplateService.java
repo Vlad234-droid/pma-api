@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
+import java.util.List;
 
 /**
  * Template service
@@ -25,6 +26,7 @@ public interface TemplateService {
      * @param file a template file
      * @param creatorId represents the creator identifier
      * @return uploaded template
+     * @throws IOException in case of file access errors
      * @throws RegistrationException if failed to save template file to database
      */
     ProcessTemplate uploadTemplate(@NotNull InputStream inputStream, @NotNull UploadMetadata uploadMetadata,
@@ -38,5 +40,13 @@ public interface TemplateService {
      * @return Process Template data
      * @throws NotFoundException if template by uuid is not found
      */
-    ProcessTemplate readTemplateByUuid(@NotNull UUID templateUuid, boolean includeFileContent);
+    ProcessTemplate findTemplateByUuid(@NotNull UUID templateUuid, boolean includeFileContent);
+
+    /**
+     * Read all information about all templates
+     *
+     * @param includeFileContent identifies if include contents of each of the files
+     * @return Process Templates data
+     */
+    List<ProcessTemplate> findAllTemplates(boolean includeFileContent);
 }

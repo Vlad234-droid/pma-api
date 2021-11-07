@@ -4,6 +4,7 @@ import com.tesco.pma.fs.domain.ProcessTemplate;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.UUID;
+import java.util.List;
 
 public interface TemplateDAO {
 
@@ -14,8 +15,16 @@ public interface TemplateDAO {
      * @param includeFileContent identifies if include file content
      * @return Process Template data
      */
-    ProcessTemplate readTemplateByUuid(@Param("templateUuid") UUID templateUuid,
+    ProcessTemplate findTemplateByUuid(@Param("templateUuid") UUID templateUuid,
                                        @Param("includeFileContent") boolean includeFileContent);
+
+    /**
+     * Read all information about all templates
+     *
+     * @param includeFileContent identifies if include contents of each of the files
+     * @return Process Templates data
+     */
+    List<ProcessTemplate> findAllTemplates(@Param("includeFileContent") boolean includeFileContent);
 
     /**
      * Save template information to database

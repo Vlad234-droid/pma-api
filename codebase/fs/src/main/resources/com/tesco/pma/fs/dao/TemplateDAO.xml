@@ -18,7 +18,7 @@
         <result property="fileContent" column="file_content" jdbcType="BINARY"/>
     </resultMap>
 
-    <select id="readTemplateByUuid" resultMap="templateResultMap">
+    <select id="findTemplateByUuid" resultMap="templateResultMap">
         SELECT uuid, path, version, type_id, status_id, description,
         created_by, created_time, file_name, file_date, file_length
         <if test="includeFileContent">
@@ -26,6 +26,15 @@
         </if>
         FROM process_template
         WHERE uuid = #{templateUuid}
+    </select>
+
+    <select id="findAllTemplates" resultMap="templateResultMap">
+        SELECT uuid, path, version, type_id, status_id, description,
+        created_by, created_time, file_name, file_date, file_length
+        <if test="includeFileContent">
+            , file_content
+        </if>
+        FROM process_template
     </select>
 
     <insert id="saveTemplate" flushCache="true">

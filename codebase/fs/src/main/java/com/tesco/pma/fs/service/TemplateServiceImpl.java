@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.List;
 
 import static com.tesco.pma.exception.ErrorCodes.ERROR_FILE_NOT_FOUND;
 import static com.tesco.pma.fs.domain.ProcessTemplateStatus.DRAFT;
@@ -66,10 +67,15 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
-    public ProcessTemplate readTemplateByUuid(UUID templateUuid, boolean includeFileContent) {
-        return Optional.ofNullable(templateDao.readTemplateByUuid(templateUuid, includeFileContent))
+    public ProcessTemplate findTemplateByUuid(UUID templateUuid, boolean includeFileContent) {
+        return Optional.ofNullable(templateDao.findTemplateByUuid(templateUuid, includeFileContent))
                 .orElseThrow(() -> new NotFoundException(ERROR_FILE_NOT_FOUND.name(),
                         "Template file was not found", templateUuid.toString()));
 
+    }
+
+    @Override
+    public List<ProcessTemplate> findAllTemplates(boolean includeFileContent) {
+        return templateDao.findAllTemplates(includeFileContent);
     }
 }

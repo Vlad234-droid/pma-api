@@ -40,6 +40,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 import static com.tesco.pma.fs.exception.ErrorCodes.ERROR_FILE_UPLOAD_FAILED;
 import static com.tesco.pma.fs.exception.ErrorCodes.INVALID_PAYLOAD;
@@ -73,10 +74,24 @@ public class TemplateEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Template data not found", content = @Content),
             })
     @GetMapping("{templateUuid}")
-    public RestResponse<ProcessTemplate> readTemplate(@PathVariable String templateUuid,
+    public RestResponse<ProcessTemplate> findTemplate(@PathVariable String templateUuid,
                                                       @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true")
                                                               boolean includeFileContent) {
-        return success(templateService.readTemplateByUuid(fromString(templateUuid), includeFileContent));
+        return success(templateService.findTemplateByUuid(fromString(templateUuid), includeFileContent));
+    }
+
+    @Operation(
+            summary = "Read All Templates information",
+            description = "Read All Templates information",
+            tags = "template",
+            responses = {
+                    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found all templates data"),
+                    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Templates data not found", content = @Content),
+            })
+    @GetMapping("/all")
+    public RestResponse<List<ProcessTemplate>> findAllTemplates(@RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true")
+                                                                        boolean includeFileContent) {
+        return success(templateService.findAllTemplates(includeFileContent));
     }
 
     /**
@@ -97,7 +112,7 @@ public class TemplateEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Internal Server Error", content = @Content)
     @GetMapping("/download/{templateUuid}")
     public ResponseEntity<Resource> downloadTemplate(@PathVariable String templateUuid) {
-        var template = templateService.readTemplateByUuid(fromString(templateUuid), true);
+        var template = templateService.findTemplateByUuid(fromString(templateUuid), true);
         byte[] content = template.getFileContent();
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + template.getFileName() + "\"")
@@ -107,8 +122,8 @@ public class TemplateEndpoint {
     }
 
     @Operation(
-            summary = "Upload template file",
-            description = "Upload template file",
+            summary = "Upload Template file",
+            description = "Upload Template file",
             tags = "template",
             requestBody = @RequestBody(
                     required = true,
