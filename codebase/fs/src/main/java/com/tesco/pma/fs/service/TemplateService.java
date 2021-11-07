@@ -4,7 +4,6 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.RegistrationException;
 import com.tesco.pma.fs.domain.ProcessTemplate;
 import com.tesco.pma.fs.domain.UploadMetadata;
-import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
@@ -17,14 +16,6 @@ import java.util.UUID;
  * Implementation classes must be annotated with @org.springframework.validation.annotation.Validated.
  */
 public interface TemplateService {
-
-    /**
-     * Download template file
-     *
-     * @return resource with template file
-     * @throws NotFoundException if template not found
-     */
-    Resource downloadTemplate();
 
     /**
      * Upload template file and save it to database
@@ -43,8 +34,9 @@ public interface TemplateService {
      * Read all information about template by its identifier
      *
      * @param templateUuid template identifier
+     * @param includeFileContent identifies if include file content
      * @return Process Template data
      * @throws NotFoundException if template by uuid is not found
      */
-    ProcessTemplate readTemplateByUuid(@NotNull UUID templateUuid);
+    ProcessTemplate readTemplateByUuid(@NotNull UUID templateUuid, boolean includeFileContent);
 }

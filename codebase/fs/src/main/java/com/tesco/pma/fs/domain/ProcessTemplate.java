@@ -1,6 +1,7 @@
 package com.tesco.pma.fs.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.tesco.pma.api.Identified;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class ProcessTemplate extends UploadMetadata implements Identified<UUID> {
 
     UUID uuid;
@@ -28,11 +30,11 @@ public class ProcessTemplate extends UploadMetadata implements Identified<UUID> 
 
     Integer fileLength;
 
-    byte[] fileContent;
-
     String createdBy;
 
     Instant createdTime;
+
+    byte[] fileContent;
 
     @Override
     @JsonIgnore

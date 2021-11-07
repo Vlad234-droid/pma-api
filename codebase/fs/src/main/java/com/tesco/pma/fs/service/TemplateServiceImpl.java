@@ -7,7 +7,6 @@ import com.tesco.pma.fs.domain.ProcessTemplate;
 import com.tesco.pma.fs.domain.UploadMetadata;
 import com.tesco.pma.logging.TraceUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -32,11 +31,6 @@ import static com.tesco.pma.fs.exception.ErrorCodes.ERROR_FILE_REGISTRATION_FAIL
 public class TemplateServiceImpl implements TemplateService {
 
     private final TemplateDAO templateDao;
-
-    @Override
-    public Resource downloadTemplate() {
-        return null;
-    }
 
     @Override
     @Transactional
@@ -72,8 +66,8 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
-    public ProcessTemplate readTemplateByUuid(UUID templateUuid) {
-        return Optional.ofNullable(templateDao.readTemplateByUuid(templateUuid))
+    public ProcessTemplate readTemplateByUuid(UUID templateUuid, boolean includeFileContent) {
+        return Optional.ofNullable(templateDao.readTemplateByUuid(templateUuid, includeFileContent))
                 .orElseThrow(() -> new NotFoundException(ERROR_FILE_NOT_FOUND.name(),
                         "Template file was not found", templateUuid.toString()));
 

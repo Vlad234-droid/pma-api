@@ -11,9 +11,11 @@ public interface TemplateDAO {
      * Read all information about template by its identifier
      *
      * @param templateUuid template identifier
+     * @param includeFileContent identifies if include file content
      * @return Process Template data
      */
-    ProcessTemplate readTemplateByUuid(@Param("templateUuid") UUID templateUuid);
+    ProcessTemplate readTemplateByUuid(@Param("templateUuid") UUID templateUuid,
+                                       @Param("includeFileContent") boolean includeFileContent);
 
     /**
      * Save template information to database

@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,6 +59,8 @@ import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 @RequiredArgsConstructor
 public class TemplateEndpoint {
 
+    public static final String INCLUDE_FILE_CONTENT = "includeFileContent";
+
     private final TemplateService templateService;
     private final AuditorAware<String> auditorAware;
 
@@ -69,8 +73,10 @@ public class TemplateEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Template data not found", content = @Content),
             })
     @GetMapping("{templateUuid}")
-    public RestResponse<ProcessTemplate> readTemplate(@PathVariable String templateUuid) {
-        return success(templateService.readTemplateByUuid(fromString(templateUuid)));
+    public RestResponse<ProcessTemplate> readTemplate(@PathVariable String templateUuid,
+                                                      @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true")
+                                                              boolean includeFileContent) {
+        return success(templateService.readTemplateByUuid(fromString(templateUuid), includeFileContent));
     }
 
     /**
@@ -89,13 +95,15 @@ public class TemplateEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.UNAUTHORIZED, description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = HttpStatusCodes.FORBIDDEN, description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Internal Server Error", content = @Content)
-    @GetMapping("/last")
-    public ResponseEntity<Resource> downloadTemplate() throws IOException {
-        var template = templateService.downloadTemplate();
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + template.getFilename() + "\"")
-                .contentLength(template.contentLength())
-                .contentType(MediaType.APPLICATION_OCTET_STREAM).body(template);
+    @GetMapping("/download/{templateUuid}")
+    public ResponseEntity<Resource> downloadTemplate(@PathVariable String templateUuid) {
+        var template = templateService.readTemplateByUuid(fromString(templateUuid), true);
+        byte[] content = template.getFileContent();
+
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + template.getFileName() + "\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(content.length)
+                .body(new ByteArrayResource(content));
     }
 
     @Operation(
