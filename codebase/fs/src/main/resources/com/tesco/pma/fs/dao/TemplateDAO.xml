@@ -51,7 +51,7 @@
                 #{fileName},
                 #{fileDate},
                 #{fileLength},
-                #{fileContent, javaType=byte[], jdbcType=BLOB, typeHandler=org.apache.ibatis.type.BlobTypeHandler})
+                #{fileContent, jdbcType=BINARY})
     </insert>
 
     <select id="getMaxVersionForTemplate" resultType="int">
