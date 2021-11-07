@@ -126,18 +126,20 @@ public class ProfileServiceImpl implements ProfileService {
     private Colleague findColleagueByColleagueUuid(UUID colleagueUuid) {
         com.tesco.pma.organisation.api.Colleague oc = configEntryDAO.getColleague(colleagueUuid);
         //todo try to download and insert colleagueApiService.findColleagueByUuid(colleagueUuid)
-        return oc != null ? getColleague(oc, colleagueUuid) : null;
+        return oc != null ? getColleague(oc, colleagueUuid, false) : null;
     }
 
-    private Colleague getColleague(com.tesco.pma.organisation.api.Colleague oc, UUID colleagueUuid) {
+    private Colleague getColleague(com.tesco.pma.organisation.api.Colleague oc, UUID colleagueUuid, boolean child) {
         var colleague = new Colleague();
         colleague.setColleagueUUID(colleagueUuid);
         colleague.setCountryCode(oc.getCountry().getCode());
         colleague.setProfile(getProfile(oc));
-        colleague.setWorkRelationships(Collections.singletonList(getWorkRelationship(oc)));
-        colleague.setExternalSystems(getExternalSystems(oc));
         colleague.setContact(getContact(oc));
-        colleague.setServiceDates(getServiceDates(oc));
+        if (!child) {
+            colleague.setWorkRelationships(Collections.singletonList(getWorkRelationship(oc)));
+            colleague.setExternalSystems(getExternalSystems(oc));
+            colleague.setServiceDates(getServiceDates(oc));
+        }
         return colleague;
     }
 
@@ -179,11 +181,17 @@ public class ProfileServiceImpl implements ProfileService {
         wr.setWorkLevel(WorkRelationship.WorkLevel.getByCode(oc.getWorkLevel().getCode()));
         wr.setPrimaryEntity(oc.getPrimaryEntity());
         wr.setSalaryFrequency(oc.getSalaryFrequency());
-        wr.setManagerUUID(oc.getManagerUuid());
         wr.setIsManager(oc.isManager());
         wr.setEmploymentType(oc.getEmploymentType());
         wr.setDepartment(getDepartment(oc));
         wr.setJob(getJob(oc));
+        wr.setManagerUUID(oc.getManagerUuid());
+        if (wr.getManagerUUID() != null) {
+            com.tesco.pma.organisation.api.Colleague mng = configEntryDAO.getColleague(wr.getManagerUUID());
+            if (mng != null) {
+                wr.setManager(getColleague(mng, wr.getManagerUUID(), true));
+            }
+        }
         return wr;
     }
 
@@ -218,7 +226,8 @@ public class ProfileServiceImpl implements ProfileService {
 
     private NotFoundException notFound(String paramName, Object paramValue) {
         return new NotFoundException(ErrorCodes.PROFILE_NOT_FOUND.getCode(),
-                messages.getMessage(ErrorCodes.PROFILE_NOT_FOUND, Map.of("param_name", paramName, "param_value", paramValue)));
+                messages.getMessage(ErrorCodes.PROFILE_NOT_FOUND,
+                        Map.of("param_name", paramName, "param_value", paramValue)));
     }
 
 }
