@@ -1,7 +1,7 @@
 package com.tesco.pma.review.dao;
 
 import com.tesco.pma.review.domain.Review;
-import com.tesco.pma.review.domain.ReviewStatus;
+import com.tesco.pma.api.ReviewStatus;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.Instant;

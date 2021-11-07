@@ -124,7 +124,5 @@ class ProfileServiceImplTest extends AbstractProfileTests {
         assertThat(results.size()).isEqualTo(3);
 
         verify(mockProfileDAO, times(3)).delete(any(TypedAttribute.class));
-
     }
-
 }
