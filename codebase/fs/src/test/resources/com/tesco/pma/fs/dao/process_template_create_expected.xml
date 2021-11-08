@@ -1,7 +1,7 @@
 <dataset>
 
     <process_template uuid="3d1ebbee-bafc-467c-acf1-5334db06e723"
-                      path="/home/vsilenko/dev"
+                      path="/home/dev"
                       version="1"
                       type_id="2"
                       status_id="2"

@@ -22,7 +22,7 @@ public class TemplateDAOTest extends AbstractDAOTest {
 
     private static final UUID TEMPLATE_UUID_1 = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65765");
     private static final UUID TEMPLATE_UUID_2 = UUID.fromString("3d1ebbee-bafc-467c-acf1-5334db06e723");
-    private static final String PATH = "/home/vsilenko/dev";
+    private static final String PATH = "/home/dev";
 
     @Autowired
     private TemplateDAO instance;
@@ -82,5 +82,4 @@ public class TemplateDAOTest extends AbstractDAOTest {
 
         assertThat(rowsInserted).isOne();
     }
-
 }

@@ -1,7 +1,7 @@
 <dataset>
 
     <process_template uuid="6d37262f-3a00-4706-a74b-6bf98be65765"
-                      path="/home/vsilenko/dev"
+                      path="/home/dev"
                       version="1"
                       type_id="2"
                       status_id="2"
@@ -14,7 +14,7 @@
                       file_content="test file test"/>
 
     <process_template uuid="ede76e9d-deb9-47b9-83b3-cf2a57b8baeb"
-                      path="/home/vsilenko/dev"
+                      path="/home/dev"
                       version="2"
                       type_id="2"
                       status_id="2"
@@ -27,7 +27,7 @@
                       file_content="test file test"/>
 
     <process_template uuid="e0f57a75-0bae-405e-9952-76c9c60aa6a3"
-                      path="/home/vsilenko/dev"
+                      path="/home/dev"
                       version="1"
                       type_id="2"
                       status_id="2"
