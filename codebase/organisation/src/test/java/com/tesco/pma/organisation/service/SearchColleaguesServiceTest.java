@@ -1,9 +1,7 @@
 package com.tesco.pma.organisation.service;
 
-import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.organisation.api.Colleague;
 import com.tesco.pma.organisation.dao.ConfigEntryDAO;
-import com.tesco.pma.service.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 

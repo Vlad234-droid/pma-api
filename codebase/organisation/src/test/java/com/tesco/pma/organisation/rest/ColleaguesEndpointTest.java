@@ -1,7 +1,6 @@
 package com.tesco.pma.organisation.rest;
 
 
-import com.tesco.pma.organisation.service.ConfigEntryService;
 import com.tesco.pma.organisation.service.SearchColleaguesService;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import org.junit.jupiter.api.Test;
