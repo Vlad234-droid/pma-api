@@ -13,6 +13,14 @@ public enum ErrorCodes implements ErrorCodeAware {
      */
     REVIEW_NOT_FOUND_FOR_COLLEAGUE,
     /**
+     * Review not found for delete
+     */
+    REVIEW_NOT_FOUND_FOR_DELETE,
+    /**
+     * Review not found for update
+     */
+    REVIEW_NOT_FOUND_FOR_UPDATE,
+    /**
      * Reviews not found
      */
     REVIEWS_NOT_FOUND,
@@ -39,7 +47,15 @@ public enum ErrorCodes implements ErrorCodeAware {
     /**
      * Group objectives not found
      */
-    GROUP_OBJECTIVES_NOT_FOUND;
+    GROUP_OBJECTIVES_NOT_FOUND,
+    /**
+     * Allowed statuses not found
+     */
+    ALLOWED_STATUSES_NOT_FOUND,
+    /**
+     * Status not allowed for operation
+     */
+    REVIEW_STATUS_NOT_ALLOWED;
 
     @Override
     public String getCode() {
