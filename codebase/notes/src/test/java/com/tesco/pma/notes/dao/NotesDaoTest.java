@@ -24,15 +24,15 @@ public class NotesDaoTest extends AbstractDAOTest {
     protected static final UUID OWNER_UUID = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
     protected static final UUID NOTE_UUID = UUID.fromString("f0977373-5afe-4410-b3a4-ef5b16d7d272");
 
+    @Autowired
+    private NotesDao notesDao;
+
     @DynamicPropertySource
     static void postgresqlProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.default.jdbc-url", CONTAINER::getJdbcUrl);
         registry.add("spring.datasource.default.password", CONTAINER::getPassword);
         registry.add("spring.datasource.default.username", CONTAINER::getUsername);
     }
-
-    @Autowired
-    private NotesDao notesDao;
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml"})

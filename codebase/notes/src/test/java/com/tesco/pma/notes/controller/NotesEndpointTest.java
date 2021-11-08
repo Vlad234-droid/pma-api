@@ -12,12 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-
 import java.util.ArrayList;
 import java.util.UUID;
-
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -30,9 +27,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 })
 public class NotesEndpointTest extends AbstractEndpointTest {
 
-    private UUID colleagueUuid = UUID.randomUUID();
+    private final UUID colleagueUuid = UUID.randomUUID();
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     String ownerColleagueUuidExpression = "$.data.ownerColleagueUuid";
 

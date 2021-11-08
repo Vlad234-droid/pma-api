@@ -1,10 +1,7 @@
 package com.tesco.pma.notes.model;
 
 import lombok.Data;
-
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Data

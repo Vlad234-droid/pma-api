@@ -2,21 +2,16 @@ package com.tesco.pma.notes.service;
 
 import com.tesco.pma.api.User;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.notes.dao.FoldersDao;
 import com.tesco.pma.notes.dao.NotesDao;
 import com.tesco.pma.notes.exception.NoteIntegrityException;
 import com.tesco.pma.notes.model.Note;
 import com.tesco.pma.organisation.api.Colleague;
 import com.tesco.pma.organisation.dao.ConfigEntryDAO;
-import com.tesco.pma.service.user.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.security.authentication.BadCredentialsException;
-
-import java.util.Optional;
 import java.util.UUID;
 
 public class NotesServiceTest {

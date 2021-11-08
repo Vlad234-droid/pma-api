@@ -11,16 +11,11 @@ import com.tesco.pma.notes.exception.UnknownDataManipulationException;
 import com.tesco.pma.notes.model.Folder;
 import com.tesco.pma.notes.model.Note;
 import com.tesco.pma.organisation.dao.ConfigEntryDAO;
-import com.tesco.pma.service.user.UserIncludes;
-import com.tesco.pma.service.user.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -46,7 +41,8 @@ public class NotesService {
                 throw new UnknownDataManipulationException(messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_HAS_NOT_BEEN_CREATED));
             }
         } catch (DataIntegrityViolationException e){
-            throw new NoteIntegrityException(NotesErrorCodes.NOTE_INTEGRITY_VIOLATION.getCode(), e.getMessage());
+            throw new NoteIntegrityException(NotesErrorCodes.NOTE_INTEGRITY_VIOLATION.getCode(),
+                    messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_INTEGRITY_VIOLATION), null, e);
         }
 
         return note;
@@ -69,7 +65,8 @@ public class NotesService {
                 return note;
             }
         } catch (DataIntegrityViolationException e) {
-            throw new NoteIntegrityException(NotesErrorCodes.NOTE_INTEGRITY_VIOLATION.getCode(), e.getMessage());
+            throw new NoteIntegrityException(NotesErrorCodes.NOTE_INTEGRITY_VIOLATION.getCode(),
+                    messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_INTEGRITY_VIOLATION), null, e);
         }
 
         throw new NotFoundException(NotesErrorCodes.NOTE_NOT_FOUND.getCode(),
@@ -91,7 +88,8 @@ public class NotesService {
                 throw new UnknownDataManipulationException(messageSourceAccessor.getMessage(NotesErrorCodes.FOLDER_HAS_NOT_BEEN_CREATED));
             }
         } catch (DataIntegrityViolationException e) {
-            throw new NoteIntegrityException(NotesErrorCodes.FOLDER_INTEGRITY_VIOLATION.getCode(), e.getMessage());
+            throw new NoteIntegrityException(NotesErrorCodes.FOLDER_INTEGRITY_VIOLATION.getCode(),
+                    messageSourceAccessor.getMessage(NotesErrorCodes.FOLDER_INTEGRITY_VIOLATION), null, e);
         }
 
         return folder;
@@ -108,7 +106,8 @@ public class NotesService {
                 return folder;
             }
         } catch (DataIntegrityViolationException e) {
-            throw new NoteIntegrityException(NotesErrorCodes.FOLDER_INTEGRITY_VIOLATION.getCode(), e.getMessage());
+            throw new NoteIntegrityException(NotesErrorCodes.FOLDER_INTEGRITY_VIOLATION.getCode(),
+                    messageSourceAccessor.getMessage(NotesErrorCodes.FOLDER_INTEGRITY_VIOLATION), null, e);
         }
 
         throw new NotFoundException(NotesErrorCodes.FOLDER_NOT_FOUND.getCode(),
