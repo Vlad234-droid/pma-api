@@ -1,0 +1,17 @@
+{
+  "success": true,
+  "data": {
+    "path": "/home/dev",
+    "type": "FORM",
+    "status": "ACTIVE",
+    "description": "other template",
+    "fileDate": "2021-04-22T08:50:08.000Z",
+    "uuid": "6d37262f-3a00-4706-a74b-6bf98be65765",
+    "version": 1,
+    "fileName": "test1.txt",
+    "fileLength": 3,
+    "createdBy": "test",
+    "createdTime": "2021-11-03T22:38:14.000Z",
+    "fileContent": "SGVs"
+  }
+}

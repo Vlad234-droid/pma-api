@@ -35,6 +35,7 @@ dependencies {
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
+    testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.hibernate.validator:hibernate-validator-test-utils:${hibernateValidatorTestUtilsVersion}")
     testImplementation("org.jeasy:easy-random-core:${easyRandomVersion}")
 
