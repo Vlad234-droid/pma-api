@@ -54,6 +54,8 @@ spring:
                               com.tesco.pma.organisation.api,
                               com.tesco.pma.review.domain,
                               com.tesco.pma.process.api,
+                              com.tesco.pma.cycle.api,
+                              com.tesco.pma.feedback.api,
                               com.tesco.pma.notes.model
         configuration-properties:
           base-package: com.tesco.pma.dao,
@@ -61,6 +63,8 @@ spring:
                         com.tesco.pma.organisation.dao,
                         com.tesco.pma.review.dao,
                         com.tesco.pma.process.dao,
+                        com.tesco.pma.cycle.dao,
+                        com.tesco.pma.feedback.dao,
                         com.tesco.pma.notes.dao
           batchSize: 500
     camunda:
@@ -88,6 +92,8 @@ spring:
       com/tesco/pma/colleague/profile/exception/AppExceptionMessage,
       com/tesco/pma/organisation/service/AppConfigEntryMessages,
       com/tesco/pma/review/exception/AppExceptionMessage,
+      com/tesco/pma/feedback/exception/AppExceptionMessage,
+      com/tesco/pma/cycle/exception/AppExceptionMessage,
       com/tesco/pma/process/service/AppPMProcessMessages,
       com/tesco/pma/notes/exception/AppNotesMessages
     encoding: UTF-8
@@ -206,7 +212,10 @@ camunda:
 #    deployment-resource-pattern: classpath:*.bpmn
 #   todo: remove in production
     auto-deployment-enabled: true
-    deployment-resource-pattern: classpath:com/tesco/pma/flow/pm_v1.bpmn, com/tesco/pma/flow/forms/pm_o_1.form, com/tesco/pma/flow/forms/pm_o_2.form
+    deployment-resource-pattern: classpath:com/tesco/pma/flow/type_1.bpmn,
+                                           com/tesco/pma/flow/type_2.bpmn,
+                                           com/tesco/pma/flow/forms/type_1_objective.form,
+                                           com/tesco/pma/flow/forms/type_2_objective.form
 
 ---
 spring:

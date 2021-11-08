@@ -17,6 +17,10 @@ public enum ErrorCodes implements ErrorCodeAware {
      */
     REVIEWS_NOT_FOUND,
     /**
+     * Reviews not found by manager
+     */
+    REVIEWS_NOT_FOUND_BY_MANAGER,
+    /**
      * Reviews not found for status update
      */
     REVIEWS_NOT_FOUND_FOR_STATUS_UPDATE,
