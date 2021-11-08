@@ -47,48 +47,47 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
         switch (colleagueChangeEventPayload.getEventType()) {
             case JOINER:
-                updated = processJoinerEventType(colleagueChangeEventPayload, feedDeliveryMode);
+                updated = processJoinerEventType(colleagueChangeEventPayload);
                 break;
             case LEAVER:
-                updated = processLeaverEventType(colleagueChangeEventPayload, feedDeliveryMode);
+                updated = processLeaverEventType(colleagueChangeEventPayload);
                 break;
             case MOVER:
-                updated = processMoverEventType(colleagueChangeEventPayload, feedDeliveryMode);
+                updated = processMoverEventType(colleagueChangeEventPayload);
                 break;
             case REINSTATEMENT:
-                updated = processReinstatementEventType(colleagueChangeEventPayload, feedDeliveryMode);
+                updated = processReinstatementEventType(colleagueChangeEventPayload);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid event type " + colleagueChangeEventPayload.getEventType());
         }
 
         if (updated == 0) {
-            // TODO
+            log.warn(LogFormatter.formatMessage(COLLEAGUE_NOT_FOUND, "For colleague '{}' was not updated records"),
+                    colleagueChangeEventPayload.getColleagueUuid());
+
         }
+
     }
 
-    private int processJoinerEventType(ColleagueChangeEventPayload colleagueChangeEventPayload,
-                                       DeliveryMode feedDeliveryMode) {
+    private int processJoinerEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
         return profileService.updateColleague(colleagueChangeEventPayload.getColleagueUuid(),
                 colleagueChangeEventPayload.getChangedAttributes());
     }
 
-    // TODO
-    private int processLeaverEventType(ColleagueChangeEventPayload colleagueChangeEventPayload,
-                                       DeliveryMode feedDeliveryMode) {
-        return processJoinerEventType(colleagueChangeEventPayload, feedDeliveryMode);
+    // TODO If logic different from main flow
+    private int processLeaverEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
+        return processJoinerEventType(colleagueChangeEventPayload);
     }
 
-    // TODO
-    private int processMoverEventType(ColleagueChangeEventPayload colleagueChangeEventPayload,
-                                      DeliveryMode feedDeliveryMode) {
-        return processJoinerEventType(colleagueChangeEventPayload, feedDeliveryMode);
+    // TODO If logic different from main flow
+    private int processMoverEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
+        return processJoinerEventType(colleagueChangeEventPayload);
     }
 
-    // TODO
-    private int processReinstatementEventType(ColleagueChangeEventPayload colleagueChangeEventPayload,
-                                              DeliveryMode feedDeliveryMode) {
-        return processJoinerEventType(colleagueChangeEventPayload, feedDeliveryMode);
+    // TODO If logic different from main flow
+    private int processReinstatementEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
+        return processJoinerEventType(colleagueChangeEventPayload);
     }
 
     private DeliveryMode resolveDeliveryModeByFeedId(String feedId) {
