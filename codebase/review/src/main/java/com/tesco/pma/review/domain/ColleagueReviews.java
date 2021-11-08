@@ -22,5 +22,6 @@ public class ColleagueReviews {
     String lastName;
     String jobName;
     String businessType;
+    List<SimplifiedReview> reviews;
     List<PMCycleTimelinePoint> timeline;
 }
