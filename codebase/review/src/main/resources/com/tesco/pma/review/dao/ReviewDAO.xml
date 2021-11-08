@@ -187,7 +187,7 @@
                  inner join department d
                             on (d.id = c.department_id)
                  left join review r
-                           on (c.uuid = r.colleague_uuid)
+                            on (c.uuid = r.colleague_uuid)
         where c.manager_uuid = #{managerUuid}
         order by c.last_name, c.first_name, r.type_id, r.status_id, r.uuid
     </select>
