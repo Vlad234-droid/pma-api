@@ -15,8 +15,8 @@ public interface TemplateDAO {
      * @param includeFileContent identifies if include file content
      * @return Process Template data
      */
-    ProcessTemplate findTemplateByUuid(@Param("templateUuid") UUID templateUuid,
-                                       @Param("includeFileContent") boolean includeFileContent);
+    ProcessTemplate findByUuid(@Param("templateUuid") UUID templateUuid,
+                               @Param("includeFileContent") boolean includeFileContent);
 
     /**
      * Read all information about all templates
@@ -24,7 +24,7 @@ public interface TemplateDAO {
      * @param includeFileContent identifies if include contents of each of the files
      * @return Process Templates data
      */
-    List<ProcessTemplate> findAllTemplates(@Param("includeFileContent") boolean includeFileContent);
+    List<ProcessTemplate> findAll(@Param("includeFileContent") boolean includeFileContent);
 
     /**
      * Save template information to database
@@ -36,7 +36,7 @@ public interface TemplateDAO {
      * have no matching status in process_template_status table,
      * have no matching type in process_template_type table, etc
      */
-    int saveTemplate(ProcessTemplate processTemplate);
+    int save(ProcessTemplate processTemplate);
 
     /**
      * Gets max version by template path and template name. If nothing found returns 0
@@ -45,5 +45,5 @@ public interface TemplateDAO {
      * @param fileName - template file name
      * @return max version or 0 if nothing found
      */
-    int getMaxVersionForTemplate(@Param("path") String path, @Param("fileName") String fileName);
+    int getMaxVersion(@Param("path") String path, @Param("fileName") String fileName);
 }

@@ -31,8 +31,8 @@ public class TemplateEndpointTest extends AbstractEndpointTest {
     private TemplateService service;
 
     @Test
-    void findTemplate() throws Exception {
-        when(service.findTemplateByUuid(TEMPLATE_UUID_1, true)).thenReturn(buildProcessTemplate(TEMPLATE_UUID_1, 1));
+    void findByUuid() throws Exception {
+        when(service.findByUuid(TEMPLATE_UUID_1, true)).thenReturn(buildProcessTemplate(TEMPLATE_UUID_1, 1));
 
         var result = performGet(status().isOk(), TEMPLATES_URL + "/" + TEMPLATE_UUID_1);
 

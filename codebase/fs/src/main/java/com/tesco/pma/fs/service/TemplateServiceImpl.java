@@ -35,8 +35,8 @@ public class TemplateServiceImpl implements TemplateService {
 
     @Override
     @Transactional
-    public ProcessTemplate uploadTemplate(InputStream inputStream, UploadMetadata uploadMetadata,
-                                          MultipartFile file, String creatorId) throws IOException {
+    public ProcessTemplate upload(InputStream inputStream, UploadMetadata uploadMetadata,
+                                  MultipartFile file, String creatorId) throws IOException {
         var template = new ProcessTemplate();
         template.setUuid(UUID.fromString(TraceUtils.getTraceId().getValue()));
         var fileName = file.getOriginalFilename();
@@ -54,10 +54,10 @@ public class TemplateServiceImpl implements TemplateService {
         template.setDescription(uploadMetadata.getDescription());
         template.setFileDate(uploadMetadata.getFileDate() == null ? currMomentInUTC : uploadMetadata.getFileDate());
 
-        var version = templateDao.getMaxVersionForTemplate(template.getPath(), template.getFileName()) + 1;
+        var version = templateDao.getMaxVersion(template.getPath(), template.getFileName()) + 1;
         template.setVersion(version);
 
-        var insertedRows = templateDao.saveTemplate(template);
+        var insertedRows = templateDao.save(template);
         if (insertedRows != 1) {
             throw new RegistrationException(ERROR_FILE_REGISTRATION_FAILED.name(),
                     "Failed to save Template to database", fileName);
@@ -67,15 +67,15 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
-    public ProcessTemplate findTemplateByUuid(UUID templateUuid, boolean includeFileContent) {
-        return Optional.ofNullable(templateDao.findTemplateByUuid(templateUuid, includeFileContent))
+    public ProcessTemplate findByUuid(UUID templateUuid, boolean includeFileContent) {
+        return Optional.ofNullable(templateDao.findByUuid(templateUuid, includeFileContent))
                 .orElseThrow(() -> new NotFoundException(ERROR_FILE_NOT_FOUND.name(),
                         "Template file was not found", templateUuid.toString()));
 
     }
 
     @Override
-    public List<ProcessTemplate> findAllTemplates(boolean includeFileContent) {
-        return templateDao.findAllTemplates(includeFileContent);
+    public List<ProcessTemplate> findAll(boolean includeFileContent) {
+        return templateDao.findAll(includeFileContent);
     }
 }

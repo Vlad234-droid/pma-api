@@ -74,10 +74,10 @@ public class TemplateEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Template data not found", content = @Content),
             })
     @GetMapping("{templateUuid}")
-    public RestResponse<ProcessTemplate> findTemplate(@PathVariable String templateUuid,
-                                                      @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true")
-                                                              boolean includeFileContent) {
-        return success(templateService.findTemplateByUuid(fromString(templateUuid), includeFileContent));
+    public RestResponse<ProcessTemplate> findByUuid(@PathVariable String templateUuid,
+                                                    @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true")
+                                                            boolean includeFileContent) {
+        return success(templateService.findByUuid(fromString(templateUuid), includeFileContent));
     }
 
     @Operation(
@@ -89,9 +89,9 @@ public class TemplateEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Templates data not found", content = @Content),
             })
     @GetMapping("/all")
-    public RestResponse<List<ProcessTemplate>> findAllTemplates(@RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true")
-                                                                        boolean includeFileContent) {
-        return success(templateService.findAllTemplates(includeFileContent));
+    public RestResponse<List<ProcessTemplate>> findAll(@RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true")
+                                                               boolean includeFileContent) {
+        return success(templateService.findAll(includeFileContent));
     }
 
     /**
@@ -111,8 +111,8 @@ public class TemplateEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.FORBIDDEN, description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Internal Server Error", content = @Content)
     @GetMapping("/download/{templateUuid}")
-    public ResponseEntity<Resource> downloadTemplate(@PathVariable String templateUuid) {
-        var template = templateService.findTemplateByUuid(fromString(templateUuid), true);
+    public ResponseEntity<Resource> download(@PathVariable String templateUuid) {
+        var template = templateService.findByUuid(fromString(templateUuid), true);
         byte[] content = template.getFileContent();
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + template.getFileName() + "\"")
@@ -143,7 +143,7 @@ public class TemplateEndpoint {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<ProcessTemplate> uploadTemplate(
+    public RestResponse<ProcessTemplate> upload(
             @RequestPart("uploadMetadata")
             @Valid @Parameter(schema = @Schema(type = "string", format = "binary")) UploadMetadata uploadMetadata,
             @RequestPart("file") MultipartFile file,
@@ -162,7 +162,7 @@ public class TemplateEndpoint {
         }
 
         try (var inputStream = file.getInputStream()) {
-            return success(templateService.uploadTemplate(inputStream, uploadMetadata, file, auditorAware.getCurrentAuditor()));
+            return success(templateService.upload(inputStream, uploadMetadata, file, auditorAware.getCurrentAuditor()));
         } catch (IOException e) {
             throw new DataUploadException(ERROR_FILE_UPLOAD_FAILED.name(), "Failed to store Template file.", fileName, e);
         }

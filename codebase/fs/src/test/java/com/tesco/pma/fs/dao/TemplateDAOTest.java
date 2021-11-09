@@ -36,8 +36,8 @@ public class TemplateDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet(BASE_PATH_TO_DATA_SET + "process_template_init.xml")
-    void findTemplateByUuid() {
-        final var result = instance.findTemplateByUuid(TEMPLATE_UUID_1, true);
+    void findByUuid() {
+        final var result = instance.findByUuid(TEMPLATE_UUID_1, true);
 
         assertThat(result).isNotNull();
         assertThat(result.getUuid()).isEqualTo(TEMPLATE_UUID_1);
@@ -45,8 +45,8 @@ public class TemplateDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet(BASE_PATH_TO_DATA_SET + "process_template_init.xml")
-    void findAllTemplates() {
-        final var result = instance.findAllTemplates(false);
+    void findAll() {
+        final var result = instance.findAll(false);
 
         assertThat(result).isNotEmpty();
         assertThat(result.size()).isEqualTo(3);
@@ -54,8 +54,8 @@ public class TemplateDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet(BASE_PATH_TO_DATA_SET + "process_template_init.xml")
-    void getMaxVersionForTemplate() {
-        final var result = instance.getMaxVersionForTemplate(PATH, "test1.txt");
+    void getMaxVersion() {
+        final var result = instance.getMaxVersion(PATH, "test1.txt");
 
         assertThat(result).isEqualTo(2);
     }
@@ -63,7 +63,7 @@ public class TemplateDAOTest extends AbstractDAOTest {
     @Test
     @DataSet(BASE_PATH_TO_DATA_SET + "cleanup.xml")
     @ExpectedDataSet(BASE_PATH_TO_DATA_SET + "process_template_create_expected.xml")
-    void createTemplateSucceeded() {
+    void saveSucceeded() {
         final var template = new ProcessTemplate();
         template.setUuid(TEMPLATE_UUID_2);
         template.setPath(PATH);
@@ -78,7 +78,7 @@ public class TemplateDAOTest extends AbstractDAOTest {
         template.setFileLength(0);
         template.setFileContent(new byte[] {});
 
-        final int rowsInserted = instance.saveTemplate(template);
+        final int rowsInserted = instance.save(template);
 
         assertThat(rowsInserted).isOne();
     }

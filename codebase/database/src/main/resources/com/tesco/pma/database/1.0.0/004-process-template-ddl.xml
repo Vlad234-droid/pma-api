@@ -73,12 +73,36 @@
             <column name="code" value="FORM"/>
             <column name="description" value="Process template type is FORM"/>
         </insert>
+        <insert tableName="process_template_type">
+            <column name="id" value="3"/>
+            <column name="code" value="PDF"/>
+            <column name="description" value="Process template type is PDF"/>
+        </insert>
+        <insert tableName="process_template_type">
+            <column name="id" value="4"/>
+            <column name="code" value="PPT"/>
+            <column name="description" value="Process template type is PPT"/>
+        </insert>
+        <insert tableName="process_template_type">
+            <column name="id" value="5"/>
+            <column name="code" value="XLS"/>
+            <column name="description" value="Process template type is XLS"/>
+        </insert>
         <rollback>
             <delete tableName="process_template_type">
                 <where>code = 'BPMN'</where>
             </delete>
             <delete tableName="process_template_type">
                 <where>code = 'FORM'</where>
+            </delete>
+            <delete tableName="process_template_type">
+                <where>code = 'PDF'</where>
+            </delete>
+            <delete tableName="process_template_type">
+                <where>code = 'PPT'</where>
+            </delete>
+            <delete tableName="process_template_type">
+                <where>code = 'XLS'</where>
             </delete>
         </rollback>
     </changeSet>

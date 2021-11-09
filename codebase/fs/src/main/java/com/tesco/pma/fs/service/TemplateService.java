@@ -29,8 +29,8 @@ public interface TemplateService {
      * @throws IOException in case of file access errors
      * @throws RegistrationException if failed to save template file to database
      */
-    ProcessTemplate uploadTemplate(@NotNull InputStream inputStream, @NotNull UploadMetadata uploadMetadata,
-                                   @NotNull MultipartFile file, @NotNull String creatorId) throws IOException;
+    ProcessTemplate upload(@NotNull InputStream inputStream, @NotNull UploadMetadata uploadMetadata,
+                           @NotNull MultipartFile file, @NotNull String creatorId) throws IOException;
 
     /**
      * Read all information about template by its identifier
@@ -40,7 +40,7 @@ public interface TemplateService {
      * @return Process Template data
      * @throws NotFoundException if template by uuid is not found
      */
-    ProcessTemplate findTemplateByUuid(@NotNull UUID templateUuid, boolean includeFileContent);
+    ProcessTemplate findByUuid(@NotNull UUID templateUuid, boolean includeFileContent);
 
     /**
      * Read all information about all templates
@@ -48,5 +48,5 @@ public interface TemplateService {
      * @param includeFileContent identifies if include contents of each of the files
      * @return Process Templates data
      */
-    List<ProcessTemplate> findAllTemplates(boolean includeFileContent);
+    List<ProcessTemplate> findAll(boolean includeFileContent);
 }

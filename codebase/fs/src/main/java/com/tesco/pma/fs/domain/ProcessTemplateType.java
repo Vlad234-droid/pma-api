@@ -10,7 +10,10 @@ import lombok.Getter;
 public enum ProcessTemplateType implements DictionaryItem<Integer> {
 
     BPMN(1, "Process template type is BPMN"),
-    FORM(2, "Process template type is FORM");
+    FORM(2, "Process template type is FORM"),
+    PDF(3, "Process template type is PDF"),
+    PPT(4, "Process template type is PPT"),
+    XLS(5, "Process template type is XLS");
 
     private final Integer id;
     private final String description;

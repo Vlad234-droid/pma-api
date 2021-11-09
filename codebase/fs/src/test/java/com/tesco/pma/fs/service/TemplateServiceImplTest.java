@@ -50,57 +50,57 @@ public class TemplateServiceImplTest {
     private TemplateDAO templateDao;
 
     @Test
-    void uploadTemplate() throws IOException {
+    void upload() throws IOException {
         var file = new MockMultipartFile(FILE_NAME, FILE_NAME, TEXT_PLAIN_VALUE, CONTENT);
         var inputStream = file.getInputStream();
         var uploadMetadata = new UploadMetadata();
 
-        when(templateDao.getMaxVersionForTemplate(PATH, FILE_NAME)).thenReturn(1);
-        when(templateDao.saveTemplate(any())).thenReturn(1);
+        when(templateDao.getMaxVersion(PATH, FILE_NAME)).thenReturn(1);
+        when(templateDao.save(any())).thenReturn(1);
 
-        var result = service.uploadTemplate(inputStream, uploadMetadata, file, CREATOR_ID);
+        var result = service.upload(inputStream, uploadMetadata, file, CREATOR_ID);
         assertNotNull(result);
         assertEquals(FILE_NAME, result.getFileName());
     }
 
     @Test
-    void uploadTemplateThrowsExceptionWhenDaoReturnsNotOne() throws IOException {
+    void uploadThrowsExceptionWhenDaoReturnsNotOne() throws IOException {
         var template = buildProcessTemplate(TEMPLATE_UUID_1, 1);
         var file = new MockMultipartFile("file1", FILE_NAME, TEXT_PLAIN_VALUE, CONTENT);
         var inputStream = file.getInputStream();
         var uploadMetadata = new UploadMetadata();
 
-        when(templateDao.getMaxVersionForTemplate(anyString(), anyString())).thenReturn(anyInt());
-        when(templateDao.saveTemplate(template)).thenReturn(-1);
+        when(templateDao.getMaxVersion(anyString(), anyString())).thenReturn(anyInt());
+        when(templateDao.save(template)).thenReturn(-1);
 
-        assertThrows(RegistrationException.class, () -> service.uploadTemplate(inputStream, uploadMetadata, file, CREATOR_ID));
+        assertThrows(RegistrationException.class, () -> service.upload(inputStream, uploadMetadata, file, CREATOR_ID));
     }
 
     @Test
-    void findTemplateByUuid() {
+    void findByUuid() {
         var template = buildProcessTemplate(TEMPLATE_UUID_1, 1);
-        when(templateDao.findTemplateByUuid(TEMPLATE_UUID_1, false)).thenReturn(template);
+        when(templateDao.findByUuid(TEMPLATE_UUID_1, false)).thenReturn(template);
 
-        var result = service.findTemplateByUuid(TEMPLATE_UUID_1, false);
+        var result = service.findByUuid(TEMPLATE_UUID_1, false);
 
         assertEquals(template, result);
     }
 
     @Test
-    void findTemplateByUuidThrowsExceptionWhenDaoReturnsNull() {
-        when(templateDao.findTemplateByUuid(TEMPLATE_UUID_1, true)).thenReturn(null);
+    void findByUuidThrowsExceptionWhenDaoReturnsNull() {
+        when(templateDao.findByUuid(TEMPLATE_UUID_1, true)).thenReturn(null);
 
-        assertThrows(NotFoundException.class, () -> service.findTemplateByUuid(TEMPLATE_UUID_1, true));
+        assertThrows(NotFoundException.class, () -> service.findByUuid(TEMPLATE_UUID_1, true));
     }
 
     @Test
-    void findAllTemplates() {
+    void findAll() {
         var templates = Arrays.asList(buildProcessTemplate(TEMPLATE_UUID_1, 1),
                 buildProcessTemplate(TEMPLATE_UUID_2, 1));
 
-        when(templateDao.findAllTemplates(false)).thenReturn(templates);
+        when(templateDao.findAll(false)).thenReturn(templates);
 
-        var result = service.findAllTemplates(false);
+        var result = service.findAll(false);
 
         assertEquals(templates, result);
     }
