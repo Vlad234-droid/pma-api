@@ -1,24 +1,5 @@
 package com.tesco.pma.colleague.profile.service;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
-import com.tesco.pma.colleague.profile.dao.ProfileDAO;
-import com.tesco.pma.colleague.profile.domain.ImportReport;
-import com.tesco.pma.colleague.profile.parser.XlsxParser;
-import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-
 import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.api.Contact;
 import com.tesco.pma.colleague.api.ExternalSystems;
@@ -29,20 +10,23 @@ import com.tesco.pma.colleague.api.workrelationships.Department;
 import com.tesco.pma.colleague.api.workrelationships.Job;
 import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
 import com.tesco.pma.colleague.profile.dao.ProfileAttributeDAO;
+import com.tesco.pma.colleague.profile.dao.ProfileDAO;
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
+import com.tesco.pma.colleague.profile.domain.ImportReport;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.exception.ErrorCodes;
+import com.tesco.pma.colleague.profile.parser.XlsxParser;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.organisation.dao.ConfigEntryDAO;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,6 +34,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link ProfileService}.
@@ -254,7 +239,7 @@ public class ProfileServiceImpl implements ProfileService {
         wr.setJob(getJob(oc));
         wr.setManagerUUID(oc.getManagerUuid());
         if (wr.getManagerUUID() != null) {
-            com.tesco.pma.organisation.api.Colleague mng = configEntryDAO.getColleague(wr.getManagerUUID());
+            var mng = profileDAO.getColleague(wr.getManagerUUID());
             if (mng != null) {
                 wr.setManager(getColleague(mng, wr.getManagerUUID(), true));
             }
