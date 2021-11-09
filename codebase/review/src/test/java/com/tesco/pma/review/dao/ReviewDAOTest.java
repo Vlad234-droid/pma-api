@@ -6,7 +6,7 @@ import com.tesco.pma.api.MapJson;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.Review;
-import com.tesco.pma.review.domain.ReviewStatus;
+import com.tesco.pma.api.ReviewStatus;
 import com.tesco.pma.review.domain.WorkingGroupObjective;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -19,12 +19,15 @@ import org.springframework.test.context.DynamicPropertySource;
 
 import java.sql.Timestamp;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.tesco.pma.review.domain.ReviewStatus.DRAFT;
-import static com.tesco.pma.review.domain.ReviewStatus.WAITING_FOR_APPROVAL;
-import static com.tesco.pma.review.domain.ReviewType.OBJECTIVE;
+import static com.tesco.pma.api.ReviewStatus.APPROVED;
+import static com.tesco.pma.api.ReviewStatus.DECLINED;
+import static com.tesco.pma.api.ReviewStatus.DRAFT;
+import static com.tesco.pma.api.ReviewStatus.WAITING_FOR_APPROVAL;
+import static com.tesco.pma.api.ReviewType.OBJECTIVE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
 import static org.assertj.core.api.InstanceOfAssertFactories.type;
@@ -183,7 +186,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void getReview() {
         final var result = instance.getReview(
                 PERFORMANCE_CYCLE_UUID,
@@ -202,7 +205,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void getReviewNotExist() {
         final var result = instance.getReview(
                 PERFORMANCE_CYCLE_UUID,
@@ -214,7 +217,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "cleanup.xml"})
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "cleanup.xml"})
     @ExpectedDataSet("review_create_expected_1.xml")
     void createReviewSucceeded() {
         final var review = Review.builder()
@@ -233,7 +236,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void createReviewAlreadyExist() {
 
         final var review = Review.builder()
@@ -251,36 +254,27 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void deleteReviewNotExist() {
         final var result = instance.deleteReview(
                 PERFORMANCE_CYCLE_UUID,
                 COLLEAGUE_UUID_NOT_EXIST,
                 OBJECTIVE,
-                NUMBER_1);
+                NUMBER_1,
+                List.of(DRAFT, DECLINED, APPROVED));
         assertThat(result).isZero();
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void deleteReviewSucceeded() {
         final var result = instance.deleteReview(
                 PERFORMANCE_CYCLE_UUID,
                 COLLEAGUE_UUID,
                 OBJECTIVE,
-                NUMBER_1);
+                NUMBER_1,
+                List.of(DRAFT, DECLINED, APPROVED));
         assertThat(result).isOne();
-    }
-
-    @Test
-    @DataSet({"group_objective_init.xml", "review_init.xml"})
-    void deleteReviewsSucceeded() {
-        final var result = instance.deleteReviews(
-                PERFORMANCE_CYCLE_UUID,
-                COLLEAGUE_UUID,
-                OBJECTIVE,
-                NUMBER_1);
-        assertThat(result).isEqualTo(2);
     }
 
     @Test
@@ -291,7 +285,8 @@ class ReviewDAOTest extends AbstractDAOTest {
                 PERFORMANCE_CYCLE_UUID,
                 COLLEAGUE_UUID,
                 OBJECTIVE,
-                NUMBER_1);
+                NUMBER_1,
+                List.of(DRAFT, DECLINED, APPROVED));
         final var result = instance.renumerateReviews(
                 PERFORMANCE_CYCLE_UUID,
                 COLLEAGUE_UUID,
@@ -301,7 +296,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     @ExpectedDataSet("review_update_expected_1.xml")
     void updateReviewSucceeded() {
         final var review = Review.builder()
@@ -314,13 +309,13 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .status(DRAFT)
                 .build();
 
-        final var result = instance.updateReview(review);
+        final var result = instance.updateReview(review, List.of(DRAFT, DECLINED, APPROVED));
 
         assertThat(result).isOne();
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void updateReviewNotExist() {
         final var review = Review.builder()
                 .colleagueUuid(COLLEAGUE_UUID_NOT_EXIST)
@@ -331,13 +326,13 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .status(WAITING_FOR_APPROVAL)
                 .build();
 
-        final var result = instance.updateReview(review);
+        final var result = instance.updateReview(review, List.of(DRAFT, DECLINED, APPROVED));
 
         assertThat(result).isZero();
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     @ExpectedDataSet("review_update_status_1.xml")
     void updateReviewStatusSucceeded() {
 
@@ -353,7 +348,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     @ExpectedDataSet("review_unlink_group_objective_expected.xml")
     void updateReviewUnlinkGroupObjective() {
         final var review = Review.builder()
@@ -366,7 +361,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .status(ReviewStatus.DRAFT)
                 .build();
 
-        final var result = instance.updateReview(review);
+        final var result = instance.updateReview(review, List.of(DRAFT, DECLINED, APPROVED));
 
         assertThat(result).isOne();
     }

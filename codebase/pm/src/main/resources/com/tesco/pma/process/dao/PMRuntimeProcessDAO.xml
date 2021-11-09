@@ -15,6 +15,7 @@
     <resultMap id="pmProcess" type="com.tesco.pma.process.api.PMRuntimeProcess">
         <id column="uuid" property="id"/>
         <result column="status_id" property="status" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.process.api.PMProcessStatus" />
+        <result column="cycle_uuid" property="cycleUuid"/>
         <result column="bpm_process_id" property="bpmProcessId"/>
         <result column="business_key" property="businessKey"/>
         <result column="last_update_time" property="lastUpdateTime"/>
@@ -26,33 +27,26 @@
         <id column="update_time" property="updateTime"/>
     </resultMap>
 
-    <resultMap id="processTimeline" type="com.tesco.pma.process.api.PMTimelinePoint">
-        <result property="cycleUuid" column="cycle"/>
-        <result property="code" column="code"/>
-        <result property="description" column="description"/>
-        <result property="status" column="status"/>
-        <result property="type" column="type"/>
-    </resultMap>
-
     <select id="read" resultMap="pmProcess">
-        select * from pm_process where uuid = #{uuid}
+        select * from pm_rt_process where uuid = #{uuid}
     </select>
 
     <select id="findByBusinessKey" resultMap="pmProcess">
-        select * from pm_process where business_key = #{businessKey}
+        select * from pm_rt_process where business_key = #{businessKey}
         order by last_update_time desc
     </select>
 
     <select id="readHistory" resultMap="pmProcessHistory">
-        select * from pm_process_hi where uuid = #{uuid}
+        select * from pm_rt_process_hi where uuid = #{uuid}
         order by update_time
     </select>
 
     <insert id="createInt" parameterType="com.tesco.pma.process.api.PMRuntimeProcess" useGeneratedKeys="true" keyColumn="uuid" keyProperty="id">
-        insert into pm_process (uuid, status_id, bpm_process_id, business_key, last_update_time)
+        insert into pm_rt_process (uuid, status_id, cycle_uuid, bpm_process_id, business_key, last_update_time)
         values (
             #{process.id},
             #{process.status.id},
+            #{process.cycleUuid},
             #{process.bpmProcessId},
             #{process.businessKey},
             #{process.lastUpdateTime}
@@ -60,55 +54,18 @@
     </insert>
 
     <update id="updateStatusInt">
-        UPDATE pm_process
+        UPDATE pm_rt_process
         SET status_id = #{status.id}, last_update_time = #{updateTime}
         WHERE uuid = #{uuid}
             <include refid="addStatusIdCondition" />
     </update>
 
     <insert id="createHistoryRecord">
-        insert into pm_process_hi (uuid, status_id, update_time)
+        insert into pm_rt_process_hi (uuid, status_id, update_time)
         values (
             #{uuid},
             #{status.id},
             #{updateTime}
         )
     </insert>
-
-    <insert id="saveMetadata" parameterType="com.tesco.pma.process.api.PMProcessMetadata">
-        insert into pm_process_metadata (rt_process_uuid, metadata)
-        values (#{processUuid},
-        #{metadata}::jsonb)
-    </insert>
-
-    <select id="readTimeline" resultMap="processTimeline">
-        select yyy.code as code,
-            yyy.description as description,
-            rt.description as type,
-            rs.code as status,
-            yyy.cycle_id as cycle
-        from
-            (select json_extract_path_text(yy.xx, 'id') as rw_uuid,
-                json_extract_path_text(yy.xx, 'code') as code,
-                json_extract_path_text(yy.xx, 'description') as description,
-                json_extract_path_text(yy.xx, 'reviewType', 'code') as rw_type_code,
-                json_extract_path_text(yy.xx, 'properties', 'pm_review_start_time') as start_time,
-                yy.cycle_id as cycle_id,
-                row_number() over () as rn
-            from (select json_array_elements((metadata->'cycle'->'reviews')::json) as xx,
-                    rt_process_uuid as cycle_id
-                from pm_process_metadata
-                where rt_process_uuid = #{processUuid})
-            yy) yyy
-        inner join review_type rt on LOWER(rt.code) = LOWER(yyy.rw_type_code)
-        left join review rw on rw.performance_cycle_uuid = yyy.cycle_id and rt.id = rw.type_id
-        left join review_status rs on rw.status_id = rs.id
-        order by yyy.rn
-    </select>
-
-    <select id="getMetadata" resultType="string">
-        select metadata
-        from pm_process_metadata
-        where rt_process_uuid = #{uuid}
-    </select>
 </mapper>

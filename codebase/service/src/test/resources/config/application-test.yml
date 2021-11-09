@@ -49,12 +49,14 @@ spring:
                               com.tesco.pma.colleague.profile.domain,
                               com.tesco.pma.organisation.api,
                               com.tesco.pma.review.domain,
+                              com.tesco.pma.feedback.api,
                               com.tesco.pma.colleague.security.domain
         configuration-properties:
           base-package: com.tesco.pma.dao,
                         com.tesco.pma.colleague.profile.dao,
                         com.tesco.pma.organisation.dao,
                         com.tesco.pma.review.dao,
+                        com.tesco.pma.feedback.dao,
                         com.tesco.pma.colleague.security.dao
           batchSize: 100
     postgres-version: 11.11

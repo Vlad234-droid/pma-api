@@ -16,14 +16,32 @@
         <result property="colleagueUuid" column="colleague_uuid"/>
         <result property="performanceCycleUuid" column="performance_cycle_uuid"/>
         <result property="type" column="type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.review.domain.ReviewType"/>
+                javaType="com.tesco.pma.api.ReviewType"/>
         <result property="number" column="number"/>
         <result property="properties" column="properties"
                 typeHandler="com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler"
                 javaType="com.tesco.pma.api.MapJson"/>
         <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.review.domain.ReviewStatus"/>
+                javaType="com.tesco.pma.api.ReviewStatus"/>
+    </resultMap>
+
+    <resultMap id="colleagueReviewsResultMap" type="com.tesco.pma.review.domain.ColleagueReviews">
+        <id property="uuid" column="uuid"/>
+        <result property="firstName" column="first_name"/>
+        <result property="lastName" column="last_name"/>
+        <result property="jobName" column="job_name"/>
+        <result property="businessType" column="business_type"/>
+        <collection property="reviews" ofType="com.tesco.pma.review.domain.SimplifiedReview">
+            <id property="uuid" column="review_uuid"/>
+            <result property="type" column="review_type_id"
+                    typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                    javaType="com.tesco.pma.api.ReviewType"/>
+            <result property="status" column="review_status_id"
+                    typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                    javaType="com.tesco.pma.api.ReviewStatus"/>
+            <result property="number" column="review_number"/>
+        </collection>
     </resultMap>
 
     <resultMap id="workingGroupObjectiveResultMap" type="com.tesco.pma.review.domain.WorkingGroupObjective">
@@ -117,10 +135,10 @@
         VALUES (#{review.uuid},
                 #{review.colleagueUuid},
                 #{review.performanceCycleUuid},
-                #{review.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.review.domain.ReviewType},
+                #{review.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.api.ReviewType},
                 #{review.number},
                 #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-                #{review.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.review.domain.ReviewStatus});
+                #{review.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.api.ReviewStatus});
     </insert>
 
     <select id="getReview" resultMap="reviewResultMap">
@@ -153,22 +171,40 @@
         order by r.number
     </select>
 
+    <select id="getTeamReviews" resultMap="colleagueReviewsResultMap">
+        select c.uuid,
+               c.first_name,
+               c.last_name,
+               j.name          as job_name,
+               d.business_type as business_type,
+               r.uuid          as review_uuid,
+               r.type_id       as review_type_id,
+               r.status_id     as review_status_id,
+               r.number        as review_number
+        from colleague c
+                 inner join job j
+                            on (j.id = c.job_id)
+                 inner join department d
+                            on (d.id = c.department_id)
+                 left join review r
+                            on (c.uuid = r.colleague_uuid)
+        where c.manager_uuid = #{managerUuid}
+        order by c.last_name, c.first_name, r.type_id, r.status_id, r.uuid
+    </select>
+
     <delete id="deleteReview">
         DELETE
         FROM review r
         WHERE r.colleague_uuid = #{colleagueUuid}
-          and r.performance_cycle_uuid = #{performanceCycleUuid}
-          and r.type_id = #{type.id}
-          and r.number = #{number}
-    </delete>
-
-    <delete id="deleteReviews">
-        DELETE
-        FROM review r
-        WHERE r.colleague_uuid = #{colleagueUuid}
-          and r.performance_cycle_uuid = #{performanceCycleUuid}
-          and r.type_id = #{type.id}
-          and r.number >= #{startNumber}
+        and r.performance_cycle_uuid = #{performanceCycleUuid}
+        and r.type_id = #{type.id}
+        and r.number = #{number}
+        <if test="allowedReviewStatuses != null and !allowedReviewStatuses.isEmpty()">
+            and r.status_id in
+            <foreach item="allowedStatus" collection="allowedReviewStatuses" separator="," open="(" close=")">
+                #{allowedStatus.id}
+            </foreach>
+        </if>
     </delete>
 
     <update id="renumerateReviews" flushCache="true">
@@ -183,12 +219,18 @@
     <update id="updateReview" flushCache="true">
         UPDATE review
         SET properties =
-                #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-            status_id  = #{review.status.id}
+        #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+        status_id = #{review.status.id}
         WHERE performance_cycle_uuid = #{review.performanceCycleUuid}
-          and colleague_uuid = #{review.colleagueUuid}
-          and type_id = #{review.type.id}
-          and number = #{review.number};
+        and colleague_uuid = #{review.colleagueUuid}
+        and type_id = #{review.type.id}
+        and number = #{review.number}
+        <if test="allowedReviewStatuses != null and !allowedReviewStatuses.isEmpty()">
+            and status_id in
+            <foreach item="allowedStatus" collection="allowedReviewStatuses" separator="," open="(" close=")">
+                #{allowedStatus.id}
+            </foreach>
+        </if>
     </update>
 
     <update id="updateReviewStatus" flushCache="true">

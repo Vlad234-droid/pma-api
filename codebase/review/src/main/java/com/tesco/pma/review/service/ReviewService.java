@@ -2,10 +2,11 @@ package com.tesco.pma.review.service;
 
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.review.domain.ColleagueReviews;
 import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.Review;
-import com.tesco.pma.review.domain.ReviewStatus;
-import com.tesco.pma.review.domain.ReviewType;
+import com.tesco.pma.api.ReviewStatus;
+import com.tesco.pma.api.ReviewType;
 import com.tesco.pma.review.domain.WorkingGroupObjective;
 
 import javax.validation.constraints.NotNull;
@@ -45,6 +46,14 @@ public interface ReviewService {
     List<Review> getReviews(@NotNull UUID performanceCycleUuid,
                             @NotNull UUID colleagueUuid,
                             @NotNull ReviewType type);
+
+    /**
+     * Finds list of colleagues reviews by managerUuid
+     *
+     * @param managerUuid an identifier of colleague
+     * @return a list of colleagues reviews
+     */
+    List<ColleagueReviews> getTeamReviews(@NotNull UUID managerUuid);
 
     /**
      * Creates review.

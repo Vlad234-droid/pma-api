@@ -1,9 +1,10 @@
 package com.tesco.pma.review.dao;
 
+import com.tesco.pma.review.domain.ColleagueReviews;
 import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.Review;
-import com.tesco.pma.review.domain.ReviewStatus;
-import com.tesco.pma.review.domain.ReviewType;
+import com.tesco.pma.api.ReviewStatus;
+import com.tesco.pma.api.ReviewType;
 import com.tesco.pma.review.domain.WorkingGroupObjective;
 import org.apache.ibatis.annotations.Param;
 
@@ -91,6 +92,14 @@ public interface ReviewDAO {
                             @Param("type") ReviewType type);
 
     /**
+     * Returns list of colleagues reviews by managerUuid
+     *
+     * @param managerUuid an identifier of colleague
+     * @return a list of colleagues reviews with active reviews
+     */
+    List<ColleagueReviews> getTeamReviews(@Param("managerUuid") UUID managerUuid);
+
+    /**
      * Creates a review
      *
      * @param review a Review
@@ -104,7 +113,8 @@ public interface ReviewDAO {
      * @param review a Review
      * @return number of updated reviews
      */
-    int updateReview(@Param("review") Review review);
+    int updateReview(@Param("review") Review review,
+                     @Param("allowedReviewStatuses") Collection<ReviewStatus> allowedReviewStatuses);
 
     /**
      * Updates a review status
@@ -136,21 +146,8 @@ public interface ReviewDAO {
     int deleteReview(@Param("performanceCycleUuid") UUID performanceCycleUuid,
                      @Param("colleagueUuid") UUID colleagueUuid,
                      @Param("type") ReviewType type,
-                     @Param("number") Integer number);
-
-    /**
-     * Delete reviews with number >= startNumber
-     *
-     * @param performanceCycleUuid an identifier of performance cycle
-     * @param colleagueUuid        an identifier of colleague
-     * @param type                 a review type
-     * @param startNumber          a start sequence number of review
-     * @return number of deleted reviews
-     */
-    int deleteReviews(@Param("performanceCycleUuid") UUID performanceCycleUuid,
-                      @Param("colleagueUuid") UUID colleagueUuid,
-                      @Param("type") ReviewType type,
-                      @Param("startNumber") Integer startNumber);
+                     @Param("number") Integer number,
+                     @Param("allowedReviewStatuses") Collection<ReviewStatus> allowedReviewStatuses);
 
     /**
      * Re-numerate reviews with number >= startNumber using the following formula:
