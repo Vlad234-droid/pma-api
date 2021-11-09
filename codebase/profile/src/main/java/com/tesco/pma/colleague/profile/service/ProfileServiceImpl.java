@@ -24,6 +24,7 @@ import com.tesco.pma.colleague.api.Contact;
 import com.tesco.pma.colleague.api.ExternalSystems;
 import com.tesco.pma.colleague.api.IamSourceSystem;
 import com.tesco.pma.colleague.api.Profile;
+import com.tesco.pma.colleague.api.service.ServiceDates;
 import com.tesco.pma.colleague.api.workrelationships.Department;
 import com.tesco.pma.colleague.api.workrelationships.Job;
 import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
@@ -34,8 +35,21 @@ import com.tesco.pma.colleague.profile.exception.ErrorCodes;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.organisation.dao.ConfigEntryDAO;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.function.Predicate;
 
 /**
  * Implementation of {@link ProfileService}.
@@ -179,18 +193,28 @@ public class ProfileServiceImpl implements ProfileService {
     private Colleague findColleagueByColleagueUuid(UUID colleagueUuid) {
         ColleagueEntity oc = profileDAO.getColleague(colleagueUuid);
         //todo try to download and insert colleagueApiService.findColleagueByUuid(colleagueUuid)
-        return oc != null ? getColleague(oc, colleagueUuid) : null;
+        return oc != null ? getColleague(oc, colleagueUuid, false) : null;
     }
 
-    private Colleague getColleague(ColleagueEntity oc, UUID colleagueUuid) {
+    private Colleague getColleague(ColleagueEntity oc, UUID colleagueUuid, boolean child) {
         var colleague = new Colleague();
         colleague.setColleagueUUID(colleagueUuid);
         colleague.setCountryCode(oc.getCountry().getCode());
         colleague.setProfile(getProfile(oc));
-        colleague.setWorkRelationships(Collections.singletonList(getWorkRelationship(oc)));
-        colleague.setExternalSystems(getExternalSystems(oc));
         colleague.setContact(getContact(oc));
+        if (!child) {
+            colleague.setWorkRelationships(Collections.singletonList(getWorkRelationship(oc)));
+            colleague.setExternalSystems(getExternalSystems(oc));
+            colleague.setServiceDates(getServiceDates(oc));
+        }
         return colleague;
+    }
+
+    private ServiceDates getServiceDates(ColleagueEntity oc) {
+        var serviceDates = new ServiceDates();
+        serviceDates.setHireDate(oc.getHireDate());
+        serviceDates.setLeavingDate(oc.getLeavingDate());
+        return serviceDates;
     }
 
     private Contact getContact(ColleagueEntity oc) {
@@ -224,8 +248,17 @@ public class ProfileServiceImpl implements ProfileService {
         wr.setWorkLevel(WorkRelationship.WorkLevel.getByCode(oc.getWorkLevel().getCode()));
         wr.setPrimaryEntity(oc.getPrimaryEntity());
         wr.setSalaryFrequency(oc.getSalaryFrequency());
+        wr.setIsManager(oc.isManager());
+        wr.setEmploymentType(oc.getEmploymentType());
         wr.setDepartment(getDepartment(oc));
         wr.setJob(getJob(oc));
+        wr.setManagerUUID(oc.getManagerUuid());
+        if (wr.getManagerUUID() != null) {
+            com.tesco.pma.organisation.api.Colleague mng = configEntryDAO.getColleague(wr.getManagerUUID());
+            if (mng != null) {
+                wr.setManager(getColleague(mng, wr.getManagerUUID(), true));
+            }
+        }
         return wr;
     }
 
@@ -260,7 +293,8 @@ public class ProfileServiceImpl implements ProfileService {
 
     private NotFoundException notFound(String paramName, Object paramValue) {
         return new NotFoundException(ErrorCodes.PROFILE_NOT_FOUND.getCode(),
-                messages.getMessage(ErrorCodes.PROFILE_NOT_FOUND, Map.of("param_name", paramName, "param_value", paramValue)));
+                messages.getMessage(ErrorCodes.PROFILE_NOT_FOUND,
+                        Map.of("param_name", paramName, "param_value", paramValue)));
     }
 
 }

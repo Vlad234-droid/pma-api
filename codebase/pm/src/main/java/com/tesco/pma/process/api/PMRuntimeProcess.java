@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 public class PMRuntimeProcess implements Identified<UUID>, StatusAware<PMProcessStatus> {
     private UUID id;
     private PMProcessStatus status;
+    private UUID cycleUuid;
     private UUID bpmProcessId;
     private String businessKey;
     private Instant lastUpdateTime;

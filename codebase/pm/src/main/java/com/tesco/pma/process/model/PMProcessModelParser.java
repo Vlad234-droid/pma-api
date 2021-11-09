@@ -11,21 +11,21 @@ import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperties;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperty;
 
 import com.tesco.pma.api.GeneralDictionaryItem;
-import com.tesco.pma.process.api.model.PMCycle;
-import com.tesco.pma.process.api.model.PMForm;
-import com.tesco.pma.process.api.model.PMReview;
+import com.tesco.pma.cycle.api.model.PMCycleElement;
+import com.tesco.pma.cycle.api.model.PMFormElement;
+import com.tesco.pma.cycle.api.model.PMReviewElement;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.tesco.pma.process.api.model.PMElement.PM_TYPE;
-import static com.tesco.pma.process.api.model.PMForm.PM_FORM_KEY;
-import static com.tesco.pma.process.api.model.PMReview.DEFAULT_PM_REVIEW_MAX;
-import static com.tesco.pma.process.api.model.PMReview.DEFAULT_PM_REVIEW_MIN;
-import static com.tesco.pma.process.api.model.PMReview.PM_REVIEW;
-import static com.tesco.pma.process.api.model.PMReview.PM_REVIEW_MAX;
-import static com.tesco.pma.process.api.model.PMReview.PM_REVIEW_MIN;
-import static com.tesco.pma.process.api.model.PMReview.PM_REVIEW_TYPE;
+import static com.tesco.pma.cycle.api.model.PMElement.PM_TYPE;
+import static com.tesco.pma.cycle.api.model.PMFormElement.PM_FORM_KEY;
+import static com.tesco.pma.cycle.api.model.PMReviewElement.DEFAULT_PM_REVIEW_MAX;
+import static com.tesco.pma.cycle.api.model.PMReviewElement.DEFAULT_PM_REVIEW_MIN;
+import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW;
+import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MAX;
+import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MIN;
+import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_TYPE;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 15.10.2021 Time: 15:45
@@ -37,11 +37,11 @@ public class PMProcessModelParser {
 
     private final ResourceProvider resourceProvider;
 
-    public void parse(PMCycle cycle, Collection<Activity> tasks) {
+    public void parse(PMCycleElement cycle, Collection<Activity> tasks) {
         tasks.forEach(task -> processTask(cycle, task));
     }
 
-    private void processTask(PMCycle cycle, Activity task) {
+    private void processTask(PMCycleElement cycle, Activity task) {
         var extensionElements = task.getExtensionElements();
         if (extensionElements != null) {
             var propsQuery = extensionElements.getElementsQuery().filterByType(CamundaProperties.class);
@@ -61,9 +61,9 @@ public class PMProcessModelParser {
         }
     }
 
-    private PMReview parseReview(Activity task, CamundaProperties props, String type) {
+    private PMReviewElement parseReview(Activity task, CamundaProperties props, String type) {
         var name = defaultValue(unwrap(task.getName()), task.getId());
-        var pmReview = new PMReview(task.getId(), name, name, new GeneralDictionaryItem(null, type, null));
+        var pmReview = new PMReviewElement(task.getId(), name, name, new GeneralDictionaryItem(null, type, null));
 
         props.getCamundaProperties().forEach(property -> {
             var key = property.getCamundaName().toLowerCase();
@@ -87,7 +87,7 @@ public class PMProcessModelParser {
                 var formName = getFormName(formKey);
                 var formJson = resourceProvider.resourceToString(formName);
 
-                pmReview.setForm(new PMForm(formKey, formName, formJson));
+                pmReview.setForm(new PMFormElement(formKey, formName, formJson));
             } catch (Exception e) {
                 log.warn("Form was not found {}", formKey, e); //todo exception handling
             }
