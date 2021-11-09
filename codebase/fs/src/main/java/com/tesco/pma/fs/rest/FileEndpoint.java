@@ -3,9 +3,9 @@ package com.tesco.pma.fs.rest;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.exception.DataUploadException;
 import com.tesco.pma.exception.InvalidPayloadException;
-import com.tesco.pma.fs.domain.ProcessTemplate;
+import com.tesco.pma.fs.domain.File;
 import com.tesco.pma.fs.domain.UploadMetadata;
-import com.tesco.pma.fs.service.TemplateService;
+import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.logging.TraceUtils;
 import com.tesco.pma.rest.HttpStatusCodes;
 
@@ -52,79 +52,79 @@ import static java.util.UUID.fromString;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
 /**
- * Template service endpoint.
+ * File service endpoint.
  */
 @RestController
-@RequestMapping(path = "/templates")
+@RequestMapping(path = "/files")
 @Validated
 @RequiredArgsConstructor
-public class TemplateEndpoint {
+public class FileEndpoint {
 
     public static final String INCLUDE_FILE_CONTENT = "includeFileContent";
 
-    private final TemplateService templateService;
+    private final FileService fileService;
     private final AuditorAware<String> auditorAware;
 
     @Operation(
-            summary = "Read Template information by its uuid",
-            description = "Read Template information by its uuid",
-            tags = "template",
+            summary = "Read File information by its uuid",
+            description = "Read File information by its uuid",
+            tags = "file",
             responses = {
-                    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the template data by its uuid"),
-                    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Template data not found", content = @Content),
+                    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the file data by its uuid"),
+                    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
             })
-    @GetMapping("{templateUuid}")
-    public RestResponse<ProcessTemplate> findByUuid(@PathVariable String templateUuid,
-                                                    @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true")
-                                                            boolean includeFileContent) {
-        return success(templateService.findByUuid(fromString(templateUuid), includeFileContent));
+    @GetMapping("{fileUuid}")
+    public RestResponse<File> findByUuid(@PathVariable String fileUuid,
+                                         @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true")
+                                                 boolean includeFileContent) {
+        return success(fileService.findByUuid(fromString(fileUuid), includeFileContent));
     }
 
     @Operation(
-            summary = "Read All Templates information",
-            description = "Read All Templates information",
-            tags = "template",
+            summary = "Read All Files information",
+            description = "Read All Files information",
+            tags = "file",
             responses = {
-                    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found all templates data"),
-                    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Templates data not found", content = @Content),
+                    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found all files data"),
+                    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Files data not found", content = @Content),
             })
     @GetMapping("/all")
-    public RestResponse<List<ProcessTemplate>> findAll(@RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true")
+    public RestResponse<List<File>> findAll(@RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true")
                                                                boolean includeFileContent) {
-        return success(templateService.findAll(includeFileContent));
+        return success(fileService.findAll(includeFileContent));
     }
 
     /**
-     * GET call to download Template file.
+     * GET call to download file.
      *
-     * @return a RestResponse with downloaded Template file
+     * @return a RestResponse with downloaded file
      * @throws IOException if the resource cannot be resolved
      */
-    @Operation(summary = "Download Template file",
-            description = "Download Template file",
-            tags = "template")
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Template downloaded")
+    @Operation(summary = "Download file",
+            description = "Download file",
+            tags = "file")
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "File downloaded")
     @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Invalid id supplied", content = @Content)
-    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Template not found",
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File not found",
             content = @Content(mediaType = APPLICATION_OCTET_STREAM_VALUE))
     @ApiResponse(responseCode = HttpStatusCodes.UNAUTHORIZED, description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = HttpStatusCodes.FORBIDDEN, description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Internal Server Error", content = @Content)
-    @GetMapping("/download/{templateUuid}")
-    public ResponseEntity<Resource> download(@PathVariable String templateUuid) {
-        var template = templateService.findByUuid(fromString(templateUuid), true);
-        byte[] content = template.getFileContent();
+    @GetMapping("/download/{fileUuid}")
+    public ResponseEntity<Resource> download(@PathVariable String fileUuid) {
+        var file = fileService.findByUuid(fromString(fileUuid), true);
+        byte[] content = file.getFileContent();
 
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + template.getFileName() + "\"")
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(content.length)
                 .body(new ByteArrayResource(content));
     }
 
     @Operation(
-            summary = "Upload Template file",
-            description = "Upload Template file",
-            tags = "template",
+            summary = "Upload file",
+            description = "Upload file",
+            tags = "file",
             requestBody = @RequestBody(
                     required = true,
                     content = @Content(
@@ -135,7 +135,7 @@ public class TemplateEndpoint {
                             })
             ),
             responses = {
-                    @ApiResponse(responseCode = CREATED, description = "Uploaded Template file")
+                    @ApiResponse(responseCode = CREATED, description = "Uploaded file")
             }
     )
     @PostMapping(path = "/",
@@ -143,7 +143,7 @@ public class TemplateEndpoint {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<ProcessTemplate> upload(
+    public RestResponse<File> upload(
             @RequestPart("uploadMetadata")
             @Valid @Parameter(schema = @Schema(type = "string", format = "binary")) UploadMetadata uploadMetadata,
             @RequestPart("file") MultipartFile file,
@@ -154,7 +154,7 @@ public class TemplateEndpoint {
 
         var fileName = file.getOriginalFilename();
         if (file.isEmpty()) {
-            throw new DataUploadException(ERROR_FILE_UPLOAD_FAILED.name(), "Failed to store empty Template file.", fileName);
+            throw new DataUploadException(ERROR_FILE_UPLOAD_FAILED.name(), "Failed to store empty file.", fileName);
         }
 
         if (StringUtils.isBlank(fileName)) {
@@ -162,9 +162,9 @@ public class TemplateEndpoint {
         }
 
         try (var inputStream = file.getInputStream()) {
-            return success(templateService.upload(inputStream, uploadMetadata, file, auditorAware.getCurrentAuditor()));
+            return success(fileService.upload(inputStream, uploadMetadata, file, auditorAware.getCurrentAuditor()));
         } catch (IOException e) {
-            throw new DataUploadException(ERROR_FILE_UPLOAD_FAILED.name(), "Failed to store Template file.", fileName, e);
+            throw new DataUploadException(ERROR_FILE_UPLOAD_FAILED.name(), "Failed to store file.", fileName, e);
         }
     }
 

@@ -4,19 +4,19 @@ import com.tesco.pma.api.DictionaryItem;
 import lombok.Getter;
 
 /**
- * Process Template statuses
+ * File statuses
  */
 @Getter
-public enum ProcessTemplateStatus implements DictionaryItem<Integer> {
+public enum FileStatus implements DictionaryItem<Integer> {
 
-    DRAFT(1, "Process template is in DRAFT status"),
-    ACTIVE(2, "Process template is in ACTIVE status"),
-    INACTIVE(3, "Process template is in INACTIVE status");
+    DRAFT(1, "File is in DRAFT status"),
+    ACTIVE(2, "File is in ACTIVE status"),
+    INACTIVE(3, "File is in INACTIVE status");
 
     private final Integer id;
     private final String description;
 
-    ProcessTemplateStatus(Integer id, String description) {
+    FileStatus(Integer id, String description) {
         this.id = id;
         this.description = description;
     }

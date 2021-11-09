@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.tesco.pma.fs.dao.TemplateDAO">
+<mapper namespace="com.tesco.pma.fs.dao.FileDAO">
 
-    <resultMap id="templateResultMap" type="com.tesco.pma.fs.domain.ProcessTemplate">
+    <resultMap id="fileResultMap" type="com.tesco.pma.fs.domain.File">
         <id property="uuid" column="uuid"/>
         <result property="path" column="path"/>
         <result property="version" column="version"/>
-        <result property="type" column="type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.fs.domain.ProcessTemplateType"/>
-        <result property="status" column="status_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.fs.domain.ProcessTemplateStatus"/>
+        <result property="type" column="type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.fs.domain.FileType"/>
+        <result property="status" column="status_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.fs.domain.FileStatus"/>
         <result property="description" column="description"/>
         <result property="createdBy" column="created_by"/>
         <result property="createdTime" column="created_time"/>
@@ -18,27 +18,27 @@
         <result property="fileContent" column="file_content" jdbcType="BINARY"/>
     </resultMap>
 
-    <select id="findTemplateByUuid" resultMap="templateResultMap">
+    <select id="findByUuid" resultMap="fileResultMap">
         SELECT uuid, path, version, type_id, status_id, description,
         created_by, created_time, file_name, file_date, file_length
         <if test="includeFileContent">
             , file_content
         </if>
-        FROM process_template
-        WHERE uuid = #{templateUuid}
+        FROM file
+        WHERE uuid = #{fileUuid}
     </select>
 
-    <select id="findAllTemplates" resultMap="templateResultMap">
+    <select id="findAll" resultMap="fileResultMap">
         SELECT uuid, path, version, type_id, status_id, description,
         created_by, created_time, file_name, file_date, file_length
         <if test="includeFileContent">
             , file_content
         </if>
-        FROM process_template
+        FROM file
     </select>
 
-    <insert id="saveTemplate" flushCache="true">
-        INSERT INTO process_template (uuid, path, version, type_id, status_id, description,
+    <insert id="save" flushCache="true">
+        INSERT INTO file (uuid, path, version, type_id, status_id, description,
                                       created_by, created_time, file_name, file_date, file_length, file_content)
         VALUES (#{uuid},
                 #{path},
@@ -54,8 +54,8 @@
                 #{fileContent, jdbcType=BINARY})
     </insert>
 
-    <select id="getMaxVersionForTemplate" resultType="int">
-        SELECT COALESCE(MAX(version), 0) FROM process_template
+    <select id="getMaxVersion" resultType="int">
+        SELECT COALESCE(MAX(version), 0) FROM file
         WHERE path = #{path} AND file_name = #{fileName}
     </select>
 

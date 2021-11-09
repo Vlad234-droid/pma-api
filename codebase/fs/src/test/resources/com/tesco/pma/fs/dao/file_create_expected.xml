@@ -1,11 +1,11 @@
 <dataset>
 
-    <process_template uuid="3d1ebbee-bafc-467c-acf1-5334db06e723"
+    <file uuid="3d1ebbee-bafc-467c-acf1-5334db06e723"
                       path="/home/dev"
                       version="1"
                       type_id="2"
                       status_id="2"
-                      description="other template"
+                      description="other file"
                       created_by="test"
                       created_time="2021-11-03 22:38:14"
                       file_name="test3.txt"

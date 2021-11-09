@@ -13,14 +13,14 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * Process Template model.
+ * File model.
  */
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
-public class ProcessTemplate extends UploadMetadata implements Identified<UUID> {
+public class File extends UploadMetadata implements Identified<UUID> {
 
     UUID uuid;
 

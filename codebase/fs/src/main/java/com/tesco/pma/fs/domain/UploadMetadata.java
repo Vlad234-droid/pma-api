@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 import java.time.Instant;
 
 /**
- * Represents the specified metadata parts in process template with multipart
+ * Represents the specified metadata parts
  */
 @Data
 @NoArgsConstructor
@@ -19,9 +19,9 @@ public class UploadMetadata {
 
     String path;
 
-    ProcessTemplateType type;
+    FileType type;
 
-    ProcessTemplateStatus status;
+    FileStatus status;
 
     String description;
 
