@@ -1,9 +1,10 @@
 package com.tesco.pma.review.dao;
 
+import com.tesco.pma.review.domain.ColleagueReviews;
 import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.Review;
-import com.tesco.pma.review.domain.ReviewStatus;
-import com.tesco.pma.review.domain.ReviewType;
+import com.tesco.pma.api.ReviewStatus;
+import com.tesco.pma.api.ReviewType;
 import com.tesco.pma.review.domain.WorkingGroupObjective;
 import org.apache.ibatis.annotations.Param;
 
@@ -65,14 +66,6 @@ public interface ReviewDAO {
     int getMaxVersionGroupObjective(@Param("businessUnitUuid") UUID businessUnitUuid);
 
     /**
-     * Returns a review
-     *
-     * @param reviewUuid an identifier
-     * @return a Review
-     */
-    Review getReviewByUuid(@Param("reviewUuid") UUID reviewUuid);
-
-    /**
      * Returns a review by performance cycle, colleague, review type and sequence number.
      *
      * @param performanceCycleUuid an identifier of performance cycle
@@ -99,6 +92,14 @@ public interface ReviewDAO {
                             @Param("type") ReviewType type);
 
     /**
+     * Returns list of colleagues reviews by managerUuid
+     *
+     * @param managerUuid an identifier of colleague
+     * @return a list of colleagues reviews with active reviews
+     */
+    List<ColleagueReviews> getTeamReviews(@Param("managerUuid") UUID managerUuid);
+
+    /**
      * Creates a review
      *
      * @param review a Review
@@ -112,7 +113,8 @@ public interface ReviewDAO {
      * @param review a Review
      * @return number of updated reviews
      */
-    int updateReview(@Param("review") Review review);
+    int updateReview(@Param("review") Review review,
+                     @Param("allowedReviewStatuses") Collection<ReviewStatus> allowedReviewStatuses);
 
     /**
      * Updates a review status
@@ -133,12 +135,34 @@ public interface ReviewDAO {
                            @Param("prevReviewStatuses") Collection<ReviewStatus> prevReviewStatuses);
 
     /**
-     * Delete a review
+     * Delete a review by business key
      *
-     * @param reviewUuid an identifier of review
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
+     * @param type                 a review type
+     * @param number               a sequence number of review
      * @return number of deleted reviews
      */
-    int deleteReview(@Param("reviewUuid") UUID reviewUuid);
+    int deleteReview(@Param("performanceCycleUuid") UUID performanceCycleUuid,
+                     @Param("colleagueUuid") UUID colleagueUuid,
+                     @Param("type") ReviewType type,
+                     @Param("number") Integer number,
+                     @Param("allowedReviewStatuses") Collection<ReviewStatus> allowedReviewStatuses);
+
+    /**
+     * Re-numerate reviews with number >= startNumber using the following formula:
+     * number=number-1
+     *
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
+     * @param type                 a review type
+     * @param startNumber          a start sequence number of review
+     * @return number of updated reviews
+     */
+    int renumerateReviews(@Param("performanceCycleUuid") UUID performanceCycleUuid,
+                          @Param("colleagueUuid") UUID colleagueUuid,
+                          @Param("type") ReviewType type,
+                          @Param("startNumber") Integer startNumber);
 
     /**
      * Insert or update a working group objective

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <!--
+        Added the Feedback status.
+    -->
+    <changeSet id="1" author="Stanislav.Eurich">
+        <createTable tableName="feedback_status" remarks="Dictionary of feedback's statuses">
+            <column name="id" type="integer" autoIncrement="true" remarks="A unique identifier for status">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="VARCHAR(30)" remarks="Shortname of status">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(100)" remarks="Description of status">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="Stanislav.Eurich">
+        <comment>Init table feedback_status</comment>
+        <insert tableName="feedback_status">
+            <column name="id" value="1"/>
+            <column name="code" value="DRAFT"/>
+            <column name="description" value="Feedback is saved as draft"/>
+        </insert>
+        <insert tableName="feedback_status">
+            <column name="id" value="2"/>
+            <column name="code" value="SUBMITTED"/>
+            <column name="description" value="Feedback was submitted"/>
+        </insert>
+        <insert tableName="feedback_status">
+            <column name="id" value="3"/>
+            <column name="code" value="PENDING"/>
+            <column name="description" value="Feedback request is pending"/>
+        </insert>
+        <insert tableName="feedback_status">
+            <column name="id" value="4"/>
+            <column name="code" value="COMPLETED"/>
+            <column name="description" value="Feedback is completed"/>
+        </insert>
+        <rollback>
+            <delete tableName="feedback_status"/>
+        </rollback>
+    </changeSet>
+
+    <!--
+        Added the Feedback target type.
+    -->
+    <changeSet id="3" author="Stanislav.Eurich">
+        <createTable tableName="feedback_target_type" remarks="Dictionary of feedback's target types">
+            <column name="id" type="integer" autoIncrement="true" remarks="A unique identifier for type">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="VARCHAR(30)" remarks="Shortname of type">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(100)" remarks="Description of type">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4" author="Stanislav.Eurich">
+        <comment>Init table feedback_target_type</comment>
+        <insert tableName="feedback_target_type">
+            <column name="id" value="1"/>
+            <column name="code" value="GOAL"/>
+            <column name="description" value="Feedback is given on or requested about goal"/>
+        </insert>
+        <insert tableName="feedback_target_type">
+            <column name="id" value="2"/>
+            <column name="code" value="OBJECTIVE"/>
+            <column name="description" value="Feedback is given on or requested about objective"/>
+        </insert>
+        <insert tableName="feedback_target_type">
+            <column name="id" value="3"/>
+            <column name="code" value="VALUE_BEHAVIOR"/>
+            <column name="description" value="Feedback is given on or requested about value and behavior"/>
+        </insert>
+        <insert tableName="feedback_target_type">
+            <column name="id" value="4"/>
+            <column name="code" value="OTHER"/>
+            <column name="description" value="Feedback is given on or requested about anything else"/>
+        </insert>
+        <rollback>
+            <delete tableName="feedback_target_type"/>
+        </rollback>
+    </changeSet>
+
+    <!--
+        Added the entity Feedback.
+    -->
+    <changeSet id="5" author="Stanislav.Eurich">
+        <createTable tableName="feedback">
+            <column name="uuid" type="${uuid_type}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="colleague_uuid" type="${uuid_type}" remarks="Author. Colleague from whom feedback is written or requested.">
+                <constraints nullable="false" />
+            </column>
+            <column name="target_colleague_uuid" type="${uuid_type}" remarks="Colleague to whom feedback is given.">
+                <constraints nullable="false" />
+            </column>
+            <column name="target_type_id" type="integer" remarks="Target type dictionary id: GOAL, OBJECTIVE, VALUE_BEHAVIOR, OTHER.">
+                <constraints nullable="true"
+                             foreignKeyName="fk_feedback__target_type_id"
+                             referencedTableName="feedback_target_type"
+                             referencedColumnNames="id" />
+            </column>
+            <column name="target_id" type="varchar(255)" remarks="Object identifier that is feedback given on/to or requested about/from.">
+                <constraints nullable="true" />
+            </column>
+            <column name="read" type="boolean" remarks="Checkbox. False for Unread feedback.">
+                <constraints nullable="false" />
+            </column>
+            <column name="status_id" type="integer" remarks="Status dictionary id: DRAFT, SUBMITTED, PENDING, COMPLETED.">
+                <constraints nullable="false"
+                             foreignKeyName="fk_feedback__status_id"
+                             referencedTableName="feedback_status"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_time" type="timestamptz">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated_time" type="timestamptz">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!--
+        Added the entity FeedbackItem.
+    -->
+    <changeSet id="6" author="Stanislav.Eurich">
+        <createTable tableName="feedback_item" remarks="The Feedback Item. Answers for questions, comments or free form feedback.">
+            <column name="uuid" type="${uuid_type}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="varchar(50)" remarks="Item code. Examples: whatWellDone, whatFocusOn, comment or question1, etc.">
+                <constraints nullable="false" />
+            </column>
+            <column name="content" type="varchar(500)" remarks="Body of feedback item. Answer for question or comment.">
+                <constraints nullable="true" />
+            </column>
+            <column name="feedback_uuid" type="${uuid_type}">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="feedback_uuid"
+                                 baseTableName="feedback_item"
+                                 constraintName="fk_feedback_item__feedback_uuid"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="uuid"
+                                 referencedTableName="feedback"/>
+    </changeSet>
+
+</databaseChangeLog>

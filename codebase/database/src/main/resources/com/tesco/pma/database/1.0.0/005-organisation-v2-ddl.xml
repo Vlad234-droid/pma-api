@@ -293,8 +293,8 @@
         <addColumn tableName="colleague">
             <column name="manager_uuid" type="${uuid_type}" remarks="A manager identifier for every colleague."/>
             <column name="employment_type" type="varchar(100)" remarks="Employment type of colleague"/>
-            <column name="hire_date" type="TIMESTAMPTZ" remarks="Hiring date of colleague"/>
-            <column name="leaving_date" type="TIMESTAMPTZ" remarks="Leaving date of colleague"/>
+            <column name="hire_date" type="DATE" remarks="Hiring date of colleague"/>
+            <column name="leaving_date" type="DATE" remarks="Leaving date of colleague"/>
             <column name="is_manager" type="boolean" remarks="Indicates that colleague a manager"/>
         </addColumn>
 

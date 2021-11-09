@@ -2,10 +2,11 @@ package com.tesco.pma.review.service;
 
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.review.domain.ColleagueReviews;
 import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.Review;
-import com.tesco.pma.review.domain.ReviewStatus;
-import com.tesco.pma.review.domain.ReviewType;
+import com.tesco.pma.api.ReviewStatus;
+import com.tesco.pma.api.ReviewType;
 import com.tesco.pma.review.domain.WorkingGroupObjective;
 
 import javax.validation.constraints.NotNull;
@@ -17,15 +18,6 @@ import java.util.UUID;
  * Review service
  */
 public interface ReviewService {
-
-    /**
-     * Finds review by uuid.
-     *
-     * @param reviewUuid an identifier
-     * @return review
-     * @throws NotFoundException if review doesn't exist.
-     */
-    Review getReviewByUuid(@NotNull UUID reviewUuid);
 
     /**
      * Finds review by performanceCycleUuid, colleagueUuid, review type and number.
@@ -56,6 +48,14 @@ public interface ReviewService {
                             @NotNull ReviewType type);
 
     /**
+     * Finds list of colleagues reviews by managerUuid
+     *
+     * @param managerUuid an identifier of colleague
+     * @return a list of colleagues reviews
+     */
+    List<ColleagueReviews> getTeamReviews(@NotNull UUID managerUuid);
+
+    /**
      * Creates review.
      *
      * @param review a review
@@ -63,15 +63,6 @@ public interface ReviewService {
      * @throws DatabaseConstraintViolationException review already exist.
      */
     Review createReview(Review review);
-
-    /**
-     * Creates reviews.
-     *
-     * @param reviews list of review
-     * @return created reviews.
-     * @throws DatabaseConstraintViolationException review already exist.
-     */
-    List<Review> createReviews(List<Review> reviews);
 
     /**
      * Updates existing review.
@@ -85,40 +76,52 @@ public interface ReviewService {
     /**
      * Create/update reviews.
      *
-     * @param reviews list of reviews.
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
+     * @param type                 a review type
+     * @param reviews              list of reviews.
      * @return created/updated reviews.
      * @throws DatabaseConstraintViolationException review already exist.
      */
-    List<Review> updateReviews(List<Review> reviews);
+    List<Review> updateReviews(@NotNull UUID performanceCycleUuid,
+                               @NotNull UUID colleagueUuid,
+                               @NotNull ReviewType type,
+                               List<Review> reviews);
 
     /**
-     * Updates review status.
+     * Updates reviews status.
      *
      * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
      * @param type                 a review type
-     * @param number               a sequence number of review
+     * @param reviews              list of review
      * @param status               a new review status
      * @param reason               a reason of changing status
      * @param loggedUserName       a logged user
      * @return a ObjectiveStatus
      * @throws NotFoundException if review doesn't exist.
      */
-    ReviewStatus updateReviewStatus(@NotNull UUID performanceCycleUuid,
-                                    @NotNull UUID colleagueUuid,
-                                    @NotNull ReviewType type,
-                                    @NotNull Integer number,
-                                    @NotNull ReviewStatus status,
-                                    @Size(max = 250) String reason,
-                                    @NotNull String loggedUserName);
+    ReviewStatus updateReviewsStatus(@NotNull UUID performanceCycleUuid,
+                                     @NotNull UUID colleagueUuid,
+                                     @NotNull ReviewType type,
+                                     List<Review> reviews,
+                                     @NotNull ReviewStatus status,
+                                     @Size(max = 250) String reason,
+                                     @NotNull String loggedUserName);
 
     /**
-     * Deletes review.
+     * Deletes review by business key.
      *
-     * @param reviewUuid an identifier.
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
+     * @param type                 a review type
+     * @param number               a sequence number of review
      * @throws NotFoundException if review doesn't exist.
      */
-    void deleteReview(@NotNull UUID reviewUuid);
+    void deleteReview(@NotNull UUID performanceCycleUuid,
+                      @NotNull UUID colleagueUuid,
+                      @NotNull ReviewType type,
+                      @NotNull Integer number);
 
     /**
      * Create group's objectives

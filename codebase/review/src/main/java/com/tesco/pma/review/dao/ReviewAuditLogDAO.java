@@ -1,7 +1,7 @@
 package com.tesco.pma.review.dao;
 
 import com.tesco.pma.review.domain.Review;
-import com.tesco.pma.review.domain.ReviewStatus;
+import com.tesco.pma.api.ReviewStatus;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.Instant;
@@ -9,7 +9,7 @@ import java.time.Instant;
 import static java.time.Instant.now;
 
 public interface ReviewAuditLogDAO {
-    default int logLogReviewUpdating(Review review, ReviewStatus newStatus, String changeReason, String updatedBy) {
+    default int logReviewUpdating(Review review, ReviewStatus newStatus, String changeReason, String updatedBy) {
         return intLogReviewUpdating(review, newStatus, changeReason, updatedBy, now());
     }
 

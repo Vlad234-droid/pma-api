@@ -268,19 +268,19 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
                         "group",
                         Set.of(e1, e2, e3)),
                 Arguments.of(
-                        "group/ho",
+                        "group/ho_c",
                         Set.of(e1, e2, e3)),
                 Arguments.of(
-                        "group/ho/salaried",
+                        "group/ho_c/salaried",
                         Set.of(e1, e2, e3)),
                 Arguments.of(
-                        "group/ho/salaried/wl3",
+                        "group/ho_c/salaried/wl3",
                         Set.of(e1)),
                 Arguments.of(
-                        "group/ho/salaried/wl4",
+                        "group/ho_c/salaried/wl4",
                         Set.of(e2)),
                 Arguments.of(
-                        "group/ho/salaried/wl5",
+                        "group/ho_c/salaried/wl5",
                         Set.of(e3)),
                 Arguments.of(
                         "uk",

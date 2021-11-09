@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "key": "title",
+      "label": "Objective title",
+      "type": "textfield",
+      "id": "Field_141o520",
+      "validate": {
+        "minLength": 10,
+        "required": true,
+        "maxLength": 100
+      }
+    },
+    {
+      "key": "description",
+      "label": "Objective description",
+      "type": "textfield",
+      "id": "Field_05qgsfz",
+      "validate": {
+        "required": true,
+        "minLength": 10,
+        "maxLength": 500
+      }
+    },
+    {
+      "key": "how_archieved",
+      "label": "How do I know I've ACHIEVED this objective?",
+      "type": "textfield",
+      "id": "Field_17nyw6d",
+      "validate": {
+        "required": true,
+        "maxLength": 500,
+        "minLength": 10
+      }
+    },
+    {
+      "key": "how_over_achieved",
+      "label": "How do I know I've OVER-ACHIEVED this objective?",
+      "type": "textfield",
+      "id": "Field_1ug5wco",
+      "validate": {
+        "required": true,
+        "minLength": 10,
+        "maxLength": 500
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Magnetic Value",
+          "value": "Magnetic Value"
+        },
+        {
+          "label": "I love my Tesco Clubcard",
+          "value": "I love my Tesco Clubcard"
+        },
+        {
+          "label": "Easily the most convenient",
+          "value": "Easily the most convenient"
+        },
+        {
+          "label": "Save to invest",
+          "value": "Save to invest"
+        },
+        {
+          "label": "Functional strategic priority",
+          "value": "Functional strategic priority"
+        },
+        {
+          "label": "Other",
+          "value": "Other"
+        }
+      ],
+      "key": "strategic_priority",
+      "label": "Strategic priority",
+      "type": "select",
+      "id": "Field_1ribi5m",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "exporter": {
+    "name": "form-js (https://demo.bpmn.io)",
+    "version": "0.4.1"
+  },
+  "type": "default",
+  "id": "type_2_objective_form"
+}

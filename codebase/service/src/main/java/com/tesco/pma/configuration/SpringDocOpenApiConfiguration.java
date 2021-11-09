@@ -56,6 +56,7 @@ public class SpringDocOpenApiConfiguration {
     public static final String FORBIDDEN_HEADER_EXAMPLE = "Bearer error=\"insufficient_scope\", "
             + "error_description=\"The request requires higher privileges than provided by the access token.\", "
             + "error_uri=\"https://tools.ietf.org/html/rfc6750#section-3.1\"";
+    public static final String REST_RESPONSE_VOID = RestResponse.class.getSimpleName() + Void.class.getSimpleName();
 
     static {
         SpringDocUtils.getConfig().replaceWithClass(SubsidiaryPermission.class, SubsidiaryPermissionMixIn.class);
@@ -129,7 +130,7 @@ public class SpringDocOpenApiConfiguration {
                 .description(BAD_REQUEST.getReasonPhrase())
                 .content(new Content().addMediaType(org.springframework.http.MediaType.APPLICATION_JSON_VALUE,
                         new MediaType()
-                                .schema(new ObjectSchema().$ref(RestResponse.class.getSimpleName()))
+                                .schema(new ObjectSchema().$ref(REST_RESPONSE_VOID))
                                 .example(RestResponse.fail(apiError))));
     }
 
@@ -155,7 +156,7 @@ public class SpringDocOpenApiConfiguration {
                                 .description("https://tools.ietf.org/html/rfc6750#section-3.1")
                                 .example(UNAUTHENTICATED_HEADER_EXAMPLE)))
                 .content(new Content().addMediaType(org.springframework.http.MediaType.APPLICATION_JSON_VALUE,
-                        new MediaType().schema(new ObjectSchema().$ref(RestResponse.class.getSimpleName()))
+                        new MediaType().schema(new ObjectSchema().$ref(REST_RESPONSE_VOID))
                                 .example(RestResponse.fail(exampleContent))));
     }
 
@@ -172,7 +173,7 @@ public class SpringDocOpenApiConfiguration {
                                 .description("https://tools.ietf.org/html/rfc6750#section-3.1")
                                 .example(FORBIDDEN_HEADER_EXAMPLE)))
                 .content(new Content().addMediaType(org.springframework.http.MediaType.APPLICATION_JSON_VALUE,
-                        new MediaType().schema(new ObjectSchema().$ref(RestResponse.class.getSimpleName()))
+                        new MediaType().schema(new ObjectSchema().$ref(REST_RESPONSE_VOID))
                                 .example(RestResponse.fail(ApiError.builder()
                                         .code(ACCESS_DENIED.getCode())
                                         .message(messages.getMessage(ACCESS_DENIED))
@@ -183,7 +184,7 @@ public class SpringDocOpenApiConfiguration {
         return new ApiResponse()
                 .description(INTERNAL_SERVER_ERROR.getReasonPhrase())
                 .content(new Content().addMediaType(org.springframework.http.MediaType.APPLICATION_JSON_VALUE,
-                        new MediaType().schema(new ObjectSchema().$ref(RestResponse.class.getSimpleName()))
+                        new MediaType().schema(new ObjectSchema().$ref(REST_RESPONSE_VOID))
                                 .example(RestResponse.fail(ApiError.builder()
                                         .code(ErrorCodes.ER_CODE_UNEXPECTED_EXCEPTION.getCode())
                                         .message("Unexpected internal service error")
@@ -194,7 +195,7 @@ public class SpringDocOpenApiConfiguration {
         return new ApiResponse()
                 .description(NOT_FOUND.getReasonPhrase())
                 .content(new Content().addMediaType(org.springframework.http.MediaType.APPLICATION_JSON_VALUE,
-                        new MediaType().schema(new ObjectSchema().$ref(RestResponse.class.getSimpleName()))
+                        new MediaType().schema(new ObjectSchema().$ref(REST_RESPONSE_VOID))
                                 .example(RestResponse.fail(ApiError.builder()
                                         .code("ENTITY_NOT_FOUND")
                                         .message("Entity was not found for parameter")
