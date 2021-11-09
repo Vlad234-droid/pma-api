@@ -63,13 +63,13 @@ public class XlsxParser {
      * DecimalFormat pattern.
      * Ex: 0.00###
      */
-    private final String outNumberFormat = "0.###";
+    private String outNumberFormat = "0.###";
 
     /**
      * boolean values in form <pre>[true value]|[false value](,[true value]|[false value])</pre>.
      * ex. 'Y|N,yes|no,T|F'
      */
-    private final String booleanConversion = "1|0";
+    private String booleanConversion = "1|0";
 
     public ParsingResult parse(@NonNull InputStream is) {
         final var res = ParsingResult.builder();

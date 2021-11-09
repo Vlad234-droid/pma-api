@@ -31,9 +31,11 @@ public class ColleagueMapper {
                 .map(fs -> {
                     var colleague = new ColleagueEntity();
                     colleague.setUuid(UUID.fromString(fs.get("colleague_uuid").getFormatted()));
-//                    colleague.setFirstName(fs.get("").getFormatted());
-//                    colleague.setLastName(fs.get("").getFormatted());
-//                    colleague.setEmail(fs.get("").getFormatted());
+                    /*
+                    colleague.setFirstName(fs.get("").getFormatted());
+                    colleague.setLastName(fs.get("").getFormatted());
+                    colleague.setEmail(fs.get("").getFormatted());
+                     */
                     colleague.setWorkLevel(wlMap.get(fs.get("work_level").getFormatted()));
                     colleague.setPrimaryEntity(fs.get("primary_entity").getFormatted());
                     colleague.setCountry(countryMap.get(fs.get("country_code").getFormatted()));

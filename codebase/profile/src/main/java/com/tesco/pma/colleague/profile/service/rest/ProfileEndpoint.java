@@ -1,24 +1,21 @@
 package com.tesco.pma.colleague.profile.service.rest;
 
-import com.tesco.pma.colleague.profile.domain.ImportReport;
-import com.tesco.pma.colleague.profile.exception.ErrorCodes;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
+import com.tesco.pma.colleague.profile.domain.ImportReport;
+import com.tesco.pma.colleague.profile.domain.TypedAttribute;
+import com.tesco.pma.colleague.profile.exception.ErrorCodes;
+import com.tesco.pma.colleague.profile.exception.ImportException;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.colleague.profile.domain.TypedAttribute;
-import com.tesco.pma.logging.TraceUtils;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Encoding;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -34,7 +31,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -142,7 +138,7 @@ public class ProfileEndpoint {
         try (var inputStream = file.getInputStream()) {
             return RestResponse.success(profileService.importColleagues(inputStream));
         } catch (IOException e) {
-            throw new RuntimeException("Failed to import colleagues", e);
+            throw new ImportException("Failed to import colleagues", e);
         }
     }
 

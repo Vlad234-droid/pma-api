@@ -135,19 +135,24 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    @Transactional
     public ImportReport importColleagues(InputStream inputStream) {
         var parser = new XlsxParser();
         var result = parser.parse(inputStream);
+
         var workLevels = ColleagueMapper.mapWLs(result.getData());
-        var countries = ColleagueMapper.mapCountries(result.getData());
-        var departments = ColleagueMapper.mapDepartments(result.getData());
-        var jobs = ColleagueMapper.mapJobs(result.getData());
-        var colleagues = ColleagueMapper.mapColleagues(result.getData(), workLevels, countries, departments, jobs);
         workLevels.forEach(profileDAO::saveWorkLevel);
+
+        var countries = ColleagueMapper.mapCountries(result.getData());
         countries.forEach(profileDAO::saveCountry);
+
+        var departments = ColleagueMapper.mapDepartments(result.getData());
         departments.forEach(profileDAO::saveDepartment);
+
+        var jobs = ColleagueMapper.mapJobs(result.getData());
         jobs.forEach(profileDAO::saveJob);
 
+        var colleagues = ColleagueMapper.mapColleagues(result.getData(), workLevels, countries, departments, jobs);
         return saveColleagues(colleagues);
     }
 
