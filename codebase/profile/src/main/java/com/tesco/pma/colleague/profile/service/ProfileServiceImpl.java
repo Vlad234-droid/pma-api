@@ -8,8 +8,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+import com.tesco.pma.colleague.profile.dao.ProfileDAO;
+import com.tesco.pma.colleague.profile.domain.ImportReport;
 import com.tesco.pma.colleague.profile.parser.XlsxParser;
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +34,6 @@ import com.tesco.pma.colleague.profile.exception.ErrorCodes;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.organisation.dao.ConfigEntryDAO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -43,13 +46,13 @@ import lombok.RequiredArgsConstructor;
 //todo @CacheConfig(cacheNames = "aggregatedColleagues")
 public class ProfileServiceImpl implements ProfileService {
 
-    private final ConfigEntryDAO configEntryDAO;
+    private final ProfileDAO profileDAO;
     private final ProfileAttributeDAO profileAttributeDAO;
     private final NamedMessageSourceAccessor messages;
 
     private static final Predicate<com.tesco.pma.colleague.api.workrelationships.WorkRelationship>
             IS_WORK_RELATIONSHIP_ACTIVE = workRelationship -> workRelationship.getWorkingStatus().equals(
-                    com.tesco.pma.colleague.api.workrelationships.WorkRelationship.WorkingStatus.ACTIVE);
+            com.tesco.pma.colleague.api.workrelationships.WorkRelationship.WorkingStatus.ACTIVE);
 
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     private static final String PROFILE_ATTRIBUTE_NAME_PARAMETER_NAME = "profileAttributeName";
@@ -127,18 +130,54 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public void importColleagues(InputStream inputStream) {
+    public ColleagueEntity getColleagueByIamId(String iamId) {
+        return profileDAO.getColleagueByIamId(iamId);
+    }
+
+    @Override
+    public ImportReport importColleagues(InputStream inputStream) {
         var parser = new XlsxParser();
-        parser.parse(inputStream);
+        var result = parser.parse(inputStream);
+        var workLevels = ColleagueMapper.mapWLs(result.getData());
+        var countries = ColleagueMapper.mapCountries(result.getData());
+        var departments = ColleagueMapper.mapDepartments(result.getData());
+        var jobs = ColleagueMapper.mapJobs(result.getData());
+        var colleagues = ColleagueMapper.mapColleagues(result.getData(), workLevels, countries, departments, jobs);
+        workLevels.forEach(profileDAO::saveWorkLevel);
+        countries.forEach(profileDAO::saveCountry);
+        departments.forEach(profileDAO::saveDepartment);
+        jobs.forEach(profileDAO::saveJob);
+
+        return saveColleagues(colleagues);
+    }
+
+    private ImportReport saveColleagues(List<ColleagueEntity> colleagues) {
+        var uuidToManager = colleagues.stream()
+                .filter(c -> c.getManagerUuid() != null)
+                .collect(Collectors.toMap(ColleagueEntity::getUuid, ColleagueEntity::getManagerUuid));
+        var builder = ImportReport.builder();
+        colleagues.forEach(c -> {
+            c.setManagerUuid(null);
+            profileDAO.saveColleague(c);
+            builder.importColleague(c.getUuid());
+        });
+        for (var colleague : uuidToManager.entrySet()) {
+            if (profileDAO.isColleagueExists(colleague.getValue())) {
+                profileDAO.updateColleagueManager(colleague.getKey(), colleague.getValue());
+            } else {
+                builder.usersManagerSkip(colleague.getKey());
+            }
+        }
+        return builder.build();
     }
 
     private Colleague findColleagueByColleagueUuid(UUID colleagueUuid) {
-        com.tesco.pma.organisation.api.Colleague oc = configEntryDAO.getColleague(colleagueUuid);
+        ColleagueEntity oc = profileDAO.getColleague(colleagueUuid);
         //todo try to download and insert colleagueApiService.findColleagueByUuid(colleagueUuid)
         return oc != null ? getColleague(oc, colleagueUuid) : null;
     }
 
-    private Colleague getColleague(com.tesco.pma.organisation.api.Colleague oc, UUID colleagueUuid) {
+    private Colleague getColleague(ColleagueEntity oc, UUID colleagueUuid) {
         var colleague = new Colleague();
         colleague.setColleagueUUID(colleagueUuid);
         colleague.setCountryCode(oc.getCountry().getCode());
@@ -149,7 +188,7 @@ public class ProfileServiceImpl implements ProfileService {
         return colleague;
     }
 
-    private Contact getContact(com.tesco.pma.organisation.api.Colleague oc) {
+    private Contact getContact(ColleagueEntity oc) {
         if (oc.getEmail() != null) {
             var contact = new Contact();
             contact.setEmail(oc.getEmail());
@@ -158,7 +197,7 @@ public class ProfileServiceImpl implements ProfileService {
         return null;
     }
 
-    private ExternalSystems getExternalSystems(com.tesco.pma.organisation.api.Colleague oc) {
+    private ExternalSystems getExternalSystems(ColleagueEntity oc) {
         var es = new ExternalSystems();
         var iam = new IamSourceSystem();
         iam.setId(oc.getIamId());
@@ -167,7 +206,7 @@ public class ProfileServiceImpl implements ProfileService {
         return es;
     }
 
-    private Profile getProfile(com.tesco.pma.organisation.api.Colleague oc) {
+    private Profile getProfile(ColleagueEntity oc) {
         var profile = new Profile();
         profile.setFirstName(oc.getFirstName());
         profile.setMiddleName(oc.getMiddleName());
@@ -175,7 +214,7 @@ public class ProfileServiceImpl implements ProfileService {
         return profile;
     }
 
-    private WorkRelationship getWorkRelationship(com.tesco.pma.organisation.api.Colleague oc) {
+    private WorkRelationship getWorkRelationship(ColleagueEntity oc) {
         var wr = new WorkRelationship();
         wr.setWorkLevel(WorkRelationship.WorkLevel.getByCode(oc.getWorkLevel().getCode()));
         wr.setPrimaryEntity(oc.getPrimaryEntity());
@@ -185,7 +224,7 @@ public class ProfileServiceImpl implements ProfileService {
         return wr;
     }
 
-    private Job getJob(com.tesco.pma.organisation.api.Colleague oc) {
+    private Job getJob(ColleagueEntity oc) {
         var ocJob = oc.getJob();
         if (ocJob != null) {
             var job = new Job();
@@ -198,7 +237,7 @@ public class ProfileServiceImpl implements ProfileService {
         return null;
     }
 
-    private Department getDepartment(com.tesco.pma.organisation.api.Colleague oc) {
+    private Department getDepartment(ColleagueEntity oc) {
         var ocDp = oc.getDepartment();
         if (ocDp != null) {
             var dp = new Department();

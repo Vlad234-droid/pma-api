@@ -3,7 +3,7 @@ package com.tesco.pma.organisation.dao;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.api.GeneralDictionaryItem;
 import com.tesco.pma.dao.AbstractDAOTest;
-import com.tesco.pma.organisation.api.Colleague;
+import com.tesco.pma.organisation.dao.entity.ColleagueEntity;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.WorkingConfigEntry;
 import org.junit.jupiter.api.Test;
@@ -233,7 +233,7 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
         assertEquals(colleagueUuids.size(), colleagues.size());
 
         var uuids = colleagues.stream()
-                .map(Colleague::getUuid)
+                .map(ColleagueEntity::getUuid)
                 .collect(Collectors.toSet());
 
         assertTrue(colleagueUuids.containsAll(uuids));

@@ -1,5 +1,6 @@
 package com.tesco.pma.colleague.profile.service.rest;
 
+import com.tesco.pma.colleague.profile.domain.ImportReport;
 import com.tesco.pma.colleague.profile.exception.ErrorCodes;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
@@ -132,15 +133,14 @@ public class ProfileEndpoint {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<Void> importColleagues(@RequestPart("file") MultipartFile file) {
+    public RestResponse<ImportReport> importColleagues(@RequestPart("file") MultipartFile file) {
 
         if (file.isEmpty()) {
             throw new InvalidPayloadException("INVALID_PAYLOAD", "File cannot be empty", "content");
         }
 
         try (var inputStream = file.getInputStream()) {
-            profileService.importColleagues(inputStream);
-            return RestResponse.success();
+            return RestResponse.success(profileService.importColleagues(inputStream));
         } catch (IOException e) {
             throw new RuntimeException("Failed to import colleagues", e);
         }

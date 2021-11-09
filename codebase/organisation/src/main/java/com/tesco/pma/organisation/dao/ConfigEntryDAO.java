@@ -1,6 +1,5 @@
 package com.tesco.pma.organisation.dao;
 
-import com.tesco.pma.organisation.api.Colleague;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.WorkingConfigEntry;
 import org.apache.ibatis.annotations.Param;
@@ -111,29 +110,4 @@ public interface ConfigEntryDAO {
         set.addAll(childStructure);
         return set;
     }
-
-    /**
-     * Gets list of colleagues by types key
-     *
-     * @param key - types
-     * @return list of colleagues
-     */
-    List<Colleague> findColleaguesByTypes(@Param("key") String key);
-
-    /**
-     * Get colleague by iam id
-     *
-     * @param colleagueUuid colleague identifier
-     * @return colleague object
-     */
-    Colleague getColleague(@Param("colleagueUuid") UUID colleagueUuid);
-
-    /**
-     * Get colleague by iam id
-     *
-     * @param iamId colleague iam identifier
-     * @return colleague object
-     */
-    Colleague getColleagueByIamId(@Param("iamId") String iamId);
-
 }

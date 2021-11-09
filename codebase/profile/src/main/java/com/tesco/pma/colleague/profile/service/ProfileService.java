@@ -1,5 +1,7 @@
 package com.tesco.pma.colleague.profile.service;
 
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
+import com.tesco.pma.colleague.profile.domain.ImportReport;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 
@@ -46,5 +48,7 @@ public interface ProfileService {
      */
     List<TypedAttribute> deleteProfileAttributes(@NotNull UUID colleagueUuid, List<TypedAttribute> profileAttributes);
 
-    void importColleagues(InputStream inputStream);
+    ColleagueEntity getColleagueByIamId(String iamId);
+
+    ImportReport importColleagues(InputStream inputStream);
 }
