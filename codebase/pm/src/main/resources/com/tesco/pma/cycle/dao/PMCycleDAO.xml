@@ -43,7 +43,7 @@
         </if>
     </sql>
 
-    <insert id="create" flushCache="true" parameterType="com.tesco.pma.cycle.api.PMCycle">
+    <insert id="createInt" flushCache="true" parameterType="com.tesco.pma.cycle.api.PMCycle">
         INSERT INTO pm_cycle
         (uuid,
          entry_config_key,

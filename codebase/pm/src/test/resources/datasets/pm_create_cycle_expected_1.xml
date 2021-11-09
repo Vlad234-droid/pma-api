@@ -1,0 +1,11 @@
+<dataset>
+    <pm_cycle
+            uuid="5ff53f32-39c8-4a14-86ba-58b87c8da4e6"
+            entry_config_key="TestKey"
+            template_uuid="bd36be33-25f4-4db7-90e9-0df0e6e8f04a"
+            name="TestCycleName"
+            status_id="1"
+            type_id="2"
+            created_by="d1810821-d1a9-48b5-9745-d0841151911f"/>
+
+</dataset>

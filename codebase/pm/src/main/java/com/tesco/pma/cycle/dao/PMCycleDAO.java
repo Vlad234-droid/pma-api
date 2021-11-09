@@ -17,10 +17,10 @@ import static java.time.Instant.now;
 public interface PMCycleDAO {
 
     default void create(PMCycle cycle) {
-        create(cycle, now());
+        createInt(cycle, now());
     }
 
-    void create(@Param("cycle") PMCycle cycle,
+    void createInt(@Param("cycle") PMCycle cycle,
                 @Param("now") Instant now);
 
     int updateStatus(@Param("uuid") UUID uuid,
