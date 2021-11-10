@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_14hkk3c" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="type_4" name="type_4" isExecutable="true">
+    <bpmn:subProcess id="Activity_1bu82ro" name="End of year review">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="pm_review_type" value="eyr" />
+          <camunda:property name="pm_type" value="review" />
+          <camunda:property name="pm_form_key" value="forms/type_4_eyr.form" />
+          <camunda:property name="pm_review_start_time" value="2022-03-15" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0j0sbw7</bpmn:incoming>
+      <bpmn:outgoing>Flow_0f4zlnq</bpmn:outgoing>
+      <bpmn:intermediateCatchEvent id="Event_1t22kvc" name="Before&#10;review">
+        <bpmn:extensionElements>
+          <camunda:executionListener event="start">
+            <camunda:script scriptFormat="groovy">println "\nObjective: start t1" +
+"${execution.getCurrentActivityName()}" +
+" ${java.time.LocalDateTime.now()}"</camunda:script>
+          </camunda:executionListener>
+          <camunda:executionListener event="end">
+            <camunda:script scriptFormat="groovy">println "\nObjective: end t1" +
+"${execution.getCurrentActivityName()}" +
+" ${java.time.LocalDateTime.now()}"</camunda:script>
+          </camunda:executionListener>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_1jzbke3</bpmn:incoming>
+        <bpmn:outgoing>Flow_1w29orc</bpmn:outgoing>
+        <bpmn:timerEventDefinition id="TimerEventDefinition_0157dy5">
+          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PD2W</bpmn:timeDuration>
+        </bpmn:timerEventDefinition>
+      </bpmn:intermediateCatchEvent>
+      <bpmn:endEvent id="Event_0nya2ac">
+        <bpmn:incoming>Flow_0vlh003</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:startEvent id="Event_0uh28rv">
+        <bpmn:outgoing>Flow_1tq8mvc</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_1tq8mvc" sourceRef="Event_0uh28rv" targetRef="Activity_03jrw4r" />
+      <bpmn:sequenceFlow id="Flow_0rjmdw7" sourceRef="Activity_0sqf3dq" targetRef="Event_1uvmyhg" />
+      <bpmn:sequenceFlow id="Flow_1w29orc" sourceRef="Event_1t22kvc" targetRef="Activity_0sqf3dq" />
+      <bpmn:sequenceFlow id="Flow_1jzbke3" sourceRef="Activity_03jrw4r" targetRef="Event_1t22kvc" />
+      <bpmn:scriptTask id="Activity_03jrw4r" name="Send&#10;reminder&#10;notification" scriptFormat="groovy">
+        <bpmn:incoming>Flow_1tq8mvc</bpmn:incoming>
+        <bpmn:outgoing>Flow_1jzbke3</bpmn:outgoing>
+        <bpmn:script>println "\nSend reminder:" +s
+"${execution.getCurrentActivityName()}" +
+" ${java.time.LocalDateTime.now()}"</bpmn:script>
+      </bpmn:scriptTask>
+      <bpmn:scriptTask id="Activity_0sqf3dq" name="Send start&#10;review&#10;event" scriptFormat="groovy">
+        <bpmn:incoming>Flow_1w29orc</bpmn:incoming>
+        <bpmn:outgoing>Flow_0rjmdw7</bpmn:outgoing>
+        <bpmn:script>println "\nSend event: " + "${execution.getCurrentActivityName()}" +
+" ${java.time.LocalDateTime.now()}"</bpmn:script>
+      </bpmn:scriptTask>
+      <bpmn:sequenceFlow id="Flow_0vlh003" sourceRef="Event_1uvmyhg" targetRef="Event_0nya2ac" />
+      <bpmn:intermediateCatchEvent id="Event_1uvmyhg" name="Review&#10;period">
+        <bpmn:extensionElements>
+          <camunda:executionListener event="start">
+            <camunda:script scriptFormat="groovy">println "\nObjective: start t2" +
+"${execution.getCurrentActivityName()}" +
+" ${java.time.LocalDateTime.now()}"</camunda:script>
+          </camunda:executionListener>
+          <camunda:executionListener event="end">
+            <camunda:script scriptFormat="groovy">println "\nObjective: end t2" +
+"${execution.getCurrentActivityName()}" +
+" ${java.time.LocalDateTime.now()}"</camunda:script>
+          </camunda:executionListener>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0rjmdw7</bpmn:incoming>
+        <bpmn:outgoing>Flow_0vlh003</bpmn:outgoing>
+        <bpmn:timerEventDefinition id="TimerEventDefinition_0e12slp">
+          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PD2W</bpmn:timeDuration>
+        </bpmn:timerEventDefinition>
+      </bpmn:intermediateCatchEvent>
+      <bpmn:textAnnotation id="TextAnnotation_0380mo6">
+        <bpmn:text>Delay, e.g. 2 weeks</bpmn:text>
+      </bpmn:textAnnotation>
+      <bpmn:association id="Association_0hzbas5" sourceRef="Event_1t22kvc" targetRef="TextAnnotation_0380mo6" />
+    </bpmn:subProcess>
+    <bpmn:task id="Activity_1vkxs1y" name="Read configuration">
+      <bpmn:incoming>Flow_0nbbfyl</bpmn:incoming>
+      <bpmn:outgoing>Flow_0j0sbw7</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_0nbbfyl" sourceRef="Event_0e0xeep" targetRef="Activity_1vkxs1y" />
+    <bpmn:endEvent id="Event_0v9jvii">
+      <bpmn:incoming>Flow_0f4zlnq</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:startEvent id="Event_0e0xeep">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="groovy">println "\nStart process: " +
+"${java.time.LocalDateTime.now()}"</camunda:script>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_0nbbfyl</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_19mhb4r">
+        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">2022-03-15</bpmn:timeDate>
+      </bpmn:timerEventDefinition>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0f4zlnq" sourceRef="Activity_1bu82ro" targetRef="Event_0v9jvii" />
+    <bpmn:sequenceFlow id="Flow_0j0sbw7" sourceRef="Activity_1vkxs1y" targetRef="Activity_1bu82ro" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="type_4">
+      <bpmndi:BPMNEdge id="Flow_0nbbfyl_di" bpmnElement="Flow_0nbbfyl">
+        <di:waypoint x="208" y="120" />
+        <di:waypoint x="240" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0j0sbw7_di" bpmnElement="Flow_0j0sbw7">
+        <di:waypoint x="340" y="120" />
+        <di:waypoint x="390" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0f4zlnq_di" bpmnElement="Flow_0f4zlnq">
+        <di:waypoint x="960" y="120" />
+        <di:waypoint x="1002" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_1vkxs1y_di" bpmnElement="Activity_1vkxs1y">
+        <dc:Bounds x="240" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0v9jvii_di" bpmnElement="Event_0v9jvii">
+        <dc:Bounds x="1002" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_020195i_di" bpmnElement="Event_0e0xeep">
+        <dc:Bounds x="172" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1bu82ro_di" bpmnElement="Activity_1bu82ro" isExpanded="true">
+        <dc:Bounds x="390" y="40" width="570" height="160" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0380mo6_di" bpmnElement="TextAnnotation_0380mo6">
+        <dc:Bounds x="590" y="170" width="150" height="26" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0vlh003_di" bpmnElement="Flow_0vlh003">
+        <di:waypoint x="868" y="120" />
+        <di:waypoint x="892" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1jzbke3_di" bpmnElement="Flow_1jzbke3">
+        <di:waypoint x="590" y="120" />
+        <di:waypoint x="622" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1w29orc_di" bpmnElement="Flow_1w29orc">
+        <di:waypoint x="658" y="120" />
+        <di:waypoint x="700" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rjmdw7_di" bpmnElement="Flow_0rjmdw7">
+        <di:waypoint x="800" y="120" />
+        <di:waypoint x="832" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tq8mvc_di" bpmnElement="Flow_1tq8mvc">
+        <di:waypoint x="458" y="120" />
+        <di:waypoint x="490" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0nya2ac_di" bpmnElement="Event_0nya2ac">
+        <dc:Bounds x="892" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0uh28rv_di" bpmnElement="Event_0uh28rv">
+        <dc:Bounds x="422" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0r6yqhw_di" bpmnElement="Activity_03jrw4r">
+        <dc:Bounds x="490" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0boensx_di" bpmnElement="Event_1uvmyhg">
+        <dc:Bounds x="832" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="832" y="76" width="37" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0420tn3_di" bpmnElement="Event_1t22kvc">
+        <dc:Bounds x="622" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="623" y="76" width="33" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0da2brm_di" bpmnElement="Activity_0sqf3dq">
+        <dc:Bounds x="700" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0hzbas5_di" bpmnElement="Association_0hzbas5">
+        <di:waypoint x="640" y="138" />
+        <di:waypoint x="640" y="170" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

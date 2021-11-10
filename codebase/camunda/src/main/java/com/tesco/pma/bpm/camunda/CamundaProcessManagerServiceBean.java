@@ -1,8 +1,27 @@
 package com.tesco.pma.bpm.camunda;
 
+import com.tesco.pma.bpm.api.DeploymentInfo;
+import com.tesco.pma.bpm.api.DeploymentInfoEntity;
+import com.tesco.pma.bpm.api.ProcessExecutionException;
+import com.tesco.pma.bpm.api.ProcessManagerService;
+import com.tesco.pma.exception.InitializationException;
+import lombok.extern.slf4j.Slf4j;
+import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.ProcessEngines;
+import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.repository.Deployment;
+import org.camunda.bpm.engine.repository.DeploymentBuilder;
+import org.camunda.bpm.engine.repository.ProcessDefinition;
+import org.camunda.bpm.engine.repository.ProcessDefinitionQuery;
+import org.camunda.bpm.engine.repository.ResourceDefinition;
+import org.camunda.bpm.engine.runtime.Execution;
+import org.camunda.bpm.engine.runtime.ExecutionQuery;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -13,22 +32,6 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import org.camunda.bpm.engine.ProcessEngine;
-import org.camunda.bpm.engine.ProcessEngines;
-import org.camunda.bpm.engine.RuntimeService;
-import org.camunda.bpm.engine.repository.DeploymentBuilder;
-import org.camunda.bpm.engine.repository.ProcessDefinition;
-import org.camunda.bpm.engine.repository.ProcessDefinitionQuery;
-import org.camunda.bpm.engine.repository.ResourceDefinition;
-import org.camunda.bpm.engine.runtime.Execution;
-import org.camunda.bpm.engine.runtime.ExecutionQuery;
-
-import com.tesco.pma.exception.InitializationException;
-import com.tesco.pma.bpm.api.ProcessExecutionException;
-import com.tesco.pma.bpm.api.ProcessManagerService;
-
-import lombok.extern.slf4j.Slf4j;
-
 
 /**
  * Camunda based implementation of {@link ProcessManagerService}
@@ -36,14 +39,15 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class CamundaProcessManagerServiceBean implements ProcessManagerService {
+    // todo naming service
 
     @Override
-    public String deployProcess(String path) throws FileNotFoundException, InitializationException {
-        return deployProcess(new File(path));
+    public DeploymentInfo deployProcessArchive(String path) throws FileNotFoundException, InitializationException {
+        return deployProcessArchive(new File(path));
     }
 
     @Override
-    public String deployProcess(File resource) throws FileNotFoundException, InitializationException {
+    public DeploymentInfo deployProcessArchive(File resource) throws FileNotFoundException, InitializationException {
         if (log.isDebugEnabled()) {
             log.debug("Deploy process from - " + resource);
         }
@@ -51,21 +55,66 @@ public class CamundaProcessManagerServiceBean implements ProcessManagerService {
             DeploymentBuilder builder = getProcessEngine().getRepositoryService().createDeployment();
             builder.name(resource.getName());
             builder.addZipInputStream(new ZipInputStream(new FileInputStream(resource))); //NOPMD
-            return builder.deploy().getId();
+            return new DeploymentInfoEntity(builder.deploy());
         } catch (Exception e) {
             throw new InitializationException("Deploy process failed using " + resource, e);
         }
     }
 
     @Override
-    public void undeployProcess(String processName) throws InitializationException {
+    public DeploymentInfo deploy(String name, Map<String, InputStream> resources)
+            throws InitializationException {
+        if (resources == null) {
+            throw new InitializationException("Deploying resources were not passed");
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Deploy process resources [{}]: {}", resources.size(), resources.keySet());
+        }
         try {
-            if (log.isDebugEnabled()) {
-                log.debug("Undeploy process by name(key) " + processName);
+            DeploymentBuilder builder = getProcessEngine().getRepositoryService().createDeployment();
+            builder.name(name);
+            for (Map.Entry<String, InputStream> resource : resources.entrySet()) {
+                builder.addInputStream(resource.getKey(), resource.getValue());
             }
-            ProcessEngine processEngine = getProcessEngine();
-            ProcessDefinitionQuery processDefinitionQuery;
-            processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
+            return new DeploymentInfoEntity(builder.deploy());
+        } catch (Exception e) {
+            throw new InitializationException("Deployment " + name + " failed using " + resources.keySet(), e);
+        }
+    }
+
+    @Override
+    public List<DeploymentInfo> undeploy(String id, String name) throws InitializationException {
+        if (log.isDebugEnabled()) {
+            log.debug("Undeploy deployed pack by name " + name);
+        }
+        try {
+            var processEngine = getProcessEngine();
+            var deploymentQuery = processEngine.getRepositoryService().createDeploymentQuery();
+            if (id != null && !id.isBlank()) {
+                deploymentQuery.deploymentId(id);
+            }
+            if (name != null && !name.isBlank()) {
+                deploymentQuery.deploymentNameLike(name);
+            }
+            var result = new ArrayList<DeploymentInfo>();
+            for (Deployment deployment : deploymentQuery.list()) {
+                processEngine.getRepositoryService().deleteDeployment(deployment.getId(), true);
+                result.add(new DeploymentInfoEntity(deployment));
+            }
+            return result;
+        } catch (Exception e) {
+            throw new InitializationException("Deployed pack cannot be removed: " + name, e);
+        }
+    }
+
+    @Override
+    public void undeployProcess(String processName) throws InitializationException {
+        if (log.isDebugEnabled()) {
+            log.debug("Undeploy process by name(key) " + processName);
+        }
+        try {
+            var processEngine = getProcessEngine();
+            var processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
             processDefinitionQuery.processDefinitionKey(processName);
             deleteProcessDeploymentsByQuery(processDefinitionQuery, processEngine);
         } catch (Exception e) {
@@ -98,15 +147,12 @@ public class CamundaProcessManagerServiceBean implements ProcessManagerService {
                 Collections.emptyList());
     }
 
-    private void deleteProcessDeploymentsByQuery(ProcessDefinitionQuery processDefinitionQuery, ProcessEngine processEngine) {
-        List<ProcessDefinition> definitions = processDefinitionQuery.list();
-        Set<String> deployments = new HashSet<>();
-        for (ProcessDefinition definition : definitions) {
-            deployments.add(definition.getDeploymentId());
-        }
-        for (String deploymentId : deployments) {
-            processEngine.getRepositoryService().deleteDeployment(deploymentId, true);
-        }
+    @Override
+    public List<DeploymentInfo> listDeployments() {
+        var processEngine = getProcessEngine();
+        var deploymentQuery = processEngine.getRepositoryService().createDeploymentQuery();
+        return deploymentQuery.list().stream()
+                .map(DeploymentInfoEntity::new).collect(Collectors.toList());
     }
 
     @Override
@@ -217,5 +263,16 @@ public class CamundaProcessManagerServiceBean implements ProcessManagerService {
 
     public ProcessEngine getProcessEngine() {
         return ProcessEngines.getDefaultProcessEngine();
+    }
+
+    private void deleteProcessDeploymentsByQuery(ProcessDefinitionQuery processDefinitionQuery, ProcessEngine processEngine) {
+        List<ProcessDefinition> definitions = processDefinitionQuery.list();
+        Set<String> deployments = new HashSet<>();
+        for (ProcessDefinition definition : definitions) {
+            deployments.add(definition.getDeploymentId());
+        }
+        for (String deploymentId : deployments) {
+            processEngine.getRepositoryService().deleteDeployment(deploymentId, true);
+        }
     }
 }

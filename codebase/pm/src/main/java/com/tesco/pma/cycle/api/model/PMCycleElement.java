@@ -1,12 +1,11 @@
 package com.tesco.pma.cycle.api.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.tesco.pma.api.DictionaryItem;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 20.10.2021 Time: 11:44
@@ -24,4 +23,8 @@ public class PMCycleElement extends PMElement {
 
     private DictionaryItem<Integer> cycleType;
     private List<PMReviewElement> reviews = new ArrayList<>();
+
+    public static List<String> getPropertyNames() {
+        return getPropertyNames(PMCycleElement.class, PM_CYCLE_PREFIX + "(?!prefix)([\\w]+)$");
+    }
 }

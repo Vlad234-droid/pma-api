@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 16.10.2021 Time: 20:43
  */
@@ -33,5 +35,9 @@ public class PMReviewElement extends PMElement {
 
     public PMReviewElement(String id, String code, String description, DictionaryItem<Integer> type) {
         super(id, code, description, type);
+    }
+
+    public static List<String> getPropertyNames() {
+        return getPropertyNames(PMReviewElement.class, PM_REVIEW_PREFIX + "(?!prefix)([\\w]+)$");
     }
 }

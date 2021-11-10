@@ -22,7 +22,7 @@ dependencies {
 
     implementation ("org.codehaus.groovy:groovy-all:${groovyVersion}")
 
-    implementation ("com.h2database:h2:${h2Version}")
+    testImplementation ("com.h2database:h2:${h2Version}")
     testImplementation ("com.zaxxer:HikariCP:${hikariVersion}")
 
     // to specify parent test dependencies
