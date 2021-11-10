@@ -105,6 +105,8 @@ server:
   port: 8083
   servlet:
     context-path: /v1
+  trusted-port: 8084
+  trusted-path-prefix: /v1/internal/
 management:
   server:
     port: 8090

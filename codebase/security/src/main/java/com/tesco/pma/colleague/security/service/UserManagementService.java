@@ -2,10 +2,9 @@ package com.tesco.pma.colleague.security.service;
 
 import com.tesco.pma.colleague.security.domain.Account;
 import com.tesco.pma.colleague.security.domain.Role;
-import com.tesco.pma.colleague.security.domain.request.AssignRoleRequest;
+import com.tesco.pma.colleague.security.domain.request.RoleRequest;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
 import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
-import com.tesco.pma.colleague.security.domain.request.RemoveRoleRequest;
 
 import java.util.List;
 
@@ -47,14 +46,14 @@ public interface UserManagementService {
      *
      * @param request
      */
-    void grantRole(AssignRoleRequest request);
+    void grantRole(RoleRequest request);
 
     /**
      * Remove access
      *
      * @param request
      */
-    void revokeRole(RemoveRoleRequest request);
+    void revokeRole(RoleRequest request);
 
     /**
      * Enable / Disable account

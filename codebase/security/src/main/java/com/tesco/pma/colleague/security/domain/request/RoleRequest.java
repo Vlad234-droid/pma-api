@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class AssignRoleRequest {
+public class RoleRequest {
     @JsonProperty("accountName")
     private String accountName;
     @JsonProperty("role")

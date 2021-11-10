@@ -25,6 +25,17 @@
         </collection>
     </resultMap>
 
+    <resultMap id="rolesResultMap" type="com.tesco.pma.colleague.security.domain.Role">
+        <result property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="description" column="description"/>
+    </resultMap>
+
+    <select id="findAllRoles" resultMap="rolesResultMap">
+        SELECT *
+        FROM pm_role
+    </select>
+
     <select id="findAccountByName" resultMap="accountResultMap">
         SELECT * FROM pm_account WHERE name = #{name}
     </select>

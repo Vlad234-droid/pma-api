@@ -4,10 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tesco.pma.colleague.security.domain.Account;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.Role;
-import com.tesco.pma.colleague.security.domain.request.AssignRoleRequest;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
 import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
-import com.tesco.pma.colleague.security.domain.request.RemoveRoleRequest;
+import com.tesco.pma.colleague.security.domain.request.RoleRequest;
 import com.tesco.pma.colleague.security.service.UserManagementService;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import org.jeasy.random.EasyRandom;
@@ -43,8 +42,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
 
     private JacksonTester<CreateAccountRequest> createAccountRequestJsonTester;
     private JacksonTester<ChangeAccountStatusRequest> changeAccountStatusRequestJsonTester;
-    private JacksonTester<AssignRoleRequest> assignRoleRequestJsonTester;
-    private JacksonTester<RemoveRoleRequest> removeRoleRequestJsonTester;
+    private JacksonTester<RoleRequest> roleRequestJsonTester;
 
     @Autowired
     protected MockMvc mvc;
@@ -181,14 +179,14 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
     void grantRoleWithOneRoleShouldReturnStatusCreated() throws Exception {
 
         // given
-        AssignRoleRequest assignRoleRequest = randomObject(AssignRoleRequest.class);
-        assignRoleRequest.setRole("1");
+        RoleRequest roleRequest = randomObject(RoleRequest.class);
+        roleRequest.setRole("1");
 
         // when
         ResultActions resultActions = mvc.perform(
                 post(ROLES_URL_TEMPLATE)
                         .contentType(APPLICATION_JSON)
-                        .content(assignRoleRequestJsonTester.write(assignRoleRequest).getJson()));
+                        .content(roleRequestJsonTester.write(roleRequest).getJson()));
 
         // then
         andExpect(resultActions, status().isCreated());
@@ -199,14 +197,14 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
     void grantRoleWithManyRolesShouldReturnStatusCreated() throws Exception {
 
         // given
-        AssignRoleRequest assignRoleRequest = randomObject(AssignRoleRequest.class);
-        assignRoleRequest.setRole(List.of("1", "2", "3"));
+        RoleRequest roleRequest = randomObject(RoleRequest.class);
+        roleRequest.setRole(List.of("1", "2", "3"));
 
         // when
         ResultActions resultActions = mvc.perform(
                 post(ROLES_URL_TEMPLATE)
                         .contentType(APPLICATION_JSON)
-                        .content(assignRoleRequestJsonTester.write(assignRoleRequest).getJson()));
+                        .content(roleRequestJsonTester.write(roleRequest).getJson()));
 
         // then
         andExpect(resultActions, status().isCreated());
@@ -217,14 +215,14 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
     void revokeRoleWithOneRoleShouldReturnStatusCreated() throws Exception {
 
         // given
-        RemoveRoleRequest removeRoleRequest = randomObject(RemoveRoleRequest.class);
-        removeRoleRequest.setRole("1");
+        RoleRequest roleRequest = randomObject(RoleRequest.class);
+        roleRequest.setRole("1");
 
         // when
         ResultActions resultActions = mvc.perform(
                 post(ROLES_URL_TEMPLATE)
                         .contentType(APPLICATION_JSON)
-                        .content(removeRoleRequestJsonTester.write(removeRoleRequest).getJson()));
+                        .content(roleRequestJsonTester.write(roleRequest).getJson()));
 
         // then
         andExpect(resultActions, status().isCreated());
@@ -235,14 +233,14 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
     void revokeRoleWithManyRolesShouldReturnStatusCreated() throws Exception {
 
         // given
-        RemoveRoleRequest removeRoleRequest = randomObject(RemoveRoleRequest.class);
-        removeRoleRequest.setRole(List.of("1", "2", "3"));
+        RoleRequest roleRequest = randomObject(RoleRequest.class);
+        roleRequest.setRole(List.of("1", "2", "3"));
 
         // when
         ResultActions resultActions = mvc.perform(
                 delete(ROLES_URL_TEMPLATE)
                         .contentType(APPLICATION_JSON)
-                        .content(removeRoleRequestJsonTester.write(removeRoleRequest).getJson()));
+                        .content(roleRequestJsonTester.write(roleRequest).getJson()));
 
         // then
         andExpect(resultActions, status().isCreated());

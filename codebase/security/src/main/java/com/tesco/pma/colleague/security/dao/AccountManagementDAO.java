@@ -3,6 +3,7 @@ package com.tesco.pma.colleague.security.dao;
 import com.tesco.pma.colleague.security.domain.Account;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.AccountType;
+import com.tesco.pma.colleague.security.domain.Role;
 import com.tesco.pma.pagination.RequestQuery;
 import org.apache.ibatis.annotations.Param;
 
@@ -12,7 +13,17 @@ import java.util.UUID;
 
 import static java.time.Instant.now;
 
+/**
+ * Interface to perform database operation on {@link Role}, {@link Account}.
+ */
 public interface AccountManagementDAO {
+
+    /**
+     * Returns an available access levels & metadata
+     *
+     * @return a list of roles
+     */
+    List<Role> findAllRoles();
 
     /**
      * Create account

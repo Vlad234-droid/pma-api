@@ -1,14 +1,12 @@
 package com.tesco.pma.colleague.security.service;
 
 import com.tesco.pma.colleague.security.dao.AccountManagementDAO;
-import com.tesco.pma.colleague.security.dao.RoleManagementDAO;
 import com.tesco.pma.colleague.security.domain.Account;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.Role;
-import com.tesco.pma.colleague.security.domain.request.AssignRoleRequest;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
 import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
-import com.tesco.pma.colleague.security.domain.request.RemoveRoleRequest;
+import com.tesco.pma.colleague.security.domain.request.RoleRequest;
 import com.tesco.pma.colleague.security.exception.ErrorCodes;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
@@ -41,7 +39,6 @@ import java.util.stream.Collectors;
 public class UserManagementServiceImpl implements UserManagementService {
 
     private final AccountManagementDAO accountManagementDAO;
-    private final RoleManagementDAO roleManagementDAO;
 
     private final ConfigEntryService configEntryService;
 
@@ -56,7 +53,7 @@ public class UserManagementServiceImpl implements UserManagementService {
 
     @Override
     public List<Role> getRoles() {
-        return roleManagementDAO.get();
+        return accountManagementDAO.findAllRoles();
     }
 
     /**
@@ -107,14 +104,14 @@ public class UserManagementServiceImpl implements UserManagementService {
 
     @Override
     @Transactional
-    public void grantRole(AssignRoleRequest request) {
+    public void grantRole(RoleRequest request) {
         Collection<String> roles = remappingRoles(request.getRole());
         updateRoles(true, request.getAccountName(), roles);
     }
 
     @Override
     @Transactional
-    public void revokeRole(RemoveRoleRequest request) {
+    public void revokeRole(RoleRequest request) {
         Collection<String> roles = remappingRoles(request.getRole());
         updateRoles(false, request.getAccountName(), roles);
     }

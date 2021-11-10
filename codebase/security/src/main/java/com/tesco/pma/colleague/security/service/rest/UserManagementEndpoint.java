@@ -2,10 +2,9 @@ package com.tesco.pma.colleague.security.service.rest;
 
 import com.tesco.pma.colleague.security.domain.Account;
 import com.tesco.pma.colleague.security.domain.Role;
-import com.tesco.pma.colleague.security.domain.request.AssignRoleRequest;
+import com.tesco.pma.colleague.security.domain.request.RoleRequest;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
 import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
-import com.tesco.pma.colleague.security.domain.request.RemoveRoleRequest;
 import com.tesco.pma.colleague.security.service.UserManagementService;
 import com.tesco.pma.colleague.security.service.rest.response.RestResponseWrapper;
 import com.tesco.pma.rest.HttpStatusCodes;
@@ -36,7 +35,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  *
  */
 @RestController
-@RequestMapping(produces = APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/user-management", produces = APPLICATION_JSON_VALUE)
 @Validated
 @RequiredArgsConstructor
 public class UserManagementEndpoint {
@@ -47,7 +46,7 @@ public class UserManagementEndpoint {
             tags = "user-management")
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Users, their status and access levels found")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Users, their status and access levels found not found")
-    @GetMapping(path = "/user-management/accounts")
+    @GetMapping(path = "/accounts")
     public RestResponseWrapper<List<Account>> getAccounts(@RequestParam(required = false, defaultValue = "1") int nextPageToken) {
         List<Account> accounts = userManagementService.getAccounts(nextPageToken);
         int nextPage = userManagementService.getNextPageToken(nextPageToken, accounts.size());
@@ -56,7 +55,7 @@ public class UserManagementEndpoint {
 
     @Operation(summary = "Create an Account", description = "Create an Account", tags = "user-management")
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
-    @PostMapping(path = "/user-management/accounts", consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/accounts", consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse<Void> createAccount(@RequestBody @Valid CreateAccountRequest request) {
         userManagementService.createAccount(request);
@@ -65,7 +64,7 @@ public class UserManagementEndpoint {
 
     @Operation(summary = "Enable / Disable an account", description = "Enable / Disable an account", tags = "user-management")
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
-    @PutMapping(path = "/user-management/accounts", consumes = APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/accounts", consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse<Void> changeAccountStatus(@RequestBody @Valid ChangeAccountStatusRequest request) {
         userManagementService.changeAccountStatus(request);
@@ -76,25 +75,25 @@ public class UserManagementEndpoint {
             tags = "user-management")
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Available access levels & metadata found")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Available access levels & metadata not found")
-    @GetMapping(value = "/user-management/roles")
+    @GetMapping(value = "/roles")
     public RestResponse<List<Role>> getRoles() {
         return RestResponse.success(userManagementService.getRoles());
     }
 
     @Operation(summary = "Add access to an account", description = "Add access to an account", tags = "user-management")
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
-    @PostMapping(path = "/user-management/roles", consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/roles", consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<Void> grantRole(@RequestBody @Valid AssignRoleRequest request) {
+    public RestResponse<Void> grantRole(@RequestBody @Valid RoleRequest request) {
         userManagementService.grantRole(request);
         return RestResponse.success();
     }
 
     @Operation(summary = "Remove access from an account", description = "Remove access from an account", tags = "user-management")
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
-    @DeleteMapping(path = "/user-management/roles", consumes = APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/roles", consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<Void> revokeRole(@RequestBody @Valid RemoveRoleRequest request) {
+    public RestResponse<Void> revokeRole(@RequestBody @Valid RoleRequest request) {
         userManagementService.revokeRole(request);
         return RestResponse.success();
     }

@@ -22,7 +22,7 @@ public class TrustedConnectorConfiguration {
     @Value("${management.server.port:8090}")
     private String managementPort;
 
-    @Value("${server.trusted-port:null}")
+    @Value("${server.trusted-port:8081}")
     private String trustedPort;
 
     /**
@@ -37,10 +37,6 @@ public class TrustedConnectorConfiguration {
     }
 
     private Connector[] additionalConnector() {
-
-        if (!StringUtils.hasLength(this.trustedPort) || "null".equals(trustedPort)) {
-            return null;
-        }
 
         Set<String> defaultPorts = new HashSet<>();
         defaultPorts.add(serverPort);
