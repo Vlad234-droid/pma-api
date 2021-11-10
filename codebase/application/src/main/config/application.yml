@@ -155,8 +155,11 @@ tesco:
           jwk-set-uri: ${ONE_LOGIN_BASE_URL}/oidc/2/certs
       role-mapping:
         ROLE_Admin: ${AD_ROLE_ADMIN}
+        ROLE_Colleague: ${AD_ROLE_COLLEAGUE}
         ROLE_LineManager: ${AD_ROLE_LINE_MANAGER}
-        ROLE_Viewer: ${AD_ROLE_VIEWER}
+        ROLE_PeopleTeam:  ${AD_ROLE_PEOPLE_TEAM}
+        ROLE_TalentAdmin: ${AD_ROLE_TALENT_ADMIN}
+        ROLE_ProcessManager: ${AD_ROLE_PROCESS_MANAGER}
     rest-template:
       security:
         enabled: ${REST_TEMPLATE_SECURITY_ENABLED:true}
