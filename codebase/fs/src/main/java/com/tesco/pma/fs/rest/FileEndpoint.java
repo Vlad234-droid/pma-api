@@ -142,10 +142,7 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = CREATED, description = "Uploaded file")
             }
     )
-    @PostMapping(path = "/",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse<List<File>> upload(
             @RequestPart("uploadMetadata")
