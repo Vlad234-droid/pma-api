@@ -1,21 +1,12 @@
 package com.tesco.pma.organisation.service;
 
-import com.tesco.pma.organisation.api.Colleague;
-import com.tesco.pma.organisation.dao.ConfigEntryDAO;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.tesco.pma.colleague.api.Colleague;
 
 import java.util.List;
 import java.util.UUID;
 
-@Service
-@AllArgsConstructor
-public class SearchColleaguesService {
+public interface SearchColleaguesService {
 
-    private final ConfigEntryDAO configEntryDAO;
-
-    public List<Colleague> getSuggestions(String fullName, UUID managerId){
-        return configEntryDAO.findColleagueSuggestionsByFullName(fullName.trim(), managerId);
-    }
+    List<Colleague> getSuggestions(String fullName, UUID managerId);
 
 }

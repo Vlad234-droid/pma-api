@@ -6,9 +6,7 @@ import com.tesco.pma.colleague.api.ExternalSystems;
 import com.tesco.pma.colleague.api.IamSourceSystem;
 import com.tesco.pma.colleague.api.Profile;
 import com.tesco.pma.colleague.api.service.ServiceDates;
-import com.tesco.pma.colleague.api.workrelationships.Department;
-import com.tesco.pma.colleague.api.workrelationships.Job;
-import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
+import com.tesco.pma.colleague.api.workrelationships.*;
 import com.tesco.pma.colleague.profile.dao.ProfileAttributeDAO;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
@@ -178,7 +176,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     private WorkRelationship getWorkRelationship(com.tesco.pma.organisation.api.Colleague oc) {
         var wr = new WorkRelationship();
-        wr.setWorkLevel(WorkRelationship.WorkLevel.getByCode(oc.getWorkLevel().getCode()));
+        wr.setWorkLevel(WorkLevel.getByCode(oc.getWorkLevel().getCode()));
         wr.setPrimaryEntity(oc.getPrimaryEntity());
         wr.setSalaryFrequency(oc.getSalaryFrequency());
         wr.setIsManager(oc.isManager());

@@ -3,4 +3,5 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     implementation("com.fasterxml.jackson.core:jackson-annotations:${fasterxmlJacksonAnnotationVersion}")
     implementation ("org.apache.commons:commons-lang3:${commonsLangVersion}")
+    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:${springBootMybatisVersion}")
 }

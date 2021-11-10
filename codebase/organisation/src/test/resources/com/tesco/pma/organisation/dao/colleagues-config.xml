@@ -30,6 +30,9 @@
                iam_source="Test"
                iam_id="TPX1"
                job_id="2"
+               employment_type="ET"
+               hire_date="2019-01-02"
+               leaving_date="2021-02-01"
                country_code="UK"
                work_level="WL2"
                department_id="4"/>

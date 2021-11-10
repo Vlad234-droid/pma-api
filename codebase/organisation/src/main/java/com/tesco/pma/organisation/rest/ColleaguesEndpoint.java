@@ -1,7 +1,7 @@
 package com.tesco.pma.organisation.rest;
 
 
-import com.tesco.pma.organisation.api.Colleague;
+import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.organisation.service.SearchColleaguesService;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;

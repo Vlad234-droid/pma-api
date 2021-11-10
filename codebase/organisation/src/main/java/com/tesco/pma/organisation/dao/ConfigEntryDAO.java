@@ -139,10 +139,10 @@ public interface ConfigEntryDAO {
     /**
      * Get colleague suggestions by full name
      *
-     * @param fullName
+     * @param names
      * @return list colleagues
      */
-    List<Colleague> findColleagueSuggestionsByFullName(@Param("fullName") String fullName,
+    List<com.tesco.pma.colleague.api.Colleague> findColleagueSuggestionsByFullName(@Param("names") List<String> names,
                                                        @Param("managerId") UUID managerId);
 
 }
