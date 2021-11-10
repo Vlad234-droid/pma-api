@@ -4,7 +4,7 @@ import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.exception.DataUploadException;
 import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.fs.domain.File;
-import com.tesco.pma.fs.domain.UploadMetadata;
+import com.tesco.pma.fs.domain.FilesUploadMetadata;
 import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.logging.TraceUtils;
 import com.tesco.pma.rest.HttpStatusCodes;
@@ -39,10 +39,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 
 import static com.tesco.pma.fs.exception.ErrorCodes.ERROR_FILE_UPLOAD_FAILED;
+import static com.tesco.pma.fs.exception.ErrorCodes.FILES_COUNT_MISMATCH;
 import static com.tesco.pma.fs.exception.ErrorCodes.INVALID_PAYLOAD;
 import static com.tesco.pma.logging.TraceId.TRACE_ID_HEADER;
 import static com.tesco.pma.rest.HttpStatusCodes.CREATED;
@@ -122,8 +126,8 @@ public class FileEndpoint {
     }
 
     @Operation(
-            summary = "Upload file",
-            description = "Upload file",
+            summary = "Upload files",
+            description = "Upload files",
             tags = "file",
             requestBody = @RequestBody(
                     required = true,
@@ -131,7 +135,7 @@ public class FileEndpoint {
                             mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
                             encoding = {
                                     @Encoding(name = "uploadMetadata", contentType = MediaType.APPLICATION_JSON_VALUE),
-                                    @Encoding(name = "file", contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+                                    @Encoding(name = "files", contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE)
                             })
             ),
             responses = {
@@ -143,29 +147,43 @@ public class FileEndpoint {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<File> upload(
+    public RestResponse<List<File>> upload(
             @RequestPart("uploadMetadata")
-            @Valid @Parameter(schema = @Schema(type = "string", format = "binary")) UploadMetadata uploadMetadata,
-            @RequestPart("file") MultipartFile file,
+            @Valid @Parameter(schema = @Schema(type = "string", format = "binary")) FilesUploadMetadata filesUploadMetadata,
+            @RequestPart("files") @NotEmpty List<@NotNull MultipartFile> files,
             HttpServletResponse response) {
 
         var traceId = TraceUtils.toParent();
         response.setHeader(TRACE_ID_HEADER, traceId.getValue());
 
-        var fileName = file.getOriginalFilename();
-        if (file.isEmpty()) {
-            throw new DataUploadException(ERROR_FILE_UPLOAD_FAILED.name(), "Failed to store empty file.", fileName);
+        var uploadMetadataList = filesUploadMetadata.getUploadMetadataList();
+        if (uploadMetadataList.size() != files.size()) {
+            throw new DataUploadException(FILES_COUNT_MISMATCH.name(), "Count of data files and metadata files do not match", null);
         }
 
-        if (StringUtils.isBlank(fileName)) {
-            throw new InvalidPayloadException(INVALID_PAYLOAD.getCode(), "File name cannot be empty", "fileName");
-        }
+        var uploadMetadataIterator = uploadMetadataList.iterator();
+        var filesIterator = files.iterator();
+        var uploadedFiles = new LinkedList<File>();
+        while (uploadMetadataIterator.hasNext() && filesIterator.hasNext()) {
+            var file = filesIterator.next();
 
-        try (var inputStream = file.getInputStream()) {
-            return success(fileService.upload(inputStream, uploadMetadata, file, auditorAware.getCurrentAuditor()));
-        } catch (IOException e) {
-            throw new DataUploadException(ERROR_FILE_UPLOAD_FAILED.name(), "Failed to store file.", fileName, e);
+            var fileName = file.getOriginalFilename();
+            if (file.isEmpty()) {
+                throw new DataUploadException(ERROR_FILE_UPLOAD_FAILED.name(), "Failed to store empty file.", fileName);
+            }
+
+            if (StringUtils.isBlank(fileName)) {
+                throw new InvalidPayloadException(INVALID_PAYLOAD.getCode(), "File name cannot be empty", "fileName");
+            }
+
+            try (var inputStream = file.getInputStream()) {
+                var fileUploadMetadata = uploadMetadataIterator.next();
+                uploadedFiles.add(fileService.upload(inputStream, fileUploadMetadata, file, auditorAware.getCurrentAuditor()));
+            } catch (IOException e) {
+                throw new DataUploadException(ERROR_FILE_UPLOAD_FAILED.name(), "Failed to store file.", fileName, e);
+            }
         }
+        return success(uploadedFiles);
     }
 
 }

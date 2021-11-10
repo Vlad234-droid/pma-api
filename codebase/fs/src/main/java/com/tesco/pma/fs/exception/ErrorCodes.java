@@ -17,7 +17,12 @@ public enum ErrorCodes implements ErrorCodeAware {
     /**
      * Failed to register file
      */
-    ERROR_FILE_REGISTRATION_FAILED;
+    ERROR_FILE_REGISTRATION_FAILED,
+
+    /**
+     * Count of data files and metadata files do not match
+     */
+    FILES_COUNT_MISMATCH;
 
     @Override
     public String getCode() {

@@ -7,6 +7,7 @@ import com.tesco.pma.api.TargetAware;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.AbstractApiRuntimeException;
 import com.tesco.pma.exception.AlreadyExistsException;
+import com.tesco.pma.exception.DataUploadException;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.exception.ExternalSystemException;
@@ -14,6 +15,7 @@ import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.exception.LimitExceededException;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.exception.RegistrationException;
 import com.tesco.pma.logging.LogFormatter;
 import com.tesco.pma.rest.RestResponse;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -120,7 +122,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .build());
     }
 
-    @ExceptionHandler(value = {InvalidParameterException.class, InvalidPayloadException.class})
+    @ExceptionHandler(value = {InvalidParameterException.class, InvalidPayloadException.class, DataUploadException.class})
     protected ResponseEntity<Object> handleBadRequestAPI(AbstractApiRuntimeException ex, WebRequest request) {
         logger.error(LogFormatter.formatMessage(ex, "Bad request error has been occurred"), ex);
         return createResponse(ex, null, HttpStatus.BAD_REQUEST);
@@ -153,7 +155,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
     }
 
-    @ExceptionHandler(ExternalSystemException.class)
+    @ExceptionHandler(value = {ExternalSystemException.class, RegistrationException.class})
     protected ResponseEntity<Object> handleExternalSystemException(ExternalSystemException ex) {
         logger.error(LogFormatter.formatMessage(ex, ex.getMessage()), ex);
 

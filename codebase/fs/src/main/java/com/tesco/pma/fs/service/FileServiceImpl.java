@@ -5,7 +5,6 @@ import com.tesco.pma.exception.RegistrationException;
 import com.tesco.pma.fs.dao.FileDAO;
 import com.tesco.pma.fs.domain.File;
 import com.tesco.pma.fs.domain.UploadMetadata;
-import com.tesco.pma.logging.TraceUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +37,7 @@ public class FileServiceImpl implements FileService {
     public File upload(InputStream inputStream, UploadMetadata uploadMetadata,
                        MultipartFile file, String creatorId) throws IOException {
         var fileData = new File();
-        fileData.setUuid(UUID.fromString(TraceUtils.getTraceId().getValue()));
+        fileData.setUuid(UUID.randomUUID());
         var fileName = file.getOriginalFilename();
         fileData.setFileName(fileName);
         fileData.setFileLength((int) file.getSize());
