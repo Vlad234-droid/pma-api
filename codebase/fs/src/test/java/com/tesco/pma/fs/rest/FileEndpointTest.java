@@ -45,6 +45,25 @@ public class FileEndpointTest extends AbstractEndpointTest {
             "  ]\n" +
             "}").getBytes();
 
+    private static final byte[] UPLOAD_FILES_METADATA_CONTENT = ("{\n" +
+            "  \"uploadMetadataList\": [\n" +
+            "    {\n" +
+            "      \"path\": \"/home/vsilenko/dev\",\n" +
+            "      \"type\": \"PDF\",\n" +
+            "      \"status\": \"ACTIVE\",\n" +
+            "      \"description\": \"text templates\",\n" +
+            "      \"fileDate\": \"2021-04-22T08:50:08.294Z\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"path\": \"/home/vsilenko/dev\",\n" +
+            "      \"type\": \"FORM\",\n" +
+            "      \"status\": \"ACTIVE\",\n" +
+            "      \"description\": \"text templates\",\n" +
+            "      \"fileDate\": \"2021-04-22T08:50:08.294Z\"\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}").getBytes();
+
     private static final Instant FILE_DATE = Instant.parse("2021-04-22T08:50:08Z");
     private static final String DESCRIPTION = "other file";
     private static final Instant CREATED_TIME = Instant.parse("2021-11-03T22:38:14Z");
@@ -63,7 +82,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     @Test
     void uploadFilesSuccess() throws Exception {
-        var multipartUploadMetadataMock = getUploadMetadataMultipartFile();
+        var multipartUploadMetadataMock = getUploadMetadataMultipartFile(UPLOAD_FILE_METADATA_CONTENT);
         var multipartFileMock = getMultipartFileToUpload(CONTENT);
 
         var dataFile = buildFileData(FILE_UUID_1, 1);
@@ -76,9 +95,23 @@ public class FileEndpointTest extends AbstractEndpointTest {
         assertResponseContent(result.getResponse(), "files_upload_ok_response.json");
     }
 
-    private MockMultipartFile getUploadMetadataMultipartFile() {
-        return new MockMultipartFile("uploadMetadata", "test_metadata.json",
-                APPLICATION_JSON_VALUE, UPLOAD_FILE_METADATA_CONTENT);
+    @Test
+    void uploadFilesUnsuccess() throws Exception {
+        var multipartUploadMetadataMock = getUploadMetadataMultipartFile(UPLOAD_FILES_METADATA_CONTENT);
+        var multipartFileMock = getMultipartFileToUpload(CONTENT);
+
+        var dataFile = buildFileData(FILE_UUID_1, 1);
+
+        when(this.service.upload(any(), any(), any(), any())).thenReturn(dataFile);
+
+        final var result = performMultipartWithMetadata(multipartUploadMetadataMock, multipartFileMock,
+                status().isBadRequest(), FILES_URL);
+
+        assertResponseContent(result.getResponse(), "files_upload_failed_response.json");
+    }
+
+    private MockMultipartFile getUploadMetadataMultipartFile(byte[] content) {
+        return new MockMultipartFile("uploadMetadata", "test_metadata.json", APPLICATION_JSON_VALUE, content);
     }
 
     private MockMultipartFile getMultipartFileToUpload(byte[] content) {
