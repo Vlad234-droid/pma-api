@@ -3,7 +3,7 @@
 
 <mapper namespace="com.tesco.pma.feedback.dao.FeedbackDAO">
 
-    <resultMap id="feedback" type="com.tesco.pma.feedback.api.Feedback">
+    <resultMap id="feedbackMap" type="com.tesco.pma.feedback.api.Feedback">
         <id column="uuid" property="uuid"/>
         <result column="colleague_uuid" property="colleagueUuid"/>
         <result column="target_colleague_uuid" property="targetColleagueUuid"/>
@@ -17,12 +17,39 @@
                 javaType="com.tesco.pma.feedback.api.FeedbackStatus"/>
         <result column="created_time" property="createdTime"/>
         <result column="updated_time" property="updatedTime"/>
-        <collection property="feedbackItems" ofType="com.tesco.pma.feedback.api.FeedbackItem">
-            <id column="fi_uuid" property="uuid"/>
-            <result column="fi_code" property="code"/>
-            <result column="fi_content" property="content"/>
-            <result column="fi_feedback_uuid" property="feedbackUuid"/>
-        </collection>
+        <association property="colleagueProfile">
+            <association property="colleague">
+                <id column="c_uuid" property="colleagueUUID"/>
+                <association property="profile" autoMapping="true" columnPrefix="c_"/>
+                <collection property="workRelationships" ofType="com.tesco.pma.colleague.api.workrelationships.WorkRelationship">
+                    <association property="department">
+                        <result column="c_department" property="name"/>
+                    </association>
+                    <association property="job">
+                        <result column="c_job" property="name"/>
+                    </association>
+                </collection>
+            </association>
+            <collection property="profileAttributes" autoMapping="true" columnPrefix="tcpa_"
+                        ofType="com.tesco.pma.colleague.profile.domain.TypedAttribute"/>
+        </association>
+        <association property="targetColleagueProfile">
+            <association property="colleague">
+                <id column="tc_uuid" property="colleagueUUID"/>
+                <association property="profile" autoMapping="true" columnPrefix="tc_"/>
+                <collection property="workRelationships" ofType="com.tesco.pma.colleague.api.workrelationships.WorkRelationship">
+                    <association property="department">
+                        <result column="tc_department" property="name"/>
+                    </association>
+                    <association property="job">
+                        <result column="tc_job" property="name"/>
+                    </association>
+                </collection>
+            </association>
+            <collection property="profileAttributes" autoMapping="true" columnPrefix="tcpa_"
+                        ofType="com.tesco.pma.colleague.profile.domain.TypedAttribute"/>
+        </association>
+        <collection property="feedbackItems" autoMapping="true" columnPrefix="fi_" ofType="com.tesco.pma.feedback.api.FeedbackItem"/>
     </resultMap>
 
     <sql id="addStatusIdCondition">
@@ -164,7 +191,7 @@
         </choose>
     </sql>
 
-    <select id="getByUuid" flushCache="true" resultMap="feedback">
+    <select id="getByUuid" flushCache="true" resultMap="feedbackMap">
         SELECT f.uuid,
                f.colleague_uuid,
                f.target_colleague_uuid,
@@ -177,14 +204,37 @@
                fi.uuid          as fi_uuid,
                fi.code          as fi_code,
                fi.content       as fi_content,
-               fi.feedback_uuid as fi_feedback_uuid
+               fi.feedback_uuid as fi_feedbackUuid,
+               c.uuid           as c_uuid,
+               c.first_name     as c_firstName,
+               c.middle_name    as c_middleName,
+               c.last_name      as c_lastName,
+               cj.name          as c_job,
+               cd.name          as c_department,
+               cpa.name         as cpa_name,
+               cpa.value        as cpa_value,
+               tc.uuid          as tc_uuid,
+               tc.first_name    as tc_firstName,
+               tc.middle_name   as tc_middleName,
+               tc.last_name     as tc_lastName,
+               tcj.name         as tc_job,
+               tcd.name         as tc_department,
+               tcpa.name        as tcpa_name,
+               tcpa.value       as tcpa_value
         FROM feedback f
-                 JOIN feedback_item fi
-                      ON f.uuid = fi.feedback_uuid
+                 LEFT JOIN feedback_item fi ON f.uuid = fi.feedback_uuid
+                 JOIN colleague c ON f.colleague_uuid = c.uuid
+                 LEFT JOIN job cj on c.job_id = cj.id
+                 LEFT JOIN department cd on c.department_id = cd.id
+                 LEFT JOIN profile_attributes cpa ON f.target_colleague_uuid = cpa.colleague_uuid
+                 JOIN colleague tc ON f.target_colleague_uuid = tc.uuid
+                 LEFT JOIN job tcj on c.job_id = tcj.id
+                 LEFT JOIN department tcd on c.department_id = tcd.id
+                 LEFT JOIN profile_attributes tcpa ON f.target_colleague_uuid = tcpa.colleague_uuid
         WHERE f.uuid = #{uuid}
     </select>
 
-    <select id="findAll" flushCache="true" resultMap="feedback">
+    <select id="findAll" flushCache="true" resultMap="feedbackMap">
         SELECT f.uuid,
                f.colleague_uuid,
                f.target_colleague_uuid,
@@ -197,10 +247,33 @@
                fi.uuid          as fi_uuid,
                fi.code          as fi_code,
                fi.content       as fi_content,
-               fi.feedback_uuid as fi_feedback_uuid
+               fi.feedback_uuid as fi_feedbackUuid,
+               c.uuid           as c_uuid,
+               c.first_name     as c_firstName,
+               c.middle_name    as c_middleName,
+               c.last_name      as c_lastName,
+               cj.name          as c_job,
+               cd.name          as c_department,
+               cpa.name         as cpa_name,
+               cpa.value        as cpa_value,
+               tc.uuid          as tc_uuid,
+               tc.first_name    as tc_firstName,
+               tc.middle_name   as tc_middleName,
+               tc.last_name     as tc_lastName,
+               tcj.name         as tc_job,
+               tcd.name         as tc_department,
+               tcpa.name        as tcpa_name,
+               tcpa.value       as tcpa_value
         FROM feedback f
-                 LEFT JOIN feedback_item fi
-                           ON f.uuid = fi.feedback_uuid
+                 LEFT JOIN feedback_item fi ON f.uuid = fi.feedback_uuid
+                 JOIN colleague c ON f.colleague_uuid = c.uuid
+                 LEFT JOIN job cj on c.job_id = cj.id
+                 LEFT JOIN department cd on c.department_id = cd.id
+                 LEFT JOIN profile_attributes cpa ON f.target_colleague_uuid = cpa.colleague_uuid
+                 JOIN colleague tc ON f.target_colleague_uuid = tc.uuid
+                 LEFT JOIN job tcj on c.job_id = tcj.id
+                 LEFT JOIN department tcd on c.department_id = tcd.id
+                 LEFT JOIN profile_attributes tcpa ON f.target_colleague_uuid = tcpa.colleague_uuid
         WHERE 1 = 1
         <if test="!requestQuery.filters.isEmpty()">
             <foreach collection="requestQuery.filters" item="filter" index="index" open=" AND " separator=" AND ">
@@ -208,7 +281,7 @@
             </foreach>
         </if>
         <if test="requestQuery.search != null and requestQuery.search != ''">
-            AND fi.content LIKE '%'||UPPER(#{requestQuery.search})||'%'
+            AND UPPER(fi.content) LIKE '%'||UPPER(#{requestQuery.search})||'%'
         </if>
 
         <if test="requestQuery.sort.isEmpty()">
