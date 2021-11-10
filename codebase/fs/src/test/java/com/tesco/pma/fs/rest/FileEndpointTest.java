@@ -1,11 +1,14 @@
 package com.tesco.pma.fs.rest;
 
+import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.exception.RegistrationException;
 import com.tesco.pma.fs.domain.File;
 import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.time.Instant;
@@ -13,6 +16,7 @@ import java.util.UUID;
 
 import static com.tesco.pma.fs.domain.FileStatus.ACTIVE;
 import static com.tesco.pma.fs.domain.FileType.FORM;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -30,7 +34,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
     private static final String PATH = "/home/dev";
     private static final String FILES_URL = "/files";
 
-    private static final byte[] CONTENT = "Spring Boot Framework 2".getBytes();
+    private static final byte[] CONTENT = {72, 101, 108};
     private static final String TXT_FILE_CONTENT_TYPE = "application/vnd.oasis.opendocument.text";
 
     private static final byte[] UPLOAD_FILE_METADATA_CONTENT = ("{\n" +
@@ -67,6 +71,8 @@ public class FileEndpointTest extends AbstractEndpointTest {
     private static final Instant FILE_DATE = Instant.parse("2021-04-22T08:50:08Z");
     private static final String DESCRIPTION = "other file";
     private static final Instant CREATED_TIME = Instant.parse("2021-11-03T22:38:14Z");
+    private static final String DOWNLOAD = "/download/";
+    private static final int FILE_LENGTH = 23;
 
     @MockBean
     private FileService service;
@@ -78,6 +84,29 @@ public class FileEndpointTest extends AbstractEndpointTest {
         var result = performGet(status().isOk(), FILES_URL + "/" + FILE_UUID_1);
 
         assertResponseContent(result.getResponse(), "file_get_ok_response.json");
+    }
+
+    @Test
+    void findByUuidUnsuccess() throws Exception {
+        when(service.findByUuid(FILE_UUID_1, true)).thenThrow(NotFoundException.class);
+
+        performGet(status().isNotFound(), FILES_URL + "/" + FILE_UUID_1);
+    }
+
+    @Test
+    void downloadSuccess() throws Exception {
+        when(service.findByUuid(FILE_UUID_1, true)).thenReturn(buildFileData(FILE_UUID_1, 1));
+
+        var result = performGet(status().isOk(), MediaType.APPLICATION_OCTET_STREAM, FILES_URL + DOWNLOAD + FILE_UUID_1);
+
+        assertThat(result.getResponse().getContentAsByteArray()).isNotSameAs(CONTENT);
+    }
+
+    @Test
+    void downloadUnsuccess() throws Exception {
+        when(service.findByUuid(FILE_UUID_1, true)).thenThrow(NotFoundException.class);
+
+        performGet(status().isNotFound(), FILES_URL + DOWNLOAD + FILE_UUID_1);
     }
 
     @Test
@@ -96,7 +125,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void uploadFilesUnsuccess() throws Exception {
+    void uploadFilesUnsuccessWithBadRequest() throws Exception {
         var multipartUploadMetadataMock = getUploadMetadataMultipartFile(UPLOAD_FILES_METADATA_CONTENT);
         var multipartFileMock = getMultipartFileToUpload(CONTENT);
 
@@ -108,6 +137,16 @@ public class FileEndpointTest extends AbstractEndpointTest {
                 status().isBadRequest(), FILES_URL);
 
         assertResponseContent(result.getResponse(), "files_upload_failed_response.json");
+    }
+
+    @Test
+    void uploadFilesUnsuccessWithInternalServerError() throws Exception {
+        var multipartUploadMetadataMock = getUploadMetadataMultipartFile(UPLOAD_FILE_METADATA_CONTENT);
+        var multipartFileMock = getMultipartFileToUpload(CONTENT);
+
+        when(this.service.upload(any(), any(), any(), any())).thenThrow(RegistrationException.class);
+
+        performMultipartWithMetadata(multipartUploadMetadataMock, multipartFileMock, status().isInternalServerError(), FILES_URL);
     }
 
     private MockMultipartFile getUploadMetadataMultipartFile(byte[] content) {
@@ -130,8 +169,8 @@ public class FileEndpointTest extends AbstractEndpointTest {
         file.setCreatedTime(CREATED_TIME);
         file.setFileName(FILE_NAME);
         file.setFileDate(FILE_DATE);
-        file.setFileLength(23);
-        file.setFileContent(new byte[] { 72, 101, 108});
+        file.setFileLength(FILE_LENGTH);
+        file.setFileContent(CONTENT);
 
         return file;
     }

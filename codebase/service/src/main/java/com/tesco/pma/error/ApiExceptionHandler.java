@@ -156,7 +156,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {ExternalSystemException.class, RegistrationException.class})
-    protected ResponseEntity<Object> handleExternalSystemException(ExternalSystemException ex) {
+    protected ResponseEntity<Object> handleExternalSystemException(AbstractApiRuntimeException ex) {
         logger.error(LogFormatter.formatMessage(ex, ex.getMessage()), ex);
 
         var error = ApiError.builder()
