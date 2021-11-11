@@ -3,7 +3,7 @@ package com.tesco.pma.notes.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.notes.model.Folder;
-import com.tesco.pma.notes.service.NotesService;
+import com.tesco.pma.notes.service.NotesServiceImpl;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import com.tesco.pma.rest.HttpStatusCodes;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ public class FoldersEndpointTest extends AbstractEndpointTest {
     protected MockMvc mvc;
 
     @MockBean
-    private NotesService notesService;
+    private NotesServiceImpl notesService;
 
     @Test
     void create() throws Exception {
