@@ -22,6 +22,7 @@ public class PMCycleElement extends PMElement {
     public static final String PM_CYCLE_MAX = PM_CYCLE_PREFIX + "max";
 
     private DictionaryItem<Integer> cycleType;
+    private List<PMTimelinePointElement> timelinePoints = new ArrayList<>();
     private List<PMReviewElement> reviews = new ArrayList<>();
 
     public static List<String> getPropertyNames() {

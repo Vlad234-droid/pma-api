@@ -56,22 +56,22 @@ class FlowModelTest {
 
     @Test
     void readModel() throws IOException {
-        checkModel(PROCESS_NAME, FILE_NAME_PM_V1, FORM_1);
+        checkModel(PROCESS_NAME, FILE_NAME_PM_V1, FORM_1, 3, 3);
     }
 
     @Test
     void readModel2() throws IOException {
-        checkModel(PROCESS_NAME_2, FILE_NAME_PM_V2, FORM_1);
+        checkModel(PROCESS_NAME_2, FILE_NAME_PM_V2, FORM_1, 3, 3);
     }
 
     @Test
     void readType1() throws IOException {
-        checkModel(PROCESS_NAME_TYPE_1, PROCESS_NAME_TYPE_1 + ".bpmn", FORM_TYPE_1_OBJECTIVE);
+        checkModel(PROCESS_NAME_TYPE_1, PROCESS_NAME_TYPE_1 + ".bpmn", FORM_TYPE_1_OBJECTIVE, 5, 3);
     }
 
     @Test
     void readType2() throws IOException {
-        checkModel(PROCESS_NAME_TYPE_2, PROCESS_NAME_TYPE_2 + ".bpmn", FORM_TYPE_2_OBJECTIVE);
+        checkModel(PROCESS_NAME_TYPE_2, PROCESS_NAME_TYPE_2 + ".bpmn", FORM_TYPE_2_OBJECTIVE, 5, 3);
     }
 
     @Test
@@ -102,7 +102,7 @@ class FlowModelTest {
         Assertions.assertEquals(expected, PMProcessModelParser.defaultValue("Set objectives ", ""));
     }
 
-    private void checkModel(String processName, String processFileName, String formName) throws IOException {
+    private void checkModel(String processName, String processFileName, String formName, int tlSize, int reviewsCount) throws IOException {
         var model = getModel(processFileName);
         Process process = model.getModelElementById(processName);
         assertNotNull(process);
@@ -116,7 +116,8 @@ class FlowModelTest {
         var tasks = model.getModelElementsByType(Activity.class);
         parser.parse(cycle, tasks);
 
-        assertEquals(3, cycle.getReviews().size());
+        assertEquals(tlSize, cycle.getTimelinePoints().size());
+        assertEquals(reviewsCount, cycle.getReviews().size());
 
         Optional<PMReviewElement> oObjective =
                 cycle.getReviews().stream().filter(r -> "OBJECTIVE".equalsIgnoreCase(r.getReviewType().getCode()))

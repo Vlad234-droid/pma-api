@@ -98,7 +98,7 @@ public class DeploymentEndpoint {
         var resources = new LinkedHashMap<String, InputStream>();
         try {
             for (MultipartFile file : files) {
-                resources.put(file.getOriginalFilename(), file.getInputStream());
+                resources.put(deploymentName + '/' + file.getOriginalFilename(), file.getInputStream());
             }
             var traceId = TraceUtils.toParent();
             response.setHeader(TRACE_ID_HEADER, traceId.getValue());

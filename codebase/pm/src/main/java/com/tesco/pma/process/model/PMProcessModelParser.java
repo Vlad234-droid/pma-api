@@ -1,22 +1,21 @@
 package com.tesco.pma.process.model;
 
-import java.util.Collection;
-import java.util.Optional;
-import java.util.regex.Pattern;
-
+import com.tesco.pma.api.GeneralDictionaryItem;
+import com.tesco.pma.cycle.api.model.PMCycleElement;
+import com.tesco.pma.cycle.api.model.PMFormElement;
+import com.tesco.pma.cycle.api.model.PMReviewElement;
+import com.tesco.pma.cycle.api.model.PMTimelinePointElement;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperties;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperty;
 
-import com.tesco.pma.api.GeneralDictionaryItem;
-import com.tesco.pma.cycle.api.model.PMCycleElement;
-import com.tesco.pma.cycle.api.model.PMFormElement;
-import com.tesco.pma.cycle.api.model.PMReviewElement;
-
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.regex.Pattern;
 
 import static com.tesco.pma.cycle.api.model.PMElement.PM_TYPE;
 import static com.tesco.pma.cycle.api.model.PMFormElement.PM_FORM_KEY;
@@ -26,6 +25,7 @@ import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MAX;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MIN;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_TYPE;
+import static com.tesco.pma.cycle.api.model.PMTimelinePointElement.PM_TIMELINE_POINT;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 15.10.2021 Time: 15:45
@@ -55,10 +55,24 @@ public class PMProcessModelParser {
             if (typeOptional.isPresent()) {
                 var type = typeOptional.get().getCamundaValue().toLowerCase();
                 if (PM_REVIEW.equals(type)) {
-                    cycle.getReviews().add(parseReview(task, props, type));
+                    var review = parseReview(task, props, type);
+                    cycle.getReviews().add(review);
+                    cycle.getTimelinePoints().add(review.toTimelinePoint());
+                } else if (PM_TIMELINE_POINT.equals(type)) {
+                    cycle.getTimelinePoints().add(parseTimelinePoint(task, props, type));
                 }
             }
         }
+    }
+
+    private PMTimelinePointElement parseTimelinePoint(Activity task, CamundaProperties props, String type) {
+        var name = defaultValue(unwrap(task.getName()), task.getId());
+        var pmTimelinePoint = new PMTimelinePointElement(task.getId(), name, name, new GeneralDictionaryItem(null, type, null));
+        props.getCamundaProperties().forEach(property -> {
+            var key = property.getCamundaName().toLowerCase();
+            pmTimelinePoint.getProperties().put(key, property.getCamundaValue());
+        });
+        return pmTimelinePoint;
     }
 
     private PMReviewElement parseReview(Activity task, CamundaProperties props, String type) {

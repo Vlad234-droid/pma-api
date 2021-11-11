@@ -26,6 +26,11 @@ class PMElementTest {
         check(PMFormElement.getPropertyNames(), 3);
     }
 
+    @Test
+    void pmTimelinePointElementConstants() {
+        check(PMTimelinePointElement.getPropertyNames(), 1);
+    }
+
     private void check(List<String> constants, int size) {
         Assertions.assertEquals(size, constants.size());
     }

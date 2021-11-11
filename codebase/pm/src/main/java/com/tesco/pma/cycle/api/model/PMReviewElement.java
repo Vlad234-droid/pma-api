@@ -5,6 +5,7 @@ import com.tesco.pma.api.DictionaryItem;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class PMReviewElement extends PMElement {
+public class PMReviewElement extends PMTimelinePointElement {
     public static final String PM_REVIEW = "review";
     public static final String PM_REVIEW_PREFIX = PM_PREFIX + PM_REVIEW + "_";
     public static final String PM_REVIEW_TYPE = PM_REVIEW_PREFIX + "type";
@@ -39,5 +40,17 @@ public class PMReviewElement extends PMElement {
 
     public static List<String> getPropertyNames() {
         return getPropertyNames(PMReviewElement.class, PM_REVIEW_PREFIX + "(?!prefix)([\\w]+)$");
+    }
+
+    public PMTimelinePointElement toTimelinePoint() {
+        var tlp = new PMTimelinePointElement(getId(), getCode(), getDescription(), getType());
+        tlp.getProperties().put(PM_TYPE, getType().getCode().toLowerCase());
+        PMTimelinePointElement.getPropertyNames().forEach(name -> {
+            var value = getProperties().get(name);
+            if (!StringUtils.isBlank(name)) {
+                tlp.getProperties().put(name, value);
+            }
+        });
+        return tlp;
     }
 }
