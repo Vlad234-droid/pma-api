@@ -1,14 +1,12 @@
 package com.tesco.pma.service.user;
 
-import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.api.User;
-import com.tesco.pma.api.security.SubsidiaryPermission;
+import com.tesco.pma.colleague.api.Colleague;
+import com.tesco.pma.colleague.api.FindColleaguesRequest;
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.ExternalSystemException;
 import com.tesco.pma.security.UserRoleNames;
 import com.tesco.pma.service.colleague.client.ColleagueApiClient;
-import com.tesco.pma.colleague.api.Colleague;
-import com.tesco.pma.colleague.api.FindColleaguesRequest;
-import com.tesco.pma.service.security.SubsidiaryPermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -42,16 +40,15 @@ public class UserServiceImpl implements UserService {
     static final String MESSAGE_PARAM_VALUE_COLLEAGUE_API = "Colleague-Api";
 
     private final ColleagueApiClient colleagueApiClient;
-    private final SubsidiaryPermissionService subsidiaryPermissionService;
     private final NamedMessageSourceAccessor messages;
 
     @Override
-    public Optional<User> findUserByColleagueUuid(final UUID colleagueUuid, final Collection<UserIncludes> includes) {
-        return findUserByColleagueUuidInternal(colleagueUuid, includes);
+    public Optional<User> findUserByColleagueUuid(final UUID colleagueUuid) {
+        return findUserByColleagueUuidInternal(colleagueUuid);
     }
 
     @Override
-    public Optional<User> findUserByIamId(final String iamId, final Collection<UserIncludes> includes) {
+    public Optional<User> findUserByIamId(final String iamId) {
         final List<Colleague> colleagues;
         try {
             colleagues = colleagueApiClient.findColleagues(FindColleaguesRequest.builder().iamId(iamId).build());
@@ -67,17 +64,7 @@ public class UserServiceImpl implements UserService {
                             Map.of("reason", "more then one colleague found for iamId: " + iamId)));
         }
         var user = mapColleagueToUser(colleagues.iterator().next());
-        return Optional.of(processIncludes(user, includes));
-    }
-
-    @Override
-    public Collection<User> findUsersHasSubsidiaryPermission(final UUID subsidiaryUuid,
-                                                             final String role,
-                                                             final Collection<UserIncludes> includes) {
-        final var colleaguesUuids = subsidiaryPermissionService.findSubsidiaryPermissionsForSubsidiary(subsidiaryUuid).stream()
-                .filter(subsidiaryPermission -> role == null || role.equals(subsidiaryPermission.getRole()))
-                .map(SubsidiaryPermission::getColleagueUuid).collect(Collectors.toSet());
-        return findUsersByColleagueUuidsInternal(colleaguesUuids, includes);
+        return Optional.of(user);
     }
 
     /**
@@ -91,8 +78,7 @@ public class UserServiceImpl implements UserService {
      * @see UserRoleNames
      */
     @Override
-    public Optional<User> findUserByAuthentication(final Authentication authentication,
-                                                   final Collection<UserIncludes> includes) {
+    public Optional<User> findUserByAuthentication(final Authentication authentication) {
         UUID colleagueUuid;
         try {
             // colleagueUuid = IdentityToken.subject = Authentication.name
@@ -102,7 +88,7 @@ public class UserServiceImpl implements UserService {
             return Optional.empty();
         }
 
-        var user = findUserByColleagueUuidInternal(colleagueUuid, includes).orElse(null);
+        var user = findUserByColleagueUuidInternal(colleagueUuid).orElse(null);
         if (user == null) {
             //fallback to onelogin token if provided
             final var auth2UserAuthority = authentication.getAuthorities().stream()
@@ -113,7 +99,6 @@ public class UserServiceImpl implements UserService {
             if (auth2UserAuthority.isPresent()) {
                 user = new User(colleagueUuid);
                 mapOidcUserInfoToUser(new OidcUserInfo(auth2UserAuthority.get().getAttributes()), user);
-                processIncludes(user, includes);
             }
         }
 
@@ -129,42 +114,22 @@ public class UserServiceImpl implements UserService {
         return Optional.ofNullable(user);
     }
 
-    private Optional<User> findUserByColleagueUuidInternal(final UUID colleagueUuid, final Collection<UserIncludes> includes) {
-        final var users = findUsersByColleagueUuidsInternal(List.of(colleagueUuid), includes);
+    private Optional<User> findUserByColleagueUuidInternal(final UUID colleagueUuid) {
+        final var users = findUsersByColleagueUuidsInternal(List.of(colleagueUuid));
         return users.isEmpty() ? Optional.empty() : Optional.of(users.iterator().next());
     }
 
-    private Collection<User> findUsersByColleagueUuidsInternal(final Collection<UUID> colleagueUuids,
-                                                               final Collection<UserIncludes> includes) {
+    private Collection<User> findUsersByColleagueUuidsInternal(final Collection<UUID> colleagueUuids) {
         if (colleagueUuids.isEmpty()) {
             return Collections.emptySet();
         }
         // skip nonexistent/notfound users
-        final var usersFound = colleagueUuids.stream()
+        return colleagueUuids.stream()
                 .distinct()
                 .map(this::tryFindColleagueByUuid)
                 .filter(Objects::nonNull)
                 .map(this::mapColleagueToUser)
                 .collect(Collectors.toList());
-
-        return processIncludes(usersFound, includes);
-    }
-
-    private Collection<User> processIncludes(final Collection<User> users, final Collection<UserIncludes> includes) {
-        if (!users.isEmpty() && includes != null && includes.contains(UserIncludes.SUBSIDIARY_PERMISSIONS)) {
-            final var colleagueUuidsFound = users.stream()
-                    .map(User::getColleagueUuid).collect(Collectors.toSet());
-            final var subsidiaryPermissionsByColleagueUuid =
-                    subsidiaryPermissionService.findSubsidiaryPermissionsForUsers(colleagueUuidsFound);
-
-            users.forEach(user -> user.setSubsidiaryPermissions(subsidiaryPermissionsByColleagueUuid
-                    .getOrDefault(user.getColleagueUuid(), Collections.emptySet())));
-        }
-        return users;
-    }
-
-    private User processIncludes(final User user, final Collection<UserIncludes> includes) {
-        return processIncludes(List.of(user), includes).iterator().next();
     }
 
     private Colleague tryFindColleagueByUuid(UUID colleagueUuid) {

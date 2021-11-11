@@ -21,9 +21,6 @@ public class UserRoleNames {
     public static final String TALENT_ADMIN = "TalentAdmin";
     public static final String PROCESS_MANAGER = "ProcessManager";
 
-    public static final String SUBSIDIARY_MANAGER = "SubsidiaryManager";
-    public static final String VIEWER = "Viewer";
-
-    public static final List<String> ALL = List.of(ADMIN, COLLEAGUE, LINE_MANAGER, PEOPLE_TEAM, TALENT_ADMIN, PROCESS_MANAGER, SUBSIDIARY_MANAGER, VIEWER);
+    public static final List<String> ALL = List.of(ADMIN, COLLEAGUE, LINE_MANAGER, PEOPLE_TEAM, TALENT_ADMIN, PROCESS_MANAGER);
 
 }

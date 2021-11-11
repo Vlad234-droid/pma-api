@@ -1,7 +1,6 @@
 package com.tesco.pma.configuration.rest.model;
 
 import com.tesco.pma.api.security.SubsidiaryPermission;
-import com.tesco.pma.security.UserRoleNames;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.UUID;
@@ -22,7 +21,7 @@ public abstract class SubsidiaryPermissionMixIn extends SubsidiaryPermission {
     @Override
     public abstract UUID getSubsidiaryUuid();
 
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY, allowableValues = UserRoleNames.SUBSIDIARY_MANAGER)
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @Override
     public abstract String getRole();
 }

@@ -8,8 +8,8 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,7 +27,7 @@ public class TrustedConnectorConfiguration {
 
     /**
      *
-     * @return
+     * @return servlet container
      */
     @Bean
     public WebServerFactoryCustomizer<TomcatServletWebServerFactory> servletContainer() {
@@ -52,14 +52,16 @@ public class TrustedConnectorConfiguration {
         }
     }
 
+    @SuppressWarnings("PMD.UseVarargs")
     private static class TomcatMultiConnectorServletWebServerFactoryCustomizer
             extends TomcatServletWebServerFactoryCustomizer {
 
         private final Connector[] additionalConnectors;
 
-        TomcatMultiConnectorServletWebServerFactoryCustomizer(ServerProperties serverProperties, Connector[] additionalConnectors) {
+        TomcatMultiConnectorServletWebServerFactoryCustomizer(final ServerProperties serverProperties,
+                                                              final Connector[] additionalConnectors) {
             super(serverProperties);
-            this.additionalConnectors = additionalConnectors;
+            this.additionalConnectors = Arrays.copyOf(additionalConnectors, additionalConnectors.length);
         }
 
         @Override

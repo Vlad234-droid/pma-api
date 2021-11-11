@@ -1,16 +1,14 @@
 package com.tesco.pma.service.user;
 
-import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.api.User;
-import com.tesco.pma.api.security.SubsidiaryPermission;
-import com.tesco.pma.exception.ExternalSystemException;
-import com.tesco.pma.security.UserRoleNames;
-import com.tesco.pma.service.colleague.client.ColleagueApiClient;
 import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.api.Contact;
 import com.tesco.pma.colleague.api.FindColleaguesRequest;
 import com.tesco.pma.colleague.api.Profile;
-import com.tesco.pma.service.security.SubsidiaryPermissionService;
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.exception.ExternalSystemException;
+import com.tesco.pma.security.UserRoleNames;
+import com.tesco.pma.service.colleague.client.ColleagueApiClient;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +29,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -57,13 +54,11 @@ class UserServiceImplTest {
     @Mock
     private ColleagueApiClient mockColleagueApiClient;
     @Mock
-    private SubsidiaryPermissionService mockSubsidiaryPermissionService;
-    @Mock
     private NamedMessageSourceAccessor mockNamedMessageSourceAccessor;
 
     @BeforeEach
     void setUp() {
-        instance = new UserServiceImpl(mockColleagueApiClient, mockSubsidiaryPermissionService, mockNamedMessageSourceAccessor);
+        instance = new UserServiceImpl(mockColleagueApiClient, mockNamedMessageSourceAccessor);
     }
 
     @Test
@@ -71,7 +66,7 @@ class UserServiceImplTest {
         final var colleague = randomColleague();
         findColleagueByColleagueUuidFoundCall(colleague);
 
-        final var res = instance.findUserByColleagueUuid(colleague.getColleagueUUID(), Collections.emptySet());
+        final var res = instance.findUserByColleagueUuid(colleague.getColleagueUUID());
 
         assertThat(res).hasValueSatisfying(colleagueProperlyMapped(colleague));
     }
@@ -81,23 +76,9 @@ class UserServiceImplTest {
         final var colleague = randomColleague();
         findColleagueByColleagueUuidNotFoundCall(colleague.getColleagueUUID());
 
-        final var res = instance.findUserByColleagueUuid(colleague.getColleagueUUID(), Collections.emptySet());
+        final var res = instance.findUserByColleagueUuid(colleague.getColleagueUUID());
 
         assertThat(res).isEmpty();
-    }
-
-    @Test
-    void findUserByColleagueUuidFetchSubsidiaryPermissions() {
-        final var colleague = randomColleague();
-        final var subsidiaryPermissions = RANDOM.objects(SubsidiaryPermission.class, 3).collect(toList());
-        final var colleagueUuid = colleague.getColleagueUUID();
-        findColleagueByColleagueUuidFoundCall(colleague);
-        findSubsidiaryPermissionsCall(colleagueUuid, subsidiaryPermissions);
-
-        final var res = instance.findUserByColleagueUuid(colleagueUuid,
-                Set.of(UserIncludes.SUBSIDIARY_PERMISSIONS));
-
-        assertThat(res).hasValueSatisfying(hasSubsidiaryPermissions(subsidiaryPermissions));
     }
 
     @Test
@@ -107,7 +88,7 @@ class UserServiceImplTest {
         when(mockColleagueApiClient.findColleagueByColleagueUuid(colleague.getColleagueUUID()))
                 .thenThrow(restClientException);
 
-        assertThatCode(() -> instance.findUserByColleagueUuid(colleague.getColleagueUUID(), Collections.emptySet()))
+        assertThatCode(() -> instance.findUserByColleagueUuid(colleague.getColleagueUUID()))
                 .hasCause(restClientException)
                 .isInstanceOf(ExternalSystemException.class);
 
@@ -122,7 +103,7 @@ class UserServiceImplTest {
         when(mockColleagueApiClient.findColleagues(FindColleaguesRequest.builder().iamId(iamId).build()))
                 .thenReturn(List.of(colleague));
 
-        final var res = instance.findUserByIamId(iamId, Collections.emptySet());
+        final var res = instance.findUserByIamId(iamId);
 
         assertThat(res).hasValueSatisfying(colleagueProperlyMapped(colleague));
     }
@@ -133,7 +114,7 @@ class UserServiceImplTest {
         when(mockColleagueApiClient.findColleagues(FindColleaguesRequest.builder().iamId(iamId).build()))
                 .thenReturn(Collections.emptyList());
 
-        final var res = instance.findUserByIamId(iamId, Collections.emptySet());
+        final var res = instance.findUserByIamId(iamId);
 
         assertThat(res).isEmpty();
     }
@@ -144,27 +125,12 @@ class UserServiceImplTest {
         when(mockColleagueApiClient.findColleagues(FindColleaguesRequest.builder().iamId(iamId).build()))
                 .thenReturn(List.of(randomColleague(), randomColleague()));
 
-        assertThatCode(() -> instance.findUserByIamId(iamId, Collections.emptySet()))
+        assertThatCode(() -> instance.findUserByIamId(iamId))
                 .isInstanceOf(ExternalSystemException.class)
                 .hasNoCause();
 
         verify(mockNamedMessageSourceAccessor).getMessage(COLLEAGUE_API_UNEXPECTED_RESULT,
                 Map.of("reason", "more then one colleague found for iamId: " + iamId));
-    }
-
-    @Test
-    void findUserByIamIdFetchSubsidiaryPermissions() {
-        final var iamId = RANDOM.nextObject(String.class);
-        final var colleague = randomColleague();
-        final var subsidiaryPermissions = RANDOM.objects(SubsidiaryPermission.class, 3).collect(toList());
-        final var colleagueUuid = colleague.getColleagueUUID();
-        when(mockColleagueApiClient.findColleagues(FindColleaguesRequest.builder().iamId(iamId).build()))
-                .thenReturn(List.of(colleague));
-        findSubsidiaryPermissionsCall(colleagueUuid, subsidiaryPermissions);
-
-        final var res = instance.findUserByIamId(iamId, Set.of(UserIncludes.SUBSIDIARY_PERMISSIONS));
-
-        assertThat(res).hasValueSatisfying(hasSubsidiaryPermissions(subsidiaryPermissions));
     }
 
     @Test
@@ -174,7 +140,7 @@ class UserServiceImplTest {
         when(mockColleagueApiClient.findColleagues(FindColleaguesRequest.builder().iamId(iamId).build()))
                 .thenThrow(restClientException);
 
-        assertThatCode(() -> instance.findUserByIamId(iamId, Collections.emptySet()))
+        assertThatCode(() -> instance.findUserByIamId(iamId))
                 .hasCause(restClientException)
                 .isInstanceOf(ExternalSystemException.class);
 
@@ -183,63 +149,10 @@ class UserServiceImplTest {
     }
 
     @Test
-    void findUsersHasSubsidiaryPermissionPermissionsNotFound() {
-        final var subsidiaryUuid = randomUUID();
-        final var role = RANDOM.nextObject(String.class);
-        when(mockSubsidiaryPermissionService.findSubsidiaryPermissionsForSubsidiary(subsidiaryUuid)).thenReturn(Collections.emptySet());
-
-        final var res = instance.findUsersHasSubsidiaryPermission(subsidiaryUuid, role, Collections.emptySet());
-
-        assertThat(res).isEmpty();
-    }
-
-    @Test
-    void findUsersHasSubsidiaryPermissionPermissionsFoundWithProvidedRole() {
-        final var subsidiaryUuid = randomUUID();
-        final var colleagueWithMatchedRole = randomColleague();
-        final var colleagueWithNotMatchedRole = randomColleague();
-        final var roleTarget = RANDOM.nextObject(String.class);
-        final var roleNotMatched = RANDOM.nextObject(String.class);
-        when(mockSubsidiaryPermissionService.findSubsidiaryPermissionsForSubsidiary(subsidiaryUuid))
-                .thenReturn(List.of(
-                        SubsidiaryPermission.of(colleagueWithMatchedRole.getColleagueUUID(), subsidiaryUuid, roleTarget),
-                        SubsidiaryPermission.of(colleagueWithNotMatchedRole.getColleagueUUID(), subsidiaryUuid, roleNotMatched)
-                ));
-
-        findColleagueByColleagueUuidFoundCall(colleagueWithMatchedRole);
-
-        final var res = instance.findUsersHasSubsidiaryPermission(subsidiaryUuid, roleTarget, Collections.emptySet());
-
-        assertThat(res).hasSize(1)
-                .anySatisfy(colleagueProperlyMapped(colleagueWithMatchedRole));
-    }
-
-    @Test
-    void findUsersHasSubsidiaryPermissionPermissionsFoundForAnyRole() {
-        final var subsidiaryUuid = randomUUID();
-        final var colleague1 = randomColleague();
-        final var colleague2 = randomColleague();
-        when(mockSubsidiaryPermissionService.findSubsidiaryPermissionsForSubsidiary(subsidiaryUuid))
-                .thenReturn(List.of(
-                        SubsidiaryPermission.of(colleague1.getColleagueUUID(), subsidiaryUuid, RANDOM.nextObject(String.class)),
-                        SubsidiaryPermission.of(colleague2.getColleagueUUID(), subsidiaryUuid, RANDOM.nextObject(String.class))
-                ));
-
-        findColleagueByColleagueUuidFoundCall(colleague1);
-        findColleagueByColleagueUuidFoundCall(colleague2);
-
-        final var res = instance.findUsersHasSubsidiaryPermission(subsidiaryUuid, null, Collections.emptySet());
-
-        assertThat(res).hasSize(2)
-                .anySatisfy(colleagueProperlyMapped(colleague1))
-                .anySatisfy(colleagueProperlyMapped(colleague2));
-    }
-
-    @Test
     void findUserByAuthenticationAuthenticationNameNotUUIDReturnsEmpty() {
         final var auth = new TestingAuthenticationToken("not-uuid", CREDENTIALS);
 
-        final var res = instance.findUserByAuthentication(auth, Collections.emptySet());
+        final var res = instance.findUserByAuthentication(auth);
 
         assertThat(res).isEmpty();
     }
@@ -250,7 +163,7 @@ class UserServiceImplTest {
         final var auth = new TestingAuthenticationToken(colleague.getColleagueUUID().toString(), CREDENTIALS);
         findColleagueByColleagueUuidFoundCall(colleague);
 
-        final var res = instance.findUserByAuthentication(auth, Collections.emptySet());
+        final var res = instance.findUserByAuthentication(auth);
 
         assertThat(res).hasValueSatisfying(colleagueProperlyMapped(colleague));
     }
@@ -274,7 +187,7 @@ class UserServiceImplTest {
         final var auth = new TestingAuthenticationToken(colleagueUuid.toString(), CREDENTIALS, List.of(oAuth2UserAuthority));
         findColleagueByColleagueUuidNotFoundCall(colleagueUuid);
 
-        final var res = instance.findUserByAuthentication(auth, Collections.emptySet());
+        final var res = instance.findUserByAuthentication(auth);
 
         assertThat(res).get().usingRecursiveComparison().isEqualTo(expectedUser);
     }
@@ -286,7 +199,7 @@ class UserServiceImplTest {
         final var auth = new TestingAuthenticationToken(colleagueUuid.toString(), CREDENTIALS);
         findColleagueByColleagueUuidNotFoundCall(colleagueUuid);
 
-        final var res = instance.findUserByAuthentication(auth, Collections.emptySet());
+        final var res = instance.findUserByAuthentication(auth);
 
         assertThat(res).isEmpty();
     }
@@ -300,7 +213,7 @@ class UserServiceImplTest {
                 authorities.toArray(String[]::new));
         findColleagueByColleagueUuidFoundCall(colleague);
 
-        final var res = instance.findUserByAuthentication(auth, Collections.emptySet());
+        final var res = instance.findUserByAuthentication(auth);
 
         assertThat(res).hasValueSatisfying(user -> assertThat(user.getRoles()).containsExactlyInAnyOrderElementsOf(expectedRoles));
     }
@@ -316,15 +229,6 @@ class UserServiceImplTest {
     private void findColleagueByColleagueUuidNotFoundCall(UUID colleagueUuid) {
         when(mockColleagueApiClient.findColleagueByColleagueUuid(colleagueUuid))
                 .thenThrow(RANDOM.nextObject(HttpClientErrorException.NotFound.class));
-    }
-
-    private void findSubsidiaryPermissionsCall(UUID colleagueUuid, Collection<SubsidiaryPermission> subsidiaryPermissions) {
-        when(mockSubsidiaryPermissionService.findSubsidiaryPermissionsForUsers(Set.of(colleagueUuid)))
-                .thenReturn(Map.of(colleagueUuid, subsidiaryPermissions));
-    }
-
-    private Consumer<User> hasSubsidiaryPermissions(Collection<SubsidiaryPermission> subsidiaryPermissions) {
-        return user -> assertThat(user.getSubsidiaryPermissions()).containsExactlyInAnyOrderElementsOf(subsidiaryPermissions);
     }
 
     private Consumer<User> colleagueProperlyMapped(Colleague colleague) {
