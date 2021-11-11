@@ -9,22 +9,18 @@ import lombok.Singular;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 
 @Data
 @Builder
 @NoArgsConstructor
-public class ProcessingError {
-
-    private UUID id;
+public class ParsingError {
 
     private String code;
 
     @Singular
     private Map<String, String> properties;
 
-    protected ProcessingError(UUID id, @NonNull String code, Map<String, String> properties) {
-        this.id = Objects.requireNonNullElse(id, UUID.randomUUID());
+    protected ParsingError(@NonNull String code, Map<String, String> properties) {
         this.code = code;
         this.properties = Objects.requireNonNullElse(properties, Collections.emptyMap());
     }

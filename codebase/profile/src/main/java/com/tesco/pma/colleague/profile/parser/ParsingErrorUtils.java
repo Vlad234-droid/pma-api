@@ -1,6 +1,6 @@
 package com.tesco.pma.colleague.profile.parser;
 
-import com.tesco.pma.colleague.profile.parser.model.ProcessingError;
+import com.tesco.pma.colleague.profile.parser.model.ParsingError;
 import lombok.experimental.UtilityClass;
 import org.apache.poi.ss.usermodel.CellType;
 
@@ -13,8 +13,8 @@ import static com.tesco.pma.colleague.profile.parser.ParsingErrorCode.PARSE_MULT
 @UtilityClass
 public class ParsingErrorUtils {
 
-    public static ProcessingError cellError(String stringCellValue, String formatCellValue, String cellReference) {
-        return ProcessingError.builder()
+    public static ParsingError cellError(String stringCellValue, String formatCellValue, String cellReference) {
+        return ParsingError.builder()
                 .code(PARSE_ERROR_CELL.getCode())
                 .property("stringCellValue", stringCellValue)
                 .property("formatCellValue", formatCellValue)
@@ -22,16 +22,16 @@ public class ParsingErrorUtils {
                 .build();
     }
 
-    public static ProcessingError cellUnknownType(CellType cellType, String cellReference) {
-        return ProcessingError.builder()
+    public static ParsingError cellUnknownType(CellType cellType, String cellReference) {
+        return ParsingError.builder()
                 .code(PARSE_CELL_UNKNOWN_TYPE.getCode())
                 .property("cellType", cellType.name())
                 .property("cellReference", cellReference)
                 .build();
     }
 
-    public static ProcessingError multiProperties(String property, List<Integer> sources) {
-        return ProcessingError.builder()
+    public static ParsingError multiProperties(String property, List<Integer> sources) {
+        return ParsingError.builder()
                 .code(PARSE_MULTI_PROPERTIES.getCode())
                 .property("property", property)
                 .property("sources", sources.toString())

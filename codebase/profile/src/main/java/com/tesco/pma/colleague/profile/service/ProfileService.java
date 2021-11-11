@@ -1,12 +1,10 @@
 package com.tesco.pma.colleague.profile.service;
 
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
-import com.tesco.pma.colleague.profile.domain.ImportReport;
-import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
+import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 
 import javax.validation.constraints.NotNull;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -50,5 +48,4 @@ public interface ProfileService {
 
     ColleagueEntity getColleagueByIamId(String iamId);
 
-    ImportReport importColleagues(InputStream inputStream);
 }

@@ -11,12 +11,11 @@ import java.util.UUID;
 @Value
 public class ImportReport {
 
+    UUID requestUuid;
+
     @Singular("importColleague")
     Set<UUID> imported;
 
     @Singular("skipColleague")
-    Set<UUID> skipped;
-
-    @Singular("usersManagerSkip")
-    Set<UUID> managerSkippedForUser;
+    Set<ImportError> skipped;
 }

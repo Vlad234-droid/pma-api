@@ -19,15 +19,15 @@ public class ParsingResult {
     List<FieldSet> data;
 
     @Singular
-    Set<ProcessingError> errors;
+    Set<ParsingError> errors;
 
-    public ParsingResult(Metadata metadata, List<FieldSet> data, Set<ProcessingError> errors) {
+    boolean success;
+
+    public ParsingResult(Metadata metadata, List<FieldSet> data, Set<ParsingError> errors, boolean success) {
         this.metadata = metadata;
         this.data = Objects.requireNonNullElse(data, Collections.emptyList());
         this.errors = Objects.requireNonNullElse(errors, Collections.emptySet());
+        this.success = success;
     }
 
-    public boolean isSucceeded() {
-        return getErrors().isEmpty();
-    }
 }

@@ -13,10 +13,8 @@ import com.tesco.pma.colleague.profile.dao.ProfileAttributeDAO;
 import com.tesco.pma.colleague.profile.dao.ProfileDAO;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
-import com.tesco.pma.colleague.profile.domain.ImportReport;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.exception.ErrorCodes;
-import com.tesco.pma.colleague.profile.parser.XlsxParser;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
@@ -26,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +31,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link ProfileService}.
@@ -131,48 +127,6 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public ColleagueEntity getColleagueByIamId(String iamId) {
         return profileDAO.getColleagueByIamId(iamId);
-    }
-
-    @Override
-    @Transactional
-    public ImportReport importColleagues(InputStream inputStream) {
-        var parser = new XlsxParser();
-        var result = parser.parse(inputStream);
-
-        var workLevels = ColleagueMapper.mapWLs(result.getData());
-        workLevels.forEach(profileDAO::saveWorkLevel);
-
-        var countries = ColleagueMapper.mapCountries(result.getData());
-        countries.forEach(profileDAO::saveCountry);
-
-        var departments = ColleagueMapper.mapDepartments(result.getData());
-        departments.forEach(profileDAO::saveDepartment);
-
-        var jobs = ColleagueMapper.mapJobs(result.getData());
-        jobs.forEach(profileDAO::saveJob);
-
-        var colleagues = ColleagueMapper.mapColleagues(result.getData(), workLevels, countries, departments, jobs);
-        return saveColleagues(colleagues);
-    }
-
-    private ImportReport saveColleagues(List<ColleagueEntity> colleagues) {
-        var uuidToManager = colleagues.stream()
-                .filter(c -> c.getManagerUuid() != null)
-                .collect(Collectors.toMap(ColleagueEntity::getUuid, ColleagueEntity::getManagerUuid));
-        var builder = ImportReport.builder();
-        colleagues.forEach(c -> {
-            c.setManagerUuid(null);
-            profileDAO.saveColleague(c);
-            builder.importColleague(c.getUuid());
-        });
-        for (var colleague : uuidToManager.entrySet()) {
-            if (profileDAO.isColleagueExists(colleague.getValue())) {
-                profileDAO.updateColleagueManager(colleague.getKey(), colleague.getValue());
-            } else {
-                builder.usersManagerSkip(colleague.getKey());
-            }
-        }
-        return builder.build();
     }
 
     private Colleague findColleagueByColleagueUuid(UUID colleagueUuid) {

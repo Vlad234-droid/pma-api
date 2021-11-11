@@ -5,7 +5,7 @@ import com.tesco.pma.colleague.profile.parser.model.FieldDescriptor;
 import com.tesco.pma.colleague.profile.parser.model.FieldSet;
 import com.tesco.pma.colleague.profile.parser.model.Metadata;
 import com.tesco.pma.colleague.profile.parser.model.ParsingResult;
-import com.tesco.pma.colleague.profile.parser.model.ProcessingError;
+import com.tesco.pma.colleague.profile.parser.model.ParsingError;
 import com.tesco.pma.colleague.profile.parser.model.Value;
 import lombok.Data;
 import lombok.NonNull;
@@ -99,8 +99,8 @@ public class XlsxParser {
 
 
     private void processError(ParsingResult.ParsingResultBuilder res, Exception ex, ParsingErrorCode parsingErrorCode) {
-        final var error = ProcessingError.builder().code(parsingErrorCode.getCode()).build();
-        res.error(error);
+        final var error = ParsingError.builder().code(parsingErrorCode.getCode()).build();
+        res.success(false).error(error);
         log.error(parsingErrorCode.getCode(), ex);
     }
 
@@ -146,7 +146,7 @@ public class XlsxParser {
 
                 processData(rowIterator);
 
-                return resultBuilder.build();
+                return resultBuilder.success(true).build();
             } finally {
                 LocaleUtil.setUserLocale(userLocale);
                 LocaleUtil.setUserTimeZone(userTimeZone);

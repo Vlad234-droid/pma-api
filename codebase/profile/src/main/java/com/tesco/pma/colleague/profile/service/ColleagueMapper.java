@@ -1,6 +1,7 @@
 package com.tesco.pma.colleague.profile.service;
 
 import com.tesco.pma.colleague.profile.parser.model.FieldSet;
+import com.tesco.pma.colleague.profile.parser.model.Value;
 import com.tesco.pma.colleague.profile.parser.model.ValueType;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import lombok.experimental.UtilityClass;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -30,28 +32,41 @@ public class ColleagueMapper {
                 .map(FieldSet::getValues)
                 .map(fs -> {
                     var colleague = new ColleagueEntity();
-                    colleague.setUuid(UUID.fromString(fs.get("colleague_uuid").getFormatted()));
-                    /*
-                    colleague.setFirstName(fs.get("").getFormatted());
-                    colleague.setLastName(fs.get("").getFormatted());
-                    colleague.setEmail(fs.get("").getFormatted());
-                     */
-                    colleague.setWorkLevel(wlMap.get(fs.get("work_level").getFormatted()));
-                    colleague.setPrimaryEntity(fs.get("primary_entity").getFormatted());
-                    colleague.setCountry(countryMap.get(fs.get("country_code").getFormatted()));
-                    colleague.setDepartment(depMap.get(fs.get("department_id").getFormatted()));
-                    colleague.setSalaryFrequency(fs.get("salary_frequency").getFormatted());
-                    colleague.setJob(jobMap.get(fs.get("job_id").getFormatted()));
-                    colleague.setIamId(fs.get("iam_id").getFormatted());
-                    colleague.setIamSource(fs.get("iam_source").getFormatted());
-                    colleague.setManagerUuid(StringUtils.isNotEmpty(fs.get("manager_uuid").getFormatted())
-                            ? UUID.fromString(fs.get("manager_uuid").getFormatted()) : null);
-                    colleague.setEmploymentType(fs.get("employment_type").getFormatted());
-                    colleague.setHireDate(getISODate(fs.get("hire_date").getFormatted()));
-                    colleague.setLeavingDate(getISODate(fs.get("leaving_date").getFormatted()));
-                    colleague.setManager("1".equals(fs.get("is_manager").getFormatted()));
+                    colleague.setUuid(getUuidValueNullSafe(fs, "colleague_uuid"));
+                    colleague.setFirstName(getValueNullSafe(fs, "first_name"));
+                    colleague.setLastName(getValueNullSafe(fs, "last_name"));
+                    colleague.setEmail(getValueNullSafe(fs, "email"));
+                    colleague.setWorkLevel(wlMap.get(getValueNullSafe(fs, "work_level")));
+                    colleague.setPrimaryEntity(getValueNullSafe(fs, "primary_entity"));
+                    colleague.setCountry(countryMap.get(getValueNullSafe(fs, "country_code")));
+                    colleague.setDepartment(depMap.get(getValueNullSafe(fs, "department_id")));
+                    colleague.setSalaryFrequency(getValueNullSafe(fs, "salary_frequency"));
+                    colleague.setJob(jobMap.get(getValueNullSafe(fs, "job_id")));
+                    colleague.setIamId(getValueNullSafe(fs, "iam_id"));
+                    colleague.setIamSource(getValueNullSafe(fs, "iam_source"));
+                    colleague.setManagerUuid(getUuidValueNullSafe(fs, "manager_uuid"));
+                    colleague.setEmploymentType(getValueNullSafe(fs, "employment_type"));
+                    colleague.setHireDate(getISODate(getValueNullSafe(fs, "hire_date")));
+                    colleague.setLeavingDate(getISODate(getValueNullSafe(fs, "leaving_date")));
+                    colleague.setManager("1".equals(getValueNullSafe(fs, "is_manager")));
                     return colleague;
                 }).collect(Collectors.toList());
+    }
+
+    private static String getValueNullSafe(Map<String, Value> fs, String columnName) {
+        var value = fs.get(columnName);
+        if (value == null || StringUtils.isEmpty(value.getFormatted())) {
+            return null;
+        }
+        return value.getFormatted();
+    }
+
+    private static UUID getUuidValueNullSafe(Map<String, Value> fs, String collumnName) {
+        var value = fs.get(collumnName);
+        if (value == null || StringUtils.isEmpty(value.getFormatted())) {
+            return null;
+        }
+        return UUID.fromString(value.getFormatted());
     }
 
     Set<ColleagueEntity.WorkLevel> mapWLs(List<FieldSet> data) {
@@ -88,9 +103,9 @@ public class ColleagueMapper {
                 .filter(c -> c.get("department_id").getType() != ValueType.BLANK)
                 .map(c -> {
                     var department = new ColleagueEntity.Department();
-                    department.setId(c.get("department_id").getFormatted());
-                    department.setName(c.get("department_name").getFormatted());
-                    department.setBusinessType(c.get("business_type").getFormatted());
+                    department.setId(getValueNullSafe(c, "department_id"));
+                    department.setName(getValueNullSafe(c, "department_name"));
+                    department.setBusinessType(getValueNullSafe(c, "business_type"));
                     return department;
                 }).collect(Collectors.toSet());
     }
@@ -101,8 +116,8 @@ public class ColleagueMapper {
                 .filter(c -> c.get("job_id").getType() != ValueType.BLANK)
                 .map(c -> {
                     var job = new ColleagueEntity.Job();
-                    job.setId(c.get("job_id").getFormatted());
-                    job.setName(c.get("job_name").getFormatted());
+                    job.setId(getValueNullSafe(c, "job_id"));
+                    job.setName(getValueNullSafe(c, "job_name"));
                     return job;
                 }).collect(Collectors.toSet());
     }

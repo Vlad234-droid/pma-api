@@ -1,10 +1,13 @@
 package com.tesco.pma.colleague.profile.service.rest;
 
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
+import com.tesco.pma.colleague.profile.domain.ImportError;
 import com.tesco.pma.colleague.profile.domain.ImportReport;
+import com.tesco.pma.colleague.profile.domain.ImportRequest;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.exception.ErrorCodes;
 import com.tesco.pma.colleague.profile.exception.ImportException;
+import com.tesco.pma.colleague.profile.service.ImportColleagueService;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.InvalidPayloadException;
@@ -47,6 +50,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class ProfileEndpoint {
 
     private final ProfileService profileService;
+    private final ImportColleagueService importService;
     private final NamedMessageSourceAccessor messages;
 
     @Operation(summary = "Get profile by colleague uuid", description = "Get profile by colleague uuid", tags = "profile")
@@ -136,10 +140,25 @@ public class ProfileEndpoint {
         }
 
         try (var inputStream = file.getInputStream()) {
-            return RestResponse.success(profileService.importColleagues(inputStream));
+            return RestResponse.success(importService.importColleagues(inputStream, file.getOriginalFilename()));
         } catch (IOException e) {
             throw new ImportException("Failed to import colleagues", e);
         }
+    }
+
+    @Operation(summary = "Get import request by uuid", tags = "profile")
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Request found")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Request not found")
+    @GetMapping(path = "/requests/{requestUuid}")
+    public RestResponse<ImportRequest> getImportRequest(@PathVariable UUID requestUuid) {
+        return RestResponse.success(importService.getRequest(requestUuid));
+    }
+
+    @Operation(summary = "Get import request errors by request uuid", tags = "profile")
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Request errors found")
+    @GetMapping(path = "/requests/{requestUuid}/errors")
+    public RestResponse<List<ImportError>> getImportRequestErrors(@PathVariable UUID requestUuid) {
+        return RestResponse.success(importService.getRequestErrors(requestUuid));
     }
 
 }
