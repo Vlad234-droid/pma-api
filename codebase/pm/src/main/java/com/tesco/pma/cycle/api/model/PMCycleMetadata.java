@@ -14,5 +14,6 @@ public class PMCycleMetadata implements Jsonb {
         REVIEW,
         CYCLE
     }
+
     private PMCycleElement cycle;
 }
