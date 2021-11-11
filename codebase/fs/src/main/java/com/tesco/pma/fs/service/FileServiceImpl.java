@@ -16,7 +16,6 @@ import java.io.InputStream;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.List;
 
 import static com.tesco.pma.exception.ErrorCodes.ERROR_FILE_NOT_FOUND;
 import static com.tesco.pma.fs.domain.FileStatus.DRAFT;
@@ -71,10 +70,5 @@ public class FileServiceImpl implements FileService {
                 .orElseThrow(() -> new NotFoundException(ERROR_FILE_NOT_FOUND.name(),
                         "File was not found", fileUuid.toString()));
 
-    }
-
-    @Override
-    public List<File> findAll(boolean includeFileContent) {
-        return fileDao.findAll(includeFileContent);
     }
 }

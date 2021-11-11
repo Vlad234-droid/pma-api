@@ -45,15 +45,6 @@ public class FileDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet(BASE_PATH_TO_DATA_SET + "file_init.xml")
-    void findAll() {
-        final var result = instance.findAll(false);
-
-        assertThat(result).isNotEmpty();
-        assertThat(result.size()).isEqualTo(3);
-    }
-
-    @Test
-    @DataSet(BASE_PATH_TO_DATA_SET + "file_init.xml")
     void getMaxVersion() {
         final var result = instance.getMaxVersion(PATH, "test1.txt");
 

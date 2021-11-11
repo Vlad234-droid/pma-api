@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
-import java.util.List;
 
 /**
  * File service.
@@ -41,12 +40,4 @@ public interface FileService {
      * @throws NotFoundException if file by uuid is not found
      */
     File findByUuid(@NotNull UUID fileUuid, boolean includeFileContent);
-
-    /**
-     * Read all information about all files
-     *
-     * @param includeFileContent identifies if include contents of each of the files
-     * @return files data
-     */
-    List<File> findAll(boolean includeFileContent);
 }

@@ -4,7 +4,6 @@ import com.tesco.pma.fs.domain.File;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.UUID;
-import java.util.List;
 
 public interface FileDAO {
 
@@ -17,14 +16,6 @@ public interface FileDAO {
      */
     File findByUuid(@Param("fileUuid") UUID fileUuid,
                     @Param("includeFileContent") boolean includeFileContent);
-
-    /**
-     * Read all information about all files
-     *
-     * @param includeFileContent identifies if include contents of each of the files
-     * @return files data
-     */
-    List<File> findAll(@Param("includeFileContent") boolean includeFileContent);
 
     /**
      * Save file information to database

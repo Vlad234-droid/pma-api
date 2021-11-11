@@ -84,20 +84,6 @@ public class FileEndpoint {
         return success(fileService.findByUuid(fromString(fileUuid), includeFileContent));
     }
 
-    @Operation(
-            summary = "Read All Files information",
-            description = "Read All Files information",
-            tags = "file",
-            responses = {
-                    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found all files data"),
-                    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Files data not found", content = @Content),
-            })
-    @GetMapping("/all")
-    public RestResponse<List<File>> findAll(@RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true")
-                                                               boolean includeFileContent) {
-        return success(fileService.findAll(includeFileContent));
-    }
-
     /**
      * GET call to download file.
      *

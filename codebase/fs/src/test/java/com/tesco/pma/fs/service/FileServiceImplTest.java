@@ -17,7 +17,6 @@ import com.tesco.pma.fs.dao.FileDAO;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.UUID;
 
 import static com.tesco.pma.fs.domain.FileStatus.ACTIVE;
@@ -91,18 +90,6 @@ public class FileServiceImplTest {
         when(fileDao.findByUuid(FILE_UUID_1, true)).thenReturn(null);
 
         assertThrows(NotFoundException.class, () -> service.findByUuid(FILE_UUID_1, true));
-    }
-
-    @Test
-    void findAll() {
-        var files = Arrays.asList(buildFileData(FILE_UUID_1, 1),
-                buildFileData(FILE_UUID_2, 1));
-
-        when(fileDao.findAll(false)).thenReturn(files);
-
-        var result = service.findAll(false);
-
-        assertEquals(files, result);
     }
 
     private File buildFileData(UUID uuid, Integer version) {

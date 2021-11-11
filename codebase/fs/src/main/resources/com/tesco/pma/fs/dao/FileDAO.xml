@@ -28,15 +28,6 @@
         WHERE uuid = #{fileUuid}
     </select>
 
-    <select id="findAll" resultMap="fileResultMap">
-        SELECT uuid, path, version, type_id, status_id, description,
-        created_by, created_time, file_name, file_date, file_length
-        <if test="includeFileContent">
-            , file_content
-        </if>
-        FROM file
-    </select>
-
     <insert id="save" flushCache="true">
         INSERT INTO file (uuid, path, version, type_id, status_id, description,
                                       created_by, created_time, file_name, file_date, file_length, file_content)
