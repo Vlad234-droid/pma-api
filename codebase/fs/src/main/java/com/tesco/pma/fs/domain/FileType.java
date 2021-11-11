@@ -9,11 +9,11 @@ import lombok.Getter;
 @Getter
 public enum FileType implements DictionaryItem<Integer> {
 
-    BPMN(1, "File type is BPMN"),
-    FORM(2, "File type is FORM"),
-    PDF(3, "File type is PDF"),
-    PPT(4, "File type is PPT"),
-    XLS(5, "File type is XLS");
+    BPMN(1, "Business Process Model file"),
+    FORM(2, "GUI Form file"),
+    PDF(3, "Portable document format file"),
+    PPT(4, "PowerPoint presentation file"),
+    XLS(5, "Excel file");
 
     private final Integer id;
     private final String description;

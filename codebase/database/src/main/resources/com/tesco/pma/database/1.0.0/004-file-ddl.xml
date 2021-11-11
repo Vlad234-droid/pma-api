@@ -66,27 +66,27 @@
         <insert tableName="file_type">
             <column name="id" value="1"/>
             <column name="code" value="BPMN"/>
-            <column name="description" value="File type is BPMN"/>
+            <column name="description" value="Business Process Model file"/>
         </insert>
         <insert tableName="file_type">
             <column name="id" value="2"/>
             <column name="code" value="FORM"/>
-            <column name="description" value="File type is FORM"/>
+            <column name="description" value="GUI Form file"/>
         </insert>
         <insert tableName="file_type">
             <column name="id" value="3"/>
             <column name="code" value="PDF"/>
-            <column name="description" value="File type is PDF"/>
+            <column name="description" value="Portable document format file"/>
         </insert>
         <insert tableName="file_type">
             <column name="id" value="4"/>
             <column name="code" value="PPT"/>
-            <column name="description" value="File type is PPT"/>
+            <column name="description" value="PowerPoint presentation file"/>
         </insert>
         <insert tableName="file_type">
             <column name="id" value="5"/>
             <column name="code" value="XLS"/>
-            <column name="description" value="File type is XLS"/>
+            <column name="description" value="Excel file"/>
         </insert>
         <rollback>
             <delete tableName="file_type">
