@@ -60,7 +60,10 @@ public class FeedbackServiceImpl implements FeedbackService {
             feedbackDAO.insert(feedback);
             Set<FeedbackItem> feedbackItems = feedback.getFeedbackItems()
                     .stream()
-                    .peek(feedbackItem -> feedbackItem.setFeedbackUuid(feedback.getUuid()))
+                    .map(feedbackItem -> {
+                        feedbackItem.setFeedbackUuid(feedback.getUuid());
+                        return feedbackItem;
+                    })
                     .map(this::save)
                     .collect(Collectors.toSet());
             feedback.setFeedbackItems(feedbackItems);
@@ -80,7 +83,10 @@ public class FeedbackServiceImpl implements FeedbackService {
         if (1 == feedbackDAO.update(feedback, statusFilter)) {
             Set<FeedbackItem> feedbackItems = feedback.getFeedbackItems()
                     .stream()
-                    .peek(feedbackItem -> feedbackItem.setFeedbackUuid(feedback.getUuid()))
+                    .map(feedbackItem -> {
+                        feedbackItem.setFeedbackUuid(feedback.getUuid());
+                        return feedbackItem;
+                    })
                     .map(this::save)
                     .collect(Collectors.toSet());
             feedback.setFeedbackItems(feedbackItems);
