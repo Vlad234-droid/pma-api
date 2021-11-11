@@ -5,8 +5,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
-import com.tesco.pma.configuration.rest.model.UserMixIn;
-import com.tesco.pma.api.User;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +28,6 @@ public class JsonConfiguration {
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
         return builder -> builder
-                .mixIn(User.class, UserMixIn.class)
                 .serializers(
                         new LocalDateSerializer(ISO_LOCAL_DATE),
                         new LocalTimeSerializer(ISO_LOCAL_TIME_WITH_THREE_DIGIT_MILLISECOND),

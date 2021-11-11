@@ -43,8 +43,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static com.tesco.pma.security.UserRoleNames.ADMIN;
-import static com.tesco.pma.security.UserRoleNames.SUBSIDIARY_MANAGER;
-import static com.tesco.pma.security.UserRoleNames.VIEWER;
+import static com.tesco.pma.security.UserRoleNames.COLLEAGUE;
+import static com.tesco.pma.security.UserRoleNames.LINE_MANAGER;
 
 /**
  * Configures components to have ability to override user roles for user.
@@ -100,7 +100,7 @@ public class TestUserWithOverridingRolesConfiguration {
         @ResponseStatus(HttpStatus.NO_CONTENT)
         public void setOverridingRoles(
                 @PathVariable UUID colleagueUuid,
-                @RequestBody Collection<@NotNull @AllowedValues({SUBSIDIARY_MANAGER, ADMIN, VIEWER}) String> roleNames) {
+                @RequestBody Collection<@NotNull @AllowedValues({LINE_MANAGER, ADMIN, COLLEAGUE}) String> roleNames) {
             overridingRolesByColleagueUuid.put(colleagueUuid, roleNames);
         }
 

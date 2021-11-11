@@ -1,0 +1,181 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet author="akuzmin" id="1">
+        <createTable remarks="Dictionary of roles"
+                     tableName="pm_role">
+            <column name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pm_role_pk"/>
+            </column>
+            <column name="code" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="akuzmin" id="2">
+        <comment>Init table pm_role</comment>
+        <insert tableName="pm_role">
+            <column name="id" value="1"/>
+            <column name="code" value="GG-UK-TescoGlobal-PMA-Colleague"/>
+            <column name="description" value="Gives access to the Colleague role on PMA on TescoGlobal"/>
+        </insert>
+        <insert tableName="pm_role">
+            <column name="id" value="2"/>
+            <column name="code" value="GG-UK-TescoGlobal-PMA-LineManager"/>
+            <column name="description" value="Gives access to the Line Manager role on PMA on TescoGlobal"/>
+        </insert>
+        <insert tableName="pm_role">
+            <column name="id" value="3"/>
+            <column name="code" value="GG-UK-TescoGlobal-PMA-PeopleTeam"/>
+            <column name="description" value="Gives access to the People Team role on PMA on TescoGlobal"/>
+        </insert>
+        <insert tableName="pm_role">
+            <column name="id" value="4"/>
+            <column name="code" value="GG-UK-TescoGlobal-PMA-TalentAdmin"/>
+            <column name="description" value="Gives access to the Talent Admin role on PMA on TescoGlobal"/>
+        </insert>
+        <insert tableName="pm_role">
+            <column name="id" value="5"/>
+            <column name="code" value="GG-UK-TescoGlobal-PMA-ProcessManager"/>
+            <column name="description" value="Gives access to the Process Manager role on PMA on TescoGlobal"/>
+        </insert>
+        <insert tableName="pm_role">
+            <column name="id" value="6"/>
+            <column name="code" value="GG-UK-TescoGlobal-PMA-Admin"/>
+            <column name="description" value="Gives access to the Admin role on PMA on TescoGlobal"/>
+        </insert>
+        <insert tableName="pm_role">
+            <column name="id" value="7"/>
+            <column name="code" value="GG-UK-TescoGlobal-PMA-PPE-Colleague"/>
+            <column name="description" value="Gives access to the PPE Colleague role on PMA on TescoGlobal"/>
+        </insert>
+        <insert tableName="pm_role">
+            <column name="id" value="8"/>
+            <column name="code" value="GG-UK-TescoGlobal-PMA-PPE-LineManager"/>
+            <column name="description" value="Gives access to the PPE Line Manager role on PMA on TescoGlobal"/>
+        </insert>
+        <insert tableName="pm_role">
+            <column name="id" value="9"/>
+            <column name="code" value="GG-UK-TescoGlobal-PMA-PPE-PeopleTeam"/>
+            <column name="description" value="Gives access to the PPE People Team role on PMA on TescoGlobal"/>
+        </insert>
+        <insert tableName="pm_role">
+            <column name="id" value="10"/>
+            <column name="code" value="GG-UK-TescoGlobal-PMA-PPE-TalentAdmin"/>
+            <column name="description" value="Gives access to the PPE Talent Admin role on PMA on TescoGlobal"/>
+        </insert>
+        <insert tableName="pm_role">
+            <column name="id" value="11"/>
+            <column name="code" value="GG-UK-TescoGlobal-PMA-PPE-ProcessManager"/>
+            <column name="description" value="Gives access to the PPE Process Manager role on PMA on TescoGlobal"/>
+        </insert>
+        <insert tableName="pm_role">
+            <column name="id" value="12"/>
+            <column name="code" value="GG-UK-TescoGlobal-PMA-PPE-Admin"/>
+            <column name="description" value="Gives access to the PPE Admin role on PMA on TescoGlobal"/>
+        </insert>
+        <rollback>
+            <delete tableName="pm_role">
+                <where>name = 'GG-UK-TescoGlobal-PMA-Colleague'</where>
+            </delete>
+            <delete tableName="pm_role">
+                <where>name = 'GG-UK-TescoGlobal-PMA-LineManager'</where>
+            </delete>
+            <delete tableName="pm_role">
+                <where>name = 'GG-UK-TescoGlobal-PMA-PeopleTeam'</where>
+            </delete>
+            <delete tableName="pm_role">
+                <where>name = 'GG-UK-TescoGlobal-PMA-TalentAdmin'</where>
+            </delete>
+            <delete tableName="pm_role">
+                <where>name = 'GG-UK-TescoGlobal-PMA-ProcessManager'</where>
+            </delete>
+            <delete tableName="pm_role">
+                <where>name = 'GG-UK-TescoGlobal-PMA-Admin'</where>
+            </delete>
+            <delete tableName="pm_role">
+                <where>name = 'GG-UK-TescoGlobal-PMA-PPE-Colleague'</where>
+            </delete>
+            <delete tableName="pm_role">
+                <where>name = 'GG-UK-TescoGlobal-PMA-PPE-LineManager'</where>
+            </delete>
+            <delete tableName="pm_role">
+                <where>name = 'GG-UK-TescoGlobal-PMA-PPE-PeopleTeam'</where>
+            </delete>
+            <delete tableName="pm_role">
+                <where>name = 'GG-UK-TescoGlobal-PMA-PPE-TalentAdmin'</where>
+            </delete>
+            <delete tableName="pm_role">
+                <where>name = 'GG-UK-TescoGlobal-PMA-PPE-ProcessManager'</where>
+            </delete>
+            <delete tableName="pm_role">
+                <where>name = 'GG-UK-TescoGlobal-PMA-PPE-Admin'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="akuzmin" id="3">
+        <createTable remarks="List of accounts"
+                     tableName="pm_account">
+            <column name="id" type="${uuid_type}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pm_account_pk"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="iam_id" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_login" type="TIMESTAMPTZ">
+                <constraints nullable="true"/>
+            </column>
+            <column name="employee_number" type="VARCHAR(30)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint columnNames="name" constraintName="pm_account_name_uc"
+                             tableName="pm_account"/>
+    </changeSet>
+
+    <changeSet author="akuzmin" id="4">
+        <createTable remarks="List of roles for account"
+                     tableName="pm_account_role">
+            <column name="account_id" type="${uuid_type}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="pm_account_role" indexName="pm_account_role_account_id_idx">
+            <column name="account_id"/>
+        </createIndex>
+        <createIndex tableName="pm_account_role" indexName="pm_account_role_role_id_idx">
+            <column name="role_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseColumnNames="account_id" baseTableName="pm_account_role"
+                                 constraintName="pm_account_role_account_id_pk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="pm_account" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="pm_account_role"
+                                 constraintName="pm_account_role_role_id_pk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="pm_role" validate="true"/>
+        <addUniqueConstraint tableName="pm_account_role"
+                             columnNames="account_id, role_id"
+                             constraintName="pm_account_role_uc"/>
+    </changeSet>
+
+</databaseChangeLog>

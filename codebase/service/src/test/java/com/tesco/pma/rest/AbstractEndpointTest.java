@@ -1,13 +1,9 @@
 package com.tesco.pma.rest;
 
 import com.tesco.pma.TestConfig;
-import com.tesco.pma.api.User;
-import com.tesco.pma.api.security.SubsidiaryPermission;
 import com.tesco.pma.security.UserRoleNames;
-import com.tesco.pma.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.json.BasicJsonTester;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
@@ -25,17 +21,11 @@ import java.io.UnsupportedEncodingException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static java.util.UUID.fromString;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -79,9 +69,6 @@ public abstract class AbstractEndpointTest {
 
     @Autowired
     protected MockMvc mvc;
-
-    @MockBean
-    protected UserService mockUserService;
 
     protected void assertResponseContent(MockHttpServletResponse actualResponse, String expectedJsonResource) throws UnsupportedEncodingException {
         var actualJsonContent = json.from(actualResponse.getContentAsString());
@@ -196,9 +183,9 @@ public abstract class AbstractEndpointTest {
         return mvc;
     }
 
-    protected RequestPostProcessor viewer() {
+    protected RequestPostProcessor colleague() {
         return SecurityMockMvcRequestPostProcessors.jwt()
-                .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.VIEWER));
+                .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.COLLEAGUE));
     }
 
     protected RequestPostProcessor admin() {
@@ -206,18 +193,9 @@ public abstract class AbstractEndpointTest {
                 .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.ADMIN));
     }
 
-    protected RequestPostProcessor subsidiaryManagerOf(UUID... subsidiaryUuids) {
-        final var requestPostProcessor = SecurityMockMvcRequestPostProcessors.jwt()
-                .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.SUBSIDIARY_MANAGER));
-        if (subsidiaryUuids.length != 0) {
-            final var subsidiaryPermissions = Arrays.stream(subsidiaryUuids).filter(Objects::nonNull)
-                    .map(subsidiaryUuid -> SubsidiaryPermission.of(USER_COLLEAGUE_UUID, subsidiaryUuid, UserRoleNames.SUBSIDIARY_MANAGER))
-                    .collect(Collectors.toSet());
-            final var user = new User(USER_COLLEAGUE_UUID);
-            user.setSubsidiaryPermissions(subsidiaryPermissions);
-            when(mockUserService.findUserByAuthentication(any(), any())).thenReturn(Optional.of(user));
-        }
-        return requestPostProcessor;
+    protected RequestPostProcessor lineManager() {
+        return SecurityMockMvcRequestPostProcessors.jwt()
+                .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.LINE_MANAGER));
     }
 
     protected RequestPostProcessor security(String role, UUID... subsidiaryUuids) {
@@ -226,11 +204,11 @@ public abstract class AbstractEndpointTest {
             case UserRoleNames.ADMIN:
                 requestPostProcessor = admin();
                 break;
-            case UserRoleNames.VIEWER:
-                requestPostProcessor = viewer();
+            case UserRoleNames.COLLEAGUE:
+                requestPostProcessor = colleague();
                 break;
-            case UserRoleNames.SUBSIDIARY_MANAGER:
-                requestPostProcessor = subsidiaryManagerOf(subsidiaryUuids);
+            case UserRoleNames.LINE_MANAGER:
+                requestPostProcessor = lineManager();
                 break;
             case "Anonymous":
                 requestPostProcessor = SecurityMockMvcRequestPostProcessors.anonymous();
