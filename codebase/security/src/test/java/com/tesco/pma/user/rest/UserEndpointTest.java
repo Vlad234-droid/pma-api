@@ -1,12 +1,14 @@
-package com.tesco.pma.service.user.rest;
+package com.tesco.pma.user.rest;
 
 import com.tesco.pma.api.User;
 import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.rest.AbstractEndpointTest;
+import com.tesco.pma.user.UserService;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.Authentication;
 
 import java.util.Optional;
@@ -22,12 +24,17 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = UserEndpoint.class)
 class UserEndpointTest extends AbstractEndpointTest {
     static final EasyRandom RANDOM = new EasyRandom();
     static final String ERRORS_0_CODE_JSON_PATH = "$.errors[0].code";
+
+    @MockBean
+    protected UserService mockUserService;
 
     @Test
     void getUserByColleagueUuidSucceeded() throws Exception {

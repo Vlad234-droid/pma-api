@@ -1,11 +1,11 @@
-package com.tesco.pma.service.user.rest;
+package com.tesco.pma.user.rest;
 
 import com.tesco.pma.api.User;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
-import com.tesco.pma.service.user.UserService;
+import com.tesco.pma.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;

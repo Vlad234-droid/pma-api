@@ -1,4 +1,4 @@
-package com.tesco.pma.service.user;
+package com.tesco.pma.user;
 
 import com.tesco.pma.api.User;
 import com.tesco.pma.colleague.api.Colleague;

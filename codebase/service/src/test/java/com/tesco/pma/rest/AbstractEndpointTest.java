@@ -2,10 +2,8 @@ package com.tesco.pma.rest;
 
 import com.tesco.pma.TestConfig;
 import com.tesco.pma.security.UserRoleNames;
-import com.tesco.pma.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.json.BasicJsonTester;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
@@ -28,7 +26,12 @@ import java.util.UUID;
 import static java.util.UUID.fromString;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
@@ -66,9 +69,6 @@ public abstract class AbstractEndpointTest {
 
     @Autowired
     protected MockMvc mvc;
-
-    @MockBean
-    protected UserService mockUserService;
 
     protected void assertResponseContent(MockHttpServletResponse actualResponse, String expectedJsonResource) throws UnsupportedEncodingException {
         var actualJsonContent = json.from(actualResponse.getContentAsString());
