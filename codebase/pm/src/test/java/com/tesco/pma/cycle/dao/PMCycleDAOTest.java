@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.cycle.api.PMCycle;
+import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.dao.AbstractDAOTest;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -27,6 +29,12 @@ class PMCycleDAOTest extends AbstractDAOTest {
 
     private static final UUID COLLEAGUE_UUID = UUID.fromString("d1810821-d1a9-48b5-9745-d0841151911f");
     private static final UUID CYCLE_UUID = UUID.fromString("5d8a71fe-9cc6-4f3a-9ab6-75f08e6886d4");
+    private static final UUID CYCLE_UUID_3 = UUID.fromString("5d8a71fe-9cc6-4f3a-9ab6-75f08e6886d5");
+    private static final UUID CYCLE_CREATE_UUID = UUID.fromString("5ff53f32-39c8-4a14-86ba-58b87c8da4e6");
+    private static final UUID TEMPLATE_UUID = UUID.fromString("bd36be33-25f4-4db7-90e9-0df0e6e8f04a");
+    public static final String TEST_KEY = "TestKey";
+    public static final String TEST_CYCLE_NAME = "TestCycleName";
+    public static final String SDF_PATTERN = "yyyy-MM-dd";
 
     private final BasicJsonTester json = new BasicJsonTester(getClass());
 
@@ -71,4 +79,33 @@ class PMCycleDAOTest extends AbstractDAOTest {
         var expectedJson = json.from(metadata);
         assertThat(expectedJson).isEqualToJson(actual.getJsonMetadata());
     }
+
+    @Test
+    void createCycleWithMetadata() throws Exception {
+        var cycle = createCycle(CYCLE_UUID_3);
+        var metadata = IOUtils.toString(Objects.requireNonNull(getClass()
+                .getResourceAsStream("/com/tesco/pma/cycle/dao/type_1_metadata.json")), StandardCharsets.UTF_8);
+        cycle.setJsonMetadata(metadata);
+        dao.create(cycle, Instant.now());
+
+        var actual = dao.read(CYCLE_UUID_3);
+        var expectedJson = json.from(metadata);
+        assertThat(expectedJson).isEqualToJson(actual.getJsonMetadata());
+        assertThat(CYCLE_UUID_3).isEqualTo(actual.getUuid());
+
+    }
+
+    private PMCycle createCycle(UUID uuid) {
+        return PMCycle.builder()
+                .name(TEST_CYCLE_NAME)
+                .status(ACTIVE)
+                .type(PMCycleType.HIRING_DATE)
+                .createdBy(COLLEAGUE_UUID)
+                .uuid(uuid)
+                .entryConfigKey(TEST_KEY)
+                .templateUUID(TEMPLATE_UUID)
+                .build();
+    }
+
+
 }
