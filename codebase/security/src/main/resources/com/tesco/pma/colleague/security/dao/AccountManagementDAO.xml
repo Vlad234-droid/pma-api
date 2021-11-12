@@ -102,4 +102,21 @@
           AND role_id = #{roleId}
     </delete>
 
+    <select id="findAccountByIamId" resultMap="accountsResultMap">
+        SELECT
+        a.id as id,
+        a.name as name,
+        a.type_id as type_id,
+        a.status_id as status_id,
+        a.iam_id as iam_id,
+        a.employee_number as employee_number,
+        a.last_login as last_login,
+        r.id as role_id,
+        r.code as role_code
+        FROM (SELECT * FROM pm_account WHERE iam_id = #{iamId}
+        ) a
+        LEFT JOIN pm_account_role ar on a.id = ar.account_id
+        LEFT JOIN pm_role r on ar.role_id = r.id;
+    </select>
+
 </mapper>

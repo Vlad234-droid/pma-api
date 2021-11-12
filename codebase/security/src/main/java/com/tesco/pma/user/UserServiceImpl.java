@@ -2,12 +2,20 @@ package com.tesco.pma.user;
 
 import com.tesco.pma.api.User;
 import com.tesco.pma.colleague.api.Colleague;
+import com.tesco.pma.colleague.api.Contact;
 import com.tesco.pma.colleague.api.FindColleaguesRequest;
+import com.tesco.pma.colleague.api.Profile;
+import com.tesco.pma.colleague.security.domain.Account;
+import com.tesco.pma.colleague.security.domain.Role;
+import com.tesco.pma.colleague.security.service.UserManagementService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.ExternalSystemException;
+import com.tesco.pma.organisation.service.ConfigEntryService;
 import com.tesco.pma.security.UserRoleNames;
 import com.tesco.pma.service.colleague.client.ColleagueApiClient;
+import com.tesco.pma.user.util.RolesMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
@@ -19,6 +27,7 @@ import org.springframework.web.client.RestClientException;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -39,8 +48,11 @@ public class UserServiceImpl implements UserService {
     static final String MESSAGE_PARAM_NAME_API_NAME = "apiName";
     static final String MESSAGE_PARAM_VALUE_COLLEAGUE_API = "Colleague-Api";
 
+    private final ConfigEntryService configEntryService;
     private final ColleagueApiClient colleagueApiClient;
+    private final UserManagementService userManagementService;
     private final NamedMessageSourceAccessor messages;
+    private final RolesMapper rolesMapper;
 
     @Override
     public Optional<User> findUserByColleagueUuid(final UUID colleagueUuid) {
@@ -103,15 +115,40 @@ public class UserServiceImpl implements UserService {
         }
 
         if (user != null) {
-            final var roles = authentication.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .map(grantedAuthority -> grantedAuthority.replace("ROLE_", ""))
-                    .filter(UserRoleNames.ALL::contains)
-                    .collect(Collectors.toList());
+            // First attempt - try to find roles in authentication authorities
+            Collection<String> roles = new HashSet<>(findRolesInAuthentication(authentication));
+
+            // Second attempt - try to find roles in account storage
+            roles.addAll(findRolesInAccountStorage(colleagueUuid));
+
             user.setRoles(roles);
         }
 
         return Optional.ofNullable(user);
+    }
+
+    private Collection<String> findRolesInAuthentication(final Authentication authentication) {
+        return authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .map(grantedAuthority -> grantedAuthority.replace("ROLE_", ""))
+                .filter(UserRoleNames.ALL::contains)
+                .collect(Collectors.toList());
+    }
+
+    private Collection<String> findRolesInAccountStorage(UUID colleagueUuid) {
+        com.tesco.pma.organisation.api.Colleague colleague = configEntryService.getColleague(colleagueUuid);
+        if (colleague != null && colleague.getIamId() != null) {
+            Account account = userManagementService.findAccountByIamId(colleague.getIamId());
+            if (account != null) {
+                Collection<Role> roles = account.getRoles();
+                return roles.stream()
+                        .map(role -> rolesMapper.findRoleByCode(role.getCode()))
+                        .map(role -> role.replaceAll("ROLE_", ""))
+                        .filter(UserRoleNames.ALL::contains)
+                        .collect(Collectors.toList());
+            }
+        }
+        return Collections.emptySet();
     }
 
     private Optional<User> findUserByColleagueUuidInternal(final UUID colleagueUuid) {
@@ -133,6 +170,13 @@ public class UserServiceImpl implements UserService {
     }
 
     private Colleague tryFindColleagueByUuid(UUID colleagueUuid) {
+        // First attempt - try to find in local storage
+        com.tesco.pma.organisation.api.Colleague oc = configEntryService.getColleague(colleagueUuid);
+        if (oc != null) {
+            return mapLocalColleagueToColleague(oc);
+        }
+
+        // Second attempt - try to find with using external Colleague Facts API
         try {
             return colleagueApiClient.findColleagueByColleagueUuid(colleagueUuid);
         } catch (HttpClientErrorException.NotFound exception) {
@@ -172,6 +216,20 @@ public class UserServiceImpl implements UserService {
         return target;
     }
 
+    private Colleague mapLocalColleagueToColleague(final com.tesco.pma.organisation.api.Colleague localColleague) {
+        var colleague = new Colleague();
+        colleague.setColleagueUUID(localColleague.getUuid());
+
+        var profile = new Profile();
+        BeanUtils.copyProperties(localColleague, profile);
+        colleague.setProfile(profile);
+
+        var contact = new Contact();
+        BeanUtils.copyProperties(localColleague, contact);
+        colleague.setContact(contact);
+
+        return colleague;
+    }
 
     private ExternalSystemException colleagueApiException(RestClientException restClientException) {
         return new ExternalSystemException(EXTERNAL_API_CONNECTION_ERROR.getCode(),
