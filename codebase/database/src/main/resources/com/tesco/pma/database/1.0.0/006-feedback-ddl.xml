@@ -159,4 +159,20 @@
                                  referencedTableName="feedback"/>
     </changeSet>
 
+    <!--
+        Added constraint Feedback - Colleague.
+    -->
+    <changeSet id="7" author="Stanislav.Eurich">
+        <addForeignKeyConstraint baseColumnNames="colleague_uuid"
+                                 baseTableName="feedback"
+                                 constraintName="fk_feedback__colleague_uuid"
+                                 referencedColumnNames="uuid"
+                                 referencedTableName="colleague"/>
+        <addForeignKeyConstraint baseColumnNames="target_colleague_uuid"
+                                 baseTableName="feedback"
+                                 constraintName="fk_feedback__target_colleague_uuid"
+                                 referencedColumnNames="uuid"
+                                 referencedTableName="colleague"/>
+    </changeSet>
+
 </databaseChangeLog>
