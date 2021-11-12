@@ -6,6 +6,7 @@ import com.tesco.pma.colleague.api.Contact;
 import com.tesco.pma.colleague.api.FindColleaguesRequest;
 import com.tesco.pma.colleague.api.Profile;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.configuration.security.AppendGrantedAuthoritiesBearerTokenAuthenticationMerger;
 import com.tesco.pma.exception.ExternalSystemException;
 import com.tesco.pma.organisation.service.ConfigEntryService;
 import com.tesco.pma.security.UserRoleNames;
@@ -79,7 +80,7 @@ public class UserServiceImpl implements UserService {
      * If a colleague not found fallback to OneLogin token User info.
      * Also extracts user roles from {@link Authentication#getAuthorities()}
      *
-     * @see com.tesco.pma.configuration.security.AppendGrantedAuthoritiesBearerTokenAuthenticationMerger
+     * @see AppendGrantedAuthoritiesBearerTokenAuthenticationMerger
      * @see UserRoleNames
      */
     @Override
