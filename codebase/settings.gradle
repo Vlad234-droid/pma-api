@@ -20,4 +20,6 @@ include 'profile'
 include 'review'
 include 'cep'
 include 'feedback'
+include 'security'
 include 'notes'
+

@@ -36,7 +36,6 @@
         </field>
         <field name="role">
             <constraint annotation="javax.validation.constraints.NotNull"/>
-            <constraint annotation="com.tesco.pma.validation.UserRolesAllowed"/>
         </field>
     </bean>
 </constraint-mappings>

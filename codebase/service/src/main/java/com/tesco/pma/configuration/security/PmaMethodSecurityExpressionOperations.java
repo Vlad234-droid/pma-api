@@ -1,24 +1,14 @@
 package com.tesco.pma.configuration.security;
 
-import com.tesco.pma.api.User;
-import com.tesco.pma.security.UserDetails;
 import com.tesco.pma.security.UserRoleNames;
-import com.tesco.pma.service.user.UserIncludes;
-import com.tesco.pma.service.user.UserService;
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Delegate;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 
-import java.util.EnumSet;
-import java.util.UUID;
-
 import static com.tesco.pma.security.UserRoleNames.ADMIN;
-import static com.tesco.pma.security.UserRoleNames.SUBSIDIARY_MANAGER;
-import static com.tesco.pma.security.UserRoleNames.VIEWER;
+import static com.tesco.pma.security.UserRoleNames.COLLEAGUE;
+import static com.tesco.pma.security.UserRoleNames.LINE_MANAGER;
 
 /**
  * Pma specific {@link MethodSecurityExpressionOperations}.
@@ -32,49 +22,40 @@ import static com.tesco.pma.security.UserRoleNames.VIEWER;
  *
  * <p>{@link #isAdmin()}
  *
- * <p>{@link #isViewer()}
+ * <p>{@link #isColleague()}
  *
- * <p>{@link #isManagerOf(UUID)}
+ * <p>{@link #isLineManager()}
  *
- * <p>Example: @PreAuthorize("isAdmin() or isViewer() or isManagerFor(#subsidiaryUuid)")
+ * <p>Example: @PreAuthorize("isAdmin() or isColleague() or isLineManager()")
  */
 @Slf4j
 public class PmaMethodSecurityExpressionOperations implements MethodSecurityExpressionOperations {
-    static final UserDetails NULL_USER_DETAILS = new UserDetails(new User(UUID.fromString("00000000-0000-0000-0000-000000000000")));
 
     @Delegate
     @NonNull
     private final MethodSecurityExpressionOperations delegate;
 
-    @NonNull
-    private final UserService userService;
-
-    @Getter(lazy = true, value = AccessLevel.PRIVATE)
-    private final UserDetails userDetails = retrieveUserDetails();
-
-    public PmaMethodSecurityExpressionOperations(@NonNull MethodSecurityExpressionOperations delegate, @NonNull UserService userService) {
+    public PmaMethodSecurityExpressionOperations(@NonNull MethodSecurityExpressionOperations delegate) {
         this.delegate = delegate;
-        this.userService = userService;
         log.info("MethodSecurityExpressionOperations delegate: {}", delegate);
-        log.info("UserService: {}", userService);
     }
 
     /**
      * Check if user has {@link UserRoleNames#ADMIN} role.
      *
-     * @return true - if user is a Viewer, false otherwise.
+     * @return true - if user is a Admin, false otherwise.
      */
     public boolean isAdmin() {
         return hasRole(ADMIN);
     }
 
     /**
-     * Check if user has {@link UserRoleNames#VIEWER} role.
+     * Check if user has {@link UserRoleNames#COLLEAGUE} role.
      *
-     * @return true - if user is a Viewer, false otherwise.
+     * @return true - if user is a Colleague, false otherwise.
      */
-    public boolean isViewer() {
-        return hasRole(VIEWER);
+    public boolean isColleague() {
+        return hasRole(COLLEAGUE);
     }
 
     public boolean isCurrentUser(UUID userId){
@@ -86,21 +67,12 @@ public class PmaMethodSecurityExpressionOperations implements MethodSecurityExpr
     }
 
     /**
-     * Check if user has {@link UserRoleNames#SUBSIDIARY_MANAGER} role and is a Manager of a particular Subsidiary.
+     * Check if user has {@link UserRoleNames#LINE_MANAGER} role.
      *
-     * @param subsidiaryUuid uuid of the Subsidiary. Can be null.
-     * @return true - if user is a manager, false otherwise. If subsidiaryUuid is null returns false.
+     * @return true - if user is a Line Manager, false otherwise.
      */
-    public boolean isManagerOf(UUID subsidiaryUuid) {
-        if (subsidiaryUuid == null) {
-            return false;
-        }
-        return hasRole(SUBSIDIARY_MANAGER) && getUserDetails().hasSubsidiaryPermission(subsidiaryUuid, SUBSIDIARY_MANAGER);
+    public boolean isLineManager() {
+        return hasRole(LINE_MANAGER);
     }
 
-    private UserDetails retrieveUserDetails() {
-        return userService.findUserByAuthentication(getAuthentication(), EnumSet.of(UserIncludes.SUBSIDIARY_PERMISSIONS))
-                .map(UserDetails::new)
-                .orElse(NULL_USER_DETAILS);
-    }
 }

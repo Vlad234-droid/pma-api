@@ -31,6 +31,7 @@ dependencies {
     implementation project(':review')
     implementation project(':cep')
     implementation project(':feedback')
+    implementation project(':security')
     implementation project(':notes')
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
