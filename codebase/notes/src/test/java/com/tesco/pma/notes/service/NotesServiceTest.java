@@ -5,8 +5,8 @@ import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.notes.dao.FoldersDao;
-import com.tesco.pma.notes.dao.NotesDao;
+import com.tesco.pma.notes.dao.FoldersDAO;
+import com.tesco.pma.notes.dao.NotesDAO;
 import com.tesco.pma.notes.exception.NoteIntegrityException;
 import com.tesco.pma.notes.model.Note;
 import org.junit.jupiter.api.Assertions;
@@ -19,8 +19,8 @@ import java.util.UUID;
 
 public class NotesServiceTest {
 
-    private final FoldersDao foldersDao = Mockito.mock(FoldersDao.class);
-    private final NotesDao notesDao = Mockito.mock(NotesDao.class);
+    private final FoldersDAO foldersDao = Mockito.mock(FoldersDAO.class);
+    private final NotesDAO notesDao = Mockito.mock(NotesDAO.class);
     private final NamedMessageSourceAccessor messageSourceAccessor = Mockito.mock(NamedMessageSourceAccessor.class);
     private final ProfileService profileService = Mockito.mock(ProfileService.class);
 

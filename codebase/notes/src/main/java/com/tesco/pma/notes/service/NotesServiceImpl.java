@@ -4,8 +4,8 @@ import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.notes.dao.FoldersDao;
-import com.tesco.pma.notes.dao.NotesDao;
+import com.tesco.pma.notes.dao.FoldersDAO;
+import com.tesco.pma.notes.dao.NotesDAO;
 import com.tesco.pma.notes.exception.NoteIntegrityException;
 import com.tesco.pma.notes.exception.NotesErrorCodes;
 import com.tesco.pma.notes.exception.UnknownDataManipulationException;
@@ -25,8 +25,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class NotesServiceImpl implements NotesService {
 
-    private final FoldersDao foldersDao;
-    private final NotesDao notesDao;
+    private final FoldersDAO foldersDao;
+    private final NotesDAO notesDao;
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final ProfileService profileService;
 
