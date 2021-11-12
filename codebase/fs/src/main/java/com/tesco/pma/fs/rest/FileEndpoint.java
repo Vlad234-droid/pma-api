@@ -44,6 +44,7 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import static com.tesco.pma.fs.exception.ErrorCodes.ERROR_FILE_UPLOAD_FAILED;
 import static com.tesco.pma.fs.exception.ErrorCodes.FILES_COUNT_MISMATCH;
@@ -52,7 +53,6 @@ import static com.tesco.pma.logging.TraceId.TRACE_ID_HEADER;
 import static com.tesco.pma.rest.HttpStatusCodes.CREATED;
 
 import static com.tesco.pma.rest.RestResponse.success;
-import static java.util.UUID.fromString;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
 /**
@@ -78,10 +78,9 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
             })
     @GetMapping("{fileUuid}")
-    public RestResponse<File> findByUuid(@PathVariable String fileUuid,
-                                         @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true")
-                                                 boolean includeFileContent) {
-        return success(fileService.findByUuid(fromString(fileUuid), includeFileContent));
+    public RestResponse<File> find(@PathVariable UUID fileUuid,
+                                   @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true") boolean includeFileContent) {
+        return success(fileService.find(fileUuid, includeFileContent));
     }
 
     /**
@@ -101,8 +100,8 @@ public class FileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.FORBIDDEN, description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Internal Server Error", content = @Content)
     @GetMapping("/download/{fileUuid}")
-    public ResponseEntity<Resource> download(@PathVariable String fileUuid) {
-        var file = fileService.findByUuid(fromString(fileUuid), true);
+    public ResponseEntity<Resource> download(@PathVariable UUID fileUuid) {
+        var file = fileService.find(fileUuid, true);
         byte[] content = file.getFileContent();
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
@@ -159,12 +158,18 @@ public class FileEndpoint {
                 throw new InvalidPayloadException(INVALID_PAYLOAD.getCode(), "File name cannot be empty", "fileName");
             }
 
-            try (var inputStream = file.getInputStream()) {
+            var fileData = new File();
+            fileData.setFileName(fileName);
+            fileData.setFileLength((int) file.getSize());
+
+            try {
+                fileData.setFileContent(file.getBytes());
                 var fileUploadMetadata = uploadMetadataIterator.next();
-                uploadedFiles.add(fileService.upload(inputStream, fileUploadMetadata, file, auditorAware.getCurrentAuditor()));
+                uploadedFiles.add(fileService.upload(fileData, fileUploadMetadata, auditorAware.getCurrentAuditor()));
             } catch (IOException e) {
                 throw new DataUploadException(ERROR_FILE_UPLOAD_FAILED.name(), "Failed to store file.", fileName, e);
             }
+
         }
         return success(uploadedFiles);
     }

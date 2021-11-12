@@ -14,8 +14,7 @@ public interface FileDAO {
      * @param includeFileContent identifies if include file content
      * @return file data
      */
-    File findByUuid(@Param("fileUuid") UUID fileUuid,
-                    @Param("includeFileContent") boolean includeFileContent);
+    File find(@Param("fileUuid") UUID fileUuid, @Param("includeFileContent") boolean includeFileContent);
 
     /**
      * Save file information to database

@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,14 +30,8 @@ public class FileServiceImpl implements FileService {
 
     @Override
     @Transactional
-    public File upload(InputStream inputStream, UploadMetadata uploadMetadata,
-                       MultipartFile file, String creatorId) throws IOException {
-        var fileData = new File();
+    public File upload(File fileData, UploadMetadata uploadMetadata, String creatorId) {
         fileData.setUuid(UUID.randomUUID());
-        var fileName = file.getOriginalFilename();
-        fileData.setFileName(fileName);
-        fileData.setFileLength((int) file.getSize());
-        fileData.setFileContent(file.getBytes());
 
         var currMomentInUTC = Instant.now();
         fileData.setCreatedTime(currMomentInUTC);
@@ -58,15 +49,15 @@ public class FileServiceImpl implements FileService {
         var insertedRows = fileDao.save(fileData);
         if (insertedRows != 1) {
             throw new RegistrationException(ERROR_FILE_REGISTRATION_FAILED.name(),
-                    "Failed to save File to database", fileName);
+                    "Failed to save File to database", fileData.getFileName());
         }
 
         return fileData;
     }
 
     @Override
-    public File findByUuid(UUID fileUuid, boolean includeFileContent) {
-        return Optional.ofNullable(fileDao.findByUuid(fileUuid, includeFileContent))
+    public File find(UUID fileUuid, boolean includeFileContent) {
+        return Optional.ofNullable(fileDao.find(fileUuid, includeFileContent))
                 .orElseThrow(() -> new NotFoundException(ERROR_FILE_NOT_FOUND.name(),
                         "File was not found", fileUuid.toString()));
 

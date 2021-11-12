@@ -4,11 +4,8 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.RegistrationException;
 import com.tesco.pma.fs.domain.File;
 import com.tesco.pma.fs.domain.UploadMetadata;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.UUID;
 
 /**
@@ -20,16 +17,13 @@ public interface FileService {
     /**
      * Upload file and save it to database
      *
-     * @param inputStream data of file
+     * @param fileData is file data
      * @param uploadMetadata represents the parts of file metadata
-     * @param file is file data
      * @param creatorId represents the creator identifier
      * @return uploaded file
-     * @throws IOException in case of file access errors
      * @throws RegistrationException if failed to save file data to database
      */
-    File upload(@NotNull InputStream inputStream, @NotNull UploadMetadata uploadMetadata,
-                @NotNull MultipartFile file, @NotNull String creatorId) throws IOException;
+    File upload(@NotNull File fileData, @NotNull UploadMetadata uploadMetadata, @NotNull String creatorId);
 
     /**
      * Read all information about file by its identifier
@@ -39,5 +33,5 @@ public interface FileService {
      * @return file data
      * @throws NotFoundException if file by uuid is not found
      */
-    File findByUuid(@NotNull UUID fileUuid, boolean includeFileContent);
+    File find(@NotNull UUID fileUuid, boolean includeFileContent);
 }

@@ -18,7 +18,7 @@
         <result property="fileContent" column="file_content" jdbcType="BINARY"/>
     </resultMap>
 
-    <select id="findByUuid" resultMap="fileResultMap">
+    <select id="find" resultMap="fileResultMap">
         SELECT uuid, path, version, type_id, status_id, description,
         created_by, created_time, file_name, file_date, file_length
         <if test="includeFileContent">

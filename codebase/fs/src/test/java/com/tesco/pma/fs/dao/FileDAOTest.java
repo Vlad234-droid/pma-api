@@ -37,7 +37,7 @@ public class FileDAOTest extends AbstractDAOTest {
     @Test
     @DataSet(BASE_PATH_TO_DATA_SET + "file_init.xml")
     void findByUuid() {
-        final var result = instance.findByUuid(FILE_UUID_1, true);
+        final var result = instance.find(FILE_UUID_1, true);
 
         assertThat(result).isNotNull();
         assertThat(result.getUuid()).isEqualTo(FILE_UUID_1);
@@ -63,19 +63,19 @@ public class FileDAOTest extends AbstractDAOTest {
     }
 
     private File buildFileData() {
-        final var file = new File();
-        file.setUuid(FILE_UUID_2);
-        file.setPath(PATH);
-        file.setVersion(1);
-        file.setType(FORM);
-        file.setStatus(ACTIVE);
-        file.setDescription("other file");
-        file.setCreatedBy("test");
-        file.setCreatedTime(Instant.parse("2021-11-03T22:38:14Z"));
-        file.setFileName("test3.txt");
-        file.setFileDate(Instant.parse("2021-04-22T08:50:08Z"));
-        file.setFileLength(0);
-        file.setFileContent(new byte[] {});
-        return file;
+        final var fileData = new File();
+        fileData.setUuid(FILE_UUID_2);
+        fileData.setPath(PATH);
+        fileData.setVersion(1);
+        fileData.setType(FORM);
+        fileData.setStatus(ACTIVE);
+        fileData.setDescription("other file");
+        fileData.setCreatedBy("test");
+        fileData.setCreatedTime(Instant.parse("2021-11-03T22:38:14Z"));
+        fileData.setFileName("test3.txt");
+        fileData.setFileDate(Instant.parse("2021-04-22T08:50:08Z"));
+        fileData.setFileLength(0);
+        fileData.setFileContent(new byte[] {});
+        return fileData;
     }
 }

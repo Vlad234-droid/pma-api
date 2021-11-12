@@ -79,7 +79,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     @Test
     void findByUuid() throws Exception {
-        when(service.findByUuid(FILE_UUID_1, true)).thenReturn(buildFileData(FILE_UUID_1, 1));
+        when(service.find(FILE_UUID_1, true)).thenReturn(buildFileData(FILE_UUID_1, 1));
 
         var result = performGet(status().isOk(), FILES_URL + "/" + FILE_UUID_1);
 
@@ -88,14 +88,14 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     @Test
     void findByUuidUnsuccess() throws Exception {
-        when(service.findByUuid(FILE_UUID_1, true)).thenThrow(NotFoundException.class);
+        when(service.find(FILE_UUID_1, true)).thenThrow(NotFoundException.class);
 
         performGet(status().isNotFound(), FILES_URL + "/" + FILE_UUID_1);
     }
 
     @Test
     void downloadSuccess() throws Exception {
-        when(service.findByUuid(FILE_UUID_1, true)).thenReturn(buildFileData(FILE_UUID_1, 1));
+        when(service.find(FILE_UUID_1, true)).thenReturn(buildFileData(FILE_UUID_1, 1));
 
         var result = performGet(status().isOk(), MediaType.APPLICATION_OCTET_STREAM, FILES_URL + DOWNLOAD + FILE_UUID_1);
 
@@ -104,7 +104,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     @Test
     void downloadUnsuccess() throws Exception {
-        when(service.findByUuid(FILE_UUID_1, true)).thenThrow(NotFoundException.class);
+        when(service.find(FILE_UUID_1, true)).thenThrow(NotFoundException.class);
 
         performGet(status().isNotFound(), FILES_URL + DOWNLOAD + FILE_UUID_1);
     }
@@ -116,7 +116,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
         var dataFile = buildFileData(FILE_UUID_1, 1);
 
-        when(this.service.upload(any(), any(), any(), any())).thenReturn(dataFile);
+        when(this.service.upload(any(), any(), any())).thenReturn(dataFile);
 
         final var result = performMultipartWithMetadata(multipartUploadMetadataMock, multipartFileMock,
                 status().isCreated(), FILES_URL);
@@ -131,7 +131,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
         var dataFile = buildFileData(FILE_UUID_1, 1);
 
-        when(this.service.upload(any(), any(), any(), any())).thenReturn(dataFile);
+        when(this.service.upload(any(), any(), any())).thenReturn(dataFile);
 
         final var result = performMultipartWithMetadata(multipartUploadMetadataMock, multipartFileMock,
                 status().isBadRequest(), FILES_URL);
@@ -144,7 +144,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
         var multipartUploadMetadataMock = getUploadMetadataMultipartFile(UPLOAD_FILE_METADATA_CONTENT);
         var multipartFileMock = getMultipartFileToUpload(CONTENT);
 
-        when(this.service.upload(any(), any(), any(), any())).thenThrow(RegistrationException.class);
+        when(this.service.upload(any(), any(), any())).thenThrow(RegistrationException.class);
 
         performMultipartWithMetadata(multipartUploadMetadataMock, multipartFileMock, status().isInternalServerError(), FILES_URL);
     }
@@ -158,20 +158,20 @@ public class FileEndpointTest extends AbstractEndpointTest {
     }
 
     private File buildFileData(UUID uuid, Integer version) {
-        var file = new File();
-        file.setUuid(uuid);
-        file.setPath(PATH);
-        file.setVersion(version);
-        file.setType(FORM);
-        file.setStatus(ACTIVE);
-        file.setDescription(DESCRIPTION);
-        file.setCreatedBy(CREATOR_ID);
-        file.setCreatedTime(CREATED_TIME);
-        file.setFileName(FILE_NAME);
-        file.setFileDate(FILE_DATE);
-        file.setFileLength(FILE_LENGTH);
-        file.setFileContent(CONTENT);
+        var fileData = new File();
+        fileData.setUuid(uuid);
+        fileData.setPath(PATH);
+        fileData.setVersion(version);
+        fileData.setType(FORM);
+        fileData.setStatus(ACTIVE);
+        fileData.setDescription(DESCRIPTION);
+        fileData.setCreatedBy(CREATOR_ID);
+        fileData.setCreatedTime(CREATED_TIME);
+        fileData.setFileName(FILE_NAME);
+        fileData.setFileDate(FILE_DATE);
+        fileData.setFileLength(FILE_LENGTH);
+        fileData.setFileContent(CONTENT);
 
-        return file;
+        return fileData;
     }
 }
