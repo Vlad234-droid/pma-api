@@ -3,7 +3,9 @@ package com.tesco.pma.user;
 import com.tesco.pma.api.User;
 import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.api.Contact;
+import com.tesco.pma.colleague.api.ExternalSystems;
 import com.tesco.pma.colleague.api.FindColleaguesRequest;
+import com.tesco.pma.colleague.api.IamSourceSystem;
 import com.tesco.pma.colleague.api.Profile;
 import com.tesco.pma.colleague.security.domain.Account;
 import com.tesco.pma.colleague.security.domain.Role;
@@ -227,6 +229,12 @@ public class UserServiceImpl implements UserService {
         var contact = new Contact();
         BeanUtils.copyProperties(localColleague, contact);
         colleague.setContact(contact);
+
+        var externalSystems = new ExternalSystems();
+        var iam = new IamSourceSystem();
+        iam.setId(localColleague.getIamId());
+        externalSystems.setIam(iam);
+        colleague.setExternalSystems(externalSystems);
 
         return colleague;
     }
