@@ -41,5 +41,7 @@ out/
 **/logs/*.log
 **/logs/*.log.zip
 
+**/localconf
+
 codebase/application/src/main/config/application.properties
 codebase/application/SERVICE_HOME_IS_UNDEFINED/**
