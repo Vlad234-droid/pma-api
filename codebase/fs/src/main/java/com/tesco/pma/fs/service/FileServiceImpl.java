@@ -46,7 +46,7 @@ public class FileServiceImpl implements FileService {
         var version = fileDao.getMaxVersion(fileData.getPath(), fileData.getFileName()) + 1;
         fileData.setVersion(version);
 
-        var insertedRows = fileDao.save(fileData);
+        var insertedRows = fileDao.create(fileData);
         if (insertedRows != 1) {
             throw new RegistrationException(ERROR_FILE_REGISTRATION_FAILED.name(),
                     "Failed to save File to database", fileData.getFileName());
@@ -56,8 +56,8 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public File find(UUID fileUuid, boolean includeFileContent) {
-        return Optional.ofNullable(fileDao.find(fileUuid, includeFileContent))
+    public File read(UUID fileUuid, boolean includeFileContent) {
+        return Optional.ofNullable(fileDao.read(fileUuid, includeFileContent))
                 .orElseThrow(() -> new NotFoundException(ERROR_FILE_NOT_FOUND.name(),
                         "File was not found", fileUuid.toString()));
 

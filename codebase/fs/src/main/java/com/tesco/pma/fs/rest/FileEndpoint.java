@@ -78,9 +78,9 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
             })
     @GetMapping("{fileUuid}")
-    public RestResponse<File> find(@PathVariable UUID fileUuid,
+    public RestResponse<File> read(@PathVariable UUID fileUuid,
                                    @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true") boolean includeFileContent) {
-        return success(fileService.find(fileUuid, includeFileContent));
+        return success(fileService.read(fileUuid, includeFileContent));
     }
 
     /**
@@ -101,7 +101,7 @@ public class FileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Internal Server Error", content = @Content)
     @GetMapping("/download/{fileUuid}")
     public ResponseEntity<Resource> download(@PathVariable UUID fileUuid) {
-        var file = fileService.find(fileUuid, true);
+        var file = fileService.read(fileUuid, true);
         byte[] content = file.getFileContent();
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")

@@ -36,8 +36,8 @@ public class FileDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet(BASE_PATH_TO_DATA_SET + "file_init.xml")
-    void findByUuid() {
-        final var result = instance.find(FILE_UUID_1, true);
+    void readByUuid() {
+        final var result = instance.read(FILE_UUID_1, true);
 
         assertThat(result).isNotNull();
         assertThat(result.getUuid()).isEqualTo(FILE_UUID_1);
@@ -54,10 +54,10 @@ public class FileDAOTest extends AbstractDAOTest {
     @Test
     @DataSet(BASE_PATH_TO_DATA_SET + "cleanup.xml")
     @ExpectedDataSet(BASE_PATH_TO_DATA_SET + "file_create_expected.xml")
-    void saveSucceeded() {
+    void createSucceeded() {
         final File file = buildFileData();
 
-        final int rowsInserted = instance.save(file);
+        final int rowsInserted = instance.create(file);
 
         assertThat(rowsInserted).isOne();
     }

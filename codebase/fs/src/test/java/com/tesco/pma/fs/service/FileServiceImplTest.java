@@ -49,7 +49,7 @@ public class FileServiceImplTest {
         var fileData = buildFileData(FILE_NAME, FILE_UUID_1, 1);
         var uploadMetadata = new UploadMetadata();
         when(fileDao.getMaxVersion(PATH, FILE_NAME)).thenReturn(1);
-        when(fileDao.save(any())).thenReturn(1);
+        when(fileDao.create(any())).thenReturn(1);
 
         var result = service.upload(fileData, uploadMetadata, CREATOR_ID);
 
@@ -62,26 +62,26 @@ public class FileServiceImplTest {
         var fileData = buildFileData(FILE_NAME, FILE_UUID_1, 1);
         var uploadMetadata = new UploadMetadata();
         when(fileDao.getMaxVersion(anyString(), anyString())).thenReturn(anyInt());
-        when(fileDao.save(fileData)).thenReturn(-1);
+        when(fileDao.create(fileData)).thenReturn(-1);
 
         assertThrows(RegistrationException.class, () -> service.upload(fileData, uploadMetadata, CREATOR_ID));
     }
 
     @Test
-    void findByUuid() {
+    void readByUuid() {
         var fileData = buildFileData(FILE_NAME, FILE_UUID_1, 1);
-        when(fileDao.find(FILE_UUID_1, false)).thenReturn(fileData);
+        when(fileDao.read(FILE_UUID_1, false)).thenReturn(fileData);
 
-        var result = service.find(FILE_UUID_1, false);
+        var result = service.read(FILE_UUID_1, false);
 
         assertEquals(fileData, result);
     }
 
     @Test
-    void findByUuidThrowsExceptionWhenDaoReturnsNull() {
-        when(fileDao.find(FILE_UUID_1, true)).thenReturn(null);
+    void readByUuidThrowsExceptionWhenDaoReturnsNull() {
+        when(fileDao.read(FILE_UUID_1, true)).thenReturn(null);
 
-        assertThrows(NotFoundException.class, () -> service.find(FILE_UUID_1, true));
+        assertThrows(NotFoundException.class, () -> service.read(FILE_UUID_1, true));
     }
 
     private File buildFileData(String fileName, UUID uuid, Integer version) {

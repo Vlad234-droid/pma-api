@@ -14,7 +14,7 @@ public interface FileDAO {
      * @param includeFileContent identifies if include file content
      * @return file data
      */
-    File find(@Param("fileUuid") UUID fileUuid, @Param("includeFileContent") boolean includeFileContent);
+    File read(@Param("fileUuid") UUID fileUuid, @Param("includeFileContent") boolean includeFileContent);
 
     /**
      * Save file information to database
@@ -26,7 +26,7 @@ public interface FileDAO {
      * have no matching status in file_status table,
      * have no matching type in file_type table, etc
      */
-    int save(File file);
+    int create(File file);
 
     /**
      * Gets max version by file path and file name. If nothing found returns 0
