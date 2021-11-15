@@ -48,10 +48,10 @@ public interface ProfileService {
     List<TypedAttribute> deleteProfileAttributes(@NotNull UUID colleagueUuid, List<TypedAttribute> profileAttributes);
 
     /**
-     * Find colleague by id
+     * Find colleague by uuid
      *
-     * @param colleagueUuid
-     * @return Deleted profile attributes
+     * @param colleagueUuid - colleague identifier
+     * @return colleague object
      */
     Colleague findColleagueByColleagueUuid(UUID colleagueUuid);
 
