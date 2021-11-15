@@ -1,11 +1,7 @@
 package com.tesco.pma.configuration;
 
 import com.tesco.pma.configuration.rest.model.AbstractRequestQueryMixIn;
-import com.tesco.pma.configuration.rest.model.AbstractSubsidiaryMixIn;
-import com.tesco.pma.configuration.rest.model.SubsidiaryPermissionMixIn;
 import com.tesco.pma.configuration.security.AdditionalAuthProperties;
-import com.tesco.pma.api.Subsidiary;
-import com.tesco.pma.api.security.SubsidiaryPermission;
 import com.tesco.pma.error.ApiError;
 import com.tesco.pma.error.ApiValidationError;
 import com.tesco.pma.exception.ErrorCodes;
@@ -59,9 +55,7 @@ public class SpringDocOpenApiConfiguration {
     public static final String REST_RESPONSE_VOID = RestResponse.class.getSimpleName() + Void.class.getSimpleName();
 
     static {
-        SpringDocUtils.getConfig().replaceWithClass(SubsidiaryPermission.class, SubsidiaryPermissionMixIn.class);
         SpringDocUtils.getConfig().replaceWithClass(RequestQuery.class, AbstractRequestQueryMixIn.class);
-        SpringDocUtils.getConfig().replaceWithClass(Subsidiary.class, AbstractSubsidiaryMixIn.class);
     }
 
     private final NamedMessageSourceAccessor messages;
