@@ -32,7 +32,7 @@ public class NotesServiceImpl implements NotesService {
 
     @Override
     @Transactional
-    public Note createNote(Note note){
+    public Note createNote(Note note) {
         log.debug("Creating a Note {} for {}", note.getTitle(), note.getOwnerColleagueUuid().toString());
         checkReferenceColleague(note.getOwnerColleagueUuid(), note.getReferenceColleagueUuid());
         note.setId(UUID.randomUUID());
@@ -41,7 +41,7 @@ public class NotesServiceImpl implements NotesService {
             if (0 == notesDao.create(note)) {
                 throw new UnknownDataManipulationException(messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_HAS_NOT_BEEN_CREATED));
             }
-        } catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             throw new NoteIntegrityException(NotesErrorCodes.NOTE_INTEGRITY_VIOLATION.getCode(),
                     messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_INTEGRITY_VIOLATION), null, e);
         }
@@ -50,18 +50,18 @@ public class NotesServiceImpl implements NotesService {
     }
 
     @Override
-    public List<Note> findNoteByOwner(UUID ownerId){
+    public List<Note> findNoteByOwner(UUID ownerId) {
        return notesDao.findByOwner(ownerId);
     }
 
     @Override
-    public List<Note> findNoteByFolder(UUID folderId){
+    public List<Note> findNoteByFolder(UUID folderId) {
         return notesDao.findByFolder(folderId);
     }
 
     @Override
     @Transactional
-    public Note updateNote(Note note){
+    public Note updateNote(Note note) {
         checkReferenceColleague(note.getOwnerColleagueUuid(), note.getReferenceColleagueUuid());
 
         try {
@@ -79,13 +79,13 @@ public class NotesServiceImpl implements NotesService {
 
     @Override
     @Transactional
-    public void deleteNote(UUID uuid){
+    public void deleteNote(UUID uuid) {
         notesDao.delete(uuid);
     }
 
     @Override
     @Transactional
-    public Folder createFolder(Folder folder){
+    public Folder createFolder(Folder folder) {
         log.debug("Creating folder {} for {}", folder.getTitle(), folder.getOwnerColleagueUuid().toString());
         folder.setId(UUID.randomUUID());
 
@@ -102,13 +102,13 @@ public class NotesServiceImpl implements NotesService {
     }
 
     @Override
-    public List<Folder> findFolderByOwner(UUID uuid){
+    public List<Folder> findFolderByOwner(UUID uuid) {
         return foldersDao.findByOwner(uuid);
     }
 
     @Override
     @Transactional
-    public Folder updateFolder(Folder folder){
+    public Folder updateFolder(Folder folder) {
         try {
             if (1 == foldersDao.update(folder)) {
                 return folder;
@@ -124,32 +124,33 @@ public class NotesServiceImpl implements NotesService {
 
     @Override
     @Transactional
-    public void deleteFolder(UUID uuid){
+    public void deleteFolder(UUID uuid) {
         foldersDao.delete(uuid);
     }
 
-    private void checkReferenceColleague(UUID managerUuid, UUID referenceColleagueId){
+    private void checkReferenceColleague(UUID managerUuid, UUID referenceColleagueId) {
 
-        if(referenceColleagueId == null || managerUuid == null){
+        if (referenceColleagueId == null || managerUuid == null) {
             return;
         }
 
-        if(managerUuid.equals(referenceColleagueId)){
+        if (managerUuid.equals(referenceColleagueId)) {
             throw new NoteIntegrityException(NotesErrorCodes.NOTE_OWNER_REFERENCE_COLLISION.getCode(),
                     messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_OWNER_REFERENCE_COLLISION, Map.of("id", managerUuid)));
         }
 
         var referenceColleague = profileService.findColleagueByColleagueUuid(referenceColleagueId);
 
-        if(referenceColleague == null){
+        if (referenceColleague == null) {
             throw new NotFoundException(ErrorCodes.USER_NOT_FOUND.getCode(),
                     messageSourceAccessor.getMessage(ErrorCodes.USER_NOT_FOUND,
                             Map.of("param_name", "colleague ID", "param_value", referenceColleagueId.toString())));
         }
 
-        if(!managerUuid.equals(referenceColleague.getWorkRelationships().get(0).getManagerUUID())){
+        if (!managerUuid.equals(referenceColleague.getWorkRelationships().get(0).getManagerUUID())) {
             throw new NoteIntegrityException(NotesErrorCodes.NOT_A_LINE_MANAGER.getCode(),
-                    messageSourceAccessor.getMessage(NotesErrorCodes.NOT_A_LINE_MANAGER, Map.of("curId", managerUuid, "refId", referenceColleagueId)));
+                    messageSourceAccessor.getMessage(NotesErrorCodes.NOT_A_LINE_MANAGER,
+                            Map.of("curId", managerUuid, "refId", referenceColleagueId)));
         }
     }
 
