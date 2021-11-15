@@ -132,7 +132,9 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public FeedbackItem save(FeedbackItem feedbackItem) {
         log.debug("Request to save FeedbackItem : {}", feedbackItem);
-        feedbackItem.setUuid(UUID.randomUUID());
+        if (feedbackItem.getUuid() == null) {
+            feedbackItem.setUuid(UUID.randomUUID());
+        }
         if (1 != feedbackDAO.insertOrUpdateFeedbackItem(feedbackItem)) {
             String message = messageSourceAccessor.getMessage(ErrorCodes.FEEDBACK_ITEM_NOT_FOUND,
                     Map.of(PARAM_NAME, "uuid", PARAM_VALUE, feedbackItem.getUuid()));
