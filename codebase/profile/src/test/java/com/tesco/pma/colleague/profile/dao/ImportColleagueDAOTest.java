@@ -68,10 +68,12 @@ public class ImportColleagueDAOTest extends AbstractDAOTest {
     void saveAndGetImportErrors() {
         var ie = new ImportError();
         var colleagueUuid = UUID.randomUUID();
+        var message = "message";
+
         ie.setRequestUuid(REQUEST_UUID_2);
         ie.setColleagueUuid(colleagueUuid);
         ie.setCode("code");
-        ie.setMessage("message");
+        ie.setMessage(message);
 
         dao.saveError(ie);
 
@@ -81,14 +83,14 @@ public class ImportColleagueDAOTest extends AbstractDAOTest {
                 .hasSize(3)
                 .element(2)
                 .returns("code", ImportError::getCode)
-                .returns("message", ImportError::getMessage)
+                .returns(message, ImportError::getMessage)
                 .returns(REQUEST_UUID_2, ImportError::getRequestUuid)
                 .returns(colleagueUuid, ImportError::getColleagueUuid);
 
         Assertions.assertThat(requestErrors)
                 .element(1)
                 .returns("ERROR", ImportError::getCode)
-                .returns("message", ImportError::getMessage)
+                .returns(message, ImportError::getMessage)
                 .returns(REQUEST_UUID_2, ImportError::getRequestUuid);
     }
 
