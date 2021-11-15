@@ -15,9 +15,12 @@ import java.util.List;
 @SuppressWarnings("PMD.ClassNamingConventions")
 public class UserRoleNames {
     public static final String ADMIN = "Admin";
-    public static final String SUBSIDIARY_MANAGER = "SubsidiaryManager";
-    public static final String VIEWER = "Viewer";
+    public static final String COLLEAGUE = "Colleague";
+    public static final String LINE_MANAGER = "LineManager";
+    public static final String PEOPLE_TEAM = "PeopleTeam";
+    public static final String TALENT_ADMIN = "TalentAdmin";
+    public static final String PROCESS_MANAGER = "ProcessManager";
 
-    public static final List<String> ALL = List.of(ADMIN, SUBSIDIARY_MANAGER, VIEWER);
+    public static final List<String> ALL = List.of(ADMIN, COLLEAGUE, LINE_MANAGER, PEOPLE_TEAM, TALENT_ADMIN, PROCESS_MANAGER);
 
 }
