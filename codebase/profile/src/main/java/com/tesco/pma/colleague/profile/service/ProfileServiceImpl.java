@@ -123,7 +123,8 @@ public class ProfileServiceImpl implements ProfileService {
         return results;
     }
 
-    private Colleague findColleagueByColleagueUuid(UUID colleagueUuid) {
+    @Override
+    public Colleague findColleagueByColleagueUuid(UUID colleagueUuid) {
         com.tesco.pma.organisation.api.Colleague oc = configEntryDAO.getColleague(colleagueUuid);
         //todo try to download and insert colleagueApiService.findColleagueByUuid(colleagueUuid)
         return oc != null ? getColleague(oc, colleagueUuid, false) : null;
