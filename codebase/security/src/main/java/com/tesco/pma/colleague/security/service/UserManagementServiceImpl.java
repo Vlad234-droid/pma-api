@@ -126,6 +126,11 @@ public class UserManagementServiceImpl implements UserManagementService {
         }
     }
 
+    @Override
+    public Account findAccountByIamId(String iamId) {
+        return accountManagementDAO.findAccountByIamId(iamId);
+    }
+
     private List<Account> refinementAccounts(List<Account> accounts) {
         return accounts.stream().peek(account -> {
             Collection<Role> roles = account.getRoles();

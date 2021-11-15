@@ -141,8 +141,6 @@ springdoc:
     disable-swagger-default-url: true
 validation:
   mapping-locations:
-    - classpath:com/tesco/pma/validation/constraints-subsidiary.xml
-    - classpath:com/tesco/pma/validation/subsidiary-permission.xml
     - classpath:com/tesco/pma/feedback/validation/constraints-feedback.xml
   messages:
     basename: com/tesco/pma/validation/AppValidationMessages

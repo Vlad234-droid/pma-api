@@ -90,4 +90,5 @@ public interface ConfigEntryService {
      * @return list of colleagues
      */
     List<ColleagueEntity> findColleaguesByCompositeKey(String compositeKey);
+
 }
