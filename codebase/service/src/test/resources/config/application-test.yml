@@ -95,8 +95,6 @@ management:
     shutdown:
       enabled: true
 validation:
-  mapping-locations:
-    - classpath:com/tesco/pma/feedback/validation/constraints-feedback.xml
   messages:
     basename: com/tesco/pma/validation/AppValidationMessages
     encoding: UTF-8
