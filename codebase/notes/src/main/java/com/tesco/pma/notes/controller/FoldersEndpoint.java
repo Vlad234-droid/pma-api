@@ -9,7 +9,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.util.List;
 import java.util.UUID;
@@ -28,7 +37,7 @@ public class FoldersEndpoint {
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isCurrentUser(#folder.ownerColleagueUuid)")
-    public RestResponse<?> createFolder(@RequestBody Folder folder){
+    public RestResponse<?> createFolder(@RequestBody Folder folder) {
         return RestResponse.success(notesService.createFolder(folder));
     }
 
@@ -36,7 +45,7 @@ public class FoldersEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Find a folder")
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public RestResponse<List<Folder>> get(@RequestParam UUID ownerId){
+    public RestResponse<List<Folder>> get(@RequestParam UUID ownerId) {
         return RestResponse.success(notesService.findFolderByOwner(ownerId));
     }
 
@@ -45,7 +54,7 @@ public class FoldersEndpoint {
     @PutMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isCurrentUser(#folder.ownerColleagueUuid)")
-    public RestResponse<?> update(@PathVariable("id") UUID uuid, @RequestBody Folder folder){
+    public RestResponse<?> update(@PathVariable("id") UUID uuid, @RequestBody Folder folder) {
         return RestResponse.success(notesService.updateFolder(folder));
     }
 
@@ -53,7 +62,7 @@ public class FoldersEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Delete a Folder")
     @DeleteMapping(value = "/{id}",produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public RestResponse<?> delete(@PathVariable("id") UUID uuid){
+    public RestResponse<?> delete(@PathVariable("id") UUID uuid) {
         notesService.deleteFolder(uuid);
         return RestResponse.success();
     }
