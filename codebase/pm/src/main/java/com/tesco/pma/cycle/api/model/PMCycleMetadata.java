@@ -8,12 +8,6 @@ import lombok.Data;
  */
 @Data
 public class PMCycleMetadata implements Jsonb {
-    public enum PMElementType {
-        ELEMENT,
-        TIMELINE_POINT,
-        REVIEW,
-        CYCLE
-    }
 
     private PMCycleElement cycle;
 }

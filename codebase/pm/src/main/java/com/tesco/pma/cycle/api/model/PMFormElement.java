@@ -1,7 +1,5 @@
 package com.tesco.pma.cycle.api.model;
 
-import com.tesco.pma.api.GeneralDictionaryItem;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -23,7 +21,7 @@ public class PMFormElement extends PMElement {
     private String json;
 
     public PMFormElement(String key, String code, String json) {
-        super(null, code, null, new GeneralDictionaryItem(null, PM_FORM, null));
+        super(null, code, null, PMElementType.FORM);
         this.key = key;
         this.json = json;
     }

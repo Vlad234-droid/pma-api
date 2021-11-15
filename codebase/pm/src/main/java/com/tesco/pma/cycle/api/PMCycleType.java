@@ -12,7 +12,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum PMCycleType implements DictionaryItem<Integer> {
     FISCAL(1, "Fiscal year start"),
-    HIRING_DATE(2, "Hiring date");
+    HIRING(2, "Hiring date start");
 
     private Integer id;
     private String description;

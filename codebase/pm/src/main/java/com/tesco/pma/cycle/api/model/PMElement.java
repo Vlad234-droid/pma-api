@@ -23,13 +23,10 @@ public class PMElement implements DictionaryItem<String> {
     private String id;
     private String code;
     private String description;
-    private DictionaryItem<Integer> type;
+    private PMElementType type;
     private Map<String, String> properties = new LinkedHashMap<>();
 
-    //todo private PMElement parent;
-    //todo private List<PMElement> children = new ArrayList<>();
-
-    public PMElement(String id, String code, String description, DictionaryItem<Integer> type) {
+    protected PMElement(String id, String code, String description, PMElementType type) {
         this.id = id;
         this.code = code;
         this.description = description;

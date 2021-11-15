@@ -10,8 +10,8 @@ import com.tesco.pma.process.api.PMProcessErrorCodes;
 import com.tesco.pma.process.api.PMProcessStatus;
 import com.tesco.pma.process.api.PMRuntimeProcess;
 import com.tesco.pma.process.dao.PMRuntimeProcessDAO;
-import com.tesco.pma.process.model.PMProcessModelParser;
-import com.tesco.pma.process.model.ResourceProvider;
+import com.tesco.pma.cycle.model.PMProcessModelParser;
+import com.tesco.pma.cycle.model.ResourceProvider;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
 import org.camunda.bpm.engine.ProcessEngine;
@@ -105,7 +105,7 @@ public class PMProcessServiceImpl implements PMProcessService {
         cycle.setCode(processDefinition.getKey());
         metadata.setCycle(cycle);
 
-        var parser = new PMProcessModelParser(resourceProvider);
+        var parser = new PMProcessModelParser(resourceProvider, messageSourceAccessor);
         var tasks = model.getModelElementsByType(Activity.class);
         parser.parse(cycle, tasks);
 

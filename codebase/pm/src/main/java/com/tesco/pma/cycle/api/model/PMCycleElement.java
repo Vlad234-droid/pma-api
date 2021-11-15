@@ -1,6 +1,6 @@
 package com.tesco.pma.cycle.api.model;
 
-import com.tesco.pma.api.DictionaryItem;
+import com.tesco.pma.cycle.api.PMCycleType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -21,9 +21,8 @@ public class PMCycleElement extends PMElement {
     public static final String PM_CYCLE_END_TIME = PM_CYCLE_PREFIX + "end_time";
     public static final String PM_CYCLE_MAX = PM_CYCLE_PREFIX + "max";
 
-    private DictionaryItem<Integer> cycleType;
+    private PMCycleType cycleType;
     private List<PMTimelinePointElement> timelinePoints = new ArrayList<>();
-    private List<PMReviewElement> reviews = new ArrayList<>();
 
     public static List<String> getPropertyNames() {
         return getPropertyNames(PMCycleElement.class, PM_CYCLE_PREFIX + "(?!prefix)([\\w]+)$");

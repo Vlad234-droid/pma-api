@@ -56,6 +56,12 @@ spring:
     enabled: true
     change-log: 'classpath:/com/tesco/pma/database/changelog-master.xml'
     labels: '!integration'
+  messages:
+    basename: >
+      com/tesco/pma/exception/AppExceptionMessage,
+      com/tesco/pma/cycle/exception/AppExceptionMessage,
+      com/tesco/pma/process/service/AppPMProcessMessages
+    encoding: UTF-8
 server:
   port: 8083
   servlet:

@@ -61,6 +61,7 @@
           <camunda:property name="pm_type" value="review" />
           <camunda:property name="pm_review_type" value="eyr" />
           <camunda:property name="pm_review_start_time" value="2022-03-15" />
+          <camunda:property name="pm_review_start_delay" value="P1Y" />
         </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_10o56ax</bpmn:incoming>
@@ -75,6 +76,7 @@
           <camunda:property name="pm_type" value="review" />
           <camunda:property name="pm_review_type" value="myr" />
           <camunda:property name="pm_review_start_time" value="2021-10-01" />
+          <camunda:property name="pm_review_start_delay" value="P6M" />
         </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_10nqhon</bpmn:incoming>
@@ -108,7 +110,8 @@
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="pm_type" value="timeline_point" />
-          <camunda:property name="pm_review_start_time" value="2022-01-01" />
+          <camunda:property name="pm_timeline_point_start_time" value="2022-01-01" />
+          <camunda:property name="pm_timeline_point_start_delay" value="P9M" />
         </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1i8797i</bpmn:incoming>
@@ -123,7 +126,8 @@
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="pm_type" value="timeline_point" />
-          <camunda:property name="pm_review_start_time" value="2021-07-01" />
+          <camunda:property name="pm_timeline_point_start_time" value="2021-07-01" />
+          <camunda:property name="pm_timeline_point_start_delay" value="P3M" />
         </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1r6dvjh</bpmn:incoming>

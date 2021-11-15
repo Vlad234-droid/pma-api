@@ -1,10 +1,11 @@
 package com.tesco.pma.api;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum ReviewType implements DictionaryItem<Integer> {
 
     OBJECTIVE(1, "Objective review"),

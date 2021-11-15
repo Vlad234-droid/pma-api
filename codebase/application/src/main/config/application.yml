@@ -215,7 +215,7 @@ camunda:
       enabled: true
     #      db-reporter-activate: true
     job-execution:
-      enabled: false
+      enabled: true
     id-generator: strong
 #    deployment-resource-pattern: classpath:*.bpmn
 #   todo: remove in production
