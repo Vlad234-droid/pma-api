@@ -3,18 +3,9 @@ package com.tesco.pma.colleague.profile.dao;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface ProfileDAO {
-
-    /**
-     * Gets list of colleagues by types key
-     *
-     * @param key - types
-     * @return list of colleagues
-     */
-    List<ColleagueEntity> findColleaguesByTypes(@Param("key") String key);
 
     /**
      * Get colleague by iam id

@@ -1,5 +1,6 @@
 package com.tesco.pma.organisation.dao;
 
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.WorkingConfigEntry;
 import org.apache.ibatis.annotations.Param;
@@ -95,6 +96,14 @@ public interface ConfigEntryDAO {
      * @param uuid - entry identifier
      */
     void deleteConfigEntry(@Param("uuid") UUID uuid);
+
+    /**
+     * Gets list of colleagues by types key
+     *
+     * @param key - types
+     * @return list of colleagues
+     */
+    List<ColleagueEntity> findColleaguesByTypes(@Param("key") String key);
 
     /**
      * Gets all structure for config entry

@@ -1,12 +1,11 @@
 package com.tesco.pma.organisation.service;
 
-import com.tesco.pma.colleague.profile.dao.ProfileDAO;
+import com.tesco.pma.api.GeneralDictionaryItem;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.ConfigEntryErrorCodes;
 import com.tesco.pma.organisation.api.ConfigEntryResponse;
-import com.tesco.pma.api.GeneralDictionaryItem;
 import com.tesco.pma.organisation.api.WorkingConfigEntry;
 import com.tesco.pma.organisation.dao.ConfigEntryDAO;
 import com.tesco.pma.organisation.dao.ConfigEntryTypeDAO;
@@ -39,11 +38,10 @@ public class ConfigEntryServiceTest {
     private static final String CHILD_NAME_1_1 = "child_1_1";
 
     private final ConfigEntryDAO dao = Mockito.mock(ConfigEntryDAO.class);
-    private final ProfileDAO profileDAO = Mockito.mock(ProfileDAO.class);
     private final ConfigEntryTypeDAO configEntryTypeDAO = Mockito.mock(ConfigEntryTypeDAO.class);
     private final NamedMessageSourceAccessor accessor = Mockito.mock(NamedMessageSourceAccessor.class);
 
-    private final ConfigEntryService service = new ConfigEntryServiceImpl(dao, profileDAO, configEntryTypeDAO, accessor);
+    private final ConfigEntryService service = new ConfigEntryServiceImpl(dao, configEntryTypeDAO, accessor);
 
     @Test
     void getStructure() {
@@ -230,7 +228,7 @@ public class ConfigEntryServiceTest {
     void findColleaguesByCompositeKey() {
         service.findColleaguesByCompositeKey("BU/root/BU/child_1/BU/child_2/BU/child_3/#v1");
 
-        Mockito.verify(profileDAO).findColleaguesByTypes("root/child_1/child_2/child_3");
+        Mockito.verify(dao).findColleaguesByTypes("root/child_1/child_2/child_3");
     }
 
     @Test
