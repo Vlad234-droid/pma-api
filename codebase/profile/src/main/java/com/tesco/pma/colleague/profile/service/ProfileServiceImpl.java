@@ -130,6 +130,11 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    public ColleagueEntity getColleague(UUID colleagueUuid) {
+        return profileDAO.getColleague(colleagueUuid);
+    }
+
+    @Override
     public Colleague findColleagueByColleagueUuid(UUID colleagueUuid) {
         var oc = profileDAO.getColleague(colleagueUuid);
         //todo try to download and insert colleagueApiService.findColleagueByUuid(colleagueUuid)

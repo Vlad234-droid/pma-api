@@ -63,4 +63,12 @@ public interface ProfileService {
      */
     ColleagueEntity getColleagueByIamId(String iamId);
 
+    /**
+     * Get colleague by UUID
+     *
+     * @param colleagueUuid - colleague identifier
+     * @return colleague object
+     */
+    ColleagueEntity getColleague(UUID colleagueUuid);
+
 }
