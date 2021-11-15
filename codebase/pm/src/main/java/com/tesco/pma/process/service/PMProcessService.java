@@ -19,7 +19,7 @@ public interface PMProcessService {
      *                2. REGISTERED status is applying
      *                3.
      */
-    void register(PMRuntimeProcess process);
+    PMRuntimeProcess register(PMRuntimeProcess process);
 
     /**
      * Returns process by uuid

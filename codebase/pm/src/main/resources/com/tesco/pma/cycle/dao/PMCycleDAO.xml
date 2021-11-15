@@ -15,7 +15,9 @@
                 javaType="com.tesco.pma.cycle.api.PMCycleType"/>
         <result property="startTime" column="start_time"/>
         <result property="endTime" column="end_time"/>
-        <result property="properties" column="properties"/>
+        <result property="properties" column="properties"
+                typeHandler="com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler"
+                javaType="com.tesco.pma.api.MapJson"/>
         <result property="jsonMetadata" column="metadata"/>
     </resultMap>
 
@@ -68,7 +70,7 @@
                 #{now},
                 #{cycle.startTime},
                 #{cycle.endTime},
-                #{cycle.properties},
+                #{cycle.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
                 #{cycle.jsonMetadata}::jsonb
                 );
     </insert>
@@ -86,10 +88,21 @@
         <include refid="addStatusIdCondition"/>
     </update>
 
-    <select id="getByStatus" resultMap="cycleResultMap">
-        SELECT *
+    <select id="getAll" resultMap="cycleResultMap">
+        SELECT uuid,
+            entry_config_key,
+            template_uuid,
+            name,
+            type_id,
+            status_id,
+            created_by,
+            start_time,
+            end_time,
+            properties
+        <if test="includeMetadata">
+            ,metadata
+        </if>
         FROM pm_cycle
-        WHERE status_id = #{status.id}
     </select>
 
     <select id="getByColleague" resultMap="cycleResultMap">

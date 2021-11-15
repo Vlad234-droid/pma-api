@@ -7,6 +7,7 @@ import com.tesco.pma.api.Identified;
 import com.tesco.pma.api.StatusAware;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +19,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class PMRuntimeProcess implements Identified<UUID>, StatusAware<PMProcessStatus> {
     private UUID id;
     private PMProcessStatus status;

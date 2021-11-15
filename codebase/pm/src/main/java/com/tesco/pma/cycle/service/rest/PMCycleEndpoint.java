@@ -18,14 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeTypeUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -42,9 +35,11 @@ public class PMCycleEndpoint {
 
     private static final String CYCLE_UUID_PARAMETER_NAME = "cycleUuid";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
+    public static final String INCLUDE_METADATA = "includeMetadata";
 
     private final PMCycleService service;
     private final NamedMessageSourceAccessor messageSourceAccessor;
+
 
     /**
      * POST call to create a Performance Cycle .
@@ -61,6 +56,23 @@ public class PMCycleEndpoint {
     public RestResponse<PMCycle> create(@RequestBody PMCycle config) {
 
         return success(service.create(config));
+    }
+
+    /**
+     * PUT call to create and run Performance Cycle.
+     *
+     * @param config a PMCycle
+     * @return a RestResponse parameterized with PMCycle
+     */
+    @Operation(summary = "Publish performance cycle",
+            description = "Performance cycle published",
+            tags = {"performance-cycle"})
+    @ApiResponse(responseCode = HttpStatusCodes.ACCEPTED, description = "Successful operation")
+    @PutMapping(value = "/pm-cycles/publish", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public RestResponse<PMCycle> publish(@RequestBody PMCycle config) {
+
+        return success(service.publish(config));
     }
 
     /**
@@ -83,9 +95,9 @@ public class PMCycleEndpoint {
     }
 
     /**
-     * Get call using a Status param and return a list of PMCycle as JSON.
+     * Get call using a includeMetadata param and return a list of PMCycle as JSON.
      *
-     * @param status PMCycle status
+     * @param includeMetadata includeMetadata (true/false)
      * @return a RestResponse parameterized with list of PMCycle
      */
     @Operation(summary = "Get all performance cycles for status",
@@ -93,9 +105,10 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found all performance cycles with status")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycles for the status not found",
             content = @Content)
-    @GetMapping(value = "/pm-cycles/statuses/{status}", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<PMCycle>> getByStatus(@PathVariable("status") PMCycleStatus status) {
-        return success(service.getByStatus(status));
+    @GetMapping(value = "/pm-cycles/", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<List<PMCycle>> getAll(@RequestParam(value = INCLUDE_METADATA, defaultValue = "false")
+                                                          boolean includeMetadata) {
+        return success(service.getAll(includeMetadata));
     }
 
     /**

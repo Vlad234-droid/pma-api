@@ -50,6 +50,8 @@ public interface PMCycleDAO {
     int updateMetadata(@Param("uuid") UUID uuid, @Param("metadata") String metadata);
 
     List<ReviewCounter> getReviewsCountByStatus(@Param("type") ReviewType reviewType,
-                                          @Param("pmc_uuid") UUID performanceCycleUUID,
-                                          @Param("colleague_uuid") UUID colleagueUUID);
+                                                @Param("pmc_uuid") UUID performanceCycleUUID,
+                                                @Param("colleague_uuid") UUID colleagueUUID);
+
+    List<PMCycle> getAll(boolean includeMetadata);
 }

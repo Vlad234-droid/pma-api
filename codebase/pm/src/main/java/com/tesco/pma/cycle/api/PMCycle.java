@@ -1,5 +1,6 @@
 package com.tesco.pma.cycle.api;
 
+import com.tesco.pma.api.MapJson;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +29,7 @@ public class PMCycle {
     Instant startTime;
     Instant endTime;
 
-    String properties;
+    MapJson properties;
 
     String jsonMetadata;
 }

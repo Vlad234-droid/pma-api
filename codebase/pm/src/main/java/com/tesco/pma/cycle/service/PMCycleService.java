@@ -108,5 +108,7 @@ public interface PMCycleService {
     void updateJsonMetadata(@NotNull UUID uuid, @NotNull String metadata);
 
     List<PMCycleTimelinePoint> getCycleTimelineByColleague(UUID colleagueUuid);
+
+    List<PMCycle> getAll(boolean includeMetadata);
 }
 

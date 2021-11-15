@@ -62,12 +62,13 @@ public class PMProcessServiceImpl implements PMProcessService {
 
     @Override
     @Transactional
-    public void register(PMRuntimeProcess process) {
+    public PMRuntimeProcess register(PMRuntimeProcess process) {
         process.setId(UUID.randomUUID());
         process.setStatus(PMProcessStatus.REGISTERED);
         //todo check not null businessKey, bpmProcessId
         try {
             dao.create(process);
+            return process;
         } catch (DuplicateKeyException ex) {
             throw new DatabaseConstraintViolationException(PMProcessErrorCodes.PROCESS_ALREADY_EXISTS.getCode(),
                     messageSourceAccessor.getMessage(PMProcessErrorCodes.PROCESS_ALREADY_EXISTS), null, ex);
