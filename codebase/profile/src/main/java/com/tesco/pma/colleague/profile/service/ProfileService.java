@@ -1,8 +1,7 @@
 package com.tesco.pma.colleague.profile.service;
 
-import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.api.Colleague;
-import com.tesco.pma.colleague.profile.domain.TypedAttribute;
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 
