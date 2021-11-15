@@ -62,4 +62,11 @@ public interface UserManagementService {
      */
     void changeAccountStatus(ChangeAccountStatusRequest request);
 
+    /**
+     * Find account by IAM ID
+     * @param iamId
+     * @return Account information
+     */
+    Account findAccountByIamId(String iamId);
+
 }

@@ -2,7 +2,6 @@ package com.tesco.pma.configuration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tesco.pma.TestConfig;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -17,7 +16,8 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ActiveProfiles("test")
-@SpringBootTest(classes = TestConfig.class)
+@SpringBootTest(classes = TestConfig.class,
+        properties = {"tesco.application.rest-template.security.enabled=false"})
 class DateTypesSerializationTest {
 
     @Autowired

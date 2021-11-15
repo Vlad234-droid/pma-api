@@ -8,6 +8,7 @@ import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
 /**
  * TypeHandler for mybatis for identifier usage
@@ -18,7 +19,11 @@ public abstract class AbstractIdentifiedEnumTypeHandler<T extends Enum<T> & Iden
 
     @Override
     public void setParameter(PreparedStatement ps, int parameterIndex, T parameter, JdbcType jdbcType) throws SQLException {
-        ps.setInt(parameterIndex, parameter.getId());
+        if (parameter != null) {
+            ps.setInt(parameterIndex, parameter.getId());
+        } else {
+            ps.setNull(parameterIndex, Types.INTEGER);
+        }
     }
 
     @Override

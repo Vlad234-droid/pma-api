@@ -23,7 +23,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
-import static java.util.UUID.fromString;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -48,8 +47,6 @@ public abstract class AbstractEndpointTest {
     protected static final LocalDate END_DATE = LocalDate.parse("2021-04-04");
     protected static final LocalDate START_DATE_2 = LocalDate.parse("2020-04-05");
     protected static final LocalDate END_DATE_2 = LocalDate.parse("2020-04-04");
-    protected static final UUID SUBSIDIARY_UUID = fromString("5d9bbac9-850a-45e3-856b-50be9b9f563c");
-    protected static final UUID ILLEGAL_SUBSIDIARY_UUID = UUID.fromString("5d9bbac9-850a-45e3-856b-50be9b9f564c");
     protected static final String MOCK_CREATOR_ID = "MockCreatorId";
 
     protected static final String DIMENSION_CONFIG_NAME = "Dim1";
@@ -193,7 +190,7 @@ public abstract class AbstractEndpointTest {
                 .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.LINE_MANAGER));
     }
 
-    protected RequestPostProcessor security(String role, UUID... subsidiaryUuids) {
+    protected RequestPostProcessor security(String role) {
         final RequestPostProcessor requestPostProcessor;
         switch (role) {
             case UserRoleNames.ADMIN:

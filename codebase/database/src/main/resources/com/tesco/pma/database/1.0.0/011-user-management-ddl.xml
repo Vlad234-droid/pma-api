@@ -82,40 +82,40 @@
         </insert>
         <rollback>
             <delete tableName="pm_role">
-                <where>name = 'GG-UK-TescoGlobal-PMA-Colleague'</where>
+                <where>code = 'GG-UK-TescoGlobal-PMA-Colleague'</where>
             </delete>
             <delete tableName="pm_role">
-                <where>name = 'GG-UK-TescoGlobal-PMA-LineManager'</where>
+                <where>code = 'GG-UK-TescoGlobal-PMA-LineManager'</where>
             </delete>
             <delete tableName="pm_role">
-                <where>name = 'GG-UK-TescoGlobal-PMA-PeopleTeam'</where>
+                <where>code = 'GG-UK-TescoGlobal-PMA-PeopleTeam'</where>
             </delete>
             <delete tableName="pm_role">
-                <where>name = 'GG-UK-TescoGlobal-PMA-TalentAdmin'</where>
+                <where>code = 'GG-UK-TescoGlobal-PMA-TalentAdmin'</where>
             </delete>
             <delete tableName="pm_role">
-                <where>name = 'GG-UK-TescoGlobal-PMA-ProcessManager'</where>
+                <where>code = 'GG-UK-TescoGlobal-PMA-ProcessManager'</where>
             </delete>
             <delete tableName="pm_role">
-                <where>name = 'GG-UK-TescoGlobal-PMA-Admin'</where>
+                <where>code = 'GG-UK-TescoGlobal-PMA-Admin'</where>
             </delete>
             <delete tableName="pm_role">
-                <where>name = 'GG-UK-TescoGlobal-PMA-PPE-Colleague'</where>
+                <where>code = 'GG-UK-TescoGlobal-PMA-PPE-Colleague'</where>
             </delete>
             <delete tableName="pm_role">
-                <where>name = 'GG-UK-TescoGlobal-PMA-PPE-LineManager'</where>
+                <where>code = 'GG-UK-TescoGlobal-PMA-PPE-LineManager'</where>
             </delete>
             <delete tableName="pm_role">
-                <where>name = 'GG-UK-TescoGlobal-PMA-PPE-PeopleTeam'</where>
+                <where>code = 'GG-UK-TescoGlobal-PMA-PPE-PeopleTeam'</where>
             </delete>
             <delete tableName="pm_role">
-                <where>name = 'GG-UK-TescoGlobal-PMA-PPE-TalentAdmin'</where>
+                <where>code = 'GG-UK-TescoGlobal-PMA-PPE-TalentAdmin'</where>
             </delete>
             <delete tableName="pm_role">
-                <where>name = 'GG-UK-TescoGlobal-PMA-PPE-ProcessManager'</where>
+                <where>code = 'GG-UK-TescoGlobal-PMA-PPE-ProcessManager'</where>
             </delete>
             <delete tableName="pm_role">
-                <where>name = 'GG-UK-TescoGlobal-PMA-PPE-Admin'</where>
+                <where>code = 'GG-UK-TescoGlobal-PMA-PPE-Admin'</where>
             </delete>
         </rollback>
     </changeSet>

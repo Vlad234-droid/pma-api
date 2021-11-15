@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.notes.dao.FoldersDAO">
+
+    <resultMap id="noteFolderStructure" type="com.tesco.pma.notes.model.Folder">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="owner_uuid" property="ownerColleagueUuid"/>
+    </resultMap>
+
+    <insert id="create" flushCache="true" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO note_folders (id, title, owner_uuid)
+        VALUES (#{folder.id}, #{folder.title}, #{folder.ownerColleagueUuid})
+    </insert>
+
+    <select id="findByOwner" resultMap="noteFolderStructure">
+        SELECT id, title, owner_uuid
+        FROM note_folders nf
+        WHERE nf.owner_uuid = #{colleagueUuid}
+    </select>
+
+    <update id="update" flushCache="true">
+        UPDATE note_folders
+        SET title = (#{folder.title}), owner_uuid = (#{folder.ownerColleagueUuid})
+        WHERE id = #{folder.id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM note_folders WHERE id = #{id}
+    </delete>
+
+</mapper>
