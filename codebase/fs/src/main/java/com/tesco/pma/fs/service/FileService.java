@@ -33,5 +33,5 @@ public interface FileService {
      * @return file data
      * @throws NotFoundException if file by uuid is not found
      */
-    File read(@NotNull UUID fileUuid, boolean includeFileContent);
+    File get(@NotNull UUID fileUuid, boolean includeFileContent);
 }

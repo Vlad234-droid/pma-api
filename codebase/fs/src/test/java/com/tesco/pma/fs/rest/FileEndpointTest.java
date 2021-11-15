@@ -78,8 +78,8 @@ public class FileEndpointTest extends AbstractEndpointTest {
     private FileService service;
 
     @Test
-    void readByUuid() throws Exception {
-        when(service.read(FILE_UUID_1, true)).thenReturn(buildFileData(FILE_UUID_1, 1));
+    void getByUuid() throws Exception {
+        when(service.get(FILE_UUID_1, true)).thenReturn(buildFileData(FILE_UUID_1, 1));
 
         var result = performGet(status().isOk(), FILES_URL + "/" + FILE_UUID_1);
 
@@ -87,15 +87,15 @@ public class FileEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void readByUuidUnsuccess() throws Exception {
-        when(service.read(FILE_UUID_1, true)).thenThrow(NotFoundException.class);
+    void getByUuidUnsuccess() throws Exception {
+        when(service.get(FILE_UUID_1, true)).thenThrow(NotFoundException.class);
 
         performGet(status().isNotFound(), FILES_URL + "/" + FILE_UUID_1);
     }
 
     @Test
     void downloadSuccess() throws Exception {
-        when(service.read(FILE_UUID_1, true)).thenReturn(buildFileData(FILE_UUID_1, 1));
+        when(service.get(FILE_UUID_1, true)).thenReturn(buildFileData(FILE_UUID_1, 1));
 
         var result = performGet(status().isOk(), MediaType.APPLICATION_OCTET_STREAM, FILES_URL + DOWNLOAD + FILE_UUID_1);
 
@@ -104,7 +104,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     @Test
     void downloadUnsuccess() throws Exception {
-        when(service.read(FILE_UUID_1, true)).thenThrow(NotFoundException.class);
+        when(service.get(FILE_UUID_1, true)).thenThrow(NotFoundException.class);
 
         performGet(status().isNotFound(), FILES_URL + DOWNLOAD + FILE_UUID_1);
     }

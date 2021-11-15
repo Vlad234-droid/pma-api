@@ -70,17 +70,17 @@ public class FileEndpoint {
     private final AuditorAware<String> auditorAware;
 
     @Operation(
-            summary = "Read File information by its uuid",
-            description = "Read File information by its uuid",
+            summary = "Get File information by its uuid",
+            description = "Get File information by its uuid",
             tags = "file",
             responses = {
                     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the file data by its uuid"),
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
             })
     @GetMapping("{fileUuid}")
-    public RestResponse<File> read(@PathVariable UUID fileUuid,
-                                   @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true") boolean includeFileContent) {
-        return success(fileService.read(fileUuid, includeFileContent));
+    public RestResponse<File> get(@PathVariable UUID fileUuid,
+                                  @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true") boolean includeFileContent) {
+        return success(fileService.get(fileUuid, includeFileContent));
     }
 
     /**
@@ -101,7 +101,7 @@ public class FileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Internal Server Error", content = @Content)
     @GetMapping("/download/{fileUuid}")
     public ResponseEntity<Resource> download(@PathVariable UUID fileUuid) {
-        var file = fileService.read(fileUuid, true);
+        var file = fileService.get(fileUuid, true);
         byte[] content = file.getFileContent();
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")

@@ -17,7 +17,7 @@ public interface FileDAO {
     File read(@Param("fileUuid") UUID fileUuid, @Param("includeFileContent") boolean includeFileContent);
 
     /**
-     * Save file information to database
+     * Save file information to database with maximum+1 version
      *
      * @param file - file data
      * @return the number of the inserted rows

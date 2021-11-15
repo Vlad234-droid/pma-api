@@ -68,20 +68,20 @@ public class FileServiceImplTest {
     }
 
     @Test
-    void readByUuid() {
+    void getByUuid() {
         var fileData = buildFileData(FILE_NAME, FILE_UUID_1, 1);
         when(fileDao.read(FILE_UUID_1, false)).thenReturn(fileData);
 
-        var result = service.read(FILE_UUID_1, false);
+        var result = service.get(FILE_UUID_1, false);
 
         assertEquals(fileData, result);
     }
 
     @Test
-    void readByUuidThrowsExceptionWhenDaoReturnsNull() {
+    void getByUuidThrowsExceptionWhenDaoReturnsNull() {
         when(fileDao.read(FILE_UUID_1, true)).thenReturn(null);
 
-        assertThrows(NotFoundException.class, () -> service.read(FILE_UUID_1, true));
+        assertThrows(NotFoundException.class, () -> service.get(FILE_UUID_1, true));
     }
 
     private File buildFileData(String fileName, UUID uuid, Integer version) {

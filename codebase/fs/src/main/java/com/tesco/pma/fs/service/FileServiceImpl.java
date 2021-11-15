@@ -56,7 +56,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public File read(UUID fileUuid, boolean includeFileContent) {
+    public File get(UUID fileUuid, boolean includeFileContent) {
         return Optional.ofNullable(fileDao.read(fileUuid, includeFileContent))
                 .orElseThrow(() -> new NotFoundException(ERROR_FILE_NOT_FOUND.name(),
                         "File was not found", fileUuid.toString()));
