@@ -35,7 +35,8 @@ spring:
     basename: >
       com/tesco/pma/exception/AppExceptionMessage,
       com/tesco/pma/colleague/profile/exception/AppExceptionMessage,
-      com/tesco/pma/review/exception/AppExceptionMessage
+      com/tesco/pma/review/exception/AppExceptionMessage,
+      com/tesco/pma/colleague/security/exception/AppExceptionMessage
     encoding: UTF-8
   async-executor:
     core-pool-size: 2
@@ -48,13 +49,17 @@ spring:
                               com.tesco.pma.colleague.profile.domain,
                               com.tesco.pma.organisation.api,
                               com.tesco.pma.review.domain,
-                              com.tesco.pma.feedback.api
+                              com.tesco.pma.feedback.api,
+                              com.tesco.pma.colleague.security.domain,
+                              com.tesco.pma.notes.model
         configuration-properties:
           base-package: com.tesco.pma.dao,
                         com.tesco.pma.colleague.profile.dao,
                         com.tesco.pma.organisation.dao,
                         com.tesco.pma.review.dao,
-                        com.tesco.pma.feedback.dao
+                        com.tesco.pma.feedback.dao,
+                        com.tesco.pma.colleague.security.dao,
+                        com.tesco.pma.notes.dao
           batchSize: 100
     postgres-version: 11.11
     testdb:
@@ -91,8 +96,6 @@ management:
       enabled: true
 validation:
   mapping-locations:
-    - classpath:com/tesco/pma/validation/constraints-subsidiary.xml
-    - classpath:com/tesco/pma/validation/subsidiary-permission.xml
   messages:
     basename: com/tesco/pma/validation/AppValidationMessages
     encoding: UTF-8

@@ -1,5 +1,6 @@
 package com.tesco.pma.colleague.profile.service;
 
+import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 
@@ -54,5 +55,13 @@ public interface ProfileService {
      * @return Number of updated records
      */
     int updateColleague(@NotNull UUID colleagueUuid, Collection<String> changedAttributes);
+
+    /**
+     * Find colleague by id
+     *
+     * @param colleagueUuid
+     * @return Deleted profile attributes
+     */
+    Colleague findColleagueByColleagueUuid(UUID colleagueUuid);
 
 }

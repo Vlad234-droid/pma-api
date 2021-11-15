@@ -1,9 +1,7 @@
 package com.tesco.pma.configuration;
 
 import com.tesco.pma.configuration.security.PmaMethodSecurityExpressionOperations;
-import com.tesco.pma.service.user.UserService;
 import org.aopalliance.intercept.MethodInvocation;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +22,6 @@ import org.springframework.security.core.Authentication;
 @ConditionalOnProperty(name = "tesco.application.security.enabled", havingValue = "true", matchIfMissing = true)
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class MethodSecurityConfiguration extends GlobalMethodSecurityConfiguration {
-    private ObjectProvider<UserService> userServiceObjectProvider;
 
     @Override
     protected MethodSecurityExpressionHandler createExpressionHandler() {
@@ -33,7 +30,7 @@ public class MethodSecurityConfiguration extends GlobalMethodSecurityConfigurati
             protected MethodSecurityExpressionOperations createSecurityExpressionRoot(Authentication authentication,
                                                                                       MethodInvocation invocation) {
                 return new PmaMethodSecurityExpressionOperations(
-                        super.createSecurityExpressionRoot(authentication, invocation), userServiceObjectProvider.getObject());
+                        super.createSecurityExpressionRoot(authentication, invocation));
             }
         };
     }
@@ -51,8 +48,4 @@ public class MethodSecurityConfiguration extends GlobalMethodSecurityConfigurati
         objectPostProcessor.postProcess(getExpressionHandler());
     }
 
-    @Autowired
-    public void setUserServiceObjectProvider(ObjectProvider<UserService> userServiceObjectProvider) {
-        this.userServiceObjectProvider = userServiceObjectProvider;
-    }
 }

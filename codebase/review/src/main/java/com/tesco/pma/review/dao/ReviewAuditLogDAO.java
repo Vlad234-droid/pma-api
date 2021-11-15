@@ -9,7 +9,7 @@ import java.time.Instant;
 import static java.time.Instant.now;
 
 public interface ReviewAuditLogDAO {
-    default int logLogReviewUpdating(Review review, ReviewStatus newStatus, String changeReason, String updatedBy) {
+    default int logReviewUpdating(Review review, ReviewStatus newStatus, String changeReason, String updatedBy) {
         return intLogReviewUpdating(review, newStatus, changeReason, updatedBy, now());
     }
 

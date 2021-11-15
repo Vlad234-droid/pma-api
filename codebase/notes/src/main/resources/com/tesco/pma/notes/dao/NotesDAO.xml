@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.notes.dao.NotesDAO">
+
+    <resultMap id="noteStructure" type="com.tesco.pma.notes.model.Note">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="owner_uuid" property="ownerColleagueUuid"/>
+        <result column="reference_uuid" property="referenceColleagueUuid"/>
+        <result column="folder_uuid" property="folderUuid"/>
+        <result column="update_time" property="updateTime" typeHandler="org.apache.ibatis.type.InstantTypeHandler"/>
+
+        <result property="status" column="status_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.notes.model.NoteStatus"/>
+    </resultMap>
+
+
+    <insert id="create" flushCache="true">
+        INSERT INTO notes (id, title, content, owner_uuid, reference_uuid, folder_uuid, update_time, status_id)
+        VALUES (#{note.id}, #{note.title}, #{note.content}, #{note.ownerColleagueUuid}, #{note.referenceColleagueUuid},
+        #{note.folderUuid}, #{note.updateTime},
+        #{note.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.notes.model.NoteStatus} )
+    </insert>
+
+    <select id="findByOwner" resultMap="noteStructure">
+        SELECT id, title, content, owner_uuid, reference_uuid, folder_uuid, update_time, status_id
+        FROM notes
+        WHERE notes.owner_uuid = #{colleagueUuid}
+    </select>
+
+    <select id="findByFolder" resultMap="noteStructure">
+        SELECT id, title, content, owner_uuid, reference_uuid, folder_uuid, update_time, status_id
+        FROM notes
+        WHERE notes.folder_uuid = #{folderUuid}
+    </select>
+
+    <update id="update" flushCache="true">
+        UPDATE notes
+        SET title = (#{note.title}), content = (#{note.content}), owner_uuid = (#{note.ownerColleagueUuid}),
+            reference_uuid = (#{note.referenceColleagueUuid}), folder_uuid = (#{note.folderUuid}),
+            update_time = (#{note.updateTime}),
+            status_id = (#{note.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler})
+        WHERE id = #{note.id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM notes WHERE id = #{id}
+    </delete>
+
+</mapper>

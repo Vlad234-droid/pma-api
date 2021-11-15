@@ -1,6 +1,6 @@
 package com.tesco.pma.api;
 
-import com.tesco.pma.api.security.SubsidiaryPermission;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +15,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class User {
     private UUID colleagueUuid;
 
@@ -29,8 +30,6 @@ public class User {
     private String gender;
 
     private String email;
-
-    private Collection<SubsidiaryPermission> subsidiaryPermissions = new HashSet<>();
 
     private Collection<String> roles = new HashSet<>();
 

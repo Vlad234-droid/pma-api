@@ -98,4 +98,13 @@ public interface ConfigEntryService {
      * @return colleague object
      */
     Colleague getColleagueByIamId(String iamId);
+
+    /**
+     * Get colleague by colleague UUID
+     *
+     * @param colleagueUuid colleague UUID
+     * @return colleague object
+     */
+    Colleague getColleague(UUID colleagueUuid);
+
 }
