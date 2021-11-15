@@ -2,20 +2,22 @@ package com.tesco.pma.logger;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import com.tesco.pma.TestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SpringBootTest
 @ActiveProfiles("test")
-@SpringBootTest(classes = TestConfig.class,
-        properties = {"tesco.application.rest-template.security.enabled=false"})
+@ContextConfiguration(classes = TestConfig.class)
 class LoggerSensitiveDataTest {
 
     public static final String DEFAULT_INFO_LOG = "This is default INFO log";
