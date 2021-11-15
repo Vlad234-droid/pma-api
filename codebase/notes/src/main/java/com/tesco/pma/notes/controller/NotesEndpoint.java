@@ -1,7 +1,7 @@
 package com.tesco.pma.notes.controller;
 
 import com.tesco.pma.notes.model.Note;
-import com.tesco.pma.notes.service.NotesServiceImpl;
+import com.tesco.pma.notes.service.NotesService;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,7 +21,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RequestMapping(path = "/notes")
 public class NotesEndpoint {
 
-    private final NotesServiceImpl notesService;
+    private final NotesService notesService;
 
     @Operation(summary = "Create a Note", tags = {"Notes"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Create a new Note")
