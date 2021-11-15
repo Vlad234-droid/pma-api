@@ -3,6 +3,7 @@ package com.tesco.pma.cycle.model;
 import com.tesco.pma.api.ReviewType;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.model.PMCycleElement;
+import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import com.tesco.pma.cycle.api.model.PMFormElement;
 import com.tesco.pma.cycle.api.model.PMReviewElement;
 import com.tesco.pma.cycle.api.model.PMTimelinePointElement;
@@ -11,6 +12,7 @@ import com.tesco.pma.error.ErrorCodeAware;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperties;
@@ -40,10 +42,34 @@ import static com.tesco.pma.cycle.exception.ErrorCodes.PM_PARSE_NOT_FOUND;
 @AllArgsConstructor
 public class PMProcessModelParser {
     private static final Pattern FORM_NAME_PATTERN = Pattern.compile("(([\\w\\-_/]+)\\.(form|json))$");
+    public static final String KEY = "key";
+    public static final String VALUE = "value";
 
     private final ResourceProvider resourceProvider;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
+    /**
+     * Parse the model and return the metadata
+     *
+     * @param model Parsing model
+     * @throws ParseException any exceptions
+     */
+    public PMCycleMetadata parse(BpmnModelInstance model) {
+        var metadata = new PMCycleMetadata();
+        var cycle = new PMCycleElement();
+        var processes = model.getModelElementsByType(org.camunda.bpm.model.bpmn.instance.Process.class);
+        if (processes == null || processes.isEmpty()) {
+            throw parseException(PM_PARSE_NOT_FOUND, Map.of(KEY, "process", VALUE, "absent"), "process", null);
+        }
+        var process = processes.iterator().next();
+        cycle.setCode(process.getId());
+        metadata.setCycle(cycle);
+
+        var tasks = model.getModelElementsByType(Activity.class);
+        parse(cycle, tasks);
+
+        return metadata;
+    }
     /**
      * Parse the tasks and builds the metadata
      *
@@ -51,7 +77,7 @@ public class PMProcessModelParser {
      * @param tasks tasks collection
      * @throws ParseException any exceptions
      */
-    public void parse(PMCycleElement cycle, Collection<Activity> tasks) {
+    private void parse(PMCycleElement cycle, Collection<Activity> tasks) {
         tasks.forEach(task -> processTask(cycle, task));
     }
 
@@ -116,8 +142,7 @@ public class PMProcessModelParser {
 
                 pmReview.setForm(new PMFormElement(formKey, formName, formJson));
             } catch (Exception e) {
-                log.warn("Form was not found {}", formKey, e); //todo exception handling
-                throw parseException(PM_PARSE_NOT_FOUND, Map.of("key", "formKey", "value", formKey), formKey, e);
+                throw parseException(PM_PARSE_NOT_FOUND, Map.of(KEY, "formKey", VALUE, formKey), formKey, e);
             }
         }
         return pmReview;
@@ -141,12 +166,12 @@ public class PMProcessModelParser {
 
     private ReviewType getReviewType(String name, String value) {
         if (StringUtils.isBlank(value)) {
-            throw parseException(PM_PARSE_IS_BLANK, Map.of("key", name), name, null);
+            throw parseException(PM_PARSE_IS_BLANK, Map.of(KEY, name), name, null);
         }
         try {
             return ReviewType.valueOf(value.toUpperCase());
         } catch (Exception e) {
-            throw parseException(PM_PARSE_NOT_FOUND, Map.of("key", name, "value", value), name, e);
+            throw parseException(PM_PARSE_NOT_FOUND, Map.of(KEY, name, VALUE, value), name, e);
         }
     }
 

@@ -3,8 +3,6 @@ package com.tesco.pma.cycle.model;
 import com.tesco.pma.api.ReviewType;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.LocalTestConfig;
-import com.tesco.pma.cycle.api.model.PMCycleElement;
-import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.cycle.api.model.PMFormElement;
 import com.tesco.pma.cycle.api.model.PMReviewElement;
@@ -12,8 +10,6 @@ import com.tesco.pma.cycle.exception.ParseException;
 import org.apache.commons.io.IOUtils;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.bpm.model.bpmn.instance.Activity;
-import org.camunda.bpm.model.bpmn.instance.Process;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -127,17 +123,10 @@ class FlowModelTest {
 
     private void checkModel(String processName, String processFileName, String formName, int tlSize, int reviewsCount) throws IOException {
         var model = getModel(processFileName);
-        Process process = model.getModelElementById(processName);
-        assertNotNull(process);
-
-        var metadata = new PMCycleMetadata();
-        var cycle = new PMCycleElement();
-        cycle.setCode(process.getId());
-        cycle.setDescription(process.getName());
-        metadata.setCycle(cycle);
-
-        var tasks = model.getModelElementsByType(Activity.class);
-        parser.parse(cycle, tasks);
+        var metadata = parser.parse(model);
+        assertNotNull(metadata);
+        var cycle = metadata.getCycle();
+        assertNotNull(cycle);
 
         assertEquals(tlSize, cycle.getTimelinePoints().size());
 
