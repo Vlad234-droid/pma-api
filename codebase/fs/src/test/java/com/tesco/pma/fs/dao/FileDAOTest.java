@@ -44,14 +44,6 @@ public class FileDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet(BASE_PATH_TO_DATA_SET + "file_init.xml")
-    void getMaxVersion() {
-        final var result = instance.getMaxVersion(PATH, "test1.txt");
-
-        assertThat(result).isEqualTo(2);
-    }
-
-    @Test
     @DataSet(BASE_PATH_TO_DATA_SET + "cleanup.xml")
     @ExpectedDataSet(BASE_PATH_TO_DATA_SET + "file_create_expected.xml")
     void createSucceeded() {

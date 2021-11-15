@@ -27,13 +27,4 @@ public interface FileDAO {
      * have no matching type in file_type table, etc
      */
     int create(File file);
-
-    /**
-     * Gets max version by file path and file name. If nothing found returns 0
-     *
-     * @param path - file path
-     * @param fileName - file name
-     * @return max version or 0 if nothing found
-     */
-    int getMaxVersion(@Param("path") String path, @Param("fileName") String fileName);
 }

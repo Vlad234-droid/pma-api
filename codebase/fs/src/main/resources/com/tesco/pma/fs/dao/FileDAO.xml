@@ -30,10 +30,13 @@
 
     <insert id="create" flushCache="true">
         INSERT INTO file (uuid, path, version, type_id, status_id, description,
-                                      created_by, created_time, file_name, file_date, file_length, file_content)
+        created_by, created_time, file_name, file_date, file_length, file_content)
         VALUES (#{uuid},
                 #{path},
-                #{version},
+                (<include refid="getMaxVersion">
+                    <property name="path" value="#{path}"/>
+                    <property name="fileName" value="#{fileName}"/>
+                </include>) + 1,
                 #{type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, jdbcType=INTEGER},
                 #{status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, jdbcType=INTEGER},
                 #{description},
@@ -45,9 +48,10 @@
                 #{fileContent, jdbcType=BINARY})
     </insert>
 
-    <select id="getMaxVersion" resultType="int">
-        SELECT COALESCE(MAX(version), 0) FROM file
+    <sql id="getMaxVersion">
+        SELECT COALESCE(MAX(version), 0)
+        FROM file
         WHERE path = #{path} AND file_name = #{fileName}
-    </select>
+    </sql>
 
 </mapper>

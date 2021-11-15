@@ -43,16 +43,13 @@ public class FileServiceImpl implements FileService {
         fileData.setDescription(uploadMetadata.getDescription());
         fileData.setFileDate(uploadMetadata.getFileDate() == null ? currMomentInUTC : uploadMetadata.getFileDate());
 
-        var version = fileDao.getMaxVersion(fileData.getPath(), fileData.getFileName()) + 1;
-        fileData.setVersion(version);
-
         var insertedRows = fileDao.create(fileData);
         if (insertedRows != 1) {
             throw new RegistrationException(ERROR_FILE_REGISTRATION_FAILED.name(),
                     "Failed to save File to database", fileData.getFileName());
         }
 
-        return fileData;
+        return get(fileData.getUuid(), false);
     }
 
     @Override

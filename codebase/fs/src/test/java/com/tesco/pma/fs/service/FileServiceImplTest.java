@@ -23,8 +23,7 @@ import static com.tesco.pma.fs.domain.FileType.FORM;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -48,8 +47,8 @@ public class FileServiceImplTest {
     void upload() {
         var fileData = buildFileData(FILE_NAME, FILE_UUID_1, 1);
         var uploadMetadata = new UploadMetadata();
-        when(fileDao.getMaxVersion(PATH, FILE_NAME)).thenReturn(1);
         when(fileDao.create(any())).thenReturn(1);
+        when(fileDao.read(any(), eq(false))).thenReturn(fileData);
 
         var result = service.upload(fileData, uploadMetadata, CREATOR_ID);
 
@@ -61,7 +60,6 @@ public class FileServiceImplTest {
     void uploadThrowsExceptionWhenDaoReturnsNotOne() throws IOException {
         var fileData = buildFileData(FILE_NAME, FILE_UUID_1, 1);
         var uploadMetadata = new UploadMetadata();
-        when(fileDao.getMaxVersion(anyString(), anyString())).thenReturn(anyInt());
         when(fileDao.create(fileData)).thenReturn(-1);
 
         assertThrows(RegistrationException.class, () -> service.upload(fileData, uploadMetadata, CREATOR_ID));
