@@ -9,7 +9,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.util.List;
 import java.util.UUID;
@@ -28,7 +37,7 @@ public class NotesEndpoint {
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isCurrentUser(#note.ownerColleagueUuid)")
-    public RestResponse<Note> createNote(@RequestBody Note note){
+    public RestResponse<Note> createNote(@RequestBody Note note) {
         return RestResponse.success(notesService.createNote(note));
     }
 
@@ -37,7 +46,7 @@ public class NotesEndpoint {
     @PutMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isCurrentUser(#note.ownerColleagueUuid)")
-    public RestResponse<Note> update(@PathVariable("id") UUID uuid, @RequestBody Note note){
+    public RestResponse<Note> update(@PathVariable("id") UUID uuid, @RequestBody Note note) {
         return RestResponse.success(notesService.updateNote(note));
     }
 
@@ -45,7 +54,7 @@ public class NotesEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Find Note")
     @GetMapping(produces = APPLICATION_JSON_VALUE, params = "ownerId")
     @ResponseStatus(HttpStatus.OK)
-    public RestResponse<List<Note>> findByOwner(@RequestParam UUID ownerId){
+    public RestResponse<List<Note>> findByOwner(@RequestParam UUID ownerId) {
         return RestResponse.success(notesService.findNoteByOwner(ownerId));
     }
 
@@ -53,7 +62,7 @@ public class NotesEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Find Note")
     @GetMapping(produces = APPLICATION_JSON_VALUE, params = "folderId")
     @ResponseStatus(HttpStatus.OK)
-    public RestResponse<List<Note>> findByFolder(@RequestParam UUID folderId){
+    public RestResponse<List<Note>> findByFolder(@RequestParam UUID folderId) {
         return RestResponse.success(notesService.findNoteByFolder(folderId));
     }
 
@@ -61,7 +70,7 @@ public class NotesEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Delete a Note")
     @DeleteMapping(value = "/{id}",produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public RestResponse<?> delete(@PathVariable("id") UUID uuid){
+    public RestResponse<?> delete(@PathVariable("id") UUID uuid) {
         notesService.deleteNote(uuid);
         return RestResponse.success();
     }
