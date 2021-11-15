@@ -5,6 +5,9 @@ import lombok.NonNull;
 import lombok.experimental.Delegate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.UUID;
 
 import static com.tesco.pma.security.UserRoleNames.ADMIN;
 import static com.tesco.pma.security.UserRoleNames.COLLEAGUE;
@@ -65,6 +68,15 @@ public class PmaMethodSecurityExpressionOperations implements MethodSecurityExpr
      */
     public boolean isColleague() {
         return hasRole(COLLEAGUE);
+    }
+
+    public boolean isCurrentUser(UUID userId){
+        if(userId==null){
+            return false;
+        }
+
+        var currentUserId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
+        return userId.equals(currentUserId);
     }
 
     /**

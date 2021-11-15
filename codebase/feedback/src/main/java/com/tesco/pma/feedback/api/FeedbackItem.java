@@ -31,6 +31,6 @@ public class FeedbackItem {
     /**
      * Link to feedback.
      */
-    @Schema(description = "Link to feedback", required = true)
+    @Schema(description = "Link to feedback")
     private UUID feedbackUuid;
 }
