@@ -9,7 +9,10 @@ import com.tesco.pma.colleague.api.service.ServiceDates;
 import com.tesco.pma.colleague.api.workrelationships.Department;
 import com.tesco.pma.colleague.api.workrelationships.Job;
 import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
+import com.tesco.pma.organisation.dao.ConfigEntryDAO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -21,7 +24,11 @@ import java.util.function.Predicate;
  * Utility class for mapping between Colleague Facts API json format and database representation
  */
 @SuppressWarnings("PMD.UseUtilityClass")
+@Component
+@RequiredArgsConstructor
 public class ColleagueFactsApiLocalMapper {
+
+    private final ConfigEntryDAO configEntryDAO;
 
     private static final String UNDEFINED_VALUE = "N/A";
 
@@ -29,26 +36,29 @@ public class ColleagueFactsApiLocalMapper {
             IS_WORK_RELATIONSHIP_ACTIVE = workRelationship -> workRelationship.getWorkingStatus().equals(
             com.tesco.pma.colleague.api.workrelationships.WorkRelationship.WorkingStatus.ACTIVE);
 
-    public static Colleague localToColleagueFactsApi(com.tesco.pma.organisation.api.Colleague oc, UUID colleagueUuid) {
+    public Colleague localToColleagueFactsApi(com.tesco.pma.organisation.api.Colleague oc, UUID colleagueUuid,
+                                                     boolean child) {
         var colleague = new Colleague();
         colleague.setColleagueUUID(colleagueUuid);
         colleague.setCountryCode(oc.getCountry().getCode());
         colleague.setProfile(getProfile(oc));
-        colleague.setWorkRelationships(Collections.singletonList(getWorkRelationship(oc)));
-        colleague.setExternalSystems(getExternalSystems(oc));
         colleague.setContact(getContact(oc));
-        colleague.setServiceDates(getServiceDates(oc));
+        if (!child) {
+            colleague.setWorkRelationships(Collections.singletonList(getWorkRelationship(oc)));
+            colleague.setExternalSystems(getExternalSystems(oc));
+            colleague.setServiceDates(getServiceDates(oc));
+        }
         return colleague;
     }
 
-    private static ServiceDates getServiceDates(com.tesco.pma.organisation.api.Colleague oc) {
+    private ServiceDates getServiceDates(com.tesco.pma.organisation.api.Colleague oc) {
         var serviceDates = new ServiceDates();
         serviceDates.setHireDate(oc.getHireDate());
         serviceDates.setLeavingDate(oc.getLeavingDate());
         return serviceDates;
     }
 
-    private static Contact getContact(com.tesco.pma.organisation.api.Colleague oc) {
+    private Contact getContact(com.tesco.pma.organisation.api.Colleague oc) {
         if (oc.getEmail() != null) {
             var contact = new Contact();
             contact.setEmail(oc.getEmail());
@@ -57,7 +67,7 @@ public class ColleagueFactsApiLocalMapper {
         return null;
     }
 
-    private static ExternalSystems getExternalSystems(com.tesco.pma.organisation.api.Colleague oc) {
+    private ExternalSystems getExternalSystems(com.tesco.pma.organisation.api.Colleague oc) {
         var es = new ExternalSystems();
         var iam = new IamSourceSystem();
         iam.setId(oc.getIamId());
@@ -66,7 +76,7 @@ public class ColleagueFactsApiLocalMapper {
         return es;
     }
 
-    private static Profile getProfile(com.tesco.pma.organisation.api.Colleague oc) {
+    private Profile getProfile(com.tesco.pma.organisation.api.Colleague oc) {
         var profile = new Profile();
         profile.setFirstName(oc.getFirstName());
         profile.setMiddleName(oc.getMiddleName());
@@ -74,20 +84,26 @@ public class ColleagueFactsApiLocalMapper {
         return profile;
     }
 
-    private static WorkRelationship getWorkRelationship(com.tesco.pma.organisation.api.Colleague oc) {
+    private WorkRelationship getWorkRelationship(com.tesco.pma.organisation.api.Colleague oc) {
         var wr = new WorkRelationship();
         wr.setWorkLevel(WorkRelationship.WorkLevel.getByCode(oc.getWorkLevel().getCode()));
         wr.setPrimaryEntity(oc.getPrimaryEntity());
         wr.setSalaryFrequency(oc.getSalaryFrequency());
-        wr.setManagerUUID(oc.getManagerUuid());
         wr.setIsManager(oc.isManager());
         wr.setEmploymentType(oc.getEmploymentType());
         wr.setDepartment(getDepartment(oc));
         wr.setJob(getJob(oc));
+        wr.setManagerUUID(oc.getManagerUuid());
+        if (wr.getManagerUUID() != null) {
+            com.tesco.pma.organisation.api.Colleague mng = configEntryDAO.getColleague(wr.getManagerUUID());
+            if (mng != null) {
+                wr.setManager(localToColleagueFactsApi(mng, wr.getManagerUUID(), true));
+            }
+        }
         return wr;
     }
 
-    private static Job getJob(com.tesco.pma.organisation.api.Colleague oc) {
+    private Job getJob(com.tesco.pma.organisation.api.Colleague oc) {
         var ocJob = oc.getJob();
         if (ocJob != null) {
             var job = new Job();
@@ -100,7 +116,7 @@ public class ColleagueFactsApiLocalMapper {
         return null;
     }
 
-    private static Department getDepartment(com.tesco.pma.organisation.api.Colleague oc) {
+    private Department getDepartment(com.tesco.pma.organisation.api.Colleague oc) {
         var ocDp = oc.getDepartment();
         if (ocDp != null) {
             var dp = new Department();
@@ -112,7 +128,7 @@ public class ColleagueFactsApiLocalMapper {
         return null;
     }
 
-    public static com.tesco.pma.organisation.api.Colleague colleagueFactsApiToLocal(Colleague source) {
+    public com.tesco.pma.organisation.api.Colleague colleagueFactsApiToLocal(Colleague source) {
         com.tesco.pma.organisation.api.Colleague destination = new com.tesco.pma.organisation.api.Colleague();
 
         destination.setUuid(source.getColleagueUUID());
@@ -152,7 +168,7 @@ public class ColleagueFactsApiLocalMapper {
         return destination;
     }
 
-    private static void mappingWorkRelationshipProperties(Colleague source,
+    private void mappingWorkRelationshipProperties(Colleague source,
                                                           com.tesco.pma.organisation.api.Colleague destination) {
         if (Objects.nonNull(source.getWorkRelationships())) {
             Optional<WorkRelationship> optionalWorkRelationship = source.getWorkRelationships().stream().findFirst();

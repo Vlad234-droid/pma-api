@@ -1,6 +1,7 @@
 package com.tesco.pma.colleague.profile.service;
 
 import com.tesco.pma.colleague.profile.dao.ColleagueDAO;
+import com.tesco.pma.colleague.profile.service.util.ColleagueFactsApiLocalMapper;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.colleague.profile.AbstractProfileTests;
@@ -8,6 +9,7 @@ import com.tesco.pma.colleague.profile.LocalTestConfig;
 import com.tesco.pma.colleague.profile.dao.ProfileAttributeDAO;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
+import com.tesco.pma.organisation.api.Colleague;
 import com.tesco.pma.organisation.dao.ConfigEntryDAO;
 import com.tesco.pma.service.colleague.ColleagueApiService;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -55,6 +58,9 @@ class ProfileServiceImplTest extends AbstractProfileTests {
     @MockBean
     private ColleagueApiService colleagueApiService;
 
+    @MockBean
+    private ColleagueFactsApiLocalMapper colleagueFactsApiLocalMapper;
+
     @SpyBean
     private ProfileServiceImpl profileService;
 
@@ -67,7 +73,12 @@ class ProfileServiceImplTest extends AbstractProfileTests {
                 .thenReturn(profileAttributes(3));
 
         when(configEntryDAO.getColleague(any(UUID.class)))
-                .thenReturn(randomColleague());
+                .thenReturn(randomEntity(com.tesco.pma.organisation.api.Colleague.class));
+
+        when(colleagueFactsApiLocalMapper.localToColleagueFactsApi(
+                any(com.tesco.pma.organisation.api.Colleague.class), any(UUID.class), anyBoolean()))
+                .thenReturn(randomEntity(com.tesco.pma.colleague.api.Colleague.class));
+
 
         Optional<ColleagueProfile> profileResponse = profileService.findProfileByColleagueUuid(colleagueUuid);
         assertThat(profileResponse).isPresent();

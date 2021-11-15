@@ -6,6 +6,7 @@ import com.tesco.pma.colleague.profile.dao.ProfileAttributeDAO;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.exception.ErrorCodes;
+import com.tesco.pma.colleague.profile.service.util.ColleagueFactsApiLocalMapper;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
@@ -27,9 +28,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.tesco.pma.colleague.profile.service.util.ColleagueFactsApiLocalMapper.colleagueFactsApiToLocal;
-import static com.tesco.pma.colleague.profile.service.util.ColleagueFactsApiLocalMapper.localToColleagueFactsApi;
-
 /**
  * Implementation of {@link ProfileService}.
  */
@@ -45,6 +43,7 @@ public class ProfileServiceImpl implements ProfileService {
     private final ProfileAttributeDAO profileAttributeDAO;
     private final ColleagueApiService colleagueApiService;
     private final NamedMessageSourceAccessor messages;
+    private final ColleagueFactsApiLocalMapper colleagueFactsApiLocalMapper;
 
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     private static final String PROFILE_ATTRIBUTE_NAME_PARAMETER_NAME = "profileAttributeName";
@@ -122,6 +121,13 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    public Colleague findColleagueByColleagueUuid(UUID colleagueUuid) {
+        com.tesco.pma.organisation.api.Colleague oc = configEntryDAO.getColleague(colleagueUuid);
+        //todo try to download and insert colleagueApiService.findColleagueByUuid(colleagueUuid)
+        return oc != null ? colleagueFactsApiLocalMapper.localToColleagueFactsApi(oc, colleagueUuid, false) : null;
+    }
+
+    @Override
     // TODO To optimize logic for update only changed attributes
     public int updateColleague(UUID colleagueUuid, Collection<String> changedAttributes) {
         int updated = 0;
@@ -133,7 +139,7 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         try {
-            com.tesco.pma.organisation.api.Colleague changedLocalColleague = colleagueFactsApiToLocal(colleague);
+            com.tesco.pma.organisation.api.Colleague changedLocalColleague = colleagueFactsApiLocalMapper.colleagueFactsApiToLocal(colleague);
             updateDictionaries(existingLocalColleague, changedLocalColleague);
             updated = colleagueDAO.update(changedLocalColleague);
         } catch (DataIntegrityViolationException exception) {
@@ -142,12 +148,6 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         return updated;
-    }
-
-    private Colleague findColleagueByColleagueUuid(UUID colleagueUuid) {
-        com.tesco.pma.organisation.api.Colleague oc = configEntryDAO.getColleague(colleagueUuid);
-        //todo try to download and insert colleagueApiService.findColleagueByUuid(colleagueUuid)
-        return oc != null ? localToColleagueFactsApi(oc, colleagueUuid) : null;
     }
 
     private List<TypedAttribute> findProfileAttributes(UUID colleagueUuid) {

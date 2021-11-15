@@ -41,8 +41,8 @@ public abstract class AbstractProfileTests {
         return NAMES[index - 1];
     }
 
-    protected com.tesco.pma.organisation.api.Colleague randomColleague() {
-        return RANDOM.nextObject(com.tesco.pma.organisation.api.Colleague.class);
+    protected <T> T randomEntity(Class<T> clazz) {
+        return RANDOM.nextObject(clazz);
     }
 
 }
