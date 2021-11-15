@@ -5,6 +5,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleType;
+import com.tesco.pma.cycle.api.PMCycleUserProfile;
 import com.tesco.pma.dao.AbstractDAOTest;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
@@ -100,7 +101,9 @@ class PMCycleDAOTest extends AbstractDAOTest {
                 .name(TEST_CYCLE_NAME)
                 .status(ACTIVE)
                 .type(PMCycleType.HIRING_DATE)
-                .createdBy(COLLEAGUE_UUID)
+                .createdBy(PMCycleUserProfile.builder()
+                        .uuid(COLLEAGUE_UUID)
+                        .build())
                 .uuid(uuid)
                 .entryConfigKey(TEST_KEY)
                 .templateUUID(TEMPLATE_UUID)

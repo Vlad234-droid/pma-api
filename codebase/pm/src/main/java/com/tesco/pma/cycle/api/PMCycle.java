@@ -22,7 +22,7 @@ public class PMCycle {
     UUID templateUUID;
 
     String name;
-    UUID createdBy;
+    PMCycleUserProfile createdBy;
     PMCycleStatus status;
     PMCycleType type;
 

@@ -22,12 +22,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.tesco.pma.api.DictionaryFilter.includeFilter;
-import static com.tesco.pma.cycle.api.PMCycleStatus.*;
-import static com.tesco.pma.cycle.exception.ErrorCodes.*;
+import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
+import static com.tesco.pma.cycle.api.PMCycleStatus.COMPLETED;
+import static com.tesco.pma.cycle.api.PMCycleStatus.DRAFT;
+import static com.tesco.pma.cycle.api.PMCycleStatus.FAILED;
+import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
+import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_ALREADY_EXISTS;
+import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_METADATA_NOT_FOUND;
+import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND;
+import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_BY_UUID;
+import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_COLLEAGUE;
+import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_FOR_STATUS_UPDATE;
 import static java.lang.Boolean.TRUE;
 import static java.util.Set.of;
 
@@ -86,22 +99,22 @@ public class PMCycleServiceImpl implements PMCycleService {
         log.debug("Starting process");
         String processUUID = null;
         try {
-            Map<String, Object> props = Map.of("needsObjective", TRUE,
+            var props = Map.of("needsObjective", TRUE,
                     "needsEyr", TRUE,
                     "needsMyr", TRUE);
             processUUID = processManagerService.runProcess("type_1",  props);
             log.debug("Started process: {}", processUUID);
         } catch (ProcessExecutionException e) {
             //TODO throw ex or return cycle
-            e.printStackTrace();
             updateStatus(cycle.getUuid(), FAILED);
         }
 
         if (null == processUUID) {
-            throw new NullPointerException();
-            //TODO throw ex. Check UUID
+            log.error("");
+            return cycle;
         }
-        PMRuntimeProcess pmRuntimeProcess = PMRuntimeProcess.builder()
+
+        var pmRuntimeProcess = PMRuntimeProcess.builder()
                 .bpmProcessId(UUID.fromString(processUUID))
                 .cycleUuid(cycle.getUuid())
                 .businessKey(cycle.getEntryConfigKey())

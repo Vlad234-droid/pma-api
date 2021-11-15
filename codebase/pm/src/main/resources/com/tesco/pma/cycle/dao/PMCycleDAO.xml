@@ -7,7 +7,6 @@
         <result property="entryConfigKey" column="entry_config_key"/>
         <result property="templateUUID" column="template_uuid"/>
         <result property="name" column="name"/>
-        <result property="createdBy" column="created_by"/>
         <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.cycle.api.PMCycleStatus"/>
@@ -19,6 +18,7 @@
                 typeHandler="com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler"
                 javaType="com.tesco.pma.api.MapJson"/>
         <result property="jsonMetadata" column="metadata"/>
+        <association property="createdBy" column="{uuid=created_by}" select="getColleagueByUuid"/>
     </resultMap>
 
     <resultMap id="cycleTimelineMap" type="com.tesco.pma.cycle.api.PMCycleTimelinePoint">
@@ -34,6 +34,13 @@
         <result property="count" column="cnt"/>
         <result property="status" column="status_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.api.ReviewStatus"/>
+    </resultMap>
+
+    <resultMap id="colleagueMap" type="com.tesco.pma.cycle.api.PMCycleUserProfile">
+        <result property="uuid" column="uuid"/>
+        <result property="profile.firstName" column="first_name"/>
+        <result property="profile.middleName" column="middle_name"/>
+        <result property="profile.lastName" column="last_name"/>
     </resultMap>
 
     <sql id="addStatusIdCondition">
@@ -66,7 +73,7 @@
                 #{cycle.name},
                 #{cycle.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleType},
                 #{cycle.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus},
-                #{cycle.createdBy},
+                #{cycle.createdBy.uuid},
                 #{now},
                 #{cycle.startTime},
                 #{cycle.endTime},
@@ -164,5 +171,14 @@
           and rw.colleague_uuid=#{colleague_uuid}
         group by status_id
         order by cnt DESC
+    </select>
+
+    <select id="getColleagueByUuid" resultMap="colleagueMap">
+        select uuid,
+               first_name,
+               middle_name,
+               last_name
+        from colleague
+        where uuid = #{uuid}
     </select>
 </mapper>

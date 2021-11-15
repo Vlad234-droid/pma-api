@@ -18,6 +18,8 @@ public interface PMProcessService {
      *                1. UUID identifier is generating automatically
      *                2. REGISTERED status is applying
      *                3.
+     *
+     * @return PMRuntimeProcess
      */
     PMRuntimeProcess register(PMRuntimeProcess process);
 
