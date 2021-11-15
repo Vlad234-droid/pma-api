@@ -70,8 +70,8 @@ public class PmaMethodSecurityExpressionOperations implements MethodSecurityExpr
         return hasRole(COLLEAGUE);
     }
 
-    public boolean isCurrentUser(UUID userId){
-        if(userId==null){
+    public boolean isCurrentUser(UUID userId) {
+        if (userId == null) {
             return false;
         }
 
