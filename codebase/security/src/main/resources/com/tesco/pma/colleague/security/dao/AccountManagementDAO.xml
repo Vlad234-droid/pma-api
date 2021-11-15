@@ -113,10 +113,10 @@
         a.last_login as last_login,
         r.id as role_id,
         r.code as role_code
-        FROM (SELECT * FROM pm_account WHERE iam_id = #{iamId}
-        ) a
+        FROM pm_account a
         LEFT JOIN pm_account_role ar on a.id = ar.account_id
-        LEFT JOIN pm_role r on ar.role_id = r.id;
+        LEFT JOIN pm_role r on ar.role_id = r.id
+        WHERE iam_id = #{iamId};
     </select>
 
 </mapper>
