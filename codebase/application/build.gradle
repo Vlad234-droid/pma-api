@@ -33,6 +33,7 @@ dependencies {
     implementation project(':feedback')
     implementation project(':security')
     implementation project(':notes')
+    implementation project(':fs')
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-web")
