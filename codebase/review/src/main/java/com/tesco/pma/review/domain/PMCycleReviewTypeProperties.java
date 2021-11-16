@@ -1,22 +1,23 @@
-package com.tesco.pma.cycle.api;
+package com.tesco.pma.review.domain;
 
-import com.tesco.pma.api.ReviewStatus;
 import com.tesco.pma.api.ReviewType;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PMCycleTimelinePoint {
-    String cycleUuid;
-    String code;
-    String description;
+@Builder
+public class PMCycleReviewTypeProperties {
+    UUID cycleUuid;
     ReviewType type;
-    ReviewStatus status;
-    Date startDate;
+    Integer min;
+    Integer max;
 }
