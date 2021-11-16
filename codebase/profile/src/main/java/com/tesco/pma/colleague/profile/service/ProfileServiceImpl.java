@@ -26,7 +26,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.*;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -139,16 +145,6 @@ public class ProfileServiceImpl implements ProfileService {
         return profileDAO.getColleague(colleagueUuid);
     }
 
-    @Override
-    public List<Colleague> getSuggestions(String fullName, UUID managerId) {
-        var names = Arrays.stream(fullName.split(StringUtils.SPACE))
-                .map(String::trim)
-                .map(String::toLowerCase)
-                .collect(Collectors.toList());
-
-        return profileDAO.findColleagueSuggestionsByFullName(names, managerId);
-    }
-
     private Colleague getColleague(ColleagueEntity oc, UUID colleagueUuid, boolean child) {
         var colleague = new Colleague();
         colleague.setColleagueUUID(colleagueUuid);
@@ -161,6 +157,16 @@ public class ProfileServiceImpl implements ProfileService {
             colleague.setServiceDates(getServiceDates(oc));
         }
         return colleague;
+    }
+
+    @Override
+    public List<Colleague> getSuggestions(String fullName, UUID managerId) {
+        var names = Arrays.stream(fullName.split(StringUtils.SPACE))
+                .map(String::trim)
+                .map(String::toLowerCase)
+                .collect(Collectors.toList());
+
+        return profileDAO.findColleagueSuggestionsByFullName(names, managerId);
     }
 
     private ServiceDates getServiceDates(ColleagueEntity oc) {
