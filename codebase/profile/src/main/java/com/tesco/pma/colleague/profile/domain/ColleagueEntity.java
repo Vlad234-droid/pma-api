@@ -1,4 +1,4 @@
-package com.tesco.pma.organisation.api;
+package com.tesco.pma.colleague.profile.domain;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
-public class Colleague { //NOPMD
+public class ColleagueEntity { //NOPMD
     private UUID uuid;
     private String firstName;
     private String middleName;
