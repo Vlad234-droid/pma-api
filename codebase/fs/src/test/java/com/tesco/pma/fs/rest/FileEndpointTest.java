@@ -14,7 +14,6 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -124,17 +123,16 @@ public class FileEndpointTest extends AbstractEndpointTest {
     }
 
     private MockMultipartFile getUploadMetadataMultipartFile(String fileName) throws IOException {
-        var content = resourceToString(fileName).getBytes();
-        return new MockMultipartFile("uploadMetadata", fileName, APPLICATION_JSON_VALUE, content);
+        return new MockMultipartFile("uploadMetadata", fileName, APPLICATION_JSON_VALUE, resourceToByteArray(fileName));
     }
 
     private MockMultipartFile getMultipartFileToUpload(byte[] content) {
         return new MockMultipartFile("files", FILE_NAME, TXT_FILE_CONTENT_TYPE, content);
     }
 
-    private String resourceToString(final String resourceName) throws IOException {
+    private byte[] resourceToByteArray(final String resourceName) throws IOException {
         try (InputStream is = getClass().getResourceAsStream(RESOURCES_PATH + resourceName)) {
-            return IOUtils.toString(is, StandardCharsets.UTF_8);
+            return IOUtils.toByteArray(is);
         }
     }
 
