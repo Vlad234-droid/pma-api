@@ -4,6 +4,7 @@ import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.review.domain.ColleagueReviews;
 import com.tesco.pma.review.domain.GroupObjective;
+import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.api.ReviewStatus;
 import com.tesco.pma.api.ReviewType;
@@ -167,4 +168,13 @@ public interface ReviewService {
      * @return a list of published group's objectives
      */
     List<GroupObjective> getPublishedGroupObjectives(@NotNull UUID businessUnitUuid);
+
+    /**
+     * Finds timeline by colleagueUuid
+     *
+     * @param colleagueUuid an identifier of colleague
+     * @return a list of timeline points
+     * @throws NotFoundException if timeline doesn't exist.
+     */
+    List<PMCycleTimelinePoint> getCycleTimelineByColleague(UUID colleagueUuid);
 }

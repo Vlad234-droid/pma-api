@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.fs.dao.FileDAO">
+
+    <resultMap id="fileResultMap" type="com.tesco.pma.fs.domain.File">
+        <id property="uuid" column="uuid"/>
+        <result property="path" column="path"/>
+        <result property="version" column="version"/>
+        <result property="type" column="type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.fs.domain.FileType"/>
+        <result property="status" column="status_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.fs.domain.FileStatus"/>
+        <result property="description" column="description"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="createdTime" column="created_time"/>
+        <result property="fileName" column="file_name"/>
+        <result property="fileDate" column="file_date"/>
+        <result property="fileLength" column="file_length"/>
+        <result property="fileContent" column="file_content" jdbcType="BINARY"/>
+    </resultMap>
+
+    <select id="read" resultMap="fileResultMap">
+        SELECT uuid, path, version, type_id, status_id, description,
+        created_by, created_time, file_name, file_date, file_length
+        <if test="includeFileContent">
+            , file_content
+        </if>
+        FROM file
+        WHERE uuid = #{fileUuid}
+    </select>
+
+    <insert id="create" flushCache="true">
+        INSERT INTO file (uuid, path, version, type_id, status_id, description,
+        created_by, created_time, file_name, file_date, file_length, file_content)
+        VALUES (#{uuid},
+                #{path},
+                (<include refid="getMaxVersion">
+                    <property name="path" value="#{path}"/>
+                    <property name="fileName" value="#{fileName}"/>
+                </include>) + 1,
+                #{type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, jdbcType=INTEGER},
+                #{status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, jdbcType=INTEGER},
+                #{description},
+                #{createdBy},
+                #{createdTime},
+                #{fileName},
+                #{fileDate},
+                #{fileLength},
+                #{fileContent, jdbcType=BINARY})
+    </insert>
+
+    <sql id="getMaxVersion">
+        SELECT COALESCE(MAX(version), 0)
+        FROM file
+        WHERE path = #{path} AND file_name = #{fileName}
+    </sql>
+
+</mapper>
