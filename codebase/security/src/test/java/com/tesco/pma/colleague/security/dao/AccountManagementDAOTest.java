@@ -75,14 +75,14 @@ class AccountManagementDAOTest extends AbstractDAOTest {
 
     @Test
     void disableAccountSucceeded() {
-        final int updated = dao.disableAccount("string 1",AccountStatus.DISABLED);
+        final int updated = dao.disableAccount("string 1", AccountStatus.DISABLED);
 
         assertThat(updated).isEqualTo(1);
     }
 
     @Test
     void enableAccountSucceeded() {
-        final int updated = dao.enableAccount("string 1",AccountStatus.ENABLED);
+        final int updated = dao.enableAccount("string 1", AccountStatus.ENABLED);
 
         assertThat(updated).isEqualTo(1);
     }
@@ -99,6 +99,15 @@ class AccountManagementDAOTest extends AbstractDAOTest {
         final int updated = dao.removeRole(UUID.fromString("3c9d0dcd-318b-4094-9743-98e8460aac7e"), 1);
 
         assertThat(updated).isEqualTo(1);
+    }
+
+    @Test
+    void findAccountByIamIdSucceeded() {
+        var account= dao.findAccountByIamId("string 2");
+
+        assertThat(account.getId()).isEqualTo(UUID.fromString("d7b90699-521d-48cc-8d08-eaf240ffcb0d"));
+        assertThat(account.getStatus()).isEqualTo(AccountStatus.ENABLED);
+        assertThat(account.getType()).isEqualTo(AccountType.USER);
     }
 
 }

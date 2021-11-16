@@ -2,12 +2,17 @@ package com.tesco.pma.user;
 
 import com.tesco.pma.api.User;
 import com.tesco.pma.colleague.api.Colleague;
+import com.tesco.pma.colleague.api.Contact;
 import com.tesco.pma.colleague.api.FindColleaguesRequest;
+import com.tesco.pma.colleague.api.Profile;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.configuration.security.AppendGrantedAuthoritiesBearerTokenAuthenticationMerger;
 import com.tesco.pma.exception.ExternalSystemException;
+import com.tesco.pma.organisation.service.ConfigEntryService;
 import com.tesco.pma.security.UserRoleNames;
 import com.tesco.pma.service.colleague.client.ColleagueApiClient;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
@@ -39,6 +44,7 @@ public class UserServiceImpl implements UserService {
     static final String MESSAGE_PARAM_NAME_API_NAME = "apiName";
     static final String MESSAGE_PARAM_VALUE_COLLEAGUE_API = "Colleague-Api";
 
+    private final ConfigEntryService configEntryService;
     private final ColleagueApiClient colleagueApiClient;
     private final NamedMessageSourceAccessor messages;
 
@@ -74,7 +80,7 @@ public class UserServiceImpl implements UserService {
      * If a colleague not found fallback to OneLogin token User info.
      * Also extracts user roles from {@link Authentication#getAuthorities()}
      *
-     * @see com.tesco.pma.configuration.security.AppendGrantedAuthoritiesBearerTokenAuthenticationMerger
+     * @see AppendGrantedAuthoritiesBearerTokenAuthenticationMerger
      * @see UserRoleNames
      */
     @Override
@@ -133,6 +139,13 @@ public class UserServiceImpl implements UserService {
     }
 
     private Colleague tryFindColleagueByUuid(UUID colleagueUuid) {
+        // First attempt - try to find in local storage
+        com.tesco.pma.organisation.api.Colleague oc = configEntryService.getColleague(colleagueUuid);
+        if (oc != null) {
+            return mapLocalColleagueToColleague(oc);
+        }
+
+        // Second attempt - try to find with using external Colleague Facts API
         try {
             return colleagueApiClient.findColleagueByColleagueUuid(colleagueUuid);
         } catch (HttpClientErrorException.NotFound exception) {
@@ -172,6 +185,20 @@ public class UserServiceImpl implements UserService {
         return target;
     }
 
+    private Colleague mapLocalColleagueToColleague(final com.tesco.pma.organisation.api.Colleague localColleague) {
+        var colleague = new Colleague();
+        colleague.setColleagueUUID(localColleague.getUuid());
+
+        var profile = new Profile();
+        BeanUtils.copyProperties(localColleague, profile);
+        colleague.setProfile(profile);
+
+        var contact = new Contact();
+        BeanUtils.copyProperties(localColleague, contact);
+        colleague.setContact(contact);
+
+        return colleague;
+    }
 
     private ExternalSystemException colleagueApiException(RestClientException restClientException) {
         return new ExternalSystemException(EXTERNAL_API_CONNECTION_ERROR.getCode(),

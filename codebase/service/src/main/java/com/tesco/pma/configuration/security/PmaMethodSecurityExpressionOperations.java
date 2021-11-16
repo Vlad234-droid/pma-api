@@ -12,6 +12,9 @@ import java.util.UUID;
 import static com.tesco.pma.security.UserRoleNames.ADMIN;
 import static com.tesco.pma.security.UserRoleNames.COLLEAGUE;
 import static com.tesco.pma.security.UserRoleNames.LINE_MANAGER;
+import static com.tesco.pma.security.UserRoleNames.PEOPLE_TEAM;
+import static com.tesco.pma.security.UserRoleNames.PROCESS_MANAGER;
+import static com.tesco.pma.security.UserRoleNames.TALENT_ADMIN;
 
 /**
  * Pma specific {@link MethodSecurityExpressionOperations}.
@@ -28,6 +31,12 @@ import static com.tesco.pma.security.UserRoleNames.LINE_MANAGER;
  * <p>{@link #isColleague()}
  *
  * <p>{@link #isLineManager()}
+ *
+ * <p>{@link #isPeopleTeam()}
+ *
+ * <p>{@link #isTalentAdmin()}
+ *
+ * <p>{@link #isProcessManager()}
  *
  * <p>Example: @PreAuthorize("isAdmin() or isColleague() or isLineManager()")
  */
@@ -77,6 +86,33 @@ public class PmaMethodSecurityExpressionOperations implements MethodSecurityExpr
      */
     public boolean isLineManager() {
         return hasRole(LINE_MANAGER);
+    }
+
+    /**
+     * Check if user has {@link UserRoleNames#PEOPLE_TEAM} role.
+     *
+     * @return true - if user is a People Team, false otherwise.
+     */
+    public boolean isPeopleTeam() {
+        return hasRole(PEOPLE_TEAM);
+    }
+
+    /**
+     * Check if user has {@link UserRoleNames#TALENT_ADMIN} role.
+     *
+     * @return true - if user is a Talent Admin, false otherwise.
+     */
+    public boolean isTalentAdmin() {
+        return hasRole(TALENT_ADMIN);
+    }
+
+    /**
+     * Check if user has {@link UserRoleNames#PROCESS_MANAGER} role.
+     *
+     * @return true - if user is a Process Manager, false otherwise.
+     */
+    public boolean isProcessManager() {
+        return hasRole(PROCESS_MANAGER);
     }
 
 }
