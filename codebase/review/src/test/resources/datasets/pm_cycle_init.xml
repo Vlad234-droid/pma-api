@@ -13,8 +13,6 @@
             properties="test"
             metadata="
 {
-  &quot;success&quot;: true,
-  &quot;data&quot;: {
     &quot;cycle&quot;: {
       &quot;id&quot;: null,
       &quot;code&quot;: &quot;type_1&quot;,
@@ -139,7 +137,6 @@
         }
       ]
     }
-  }
 }
 "
     />

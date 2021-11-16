@@ -319,7 +319,7 @@
                json_extract_path_text(r.timeline_points, 'properties', 'pm_review_min') as min,
        json_extract_path_text(r.timeline_points, 'properties', 'pm_review_max') as max
         from (select c.uuid                                                                         as cycle_uuid,
-            json_array_elements((metadata -> 'data' -> 'cycle' -> 'timelinePoints')::json) as timeline_points
+            json_array_elements((metadata -> 'cycle' -> 'timelinePoints')::json) as timeline_points
             from pm_cycle c
             where c.uuid = #{cycleUuid}) as r
         where upper(json_extract_path_text(r.timeline_points, 'type', 'code')) = 'REVIEW'
@@ -352,7 +352,7 @@
                    json_extract_path_text(tp.timeline_point, 'properties', 'pm_type') as props_type,
                    tp.timeline_point
             from (select c.uuid                                                                         as cycle_uuid,
-                         json_array_elements((metadata -> 'data' -> 'cycle' -> 'timelinePoints')::json) as timeline_point
+                         json_array_elements((metadata -> 'cycle' -> 'timelinePoints')::json) as timeline_point
                   from pm_cycle c
                   where c.uuid = #{cycleUuid}) as tp)
         select tpe.cycle_uuid,
