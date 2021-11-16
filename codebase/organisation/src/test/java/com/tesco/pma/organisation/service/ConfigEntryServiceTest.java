@@ -228,7 +228,7 @@ public class ConfigEntryServiceTest {
     void findColleaguesByCompositeKey() {
         service.findColleaguesByCompositeKey("BU/root/BU/child_1/BU/child_2/BU/child_3/#v1");
 
-        Mockito.verify(dao).findColleaguesByTypes("root/child_1/child_2/child_3");
+        Mockito.verify(dao).findColleaguesByCompositeKey("root/child_1/child_2/child_3");
     }
 
     @Test

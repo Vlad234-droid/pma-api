@@ -57,20 +57,19 @@ public class ImportColleagueServiceImpl implements ImportColleagueService {
                     .build();
         }
 
-        updateRequestStatus(request, ImportRequestStatus.IN_PROGRESS);
-        var workLevels = ColleagueMapper.mapWLs(result.getData());
+        var workLevels = ColleagueEntityMapper.mapWLs(result.getData());
         workLevels.forEach(profileDAO::saveWorkLevel);
 
-        var countries = ColleagueMapper.mapCountries(result.getData());
+        var countries = ColleagueEntityMapper.mapCountries(result.getData());
         countries.forEach(profileDAO::saveCountry);
 
-        var departments = ColleagueMapper.mapDepartments(result.getData());
+        var departments = ColleagueEntityMapper.mapDepartments(result.getData());
         departments.forEach(profileDAO::saveDepartment);
 
-        var jobs = ColleagueMapper.mapJobs(result.getData());
+        var jobs = ColleagueEntityMapper.mapJobs(result.getData());
         jobs.forEach(profileDAO::saveJob);
 
-        var colleagues = ColleagueMapper.mapColleagues(result.getData(), workLevels, countries, departments, jobs);
+        var colleagues = ColleagueEntityMapper.mapColleagues(result.getData(), workLevels, countries, departments, jobs);
         var importReport = saveColleagues(colleagues, requestUuid);
 
         updateRequestStatus(request, ImportRequestStatus.PROCESSED);

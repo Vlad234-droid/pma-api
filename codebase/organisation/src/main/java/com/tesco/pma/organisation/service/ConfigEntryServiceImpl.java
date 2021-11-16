@@ -194,7 +194,7 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
         var parts = compositeKey.split("/");
         var searchKey = IntStream.range(0, parts.length)
                 .filter(i -> i % 2 == 1).mapToObj(i -> parts[i]).collect(Collectors.joining("/"));
-        return dao.findColleaguesByTypes(searchKey);
+        return dao.findColleaguesByCompositeKey(searchKey);
     }
 
     private String buildCompositeKeySearchTerm(String key) {

@@ -119,7 +119,7 @@ public interface ConfigEntryDAO {
      * @param key - types
      * @return list of colleagues
      */
-    List<ColleagueEntity> findColleaguesByTypes(@Param("key") String key);
+    List<ColleagueEntity> findColleaguesByCompositeKey(@Param("key") String key);
 
     /**
      * Gets all structure for config entry

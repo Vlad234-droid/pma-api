@@ -7,7 +7,7 @@ import lombok.Getter;
  * Status for request processing in its life cycle (file registration, mapping, parsing)
  */
 @Getter
-public enum ImportRequestStatus implements DictionaryItem {
+public enum ImportRequestStatus implements DictionaryItem<Integer> {
 
     REGISTERED(1, "File processing request was registered to database and data stored to file storage"),
     IN_PROGRESS(2, "Parsing or mapping is in progress"),

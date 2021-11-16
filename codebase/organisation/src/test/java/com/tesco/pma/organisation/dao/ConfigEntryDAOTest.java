@@ -242,7 +242,7 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
     @MethodSource("provideArgsForGettingColleagues")
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues-config.xml"})
     void readColleaguesByKey(String key, Set<UUID> colleagueUuids) {
-        var colleagues = dao.findColleaguesByTypes(key);
+        var colleagues = dao.findColleaguesByCompositeKey(key);
 
         assertEquals(colleagueUuids.size(), colleagues.size());
 
