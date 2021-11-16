@@ -21,26 +21,11 @@
         <association property="createdBy" column="{uuid=created_by}" select="getColleagueByUuid"/>
     </resultMap>
 
-    <resultMap id="cycleTimelineMap" type="com.tesco.pma.cycle.api.PMCycleTimelinePoint">
-        <result property="cycleUuid" column="cycle"/>
-        <result property="code" column="code"/>
-        <result property="description" column="description"/>
-        <result property="type" column="type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.api.ReviewType"/>
-        <result property="startDate" column="start_time"/>
-    </resultMap>
-
-    <resultMap id="reviewCountMap" type="com.tesco.pma.cycle.api.ReviewCounter">
-        <result property="count" column="cnt"/>
-        <result property="status" column="status_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.api.ReviewStatus"/>
-    </resultMap>
-
-    <resultMap id="colleagueMap" type="com.tesco.pma.colleague.api.Colleague">
-        <result property="colleagueUUID" column="uuid"/>
-        <result property="profile.firstName" column="first_name"/>
-        <result property="profile.middleName" column="middle_name"/>
-        <result property="profile.lastName" column="last_name"/>
+    <resultMap id="colleagueMap" type="com.tesco.pma.colleague.api.ColleagueSimple">
+        <result property="uuid" column="uuid"/>
+        <result property="firstName" column="first_name"/>
+        <result property="middleName" column="middle_name"/>
+        <result property="lastName" column="last_name"/>
     </resultMap>
 
     <sql id="addStatusIdCondition">
@@ -73,7 +58,7 @@
                 #{cycle.name},
                 #{cycle.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleType},
                 #{cycle.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus},
-                #{cycle.createdBy.colleagueUUID},
+                #{cycle.createdBy.uuid},
                 #{now},
                 #{cycle.startTime},
                 #{cycle.endTime},

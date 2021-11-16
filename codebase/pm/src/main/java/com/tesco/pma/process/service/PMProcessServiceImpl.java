@@ -42,7 +42,6 @@ public class PMProcessServiceImpl implements PMProcessService {
     private final PMRuntimeProcessDAO dao;
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final ProcessEngine processEngine;
-    private final PMProcessService self;
 
     private final ResourceProvider resourceProvider = new FormsResourceProvider();
 
@@ -62,13 +61,18 @@ public class PMProcessServiceImpl implements PMProcessService {
     }
 
     @Override
+    @Transactional
     public PMRuntimeProcess register(PMRuntimeProcess process) {
-        return self.register(process, PMProcessStatus.REGISTERED);
+        return register(process, PMProcessStatus.REGISTERED);
     }
 
     @Override
     @Transactional
     public PMRuntimeProcess register(PMRuntimeProcess process, PMProcessStatus status) {
+        return intRegister(process, status);
+    }
+
+    private PMRuntimeProcess intRegister(PMRuntimeProcess process, PMProcessStatus status) {
         process.setId(UUID.randomUUID());
         process.setStatus(status);
         //todo check not null businessKey, bpmProcessId

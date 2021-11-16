@@ -5,8 +5,7 @@ import com.github.database.rider.core.api.dataset.CompareOperation;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.tesco.pma.api.DictionaryFilter;
-import com.tesco.pma.colleague.api.Colleague;
-import com.tesco.pma.colleague.api.Colleague;
+import com.tesco.pma.colleague.api.ColleagueSimple;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.PMCycleType;
@@ -22,7 +21,11 @@ import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -77,7 +80,7 @@ class PMCycleDAOTest extends AbstractDAOTest {
     @ExpectedDataSet(value = "pm_create_cycle_expected_1.xml", compareOperation = CompareOperation.CONTAINS)
     void createPMCycle() throws ParseException {
         Instant testTime = new SimpleDateFormat(SDF_PATTERN, Locale.ENGLISH).parse("2016-12-31").toInstant();
-        dao.createInt(createCycle(), testTime);
+        dao.createInt(createCycle(CYCLE_CREATE_UUID), testTime);
     }
 
     @Test
@@ -86,8 +89,6 @@ class PMCycleDAOTest extends AbstractDAOTest {
     void changeCycleStatus() {
         dao.updateStatus(CYCLE_UUID, PMCycleStatus.INACTIVE, null);
     }
-
-
 
 
     @Test
@@ -107,7 +108,7 @@ class PMCycleDAOTest extends AbstractDAOTest {
         var metadata = IOUtils.toString(Objects.requireNonNull(getClass()
                 .getResourceAsStream("/com/tesco/pma/cycle/dao/type_1_metadata.json")), StandardCharsets.UTF_8);
         cycle.setJsonMetadata(metadata);
-        dao.create(cycle, Instant.now());
+        dao.createInt(cycle, Instant.now());
 
         var actual = dao.read(CYCLE_UUID_3);
         var expectedJson = json.from(metadata);
@@ -117,13 +118,15 @@ class PMCycleDAOTest extends AbstractDAOTest {
     }
 
     private PMCycle createCycle(UUID uuid) {
-        Colleague createdBy = new Colleague();
-        createdBy.setColleagueUUID(COLLEAGUE_UUID);
+
         return PMCycle.builder()
                 .name(TEST_CYCLE_NAME)
                 .status(ACTIVE)
                 .type(PMCycleType.HIRING_DATE)
-                .createdBy(createdBy)
+                .createdBy(ColleagueSimple
+                        .builder()
+                        .uuid(COLLEAGUE_UUID)
+                        .build())
                 .uuid(uuid)
                 .entryConfigKey(TEST_KEY)
                 .templateUUID(TEMPLATE_UUID)

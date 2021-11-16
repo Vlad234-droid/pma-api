@@ -49,7 +49,6 @@ public class PMCycleServiceImpl implements PMCycleService {
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final ProcessManagerService processManagerService;
     private final PMProcessService pmProcessService;
-    private final PMCycleService self;
 
     public static final String NOT_IMPLEMENTED_YET = "Not implemented yet";
     private static final String ORG_KEY_PARAMETER_NAME = "organisationKey";
@@ -92,7 +91,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     @Transactional
     public PMCycle publish(@NotNull PMCycle cycle) {
         log.debug("Request to publish Performance cycle : {}", cycle);
-        self.create(cycle);
+        create(cycle);
 
         //TODO get templateCode from metadata
         String templateCode = "type_1";
