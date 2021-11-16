@@ -15,6 +15,9 @@ import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.exception.LimitExceededException;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.exception.ReviewCreationException;
+import com.tesco.pma.exception.ReviewDeletionException;
+import com.tesco.pma.exception.ReviewUpdateException;
 import com.tesco.pma.exception.RegistrationException;
 import com.tesco.pma.logging.LogFormatter;
 import com.tesco.pma.rest.RestResponse;
@@ -122,7 +125,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .build());
     }
 
-    @ExceptionHandler(value = {InvalidParameterException.class, InvalidPayloadException.class, DataUploadException.class})
+    @ExceptionHandler(value = {
+            InvalidParameterException.class,
+            InvalidPayloadException.class,
+            DataUploadException.class,
+            ReviewCreationException.class,
+            ReviewUpdateException.class,
+            ReviewDeletionException.class})
     protected ResponseEntity<Object> handleBadRequestAPI(AbstractApiRuntimeException ex, WebRequest request) {
         logger.error(LogFormatter.formatMessage(ex, "Bad request error has been occurred"), ex);
         return createResponse(ex, null, HttpStatus.BAD_REQUEST);
