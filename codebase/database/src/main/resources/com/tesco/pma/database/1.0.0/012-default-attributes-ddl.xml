@@ -4,24 +4,36 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
 
     <changeSet author="adublyanin" id="1">
-        <createTable tableName="notification_attributes">
+        <createTable tableName="default_attributes">
             <column name="id" type="${uuid_type}">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="notification_attr_pk"/>
             </column>
+
             <column name="name" type="VARCHAR(30)">
                 <constraints nullable="false"/>
             </column>
-            <column name="type_id" type="integer">
+
+            <column name="value" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="criteria_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="category_id" type="integer">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
 
     <changeSet author="adublyanin" id="2">
-        <insert tableName="notification_attributes">
+        <insert tableName="default_attributes">
             <column name="id" value="1"/>
             <column name="name" value=""/>
-            <column name="type" value="1"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="1"/>
+            <column name="category_id" value="1"/>
         </insert>
     </changeSet>
 

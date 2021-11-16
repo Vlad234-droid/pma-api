@@ -54,4 +54,12 @@ public interface ProfileService {
      */
     Colleague findColleagueByColleagueUuid(UUID colleagueUuid);
 
+    /**
+     * Find attributes by colleague id
+     *
+     * @param colleagueUuid
+     * @return TypedAttributes
+     */
+    List<TypedAttribute> findProfileAttributes(UUID colleagueUuid);
+
 }
