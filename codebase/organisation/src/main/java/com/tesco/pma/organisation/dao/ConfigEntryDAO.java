@@ -29,7 +29,7 @@ public interface ConfigEntryDAO {
     List<ConfigEntry> findConfigEntryParentStructure(@Param("uuid") UUID uuid);
 
     /**
-     * Get all child structure for config entry
+     * Get all unpublished child structure for config entry
      *
      * @param uuid - root uuid
      * @return parent structure includes root object
@@ -57,7 +57,23 @@ public interface ConfigEntryDAO {
      *
      * @return list of root entries
      */
-    List<ConfigEntry> findAllRootEntries();
+    List<ConfigEntry> findAllUnpublishedRootEntries();
+
+    /**
+     * Gets all published root config entries
+     *
+     * @return list of root entries
+     */
+    List<ConfigEntry> findAllPublishedRootEntries();
+
+    /**
+     * Get all published child structure for config entry
+     *
+     * @param uuid - root uuid
+     * @return parent structure includes root object
+     */
+    List<ConfigEntry> findPublishedConfigEntryChildStructure(@Param("uuid") UUID uuid);
+
 
     /**
      * Creates config entry

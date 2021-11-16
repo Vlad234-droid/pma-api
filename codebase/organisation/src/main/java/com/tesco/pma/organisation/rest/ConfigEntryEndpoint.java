@@ -37,31 +37,46 @@ public class ConfigEntryEndpoint {
     private final ConfigEntryService configEntryService;
 
 
-    @Operation(summary = "Get config entry structure by root identifier",
+    @Operation(summary = "Get unpublished config entry structure by root identifier",
+            tags = {"config-entry"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the config entry structure")
+    @GetMapping(value = "{entryUuid}/unpublished", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<ConfigEntryResponse> getUnpublishedEntryConfigStructure(@PathVariable UUID entryUuid) {
+        return RestResponse.success(configEntryService.getUnpublishedStructure(entryUuid));
+    }
+
+    @Operation(summary = "Get published config entry structure by root identifier",
             tags = {"config-entry"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the config entry structure")
     @GetMapping(value = "{entryUuid}", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<ConfigEntryResponse> getEntryConfigStructure(@PathVariable UUID entryUuid) {
-        return RestResponse.success(configEntryService.getStructure(entryUuid));
+    public RestResponse<ConfigEntryResponse> getPublishedEntryConfigStructure(@PathVariable UUID entryUuid) {
+        return RestResponse.success(configEntryService.getPublishedStructure(entryUuid));
     }
 
     @Operation(summary = "Get published config entry structure by composite key", tags = {"config-entry"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the config entry structure")
-    @GetMapping(value = "published", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(produces = APPLICATION_JSON_VALUE)
     public RestResponse<List<ConfigEntryResponse>> getPublishedEntryConfigStructureByCompositeKey(@RequestParam String compositeKey) {
         return RestResponse.success(configEntryService.getPublishedChildStructureByCompositeKey(compositeKey));
     }
 
-    @Operation(summary = "Get all root config entries ", tags = {"config-entry"})
+    @Operation(summary = "Get all unpublished root config entries ", tags = {"config-entry"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the config entry structure")
-    @GetMapping(value = "roots", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "roots/unpublished", produces = APPLICATION_JSON_VALUE)
     public RestResponse<List<ConfigEntryResponse>> getUnpublishedRoots() {
         return RestResponse.success(configEntryService.getUnpublishedRoots());
     }
 
+    @Operation(summary = "Get all published root config entries ", tags = {"config-entry"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the config entry structure")
+    @GetMapping(value = "roots", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<List<ConfigEntryResponse>> getPublishedRoots() {
+        return RestResponse.success(configEntryService.getPublishedRoots());
+    }
+
     @Operation(summary = "Get unpublished structure by composite key", tags = {"config-entry"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the config entry structure")
-    @GetMapping(produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "unpublished", produces = APPLICATION_JSON_VALUE)
     public RestResponse<List<ConfigEntryResponse>> getUnpublished(@RequestParam String compositeKey) {
         return RestResponse.success(configEntryService.getUnpublishedChildStructureByCompositeKey(compositeKey));
     }

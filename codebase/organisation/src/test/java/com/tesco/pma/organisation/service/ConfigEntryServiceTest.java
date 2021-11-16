@@ -50,7 +50,7 @@ public class ConfigEntryServiceTest {
                 getConfigEntry(CHILD_UUID_2, CHILD_NAME_2, ROOT_UUID),
                 getConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, CHILD_UUID_1))));
 
-        var structure = service.getStructure(CHILD_UUID_1);
+        var structure = service.getUnpublishedStructure(CHILD_UUID_1);
 
         assertEquals(ROOT_UUID, structure.getUuid());
         var children = structure.getChildren();
@@ -233,7 +233,7 @@ public class ConfigEntryServiceTest {
 
     @Test
     void getUnpublishedRoots() {
-        Mockito.when(dao.findAllRootEntries()).thenReturn(List.of(getConfigEntry(ROOT_UUID, ROOT_NAME, null),
+        Mockito.when(dao.findAllUnpublishedRootEntries()).thenReturn(List.of(getConfigEntry(ROOT_UUID, ROOT_NAME, null),
                 getConfigEntry(CHILD_UUID_1, CHILD_NAME_1, null)));
 
         var structure = service.getUnpublishedRoots();

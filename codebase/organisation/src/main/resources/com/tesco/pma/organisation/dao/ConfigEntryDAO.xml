@@ -143,7 +143,7 @@
         WHERE ce.composite_key like #{key}
     </select>
 
-    <select id="findAllRootEntries" resultMap="configEntryStructure">
+    <select id="findAllUnpublishedRootEntries" resultMap="configEntryStructure">
         SELECT ce.uuid,
                ce.name,
                ce.type_id,
@@ -156,6 +156,48 @@
         FROM config_entry ce
                  JOIN config_entry_type cet ON cet.id = ce.type_id
         WHERE ce.parent_uuid is null
+    </select>
+
+    <select id="findAllPublishedRootEntries" resultMap="configEntryStructure">
+        SELECT ce.uuid,
+               wce.name,
+               wce.type_id,
+               wce.version,
+               ce.parent_uuid,
+               wce.composite_key,
+               cet.id          as t_id,
+               cet.code        as t_code,
+               cet.description as t_description
+        FROM working_config_entry wce
+                 JOIN config_entry ce ON wce.config_entry_uuid = ce.uuid
+                 JOIN config_entry_type cet ON cet.id = wce.type_id
+        WHERE ce.parent_uuid is null
+    </select>
+
+    <select id="findPublishedConfigEntryChildStructure" resultMap="configEntryStructure">
+        WITH RECURSIVE orgs AS (
+            SELECT ce.uuid, wce.name, wce.type_id, wce.version, ce.parent_uuid, wce.composite_key, 0 as depth
+            FROM config_entry ce
+                     JOIN working_config_entry wce ON wce.config_entry_uuid = ce.uuid
+            WHERE ce.uuid = #{uuid}
+            UNION ALL
+            SELECT ce.uuid, wce.name, wce.type_id, wce.version, ce.parent_uuid, wce.composite_key, depth + 1 as depth
+            FROM orgs
+                     JOIN config_entry ce ON ce.parent_uuid = orgs.uuid
+                     JOIN working_config_entry wce ON wce.config_entry_uuid = ce.uuid
+        )
+        SELECT o.uuid,
+               o.name,
+               o.type_id,
+               o.version,
+               o.parent_uuid,
+               o.composite_key,
+               cet.id          as t_id,
+               cet.code        as t_code,
+               cet.description as t_description
+        FROM orgs o
+                 join config_entry_type cet on cet.id = o.type_id
+        ORDER BY depth ASC;
     </select>
 
     <select id="findConfigEntryType" resultType="com.tesco.pma.api.GeneralDictionaryItem">

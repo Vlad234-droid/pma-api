@@ -15,7 +15,7 @@ public interface ConfigEntryService {
      * @param configEntryUuid - config entry identifier
      * @return set of config structure
      */
-    ConfigEntryResponse getStructure(UUID configEntryUuid);
+    ConfigEntryResponse getUnpublishedStructure(UUID configEntryUuid);
 
     /**
      * Generates composite key for config entry
@@ -106,5 +106,20 @@ public interface ConfigEntryService {
      * @return colleague object
      */
     Colleague getColleague(UUID colleagueUuid);
+
+    /**
+     * Get all published roots
+     *
+     * @return list of roots
+     */
+    List<ConfigEntryResponse> getPublishedRoots();
+
+    /**
+     * Get published structure
+     *
+     * @param entryUuid - root identifier
+     * @return config entry structure
+     */
+    ConfigEntryResponse getPublishedStructure(UUID entryUuid);
 
 }
