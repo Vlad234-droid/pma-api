@@ -1,18 +1,22 @@
 package com.tesco.pma.review.service;
 
+import com.tesco.pma.api.ReviewStatus;
+import com.tesco.pma.api.ReviewType;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
-import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.exception.ReviewCreationException;
+import com.tesco.pma.exception.ReviewDeletionException;
+import com.tesco.pma.exception.ReviewUpdateException;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
 import com.tesco.pma.review.dao.ReviewDAO;
 import com.tesco.pma.review.domain.ColleagueReviews;
 import com.tesco.pma.review.domain.GroupObjective;
+import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
-import com.tesco.pma.api.ReviewStatus;
-import com.tesco.pma.api.ReviewType;
+import com.tesco.pma.review.domain.ReviewStatusCounter;
 import com.tesco.pma.review.domain.WorkingGroupObjective;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
@@ -29,6 +33,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.tesco.pma.api.PMElementType.REVIEW;
 import static com.tesco.pma.api.ReviewStatus.APPROVED;
 import static com.tesco.pma.api.ReviewStatus.COMPLETED;
 import static com.tesco.pma.api.ReviewStatus.DECLINED;
@@ -37,8 +42,11 @@ import static com.tesco.pma.api.ReviewStatus.WAITING_FOR_APPROVAL;
 import static com.tesco.pma.api.ReviewType.OBJECTIVE;
 import static com.tesco.pma.review.exception.ErrorCodes.ALLOWED_STATUSES_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.BUSINESS_UNIT_NOT_EXISTS;
+import static com.tesco.pma.review.exception.ErrorCodes.CANNOT_DELETE_REVIEW_COUNT_CONSTRAINT;
 import static com.tesco.pma.review.exception.ErrorCodes.GROUP_OBJECTIVES_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.GROUP_OBJECTIVE_ALREADY_EXISTS;
+import static com.tesco.pma.review.exception.ErrorCodes.MAX_REVIEW_NUMBER_CONSTRAINT_VIOLATION;
+import static com.tesco.pma.review.exception.ErrorCodes.MIN_REVIEW_NUMBER_CONSTRAINT_VIOLATION;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND_BY_MANAGER;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND_FOR_STATUS_UPDATE;
@@ -72,11 +80,13 @@ public class ReviewServiceImpl implements ReviewService {
     private static final String PREV_STATUSES_PARAMETER_NAME = "prevStatuses";
     private static final String ALLOWED_STATUSES_PARAMETER_NAME = "allowedStatuses";
     private static final String OPERATION_PARAMETER_NAME = "operation";
+    private static final String MAX_PARAMETER_NAME = "max";
+    private static final String MIN_PARAMETER_NAME = "min";
+    private static final String COUNT_PARAMETER_NAME = "count";
     private static final String CREATE_OPERATION_NAME = "CREATE";
     private static final String DELETE_OPERATION_NAME = "DELETE";
     private static final String UPDATE_OPERATION_NAME = "UPDATE";
     private static final String CHANGE_STATUS_OPERATION_NAME = "CHANGE STATUS";
-    private static final String REVIEW_STATUS_FIELD_NAME = "review.status";
     private static final Comparator<GroupObjective> GROUP_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR =
             Comparator.comparing(GroupObjective::getNumber)
                     .thenComparing(GroupObjective::getTitle);
@@ -114,7 +124,7 @@ public class ReviewServiceImpl implements ReviewService {
                     Map.of(MANAGER_UUID_PARAMETER_NAME, managerUuid));
         } else {
             results.forEach(colleagueReviews -> {
-                colleagueReviews.setTimeline(pmCycleService.getCycleTimelineByColleague(colleagueReviews.getUuid()));
+                colleagueReviews.setTimeline(getCycleTimelineByColleague(colleagueReviews.getUuid()));
             });
         }
         return results;
@@ -179,6 +189,9 @@ public class ReviewServiceImpl implements ReviewService {
                 intDeleteReview(performanceCycleUuid, colleagueUuid, type, i);
             }
         }
+
+        checkReviewStateAfterUpdate(performanceCycleUuid, colleagueUuid, type);
+
         return results;
     }
 
@@ -220,6 +233,7 @@ public class ReviewServiceImpl implements ReviewService {
                                 PREV_STATUSES_PARAMETER_NAME, prevStatuses));
             }
         });
+
         return status;
     }
 
@@ -322,18 +336,6 @@ public class ReviewServiceImpl implements ReviewService {
         return results;
     }
 
-    private NotFoundException notFound(ErrorCodeAware errorCode, Map<String, ?> params) {
-        return notFound(errorCode, params, null);
-    }
-
-    private NotFoundException notFound(ErrorCodeAware errorCode, Map<String, ?> params, Throwable cause) {
-        return new NotFoundException(errorCode.getCode(), messageSourceAccessor.getMessage(errorCode.getCode(), params), null, cause);
-    }
-
-    private InvalidPayloadException invalidPayload(ErrorCodeAware errorCode, Map<String, ?> params, String field) {
-        return new InvalidPayloadException(errorCode.getCode(), messageSourceAccessor.getMessage(errorCode.getCode(), params), field);
-    }
-
     private DatabaseConstraintViolationException databaseConstraintViolation(ErrorCodeAware errorCode,
                                                                              Map<String, ?> params,
                                                                              Throwable cause) {
@@ -347,6 +349,53 @@ public class ReviewServiceImpl implements ReviewService {
                 .version(version)
                 .updateTime(now())
                 .build();
+    }
+
+    @Override
+    public List<PMCycleTimelinePoint> getCycleTimelineByColleague(UUID colleagueUuid) {
+        var currentCycleUuid = pmCycleService.getCurrentByColleague(colleagueUuid).getUuid();
+        var cycleTimeline = reviewDAO.getTimeline(currentCycleUuid);
+
+        for (PMCycleTimelinePoint timelinePoint :
+                cycleTimeline) {
+            if (REVIEW == timelinePoint.getType()) {
+                var reviewStatusCounter = getTimelineReviewStatusCounter(
+                        currentCycleUuid,
+                        colleagueUuid,
+                        timelinePoint.getReviewType());
+                if (null != reviewStatusCounter) {
+                    timelinePoint.setStatus(reviewStatusCounter.getStatus());
+                    timelinePoint.setCount(reviewStatusCounter.getCount());
+                } else {
+                    break;
+                }
+            }
+        }
+        return cycleTimeline;
+    }
+
+    private ReviewStatusCounter getTimelineReviewStatusCounter(UUID cycleUuid, UUID colleagueUuid, ReviewType reviewType) {
+        var reviewStats = reviewDAO.getReviewStats(cycleUuid, colleagueUuid, reviewType);
+        if (null == reviewStats || 0 == reviewStats.getStatusStats().size()) {
+            return null;
+        }
+        if (OBJECTIVE == reviewType) {
+            var mapStatusStats = reviewStats.getMapStatusStats();
+            var minObjectives = reviewDAO.getPMCycleReviewTypeProperties(cycleUuid, reviewType).getMin();
+            if (mapStatusStats.containsKey(APPROVED) && mapStatusStats.get(APPROVED) >= minObjectives) {
+                return new ReviewStatusCounter(APPROVED, mapStatusStats.get(APPROVED));
+            } else if (mapStatusStats.containsKey(WAITING_FOR_APPROVAL) && mapStatusStats.get(WAITING_FOR_APPROVAL) >= minObjectives) {
+                return new ReviewStatusCounter(WAITING_FOR_APPROVAL, mapStatusStats.get(WAITING_FOR_APPROVAL));
+            } else if (mapStatusStats.containsKey(DECLINED)) {
+                return new ReviewStatusCounter(DECLINED, mapStatusStats.get(DECLINED));
+            } else if (mapStatusStats.containsKey(DRAFT)) {
+                return new ReviewStatusCounter(DRAFT, mapStatusStats.get(DRAFT));
+            } else {
+                return null;
+            }
+        } else {
+            return reviewStats.getStatusStats().get(0);
+        }
     }
 
     private static <T> boolean listEqualsIgnoreOrder(List<T> list1, List<T> list2, Comparator<? super T> comparator) {
@@ -383,6 +432,14 @@ public class ReviewServiceImpl implements ReviewService {
 
     public Review intCreateReview(Review review) {
         review.setUuid(UUID.randomUUID());
+        var reviewTypeProperties = reviewDAO.getPMCycleReviewTypeProperties(review.getPerformanceCycleUuid(), review.getType());
+        if (reviewTypeProperties.getMax() < review.getNumber()) {
+            throw createReviewException(
+                    MAX_REVIEW_NUMBER_CONSTRAINT_VIOLATION,
+                    Map.of(MAX_PARAMETER_NAME, reviewTypeProperties.getMax(),
+                            NUMBER_PARAMETER_NAME, review.getNumber())
+            );
+        }
         try {
             var allowedStatuses = getStatusesForCreate();
             if (0 == allowedStatuses.size()) {
@@ -393,11 +450,10 @@ public class ReviewServiceImpl implements ReviewService {
                 reviewDAO.createReview(review);
                 return review;
             } else {
-                throw invalidPayload(
+                throw createReviewException(
                         REVIEW_STATUS_NOT_ALLOWED,
                         Map.of(STATUS_PARAMETER_NAME, review.getStatus(),
-                                OPERATION_PARAMETER_NAME, CREATE_OPERATION_NAME),
-                        REVIEW_STATUS_FIELD_NAME
+                                OPERATION_PARAMETER_NAME, CREATE_OPERATION_NAME)
                 );
             }
         } catch (DuplicateKeyException e) {
@@ -434,6 +490,17 @@ public class ReviewServiceImpl implements ReviewService {
                                  UUID colleagueUuid,
                                  ReviewType type,
                                  Integer number) {
+        var reviewTypeProperties = reviewDAO.getPMCycleReviewTypeProperties(performanceCycleUuid, type);
+        var reviewCount = reviewDAO.getReviewStats(performanceCycleUuid, colleagueUuid, type)
+                .getStatusStats()
+                .stream()
+                .mapToInt(ReviewStatusCounter::getCount)
+                .sum();
+        if (reviewCount == reviewTypeProperties.getMin()) {
+            throw deleteReviewException(CANNOT_DELETE_REVIEW_COUNT_CONSTRAINT,
+                    Map.of(MIN_PARAMETER_NAME, reviewTypeProperties.getMin()));
+        }
+
         var allowedStatuses = getStatusesForDelete(type);
         if (0 == allowedStatuses.size()) {
             throw notFound(ALLOWED_STATUSES_NOT_FOUND,
@@ -445,7 +512,7 @@ public class ReviewServiceImpl implements ReviewService {
                 type,
                 number,
                 allowedStatuses)) {
-            throw notFound(REVIEW_NOT_FOUND_FOR_DELETE,
+            throw deleteReviewException(REVIEW_NOT_FOUND_FOR_DELETE,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
                             TYPE_PARAMETER_NAME, type,
@@ -494,5 +561,43 @@ public class ReviewServiceImpl implements ReviewService {
             // TODO: 11/6/2021 should be implemented after receiving requirements
             return Collections.emptyList();
         }
+    }
+
+    private void checkReviewStateAfterUpdate(UUID performanceCycleUuid,
+                                             UUID colleagueUuid,
+                                             ReviewType type) {
+        if (OBJECTIVE == type) {
+
+            var reviewTypeProperties = reviewDAO.getPMCycleReviewTypeProperties(performanceCycleUuid, type);
+            var mapStatusStats = reviewDAO.getReviewStats(performanceCycleUuid, colleagueUuid, type).getMapStatusStats();
+
+            if (mapStatusStats.containsKey(WAITING_FOR_APPROVAL)
+                    && mapStatusStats.get(WAITING_FOR_APPROVAL) < reviewTypeProperties.getMin()) {
+                throw updateReviewException(MIN_REVIEW_NUMBER_CONSTRAINT_VIOLATION,
+                        Map.of(COUNT_PARAMETER_NAME, mapStatusStats.get(WAITING_FOR_APPROVAL),
+                                STATUS_PARAMETER_NAME, WAITING_FOR_APPROVAL,
+                                MIN_PARAMETER_NAME, reviewTypeProperties.getMin()));
+            }
+        }
+    }
+
+    private NotFoundException notFound(ErrorCodeAware errorCode, Map<String, ?> params) {
+        return notFound(errorCode, params, null);
+    }
+
+    private NotFoundException notFound(ErrorCodeAware errorCode, Map<String, ?> params, Throwable cause) {
+        return new NotFoundException(errorCode.getCode(), messageSourceAccessor.getMessage(errorCode.getCode(), params), null, cause);
+    }
+
+    private ReviewCreationException createReviewException(ErrorCodeAware errorCode, Map<String, ?> params) {
+        return new ReviewCreationException(errorCode.getCode(), messageSourceAccessor.getMessage(errorCode.getCode(), params), null, null);
+    }
+
+    private ReviewUpdateException updateReviewException(ErrorCodeAware errorCode, Map<String, ?> params) {
+        return new ReviewUpdateException(errorCode.getCode(), messageSourceAccessor.getMessage(errorCode.getCode(), params), null, null);
+    }
+
+    private ReviewDeletionException deleteReviewException(ErrorCodeAware errorCode, Map<String, ?> params) {
+        return new ReviewDeletionException(errorCode.getCode(), messageSourceAccessor.getMessage(errorCode.getCode(), params), null, null);
     }
 }

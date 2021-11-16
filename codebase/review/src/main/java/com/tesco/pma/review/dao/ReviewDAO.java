@@ -1,10 +1,13 @@
 package com.tesco.pma.review.dao;
 
-import com.tesco.pma.review.domain.ColleagueReviews;
-import com.tesco.pma.review.domain.GroupObjective;
-import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.api.ReviewStatus;
 import com.tesco.pma.api.ReviewType;
+import com.tesco.pma.review.domain.ColleagueReviews;
+import com.tesco.pma.review.domain.GroupObjective;
+import com.tesco.pma.review.domain.PMCycleReviewTypeProperties;
+import com.tesco.pma.review.domain.PMCycleTimelinePoint;
+import com.tesco.pma.review.domain.Review;
+import com.tesco.pma.review.domain.ReviewStats;
 import com.tesco.pma.review.domain.WorkingGroupObjective;
 import org.apache.ibatis.annotations.Param;
 
@@ -187,5 +190,36 @@ public interface ReviewDAO {
      * @return number of deleted working group objectives
      */
     int deleteWorkingGroupObjective(@Param("businessUnitUuid") UUID businessUnitUuid);
+
+    /**
+     * Returns properties of review type by PM cycleUuid and review type
+     *
+     * @param cycleUuid an identifier of performance cycle
+     * @param type      a review type
+     * @return a PMCycleReviewTypeProperties
+     */
+    PMCycleReviewTypeProperties getPMCycleReviewTypeProperties(@Param("cycleUuid") UUID cycleUuid,
+                                                               @Param("type") ReviewType type);
+
+    /**
+     * Returns review stats by PM cycleUuid, colleagueUuid and review type
+     *
+     * @param cycleUuid     an identifier of performance cycle
+     * @param colleagueUuid an identifier of colleague
+     * @param type          a review type
+     * @return a PMCycleReviewTypeProperties
+     */
+    ReviewStats getReviewStats(@Param("cycleUuid") UUID cycleUuid,
+                               @Param("colleagueUuid") UUID colleagueUuid,
+                               @Param("type") ReviewType type);
+
+
+    /**
+     * Returns time line by PM cycleUuid
+     *
+     * @param cycleUuid an identifier of performance cycle
+     * @return a PMCycleReviewTypeProperties
+     */
+    List<PMCycleTimelinePoint> getTimeline(@Param("cycleUuid") UUID cycleUuid);
 
 }

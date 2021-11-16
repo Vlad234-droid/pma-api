@@ -6,8 +6,6 @@ import com.tesco.pma.bpm.api.ProcessManagerService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
-import com.tesco.pma.cycle.api.PMCycleTimelinePoint;
-import com.tesco.pma.cycle.api.ReviewCounter;
 import com.tesco.pma.cycle.dao.PMCycleDAO;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
@@ -27,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.tesco.pma.api.DictionaryFilter.includeFilter;
 import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
@@ -36,7 +33,6 @@ import static com.tesco.pma.cycle.api.PMCycleStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMCycleStatus.FAILED;
 import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_ALREADY_EXISTS;
-import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_METADATA_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_BY_UUID;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_COLLEAGUE;
@@ -204,35 +200,6 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<PMCycleTimelinePoint> getCycleTimeline(UUID uuid) {
-        var timeline = cycleDAO.readTimeline(uuid);
-        if (timeline == null) {
-            throw new NotFoundException(PM_CYCLE_METADATA_NOT_FOUND.getCode(),
-                    messageSourceAccessor.getMessage(PM_CYCLE_METADATA_NOT_FOUND,
-                            Map.of(CYCLE_UUID_PARAMETER_NAME, uuid)));
-        }
-        return timeline;
-    }
-
-    @Override
-    public void updateJsonMetadata(UUID uuid, String metadata) {
-        cycleDAO.updateMetadata(uuid, metadata);
-    }
-
-    @Override
-    public List<PMCycleTimelinePoint> getCycleTimelineByColleague(UUID colleagueUuid) {
-        PMCycle currentCycleByColleague = getCurrentByColleague(colleagueUuid);
-        List<PMCycleTimelinePoint> cycleTimeline = getCycleTimeline(currentCycleByColleague.getUuid());
-
-        return cycleTimeline.stream()
-                .peek(ctp -> ctp.setStatus(cycleDAO.getReviewsCountByStatus(ctp.getType(),
-                        currentCycleByColleague.getUuid(),
-                        colleagueUuid).stream().findFirst().orElse(new ReviewCounter()).getStatus()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public List<PMCycle> getAll(boolean includeMetadata) {
         var results = cycleDAO.getAll(includeMetadata);
         if (results == null) {
@@ -240,6 +207,11 @@ public class PMCycleServiceImpl implements PMCycleService {
                     Map.of(INCLUDE_METADATA_PARAMETER_NAME, includeMetadata));
         }
         return results;
+    }
+
+    @Override
+    public void updateJsonMetadata(UUID uuid, String metadata) {
+        cycleDAO.updateMetadata(uuid, metadata);
     }
 
     //TODO refactor to common solution (include @com.tesco.pma.review.service.ReviewServiceImpl)
