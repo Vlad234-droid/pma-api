@@ -3,9 +3,9 @@ package com.tesco.pma.cycle.dao;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.api.DictionaryFilter;
+import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleType;
-import com.tesco.pma.cycle.api.PMCycleUserProfile;
 import com.tesco.pma.dao.AbstractDAOTest;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
@@ -97,13 +97,13 @@ class PMCycleDAOTest extends AbstractDAOTest {
     }
 
     private PMCycle createCycle(UUID uuid) {
+        Colleague createdBy = new Colleague();
+        createdBy.setColleagueUUID(COLLEAGUE_UUID);
         return PMCycle.builder()
                 .name(TEST_CYCLE_NAME)
                 .status(ACTIVE)
                 .type(PMCycleType.HIRING_DATE)
-                .createdBy(PMCycleUserProfile.builder()
-                        .uuid(COLLEAGUE_UUID)
-                        .build())
+                .createdBy(createdBy)
                 .uuid(uuid)
                 .entryConfigKey(TEST_KEY)
                 .templateUUID(TEMPLATE_UUID)

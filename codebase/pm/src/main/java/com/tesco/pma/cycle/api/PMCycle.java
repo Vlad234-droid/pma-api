@@ -1,6 +1,7 @@
 package com.tesco.pma.cycle.api;
 
 import com.tesco.pma.api.MapJson;
+import com.tesco.pma.colleague.api.Colleague;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +23,7 @@ public class PMCycle {
     UUID templateUUID;
 
     String name;
-    PMCycleUserProfile createdBy;
+    Colleague createdBy;
     PMCycleStatus status;
     PMCycleType type;
 

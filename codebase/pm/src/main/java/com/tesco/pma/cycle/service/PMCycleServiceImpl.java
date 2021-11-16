@@ -53,6 +53,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final ProcessManagerService processManagerService;
     private final PMProcessService pmProcessService;
+    private final PMCycleService self;
 
     public static final String NOT_IMPLEMENTED_YET = "Not implemented yet";
     private static final String ORG_KEY_PARAMETER_NAME = "organisationKey";
@@ -95,35 +96,36 @@ public class PMCycleServiceImpl implements PMCycleService {
     @Transactional
     public PMCycle publish(@NotNull PMCycle cycle) {
         log.debug("Request to publish Performance cycle : {}", cycle);
-        create(cycle);
-        log.debug("Starting process");
-        String processUUID = null;
+        self.create(cycle);
+
+        //TODO get templateCode from metadata
+        String templateCode = "type_1";
+
         try {
             var props = Map.of("needsObjective", TRUE,
                     "needsEyr", TRUE,
                     "needsMyr", TRUE);
-            processUUID = processManagerService.runProcess("type_1",  props);
+
+            var processUUID = processManagerService.runProcess(templateCode, props);
             log.debug("Started process: {}", processUUID);
+
+            var pmRuntimeProcess = PMRuntimeProcess.builder()
+                    .bpmProcessId(UUID.fromString(processUUID))
+                    .cycleUuid(cycle.getUuid())
+                    .businessKey(templateCode)
+                    .build();
+
+            pmRuntimeProcess = pmProcessService.register(pmRuntimeProcess);
+            log.debug("Registered PM process: {}", pmRuntimeProcess);
+
+            pmProcessService.updateStatus(pmRuntimeProcess.getId(), PMProcessStatus.STARTED,
+                    DictionaryFilter.includeFilter(PMProcessStatus.REGISTERED));
+
         } catch (ProcessExecutionException e) {
+            log.error("Process start error, cause: ", e);
             //TODO throw ex or return cycle
             updateStatus(cycle.getUuid(), FAILED);
         }
-
-        if (null == processUUID) {
-            log.error("");
-            return cycle;
-        }
-
-        var pmRuntimeProcess = PMRuntimeProcess.builder()
-                .bpmProcessId(UUID.fromString(processUUID))
-                .cycleUuid(cycle.getUuid())
-                .businessKey(cycle.getEntryConfigKey())
-                .build();
-        pmRuntimeProcess = pmProcessService.register(pmRuntimeProcess);
-        log.debug("Registered PM process: {}", pmRuntimeProcess);
-
-        pmProcessService.updateStatus(pmRuntimeProcess.getId(), PMProcessStatus.STARTED,
-                DictionaryFilter.includeFilter(PMProcessStatus.REGISTERED));
 
         return cycle;
     }
