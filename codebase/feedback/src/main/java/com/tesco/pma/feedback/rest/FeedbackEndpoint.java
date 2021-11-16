@@ -7,6 +7,7 @@ import com.tesco.pma.feedback.service.FeedbackService;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
+import com.tesco.pma.validation.ValidationGroup;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +23,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.groups.Default;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * REST controller for managing {@link Feedback}.
@@ -48,11 +51,30 @@ public class FeedbackEndpoint {
      */
     @PostMapping("/feedbacks")
     @ResponseStatus(HttpStatus.CREATED)
+    @Validated({ValidationGroup.OnCreate.class, Default.class})
     @Operation(summary = "Create a new feedback with items", tags = {"feedback"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Feedback created")
     public RestResponse<Feedback> createFeedback(@Valid @RequestBody Feedback feedback) throws URISyntaxException {
         log.debug("REST request to save Feedback : {}", feedback);
         return RestResponse.success(feedbackService.create(feedback));
+    }
+
+    /**
+     * {@code POST  /feedbacks/batch} : Create a new feedbacks.
+     *
+     * @param feedbacks the list of feedback to create.
+     * @return the {@link RestResponse} with status {@code 201 (Created)} and with body the new feedbacks
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PostMapping("/feedbacks/batch")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Validated({ValidationGroup.OnCreate.class, Default.class})
+    @Operation(summary = "Create a new list of feedbacks with items", tags = {"feedback"})
+    @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "List of feedbacks created")
+    public RestResponse<List<Feedback>> createFeedbacks(@Valid @RequestBody List<Feedback> feedbacks) throws URISyntaxException {
+        log.debug("REST request to save Feedbacks : {}", feedbacks);
+        List<Feedback> result = feedbacks.stream().map(feedbackService::create).collect(Collectors.toList());
+        return RestResponse.success(result);
     }
 
     /**
@@ -66,6 +88,7 @@ public class FeedbackEndpoint {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/feedbacks/{uuid}")
+    @Validated({ValidationGroup.OnUpdate.class, Default.class})
     @Operation(summary = "Updates an existing feedback", tags = {"feedback"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Feedback updated")
     @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Invalid UUID")
