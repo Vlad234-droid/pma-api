@@ -1,4 +1,4 @@
-package com.tesco.pma.process.model;
+package com.tesco.pma.cycle.model;
 
 import java.io.IOException;
 import java.io.InputStream;

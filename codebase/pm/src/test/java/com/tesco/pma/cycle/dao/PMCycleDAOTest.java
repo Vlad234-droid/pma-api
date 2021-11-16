@@ -102,7 +102,7 @@ class PMCycleDAOTest extends AbstractDAOTest {
         return PMCycle.builder()
                 .name(TEST_CYCLE_NAME)
                 .status(ACTIVE)
-                .type(PMCycleType.HIRING_DATE)
+                .type(PMCycleType.HIRING)
                 .createdBy(COLLEAGUE_UUID)
                 .uuid(CYCLE_CREATE_UUID)
                 .entryConfigKey(TEST_KEY)
