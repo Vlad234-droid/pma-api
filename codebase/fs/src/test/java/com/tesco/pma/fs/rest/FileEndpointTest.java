@@ -5,12 +5,16 @@ import com.tesco.pma.exception.RegistrationException;
 import com.tesco.pma.fs.domain.File;
 import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.rest.AbstractEndpointTest;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -29,6 +33,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     private static final UUID FILE_UUID_1 = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65765");
 
+    private static final String RESOURCES_PATH = "/com/tesco/pma/fs/rest/";
     private static final String FILE_NAME = "test1.txt";
     private static final String CREATOR_ID = "test";
     private static final String PATH = "/home/dev";
@@ -36,37 +41,6 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     private static final byte[] CONTENT = {72, 101, 108};
     private static final String TXT_FILE_CONTENT_TYPE = "application/vnd.oasis.opendocument.text";
-
-    private static final byte[] UPLOAD_FILE_METADATA_CONTENT = ("{\n" +
-            "  \"uploadMetadataList\": [\n" +
-            "    {\n" +
-            "      \"path\": \"/home/dev\",\n" +
-            "      \"type\": \"FORM\",\n" +
-            "      \"status\": \"ACTIVE\",\n" +
-            "      \"description\": \"other file\",\n" +
-            "      \"fileDate\": \"2021-04-22T08:50:08Z\"\n" +
-            "    }\n" +
-            "  ]\n" +
-            "}").getBytes();
-
-    private static final byte[] UPLOAD_FILES_METADATA_CONTENT = ("{\n" +
-            "  \"uploadMetadataList\": [\n" +
-            "    {\n" +
-            "      \"path\": \"/home/vsilenko/dev\",\n" +
-            "      \"type\": \"PDF\",\n" +
-            "      \"status\": \"ACTIVE\",\n" +
-            "      \"description\": \"text templates\",\n" +
-            "      \"fileDate\": \"2021-04-22T08:50:08.294Z\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"path\": \"/home/vsilenko/dev\",\n" +
-            "      \"type\": \"FORM\",\n" +
-            "      \"status\": \"ACTIVE\",\n" +
-            "      \"description\": \"text templates\",\n" +
-            "      \"fileDate\": \"2021-04-22T08:50:08.294Z\"\n" +
-            "    }\n" +
-            "  ]\n" +
-            "}").getBytes();
 
     private static final Instant FILE_DATE = Instant.parse("2021-04-22T08:50:08Z");
     private static final String DESCRIPTION = "other file";
@@ -111,7 +85,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     @Test
     void uploadFilesSuccess() throws Exception {
-        var multipartUploadMetadataMock = getUploadMetadataMultipartFile(UPLOAD_FILE_METADATA_CONTENT);
+        var multipartUploadMetadataMock = getUploadMetadataMultipartFile("test_metadata.json");
         var multipartFileMock = getMultipartFileToUpload(CONTENT);
 
         var dataFile = buildFileData(FILE_UUID_1, 1);
@@ -126,7 +100,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     @Test
     void uploadFilesUnsuccessWithBadRequest() throws Exception {
-        var multipartUploadMetadataMock = getUploadMetadataMultipartFile(UPLOAD_FILES_METADATA_CONTENT);
+        var multipartUploadMetadataMock = getUploadMetadataMultipartFile("test_metadata_for_2_files.json");
         var multipartFileMock = getMultipartFileToUpload(CONTENT);
 
         var dataFile = buildFileData(FILE_UUID_1, 1);
@@ -141,7 +115,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     @Test
     void uploadFilesUnsuccessWithInternalServerError() throws Exception {
-        var multipartUploadMetadataMock = getUploadMetadataMultipartFile(UPLOAD_FILE_METADATA_CONTENT);
+        var multipartUploadMetadataMock = getUploadMetadataMultipartFile("test_metadata.json");
         var multipartFileMock = getMultipartFileToUpload(CONTENT);
 
         when(this.service.upload(any(), any(), any())).thenThrow(RegistrationException.class);
@@ -149,12 +123,19 @@ public class FileEndpointTest extends AbstractEndpointTest {
         performMultipartWithMetadata(multipartUploadMetadataMock, multipartFileMock, status().isInternalServerError(), FILES_URL);
     }
 
-    private MockMultipartFile getUploadMetadataMultipartFile(byte[] content) {
-        return new MockMultipartFile("uploadMetadata", "test_metadata.json", APPLICATION_JSON_VALUE, content);
+    private MockMultipartFile getUploadMetadataMultipartFile(String fileName) throws IOException {
+        var content = resourceToString(fileName).getBytes();
+        return new MockMultipartFile("uploadMetadata", fileName, APPLICATION_JSON_VALUE, content);
     }
 
     private MockMultipartFile getMultipartFileToUpload(byte[] content) {
         return new MockMultipartFile("files", FILE_NAME, TXT_FILE_CONTENT_TYPE, content);
+    }
+
+    private String resourceToString(final String resourceName) throws IOException {
+        try (InputStream is = getClass().getResourceAsStream(RESOURCES_PATH + resourceName)) {
+            return IOUtils.toString(is, StandardCharsets.UTF_8);
+        }
     }
 
     private File buildFileData(UUID uuid, Integer version) {

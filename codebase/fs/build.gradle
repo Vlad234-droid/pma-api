@@ -38,6 +38,7 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.hibernate.validator:hibernate-validator-test-utils:${hibernateValidatorTestUtilsVersion}")
     testImplementation("org.jeasy:easy-random-core:${easyRandomVersion}")
+    testImplementation("commons-io:commons-io:${commonsIoVersion}")
 
     testImplementation("com.h2database:h2:${h2Version}")
 
