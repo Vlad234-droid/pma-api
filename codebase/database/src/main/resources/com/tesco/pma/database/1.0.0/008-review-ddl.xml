@@ -175,19 +175,68 @@
                              tableName="review"/>
     </changeSet>
 
+
     <changeSet author="ypashynskyi" id="6">
+        <createTable tableName="group_objective_status"
+                     remarks="Dictionary of group objective statuses">
+            <column name="id" type="integer"
+                    remarks="A unique identifier for status">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="group_objective_status_pk"/>
+            </column>
+            <column name="code" type="VARCHAR(30)"
+                    remarks="Shortname of status">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(100)"
+                    remarks="Description of status">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="ypashynskyi" id="7">
+        <comment>Init table group_objective_status</comment>
+        <insert tableName="group_objective_status">
+            <column name="id" value="1"/>
+            <column name="code" value="DRAFT"/>
+            <column name="description" value="Group objective is saved as draft"/>
+        </insert>
+        <insert tableName="group_objective_status">
+            <column name="id" value="2"/>
+            <column name="code" value="PUBLISHED"/>
+            <column name="description" value="Group objective was published"/>
+        </insert>
+        <insert tableName="group_objective_status">
+            <column name="id" value="3"/>
+            <column name="code" value="UNPUBLISHED"/>
+            <column name="description" value="Group objective was unpublished"/>
+        </insert>
+        <rollback>
+            <delete tableName="review_status">
+                <where>code = 'DRAFT'</where>
+            </delete>
+            <delete tableName="review_status">
+                <where>code = 'PUBLISHED'</where>
+            </delete>
+            <delete tableName="review_status">
+                <where>code = 'UNPUBLISHED'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="ypashynskyi" id="8">
         <createTable tableName="group_objective"
                      remarks="Table of group(organization, department etc.) objectives">
             <column name="uuid" type="${uuid_type}"
                     remarks="A unique identifier for group objective">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="group_objective_pk"/>
             </column>
-            <column name="business_unit_uuid" type="${uuid_type}"
-                    remarks="A unique identifier for business unit.">
-                <constraints nullable="false"/>
-            </column>
             <column name="number" type="integer"
                     remarks="A sequence number for business unit's objective">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status_id" type="integer"
+                    remarks="Status of review">
                 <constraints nullable="false"/>
             </column>
             <column name="version" type="integer"
@@ -199,12 +248,17 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addUniqueConstraint columnNames="business_unit_uuid, version, number"
+        <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="group_objective"
+                                 constraintName="group_objective_status_id_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="review_status"
+                                 validate="true"/>
+        <addUniqueConstraint columnNames="version, number"
                              constraintName="group_objective_unique"
                              tableName="group_objective"/>
     </changeSet>
 
-    <changeSet author="ypashynskyi" id="7">
+    <changeSet author="ypashynskyi" id="9">
         <createTable tableName="working_group_objective"
                      remarks="Table for working version of group objective">
             <column name="business_unit_uuid" type="${uuid_type}"
@@ -224,7 +278,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet author="ypashynskyi" id="8">
+    <changeSet author="ypashynskyi" id="10">
         <createTable tableName="review_link"
                      remarks="Table for links from review to group objective">
             <column name="review_uuid" type="${uuid_type}"
@@ -248,7 +302,7 @@
                                  validate="true"/>
     </changeSet>
 
-    <changeSet author="ypashynskyi" id="9">
+    <changeSet author="ypashynskyi" id="11">
         <createTable remarks="History of changing review's statuses"
                      tableName="review_change_status_hi">
             <column name="review_uuid" type="${uuid_type}">

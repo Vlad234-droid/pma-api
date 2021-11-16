@@ -1,14 +1,13 @@
 package com.tesco.pma.review.service;
 
+import com.tesco.pma.api.ReviewStatus;
+import com.tesco.pma.api.ReviewType;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.review.domain.ColleagueReviews;
 import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
-import com.tesco.pma.api.ReviewStatus;
-import com.tesco.pma.api.ReviewType;
-import com.tesco.pma.review.domain.WorkingGroupObjective;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -127,47 +126,34 @@ public interface ReviewService {
     /**
      * Create group's objectives
      *
-     * @param businessUnitUuid business unit an identifier, not null
-     * @param groupObjectives  a list of group's objectives
+     * @param groupObjectives a list of group's objectives
      * @return Created group's objectives
-     * @throws NotFoundException                    if business unit or performance cycle doesn't exist.
      * @throws DatabaseConstraintViolationException group objective already exist.
      */
-    List<GroupObjective> createGroupObjectives(@NotNull UUID businessUnitUuid,
-                                               List<GroupObjective> groupObjectives);
+    List<GroupObjective> createGroupObjectives(List<GroupObjective> groupObjectives,
+                                               @NotNull String loggedUserName);
 
     /**
      * Get all group's objectives
      *
-     * @param businessUnitUuid business unit an identifier, not null
      * @return a list of all group's objectives
      */
-    List<GroupObjective> getAllGroupObjectives(@NotNull UUID businessUnitUuid);
+    List<GroupObjective> getAllGroupObjectives();
 
     /**
      * Publish the last version of group objectives
      *
-     * @param businessUnitUuid business unit an identifier, not null
-     * @param loggedUserName   a logged user
+     * @param loggedUserName a logged user
      * @return a working group objective
      */
-    WorkingGroupObjective publishGroupObjectives(@NotNull UUID businessUnitUuid,
-                                                 @NotNull String loggedUserName);
-
-    /**
-     * Un-publish group objectives
-     *
-     * @param businessUnitUuid business unit an identifier, not null
-     */
-    void unpublishGroupObjectives(@NotNull UUID businessUnitUuid);
+    List<GroupObjective> publishGroupObjectives(@NotNull String loggedUserName);
 
     /**
      * Get published group's objectives
      *
-     * @param businessUnitUuid business unit an identifier, not null
      * @return a list of published group's objectives
      */
-    List<GroupObjective> getPublishedGroupObjectives(@NotNull UUID businessUnitUuid);
+    List<GroupObjective> getPublishedGroupObjectives();
 
     /**
      * Finds timeline by colleagueUuid

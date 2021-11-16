@@ -1,5 +1,6 @@
 package com.tesco.pma.review.service;
 
+import com.tesco.pma.api.GroupObjectiveStatus;
 import com.tesco.pma.api.ReviewStatus;
 import com.tesco.pma.api.ReviewType;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
@@ -41,7 +42,6 @@ import static com.tesco.pma.api.ReviewStatus.DRAFT;
 import static com.tesco.pma.api.ReviewStatus.WAITING_FOR_APPROVAL;
 import static com.tesco.pma.api.ReviewType.OBJECTIVE;
 import static com.tesco.pma.review.exception.ErrorCodes.ALLOWED_STATUSES_NOT_FOUND;
-import static com.tesco.pma.review.exception.ErrorCodes.BUSINESS_UNIT_NOT_EXISTS;
 import static com.tesco.pma.review.exception.ErrorCodes.CANNOT_DELETE_REVIEW_COUNT_CONSTRAINT;
 import static com.tesco.pma.review.exception.ErrorCodes.GROUP_OBJECTIVES_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.GROUP_OBJECTIVE_ALREADY_EXISTS;
@@ -257,31 +257,23 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public List<GroupObjective> createGroupObjectives(UUID businessUnitUuid,
-                                                      List<GroupObjective> groupObjectives) {
-        var currentGroupObjectives = reviewDAO.getGroupObjectivesByBusinessUnitUuid(businessUnitUuid);
+    public List<GroupObjective> createGroupObjectives(List<GroupObjective> groupObjectives, String loggedUserName) {
+        var currentGroupObjectives = reviewDAO.getGroupObjectives();
         if (listEqualsIgnoreOrder(currentGroupObjectives, groupObjectives, GROUP_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR)) {
             return currentGroupObjectives;
         }
         List<GroupObjective> results = new ArrayList<>();
-        final var newVersion = reviewDAO.getMaxVersionGroupObjective(businessUnitUuid) + 1;
+        final var newVersion = reviewDAO.getMaxVersionGroupObjective() + 1;
         groupObjectives.forEach(groupObjective -> {
             try {
                 groupObjective.setUuid(UUID.randomUUID());
-                groupObjective.setBusinessUnitUuid(businessUnitUuid);
+                groupObjective.setStatus(GroupObjectiveStatus.DRAFT);
                 groupObjective.setVersion(newVersion);
-                if (1 == reviewDAO.createGroupObjective(groupObjective)) {
-                    results.add(groupObjective);
-                } else {
-                    //todo it will work after implementation foreign keys
-                    throw notFound(BUSINESS_UNIT_NOT_EXISTS,
-                            Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, groupObjective.getBusinessUnitUuid()));
-                }
+                results.add(groupObjective);
             } catch (DuplicateKeyException e) {
                 throw databaseConstraintViolation(
                         GROUP_OBJECTIVE_ALREADY_EXISTS,
-                        Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, groupObjective.getBusinessUnitUuid(),
-                                NUMBER_PARAMETER_NAME, groupObjective.getNumber(),
+                        Map.of(NUMBER_PARAMETER_NAME, groupObjective.getNumber(),
                                 VERSION_PARAMETER_NAME, groupObjective.getVersion()),
                         e);
 
@@ -292,46 +284,27 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<GroupObjective> getAllGroupObjectives(UUID businessUnitUuid) {
-        List<GroupObjective> results = reviewDAO.getGroupObjectivesByBusinessUnitUuid(businessUnitUuid);
+    public List<GroupObjective> getAllGroupObjectives() {
+        List<GroupObjective> results = reviewDAO.getGroupObjectives();
         if (results == null) {
-            throw notFound(GROUP_OBJECTIVES_NOT_FOUND,
-                    Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, businessUnitUuid));
+            throw notFound(GROUP_OBJECTIVES_NOT_FOUND, Map.of());
         }
         return results;
     }
 
     @Override
     @Transactional
-    public WorkingGroupObjective publishGroupObjectives(UUID businessUnitUuid,
-                                                        String loggedUserName) {
-        final var version = reviewDAO.getMaxVersionGroupObjective(businessUnitUuid);
-        final var workingGroupObjective = getWorkingGroupObjective(businessUnitUuid, version);
-        workingGroupObjective.setUpdaterId(loggedUserName);
-        if (1 == reviewDAO.insertOrUpdateWorkingGroupObjective(workingGroupObjective)) {
-            return workingGroupObjective;
-        } else {
-            //todo it will work after implementation foreign keys
-            throw notFound(BUSINESS_UNIT_NOT_EXISTS,
-                    Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, businessUnitUuid));
-        }
+    public List<GroupObjective> publishGroupObjectives(String loggedUserName) {
+        reviewDAO.unpublishGroupObjectives();
+        reviewDAO.publishGroupObjectives();
+        return getPublishedGroupObjectives();
     }
 
     @Override
-    @Transactional
-    public void unpublishGroupObjectives(UUID businessUnitUuid) {
-        if (1 != reviewDAO.deleteWorkingGroupObjective(businessUnitUuid)) {
-            throw notFound(BUSINESS_UNIT_NOT_EXISTS,
-                    Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, businessUnitUuid));
-        }
-    }
-
-    @Override
-    public List<GroupObjective> getPublishedGroupObjectives(UUID businessUnitUuid) {
-        List<GroupObjective> results = reviewDAO.getWorkingGroupObjectivesByBusinessUnitUuid(businessUnitUuid);
+    public List<GroupObjective> getPublishedGroupObjectives() {
+        List<GroupObjective> results = reviewDAO.getPublishedGroupObjectives();
         if (results == null) {
-            throw notFound(GROUP_OBJECTIVES_NOT_FOUND,
-                    Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, businessUnitUuid));
+            throw notFound(GROUP_OBJECTIVES_NOT_FOUND, Map.of());
         }
         return results;
     }

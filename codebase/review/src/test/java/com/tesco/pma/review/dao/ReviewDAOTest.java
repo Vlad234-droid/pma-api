@@ -2,6 +2,7 @@ package com.tesco.pma.review.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import com.tesco.pma.api.GroupObjectiveStatus;
 import com.tesco.pma.api.MapJson;
 import com.tesco.pma.api.ReviewStatus;
 import com.tesco.pma.dao.AbstractDAOTest;
@@ -10,7 +11,6 @@ import com.tesco.pma.review.domain.PMCycleReviewTypeProperties;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStats;
-import com.tesco.pma.review.domain.WorkingGroupObjective;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -44,9 +43,6 @@ class ReviewDAOTest extends AbstractDAOTest {
     private static final UUID GROUP_OBJECTIVE_UUID_2 = UUID.fromString("aab9ab0b-f50f-4442-8900-b03777ee0011");
     private static final UUID GROUP_OBJECTIVE_UUID_NOT_EXIST = UUID.fromString("aab9ab0b-f50f-4442-8900-000000000000");
     private static final UUID REVIEW_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
-    private static final UUID BUSINESS_UNIT_UUID = UUID.fromString("ffb9ab0b-f50f-4442-8900-b03777ee00ef");
-    private static final UUID BUSINESS_UNIT_UUID_2 = UUID.fromString("ffb9ab0b-f50f-4442-8900-b03777ee00ec");
-    private static final UUID BUSINESS_UNIT_UUID_NOT_EXIST = UUID.fromString("ffb9ab0b-f50f-4442-8900-000000000000");
     private static final UUID COLLEAGUE_UUID = UUID.fromString("ccb9ab0b-f50f-4442-8900-b03777ee00ec");
     private static final UUID COLLEAGUE_UUID_NOT_EXIST = UUID.fromString("ccb9ab0b-f50f-4442-8900-000000000000");
     private static final UUID PERFORMANCE_CYCLE_UUID = UUID.fromString("0c5d9cb1-22cf-4fcd-a19a-9e70df6bc941");
@@ -110,8 +106,8 @@ class ReviewDAOTest extends AbstractDAOTest {
 
         final var groupObjective = GroupObjective.builder()
                 .uuid(GROUP_OBJECTIVE_UUID)
-                .businessUnitUuid(BUSINESS_UNIT_UUID)
                 .number(NUMBER_1)
+                .status(GroupObjectiveStatus.DRAFT)
                 .title(TITLE_1)
                 .version(VERSION_1)
                 .build();
@@ -127,8 +123,8 @@ class ReviewDAOTest extends AbstractDAOTest {
 
         final var groupObjective = GroupObjective.builder()
                 .uuid(GROUP_OBJECTIVE_UUID_2)
-                .businessUnitUuid(BUSINESS_UNIT_UUID_2)
                 .number(NUMBER_1)
+                .status(GroupObjectiveStatus.DRAFT)
                 .title(TITLE_1)
                 .version(VERSION_1)
                 .build();
@@ -144,8 +140,8 @@ class ReviewDAOTest extends AbstractDAOTest {
 
         assertThat(result)
                 .asInstanceOf(type(GroupObjective.class))
-                .returns(BUSINESS_UNIT_UUID_2, from(GroupObjective::getBusinessUnitUuid))
                 .returns(NUMBER_1, from(GroupObjective::getNumber))
+                .returns(GroupObjectiveStatus.DRAFT, from(GroupObjective::getStatus))
                 .returns(VERSION_1, from(GroupObjective::getVersion));
     }
 
@@ -159,15 +155,15 @@ class ReviewDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet("group_objective_init.xml")
-    void getGroupObjectivesByBusinessUnitUuid() {
-        final var result = instance.getGroupObjectivesByBusinessUnitUuid(BUSINESS_UNIT_UUID_2);
+    void getGroupObjectives() {
+        final var result = instance.getGroupObjectives();
 
         assertThat(result).isNotEmpty();
         assertThat(result.size()).isEqualTo(1);
 
         assertThat(result.get(0))
-                .returns(BUSINESS_UNIT_UUID_2, from(GroupObjective::getBusinessUnitUuid))
                 .returns(NUMBER_1, from(GroupObjective::getNumber))
+                .returns(GroupObjectiveStatus.DRAFT, from(GroupObjective::getStatus))
                 .returns(GROUP_TITLE_UPDATE, from(GroupObjective::getTitle))
                 .returns(VERSION_3, from(GroupObjective::getVersion));
     }
@@ -189,8 +185,24 @@ class ReviewDAOTest extends AbstractDAOTest {
     @Test
     @DataSet("group_objective_init.xml")
     void getMaxVersionGroupObjective() {
-        final var result = instance.getMaxVersionGroupObjective(BUSINESS_UNIT_UUID_2);
+        final var result = instance.getMaxVersionGroupObjective();
         assertThat(result).isEqualTo(3);
+    }
+
+    @Test
+    @DataSet("group_objective_init.xml")
+    @ExpectedDataSet("group_objective_publish_expected_1.xml")
+    void publishGroupObjectiveSucceeded() {
+        final var result = instance.publishGroupObjectives();
+        assertThat(result).isOne();
+    }
+
+    @Test
+    @DataSet("group_objective_init.xml")
+    @ExpectedDataSet("group_objective_unpublish_expected_1.xml")
+    void unpublishGroupObjectiveSucceeded() {
+        final var result = instance.unpublishGroupObjectives();
+        assertThat(result).isOne();
     }
 
     @Test
@@ -372,60 +384,6 @@ class ReviewDAOTest extends AbstractDAOTest {
         final var result = instance.updateReview(review, List.of(DRAFT, DECLINED, APPROVED));
 
         assertThat(result).isOne();
-    }
-
-    @Test
-    @DataSet("cleanup.xml")
-    @ExpectedDataSet("working_group_objective_create_expected.xml")
-    void createWorkingGroupObjectiveSucceeded() {
-
-        final var workingGroupObjective = WorkingGroupObjective.builder()
-                .businessUnitUuid(BUSINESS_UNIT_UUID_2)
-                .version(VERSION_1)
-                .updaterId(USER_INIT)
-                .updateTime(Timestamp.valueOf(TIME_INIT).toInstant())
-                .build();
-
-        final var rowsInserted = instance.insertOrUpdateWorkingGroupObjective(workingGroupObjective);
-
-        assertThat(rowsInserted).isOne();
-    }
-
-    @Test
-    @DataSet("working_group_objective_init.xml")
-    void deleteWorkingGroupObjectiveNotExist() {
-        final var result = instance.deleteWorkingGroupObjective(BUSINESS_UNIT_UUID_NOT_EXIST);
-
-        assertThat(result).isZero();
-    }
-
-    @Test
-    @DataSet("working_group_objective_init.xml")
-    void deleteWorkingGroupObjectiveSucceeded() {
-        final var result = instance.deleteWorkingGroupObjective(BUSINESS_UNIT_UUID_2);
-
-        assertThat(result).isOne();
-    }
-
-    @Test
-    @DataSet("working_group_objective_init.xml")
-    void getWorkingGroupObjective() {
-        final var result = instance.getWorkingGroupObjective(BUSINESS_UNIT_UUID_2);
-
-        assertThat(result)
-                .asInstanceOf(type(WorkingGroupObjective.class))
-                .returns(BUSINESS_UNIT_UUID_2, from(WorkingGroupObjective::getBusinessUnitUuid))
-                .returns(VERSION_1, from(WorkingGroupObjective::getVersion))
-                .returns(USER_INIT, from(WorkingGroupObjective::getUpdaterId))
-                .returns(Timestamp.valueOf(TIME_INIT).toInstant(), from(WorkingGroupObjective::getUpdateTime));
-    }
-
-    @Test
-    @DataSet("working_group_objective_init.xml")
-    void getWorkingGroupObjectiveNotExist() {
-        final var result = instance.getWorkingGroupObjective(BUSINESS_UNIT_UUID_NOT_EXIST);
-
-        assertThat(result).isNull();
     }
 
     @Test

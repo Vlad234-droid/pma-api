@@ -8,7 +8,6 @@ import com.tesco.pma.review.domain.PMCycleReviewTypeProperties;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStats;
-import com.tesco.pma.review.domain.WorkingGroupObjective;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
@@ -31,18 +30,16 @@ public interface ReviewDAO {
     /**
      * Returns a list of group objectives for max version
      *
-     * @param businessUnitUuid an identifier of business unit
      * @return a list of Group Objectives for max version
      */
-    List<GroupObjective> getGroupObjectivesByBusinessUnitUuid(@Param("businessUnitUuid") UUID businessUnitUuid);
+    List<GroupObjective> getGroupObjectives();
 
     /**
-     * Returns a list of working group objectives
+     * Returns a list of published group objectives
      *
-     * @param businessUnitUuid an identifier of business unit
      * @return a list of Group Objectives
      */
-    List<GroupObjective> getWorkingGroupObjectivesByBusinessUnitUuid(@Param("businessUnitUuid") UUID businessUnitUuid);
+    List<GroupObjective> getPublishedGroupObjectives();
 
     /**
      * Creates a group objective
@@ -63,10 +60,23 @@ public interface ReviewDAO {
     /**
      * Returns max version of group objectives
      *
-     * @param businessUnitUuid an identifier of business unit
      * @return max version of group objectives
      */
-    int getMaxVersionGroupObjective(@Param("businessUnitUuid") UUID businessUnitUuid);
+    int getMaxVersionGroupObjective();
+
+    /**
+     * Publish group objectives
+     *
+     * @return number of published group objectives
+     */
+    int publishGroupObjectives();
+
+    /**
+     * Un-publish group objectives
+     *
+     * @return number of un-published group objectives
+     */
+    int unpublishGroupObjectives();
 
     /**
      * Returns a review by performance cycle, colleague, review type and sequence number.
@@ -166,30 +176,6 @@ public interface ReviewDAO {
                           @Param("colleagueUuid") UUID colleagueUuid,
                           @Param("type") ReviewType type,
                           @Param("startNumber") Integer startNumber);
-
-    /**
-     * Insert or update a working group objective
-     *
-     * @param workingGroupObjective a WorkingGroupObjective
-     * @return number of inserted or updated working group objectives
-     */
-    int insertOrUpdateWorkingGroupObjective(@Param("workingGroupObjective") WorkingGroupObjective workingGroupObjective);
-
-    /**
-     * Returns a working group objective
-     *
-     * @param businessUnitUuid an identifier of business unit
-     * @return a WorkingGroupObjective
-     */
-    WorkingGroupObjective getWorkingGroupObjective(@Param("businessUnitUuid") UUID businessUnitUuid);
-
-    /**
-     * Delete a working group objective
-     *
-     * @param businessUnitUuid an identifier of business unit
-     * @return number of deleted working group objectives
-     */
-    int deleteWorkingGroupObjective(@Param("businessUnitUuid") UUID businessUnitUuid);
 
     /**
      * Returns properties of review type by PM cycleUuid and review type

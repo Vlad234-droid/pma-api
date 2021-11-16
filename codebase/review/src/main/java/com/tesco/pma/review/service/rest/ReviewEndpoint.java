@@ -12,7 +12,6 @@ import com.tesco.pma.review.domain.ColleagueReviews;
 import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
-import com.tesco.pma.review.domain.WorkingGroupObjective;
 import com.tesco.pma.review.domain.request.UpdateReviewsStatusRequest;
 import com.tesco.pma.review.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -247,65 +246,53 @@ public class ReviewEndpoint {
     }
 
     /**
-     * POST call to create group's objectives.
+     * POST call to create group objectives.
      *
-     * @param businessUnitUuid business unit an identifier
-     * @param groupObjectives  group's objectives
-     * @return a RestResponse parameterized with group's objectives
+     * @param groupObjectives group objectives
+     * @return a RestResponse parameterized with list of group gbjectives
      */
-    @Operation(summary = "Create new group's objectives", description = "Group's objectives created", tags = {"objective"})
+    @Operation(summary = "Create new group objectives", description = "Group objectives created", tags = {"objective"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
-    @PostMapping(path = "/business-units/{businessUnitUuid}/objectives",
+    @PostMapping(path = "/objectives",
             produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<List<GroupObjective>> createGroupObjectives(@PathVariable("businessUnitUuid") UUID businessUnitUuid,
-                                                                    @RequestBody List<GroupObjective> groupObjectives) {
-        return RestResponse.success(reviewService.createGroupObjectives(businessUnitUuid, groupObjectives));
+    public RestResponse<List<GroupObjective>> createGroupObjectives(@RequestBody List<GroupObjective> groupObjectives) {
+        return RestResponse.success(reviewService.createGroupObjectives(groupObjectives, resolveUserName()));
     }
 
     /**
-     * Get call using a Path param and return a list of Group Objectives as JSON.
+     * Get call to return a list of group objectives as JSON.
      *
-     * @param businessUnitUuid business unit an identifier
-     * @return a RestResponse parameterized with list of Group Objectives
+     * @return a RestResponse parameterized with list of group objectives
      */
-    @Operation(summary = "Get all group's objectives by business unit", tags = {"objective"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found Group Objectives")
-    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Group Objectives not found", content = @Content)
-    @GetMapping(path = "/business-units/{businessUnitUuid}/objectives",
+    @Operation(summary = "Get all group objectives", tags = {"objective"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found group objectives")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Group objectives not found", content = @Content)
+    @GetMapping(path = "/objectives",
             produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<GroupObjective>> getGroupObjectives(@PathVariable("businessUnitUuid") UUID businessUnitUuid) {
-        return success(reviewService.getAllGroupObjectives(businessUnitUuid));
+    public RestResponse<List<GroupObjective>> getGroupObjectives() {
+        return success(reviewService.getAllGroupObjectives());
     }
 
     /**
-     * Get call using a Path param and return a list of published Group Objectives as JSON.
+     * Get call to return a list of published group Objectives as JSON.
      *
-     * @param businessUnitUuid business unit an identifier
-     * @return a RestResponse parameterized with list of published Group Objectives
+     * @return a RestResponse parameterized with list of published group Objectives
      */
     @Operation(summary = "Get published group's objectives by business unit", tags = {"objective"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found Group Objectives")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Group Objectives not found", content = @Content)
-    @GetMapping(path = "/business-units/{businessUnitUuid}/objectives/published",
+    @GetMapping(path = "/objectives/published",
             produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<GroupObjective>> getPublishedGroupObjectives(@PathVariable("businessUnitUuid") UUID businessUnitUuid) {
-        return success(reviewService.getPublishedGroupObjectives(businessUnitUuid));
+    public RestResponse<List<GroupObjective>> getPublishedGroupObjectives() {
+        return success(reviewService.getPublishedGroupObjectives());
     }
 
-    @Operation(summary = "Publish group's objectives", tags = {"objective"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Group's objectives have been published")
-    @PostMapping(value = "/business-units/{businessUnitUuid}/objectives/publish", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<WorkingGroupObjective> publishBusinessUnitStructure(@PathVariable("businessUnitUuid") UUID businessUnitUuid) {
-        return success(reviewService.publishGroupObjectives(businessUnitUuid, resolveUserName()));
-    }
-
-    @Operation(summary = "Unpublish group's objectives", tags = {"objective"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Group's objectives have been unpublished")
-    @DeleteMapping(value = "/business-units/{businessUnitUuid}/objectives/publish", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<?> unpublishBusinessUnitStructure(@PathVariable("businessUnitUuid") UUID businessUnitUuid) {
-        reviewService.unpublishGroupObjectives(businessUnitUuid);
-        return RestResponse.success();
+    @Operation(summary = "Publish group objectives", tags = {"objective"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Group objectives have been published")
+    @PostMapping(value = "/objectives/publish", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<List<GroupObjective>> publishGroupObjectives() {
+        return success(reviewService.publishGroupObjectives(resolveUserName()));
     }
 
     private String resolveUserName() {
