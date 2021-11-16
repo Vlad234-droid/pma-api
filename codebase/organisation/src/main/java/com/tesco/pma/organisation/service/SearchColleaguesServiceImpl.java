@@ -18,7 +18,7 @@ public class SearchColleaguesServiceImpl implements SearchColleaguesService {
     private final ConfigEntryDAO configEntryDAO;
 
     @Override
-    public List<Colleague> getSuggestions(String fullName, UUID managerId){
+    public List<Colleague> getSuggestions(String fullName, UUID managerId) {
         var names = Arrays.stream(fullName.split(StringUtils.SPACE))
                 .map(String::trim)
                 .map(String::toLowerCase)
