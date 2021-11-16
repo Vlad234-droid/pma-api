@@ -1,0 +1,9 @@
+{
+  "success": false,
+  "errors": [
+    {
+      "code": "FILES_COUNT_MISMATCH",
+      "message": "Count of data files and metadata files do not match"
+    }
+  ]
+}

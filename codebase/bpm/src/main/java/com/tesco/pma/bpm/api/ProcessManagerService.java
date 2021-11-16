@@ -1,38 +1,71 @@
 package com.tesco.pma.bpm.api;
 
+import com.tesco.pma.exception.InitializationException;
+
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-
-import com.tesco.pma.exception.InitializationException;
 
 /**
  * Interface for managing process deployment and execution
  */
 public interface ProcessManagerService {
 
+    /**
+     * Returns a list of deployment's identifier and name
+     *
+     * @return list of deployments references
+     */
+    List<DeploymentInfo> listDeployments();
+
+    /**
+     * Returns a list of processes
+     *
+     * @return list of processes
+     */
     List<String> listProcesses();
 
     /**
-     * Deploy process archive to bpm database
+     * Deploys process archive to bpm database
      *
      * @param path Path to process archive (e.g. *.bar)
      * @return process key
      * @throws InitializationException initialization failing
      * @throws FileNotFoundException file not found
      */
-    String deployProcess(String path) throws FileNotFoundException, InitializationException;
+    DeploymentInfo deployProcessArchive(String path) throws FileNotFoundException, InitializationException;
 
     /**
-     * Deploy process archive to bpm database
+     * Deploys process archive to bpm database
      *
      * @param resource {@link File resource} to process archive (e.g. *.bar)
      * @return process key
      * @throws InitializationException initialization failing
      * @throws FileNotFoundException file not found
      */
-    String deployProcess(File resource) throws FileNotFoundException, InitializationException;
+    DeploymentInfo deployProcessArchive(File resource) throws FileNotFoundException, InitializationException;
+
+    /**
+     * Deploys process resources like bpmn, forms etc
+     *
+     * @param name deploying pack name
+     * @param resources the map of resources names and their streams
+     * @return deployment identifier
+     * @throws InitializationException any exception
+     */
+    DeploymentInfo deploy(String name, Map<String, InputStream> resources) throws InitializationException;
+
+    /**
+     * Undeploys a whole deployment by the name
+     *
+     * @param id identifier of deployment (optional one of id or name)
+     * @param name like name expression (optional one of id or name)
+     * @return list of undeployed packs
+     * @throws InitializationException any exception
+     */
+    List<DeploymentInfo> undeploy(String id, String name) throws InitializationException;
 
     /**
      * Undeploy all version of process by processKey

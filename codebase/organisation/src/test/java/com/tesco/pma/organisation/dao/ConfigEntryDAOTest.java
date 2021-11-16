@@ -2,9 +2,7 @@ package com.tesco.pma.organisation.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.api.GeneralDictionaryItem;
-import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
 import com.tesco.pma.dao.AbstractDAOTest;
-import com.tesco.pma.organisation.api.Colleague;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.WorkingConfigEntry;
 import org.junit.jupiter.api.Test;
@@ -212,17 +210,20 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
 
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("provideArgsForGettingColleagues")
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues-config.xml"})
-    void getColleagueByIamId() {
-        var colleague = dao.getColleagueByIamId("TPX1");
+    void readColleaguesByKey(String key, Set<UUID> colleagueUuids) {
+        var colleagues = dao.findColleaguesByTypes(key);
 
-        assertNotNull(colleague);
-        assertEquals(UUID.fromString("c409869b-2acf-45cd-8cc6-e13af2e6f935"), colleague.getUuid());
-        assertNotNull(colleague.getCountry());
-        assertNotNull(colleague.getDepartment());
-        assertNotNull(colleague.getJob());
-        assertNotNull(colleague.getWorkLevel());
+        assertEquals(colleagueUuids.size(), colleagues.size());
+
+        var uuids = colleagues.stream()
+                .map(ColleagueEntity::getUuid)
+                .collect(Collectors.toSet());
+
+        assertTrue(colleagueUuids.containsAll(uuids));
+
     }
 
     @Test
@@ -254,22 +255,6 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
         assertEquals("Test", colleague.getExternalSystems().getIam().getSource());
         assertNotNull(colleague.getServiceDates().getHireDate());
         assertNotNull(colleague.getServiceDates().getLeavingDate());
-
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideArgsForGettingColleagues")
-    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues-config.xml"})
-    void readColleaguesByKey(String key, Set<UUID> colleagueUuids) {
-        var colleagues = dao.findColleaguesByTypes(key);
-
-        assertEquals(colleagueUuids.size(), colleagues.size());
-
-        var uuids = colleagues.stream()
-                .map(Colleague::getUuid)
-                .collect(Collectors.toSet());
-
-        assertTrue(colleagueUuids.containsAll(uuids));
 
     }
 

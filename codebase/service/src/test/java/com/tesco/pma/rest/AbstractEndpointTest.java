@@ -109,10 +109,15 @@ public abstract class AbstractEndpointTest {
 
     protected MvcResult performGet(ResultMatcher status,
                                    String urlTemplate, Object... uriVars) throws Exception {
+        return performGet(status, MediaType.APPLICATION_JSON, urlTemplate, uriVars);
+    }
+
+    protected MvcResult performGet(ResultMatcher status, MediaType contentType,
+                                   String urlTemplate, Object... uriVars) throws Exception {
         return mvc.perform(get(urlTemplate, uriVars))
                 .andDo(print())
                 .andExpect(status)
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentTypeCompatibleWith(contentType))
                 .andReturn();
     }
 

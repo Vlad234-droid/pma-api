@@ -1,7 +1,7 @@
 package com.tesco.pma.review.domain;
 
-import com.tesco.pma.api.ReviewStatus;
-import com.tesco.pma.api.ReviewType;
+import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMReviewType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @Builder
 public class SimplifiedReview {
     UUID uuid;
-    ReviewType type;
-    ReviewStatus status;
+    PMReviewType type;
+    PMReviewStatus status;
     Integer number;
 }
