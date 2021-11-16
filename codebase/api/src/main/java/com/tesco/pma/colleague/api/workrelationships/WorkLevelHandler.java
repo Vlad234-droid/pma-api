@@ -11,8 +11,8 @@ import java.sql.SQLException;
 public class WorkLevelHandler implements TypeHandler<WorkLevel> {
 
     @Override
-    public void setParameter(PreparedStatement ps, int i, WorkLevel parameter, JdbcType jdbcType) throws SQLException {
-        ps.setString(i, parameter.name());
+    public void setParameter(PreparedStatement ps, int index, WorkLevel parameter, JdbcType jdbcType) throws SQLException {
+        ps.setString(index, parameter.name());
     }
 
     @Override
