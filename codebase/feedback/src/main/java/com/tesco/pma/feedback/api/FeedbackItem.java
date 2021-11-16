@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.Size;
-import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -12,7 +11,7 @@ import java.util.UUID;
  */
 @Data
 @Schema(description = "The Feedback Item. Answers for questions, comments or free form feedback.")
-public class FeedbackItem implements Serializable {
+public class FeedbackItem {
 
     private UUID uuid;
 
@@ -32,6 +31,6 @@ public class FeedbackItem implements Serializable {
     /**
      * Link to feedback.
      */
-    @Schema(description = "Link to feedback", required = true)
+    @Schema(description = "Link to feedback")
     private UUID feedbackUuid;
 }

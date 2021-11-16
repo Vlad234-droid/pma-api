@@ -1,6 +1,5 @@
 package com.tesco.pma.api;
 
-import com.tesco.pma.api.security.SubsidiaryPermission;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,8 +28,6 @@ public class User {
     private String gender;
 
     private String email;
-
-    private Collection<SubsidiaryPermission> subsidiaryPermissions = new HashSet<>();
 
     private Collection<String> roles = new HashSet<>();
 

@@ -12,7 +12,7 @@ import com.tesco.pma.feedback.exception.ErrorCodes;
 import com.tesco.pma.pagination.RequestQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,14 +60,16 @@ public class FeedbackServiceImpl implements FeedbackService {
             feedbackDAO.insert(feedback);
             Set<FeedbackItem> feedbackItems = feedback.getFeedbackItems()
                     .stream()
-                    .peek(feedbackItem -> feedbackItem.setFeedbackUuid(feedback.getUuid()))
+                    .map(feedbackItem -> {
+                        feedbackItem.setFeedbackUuid(feedback.getUuid());
+                        return feedbackItem;
+                    })
                     .map(this::save)
                     .collect(Collectors.toSet());
             feedback.setFeedbackItems(feedbackItems);
-        } catch (DuplicateKeyException ex) {
-            String message = messageSourceAccessor.getMessage(com.tesco.pma.exception.ErrorCodes.CONSTRAINT_VIOLATION);
+        } catch (DataIntegrityViolationException ex) {
             throw new DatabaseConstraintViolationException(
-                    com.tesco.pma.exception.ErrorCodes.CONSTRAINT_VIOLATION.getCode(), message, null, ex);
+                    com.tesco.pma.exception.ErrorCodes.CONSTRAINT_VIOLATION.getCode(), ex.getLocalizedMessage(), null, ex);
         }
         return feedback;
     }
@@ -77,17 +79,25 @@ public class FeedbackServiceImpl implements FeedbackService {
     public Feedback update(Feedback feedback) {
         DictionaryFilter<FeedbackStatus> statusFilter = UPDATE_STATUS_RULE_MAP.get(feedback.getStatus());
         feedback.setUpdatedTime(Instant.now());
-        if (1 == feedbackDAO.update(feedback, statusFilter)) {
-            Set<FeedbackItem> feedbackItems = feedback.getFeedbackItems()
-                    .stream()
-                    .peek(feedbackItem -> feedbackItem.setFeedbackUuid(feedback.getUuid()))
-                    .map(this::save)
-                    .collect(Collectors.toSet());
-            feedback.setFeedbackItems(feedbackItems);
-        } else {
-            String message = messageSourceAccessor.getMessage(ErrorCodes.FEEDBACK_NOT_FOUND,
-                    Map.of(PARAM_NAME, "uuid", PARAM_VALUE, feedback.getUuid()));
-            throw new NotFoundException(ErrorCodes.FEEDBACK_NOT_FOUND.getCode(), message);
+        try {
+            if (1 == feedbackDAO.update(feedback, statusFilter)) {
+                Set<FeedbackItem> feedbackItems = feedback.getFeedbackItems()
+                        .stream()
+                        .map(feedbackItem -> {
+                            feedbackItem.setFeedbackUuid(feedback.getUuid());
+                            return feedbackItem;
+                        })
+                        .map(this::save)
+                        .collect(Collectors.toSet());
+                feedback.setFeedbackItems(feedbackItems);
+            } else {
+                String message = messageSourceAccessor.getMessage(ErrorCodes.FEEDBACK_NOT_FOUND,
+                        Map.of(PARAM_NAME, "uuid", PARAM_VALUE, feedback.getUuid()));
+                throw new NotFoundException(ErrorCodes.FEEDBACK_NOT_FOUND.getCode(), message);
+            }
+        } catch (DataIntegrityViolationException ex) {
+            throw new DatabaseConstraintViolationException(
+                    com.tesco.pma.exception.ErrorCodes.CONSTRAINT_VIOLATION.getCode(), ex.getLocalizedMessage(), null, ex);
         }
         return feedback;
     }

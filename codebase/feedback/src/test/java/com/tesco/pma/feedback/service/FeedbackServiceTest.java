@@ -105,7 +105,7 @@ class FeedbackServiceTest {
 
         //then
         verify(feedbackDAO, times(1)).getByUuid(TestDataUtil.FEEDBACK_UUID_LAST);
-        assertEquals(result.getColleagueUuid(), TestDataUtil.COLLEAGUE_UUID);
+        assertEquals(TestDataUtil.COLLEAGUE_UUID, result.getColleagueUuid());
     }
 
     @Test
@@ -120,7 +120,7 @@ class FeedbackServiceTest {
         Feedback result = underTest.update(feedback);
 
         //then
-        assertEquals(result.getStatus(), FeedbackStatus.COMPLETED);
+        assertEquals(FeedbackStatus.COMPLETED, result.getStatus());
     }
 
     @Test
@@ -149,7 +149,7 @@ class FeedbackServiceTest {
         FeedbackItem result = underTest.save(feedbackItem);
 
         //then
-        assertEquals(result.getContent(), content);
+        assertEquals(content, result.getContent());
     }
 
     @Test

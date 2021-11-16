@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
 
     <!--
         Added the Feedback status.
@@ -158,6 +157,22 @@
                                  onUpdate="CASCADE"
                                  referencedColumnNames="uuid"
                                  referencedTableName="feedback"/>
+    </changeSet>
+
+    <!--
+        Added constraint Feedback - Colleague.
+    -->
+    <changeSet id="7" author="Stanislav.Eurich">
+        <addForeignKeyConstraint baseColumnNames="colleague_uuid"
+                                 baseTableName="feedback"
+                                 constraintName="fk_feedback__colleague_uuid"
+                                 referencedColumnNames="uuid"
+                                 referencedTableName="colleague"/>
+        <addForeignKeyConstraint baseColumnNames="target_colleague_uuid"
+                                 baseTableName="feedback"
+                                 constraintName="fk_feedback__target_colleague_uuid"
+                                 referencedColumnNames="uuid"
+                                 referencedTableName="colleague"/>
     </changeSet>
 
 </databaseChangeLog>
