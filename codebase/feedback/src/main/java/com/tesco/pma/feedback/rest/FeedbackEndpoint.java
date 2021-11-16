@@ -42,31 +42,14 @@ public class FeedbackEndpoint {
     private final FeedbackService feedbackService;
 
     /**
-     * {@code POST  /feedbacks} : Create a new feedback.
+     * {@code POST  /feedbacks} : Create a new feedbacks.
      *
-     * @param feedback the feedback to create.
-     * @return the {@link RestResponse} with status {@code 201 (Created)} and with body the new feedback,
+     * @param feedbacks the list of feedback to create.
+     * @return the {@link RestResponse} with status {@code 201 (Created)} and with body the new feedbacks,
      * or with status {@code 400 (Bad Request)} if the feedback has already an UUID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/feedbacks")
-    @ResponseStatus(HttpStatus.CREATED)
-    @Validated({ValidationGroup.OnCreate.class, Default.class})
-    @Operation(summary = "Create a new feedback with items", tags = {"feedback"})
-    @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Feedback created")
-    public RestResponse<Feedback> createFeedback(@Valid @RequestBody Feedback feedback) throws URISyntaxException {
-        log.debug("REST request to save Feedback : {}", feedback);
-        return RestResponse.success(feedbackService.create(feedback));
-    }
-
-    /**
-     * {@code POST  /feedbacks/batch} : Create a new feedbacks.
-     *
-     * @param feedbacks the list of feedback to create.
-     * @return the {@link RestResponse} with status {@code 201 (Created)} and with body the new feedbacks
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
-    @PostMapping("/feedbacks/batch")
     @ResponseStatus(HttpStatus.CREATED)
     @Validated({ValidationGroup.OnCreate.class, Default.class})
     @Operation(summary = "Create a new list of feedbacks with items", tags = {"feedback"})
