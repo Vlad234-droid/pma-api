@@ -99,6 +99,7 @@ spring:
       com/tesco/pma/feedback/exception/AppExceptionMessage,
       com/tesco/pma/cycle/exception/AppExceptionMessage,
       com/tesco/pma/process/service/AppPMProcessMessages,
+      com/tesco/pma/colleague/profile/import/AppImportMessages,
       com/tesco/pma/colleague/security/exception/AppExceptionMessage,
       com/tesco/pma/notes/exception/AppNotesMessages,
       com/tesco/pma/fs/exception/AppExceptionMessage
@@ -229,8 +230,10 @@ camunda:
     auto-deployment-enabled: true
     deployment-resource-pattern: classpath:com/tesco/pma/flow/type_1.bpmn,
                                            com/tesco/pma/flow/type_2.bpmn,
+                                           com/tesco/pma/flow/type_4.bpmn,
                                            com/tesco/pma/flow/forms/type_1_objective.form,
-                                           com/tesco/pma/flow/forms/type_2_objective.form
+                                           com/tesco/pma/flow/forms/type_2_objective.form,
+                                           com/tesco/pma/flow/forms/type_4_eyr.form
 
 ---
 spring:

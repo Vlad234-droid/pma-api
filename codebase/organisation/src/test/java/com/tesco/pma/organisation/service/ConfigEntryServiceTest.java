@@ -1,11 +1,11 @@
 package com.tesco.pma.organisation.service;
 
+import com.tesco.pma.api.GeneralDictionaryItem;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.ConfigEntryErrorCodes;
 import com.tesco.pma.organisation.api.ConfigEntryResponse;
-import com.tesco.pma.api.GeneralDictionaryItem;
 import com.tesco.pma.organisation.api.WorkingConfigEntry;
 import com.tesco.pma.organisation.dao.ConfigEntryDAO;
 import com.tesco.pma.organisation.dao.ConfigEntryTypeDAO;

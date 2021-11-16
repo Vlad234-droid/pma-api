@@ -1,11 +1,16 @@
 package com.tesco.pma.service.deployment.rest;
 
-import java.io.FileNotFoundException;
-import java.util.List;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
+import com.tesco.pma.bpm.api.DeploymentInfo;
+import com.tesco.pma.bpm.api.ProcessManagerService;
+import com.tesco.pma.exception.DeploymentException;
+import com.tesco.pma.exception.ErrorCodes;
+import com.tesco.pma.exception.InitializationException;
+import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.logging.TraceUtils;
+import com.tesco.pma.rest.RestResponse;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,42 +19,46 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.tesco.pma.bpm.api.ProcessManagerService;
-import com.tesco.pma.exception.ErrorCodes;
-import com.tesco.pma.exception.DeploymentException;
-import com.tesco.pma.exception.InitializationException;
-import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.rest.RestResponse;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-import lombok.extern.slf4j.Slf4j;
+import static com.tesco.pma.logging.TraceId.TRACE_ID_HEADER;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 14.06.2021 Time: 18:20
  */
 @Slf4j
 @RestController
-@RequestMapping("/processes")
 public class DeploymentEndpoint {
     @Autowired
     ProcessManagerService processManagerService;
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/processes", produces = MediaType.APPLICATION_JSON_VALUE)
     public RestResponse<List<String>> processes() {
         return RestResponse.success(processManagerService.listProcesses());
     }
 
-    @PostMapping(
+    @PostMapping(path = "/processes/archive",
             consumes = MediaType.TEXT_PLAIN_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<String> deployProcess(@RequestBody @NotNull @NotBlank String diagramPath) {
+    public RestResponse<DeploymentInfo> deployProcess(@RequestBody @NotNull @NotBlank String diagramPath) {
         try {
-            return RestResponse.success(processManagerService.deployProcess(diagramPath));
+            return RestResponse.success(processManagerService.deployProcessArchive(diagramPath));
         } catch (FileNotFoundException e) {
             throw new NotFoundException(ErrorCodes.ERROR_FILE_NOT_FOUND.name(), "Diagram file was not found", diagramPath, e);
         } catch (InitializationException e) {
@@ -58,7 +67,7 @@ public class DeploymentEndpoint {
     }
 
     @DeleteMapping(
-            path = "/{processName}",
+            path = "/processes/{processName}",
             consumes = MediaType.TEXT_PLAIN_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -69,6 +78,68 @@ public class DeploymentEndpoint {
             return RestResponse.success(processName);
         } catch (InitializationException e) {
             throw new DeploymentException(ErrorCodes.PROCESSING_FAILED.name(), "Process undeployment failed", processName, e);
+        }
+    }
+
+    @GetMapping(path = "/deployments", produces = MediaType.APPLICATION_JSON_VALUE)
+    public RestResponse<List<DeploymentInfo>> deployments() {
+        return RestResponse.success(processManagerService.listDeployments());
+    }
+
+    @PostMapping(path = "/deployments",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseStatus(HttpStatus.CREATED)
+    public RestResponse<DeploymentInfo> deploy(@RequestPart @NotNull @NotBlank
+                                           @Parameter(schema = @Schema(type = "string", format = "string")) String deploymentName,
+                                       @RequestPart MultipartFile[] files,
+                                       HttpServletResponse response) {
+        var resources = new LinkedHashMap<String, InputStream>();
+        try {
+            for (MultipartFile file : files) {
+                resources.put(deploymentName + '/' + file.getOriginalFilename(), file.getInputStream());
+            }
+            var traceId = TraceUtils.toParent();
+            response.setHeader(TRACE_ID_HEADER, traceId.getValue());
+            return RestResponse.success(processManagerService.deploy(deploymentName, resources));
+        } catch (Exception e) {
+            throw new DeploymentException(ErrorCodes.PROCESSING_FAILED.name(), "Deployment initialization failed", deploymentName, e);
+        } finally {
+            for (Map.Entry<String, InputStream> resource : resources.entrySet()) {
+                try {
+                    resource.getValue().close();
+                } catch (IOException ex) {
+                    // todo naming service
+                    log.warn("Resources was not closed correctly: " + resource.getKey(), ex);
+                }
+            }
+        }
+    }
+
+    @DeleteMapping(
+            path = "/deployments/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseStatus(HttpStatus.OK)
+    public RestResponse<List<DeploymentInfo>> undeploy(@PathVariable("id") @NotNull @NotBlank String id) {
+        try {
+            return RestResponse.success(processManagerService.undeploy(id, null));
+        } catch (InitializationException e) {
+            throw new DeploymentException(ErrorCodes.PROCESSING_FAILED.name(), "Process undeployment failed", id, e);
+        }
+    }
+
+    @DeleteMapping(
+            path = "/deployments",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseStatus(HttpStatus.OK)
+    public RestResponse<List<DeploymentInfo>> undeployByName(@RequestParam("name") @NotNull @NotBlank String name) {
+        try {
+            return RestResponse.success(processManagerService.undeploy(null, name));
+        } catch (InitializationException e) {
+            throw new DeploymentException(ErrorCodes.PROCESSING_FAILED.name(), "Process undeployment failed", name, e);
         }
     }
 }

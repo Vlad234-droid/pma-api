@@ -1,6 +1,6 @@
 package com.tesco.pma.review.domain;
 
-import com.tesco.pma.api.ReviewType;
+import com.tesco.pma.cycle.api.PMReviewType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +17,7 @@ import java.util.UUID;
 @Builder
 public class PMCycleReviewTypeProperties {
     UUID cycleUuid;
-    ReviewType type;
+    PMReviewType type;
     Integer min;
     Integer max;
 }

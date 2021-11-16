@@ -122,6 +122,9 @@ class PMCycleDAOTest extends AbstractDAOTest {
         return PMCycle.builder()
                 .name(TEST_CYCLE_NAME)
                 .status(ACTIVE)
+                .type(PMCycleType.HIRING)
+                .createdBy(COLLEAGUE_UUID)
+                .uuid(CYCLE_CREATE_UUID)
                 .type(PMCycleType.HIRING_DATE)
                 .createdBy(ColleagueSimple
                         .builder()

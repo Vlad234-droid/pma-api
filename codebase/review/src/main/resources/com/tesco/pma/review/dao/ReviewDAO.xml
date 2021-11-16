@@ -16,14 +16,14 @@
         <result property="colleagueUuid" column="colleague_uuid"/>
         <result property="performanceCycleUuid" column="performance_cycle_uuid"/>
         <result property="type" column="type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.api.ReviewType"/>
+                javaType="com.tesco.pma.cycle.api.PMReviewType"/>
         <result property="number" column="number"/>
         <result property="properties" column="properties"
                 typeHandler="com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler"
                 javaType="com.tesco.pma.api.MapJson"/>
         <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.api.ReviewStatus"/>
+                javaType="com.tesco.pma.cycle.api.PMReviewStatus"/>
     </resultMap>
 
     <resultMap id="colleagueReviewsResultMap" type="com.tesco.pma.review.domain.ColleagueReviews">
@@ -36,10 +36,10 @@
             <id property="uuid" column="review_uuid"/>
             <result property="type" column="review_type_id"
                     typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                    javaType="com.tesco.pma.api.ReviewType"/>
+                    javaType="com.tesco.pma.cycle.api.PMReviewType"/>
             <result property="status" column="review_status_id"
                     typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                    javaType="com.tesco.pma.api.ReviewStatus"/>
+                    javaType="com.tesco.pma.cycle.api.PMReviewStatus"/>
             <result property="number" column="review_number"/>
         </collection>
     </resultMap>
@@ -62,11 +62,11 @@
         <id property="cycleUuid" column="cycle_uuid"/>
         <result property="colleagueUuid" column="colleague_uuid"/>
         <result property="type" column="review_type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.api.ReviewType"/>
+                javaType="com.tesco.pma.cycle.api.PMReviewType"/>
         <collection property="statusStats" ofType="com.tesco.pma.review.domain.ReviewStatusCounter">
             <id property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.api.ReviewStatus"/>
+                javaType="com.tesco.pma.cycle.api.PMReviewStatus"/>
             <result property="count" column="cnt"/>
         </collection>
     </resultMap>
@@ -164,10 +164,10 @@
         VALUES (#{review.uuid},
                 #{review.colleagueUuid},
                 #{review.performanceCycleUuid},
-                #{review.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.api.ReviewType},
+                #{review.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMReviewType},
                 #{review.number},
                 #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-                #{review.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.api.ReviewStatus});
+                #{review.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMReviewStatus});
     </insert>
 
     <select id="getReview" resultMap="reviewResultMap">
@@ -315,15 +315,15 @@
 
     <select id="getPMCycleReviewTypeProperties" resultMap="cycleReviewTypePropertiesResultMap">
         select r.cycle_uuid,
-               upper(json_extract_path_text(r.timeline_points, 'reviewType', 'code'))   as review_type_code,
+               upper(json_extract_path_text(r.timeline_points, 'reviewType'))   as review_type_code,
                json_extract_path_text(r.timeline_points, 'properties', 'pm_review_min') as min,
        json_extract_path_text(r.timeline_points, 'properties', 'pm_review_max') as max
         from (select c.uuid                                                                         as cycle_uuid,
             json_array_elements((metadata -> 'cycle' -> 'timelinePoints')::json) as timeline_points
             from pm_cycle c
             where c.uuid = #{cycleUuid}) as r
-        where upper(json_extract_path_text(r.timeline_points, 'type', 'code')) = 'REVIEW'
-          and upper(json_extract_path_text(r.timeline_points, 'reviewType', 'code')) = #{type}
+        where upper(json_extract_path_text(r.timeline_points, 'type')) = 'REVIEW'
+          and upper(json_extract_path_text(r.timeline_points, 'reviewType')) = #{type}
     </select>
 
     <select id="getReviewStats" resultMap="reviewStatsResultMap">
@@ -345,10 +345,10 @@
     <select id="getTimeline" resultMap="cycleTimelinePointResultMap">
         with timeline_point_enriched as (
             select tp.cycle_uuid,
-                   json_extract_path_text(tp.timeline_point, 'code')                  as timeline_code,
-                   json_extract_path_text(tp.timeline_point, 'description')           as timeline_description,
-                   upper(json_extract_path_text(tp.timeline_point, 'type', 'code'))   as element_type_code,
-                   upper(json_extract_path_text(tp.timeline_point, 'reviewType', 'code')) as review_type_code,
+                   json_extract_path_text(tp.timeline_point, 'code')                as timeline_code,
+                   json_extract_path_text(tp.timeline_point, 'description')         as timeline_description,
+                   upper(json_extract_path_text(tp.timeline_point, 'type'))         as element_type_code,
+                   upper(json_extract_path_text(tp.timeline_point, 'reviewType'))   as review_type_code,
                    json_extract_path_text(tp.timeline_point, 'properties', 'pm_type') as props_type,
                    tp.timeline_point
             from (select c.uuid                                                                         as cycle_uuid,
