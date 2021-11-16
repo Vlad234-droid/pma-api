@@ -106,15 +106,6 @@ public interface ConfigEntryDAO {
     List<ColleagueEntity> findColleaguesByTypes(@Param("key") String key);
 
     /**
-     * Get colleague suggestions by full name
-     *
-     * @param names
-     * @return list colleagues
-     */
-    List<com.tesco.pma.colleague.api.Colleague> findColleagueSuggestionsByFullName(@Param("names") List<String> names,
-                                                                                   @Param("managerId") UUID managerId);
-
-    /**
      * Gets all structure for config entry
      *
      * @param configEntryUuid - config entry identifier

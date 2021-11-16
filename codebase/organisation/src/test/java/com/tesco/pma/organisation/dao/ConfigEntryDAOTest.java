@@ -2,6 +2,7 @@ package com.tesco.pma.organisation.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.api.GeneralDictionaryItem;
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.WorkingConfigEntry;
@@ -12,7 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import java.util.List;
+
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -223,38 +224,6 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
                 .collect(Collectors.toSet());
 
         assertTrue(colleagueUuids.containsAll(uuids));
-
-    }
-
-    @Test
-    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues-config.xml"})
-    void findColleagueSuggestionsByFullName() {
-        assertEquals(9, dao.findColleagueSuggestionsByFullName(List.of("first"), null).size());
-        assertEquals(2, dao.findColleagueSuggestionsByFullName(List.of("john"), null).size());
-        assertEquals(1, dao.findColleagueSuggestionsByFullName(List.of("ro"), null).size());
-        assertEquals(2, dao.findColleagueSuggestionsByFullName(List.of("dow"), null).size());
-        assertEquals(2, dao.findColleagueSuggestionsByFullName(List.of("ohn"), null).size());
-        assertEquals(1, dao.findColleagueSuggestionsByFullName(List.of("rodgers"), null).size());
-        assertEquals(1, dao.findColleagueSuggestionsByFullName(List.of("ron", "rodgers"), null).size());
-
-        var colleague = dao.findColleagueSuggestionsByFullName(List.of("john", "dow"), null).get(0);
-
-        assertEquals("119e0d2b-1dc2-409f-8198-ecd66e59d47a", colleague.getColleagueUUID().toString());
-        assertEquals("Tesco Bank", colleague.getWorkRelationships().get(0).getPrimaryEntity());
-        assertEquals(WorkLevel.WL1, colleague.getWorkRelationships().get(0).getWorkLevel());
-        assertEquals("2", colleague.getWorkRelationships().get(0).getJob().getId());
-        assertEquals("ANNUAL", colleague.getWorkRelationships().get(0).getSalaryFrequency());
-        assertEquals("ET", colleague.getWorkRelationships().get(0).getEmploymentType());
-        //assertEquals("c409869b-2acf-45cd-8cc6-e13af2e6f935", colleague.getWorkRelationships().get(0).getManagerUUID().toString());
-        assertEquals("4", colleague.getWorkRelationships().get(0).getDepartment().getId());
-        assertEquals("John", colleague.getProfile().getFirstName());
-        assertEquals("Dow", colleague.getProfile().getLastName());
-        assertEquals("Michael", colleague.getProfile().getMiddleName());
-        assertEquals("test@test", colleague.getContact().getEmail());
-        assertEquals("TPX2", colleague.getExternalSystems().getIam().getId());
-        assertEquals("Test", colleague.getExternalSystems().getIam().getSource());
-        assertNotNull(colleague.getServiceDates().getHireDate());
-        assertNotNull(colleague.getServiceDates().getLeavingDate());
 
     }
 

@@ -33,34 +33,6 @@
         <association property="department" autoMapping="true" columnPrefix="d_"/>
     </resultMap>
 
-    <resultMap id="colleagueApiMap" type="com.tesco.pma.colleague.api.Colleague">
-        <id column="uuid" property="colleagueUUID"/>
-        <result column="co_code" property="countryCode"/>
-
-        <association property="profile" autoMapping="true" columnPrefix="p_"/>
-        <association property="contact" autoMapping="true" columnPrefix="c_"/>
-        <association property="serviceDates" autoMapping="true" columnPrefix="sd_"/>
-
-        <association property="externalSystems">
-            <association property="iam" autoMapping="true" columnPrefix="iam_"/>
-        </association>
-
-        <collection property="workRelationships" ofType="com.tesco.pma.colleague.api.workrelationships.WorkRelationship">
-            <result column="primary_entity" property="primaryEntity"/>
-            <result column="salary_frequency" property="salaryFrequency"/>
-            <result column="is_manager" property="isManager"/>
-            <result column="manager_uuid" property="managerUuid"/>
-            <result column="employment_type" property="employmentType"/>
-
-            <result column="wl_code"  javaType="com.tesco.pma.colleague.api.workrelationships.WorkLevel"
-                    typeHandler="com.tesco.pma.colleague.api.workrelationships.WorkLevelHandler"
-                    property="workLevel"/>
-
-            <association property="job" autoMapping="true" columnPrefix="j_"/>
-            <association property="department" autoMapping="true" columnPrefix="d_"/>
-        </collection>
-    </resultMap>
-
     <select id="findColleaguesByTypes" resultMap="colleagueMap">
         SELECT c.uuid,
         c.first_name,
@@ -530,50 +502,4 @@
         WHERE uuid = #{uuid};
     </delete>
 
-    <select id="findColleagueSuggestionsByFullName" resultMap="colleagueApiMap">
-        SELECT
-
-        c.uuid,
-        c.first_name as p_firstName,
-        c.middle_name as p_middleName,
-        c.last_name as p_lastName,
-        c.email as c_email,
-        c.primary_entity,
-        c.salary_frequency,
-        c.iam_source,
-        c.iam_id,
-        c.manager_uuid,
-        c.employment_type,
-        c.hire_date as sd_hireDate,
-        c.leaving_date as sd_leavingDate,
-        c.is_manager,
-        j.id            as j_id,
-        j.code          as j_code,
-        j.name          as j_name,
-        j.cost_category as j_costCategory,
-        co.code         as co_code,
-        co.name         as co_name,
-        wl.code         as wl_code,
-        wl.name         as wl_name,
-        d.id            as d_id,
-        d.name          as d_name,
-        d.business_type as d_businessType
-
-        FROM colleague c
-        JOIN job j ON j.id = c.job_id
-        JOIN country co ON co.code = c.country_code
-        JOIN work_level wl ON wl.code = c.work_level
-        JOIN department d ON d.id = c.department_id
-
-        WHERE
-        <foreach item="name" index="i" collection="names" open="(" separator=" OR " close=")">
-            lower(c.first_name) like '%${name}%'
-            OR lower(c.middle_name) like '%${name}%'
-            OR lower(c.last_name) like '%${name}%'
-        </foreach>
-
-        <if test="managerId!=null">
-            AND c.manager_uuid = #{managerId}
-        </if>
-    </select>
 </mapper>

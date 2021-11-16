@@ -71,4 +71,6 @@ public interface ProfileService {
      */
     ColleagueEntity getColleague(UUID colleagueUuid);
 
+    List<Colleague> getSuggestions(String fullName, UUID managerId);
+
 }
