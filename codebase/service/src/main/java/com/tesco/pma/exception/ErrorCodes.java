@@ -8,26 +8,6 @@ public enum ErrorCodes implements ErrorCodeAware {
      * File not found
      */
     ERROR_FILE_NOT_FOUND,
-    /**
-     * Subsidiary does not exist
-     */
-    SUBSIDIARY_DOES_NOT_EXIST,
-    /**
-     * Subsidiaries were not found
-     */
-    SUBSIDIARIES_NOT_FOUND,
-    /**
-     * Subsidiary was not found
-     */
-    SUBSIDIARY_NOT_FOUND,
-    /**
-     * Subsidiary already exists
-     */
-    SUBSIDIARY_ALREADY_EXISTS,
-    /**
-     * Subsidiary name already exists
-     */
-    SUBSIDIARY_NAME_ALREADY_EXISTS,
 
     MESSAGE_NOT_READABLE_EXCEPTION,
     /**
@@ -104,14 +84,6 @@ public enum ErrorCodes implements ErrorCodeAware {
      * Failed to accept traffic
      */
     READINESS_STATE_ERROR,
-    /**
-     * Subsidiary Permission was not found
-     */
-    SUBSIDIARY_PERMISSION_NOT_FOUND,
-    /**
-     * Subsidiary Permission already exists
-     */
-    SUBSIDIARY_PERMISSION_ALREADY_EXISTS,
     /**
      * Event accepted but not published (e.g. it is a duplicate)
      */

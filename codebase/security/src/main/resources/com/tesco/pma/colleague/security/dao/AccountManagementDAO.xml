@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.colleague.security.dao.AccountManagementDAO">
+
+    <resultMap id="accountResultMap" type="com.tesco.pma.colleague.security.domain.Account">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="type" column="type_id"
+                typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.colleague.security.domain.AccountType"/>
+        <result property="status" column="status_id"
+                typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.colleague.security.domain.AccountStatus"/>
+        <result property="iamId" column="iam_id"/>
+        <result property="lastLogin" column="last_login"/>
+        <result property="employeeNumber" column="employee_number"/>
+    </resultMap>
+
+    <resultMap id="accountsResultMap" type="com.tesco.pma.colleague.security.domain.Account"
+               extends="accountResultMap">
+        <collection property="roles" ofType="com.tesco.pma.colleague.security.domain.Role">
+            <result property="id" column="role_id"/>
+            <result property="code" column="role_code"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="rolesResultMap" type="com.tesco.pma.colleague.security.domain.Role">
+        <result property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="description" column="description"/>
+    </resultMap>
+
+    <select id="findAllRoles" resultMap="rolesResultMap">
+        SELECT *
+        FROM pm_role
+    </select>
+
+    <select id="findAccountByName" resultMap="accountResultMap">
+        SELECT * FROM pm_account WHERE name = #{name}
+    </select>
+
+    <select id="get" resultMap="accountsResultMap">
+        SELECT
+        a.id as id,
+        a.name as name,
+        a.type_id as type_id,
+        a.status_id as status_id,
+        a.iam_id as iam_id,
+        a.employee_number as employee_number,
+        a.last_login as last_login,
+        r.id as role_id,
+        r.code as role_code
+        FROM (SELECT * FROM pm_account
+            ORDER BY name
+            <if test="requestQuery.limit != null">
+                LIMIT #{requestQuery.limit}
+                <if test="requestQuery.offset != null">
+                    OFFSET #{requestQuery.offset}
+                </if>
+            </if>
+        ) a
+        LEFT JOIN pm_account_role ar on a.id = ar.account_id
+        LEFT JOIN pm_role r on ar.role_id = r.id
+        ORDER BY name;
+    </select>
+
+    <insert id="create">
+        INSERT INTO pm_account (id, name, iam_id, status_id, type_id, last_login)
+        VALUES (#{id},
+                #{name},
+                #{iamId},
+                #{status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.colleague.security.domain.AccountStatus},
+                #{type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.colleague.security.domain.AccountType},
+                #{now})
+    </insert>
+
+    <update id="disableAccount" flushCache="true">
+        UPDATE pm_account
+        SET status_id = #{status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.colleague.security.domain.AccountStatus},
+            last_login = #{now}
+        WHERE name = #{name}
+    </update>
+
+    <update id="enableAccount" flushCache="true">
+        UPDATE pm_account
+        SET status_id = #{status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.colleague.security.domain.AccountStatus},
+            last_login = #{now}
+        WHERE name = #{name}
+    </update>
+
+    <insert id="assignRole" flushCache="true">
+        INSERT INTO pm_account_role (account_id, role_id)
+        VALUES (#{accountId},
+                #{roleId})
+    </insert>
+
+    <delete id="removeRole" flushCache="true">
+        DELETE
+        FROM pm_account_role
+        WHERE account_id = #{accountId}
+          AND role_id = #{roleId}
+    </delete>
+
+    <select id="findAccountByIamId" resultMap="accountsResultMap">
+        SELECT
+        a.id as id,
+        a.name as name,
+        a.type_id as type_id,
+        a.status_id as status_id,
+        a.iam_id as iam_id,
+        a.employee_number as employee_number,
+        a.last_login as last_login,
+        r.id as role_id,
+        r.code as role_code
+        FROM pm_account a
+        LEFT JOIN pm_account_role ar on a.id = ar.account_id
+        LEFT JOIN pm_role r on ar.role_id = r.id
+        WHERE iam_id = #{iamId};
+    </select>
+
+</mapper>

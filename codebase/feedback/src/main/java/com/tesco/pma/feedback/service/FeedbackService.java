@@ -3,7 +3,12 @@ package com.tesco.pma.feedback.service;
 import com.tesco.pma.feedback.api.Feedback;
 import com.tesco.pma.feedback.api.FeedbackItem;
 import com.tesco.pma.pagination.RequestQuery;
+import com.tesco.pma.validation.ValidationGroup;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.groups.Default;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,7 +23,8 @@ public interface FeedbackService {
      * @param feedback the entity to save.
      * @return the persisted entity.
      */
-    Feedback create(Feedback feedback);
+    @Validated({ValidationGroup.OnCreate.class, Default.class})
+    Feedback create(@NotNull @Valid Feedback feedback);
 
     /**
      * Partially updates a feedback.
@@ -49,7 +55,8 @@ public interface FeedbackService {
      * @param feedback the entity to update.
      * @return the persisted entity.
      */
-    Feedback update(Feedback feedback);
+    @Validated({ValidationGroup.OnUpdate.class, Default.class})
+    Feedback update(@NotNull @Valid Feedback feedback);
 
     /**
      * Save a feedbackItem.

@@ -54,7 +54,7 @@
                 #{cycle.startTime},
                 #{cycle.endTime},
                 #{cycle.properties},
-                #{cycle.jsonMetadata}
+                #{cycle.jsonMetadata}::jsonb
                 );
     </insert>
 
