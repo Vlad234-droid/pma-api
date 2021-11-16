@@ -1,11 +1,8 @@
 package com.tesco.pma.cycle.dao;
 
 import com.tesco.pma.api.DictionaryFilter;
-import com.tesco.pma.api.ReviewType;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
-import com.tesco.pma.cycle.api.PMCycleTimelinePoint;
-import com.tesco.pma.cycle.api.ReviewCounter;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.Instant;
@@ -21,7 +18,7 @@ public interface PMCycleDAO {
     }
 
     void createInt(@Param("cycle") PMCycle cycle,
-                @Param("now") Instant now);
+                   @Param("now") Instant now);
 
     int updateStatus(@Param("uuid") UUID uuid,
                      @Param("status") PMCycleStatus status,
@@ -31,13 +28,6 @@ public interface PMCycleDAO {
 
     PMCycle read(@Param("uuid") UUID uuid);
 
-    int publish(@Param("uuid") PMCycle cycle);
-
-    int update(@Param("cycle") PMCycle cycle,
-               @Param("statusFilter") DictionaryFilter<PMCycleStatus> statusFilter);
-
-    PMCycle getCurrentByColleague(UUID colleagueUuid);
-
     List<PMCycle> getByColleague(@Param("colleagueUuid") UUID colleagueUuid,
                                  @Param("statusFilter") DictionaryFilter<PMCycleStatus> statusFilter);
 
@@ -45,11 +35,5 @@ public interface PMCycleDAO {
         return getByColleague(colleagueUuid, null);
     }
 
-    List<PMCycleTimelinePoint> readTimeline(@Param("uuid") UUID uuid);
-
     int updateMetadata(@Param("uuid") UUID uuid, @Param("metadata") String metadata);
-
-    List<ReviewCounter> getReviewsCountByStatus(@Param("type") ReviewType reviewType,
-                                          @Param("pmc_uuid") UUID performanceCycleUUID,
-                                          @Param("colleague_uuid") UUID colleagueUUID);
 }

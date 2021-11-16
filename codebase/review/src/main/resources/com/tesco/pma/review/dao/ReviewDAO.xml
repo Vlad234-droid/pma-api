@@ -51,6 +51,35 @@
         <result property="updateTime" column="updated_time"/>
     </resultMap>
 
+    <resultMap id="cycleReviewTypePropertiesResultMap" type="com.tesco.pma.review.domain.PMCycleReviewTypeProperties">
+        <id property="cycleUuid" column="cycle_uuid"/>
+        <result property="type" column="review_type_code" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="min" column="min"/>
+        <result property="max" column="max"/>
+    </resultMap>
+
+    <resultMap id="reviewStatsResultMap" type="com.tesco.pma.review.domain.ReviewStats">
+        <id property="cycleUuid" column="cycle_uuid"/>
+        <result property="colleagueUuid" column="colleague_uuid"/>
+        <result property="type" column="review_type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.api.ReviewType"/>
+        <collection property="statusStats" ofType="com.tesco.pma.review.domain.ReviewStatusCounter">
+            <id property="status" column="status_id"
+                typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.api.ReviewStatus"/>
+            <result property="count" column="cnt"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="cycleTimelinePointResultMap" type="com.tesco.pma.review.domain.PMCycleTimelinePoint">
+        <result property="cycleUuid" column="cycle_uuid"/>
+        <result property="code" column="timeline_code"/>
+        <result property="description" column="timeline_description"/>
+        <result property="type" column="element_type_code" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="reviewType" column="review_type_code" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="startDate" column="start_date" typeHandler="org.apache.ibatis.type.LocalDateTypeHandler"/>
+    </resultMap>
+
     <insert id="createGroupObjective" flushCache="true">
         INSERT INTO group_objective
         (uuid,
@@ -187,7 +216,7 @@
                  inner join department d
                             on (d.id = c.department_id)
                  left join review r
-                            on (c.uuid = r.colleague_uuid)
+                           on (c.uuid = r.colleague_uuid)
         where c.manager_uuid = #{managerUuid}
         order by c.last_name, c.first_name, r.type_id, r.status_id, r.uuid
     </select>
@@ -284,4 +313,58 @@
         where go.business_unit_uuid = #{businessUnitUuid}
     </sql>
 
+    <select id="getPMCycleReviewTypeProperties" resultMap="cycleReviewTypePropertiesResultMap">
+        select r.cycle_uuid,
+               upper(json_extract_path_text(r.timeline_points, 'reviewType', 'code'))   as review_type_code,
+               json_extract_path_text(r.timeline_points, 'properties', 'pm_review_min') as min,
+       json_extract_path_text(r.timeline_points, 'properties', 'pm_review_max') as max
+        from (select c.uuid                                                                         as cycle_uuid,
+            json_array_elements((metadata -> 'data' -> 'cycle' -> 'timelinePoints')::json) as timeline_points
+            from pm_cycle c
+            where c.uuid = #{cycleUuid}) as r
+        where upper(json_extract_path_text(r.timeline_points, 'type', 'code')) = 'REVIEW'
+          and upper(json_extract_path_text(r.timeline_points, 'reviewType', 'code')) = #{type}
+    </select>
+
+    <select id="getReviewStats" resultMap="reviewStatsResultMap">
+        select r.performance_cycle_uuid as cycle_uuid,
+               r.colleague_uuid,
+               r.type_id                as review_type_id,
+               r.status_id,
+               count(*)                 as cnt
+        from review r
+        where r.performance_cycle_uuid = #{cycleUuid}
+          and r.colleague_uuid = #{colleagueUuid}
+          and r.type_id = #{type.id}
+        group by r.performance_cycle_uuid,
+                 r.colleague_uuid,
+                 r.type_id,
+                 r.status_id
+    </select>
+
+    <select id="getTimeline" resultMap="cycleTimelinePointResultMap">
+        with timeline_point_enriched as (
+            select tp.cycle_uuid,
+                   json_extract_path_text(tp.timeline_point, 'code')                  as timeline_code,
+                   json_extract_path_text(tp.timeline_point, 'description')           as timeline_description,
+                   upper(json_extract_path_text(tp.timeline_point, 'type', 'code'))   as element_type_code,
+                   upper(json_extract_path_text(tp.timeline_point, 'reviewType', 'code')) as review_type_code,
+                   json_extract_path_text(tp.timeline_point, 'properties', 'pm_type') as props_type,
+                   tp.timeline_point
+            from (select c.uuid                                                                         as cycle_uuid,
+                         json_array_elements((metadata -> 'data' -> 'cycle' -> 'timelinePoints')::json) as timeline_point
+                  from pm_cycle c
+                  where c.uuid = #{cycleUuid}) as tp)
+        select tpe.cycle_uuid,
+               tpe.timeline_code,
+               tpe.timeline_description,
+               tpe.element_type_code,
+               tpe.review_type_code,
+               to_date(json_extract_path_text(tpe.timeline_point, 'properties',
+                                              concat('pm_', tpe.props_type, '_start_time')), 'YYYY-MM-DD') as start_date,
+               json_extract_path_text(tpe.timeline_point, 'properties',
+                                      concat('pm_', tpe.props_type, '_start_delay'))                       as start_delay
+        from timeline_point_enriched tpe
+        order by json_extract_path_text(tpe.timeline_point, 'properties', concat('pm_', tpe.props_type, '_start_time'))
+    </select>
 </mapper>

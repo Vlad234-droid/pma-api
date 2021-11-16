@@ -3,7 +3,6 @@ package com.tesco.pma.cycle.service.rest;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
-import com.tesco.pma.cycle.api.PMCycleTimelinePoint;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.rest.HttpStatusCodes;
@@ -112,22 +111,6 @@ public class PMCycleEndpoint {
     @GetMapping(value = "/pm-cycles/{uuid}", produces = APPLICATION_JSON_VALUE)
     public RestResponse<PMCycle> get(@PathVariable("uuid") UUID uuid) {
         return success(service.get(uuid));
-    }
-
-    @Operation(summary = "Get cycle timeline by the cycle identifier",
-            tags = {"performance-cycle"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the cycle timeline")
-    @GetMapping(value = "/pm-cycles/{uuid}/timeline", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    public RestResponse<List<PMCycleTimelinePoint>> getTimeline(@PathVariable UUID uuid) {
-        return RestResponse.success(service.getCycleTimeline(uuid));
-    }
-
-    @Operation(summary = "Get cycle timeline for colleague",
-            tags = {"performance-cycle"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the cycle timeline")
-    @GetMapping(value = "/colleagues/{colleagueUuid}/timeline", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    public RestResponse<List<PMCycleTimelinePoint>> getTimelineByColleague(@PathVariable UUID colleagueUuid) {
-        return RestResponse.success(service.getCycleTimelineByColleague(colleagueUuid));
     }
 
     @Operation(summary = "Get full metadata for colleague",
