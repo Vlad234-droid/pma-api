@@ -249,11 +249,11 @@
             <column name="template_uuid">3fa85f64-5717-4562-b3fc-2c963f66afa5</column>
             <column name="name">type_4</column>
             <column name="status_id">1</column>
-            <column name="type_id">1</column>
+            <column name="type_id">2</column>
             <column name="created_by">3fa85f64-5717-4562-b3fc-2c963f66afa4</column>
             <column name="creation_time">2021-10-04 17:03:23.020000</column>
-            <column name="start_time">2021-10-04 17:03:23.020000</column>
-            <column name="end_time">2021-12-04 17:03:29.770000</column>
+            <column name="start_time">2021-01-01 17:03:23.020000</column>
+            <column name="end_time">2021-12-31 17:03:29.770000</column>
             <column name="metadata"><![CDATA[
 {
   "cycle": {
@@ -335,10 +335,19 @@
             <column name="start_time">2021-11-04 17:06:23.055000</column>
             <column name="end_time">2021-12-04 17:06:35.739000</column>
         </insert>
+        <insert tableName="pm_colleague_cycle">
+            <column name="uuid">3fa85f64-5717-4562-b3fc-2c963f66af10</column>
+            <column name="colleague_uuid">10000000-0000-0000-0000-000000000004</column>
+            <column name="cycle_uuid">3fa85f64-5717-4562-b3fc-2c963f66af10</column>
+            <column name="status_id">1</column>
+            <column name="start_time">2021-02-01 17:06:23.055000</column>
+            <column name="end_time">2022-01-31 17:06:35.739000</column>
+        </insert>
         <rollback>
             <delete tableName="pm_colleague_cycle">
                 <where>uuid in ('3fa85f64-5717-4562-b3fc-2c963f66afa2',
                     '3fa85f64-5717-4562-b3fc-2c963f66afa3',
+                    '3fa85f64-5717-4562-b3fc-2c963f66af10',
                     '3fa85f64-5717-4562-b3fc-2c963f66afa1')</where>
             </delete>
         </rollback>
