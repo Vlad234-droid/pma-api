@@ -183,7 +183,8 @@ public class ProfileServiceImpl implements ProfileService {
 
     private NotFoundException notFound(String paramName, Object paramValue) {
         return new NotFoundException(ErrorCodes.PROFILE_NOT_FOUND.getCode(),
-                messages.getMessage(ErrorCodes.PROFILE_NOT_FOUND, Map.of("param_name", paramName, "param_value", paramValue)));
+                messages.getMessage(ErrorCodes.PROFILE_NOT_FOUND,
+                        Map.of("param_name", paramName, "param_value", paramValue)));
     }
 
 }

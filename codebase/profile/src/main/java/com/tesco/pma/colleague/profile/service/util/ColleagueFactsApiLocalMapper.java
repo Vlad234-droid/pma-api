@@ -186,7 +186,7 @@ public class ColleagueFactsApiLocalMapper {
                 com.tesco.pma.organisation.api.Colleague.WorkLevel workLevel =
                         new com.tesco.pma.organisation.api.Colleague.WorkLevel();
                 workLevel.setCode(workRelationship.getWorkLevel().name());
-                workLevel.setName(UNDEFINED_VALUE);
+                workLevel.setName("Work Level #");
                 destination.setWorkLevel(workLevel);
 
                 com.tesco.pma.organisation.api.Colleague.Department department =
