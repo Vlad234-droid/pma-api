@@ -20,8 +20,12 @@ public class PMFormElement extends PMElement {
     private String key;
     private String json;
 
+    public PMFormElement() {
+        setType(PMElementType.FORM);
+    }
+
     public PMFormElement(String key, String code, String json) {
-        super(null, code, null, PMElementType.FORM);
+        super(key, code, null, PMElementType.FORM);
         this.key = key;
         this.json = json;
     }

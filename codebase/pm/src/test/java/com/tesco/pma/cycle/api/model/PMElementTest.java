@@ -13,12 +13,12 @@ class PMElementTest {
 
     @Test
     void pmCycleElementConstants() {
-        check(PMCycleElement.getPropertyNames(), 4);
+        check(PMCycleElement.getPropertyNames(), 6);
     }
 
     @Test
     void pmReviewElementConstants() {
-        check(PMReviewElement.getPropertyNames(), 9);
+        check(PMReviewElement.getPropertyNames(), 8);
     }
 
     @Test

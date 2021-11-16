@@ -55,7 +55,7 @@ public class PMProcessEndpoint {
                                                 @Parameter(in = ParameterIn.QUERY, name = "params",
                                                         style = ParameterStyle.FORM, schema = @Schema(type = "object"),
                                                         explode = Explode.TRUE,
-                                                        example = "{\"p1\":\"v1\",\"p2\":\"v2\"") String paramsObj,
+                                                        example = "{\"p1\":\"v1\",\"p2\":\"v2\"}") String paramsObj,
                                                 HttpServletRequest request) {
 
         Map<String, String> parameters = request.getParameterMap() == null ? null

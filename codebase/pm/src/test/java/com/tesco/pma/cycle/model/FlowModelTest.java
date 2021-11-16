@@ -127,6 +127,8 @@ class FlowModelTest {
         assertNotNull(metadata);
         var cycle = metadata.getCycle();
         assertNotNull(cycle);
+        assertEquals(processName, cycle.getId());
+        assertEquals(processName, cycle.getCode());
 
         assertEquals(tlSize, cycle.getTimelinePoints().size());
 

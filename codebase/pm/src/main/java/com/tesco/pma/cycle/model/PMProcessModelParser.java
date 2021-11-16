@@ -2,6 +2,7 @@ package com.tesco.pma.cycle.model;
 
 import com.tesco.pma.api.ReviewType;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.api.model.PMCycleElement;
 import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import com.tesco.pma.cycle.api.model.PMFormElement;
@@ -14,15 +15,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Activity;
+import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperties;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperty;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+import static com.tesco.pma.cycle.api.model.PMCycleElement.PM_CYCLE_TYPE;
 import static com.tesco.pma.cycle.api.model.PMElement.PM_TYPE;
 import static com.tesco.pma.cycle.api.model.PMFormElement.PM_FORM_KEY;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.DEFAULT_PM_REVIEW_MAX;
@@ -52,76 +56,85 @@ public class PMProcessModelParser {
      * Parse the model and return the metadata
      *
      * @param model Parsing model
+     * @return cycle metadata
      * @throws ParseException any exceptions
      */
     public PMCycleMetadata parse(BpmnModelInstance model) {
-        var metadata = new PMCycleMetadata();
-        var cycle = new PMCycleElement();
         var processes = model.getModelElementsByType(org.camunda.bpm.model.bpmn.instance.Process.class);
         if (processes == null || processes.isEmpty()) {
             throw parseException(PM_PARSE_NOT_FOUND, Map.of(KEY, "process", VALUE, "absent"), "process", null);
         }
         var process = processes.iterator().next();
-        cycle.setCode(process.getId());
-        metadata.setCycle(cycle);
-
-        var tasks = model.getModelElementsByType(Activity.class);
-        parse(cycle, tasks);
-
+        PMCycleElement cycle = parseCycle(process);
+        var metadata = new PMCycleMetadata(cycle);
+        model.getModelElementsByType(Activity.class).forEach(task -> processTask(cycle, task));
         return metadata;
     }
-    /**
-     * Parse the tasks and builds the metadata
-     *
-     * @param cycle target cycle
-     * @param tasks tasks collection
-     * @throws ParseException any exceptions
-     */
-    private void parse(PMCycleElement cycle, Collection<Activity> tasks) {
-        tasks.forEach(task -> processTask(cycle, task));
+
+    private PMCycleElement parseCycle(org.camunda.bpm.model.bpmn.instance.Process process) {
+        var cycle = new PMCycleElement();
+        cycle.setId(process.getId());
+        cycle.setCode(process.getId());
+        var props = getCamundaProperties(process);
+
+        props.forEach(property -> {
+            var key = property.getCamundaName().toLowerCase();
+            cycle.getProperties().put(key, property.getCamundaValue());
+            if (PM_CYCLE_TYPE.equals(key)) {
+                cycle.setCycleType(getEnum(PMCycleType.class, key, property.getCamundaValue()));
+            }
+        });
+        return cycle;
+    }
+
+    private Collection<CamundaProperty> getCamundaProperties(BaseElement element) {
+        var extensionElements = element.getExtensionElements();
+        if (extensionElements != null) {
+            var propsQuery = extensionElements.getElementsQuery().filterByType(CamundaProperties.class);
+            if (propsQuery.count() > 0) {
+                return propsQuery.singleResult().getCamundaProperties();
+            }
+        }
+        return Collections.emptyList();
     }
 
     private void processTask(PMCycleElement cycle, Activity task) {
-        var extensionElements = task.getExtensionElements();
-        if (extensionElements != null) {
-            var propsQuery = extensionElements.getElementsQuery().filterByType(CamundaProperties.class);
-            if (propsQuery.count() < 1) {
-                return;
-            }
-            CamundaProperties props = propsQuery.singleResult();
-            Optional<CamundaProperty> typeOptional = props.getCamundaProperties().stream().filter(p ->
-                    p.getCamundaName().equalsIgnoreCase(PM_TYPE) && !StringUtils.isBlank(p.getCamundaValue())
-            ).findFirst();
-            if (typeOptional.isPresent()) {
-                var type = typeOptional.get().getCamundaValue().toLowerCase();
-                if (PM_REVIEW.equals(type)) {
-                    var review = parseReview(task, props);
-                    cycle.getTimelinePoints().add(review);
-                } else if (PM_TIMELINE_POINT.equals(type)) {
-                    cycle.getTimelinePoints().add(parseTimelinePoint(task, props));
-                }
+        var props = getCamundaProperties(task);
+        if (props.isEmpty()) {
+            return;
+        }
+        Optional<CamundaProperty> typeOptional = props.stream().filter(p ->
+                p.getCamundaName().equalsIgnoreCase(PM_TYPE) && !StringUtils.isBlank(p.getCamundaValue())
+        ).findFirst();
+        if (typeOptional.isPresent()) {
+            var type = typeOptional.get().getCamundaValue().toLowerCase();
+            if (PM_REVIEW.equals(type)) {
+                var review = parseReview(task, props);
+                cycle.getTimelinePoints().add(review);
+            } else if (PM_TIMELINE_POINT.equals(type)) {
+                cycle.getTimelinePoints().add(parseTimelinePoint(task, props));
             }
         }
     }
 
-    private PMTimelinePointElement parseTimelinePoint(Activity task, CamundaProperties props) {
+    private PMTimelinePointElement parseTimelinePoint(Activity task, Collection<CamundaProperty> props) {
         var name = defaultValue(unwrap(task.getName()), task.getId());
         var pmTimelinePoint = new PMTimelinePointElement(task.getId(), name, name);
-        props.getCamundaProperties().forEach(property -> {
+        props.forEach(property -> {
             var key = property.getCamundaName().toLowerCase();
             pmTimelinePoint.getProperties().put(key, property.getCamundaValue());
         });
         return pmTimelinePoint;
     }
 
-    private PMReviewElement parseReview(Activity task, CamundaProperties props) {
+    private PMReviewElement parseReview(Activity task, Collection<CamundaProperty> props) {
         var name = defaultValue(unwrap(task.getName()), task.getId());
         var pmReview = new PMReviewElement(task.getId(), name, name);
 
-        props.getCamundaProperties().forEach(property -> {
+        props.forEach(property -> {
             var key = property.getCamundaName().toLowerCase();
             if (PM_REVIEW_TYPE.equals(key)) {
-                pmReview.setReviewType(getReviewType(key, property.getCamundaValue()));
+                pmReview.setReviewType(getEnum(ReviewType.class, key, property.getCamundaValue()));
             }
             pmReview.getProperties().put(key, property.getCamundaValue());
         });
@@ -164,12 +177,12 @@ public class PMProcessModelParser {
         return null;
     }
 
-    private ReviewType getReviewType(String name, String value) {
+    private <E extends Enum<E>> E getEnum(Class<E> type, String name, String value) {
         if (StringUtils.isBlank(value)) {
             throw parseException(PM_PARSE_IS_BLANK, Map.of(KEY, name), name, null);
         }
         try {
-            return ReviewType.valueOf(value.toUpperCase());
+            return Enum.valueOf(type, value.toUpperCase());
         } catch (Exception e) {
             throw parseException(PM_PARSE_NOT_FOUND, Map.of(KEY, name, VALUE, value), name, e);
         }
