@@ -1,6 +1,6 @@
 package com.tesco.pma.cycle.api.model;
 
-import com.tesco.pma.api.ReviewType;
+import com.tesco.pma.cycle.api.PMReviewType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -26,7 +26,7 @@ public class PMReviewElement extends PMTimelinePointElement {
     public static final String DEFAULT_PM_REVIEW_MIN = "1";
     public static final String DEFAULT_PM_REVIEW_MAX = "1";
 
-    private ReviewType reviewType;
+    private PMReviewType reviewType;
     private PMFormElement form;
 
     public PMReviewElement() {

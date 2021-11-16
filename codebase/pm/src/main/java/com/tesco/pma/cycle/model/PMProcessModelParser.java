@@ -1,6 +1,6 @@
 package com.tesco.pma.cycle.model;
 
-import com.tesco.pma.api.ReviewType;
+import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.api.model.PMCycleElement;
@@ -134,7 +134,7 @@ public class PMProcessModelParser {
         props.forEach(property -> {
             var key = property.getCamundaName().toLowerCase();
             if (PM_REVIEW_TYPE.equals(key)) {
-                pmReview.setReviewType(getEnum(ReviewType.class, key, property.getCamundaValue()));
+                pmReview.setReviewType(getEnum(PMReviewType.class, key, property.getCamundaValue()));
             }
             pmReview.getProperties().put(key, property.getCamundaValue());
         });

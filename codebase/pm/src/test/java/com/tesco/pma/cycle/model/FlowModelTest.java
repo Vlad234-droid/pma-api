@@ -1,6 +1,6 @@
 package com.tesco.pma.cycle.model;
 
-import com.tesco.pma.api.ReviewType;
+import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.LocalTestConfig;
 import com.tesco.pma.cycle.api.model.PMElementType;
@@ -143,7 +143,7 @@ class FlowModelTest {
 
     private void checkObjective(String formName, List<PMReviewElement> reviews) {
         Optional<PMReviewElement> oObjective = reviews.stream()
-                .filter(r -> ReviewType.OBJECTIVE.name().equalsIgnoreCase(r.getReviewType().getCode()))
+                .filter(r -> PMReviewType.OBJECTIVE.name().equalsIgnoreCase(r.getReviewType().getCode()))
                 .findFirst();
         assertTrue(oObjective.isPresent());
         PMFormElement form = oObjective.get().getForm();
