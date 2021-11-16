@@ -2,8 +2,8 @@ package com.tesco.pma.organisation.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.api.GeneralDictionaryItem;
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.dao.AbstractDAOTest;
-import com.tesco.pma.organisation.api.Colleague;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.WorkingConfigEntry;
 import org.junit.jupiter.api.Test;
@@ -238,19 +238,6 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
 
     }
 
-    @Test
-    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues-config.xml"})
-    void getColleagueByIamId() {
-        var colleague = dao.getColleagueByIamId("TPX1");
-
-        assertNotNull(colleague);
-        assertEquals(UUID.fromString("c409869b-2acf-45cd-8cc6-e13af2e6f935"), colleague.getUuid());
-        assertNotNull(colleague.getCountry());
-        assertNotNull(colleague.getDepartment());
-        assertNotNull(colleague.getJob());
-        assertNotNull(colleague.getWorkLevel());
-    }
-
     @ParameterizedTest
     @MethodSource("provideArgsForGettingColleagues")
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues-config.xml"})
@@ -260,7 +247,7 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
         assertEquals(colleagueUuids.size(), colleagues.size());
 
         var uuids = colleagues.stream()
-                .map(Colleague::getUuid)
+                .map(ColleagueEntity::getUuid)
                 .collect(Collectors.toSet());
 
         assertTrue(colleagueUuids.containsAll(uuids));

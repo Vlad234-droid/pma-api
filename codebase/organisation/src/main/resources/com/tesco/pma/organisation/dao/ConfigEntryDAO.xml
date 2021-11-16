@@ -12,7 +12,7 @@
         <association property="type" autoMapping="true" columnPrefix="t_"/>
     </resultMap>
 
-    <resultMap id="colleagueMap" type="com.tesco.pma.organisation.api.Colleague">
+    <resultMap id="colleagueMap" type="com.tesco.pma.colleague.profile.domain.ColleagueEntity">
         <id column="uuid" property="uuid"/>
         <result column="first_name" property="firstName"/>
         <result column="middle_name" property="middleName"/>
@@ -544,71 +544,160 @@
         </where>
     </select>
 
-    <select id="getColleague" resultMap="colleagueMap">
-        SELECT c.uuid,
-               c.first_name,
-               c.middle_name,
-               c.last_name,
-               c.email,
-               c.primary_entity,
-               c.salary_frequency,
-               c.iam_source,
-               c.iam_id,
-               c.manager_uuid,
-               c.employment_type,
-               c.hire_date,
-               c.leaving_date,
-               c.is_manager,
-               j.id            as j_id,
-               j.code          as j_code,
-               j.name          as j_name,
-               j.cost_category as j_costCategory,
-               co.code         as co_code,
-               co.name         as co_name,
-               wl.code         as wl_code,
-               wl.name         as wl_name,
-               d.id            as d_id,
-               d.name          as d_name,
-               d.business_type as d_businessType
-        FROM colleague c
-                 JOIN job j ON j.id = c.job_id
-                 JOIN country co ON co.code = c.country_code
-                 JOIN work_level wl ON wl.code = c.work_level
-                 JOIN department d ON d.id = c.department_id
-        WHERE c.uuid = #{colleagueUuid}
+    <select id="findRootConfigEntry" resultMap="configEntryStructure">
+        with recursive orgs as (
+            select ce.uuid, ce.name, ce.type_id, ce.version, ce.parent_uuid, ce.composite_key, 0 as depth
+            from config_entry ce
+            where ce.uuid = #{uuid}
+            union all
+            select ce.uuid, ce.name, ce.type_id, ce.version, ce.parent_uuid, ce.composite_key, depth + 1 as depth
+            from orgs
+                     join config_entry ce on ce.uuid = orgs.parent_uuid
+        )
+        select o.uuid,
+               o.name,
+               o.type_id,
+               o.version,
+               o.composite_key,
+               null            as parent_uuid,
+               cet.id          as t_id,
+               cet.code        as t_code,
+               cet.description as t_description
+        from orgs o
+                 join config_entry_type cet on cet.id = o.type_id
+        where depth = (select max(depth) from orgs)
     </select>
 
-    <select id="getColleagueByIamId" resultMap="colleagueMap">
-        SELECT c.uuid,
-               c.first_name,
-               c.middle_name,
-               c.last_name,
-               c.email,
-               c.primary_entity,
-               c.salary_frequency,
-               c.iam_source,
-               c.iam_id,
-               c.manager_uuid,
-               c.employment_type,
-               c.hire_date,
-               c.leaving_date,
-               c.is_manager,
-               j.id            as j_id,
-               j.code          as j_code,
-               j.name          as j_name,
-               j.cost_category as j_costCategory,
-               co.code         as co_code,
-               co.name         as co_name,
-               wl.code         as wl_code,
-               wl.name         as wl_name,
-               d.id            as d_id,
-               d.name          as d_name,
-               d.business_type as d_businessType
-        FROM colleague c
-                 JOIN job j ON j.id = c.job_id
-                 JOIN country co ON co.code = c.country_code
-                 JOIN work_level wl ON wl.code = c.work_level
-                 JOIN department d ON d.id = c.department_id
-        WHERE c.iam_id = #{iamId}
+    <select id="getMaxVersionForRootEntry" resultType="int">
+        SELECT COALESCE(MAX(version), 0)
+        FROM config_entry
+        WHERE name = #{name}
+          AND type_id = #{typeId}
     </select>
+
+    <select id="findConfigEntryParentStructure" resultMap="configEntryStructure">
+        WITH RECURSIVE orgs AS (
+            SELECT ce.uuid, name, ce.type_id, ce.version, ce.parent_uuid, ce.composite_key, 0 as depth
+            FROM config_entry ce
+            WHERE ce.uuid = #{uuid}
+            UNION ALL
+            SELECT ce.uuid, ce.name, ce.type_id, ce.version, ce.parent_uuid, ce.composite_key, depth + 1 as depth
+            FROM orgs
+                     JOIN config_entry ce ON ce.uuid = orgs.parent_uuid
+        )
+        SELECT o.uuid,
+               o.name,
+               o.type_id,
+               o.version,
+               o.parent_uuid,
+               o.composite_key,
+               cet.id          as t_id,
+               cet.code        as t_code,
+               cet.description as t_description
+        FROM orgs o
+                 join config_entry_type cet on cet.id = o.type_id
+        ORDER BY depth DESC;
+    </select>
+
+    <select id="findConfigEntryChildStructure" resultMap="configEntryStructure">
+        WITH RECURSIVE orgs AS (
+            SELECT ce.uuid, name, ce.type_id, ce.version, ce.parent_uuid, ce.composite_key, 0 as depth
+            FROM config_entry ce
+            WHERE ce.uuid = #{uuid}
+            UNION ALL
+            SELECT ce.uuid, ce.name, ce.type_id, ce.version, ce.parent_uuid, ce.composite_key, depth + 1 as depth
+            FROM orgs
+                     JOIN config_entry ce ON ce.parent_uuid = orgs.uuid
+        )
+        SELECT o.uuid,
+               o.name,
+               o.type_id,
+               o.version,
+               o.parent_uuid,
+               o.composite_key,
+               cet.id          as t_id,
+               cet.code        as t_code,
+               cet.description as t_description
+        FROM orgs o
+                 join config_entry_type cet on cet.id = o.type_id
+        ORDER BY depth ASC;
+    </select>
+
+    <select id="findPublishedConfigEntriesByKey" resultMap="configEntryStructure">
+        SELECT ce.uuid,
+               ce.name,
+               ce.type_id,
+               ce.version,
+               ce.parent_uuid,
+               ce.composite_key,
+               cet.id          as t_id,
+               cet.code        as t_code,
+               cet.description as t_description
+        FROM working_config_entry wce
+                 JOIN config_entry ce ON wce.config_entry_uuid = ce.uuid
+                 JOIN config_entry_type cet ON cet.id = wce.type_id
+        WHERE wce.composite_key like #{key}
+    </select>
+
+    <select id="findConfigEntriesByKey" resultMap="configEntryStructure">
+        SELECT ce.uuid,
+               ce.name,
+               ce.type_id,
+               ce.version,
+               ce.parent_uuid,
+               ce.composite_key,
+               cet.id          as t_id,
+               cet.code        as t_code,
+               cet.description as t_description
+        FROM config_entry ce
+                 JOIN config_entry_type cet ON cet.id = ce.type_id
+        WHERE ce.composite_key like #{key}
+    </select>
+
+    <select id="findAllRootEntries" resultMap="configEntryStructure">
+        SELECT ce.uuid,
+               ce.name,
+               ce.type_id,
+               ce.version,
+               ce.parent_uuid,
+               ce.composite_key,
+               cet.id          as t_id,
+               cet.code        as t_code,
+               cet.description as t_description
+        FROM config_entry ce
+                 JOIN config_entry_type cet ON cet.id = ce.type_id
+        WHERE ce.parent_uuid is null
+    </select>
+
+    <select id="findConfigEntryType" resultType="com.tesco.pma.api.GeneralDictionaryItem">
+        SELECT id, code, description
+        FROM config_entry_type
+        WHERE id = #{id}
+    </select>
+
+    <insert id="createConfigEntry" flushCache="true">
+        INSERT INTO config_entry(uuid, name, type_id, version, parent_uuid, composite_key)
+        VALUES (#{ce.uuid}, #{ce.name},
+                #{ce.type.id},
+                #{ce.version}, #{ce.parentUuid}, #{ce.compositeKey})
+    </insert>
+
+    <insert id="publishConfigEntry" flushCache="true">
+        INSERT INTO working_config_entry(name, type_id, version, config_entry_uuid, composite_key)
+        VALUES (#{wce.name},
+                #{wce.type.id},
+                #{wce.version}, #{wce.configEntryUuid}, #{wce.compositeKey})
+    </insert>
+
+    <delete id="unpublishConfigEntries" flushCache="true">
+        DELETE
+        FROM working_config_entry
+        WHERE composite_key like #{key};
+    </delete>
+
+    <delete id="deleteConfigEntry" flushCache="true">
+        DELETE
+        FROM config_entry
+        WHERE uuid = #{uuid};
+    </delete>
 </mapper>

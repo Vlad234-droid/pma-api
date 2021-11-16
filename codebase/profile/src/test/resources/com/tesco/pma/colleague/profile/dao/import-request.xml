@@ -1,0 +1,11 @@
+<dataset>
+    <import_request uuid="a019869b-2acf-45cd-8cc6-e13af2e6a218" status_id="1" file_name="Test"
+                    creation_time="2021-09-20 10:45:12.448057"
+                    last_update_time="2021-09-20 10:45:12.448057"/>
+
+    <import_errors request_uuid="a019869b-2acf-45cd-8cc6-e13af2e6a218"
+                   code="ERROR" message="message"/>
+    <import_errors request_uuid="a019869b-2acf-45cd-8cc6-e13af2e6a218"
+                   colleague_uuid="a019869b-2acf-45cd-8cc6-e13af2e6a210"
+                   code="ERROR" message="message"/>
+</dataset>
