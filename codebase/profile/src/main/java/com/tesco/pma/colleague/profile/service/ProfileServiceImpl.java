@@ -3,6 +3,8 @@ package com.tesco.pma.colleague.profile.service;
 import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.profile.dao.ColleagueDAO;
 import com.tesco.pma.colleague.profile.dao.ProfileAttributeDAO;
+import com.tesco.pma.colleague.profile.dao.ProfileDAO;
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.exception.ErrorCodes;
@@ -11,7 +13,6 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.logging.LogFormatter;
-import com.tesco.pma.organisation.dao.ConfigEntryDAO;
 import com.tesco.pma.service.colleague.ColleagueApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +39,7 @@ import java.util.UUID;
 //todo @CacheConfig(cacheNames = "aggregatedColleagues")
 public class ProfileServiceImpl implements ProfileService {
 
-    private final ConfigEntryDAO configEntryDAO;
+    private final ProfileDAO profileDAO;
     private final ColleagueDAO colleagueDAO;
     private final ProfileAttributeDAO profileAttributeDAO;
     private final ColleagueApiService colleagueApiService;
@@ -121,10 +122,20 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    public ColleagueEntity getColleagueByIamId(String iamId) {
+        return profileDAO.getColleagueByIamId(iamId);
+    }
+
+    @Override
     public Colleague findColleagueByColleagueUuid(UUID colleagueUuid) {
-        com.tesco.pma.organisation.api.Colleague oc = configEntryDAO.getColleague(colleagueUuid);
+        var oc = profileDAO.getColleague(colleagueUuid);
         //todo try to download and insert colleagueApiService.findColleagueByUuid(colleagueUuid)
         return oc != null ? colleagueFactsApiLocalMapper.localToColleagueFactsApi(oc, colleagueUuid, false) : null;
+    }
+
+    @Override
+    public ColleagueEntity getColleague(UUID colleagueUuid) {
+        return profileDAO.getColleague(colleagueUuid);
     }
 
     @Override
@@ -132,14 +143,14 @@ public class ProfileServiceImpl implements ProfileService {
     public int updateColleague(UUID colleagueUuid, Collection<String> changedAttributes) {
         int updated = 0;
 
-        com.tesco.pma.organisation.api.Colleague existingLocalColleague = configEntryDAO.getColleague(colleagueUuid);
+        var existingLocalColleague = profileDAO.getColleague(colleagueUuid);
         Colleague colleague = colleagueApiService.findColleagueByUuid(colleagueUuid);
         if (existingLocalColleague == null || colleague == null) {
             return updated;
         }
 
         try {
-            com.tesco.pma.organisation.api.Colleague changedLocalColleague = colleagueFactsApiLocalMapper.colleagueFactsApiToLocal(colleague);
+            ColleagueEntity changedLocalColleague = colleagueFactsApiLocalMapper.colleagueFactsApiToLocal(colleague);
             updateDictionaries(existingLocalColleague, changedLocalColleague);
             updated = colleagueDAO.update(changedLocalColleague);
         } catch (DataIntegrityViolationException exception) {
@@ -154,28 +165,28 @@ public class ProfileServiceImpl implements ProfileService {
         return profileAttributeDAO.get(colleagueUuid);
     }
 
-    private void updateDictionaries(com.tesco.pma.organisation.api.Colleague existingLocalColleague,
-                                    com.tesco.pma.organisation.api.Colleague changedLocalColleague) {
+    private void updateDictionaries(ColleagueEntity existingLocalColleague,
+                                    ColleagueEntity changedLocalColleague) {
         // Country
-        com.tesco.pma.organisation.api.Colleague.Country changedCountry = changedLocalColleague.getCountry();
+        ColleagueEntity.Country changedCountry = changedLocalColleague.getCountry();
         if (changedCountry != null && !existingLocalColleague.getCountry().getCode().equals(changedCountry.getCode())) {
             colleagueDAO.insertCountry(changedCountry);
         }
 
         // Department
-        com.tesco.pma.organisation.api.Colleague.Department changedDepartment = changedLocalColleague.getDepartment();
+        ColleagueEntity.Department changedDepartment = changedLocalColleague.getDepartment();
         if (changedDepartment != null && !existingLocalColleague.getDepartment().getId().equals(changedDepartment.getId())) {
             colleagueDAO.insertDepartment(changedDepartment);
         }
 
         // Job
-        com.tesco.pma.organisation.api.Colleague.Job changedJob = changedLocalColleague.getJob();
+        ColleagueEntity.Job changedJob = changedLocalColleague.getJob();
         if (changedJob != null && !existingLocalColleague.getJob().getCode().equals(changedJob.getId())) {
             colleagueDAO.insertJob(changedJob);
         }
 
         // Work level
-        com.tesco.pma.organisation.api.Colleague.WorkLevel changedWorkLevel = changedLocalColleague.getWorkLevel();
+        ColleagueEntity.WorkLevel changedWorkLevel = changedLocalColleague.getWorkLevel();
         if (changedWorkLevel != null && !existingLocalColleague.getWorkLevel().getCode().equals(changedWorkLevel.getCode())) {
             colleagueDAO.insertWorkLevel(changedWorkLevel);
         }

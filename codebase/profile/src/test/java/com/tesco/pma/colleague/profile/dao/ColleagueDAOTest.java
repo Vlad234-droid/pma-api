@@ -1,8 +1,8 @@
 package com.tesco.pma.colleague.profile.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.dao.AbstractDAOTest;
-import com.tesco.pma.organisation.api.Colleague;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -105,8 +105,8 @@ class ColleagueDAOTest extends AbstractDAOTest {
         assertThat(inserted).isEqualTo(1);
     }
 
-    private Colleague getCorrectColleague() {
-        var colleague = new Colleague();
+    private ColleagueEntity getCorrectColleague() {
+        var colleague = new ColleagueEntity();
         colleague.setUuid(COLLEAGUE_UUID_1);
         colleague.setManager(false);
         colleague.setManagerUuid(MANAGER_UUID_1);
@@ -119,8 +119,8 @@ class ColleagueDAOTest extends AbstractDAOTest {
         return colleague;
     }
 
-    private Colleague getIncorrectColleague() {
-        var colleague = new Colleague();
+    private ColleagueEntity getIncorrectColleague() {
+        var colleague = new ColleagueEntity();
         colleague.setUuid(COLLEAGUE_UUID_1);
         colleague.setManager(false);
         colleague.setManagerUuid(MANAGER_UUID_1);
@@ -133,8 +133,8 @@ class ColleagueDAOTest extends AbstractDAOTest {
         return colleague;
     }
 
-    private Colleague.Job getJob(String id) {
-        Colleague.Job job = new Colleague.Job();
+    private ColleagueEntity.Job getJob(String id) {
+        ColleagueEntity.Job job = new ColleagueEntity.Job();
         job.setId(id);
         job.setCode("TL" + id);
         job.setName("Team lead" + id);
@@ -142,22 +142,22 @@ class ColleagueDAOTest extends AbstractDAOTest {
         return job;
     }
 
-    private Colleague.Country getCountry(String code) {
-        Colleague.Country country = new Colleague.Country();
+    private ColleagueEntity.Country getCountry(String code) {
+        ColleagueEntity.Country country = new ColleagueEntity.Country();
         country.setCode(code);
         country.setName(code);
         return country;
     }
 
-    private Colleague.WorkLevel getWorkLevel(String code) {
-        Colleague.WorkLevel workLevel = new Colleague.WorkLevel();
+    private ColleagueEntity.WorkLevel getWorkLevel(String code) {
+        ColleagueEntity.WorkLevel workLevel = new ColleagueEntity.WorkLevel();
         workLevel.setCode(code);
         workLevel.setName(code);
         return workLevel;
     }
 
-    private Colleague.Department getDepartment(String id) {
-        Colleague.Department department = new Colleague.Department();
+    private ColleagueEntity.Department getDepartment(String id) {
+        ColleagueEntity.Department department = new ColleagueEntity.Department();
         department.setId(id);
         department.setName(id);
         department.setBusinessType(id);
