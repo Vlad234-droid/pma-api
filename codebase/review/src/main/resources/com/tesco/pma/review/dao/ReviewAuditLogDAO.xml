@@ -11,8 +11,8 @@
         updated_by,
         updated_time)
         VALUES (#{review.uuid},
-        #{newStatus, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.api.ReviewStatus},
-        #{review.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.api.newStatus, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.api.ReviewStatus},
+        #{newStatus, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMReviewStatus},
+        #{review.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.api.newStatus, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMReviewStatus},
         #{changeReason},
         #{updatedBy},
         #{updatedTime});

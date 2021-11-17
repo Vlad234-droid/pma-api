@@ -1,13 +1,15 @@
 package com.tesco.pma.cycle.api.model;
 
-import java.util.Map;
-
-import org.codehaus.groovy.util.ListHashMap;
-
 import com.tesco.pma.api.DictionaryItem;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 16.10.2021 Time: 21:13
@@ -21,16 +23,22 @@ public class PMElement implements DictionaryItem<String> {
     private String id;
     private String code;
     private String description;
-    private DictionaryItem<Integer> type;
-    private Map<String, String> properties = new ListHashMap<>();
+    private PMElementType type;
+    private Map<String, String> properties = new LinkedHashMap<>();
 
-    //todo private PMElement parent;
-    //todo private List<PMElement> children = new ArrayList<>();
-
-    public PMElement(String id, String code, String description, DictionaryItem<Integer> type) {
+    protected PMElement(String id, String code, String description, PMElementType type) {
         this.id = id;
         this.code = code;
         this.description = description;
         this.type = type;
+    }
+
+    protected static List<String> getPropertyNames(Class<? extends PMElement> cls, String matches) {
+        return Arrays.stream(cls.getDeclaredFields())
+                .map(Field::getName).filter(name -> name.toLowerCase().matches(matches)).collect(Collectors.toList());
+    }
+
+    public static List<String> getPropertyNames() {
+        return getPropertyNames(PMElement.class, PM_PREFIX + "(?!prefix)([\\w]+)$");
     }
 }

@@ -3,7 +3,7 @@ package com.tesco.pma.organisation.service;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.organisation.api.Colleague;
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.ConfigEntryErrorCodes;
 import com.tesco.pma.organisation.api.ConfigEntryResponse;
@@ -176,16 +176,11 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
     }
 
     @Override
-    public List<Colleague> findColleaguesByCompositeKey(String compositeKey) {
+    public List<ColleagueEntity> findColleaguesByCompositeKey(String compositeKey) {
         var parts = compositeKey.split("/");
         var searchKey = IntStream.range(0, parts.length)
                 .filter(i -> i % 2 == 1).mapToObj(i -> parts[i]).collect(Collectors.joining("/"));
         return dao.findColleaguesByTypes(searchKey);
-    }
-
-    @Override
-    public Colleague getColleagueByIamId(String iamId) {
-        return dao.getColleagueByIamId(iamId);
     }
 
     private String buildCompositeKeySearchTerm(String key) {

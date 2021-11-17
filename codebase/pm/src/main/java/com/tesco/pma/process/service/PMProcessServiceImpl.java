@@ -2,22 +2,20 @@ package com.tesco.pma.process.service;
 
 import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.cycle.api.model.PMCycleElement;
 import com.tesco.pma.cycle.api.model.PMCycleMetadata;
+import com.tesco.pma.cycle.model.PMProcessModelParser;
+import com.tesco.pma.cycle.model.ResourceProvider;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.process.api.PMProcessErrorCodes;
 import com.tesco.pma.process.api.PMProcessStatus;
 import com.tesco.pma.process.api.PMRuntimeProcess;
 import com.tesco.pma.process.dao.PMRuntimeProcessDAO;
-import com.tesco.pma.process.model.PMProcessModelParser;
-import com.tesco.pma.process.model.ResourceProvider;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,17 +97,8 @@ public class PMProcessServiceImpl implements PMProcessService {
     public PMCycleMetadata getProcessMetadataByKey(String processKey) {
         var processDefinition = getProcessDefinition(processKey);
         var model = getModel(processDefinition);
-
-        var metadata = new PMCycleMetadata();
-        var cycle = new PMCycleElement();
-        cycle.setCode(processDefinition.getKey());
-        metadata.setCycle(cycle);
-
-        var parser = new PMProcessModelParser(resourceProvider);
-        var tasks = model.getModelElementsByType(Activity.class);
-        parser.parse(cycle, tasks);
-
-        return metadata;
+        var parser = new PMProcessModelParser(resourceProvider, messageSourceAccessor);
+        return parser.parse(model);
     }
 
     private BpmnModelInstance getModel(ProcessDefinition processDefinition) {

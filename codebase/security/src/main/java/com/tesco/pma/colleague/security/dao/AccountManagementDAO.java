@@ -128,4 +128,11 @@ public interface AccountManagementDAO {
      */
     Account findAccountByName(@Param("name") String name);
 
+    /**
+     * Find account by IAM ID
+     *
+     * @param iamId
+     * @return Account
+     */
+    Account findAccountByIamId(@Param("iamId") String iamId);
 }

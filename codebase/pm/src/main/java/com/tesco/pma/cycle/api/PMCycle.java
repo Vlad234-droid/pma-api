@@ -1,5 +1,6 @@
 package com.tesco.pma.cycle.api;
 
+import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,4 +32,5 @@ public class PMCycle {
     String properties;
 
     String jsonMetadata;
+    PMCycleMetadata metadata;
 }

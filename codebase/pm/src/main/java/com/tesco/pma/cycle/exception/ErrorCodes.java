@@ -27,7 +27,15 @@ public enum ErrorCodes implements ErrorCodeAware {
     /**
      * Cycle's metadata was not found
      */
-    PM_CYCLE_METADATA_NOT_FOUND;
+    PM_CYCLE_METADATA_NOT_FOUND,
+    /**
+     * Associated dictionary item or resource was not found
+     */
+    PM_PARSE_NOT_FOUND,
+    /**
+     * The passed value cannot be blank
+     */
+    PM_PARSE_IS_BLANK;
 
     @Override
     public String getCode() {

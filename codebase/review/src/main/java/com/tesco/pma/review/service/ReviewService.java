@@ -4,9 +4,10 @@ import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.review.domain.ColleagueReviews;
 import com.tesco.pma.review.domain.GroupObjective;
+import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
-import com.tesco.pma.api.ReviewStatus;
-import com.tesco.pma.api.ReviewType;
+import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.review.domain.WorkingGroupObjective;
 
 import javax.validation.constraints.NotNull;
@@ -31,7 +32,7 @@ public interface ReviewService {
      */
     Review getReview(@NotNull UUID performanceCycleUuid,
                      @NotNull UUID colleagueUuid,
-                     @NotNull ReviewType type,
+                     @NotNull PMReviewType type,
                      @NotNull Integer number);
 
     /**
@@ -45,7 +46,7 @@ public interface ReviewService {
      */
     List<Review> getReviews(@NotNull UUID performanceCycleUuid,
                             @NotNull UUID colleagueUuid,
-                            @NotNull ReviewType type);
+                            @NotNull PMReviewType type);
 
     /**
      * Finds list of colleagues reviews by managerUuid
@@ -85,7 +86,7 @@ public interface ReviewService {
      */
     List<Review> updateReviews(@NotNull UUID performanceCycleUuid,
                                @NotNull UUID colleagueUuid,
-                               @NotNull ReviewType type,
+                               @NotNull PMReviewType type,
                                List<Review> reviews);
 
     /**
@@ -101,13 +102,13 @@ public interface ReviewService {
      * @return a ObjectiveStatus
      * @throws NotFoundException if review doesn't exist.
      */
-    ReviewStatus updateReviewsStatus(@NotNull UUID performanceCycleUuid,
-                                     @NotNull UUID colleagueUuid,
-                                     @NotNull ReviewType type,
-                                     List<Review> reviews,
-                                     @NotNull ReviewStatus status,
-                                     @Size(max = 250) String reason,
-                                     @NotNull String loggedUserName);
+    PMReviewStatus updateReviewsStatus(@NotNull UUID performanceCycleUuid,
+                                       @NotNull UUID colleagueUuid,
+                                       @NotNull PMReviewType type,
+                                       List<Review> reviews,
+                                       @NotNull PMReviewStatus status,
+                                       @Size(max = 250) String reason,
+                                       @NotNull String loggedUserName);
 
     /**
      * Deletes review by business key.
@@ -120,7 +121,7 @@ public interface ReviewService {
      */
     void deleteReview(@NotNull UUID performanceCycleUuid,
                       @NotNull UUID colleagueUuid,
-                      @NotNull ReviewType type,
+                      @NotNull PMReviewType type,
                       @NotNull Integer number);
 
     /**
@@ -167,4 +168,13 @@ public interface ReviewService {
      * @return a list of published group's objectives
      */
     List<GroupObjective> getPublishedGroupObjectives(@NotNull UUID businessUnitUuid);
+
+    /**
+     * Finds timeline by colleagueUuid
+     *
+     * @param colleagueUuid an identifier of colleague
+     * @return a list of timeline points
+     * @throws NotFoundException if timeline doesn't exist.
+     */
+    List<PMCycleTimelinePoint> getCycleTimelineByColleague(UUID colleagueUuid);
 }

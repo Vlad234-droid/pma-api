@@ -1,6 +1,6 @@
 package com.tesco.pma.organisation.service;
 
-import com.tesco.pma.organisation.api.Colleague;
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.ConfigEntryResponse;
 
@@ -89,13 +89,6 @@ public interface ConfigEntryService {
      * @param compositeKey - key
      * @return list of colleagues
      */
-    List<Colleague> findColleaguesByCompositeKey(String compositeKey);
+    List<ColleagueEntity> findColleaguesByCompositeKey(String compositeKey);
 
-    /**
-     * Get colleague by iam id
-     *
-     * @param iamId colleague iam identifier
-     * @return colleague object
-     */
-    Colleague getColleagueByIamId(String iamId);
 }
