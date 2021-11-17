@@ -26,7 +26,7 @@
                 javaType="com.tesco.pma.cycle.api.PMReviewStatus"/>
     </resultMap>
 
-    <resultMap id="colleagueReviewsResultMap" type="com.tesco.pma.review.domain.ColleagueReviews">
+    <resultMap id="colleagueReviewsResultMap" type="com.tesco.pma.review.domain.ColleagueTimeline">
         <id property="uuid" column="uuid"/>
         <result property="firstName" column="first_name"/>
         <result property="lastName" column="last_name"/>
