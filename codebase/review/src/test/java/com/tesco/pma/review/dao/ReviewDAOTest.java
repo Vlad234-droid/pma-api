@@ -2,11 +2,11 @@ package com.tesco.pma.review.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.tesco.pma.api.GroupObjectiveStatus;
+import com.tesco.pma.api.OrgObjectiveStatus;
 import com.tesco.pma.api.MapJson;
 import com.tesco.pma.cycle.api.PMReviewStatus;
 import com.tesco.pma.dao.AbstractDAOTest;
-import com.tesco.pma.review.domain.GroupObjective;
+import com.tesco.pma.review.domain.OrgObjective;
 import com.tesco.pma.review.domain.PMCycleReviewTypeProperties;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
@@ -39,9 +39,9 @@ import static org.assertj.core.api.InstanceOfAssertFactories.type;
 
 class ReviewDAOTest extends AbstractDAOTest {
 
-    private static final UUID GROUP_OBJECTIVE_UUID = UUID.fromString("aab9ab0b-f50f-4442-8900-b03777ee0012");
-    private static final UUID GROUP_OBJECTIVE_UUID_2 = UUID.fromString("aab9ab0b-f50f-4442-8900-b03777ee0011");
-    private static final UUID GROUP_OBJECTIVE_UUID_NOT_EXIST = UUID.fromString("aab9ab0b-f50f-4442-8900-000000000000");
+    private static final UUID ORG_OBJECTIVE_UUID = UUID.fromString("aab9ab0b-f50f-4442-8900-b03777ee0012");
+    private static final UUID ORG_OBJECTIVE_UUID_2 = UUID.fromString("aab9ab0b-f50f-4442-8900-b03777ee0011");
+    private static final UUID ORG_OBJECTIVE_UUID_NOT_EXIST = UUID.fromString("aab9ab0b-f50f-4442-8900-000000000000");
     private static final UUID REVIEW_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
     private static final UUID COLLEAGUE_UUID = UUID.fromString("ccb9ab0b-f50f-4442-8900-b03777ee00ec");
     private static final UUID COLLEAGUE_UUID_NOT_EXIST = UUID.fromString("ccb9ab0b-f50f-4442-8900-000000000000");
@@ -51,7 +51,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     private static final String TITLE_PROPERTY_NAME = "title";
     private static final String TITLE_1 = "Title #1";
     private static final String TITLE_UPDATE = "Title update";
-    private static final String GROUP_TITLE_UPDATE = "Title #1 updated";
+    private static final String ORG_TITLE_UPDATE = "Title #1 updated";
     private static final String TITLE_INIT = "Title init";
     private static final String DESCRIPTION_PROPERTY_NAME = "description";
     private static final String DESCRIPTION_INIT = "Description init";
@@ -101,112 +101,112 @@ class ReviewDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet("cleanup.xml")
-    @ExpectedDataSet("group_objective_create_expected_1.xml")
-    void createGroupObjectiveSucceeded() {
+    @ExpectedDataSet("org_objective_create_expected_1.xml")
+    void createOrgObjectiveSucceeded() {
 
-        final var groupObjective = GroupObjective.builder()
-                .uuid(GROUP_OBJECTIVE_UUID)
+        final var orgObjective = OrgObjective.builder()
+                .uuid(ORG_OBJECTIVE_UUID)
                 .number(NUMBER_1)
-                .status(GroupObjectiveStatus.DRAFT)
+                .status(OrgObjectiveStatus.DRAFT)
                 .title(TITLE_1)
                 .version(VERSION_1)
                 .build();
 
-        final int rowsInserted = instance.createGroupObjective(groupObjective);
+        final int rowsInserted = instance.createOrgObjective(orgObjective);
 
         assertThat(rowsInserted).isOne();
     }
 
     @Test
-    @DataSet("group_objective_init.xml")
-    void createGroupObjectiveAlreadyExist() {
+    @DataSet("org_objective_init.xml")
+    void createOrgObjectiveAlreadyExist() {
 
-        final var groupObjective = GroupObjective.builder()
-                .uuid(GROUP_OBJECTIVE_UUID_2)
+        final var orgObjective = OrgObjective.builder()
+                .uuid(ORG_OBJECTIVE_UUID_2)
                 .number(NUMBER_1)
-                .status(GroupObjectiveStatus.DRAFT)
+                .status(OrgObjectiveStatus.DRAFT)
                 .title(TITLE_1)
                 .version(VERSION_1)
                 .build();
 
-        Assertions.assertThatThrownBy(() -> instance.createGroupObjective(groupObjective))
+        Assertions.assertThatThrownBy(() -> instance.createOrgObjective(orgObjective))
                 .isInstanceOf(DuplicateKeyException.class);
     }
 
     @Test
-    @DataSet("group_objective_init.xml")
-    void getGroupObjective() {
-        final var result = instance.getGroupObjective(GROUP_OBJECTIVE_UUID_2);
+    @DataSet("org_objective_init.xml")
+    void getOrgObjective() {
+        final var result = instance.getOrgObjective(ORG_OBJECTIVE_UUID_2);
 
         assertThat(result)
-                .asInstanceOf(type(GroupObjective.class))
-                .returns(NUMBER_1, from(GroupObjective::getNumber))
-                .returns(GroupObjectiveStatus.DRAFT, from(GroupObjective::getStatus))
-                .returns(VERSION_1, from(GroupObjective::getVersion));
+                .asInstanceOf(type(OrgObjective.class))
+                .returns(NUMBER_1, from(OrgObjective::getNumber))
+                .returns(OrgObjectiveStatus.DRAFT, from(OrgObjective::getStatus))
+                .returns(VERSION_1, from(OrgObjective::getVersion));
     }
 
     @Test
-    @DataSet("group_objective_init.xml")
-    void getGroupObjectiveNotExist() {
-        final var result = instance.getGroupObjective(GROUP_OBJECTIVE_UUID_NOT_EXIST);
+    @DataSet("org_objective_init.xml")
+    void getOrgObjectiveNotExist() {
+        final var result = instance.getOrgObjective(ORG_OBJECTIVE_UUID_NOT_EXIST);
 
         assertThat(result).isNull();
     }
 
     @Test
-    @DataSet("group_objective_init.xml")
-    void getGroupObjectives() {
-        final var result = instance.getGroupObjectives();
+    @DataSet("org_objective_init.xml")
+    void getOrgObjectives() {
+        final var result = instance.getOrgObjectives();
 
         assertThat(result).isNotEmpty();
         assertThat(result.size()).isEqualTo(1);
 
         assertThat(result.get(0))
-                .returns(NUMBER_1, from(GroupObjective::getNumber))
-                .returns(GroupObjectiveStatus.DRAFT, from(GroupObjective::getStatus))
-                .returns(GROUP_TITLE_UPDATE, from(GroupObjective::getTitle))
-                .returns(VERSION_3, from(GroupObjective::getVersion));
+                .returns(NUMBER_1, from(OrgObjective::getNumber))
+                .returns(OrgObjectiveStatus.DRAFT, from(OrgObjective::getStatus))
+                .returns(ORG_TITLE_UPDATE, from(OrgObjective::getTitle))
+                .returns(VERSION_3, from(OrgObjective::getVersion));
     }
 
     @Test
-    @DataSet("group_objective_init.xml")
-    void deleteGroupObjectiveNotExist() {
-        final var result = instance.deleteGroupObjective(GROUP_OBJECTIVE_UUID_NOT_EXIST);
+    @DataSet("org_objective_init.xml")
+    void deleteOrgObjectiveNotExist() {
+        final var result = instance.deleteOrgObjective(ORG_OBJECTIVE_UUID_NOT_EXIST);
         assertThat(result).isZero();
     }
 
     @Test
-    @DataSet("group_objective_init.xml")
-    void deleteGroupObjectiveSucceeded() {
-        final var result = instance.deleteGroupObjective(GROUP_OBJECTIVE_UUID_2);
+    @DataSet("org_objective_init.xml")
+    void deleteOrgObjectiveSucceeded() {
+        final var result = instance.deleteOrgObjective(ORG_OBJECTIVE_UUID_2);
         assertThat(result).isOne();
     }
 
     @Test
-    @DataSet("group_objective_init.xml")
-    void getMaxVersionGroupObjective() {
-        final var result = instance.getMaxVersionGroupObjective();
+    @DataSet("org_objective_init.xml")
+    void getMaxVersionOrgObjective() {
+        final var result = instance.getMaxVersionOrgObjective();
         assertThat(result).isEqualTo(3);
     }
 
     @Test
-    @DataSet("group_objective_init.xml")
-    @ExpectedDataSet("group_objective_publish_expected_1.xml")
-    void publishGroupObjectiveSucceeded() {
-        final var result = instance.publishGroupObjectives();
+    @DataSet("org_objective_init.xml")
+    @ExpectedDataSet("org_objective_publish_expected_1.xml")
+    void publishOrgObjectiveSucceeded() {
+        final var result = instance.publishOrgObjectives();
         assertThat(result).isOne();
     }
 
     @Test
-    @DataSet("group_objective_init.xml")
-    @ExpectedDataSet("group_objective_unpublish_expected_1.xml")
-    void unpublishGroupObjectiveSucceeded() {
-        final var result = instance.unpublishGroupObjectives();
+    @DataSet("org_objective_init.xml")
+    @ExpectedDataSet("org_objective_unpublish_expected_1.xml")
+    void unpublishOrgObjectiveSucceeded() {
+        final var result = instance.unpublishOrgObjectives();
         assertThat(result).isOne();
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void getReview() {
         final var result = instance.getReview(
                 PERFORMANCE_CYCLE_UUID,
@@ -225,7 +225,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void getReviewNotExist() {
         final var result = instance.getReview(
                 PERFORMANCE_CYCLE_UUID,
@@ -237,7 +237,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "cleanup.xml"})
+    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "cleanup.xml"})
     @ExpectedDataSet("review_create_expected_1.xml")
     void createReviewSucceeded() {
         final var review = Review.builder()
@@ -256,7 +256,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void createReviewAlreadyExist() {
 
         final var review = Review.builder()
@@ -274,7 +274,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void deleteReviewNotExist() {
         final var result = instance.deleteReview(
                 PERFORMANCE_CYCLE_UUID,
@@ -286,7 +286,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void deleteReviewSucceeded() {
         final var result = instance.deleteReview(
                 PERFORMANCE_CYCLE_UUID,
@@ -298,7 +298,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "review_init.xml"})
+    @DataSet({"org_objective_init.xml", "review_init.xml"})
     @ExpectedDataSet("review_delete_renumerate_expected_1.xml")
     void deleteAndRenumerateReviewsSucceeded() {
         instance.deleteReview(
@@ -316,7 +316,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     @ExpectedDataSet("review_update_expected_1.xml")
     void updateReviewSucceeded() {
         final var review = Review.builder()
@@ -335,7 +335,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void updateReviewNotExist() {
         final var review = Review.builder()
                 .colleagueUuid(COLLEAGUE_UUID_NOT_EXIST)
@@ -352,7 +352,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     @ExpectedDataSet("review_update_status_1.xml")
     void updateReviewStatusSucceeded() {
 
@@ -368,9 +368,9 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
-    @ExpectedDataSet("review_unlink_group_objective_expected.xml")
-    void updateReviewUnlinkGroupObjective() {
+    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    @ExpectedDataSet("review_unlink_org_objective_expected.xml")
+    void updateReviewUnlinkOrgObjective() {
         final var review = Review.builder()
                 .uuid(REVIEW_UUID)
                 .colleagueUuid(COLLEAGUE_UUID)
@@ -400,7 +400,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void getReviewStats() {
         final var result = instance.getReviewStats(
                 PERFORMANCE_CYCLE_UUID,

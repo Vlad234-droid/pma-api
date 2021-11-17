@@ -1,14 +1,13 @@
 package com.tesco.pma.review.service;
 
+import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.review.domain.ColleagueTimeline;
-import com.tesco.pma.review.domain.GroupObjective;
+import com.tesco.pma.review.domain.OrgObjective;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
-import com.tesco.pma.cycle.api.PMReviewStatus;
-import com.tesco.pma.cycle.api.PMReviewType;
-import com.tesco.pma.review.domain.WorkingGroupObjective;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -125,36 +124,36 @@ public interface ReviewService {
                       @NotNull Integer number);
 
     /**
-     * Create group's objectives
+     * Create organisation objectives
      *
-     * @param groupObjectives a list of group's objectives
-     * @return Created group's objectives
-     * @throws DatabaseConstraintViolationException group objective already exist.
+     * @param orgObjectives a list of organisation objectives
+     * @return Created organisation objectives
+     * @throws DatabaseConstraintViolationException organisation objective already exist.
      */
-    List<GroupObjective> createGroupObjectives(List<GroupObjective> groupObjectives,
-                                               @NotNull String loggedUserName);
+    List<OrgObjective> createOrgObjectives(List<OrgObjective> orgObjectives,
+                                           @NotNull String loggedUserName);
 
     /**
-     * Get all group's objectives
+     * Get all organisation objectives
      *
-     * @return a list of all group's objectives
+     * @return a list of all organisation objectives
      */
-    List<GroupObjective> getAllGroupObjectives();
+    List<OrgObjective> getAllOrgObjectives();
 
     /**
-     * Publish the last version of group objectives
+     * Publish the last version of organisation objectives
      *
      * @param loggedUserName a logged user
-     * @return a working group objective
+     * @return a working organisation objectives
      */
-    List<GroupObjective> publishGroupObjectives(@NotNull String loggedUserName);
+    List<OrgObjective> publishOrgObjectives(@NotNull String loggedUserName);
 
     /**
-     * Get published group's objectives
+     * Get published organisation objectives
      *
-     * @return a list of published group's objectives
+     * @return a list of published organisation objectives
      */
-    List<GroupObjective> getPublishedGroupObjectives();
+    List<OrgObjective> getPublishedOrgObjectives();
 
     /**
      * Finds timeline by colleagueUuid

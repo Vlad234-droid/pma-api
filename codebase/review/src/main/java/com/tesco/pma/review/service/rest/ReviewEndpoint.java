@@ -9,7 +9,7 @@ import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import com.tesco.pma.review.domain.ColleagueTimeline;
-import com.tesco.pma.review.domain.GroupObjective;
+import com.tesco.pma.review.domain.OrgObjective;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.request.UpdateReviewsStatusRequest;
@@ -246,53 +246,55 @@ public class ReviewEndpoint {
     }
 
     /**
-     * POST call to create group objectives.
+     * POST call to create organisation objectives.
      *
-     * @param groupObjectives group objectives
-     * @return a RestResponse parameterized with list of group gbjectives
+     * @param orgObjectives organisation objectives
+     * @return a RestResponse parameterized with list of organisation objectives
      */
-    @Operation(summary = "Create new group objectives", description = "Group objectives created", tags = {"objective"})
+    @Operation(summary = "Create new organisation objectives",
+            description = "Organisation objectives created",
+            tags = {"org-objective"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
-    @PostMapping(path = "/objectives",
+    @PostMapping(path = "/org-objectives",
             produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<List<GroupObjective>> createGroupObjectives(@RequestBody List<GroupObjective> groupObjectives) {
-        return RestResponse.success(reviewService.createGroupObjectives(groupObjectives, resolveUserName()));
+    public RestResponse<List<OrgObjective>> createOrgObjectives(@RequestBody List<OrgObjective> orgObjectives) {
+        return RestResponse.success(reviewService.createOrgObjectives(orgObjectives, resolveUserName()));
     }
 
     /**
-     * Get call to return a list of group objectives as JSON.
+     * Get call to return a list of organisation objectives as JSON.
      *
-     * @return a RestResponse parameterized with list of group objectives
+     * @return a RestResponse parameterized with list of organisation objectives
      */
-    @Operation(summary = "Get all group objectives", tags = {"objective"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found group objectives")
-    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Group objectives not found", content = @Content)
-    @GetMapping(path = "/objectives",
+    @Operation(summary = "Get all organisation objectives", tags = {"org-objective"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found organisation objectives")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Organisation objectives not found", content = @Content)
+    @GetMapping(path = "/org-objectives",
             produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<GroupObjective>> getGroupObjectives() {
-        return success(reviewService.getAllGroupObjectives());
+    public RestResponse<List<OrgObjective>> getOrgObjectives() {
+        return success(reviewService.getAllOrgObjectives());
     }
 
     /**
-     * Get call to return a list of published group Objectives as JSON.
+     * Get call to return a list of published organisation objectives as JSON.
      *
-     * @return a RestResponse parameterized with list of published group Objectives
+     * @return a RestResponse parameterized with list of published organisation objectives
      */
-    @Operation(summary = "Get published group's objectives by business unit", tags = {"objective"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found Group Objectives")
-    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Group Objectives not found", content = @Content)
-    @GetMapping(path = "/objectives/published",
+    @Operation(summary = "Get published organisation objectives", tags = {"org-objective"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found organisation objectives")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Organisation objectives not found", content = @Content)
+    @GetMapping(path = "/org-objectives/published",
             produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<GroupObjective>> getPublishedGroupObjectives() {
-        return success(reviewService.getPublishedGroupObjectives());
+    public RestResponse<List<OrgObjective>> getPublishedOrgObjectives() {
+        return success(reviewService.getPublishedOrgObjectives());
     }
 
-    @Operation(summary = "Publish group objectives", tags = {"objective"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Group objectives have been published")
-    @PostMapping(value = "/objectives/publish", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<GroupObjective>> publishGroupObjectives() {
-        return success(reviewService.publishGroupObjectives(resolveUserName()));
+    @Operation(summary = "Publish organisation objectives", tags = {"org-objective"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Organisation objectives have been published")
+    @PostMapping(value = "/org-objectives/publish", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<List<OrgObjective>> publishOrgObjectives() {
+        return success(reviewService.publishOrgObjectives(resolveUserName()));
     }
 
     private String resolveUserName() {

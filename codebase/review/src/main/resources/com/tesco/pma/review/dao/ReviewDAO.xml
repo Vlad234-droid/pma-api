@@ -3,12 +3,12 @@
 
 <mapper namespace="com.tesco.pma.review.dao.ReviewDAO">
 
-    <resultMap id="groupObjectiveResultMap" type="com.tesco.pma.review.domain.GroupObjective">
+    <resultMap id="orgObjectiveResultMap" type="com.tesco.pma.review.domain.OrgObjective">
         <id property="uuid" column="uuid"/>
         <result property="number" column="number"/>
         <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.api.GroupObjectiveStatus"/>
+                javaType="com.tesco.pma.api.OrgObjectiveStatus"/>
         <result property="title" column="title"/>
         <result property="version" column="version"/>
     </resultMap>
@@ -75,31 +75,31 @@
         <result property="startDate" column="start_date" typeHandler="org.apache.ibatis.type.LocalDateTypeHandler"/>
     </resultMap>
 
-    <insert id="createGroupObjective" flushCache="true">
-        INSERT INTO group_objective
+    <insert id="createOrgObjective" flushCache="true">
+        INSERT INTO org_objective
         (uuid,
          number,
          status_id,
          title,
          version)
-        VALUES (#{groupObjective.uuid},
-                #{groupObjective.number},
-                #{groupObjective.status.id},
-                #{groupObjective.title},
-                #{groupObjective.version})
+        VALUES (#{orgObjective.uuid},
+                #{orgObjective.number},
+                #{orgObjective.status.id},
+                #{orgObjective.title},
+                #{orgObjective.version})
     </insert>
 
-    <select id="getGroupObjective" resultMap="groupObjectiveResultMap">
+    <select id="getOrgObjective" resultMap="orgObjectiveResultMap">
         SELECT go.uuid,
                go.number,
                go.status_id,
                go.title,
                go.version
-        FROM group_objective go
-        WHERE go.uuid = #{groupObjectiveUuid}
+        FROM org_objective go
+        WHERE go.uuid = #{orgObjectiveUuid}
     </select>
 
-    <select id="getGroupObjectives" resultMap="groupObjectiveResultMap">
+    <select id="getOrgObjectives" resultMap="orgObjectiveResultMap">
         with max_version as (
         <include refid="getMaxVersion"/>
         )
@@ -108,45 +108,45 @@
         go.status_id,
         go.title,
         go.version
-        from group_objective go
+        from org_objective go
         inner join max_version mv
         on (go.version = mv.version)
         order by go.number
     </select>
 
-    <select id="getPublishedGroupObjectives" resultMap="groupObjectiveResultMap">
+    <select id="getPublishedOrgObjectives" resultMap="orgObjectiveResultMap">
         select go.uuid,
                go.number,
                go.status_id,
                go.title,
                go.version
-        from group_objective go
+        from org_objective go
         WHERE go.status_id = 2
         order by go.number
     </select>
 
-    <delete id="deleteGroupObjective">
+    <delete id="deleteOrgObjective">
         DELETE
-        FROM group_objective
-        WHERE uuid = #{groupObjectiveUuid}
+        FROM org_objective
+        WHERE uuid = #{orgObjectiveUuid}
     </delete>
 
-    <select id="getMaxVersionGroupObjective" resultType="int">
+    <select id="getMaxVersionOrgObjective" resultType="int">
         <include refid="getMaxVersion"/>
     </select>
 
-    <update id="publishGroupObjectives" flushCache="true">
+    <update id="publishOrgObjectives" flushCache="true">
         with max_version as (
         <include refid="getMaxVersion"/>
         )
-        update group_objective go
+        update org_objective go
         set status_id = 2
         from max_version mv
         where go.version = mv.version;
     </update>
 
-    <update id="unpublishGroupObjectives" flushCache="true">
-        update group_objective go
+    <update id="unpublishOrgObjectives" flushCache="true">
+        update org_objective go
         set status_id = 3
         where go.status_id = 2;
     </update>
@@ -278,7 +278,7 @@
 
     <sql id="getMaxVersion">
         select coalesce(max(version), 0) as version
-        from group_objective go
+        from org_objective go
     </sql>
 
     <select id="getPMCycleReviewTypeProperties" resultMap="cycleReviewTypePropertiesResultMap">

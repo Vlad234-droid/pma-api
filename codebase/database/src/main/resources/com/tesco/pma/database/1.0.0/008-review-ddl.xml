@@ -177,11 +177,11 @@
 
 
     <changeSet author="ypashynskyi" id="6">
-        <createTable tableName="group_objective_status"
-                     remarks="Dictionary of group objective statuses">
+        <createTable tableName="org_objective_status"
+                     remarks="Dictionary of organisation objective statuses">
             <column name="id" type="integer"
                     remarks="A unique identifier for status">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="group_objective_status_pk"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="org_objective_status_pk"/>
             </column>
             <column name="code" type="VARCHAR(30)"
                     remarks="Shortname of status">
@@ -195,21 +195,21 @@
     </changeSet>
 
     <changeSet author="ypashynskyi" id="7">
-        <comment>Init table group_objective_status</comment>
-        <insert tableName="group_objective_status">
+        <comment>Init table org_objective_status</comment>
+        <insert tableName="org_objective_status">
             <column name="id" value="1"/>
             <column name="code" value="DRAFT"/>
-            <column name="description" value="Group objective is saved as draft"/>
+            <column name="description" value="Organisation objective is saved as draft"/>
         </insert>
-        <insert tableName="group_objective_status">
+        <insert tableName="org_objective_status">
             <column name="id" value="2"/>
             <column name="code" value="PUBLISHED"/>
-            <column name="description" value="Group objective was published"/>
+            <column name="description" value="Organisation objective was published"/>
         </insert>
-        <insert tableName="group_objective_status">
+        <insert tableName="org_objective_status">
             <column name="id" value="3"/>
             <column name="code" value="UNPUBLISHED"/>
-            <column name="description" value="Group objective was unpublished"/>
+            <column name="description" value="Organisation objective was unpublished"/>
         </insert>
         <rollback>
             <delete tableName="review_status">
@@ -225,11 +225,11 @@
     </changeSet>
 
     <changeSet author="ypashynskyi" id="8">
-        <createTable tableName="group_objective"
-                     remarks="Table of group(organization, department etc.) objectives">
+        <createTable tableName="org_objective"
+                     remarks="Table of organization objectives">
             <column name="uuid" type="${uuid_type}"
-                    remarks="A unique identifier for group objective">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="group_objective_pk"/>
+                    remarks="A unique identifier for org objective">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="org_objective_pk"/>
             </column>
             <column name="number" type="integer"
                     remarks="A sequence number for business unit's objective">
@@ -248,25 +248,25 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="group_objective"
-                                 constraintName="group_objective_status_id_fk" deferrable="false"
+        <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="org_objective"
+                                 constraintName="org_objective_status_id_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
                                  referencedColumnNames="id" referencedTableName="review_status"
                                  validate="true"/>
         <addUniqueConstraint columnNames="version, number"
-                             constraintName="group_objective_unique"
-                             tableName="group_objective"/>
+                             constraintName="org_objective_unique"
+                             tableName="org_objective"/>
     </changeSet>
 
     <changeSet author="ypashynskyi" id="9">
         <createTable tableName="review_link"
-                     remarks="Table for links from review to group objective">
+                     remarks="Table for links from review to org objective">
             <column name="review_uuid" type="${uuid_type}"
                     remarks="A unique identifier for review">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="review_link_pk"/>
             </column>
-            <column name="group_objective_uuid" type="${uuid_type}"
-                    remarks="A unique identifier for group objective">
+            <column name="org_objective_uuid" type="${uuid_type}"
+                    remarks="A unique identifier for organisation objective">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -275,10 +275,10 @@
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
                                  referencedColumnNames="uuid" referencedTableName="review"
                                  validate="true"/>
-        <addForeignKeyConstraint baseColumnNames="group_objective_uuid" baseTableName="review_link"
-                                 constraintName="review_link_group_objective_uuid_fk" deferrable="false"
+        <addForeignKeyConstraint baseColumnNames="org_objective_uuid" baseTableName="review_link"
+                                 constraintName="review_link_org_objective_uuid_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
-                                 referencedColumnNames="uuid" referencedTableName="group_objective"
+                                 referencedColumnNames="uuid" referencedTableName="org_objective"
                                  validate="true"/>
     </changeSet>
 
@@ -302,6 +302,75 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="review_change_status_hi_pk"/>
             </column>
         </createTable>
+    </changeSet>
+
+    <changeSet author="ypashynskyi" id="11">
+        <createTable tableName="action_type"
+                     remarks="Dictionary of actions">
+            <column name="id" type="integer"
+                    remarks="A unique identifier for action">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="action_type_pk"/>
+            </column>
+            <column name="code" type="VARCHAR(30)"
+                    remarks="Shortname of action">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(100)"
+                    remarks="Description of action">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="ypashynskyi" id="12">
+        <comment>Init table org_objective_status</comment>
+        <insert tableName="action_type">
+            <column name="id" value="1"/>
+            <column name="code" value="SAVE"/>
+            <column name="description" value="Save"/>
+        </insert>
+        <insert tableName="action_type">
+            <column name="id" value="2"/>
+            <column name="code" value="PUBLISH"/>
+            <column name="description" value="Publish"/>
+        </insert>
+        <insert tableName="action_type">
+            <column name="id" value="3"/>
+            <column name="code" value="UNPUBLISH"/>
+            <column name="description" value="Un-publish"/>
+        </insert>
+        <rollback>
+            <delete tableName="action_type">
+                <where>code = 'SAVE'</where>
+            </delete>
+            <delete tableName="action_type">
+                <where>code = 'PUBLISH'</where>
+            </delete>
+            <delete tableName="action_type">
+                <where>code = 'UNPUBLISH'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="ypashynskyi" id="13">
+        <createTable tableName="org_objective_action_hi"
+                     remarks="Table of organization objectives actions history">
+            <column name="action_id" type="integer"
+                    remarks="Action">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="org_objective_action_hi_pk"/>
+            </column>
+            <column name="updated_by" type="VARCHAR(50)"
+                    remarks="User who made changes"/>
+            <column name="updated_time" type="TIMESTAMPTZ"
+                    remarks="Timestamp with zone when changes were applied">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="org_objective_action_hi_pk"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="action_id" baseTableName="org_objective_action_hi"
+                                 constraintName="org_objective_action_hi_action_id_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="action_type"
+                                 validate="true"/>
     </changeSet>
 
 </databaseChangeLog>

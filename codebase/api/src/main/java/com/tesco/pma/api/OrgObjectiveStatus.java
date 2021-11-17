@@ -5,11 +5,11 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum GroupObjectiveStatus implements DictionaryItem<Integer> {
+public enum OrgObjectiveStatus implements DictionaryItem<Integer> {
 
-    DRAFT(1, "Group objective is saved as draft"),
-    PUBLISHED(2, "Group objective was published"),
-    UNPUBLISHED(3, "Group objective was unpublished");
+    DRAFT(1, "Organisation objective is saved as draft"),
+    PUBLISHED(2, "Organisation objective was published"),
+    UNPUBLISHED(3, "Organisation objective was unpublished");
 
     private final Integer id;
     private final String description;

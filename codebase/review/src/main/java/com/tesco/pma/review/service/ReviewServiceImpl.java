@@ -1,9 +1,9 @@
 package com.tesco.pma.review.service;
 
-import com.tesco.pma.api.GroupObjectiveStatus;
+import com.tesco.pma.api.OrgObjectiveStatus;
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMReviewStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
-import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
@@ -14,11 +14,10 @@ import com.tesco.pma.exception.ReviewUpdateException;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
 import com.tesco.pma.review.dao.ReviewDAO;
 import com.tesco.pma.review.domain.ColleagueTimeline;
-import com.tesco.pma.review.domain.GroupObjective;
+import com.tesco.pma.review.domain.OrgObjective;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStatusCounter;
-import com.tesco.pma.review.domain.WorkingGroupObjective;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -34,6 +33,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.tesco.pma.api.ActionType.PUBLISH;
+import static com.tesco.pma.api.ActionType.SAVE;
 import static com.tesco.pma.cycle.api.PMReviewStatus.APPROVED;
 import static com.tesco.pma.cycle.api.PMReviewStatus.COMPLETED;
 import static com.tesco.pma.cycle.api.PMReviewStatus.DECLINED;
@@ -43,10 +44,10 @@ import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
 import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
 import static com.tesco.pma.review.exception.ErrorCodes.ALLOWED_STATUSES_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.CANNOT_DELETE_REVIEW_COUNT_CONSTRAINT;
-import static com.tesco.pma.review.exception.ErrorCodes.GROUP_OBJECTIVES_NOT_FOUND;
-import static com.tesco.pma.review.exception.ErrorCodes.GROUP_OBJECTIVE_ALREADY_EXISTS;
 import static com.tesco.pma.review.exception.ErrorCodes.MAX_REVIEW_NUMBER_CONSTRAINT_VIOLATION;
 import static com.tesco.pma.review.exception.ErrorCodes.MIN_REVIEW_NUMBER_CONSTRAINT_VIOLATION;
+import static com.tesco.pma.review.exception.ErrorCodes.ORG_OBJECTIVES_NOT_FOUND;
+import static com.tesco.pma.review.exception.ErrorCodes.ORG_OBJECTIVE_ALREADY_EXISTS;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND_BY_MANAGER;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND_FOR_STATUS_UPDATE;
@@ -55,7 +56,6 @@ import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_FOR_COL
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_FOR_DELETE;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_FOR_UPDATE;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_STATUS_NOT_ALLOWED;
-import static java.time.Instant.now;
 
 /**
  * Implementation of {@link ReviewService}.
@@ -87,9 +87,9 @@ public class ReviewServiceImpl implements ReviewService {
     private static final String DELETE_OPERATION_NAME = "DELETE";
     private static final String UPDATE_OPERATION_NAME = "UPDATE";
     private static final String CHANGE_STATUS_OPERATION_NAME = "CHANGE STATUS";
-    private static final Comparator<GroupObjective> GROUP_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR =
-            Comparator.comparing(GroupObjective::getNumber)
-                    .thenComparing(GroupObjective::getTitle);
+    private static final Comparator<OrgObjective> ORG_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR =
+            Comparator.comparing(OrgObjective::getNumber)
+                    .thenComparing(OrgObjective::getTitle);
 
     @Override
     public Review getReview(UUID performanceCycleUuid, UUID colleagueUuid, PMReviewType type, Integer number) {
@@ -257,55 +257,57 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public List<GroupObjective> createGroupObjectives(List<GroupObjective> groupObjectives, String loggedUserName) {
-        var currentGroupObjectives = reviewDAO.getGroupObjectives();
-        if (listEqualsIgnoreOrder(currentGroupObjectives, groupObjectives, GROUP_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR)) {
-            return currentGroupObjectives;
+    public List<OrgObjective> createOrgObjectives(List<OrgObjective> orgObjectives, String loggedUserName) {
+        var currentOrgObjectives = reviewDAO.getOrgObjectives();
+        if (listEqualsIgnoreOrder(currentOrgObjectives, orgObjectives, ORG_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR)) {
+            return currentOrgObjectives;
         }
-        List<GroupObjective> results = new ArrayList<>();
-        final var newVersion = reviewDAO.getMaxVersionGroupObjective() + 1;
-        groupObjectives.forEach(groupObjective -> {
+        List<OrgObjective> results = new ArrayList<>();
+        final var newVersion = reviewDAO.getMaxVersionOrgObjective() + 1;
+        orgObjectives.forEach(orgObjective -> {
             try {
-                groupObjective.setUuid(UUID.randomUUID());
-                groupObjective.setStatus(GroupObjectiveStatus.DRAFT);
-                groupObjective.setVersion(newVersion);
-                reviewDAO.createGroupObjective(groupObjective);
-                results.add(groupObjective);
+                orgObjective.setUuid(UUID.randomUUID());
+                orgObjective.setStatus(OrgObjectiveStatus.DRAFT);
+                orgObjective.setVersion(newVersion);
+                reviewDAO.createOrgObjective(orgObjective);
+                results.add(orgObjective);
             } catch (DuplicateKeyException e) {
                 throw databaseConstraintViolation(
-                        GROUP_OBJECTIVE_ALREADY_EXISTS,
-                        Map.of(NUMBER_PARAMETER_NAME, groupObjective.getNumber(),
-                                VERSION_PARAMETER_NAME, groupObjective.getVersion()),
+                        ORG_OBJECTIVE_ALREADY_EXISTS,
+                        Map.of(NUMBER_PARAMETER_NAME, orgObjective.getNumber(),
+                                VERSION_PARAMETER_NAME, orgObjective.getVersion()),
                         e);
 
             }
 
         });
+        reviewAuditLogDAO.logOrgObjectiveAction(SAVE, loggedUserName);
         return results;
     }
 
     @Override
-    public List<GroupObjective> getAllGroupObjectives() {
-        List<GroupObjective> results = reviewDAO.getGroupObjectives();
+    public List<OrgObjective> getAllOrgObjectives() {
+        List<OrgObjective> results = reviewDAO.getOrgObjectives();
         if (results == null) {
-            throw notFound(GROUP_OBJECTIVES_NOT_FOUND, Map.of());
+            throw notFound(ORG_OBJECTIVES_NOT_FOUND, Map.of());
         }
         return results;
     }
 
     @Override
     @Transactional
-    public List<GroupObjective> publishGroupObjectives(String loggedUserName) {
-        reviewDAO.unpublishGroupObjectives();
-        reviewDAO.publishGroupObjectives();
-        return getPublishedGroupObjectives();
+    public List<OrgObjective> publishOrgObjectives(String loggedUserName) {
+        reviewDAO.unpublishOrgObjectives();
+        reviewDAO.publishOrgObjectives();
+        reviewAuditLogDAO.logOrgObjectiveAction(PUBLISH, loggedUserName);
+        return getPublishedOrgObjectives();
     }
 
     @Override
-    public List<GroupObjective> getPublishedGroupObjectives() {
-        List<GroupObjective> results = reviewDAO.getPublishedGroupObjectives();
+    public List<OrgObjective> getPublishedOrgObjectives() {
+        List<OrgObjective> results = reviewDAO.getPublishedOrgObjectives();
         if (results == null) {
-            throw notFound(GROUP_OBJECTIVES_NOT_FOUND, Map.of());
+            throw notFound(ORG_OBJECTIVES_NOT_FOUND, Map.of());
         }
         return results;
     }
@@ -315,14 +317,6 @@ public class ReviewServiceImpl implements ReviewService {
                                                                              Throwable cause) {
         return new DatabaseConstraintViolationException(errorCode.getCode(),
                 messageSourceAccessor.getMessage(errorCode.getCode(), params), null, cause);
-    }
-
-    private WorkingGroupObjective getWorkingGroupObjective(UUID businessUnitUuid, int version) {
-        return WorkingGroupObjective.builder()
-                .businessUnitUuid(businessUnitUuid)
-                .version(version)
-                .updateTime(now())
-                .build();
     }
 
     @Override

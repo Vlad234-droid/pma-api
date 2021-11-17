@@ -3,7 +3,7 @@ package com.tesco.pma.review.dao;
 import com.tesco.pma.cycle.api.PMReviewStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.review.domain.ColleagueTimeline;
-import com.tesco.pma.review.domain.GroupObjective;
+import com.tesco.pma.review.domain.OrgObjective;
 import com.tesco.pma.review.domain.PMCycleReviewTypeProperties;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
@@ -20,63 +20,63 @@ import java.util.UUID;
 public interface ReviewDAO {
 
     /**
-     * Returns a group objective
+     * Returns an organisation objective
      *
-     * @param groupObjectiveUuid an identifier
-     * @return a GroupObjective
+     * @param orgObjectiveUuid an identifier
+     * @return an OrgObjective
      */
-    GroupObjective getGroupObjective(@Param("groupObjectiveUuid") UUID groupObjectiveUuid);
+    OrgObjective getOrgObjective(@Param("orgObjectiveUuid") UUID orgObjectiveUuid);
 
     /**
-     * Returns a list of group objectives for max version
+     * Returns a list of organisation objectives for max version
      *
-     * @return a list of Group Objectives for max version
+     * @return a list of organisation objectives for max version
      */
-    List<GroupObjective> getGroupObjectives();
+    List<OrgObjective> getOrgObjectives();
 
     /**
-     * Returns a list of published group objectives
+     * Returns a list of published organisation objectives
      *
-     * @return a list of Group Objectives
+     * @return a list of organisation objectives
      */
-    List<GroupObjective> getPublishedGroupObjectives();
+    List<OrgObjective> getPublishedOrgObjectives();
 
     /**
-     * Creates a group objective
+     * Creates an organisation objective
      *
-     * @param groupObjective a GroupObjective
-     * @return number of created group objectives
+     * @param orgObjective an organisation objective
+     * @return number of created organisation objectives
      */
-    int createGroupObjective(@Param("groupObjective") GroupObjective groupObjective);
+    int createOrgObjective(@Param("orgObjective") OrgObjective orgObjective);
 
     /**
-     * Delete a group objective
+     * Delete an organisation objective
      *
-     * @param groupObjectiveUuid an identifier
-     * @return number of deleted group objectives
+     * @param orgObjectiveUuid an identifier
+     * @return number of deleted organisation objectives
      */
-    int deleteGroupObjective(@Param("groupObjectiveUuid") UUID groupObjectiveUuid);
+    int deleteOrgObjective(@Param("orgObjectiveUuid") UUID orgObjectiveUuid);
 
     /**
-     * Returns max version of group objectives
+     * Returns max version of organisation objectives
      *
-     * @return max version of group objectives
+     * @return max version of organisation objectives
      */
-    int getMaxVersionGroupObjective();
+    int getMaxVersionOrgObjective();
 
     /**
-     * Publish group objectives
+     * Publish organisation objectives
      *
-     * @return number of published group objectives
+     * @return number of published organisation objectives
      */
-    int publishGroupObjectives();
+    int publishOrgObjectives();
 
     /**
-     * Un-publish group objectives
+     * Un-publish organisation objectives
      *
-     * @return number of un-published group objectives
+     * @return number of un-published organisation objectives
      */
-    int unpublishGroupObjectives();
+    int unpublishOrgObjectives();
 
     /**
      * Returns a review by performance cycle, colleague, review type and sequence number.
