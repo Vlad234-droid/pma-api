@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface DefaultAttributesDAO {
 
-    DefaultAttribute findByCriteriaAndCategory(@Param("criteria") DefaultAttributeCriteria criteria,
+    List<DefaultAttribute> findByCriteriaAndCategory(@Param("criteria") DefaultAttributeCriteria criteria,
                                     @Param("category") DefaultAttributeCategory category);
 
     List<DefaultAttribute> findByCriteriasAndCategory(@Param("criterias") List<DefaultAttributeCriteria> criterias,

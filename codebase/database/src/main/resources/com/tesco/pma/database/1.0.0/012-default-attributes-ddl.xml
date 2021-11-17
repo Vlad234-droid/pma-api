@@ -9,11 +9,11 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="default_attr_pk"/>
             </column>
 
-            <column name="name" type="VARCHAR(30)">
+            <column name="name" type="VARCHAR(100)">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="value" type="VARCHAR(30)">
+            <column name="value" type="VARCHAR(500)">
                 <constraints nullable="false"/>
             </column>
 

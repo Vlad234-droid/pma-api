@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.tesco.pma.colleague.profile.dao.ProfileAttributeDAO">
+<mapper namespace="com.tesco.pma.colleague.profile.dao.DefaultAttributesDAO">
 
     <resultMap id="defaultAttrRM" type="com.tesco.pma.colleague.profile.domain.DefaultAttribute">
         <id property="id" column="id"/>
@@ -17,16 +17,19 @@
                 javaType="com.tesco.pma.colleague.profile.domain.DefaultAttributeCategory"/>
     </resultMap>
 
-    <select id="defaultAttrRM" resultMap="findByCriteriaAndCategory">
+    <select id="findByCriteriaAndCategory" resultMap="defaultAttrRM">
         SELECT *
         FROM default_attributes
-        WHERE category_id = #{category} AND criteria_id = #{criteria}
+        WHERE category_id = #{category.id} AND criteria_id = #{criteria.id}
     </select>
 
-    <select id="defaultAttrRM" resultMap="findByCriteriasAndCategory">
+    <select id="findByCriteriasAndCategory" resultMap="defaultAttrRM">
         SELECT *
         FROM default_attributes
-        WHERE category_id = #{category} AND criteria_id in #{criterias}
+        WHERE category_id = #{category.id} AND criteria_id IN
+            <foreach item="criteria" collection="criterias" separator="," open="(" close=")">
+                #{criteria.id}
+            </foreach>
     </select>
 
 </mapper>
