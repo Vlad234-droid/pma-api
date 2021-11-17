@@ -8,7 +8,7 @@ import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
-import com.tesco.pma.review.domain.ColleagueReviews;
+import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
@@ -149,7 +149,7 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Reviews not found", content = @Content)
     @GetMapping(path = "/managers/{managerUuid}/reviews",
             produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<ColleagueReviews>> getTeamReviews(@PathVariable("managerUuid") UUID managerUuid) {
+    public RestResponse<List<ColleagueTimeline>> getTeamReviews(@PathVariable("managerUuid") UUID managerUuid) {
         return success(reviewService.getTeamReviews(managerUuid));
     }
 

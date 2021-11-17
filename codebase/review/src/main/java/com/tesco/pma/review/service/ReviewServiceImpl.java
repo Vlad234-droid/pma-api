@@ -12,7 +12,7 @@ import com.tesco.pma.exception.ReviewDeletionException;
 import com.tesco.pma.exception.ReviewUpdateException;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
 import com.tesco.pma.review.dao.ReviewDAO;
-import com.tesco.pma.review.domain.ColleagueReviews;
+import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
@@ -117,8 +117,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<ColleagueReviews> getTeamReviews(UUID managerUuid) {
-        List<ColleagueReviews> results = reviewDAO.getTeamReviews(managerUuid);
+    public List<ColleagueTimeline> getTeamReviews(UUID managerUuid) {
+        List<ColleagueTimeline> results = reviewDAO.getTeamReviews(managerUuid);
         if (results == null) {
             throw notFound(REVIEWS_NOT_FOUND_BY_MANAGER,
                     Map.of(MANAGER_UUID_PARAMETER_NAME, managerUuid));
