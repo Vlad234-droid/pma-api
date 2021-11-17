@@ -4,6 +4,9 @@ import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
 import com.tesco.pma.colleague.profile.dao.DefaultAttributesDAO;
 import com.tesco.pma.colleague.profile.domain.*;
+import com.tesco.pma.cycle.api.PMReviewType;
+import com.tesco.pma.review.domain.PMCycleTimelinePoint;
+import com.tesco.pma.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +21,7 @@ public class DefaultAttributesServiceImp implements DefaultAttributesService {
 
     private final DefaultAttributesDAO defaultAttributesDAO;
     private final ProfileService profileService;
+    private final ReviewService reviewService;
 
     public void updateDefaultAttributes(UUID colleagueId) {
 
@@ -43,6 +47,19 @@ public class DefaultAttributesServiceImp implements DefaultAttributesService {
 
         if(workLevel == WorkRelationship.WorkLevel.WL4 || workLevel == WorkRelationship.WorkLevel.WL5) {
             result.add(DefaultAttributeCriteria.WK_4_5_ONLY);
+        }
+
+        var timelinePoints = reviewService.getCycleTimelineByColleague(colleague.getColleagueUUID());
+
+        for (PMCycleTimelinePoint timelinePoint : timelinePoints) {
+
+            if (timelinePoint.getReviewType() == PMReviewType.MYR) {
+                result.add(DefaultAttributeCriteria.COLLEAGUES_WITH_MID_YEAR_REVIEW_ONLY);
+            }
+
+            if (timelinePoint.getReviewType() == PMReviewType.OBJECTIVE) {
+                result.add(DefaultAttributeCriteria.COLLEAGUES_WITH_OBJECTIVES_ONLY);
+            }
         }
 
         //TODO
