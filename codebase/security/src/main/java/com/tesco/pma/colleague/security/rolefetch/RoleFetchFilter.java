@@ -1,6 +1,5 @@
 package com.tesco.pma.colleague.security.rolefetch;
 
-import com.tesco.pma.colleague.security.rolefetch.RoleFetchService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.log.LogMessage;
 import org.springframework.security.core.Authentication;
@@ -11,7 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
-import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -22,7 +20,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class RoleFetchFilter extends OncePerRequestFilter {
@@ -30,10 +27,19 @@ public class RoleFetchFilter extends OncePerRequestFilter {
     private final RoleFetchService roleFetchService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+
         final var authentication = SecurityContextHolder.getContext().getAuthentication();
+
         if (authentication == null || !authentication.isAuthenticated()) {
             this.logger.trace("Did not process request since current SecurityContext is null or unauthenticated");
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        if (!(authentication instanceof BearerTokenAuthentication)) {
+            this.logger.trace("Did not process request since current authentication is not BearerTokenAuthentication");
             filterChain.doFilter(request, response);
             return;
         }
@@ -44,11 +50,16 @@ public class RoleFetchFilter extends OncePerRequestFilter {
             colleagueUuid = UUID.fromString(authentication.getName());
         } catch (Exception e) {
             // in case 'name' not UUID (e.g. anonymous user, etc.)
+            filterChain.doFilter(request, response);
             return;
         }
 
         // Try to find roles in account storage
         var roles = roleFetchService.findRolesInAccountStorage(colleagueUuid);
+        if (roles.isEmpty()) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         try {
             var context = SecurityContextHolder.getContext();
@@ -67,21 +78,16 @@ public class RoleFetchFilter extends OncePerRequestFilter {
 
     }
 
-    private Authentication merge(Authentication main, Collection<String> roles) {
-        Assert.notNull(main, "main can't be null");
+    private Authentication merge(Authentication original, Collection<String> roles) {
+        final Collection<GrantedAuthority> authorities = new LinkedHashSet<>(original.getAuthorities());
+        roles.forEach(role -> {
+            authorities.add(new SimpleGrantedAuthority(role));
+        });
 
-        if (main instanceof BearerTokenAuthentication) {
-            final Collection<GrantedAuthority> authorities = new LinkedHashSet<>(main.getAuthorities());
-            roles.forEach(role -> {
-                authorities.add(new SimpleGrantedAuthority(role));
-            });
-
-            final var authentication = new BearerTokenAuthentication((OAuth2AuthenticatedPrincipal) main.getPrincipal(),
-                    (OAuth2AccessToken) main.getCredentials(), authorities);
-            authentication.setDetails(main.getDetails());
-            return authentication;
-        }
-        return main;
+        final var authentication = new BearerTokenAuthentication((OAuth2AuthenticatedPrincipal) original.getPrincipal(),
+                (OAuth2AccessToken) original.getCredentials(), authorities);
+        authentication.setDetails(original.getDetails());
+        return authentication;
     }
 
 }

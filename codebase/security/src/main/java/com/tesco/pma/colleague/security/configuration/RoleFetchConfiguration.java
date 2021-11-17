@@ -23,7 +23,7 @@ public class RoleFetchConfiguration {
     /**
      * Register the servlet filter for fetching roles from local storage
      *
-     * @return
+     * @return FilterRegistrationBean
      */
     @Bean
     @ConditionalOnProperty(name = "tesco.application.security.enabled", havingValue = "true", matchIfMissing = true)
@@ -31,7 +31,8 @@ public class RoleFetchConfiguration {
         FilterRegistrationBean<RoleFetchFilter> filterRegistration = new FilterRegistrationBean<>();
         filterRegistration.setName("pmaRoleFetchFilter");
         filterRegistration.setFilter(new RoleFetchFilter(roleFetchService));
-        filterRegistration.setOrder(ROLE_FETCH_FILTER_PRECEDENCE); // make sure the filter is registered after the Spring Security Filter Chain
+        // Make sure the filter is registered after the Spring Security Filter Chain
+        filterRegistration.setOrder(ROLE_FETCH_FILTER_PRECEDENCE);
         filterRegistration.addUrlPatterns(ROLE_FETCH_URL_PATTERNS);
         return filterRegistration;
     }

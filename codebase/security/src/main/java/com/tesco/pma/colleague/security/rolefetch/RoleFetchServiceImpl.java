@@ -25,6 +25,7 @@ public class RoleFetchServiceImpl implements RoleFetchService {
     private final UserManagementService userManagementService;
     private final RolesMapper rolesMapper;
 
+    @Override
     public Collection<String> findRolesInAccountStorage(UUID colleagueUuid) {
         ColleagueEntity colleague = profileService.getColleague(colleagueUuid);
         if (colleague != null && colleague.getIamId() != null) {
