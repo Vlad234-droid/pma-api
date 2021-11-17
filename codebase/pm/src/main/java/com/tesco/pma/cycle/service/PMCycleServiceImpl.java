@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,7 +38,6 @@ import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_BY_UUID;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_COLLEAGUE;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_FOR_STATUS_UPDATE;
-import static java.lang.Boolean.TRUE;
 import static java.util.Set.of;
 
 @Slf4j
@@ -72,37 +72,23 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     @Override
     @Transactional
-    public PMCycle create(@NotNull PMCycle cycle) {
-        log.debug("Request to create Performance cycle : {}", cycle);
-        cycle.setUuid(UUID.randomUUID());
-        try {
-            cycleDAO.create(cycle);
-            log.debug("Performance cycle created UUID: {}", cycle.getUuid());
-            return cycle;
-        } catch (DuplicateKeyException e) {
-            throw databaseConstraintViolation(
-                    PM_CYCLE_ALREADY_EXISTS,
-                    Map.of(ORG_KEY_PARAMETER_NAME, cycle.getEntryConfigKey(),
-                            TEMPLATE_UUID_PARAMETER_NAME, cycle.getTemplateUUID()), e);
-        }
+    public PMCycle create(@NotNull PMCycle cycle, String loggedUserName) {
+        return intCreateCycle(cycle, loggedUserName);
     }
+
 
     @Override
     @Transactional
-    public PMCycle publish(@NotNull PMCycle cycle) {
+    public PMCycle publish(@NotNull PMCycle cycle, String loggedUserName) {
         log.debug("Request to publish Performance cycle : {}", cycle);
-        create(cycle);
-
-        //TODO get templateCode from metadata
-        String templateCode = "type_1";
+        intCreateCycle(cycle, loggedUserName);
 
         try {
-            var props = Map.of("needsObjective", TRUE,
-                    "needsEyr", TRUE,
-                    "needsMyr", TRUE);
+            var templateCode = cycle.getMetadata().getCycle().getCode();
+            var props = cycle.getProperties() != null ? cycle.getProperties().getMapJson() : Collections.EMPTY_MAP;
 
             var processUUID = processManagerService.runProcess(templateCode, props);
-            log.debug("Started process: {}", processUUID);
+            log.info("Started process: {}", processUUID);
 
             var pmRuntimeProcess = PMRuntimeProcess.builder()
                     .bpmProcessId(UUID.fromString(processUUID))
@@ -110,16 +96,16 @@ public class PMCycleServiceImpl implements PMCycleService {
                     .businessKey(templateCode)
                     .build();
 
-            pmRuntimeProcess = pmProcessService.register(pmRuntimeProcess);
-            log.debug("Registered PM process: {}", pmRuntimeProcess);
+            pmRuntimeProcess = pmProcessService.register(pmRuntimeProcess, PMProcessStatus.STARTED);
+            log.debug("Started PM process: {}", pmRuntimeProcess);
 
-            pmProcessService.updateStatus(pmRuntimeProcess.getId(), PMProcessStatus.STARTED,
-                    DictionaryFilter.includeFilter(PMProcessStatus.REGISTERED));
-
+            intUpdateStatus(cycle.getUuid(), ACTIVE);
         } catch (ProcessExecutionException e) {
-            log.error("Process start error, cause: ", e);
+            log.error("Performance cycle publish error, cause: ", e);
             //TODO throw ex or return cycle
-            updateStatus(cycle.getUuid(), FAILED);
+            intUpdateStatus(cycle.getUuid(), FAILED);
+        } catch (Exception e) {
+            log.error("Performance cycle publish error, cause: ", e);
         }
 
         return cycle;
@@ -129,23 +115,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     @Transactional
     public PMCycle updateStatus(UUID uuid, PMCycleStatus status) {
 
-        var cycle = cycleDAO.read(uuid);
-        if (null == cycle) {
-            throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID,
-                    Map.of(CYCLE_UUID_PARAMETER_NAME, uuid));
-        }
-
-        cycle.setStatus(status);
-
-        DictionaryFilter<PMCycleStatus> statusFilter = UPDATE_STATUS_RULE_MAP.get(status);
-
-        if (1 == cycleDAO.updateStatus(uuid, status, statusFilter)) {
-            return cycle;
-        } else {
-            throw notFound(PM_CYCLE_NOT_FOUND_FOR_STATUS_UPDATE,
-                    Map.of(STATUS_PARAMETER_NAME, status,
-                            PREV_STATUSES_PARAMETER_NAME, statusFilter));
-        }
+        return intUpdateStatus(uuid, status);
     }
 
     @Override
@@ -228,6 +198,45 @@ public class PMCycleServiceImpl implements PMCycleService {
                                                                              Throwable cause) {
         return new DatabaseConstraintViolationException(errorCode.getCode(),
                 messageSourceAccessor.getMessage(errorCode.getCode(), params), null, cause);
+    }
+
+
+    private PMCycle intCreateCycle(PMCycle cycle, String loggedUserName) {
+        log.debug("Request to create Performance cycle : {}", cycle);
+        cycle.setUuid(UUID.randomUUID());
+        cycle.setStatus(DRAFT);
+        //TODO set created by
+        try {
+            cycleDAO.create(cycle);
+            log.debug("Performance cycle created UUID: {}", cycle.getUuid());
+            return cycle;
+        } catch (DuplicateKeyException e) {
+            throw databaseConstraintViolation(
+                    PM_CYCLE_ALREADY_EXISTS,
+                    Map.of(ORG_KEY_PARAMETER_NAME, cycle.getEntryConfigKey(),
+                            TEMPLATE_UUID_PARAMETER_NAME, cycle.getTemplateUUID()), e);
+        }
+    }
+
+    private PMCycle intUpdateStatus(UUID uuid, PMCycleStatus status) {
+        var cycle = cycleDAO.read(uuid);
+        if (null == cycle) {
+            throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID,
+                    Map.of(CYCLE_UUID_PARAMETER_NAME, uuid));
+        }
+
+        cycle.setStatus(status);
+
+        DictionaryFilter<PMCycleStatus> statusFilter = UPDATE_STATUS_RULE_MAP.get(status);
+
+        if (1 == cycleDAO.updateStatus(uuid, status, statusFilter)) {
+            log.debug("Performance cycle UUID: {} changed status to: {}", cycle.getUuid(), status);
+            return cycle;
+        } else {
+            throw notFound(PM_CYCLE_NOT_FOUND_FOR_STATUS_UPDATE,
+                    Map.of(STATUS_PARAMETER_NAME, status,
+                            PREV_STATUSES_PARAMETER_NAME, statusFilter));
+        }
     }
 
 

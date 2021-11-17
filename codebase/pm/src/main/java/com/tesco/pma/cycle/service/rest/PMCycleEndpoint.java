@@ -1,6 +1,7 @@
 package com.tesco.pma.cycle.service.rest;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.service.PMCycleService;
@@ -46,12 +47,13 @@ public class PMCycleEndpoint {
 
     private final PMCycleService service;
     private final NamedMessageSourceAccessor messageSourceAccessor;
+    private final AuditorAware<String> auditorAware;
 
 
     /**
      * POST call to create a Performance Cycle .
      *
-     * @param config a PMCycle
+     * @param cycle a PMCycle
      * @return a RestResponse parameterized with PMCycle
      */
     @Operation(summary = "Create performance cycle",
@@ -60,15 +62,14 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
     @PostMapping(value = "/pm-cycles", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<PMCycle> create(@RequestBody PMCycle config) {
-
-        return success(service.create(config));
+    public RestResponse<PMCycle> create(@RequestBody PMCycle cycle) {
+        return success(service.create(cycle, resolveUserName()));
     }
 
     /**
      * PUT call to create and run Performance Cycle.
      *
-     * @param config a PMCycle
+     * @param cycle a PMCycle
      * @return a RestResponse parameterized with PMCycle
      */
     @Operation(summary = "Publish performance cycle",
@@ -77,9 +78,9 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.ACCEPTED, description = "Successful operation")
     @PutMapping(value = "/pm-cycles/publish", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public RestResponse<PMCycle> publish(@RequestBody PMCycle config) {
+    public RestResponse<PMCycle> publish(@RequestBody PMCycle cycle) {
 
-        return success(service.publish(config));
+        return success(service.publish(cycle, resolveUserName()));
     }
 
     /**
@@ -170,5 +171,9 @@ public class PMCycleEndpoint {
 
     private String jsonMetadataToRestResponse(String jsonMetadata) {
         return "{\"success\": true, \"data\": " + jsonMetadata + "}";
+    }
+
+    private String resolveUserName() {
+        return auditorAware.getCurrentAuditor();
     }
 }

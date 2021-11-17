@@ -22,7 +22,8 @@ public interface PMCycleService {
      * @return created PMCycle
      * @throws DatabaseConstraintViolationException PMCycle already exist.
      */
-    PMCycle create(@NotNull PMCycle cycle);
+    PMCycle create(@NotNull PMCycle cycle,
+                   String loggedUserName);
 
     /**
      * Publish performance cycle
@@ -30,7 +31,8 @@ public interface PMCycleService {
      * @param cycle PMCycle
      * @return published PMCycle
      */
-    PMCycle publish(@NotNull PMCycle cycle);
+    PMCycle publish(@NotNull PMCycle cycle,
+                    String loggedUserName);
 
     /**
      * Update PMCycle status
