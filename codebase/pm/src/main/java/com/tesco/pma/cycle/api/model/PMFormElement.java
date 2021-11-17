@@ -1,9 +1,9 @@
 package com.tesco.pma.cycle.api.model;
 
-import com.tesco.pma.api.GeneralDictionaryItem;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 19.10.2021 Time: 11:07
@@ -20,9 +20,17 @@ public class PMFormElement extends PMElement {
     private String key;
     private String json;
 
+    public PMFormElement() {
+        setType(PMElementType.FORM);
+    }
+
     public PMFormElement(String key, String code, String json) {
-        super(null, code, null, new GeneralDictionaryItem(null, PM_FORM, null));
+        super(key, code, null, PMElementType.FORM);
         this.key = key;
         this.json = json;
+    }
+
+    public static List<String> getPropertyNames() {
+        return getPropertyNames(PMFormElement.class, PM_FORM_PREFIX + "(?!prefix)([\\w]+)$");
     }
 }

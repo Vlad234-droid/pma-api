@@ -1,8 +1,8 @@
 package com.tesco.pma.review.domain;
 
 import com.tesco.pma.api.MapJson;
-import com.tesco.pma.api.ReviewStatus;
-import com.tesco.pma.api.ReviewType;
+import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMReviewType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,8 +21,8 @@ public class Review {
     UUID uuid;
     UUID performanceCycleUuid;
     UUID colleagueUuid;
-    ReviewType type;
+    PMReviewType type;
     Integer number;
     MapJson properties;
-    ReviewStatus status;
+    PMReviewStatus status;
 }

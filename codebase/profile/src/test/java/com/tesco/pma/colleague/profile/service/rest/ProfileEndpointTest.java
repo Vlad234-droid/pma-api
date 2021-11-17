@@ -3,6 +3,7 @@ package com.tesco.pma.colleague.profile.service.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
+import com.tesco.pma.colleague.profile.service.ImportColleagueService;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import org.jeasy.random.EasyRandom;
@@ -48,6 +49,9 @@ class ProfileEndpointTest extends AbstractEndpointTest {
 
     @MockBean
     private ProfileService mockProfileService;
+
+    @MockBean
+    private ImportColleagueService importColleagueService;
 
     private final UUID colleagueUuid = randomUUID();
 

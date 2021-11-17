@@ -99,10 +99,10 @@
         <createTable remarks="Working business unit"
                      tableName="working_config_entry">
             <column name="name" type="VARCHAR">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="working_config_entry_pk"/>
+                <constraints nullable="false"/>
             </column>
             <column name="type_id" type="INTEGER">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="working_config_entry_pk"/>
+                <constraints nullable="false"/>
             </column>
             <column name="version" type="INTEGER">
                 <constraints nullable="false"/>

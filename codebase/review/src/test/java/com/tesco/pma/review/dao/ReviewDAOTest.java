@@ -4,7 +4,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.tesco.pma.api.GroupObjectiveStatus;
 import com.tesco.pma.api.MapJson;
-import com.tesco.pma.api.ReviewStatus;
+import com.tesco.pma.cycle.api.PMReviewStatus;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.PMCycleReviewTypeProperties;
@@ -26,13 +26,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.tesco.pma.api.PMElementType.REVIEW;
-import static com.tesco.pma.api.PMElementType.TIMELINE_POINT;
-import static com.tesco.pma.api.ReviewStatus.APPROVED;
-import static com.tesco.pma.api.ReviewStatus.DECLINED;
-import static com.tesco.pma.api.ReviewStatus.DRAFT;
-import static com.tesco.pma.api.ReviewStatus.WAITING_FOR_APPROVAL;
-import static com.tesco.pma.api.ReviewType.OBJECTIVE;
+import static com.tesco.pma.cycle.api.PMReviewStatus.APPROVED;
+import static com.tesco.pma.cycle.api.PMReviewStatus.DECLINED;
+import static com.tesco.pma.cycle.api.PMReviewStatus.DRAFT;
+import static com.tesco.pma.cycle.api.PMReviewStatus.WAITING_FOR_APPROVAL;
+import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
+import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
+import static com.tesco.pma.cycle.api.model.PMElementType.TIMELINE_POINT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
 import static org.assertj.core.api.InstanceOfAssertFactories.type;
@@ -247,7 +247,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .type(OBJECTIVE)
                 .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
-                .status(ReviewStatus.DRAFT)
+                .status(PMReviewStatus.DRAFT)
                 .build();
 
         final int rowsInserted = instance.createReview(review);
@@ -266,7 +266,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .type(OBJECTIVE)
                 .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
-                .status(ReviewStatus.DRAFT)
+                .status(PMReviewStatus.DRAFT)
                 .build();
 
         Assertions.assertThatThrownBy(() -> instance.createReview(review))
@@ -378,7 +378,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .type(OBJECTIVE)
                 .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
-                .status(ReviewStatus.DRAFT)
+                .status(PMReviewStatus.DRAFT)
                 .build();
 
         final var result = instance.updateReview(review, List.of(DRAFT, DECLINED, APPROVED));
