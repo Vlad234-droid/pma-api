@@ -501,5 +501,4 @@
         FROM config_entry
         WHERE uuid = #{uuid};
     </delete>
-
 </mapper>
