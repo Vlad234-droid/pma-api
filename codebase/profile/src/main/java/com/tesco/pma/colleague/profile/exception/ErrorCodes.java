@@ -18,6 +18,8 @@ public enum ErrorCodes implements ErrorCodeAware {
      * Profile attribute name already exists
      */
     PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS,
+    COLLEAGUES_MANAGER_NOT_FOUND,
+    IMPORT_REQUEST_NOT_FOUND,
 
     /**
      * Duplicate key exception

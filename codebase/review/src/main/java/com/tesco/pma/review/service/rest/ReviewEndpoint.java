@@ -1,16 +1,17 @@
 package com.tesco.pma.review.service.rest;
 
+import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.configuration.CaseInsensitiveEnumEditor;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
-import com.tesco.pma.review.domain.ColleagueReviews;
+import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.GroupObjective;
+import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
-import com.tesco.pma.api.ReviewStatus;
-import com.tesco.pma.api.ReviewType;
 import com.tesco.pma.review.domain.WorkingGroupObjective;
 import com.tesco.pma.review.domain.request.UpdateReviewsStatusRequest;
 import com.tesco.pma.review.service.ReviewService;
@@ -63,7 +64,7 @@ public class ReviewEndpoint {
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse<Review> createReview(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                              @PathVariable("cycleUuid") String cycleUuid,
-                                             @PathVariable("type") ReviewType type,
+                                             @PathVariable("type") PMReviewType type,
                                              @PathVariable("number") Integer number,
                                              @RequestBody Review review) {
         review.setPerformanceCycleUuid(getPMCycleUuid(colleagueUuid, cycleUuid));
@@ -88,7 +89,7 @@ public class ReviewEndpoint {
             produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     public RestResponse<List<Review>> updateReviews(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                                     @PathVariable("cycleUuid") String cycleUuid,
-                                                    @PathVariable("type") ReviewType type,
+                                                    @PathVariable("type") PMReviewType type,
                                                     @RequestBody List<Review> reviews) {
         return success(reviewService.updateReviews(
                 getPMCycleUuid(colleagueUuid, cycleUuid),
@@ -113,7 +114,7 @@ public class ReviewEndpoint {
             produces = APPLICATION_JSON_VALUE)
     public RestResponse<Review> getReview(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                           @PathVariable("cycleUuid") String cycleUuid,
-                                          @PathVariable("type") ReviewType type,
+                                          @PathVariable("type") PMReviewType type,
                                           @PathVariable("number") Integer number) {
         return success(reviewService.getReview(getPMCycleUuid(colleagueUuid, cycleUuid), colleagueUuid, type, number));
     }
@@ -133,7 +134,7 @@ public class ReviewEndpoint {
             produces = APPLICATION_JSON_VALUE)
     public RestResponse<List<Review>> getReviews(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                                  @PathVariable("cycleUuid") String cycleUuid,
-                                                 @PathVariable("type") ReviewType type) {
+                                                 @PathVariable("type") PMReviewType type) {
         return success(reviewService.getReviews(getPMCycleUuid(colleagueUuid, cycleUuid), colleagueUuid, type));
     }
 
@@ -148,7 +149,7 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Reviews not found", content = @Content)
     @GetMapping(path = "/managers/{managerUuid}/reviews",
             produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<ColleagueReviews>> getTeamReviews(@PathVariable("managerUuid") UUID managerUuid) {
+    public RestResponse<List<ColleagueTimeline>> getTeamReviews(@PathVariable("managerUuid") UUID managerUuid) {
         return success(reviewService.getTeamReviews(managerUuid));
     }
 
@@ -169,7 +170,7 @@ public class ReviewEndpoint {
             consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public RestResponse<Review> updateReview(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                              @PathVariable("cycleUuid") String cycleUuid,
-                                             @PathVariable("type") ReviewType type,
+                                             @PathVariable("type") PMReviewType type,
                                              @PathVariable("number") Integer number,
                                              @RequestBody Review review) {
         review.setPerformanceCycleUuid(getPMCycleUuid(colleagueUuid, cycleUuid));
@@ -196,11 +197,11 @@ public class ReviewEndpoint {
     @PutMapping(
             path = "/colleagues/{colleagueUuid}/pm-cycles/{cycleUuid}/review-types/{type}/statuses/{status}",
             produces = APPLICATION_JSON_VALUE)
-    public RestResponse<ReviewStatus> updateReviewsStatus(@PathVariable("colleagueUuid") UUID colleagueUuid,
-                                                          @PathVariable("cycleUuid") String cycleUuid,
-                                                          @PathVariable("type") ReviewType type,
-                                                          @PathVariable("status") ReviewStatus status,
-                                                          @RequestBody UpdateReviewsStatusRequest request) {
+    public RestResponse<PMReviewStatus> updateReviewsStatus(@PathVariable("colleagueUuid") UUID colleagueUuid,
+                                                            @PathVariable("cycleUuid") String cycleUuid,
+                                                            @PathVariable("type") PMReviewType type,
+                                                            @PathVariable("status") PMReviewStatus status,
+                                                            @RequestBody UpdateReviewsStatusRequest request) {
         return success(reviewService.updateReviewsStatus(
                 getPMCycleUuid(colleagueUuid, cycleUuid),
                 colleagueUuid,
@@ -228,7 +229,7 @@ public class ReviewEndpoint {
             produces = APPLICATION_JSON_VALUE)
     public RestResponse<Void> deleteReview(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                            @PathVariable("cycleUuid") String cycleUuid,
-                                           @PathVariable("type") ReviewType type,
+                                           @PathVariable("type") PMReviewType type,
                                            @PathVariable("number") Integer number) {
         reviewService.deleteReview(
                 getPMCycleUuid(colleagueUuid, cycleUuid),
@@ -236,6 +237,13 @@ public class ReviewEndpoint {
                 type,
                 number);
         return success();
+    }
+
+    @Operation(summary = "Get cycle timeline for colleague", tags = {"review"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the cycle timeline")
+    @GetMapping(value = "/colleagues/{colleagueUuid}/timeline", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<List<PMCycleTimelinePoint>> getTimelineByColleague(@PathVariable UUID colleagueUuid) {
+        return RestResponse.success(reviewService.getCycleTimelineByColleague(colleagueUuid));
     }
 
     /**
@@ -318,7 +326,7 @@ public class ReviewEndpoint {
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(ReviewType.class, new CaseInsensitiveEnumEditor(ReviewType.class));
-        binder.registerCustomEditor(ReviewStatus.class, new CaseInsensitiveEnumEditor(ReviewStatus.class));
+        binder.registerCustomEditor(PMReviewType.class, new CaseInsensitiveEnumEditor(PMReviewType.class));
+        binder.registerCustomEditor(PMReviewStatus.class, new CaseInsensitiveEnumEditor(PMReviewStatus.class));
     }
 }

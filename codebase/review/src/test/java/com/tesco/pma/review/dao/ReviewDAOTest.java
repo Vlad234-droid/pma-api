@@ -3,10 +3,13 @@ package com.tesco.pma.review.dao;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.tesco.pma.api.MapJson;
+import com.tesco.pma.cycle.api.PMReviewStatus;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.review.domain.GroupObjective;
+import com.tesco.pma.review.domain.PMCycleReviewTypeProperties;
+import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
-import com.tesco.pma.api.ReviewStatus;
+import com.tesco.pma.review.domain.ReviewStats;
 import com.tesco.pma.review.domain.WorkingGroupObjective;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -18,16 +21,19 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.tesco.pma.api.ReviewStatus.APPROVED;
-import static com.tesco.pma.api.ReviewStatus.DECLINED;
-import static com.tesco.pma.api.ReviewStatus.DRAFT;
-import static com.tesco.pma.api.ReviewStatus.WAITING_FOR_APPROVAL;
-import static com.tesco.pma.api.ReviewType.OBJECTIVE;
+import static com.tesco.pma.cycle.api.PMReviewStatus.APPROVED;
+import static com.tesco.pma.cycle.api.PMReviewStatus.DECLINED;
+import static com.tesco.pma.cycle.api.PMReviewStatus.DRAFT;
+import static com.tesco.pma.cycle.api.PMReviewStatus.WAITING_FOR_APPROVAL;
+import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
+import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
+import static com.tesco.pma.cycle.api.model.PMElementType.TIMELINE_POINT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
 import static org.assertj.core.api.InstanceOfAssertFactories.type;
@@ -64,6 +70,8 @@ class ReviewDAOTest extends AbstractDAOTest {
     private static final Integer VERSION_3 = 3;
     private static final String USER_INIT = "Init user";
     private static final String TIME_INIT = "2021-09-20 10:45:12.448057";
+    private static final String OBJECTIVES_CODE_NAME = "Objectives";
+    private static final String Q3_CODE_NAME = "Q3";
     private static final MapJson REVIEW_PROPERTIES_INIT = new MapJson(
             Map.of(TITLE_PROPERTY_NAME, TITLE_INIT,
                     DESCRIPTION_PROPERTY_NAME, DESCRIPTION_INIT,
@@ -227,7 +235,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .type(OBJECTIVE)
                 .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
-                .status(ReviewStatus.DRAFT)
+                .status(PMReviewStatus.DRAFT)
                 .build();
 
         final int rowsInserted = instance.createReview(review);
@@ -246,7 +254,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .type(OBJECTIVE)
                 .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
-                .status(ReviewStatus.DRAFT)
+                .status(PMReviewStatus.DRAFT)
                 .build();
 
         Assertions.assertThatThrownBy(() -> instance.createReview(review))
@@ -358,7 +366,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .type(OBJECTIVE)
                 .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
-                .status(ReviewStatus.DRAFT)
+                .status(PMReviewStatus.DRAFT)
                 .build();
 
         final var result = instance.updateReview(review, List.of(DRAFT, DECLINED, APPROVED));
@@ -418,5 +426,63 @@ class ReviewDAOTest extends AbstractDAOTest {
         final var result = instance.getWorkingGroupObjective(BUSINESS_UNIT_UUID_NOT_EXIST);
 
         assertThat(result).isNull();
+    }
+
+    @Test
+    @DataSet({"pm_cycle_init.xml", "cleanup.xml"})
+    void getPMCycleReviewProperties() {
+        final var result = instance.getPMCycleReviewTypeProperties(PERFORMANCE_CYCLE_UUID, OBJECTIVE);
+
+        assertThat(result)
+                .asInstanceOf(type(PMCycleReviewTypeProperties.class))
+                .returns(PERFORMANCE_CYCLE_UUID, from(PMCycleReviewTypeProperties::getCycleUuid))
+                .returns(OBJECTIVE, from(PMCycleReviewTypeProperties::getType))
+                .returns(3, from(PMCycleReviewTypeProperties::getMin))
+                .returns(5, from(PMCycleReviewTypeProperties::getMax));
+    }
+
+    @Test
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    void getReviewStats() {
+        final var result = instance.getReviewStats(
+                PERFORMANCE_CYCLE_UUID,
+                COLLEAGUE_UUID,
+                OBJECTIVE);
+
+        assertThat(result)
+                .asInstanceOf(type(ReviewStats.class))
+                .returns(PERFORMANCE_CYCLE_UUID, from(ReviewStats::getCycleUuid))
+                .returns(COLLEAGUE_UUID, from(ReviewStats::getColleagueUuid))
+                .returns(OBJECTIVE, from(ReviewStats::getType))
+                .returns(Map.of(DRAFT, 2), from(ReviewStats::getMapStatusStats));
+    }
+
+    @Test
+    @DataSet({"pm_cycle_init.xml", "cleanup.xml"})
+    void getTimeline() {
+        final var result = instance.getTimeline(PERFORMANCE_CYCLE_UUID);
+
+        final var objectives = PMCycleTimelinePoint.builder()
+                .cycleUuid(PERFORMANCE_CYCLE_UUID)
+                .code(OBJECTIVES_CODE_NAME)
+                .description(OBJECTIVES_CODE_NAME)
+                .type(REVIEW)
+                .reviewType(OBJECTIVE)
+                .startDate(LocalDate.of(2021, 4, 1))
+                .build();
+
+        final var q3 = PMCycleTimelinePoint.builder()
+                .cycleUuid(PERFORMANCE_CYCLE_UUID)
+                .code(Q3_CODE_NAME)
+                .description(Q3_CODE_NAME)
+                .type(TIMELINE_POINT)
+                .startDate(LocalDate.of(2022, 1, 1))
+                .build();
+
+        assertThat(result.get(0))
+                .isEqualTo(objectives);
+
+        assertThat(result.get(3))
+                .isEqualTo(q3);
     }
 }

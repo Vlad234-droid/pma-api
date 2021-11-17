@@ -1,5 +1,7 @@
 package com.tesco.pma.colleague.security.service;
 
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
+import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.dao.AccountManagementDAO;
 import com.tesco.pma.colleague.security.domain.Account;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
@@ -11,8 +13,6 @@ import com.tesco.pma.colleague.security.exception.ErrorCodes;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.organisation.api.Colleague;
-import com.tesco.pma.organisation.service.ConfigEntryService;
 import com.tesco.pma.pagination.RequestQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,7 +40,7 @@ public class UserManagementServiceImpl implements UserManagementService {
 
     private final AccountManagementDAO accountManagementDAO;
 
-    private final ConfigEntryService configEntryService;
+    private final ProfileService profileService;
 
     private final NamedMessageSourceAccessor messages;
 
@@ -194,10 +194,10 @@ public class UserManagementServiceImpl implements UserManagementService {
      * @param iamId
      * @return
      */
-    private Optional<Colleague> findColleagueByIamIdOrAccountName(String accountName, String iamId) {
-        Colleague colleague = configEntryService.getColleagueByIamId(iamId);
+    private Optional<ColleagueEntity> findColleagueByIamIdOrAccountName(String accountName, String iamId) {
+        var colleague = profileService.getColleagueByIamId(iamId);
         if (colleague == null) {
-            colleague = configEntryService.getColleagueByIamId(accountName);
+            colleague = profileService.getColleagueByIamId(accountName);
         }
 
         return Optional.ofNullable(colleague);

@@ -1,8 +1,9 @@
 package com.tesco.pma.colleague.profile.service;
 
 import com.tesco.pma.colleague.api.Colleague;
-import com.tesco.pma.colleague.profile.domain.TypedAttribute;
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
+import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
@@ -57,11 +58,27 @@ public interface ProfileService {
     int updateColleague(@NotNull UUID colleagueUuid, Collection<String> changedAttributes);
 
     /**
-     * Find colleague by id
+     * Find colleague by uuid
      *
-     * @param colleagueUuid
-     * @return Deleted profile attributes
+     * @param colleagueUuid - colleague identifier
+     * @return colleague object
      */
     Colleague findColleagueByColleagueUuid(UUID colleagueUuid);
+
+    /**
+     * Get colleague by IAM identifier
+     *
+     * @param iamId - iam identifier
+     * @return colleague object
+     */
+    ColleagueEntity getColleagueByIamId(String iamId);
+
+    /**
+     * Get colleague by UUID
+     *
+     * @param colleagueUuid - colleague identifier
+     * @return colleague object
+     */
+    ColleagueEntity getColleague(UUID colleagueUuid);
 
 }

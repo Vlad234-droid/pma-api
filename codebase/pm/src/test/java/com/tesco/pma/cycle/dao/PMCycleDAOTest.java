@@ -1,9 +1,13 @@
 package com.tesco.pma.cycle.dao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.database.rider.core.api.dataset.CompareOperation;
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.tesco.pma.api.DictionaryFilter;
+import com.tesco.pma.colleague.api.ColleagueSimple;
 import com.tesco.pma.cycle.api.PMCycle;
+import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.dao.AbstractDAOTest;
 import org.apache.commons.io.IOUtils;
@@ -14,8 +18,11 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -70,6 +77,21 @@ class PMCycleDAOTest extends AbstractDAOTest {
     }
 
     @Test
+    @ExpectedDataSet(value = "pm_create_cycle_expected_1.xml", compareOperation = CompareOperation.CONTAINS)
+    void createPMCycle() throws ParseException {
+        Instant testTime = new SimpleDateFormat(SDF_PATTERN, Locale.ENGLISH).parse("2016-12-31").toInstant();
+        dao.createInt(createCycle(CYCLE_CREATE_UUID), testTime);
+    }
+
+    @Test
+    @DataSet("pm_colleague_cycle_init.xml")
+    @ExpectedDataSet(value = "pm_update_cycle_status_expected_1.xml", compareOperation = CompareOperation.CONTAINS)
+    void changeCycleStatus() {
+        dao.updateStatus(CYCLE_UUID, PMCycleStatus.INACTIVE, null);
+    }
+
+
+    @Test
     @DataSet("pm_colleague_cycle_init.xml")
     void getMetadata() throws Exception {
         var metadata = IOUtils.toString(Objects.requireNonNull(getClass()
@@ -86,7 +108,7 @@ class PMCycleDAOTest extends AbstractDAOTest {
         var metadata = IOUtils.toString(Objects.requireNonNull(getClass()
                 .getResourceAsStream("/com/tesco/pma/cycle/dao/type_1_metadata.json")), StandardCharsets.UTF_8);
         cycle.setJsonMetadata(metadata);
-        dao.create(cycle, Instant.now());
+        dao.createInt(cycle, Instant.now());
 
         var actual = dao.read(CYCLE_UUID_3);
         var expectedJson = json.from(metadata);
@@ -96,16 +118,19 @@ class PMCycleDAOTest extends AbstractDAOTest {
     }
 
     private PMCycle createCycle(UUID uuid) {
+
         return PMCycle.builder()
                 .name(TEST_CYCLE_NAME)
                 .status(ACTIVE)
-                .type(PMCycleType.HIRING_DATE)
-                .createdBy(COLLEAGUE_UUID)
+                .type(PMCycleType.HIRING)
+                .uuid(CYCLE_CREATE_UUID)
+                .createdBy(ColleagueSimple
+                        .builder()
+                        .uuid(COLLEAGUE_UUID)
+                        .build())
                 .uuid(uuid)
                 .entryConfigKey(TEST_KEY)
                 .templateUUID(TEMPLATE_UUID)
                 .build();
     }
-
-
 }

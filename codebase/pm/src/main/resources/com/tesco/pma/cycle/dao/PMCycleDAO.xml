@@ -7,7 +7,6 @@
         <result property="entryConfigKey" column="entry_config_key"/>
         <result property="templateUUID" column="template_uuid"/>
         <result property="name" column="name"/>
-        <result property="createdBy" column="created_by"/>
         <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.cycle.api.PMCycleStatus"/>
@@ -15,23 +14,18 @@
                 javaType="com.tesco.pma.cycle.api.PMCycleType"/>
         <result property="startTime" column="start_time"/>
         <result property="endTime" column="end_time"/>
-        <result property="properties" column="properties"/>
+        <result property="properties" column="properties"
+                typeHandler="com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler"
+                javaType="com.tesco.pma.api.MapJson"/>
         <result property="jsonMetadata" column="metadata"/>
+        <association property="createdBy" column="{uuid=created_by}" select="getColleagueByUuid"/>
     </resultMap>
 
-    <resultMap id="cycleTimelineMap" type="com.tesco.pma.cycle.api.PMCycleTimelinePoint">
-        <result property="cycleUuid" column="cycle"/>
-        <result property="code" column="code"/>
-        <result property="description" column="description"/>
-        <result property="type" column="type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.api.ReviewType"/>
-        <result property="startDate" column="start_time"/>
-    </resultMap>
-
-    <resultMap id="reviewCountMap" type="com.tesco.pma.cycle.api.ReviewCounter">
-        <result property="count" column="cnt"/>
-        <result property="status" column="status_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.api.ReviewStatus"/>
+    <resultMap id="colleagueMap" type="com.tesco.pma.colleague.api.ColleagueSimple">
+        <result property="uuid" column="uuid"/>
+        <result property="firstName" column="first_name"/>
+        <result property="middleName" column="middle_name"/>
+        <result property="lastName" column="last_name"/>
     </resultMap>
 
     <sql id="addStatusIdCondition">
@@ -43,7 +37,7 @@
         </if>
     </sql>
 
-    <insert id="create" flushCache="true" parameterType="com.tesco.pma.cycle.api.PMCycle">
+    <insert id="createInt" flushCache="true" parameterType="com.tesco.pma.cycle.api.PMCycle">
         INSERT INTO pm_cycle
         (uuid,
          entry_config_key,
@@ -64,11 +58,11 @@
                 #{cycle.name},
                 #{cycle.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleType},
                 #{cycle.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus},
-                #{cycle.createdBy},
+                #{cycle.createdBy.uuid},
                 #{now},
                 #{cycle.startTime},
                 #{cycle.endTime},
-                #{cycle.properties},
+                #{cycle.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
                 #{cycle.jsonMetadata}::jsonb
                 );
     </insert>
@@ -86,10 +80,22 @@
         <include refid="addStatusIdCondition"/>
     </update>
 
-    <select id="getByStatus" resultMap="cycleResultMap">
-        SELECT *
+
+    <select id="getAll" resultMap="cycleResultMap">
+        SELECT uuid,
+        entry_config_key,
+        template_uuid,
+        name,
+        type_id,
+        status_id,
+        created_by,
+        start_time,
+        end_time,
+        properties
+        <if test="includeMetadata">
+            ,metadata
+        </if>
         FROM pm_cycle
-        WHERE status_id = #{status.id}
     </select>
 
     <select id="getByColleague" resultMap="cycleResultMap">
@@ -119,37 +125,12 @@
         WHERE uuid = #{uuid}
     </insert>
 
-    <select id="readTimeline" resultMap="cycleTimelineMap">
-        select yyy.code as code,
-        yyy.description as description,
-        rt.id as type_id,
-        yyy.cycle_id as cycle,
-        yyy.start_time
-        from
-        (select json_extract_path_text(yy.xx, 'id') as rw_uuid,
-        json_extract_path_text(yy.xx, 'code') as code,
-        json_extract_path_text(yy.xx, 'description') as description,
-        json_extract_path_text(yy.xx, 'reviewType', 'code') as rw_type_code,
-        json_extract_path_text(yy.xx, 'properties', 'pm_review_start_time') as start_time,
-        yy.cycle_id as cycle_id,
-        row_number() over () as rn
-        from (select json_array_elements((metadata->'cycle'->'reviews')::json) as xx,
-        uuid as cycle_id
-        from pm_cycle
-        WHERE uuid = #{uuid}
-        )yy) yyy
-        inner join review_type rt on LOWER(rt.code) = LOWER(yyy.rw_type_code)
-        order by yyy.start_time
-    </select>
-
-    <select id="getReviewsCountByStatus" resultMap="reviewCountMap">
-        select count(*) as cnt,
-               status_id
-        from review rw
-                 join review_type rt on rw.type_id = rt.id and LOWER(rt.code)=LOWER(#{type})
-        where rw.performance_cycle_uuid=#{pmc_uuid}
-          and rw.colleague_uuid=#{colleague_uuid}
-        group by status_id
-        order by cnt DESC
+    <select id="getColleagueByUuid" resultMap="colleagueMap">
+        select uuid,
+               first_name,
+               middle_name,
+               last_name
+        from colleague
+        where uuid = #{uuid}
     </select>
 </mapper>

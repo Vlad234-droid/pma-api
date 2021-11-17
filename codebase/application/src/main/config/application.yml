@@ -57,7 +57,8 @@ spring:
                               com.tesco.pma.cycle.api,
                               com.tesco.pma.feedback.api,
                               com.tesco.pma.colleague.security.domain,
-                              com.tesco.pma.notes.model
+                              com.tesco.pma.notes.model,
+                              com.tesco.pma.fs.domain
         configuration-properties:
           base-package: com.tesco.pma.dao,
                         com.tesco.pma.colleague.profile.dao,
@@ -67,7 +68,8 @@ spring:
                         com.tesco.pma.cycle.dao,
                         com.tesco.pma.feedback.dao,
                         com.tesco.pma.colleague.security.dao,
-                        com.tesco.pma.notes.dao
+                        com.tesco.pma.notes.dao,
+                        com.tesco.pma.fs.dao
           batchSize: 500
     camunda:
       # Camunda database config
@@ -97,8 +99,10 @@ spring:
       com/tesco/pma/feedback/exception/AppExceptionMessage,
       com/tesco/pma/cycle/exception/AppExceptionMessage,
       com/tesco/pma/process/service/AppPMProcessMessages,
+      com/tesco/pma/colleague/profile/import/AppImportMessages,
       com/tesco/pma/colleague/security/exception/AppExceptionMessage,
-      com/tesco/pma/notes/exception/AppNotesMessages
+      com/tesco/pma/notes/exception/AppNotesMessages,
+      com/tesco/pma/fs/exception/AppExceptionMessage
     encoding: UTF-8
   async-executor:
     core-pool-size: 2
@@ -141,6 +145,8 @@ springdoc:
 validation:
   mapping-locations:
     - classpath:com/tesco/pma/feedback/validation/constraints-feedback.xml
+    - classpath:com/tesco/pma/validation/constraints-files-upload-metadata.xml
+    - classpath:com/tesco/pma/validation/constraints-upload-metadata.xml
   messages:
     basename: com/tesco/pma/validation/AppValidationMessages
     encoding: UTF-8
@@ -224,8 +230,10 @@ camunda:
     auto-deployment-enabled: true
     deployment-resource-pattern: classpath:com/tesco/pma/flow/type_1.bpmn,
                                            com/tesco/pma/flow/type_2.bpmn,
+                                           com/tesco/pma/flow/type_4.bpmn,
                                            com/tesco/pma/flow/forms/type_1_objective.form,
-                                           com/tesco/pma/flow/forms/type_2_objective.form
+                                           com/tesco/pma/flow/forms/type_2_objective.form,
+                                           com/tesco/pma/flow/forms/type_4_eyr.form
 
 ---
 spring:

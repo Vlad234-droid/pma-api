@@ -55,7 +55,19 @@ public enum ErrorCodes implements ErrorCodeAware {
     /**
      * Status not allowed for operation
      */
-    REVIEW_STATUS_NOT_ALLOWED;
+    REVIEW_STATUS_NOT_ALLOWED,
+    /**
+     * Max review's number limit reached
+     */
+    MAX_REVIEW_NUMBER_CONSTRAINT_VIOLATION,
+    /**
+     * Min review's number limit reached
+     */
+    MIN_REVIEW_NUMBER_CONSTRAINT_VIOLATION,
+    /**
+     * Min review's number limit reached
+     */
+    CANNOT_DELETE_REVIEW_COUNT_CONSTRAINT;
 
     @Override
     public String getCode() {

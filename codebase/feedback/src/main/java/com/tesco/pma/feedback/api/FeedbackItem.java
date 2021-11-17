@@ -3,7 +3,6 @@ package com.tesco.pma.feedback.api;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import javax.validation.constraints.Size;
 import java.util.UUID;
 
 /**
@@ -24,7 +23,6 @@ public class FeedbackItem {
     /**
      * Body of feedback item. Answer for question or comment.
      */
-    @Size(max = 500)
     @Schema(description = "Body of feedback item. Answer for question or comment.")
     private String content;
 

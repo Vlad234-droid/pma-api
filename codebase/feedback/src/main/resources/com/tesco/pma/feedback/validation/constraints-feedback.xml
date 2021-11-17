@@ -36,8 +36,8 @@
             <constraint annotation="javax.validation.constraints.NotNull"/>
         </field>
         <field name="content">
-            <constraint annotation="javax.validation.constraints.Max">
-                <element name="value">500</element>
+            <constraint annotation="javax.validation.constraints.Size">
+                <element name="max">500</element>
             </constraint>
         </field>
     </bean>
