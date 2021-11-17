@@ -269,6 +269,7 @@ public class ReviewServiceImpl implements ReviewService {
                 groupObjective.setUuid(UUID.randomUUID());
                 groupObjective.setStatus(GroupObjectiveStatus.DRAFT);
                 groupObjective.setVersion(newVersion);
+                reviewDAO.createGroupObjective(groupObjective);
                 results.add(groupObjective);
             } catch (DuplicateKeyException e) {
                 throw databaseConstraintViolation(
