@@ -17,7 +17,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EqualsAndHashCode(callSuper = false)
 @SuperBuilder
-public class ColleagueReviews extends ColleagueSimple {
+public class ColleagueTimeline extends ColleagueSimple {
 
     List<SimplifiedReview> reviews;
     List<PMCycleTimelinePoint> timeline;

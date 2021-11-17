@@ -2,7 +2,7 @@ package com.tesco.pma.review.dao;
 
 import com.tesco.pma.cycle.api.PMReviewStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
-import com.tesco.pma.review.domain.ColleagueReviews;
+import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.PMCycleReviewTypeProperties;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
@@ -100,7 +100,7 @@ public interface ReviewDAO {
      * @param managerUuid an identifier of colleague
      * @return a list of colleagues reviews with active reviews
      */
-    List<ColleagueReviews> getTeamReviews(@Param("managerUuid") UUID managerUuid);
+    List<ColleagueTimeline> getTeamReviews(@Param("managerUuid") UUID managerUuid);
 
     /**
      * Creates a review

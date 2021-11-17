@@ -2,7 +2,7 @@ package com.tesco.pma.review.service;
 
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.review.domain.ColleagueReviews;
+import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
@@ -54,7 +54,7 @@ public interface ReviewService {
      * @param managerUuid an identifier of colleague
      * @return a list of colleagues reviews
      */
-    List<ColleagueReviews> getTeamReviews(@NotNull UUID managerUuid);
+    List<ColleagueTimeline> getTeamReviews(@NotNull UUID managerUuid);
 
     /**
      * Creates review.
