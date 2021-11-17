@@ -1,8 +1,8 @@
 package com.tesco.pma.review.domain;
 
-import com.tesco.pma.api.PMElementType;
-import com.tesco.pma.api.ReviewStatus;
-import com.tesco.pma.api.ReviewType;
+import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMReviewType;
+import com.tesco.pma.cycle.api.model.PMElementType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,8 +24,8 @@ public class PMCycleTimelinePoint {
     String code;
     String description;
     PMElementType type;
-    ReviewType reviewType;
+    PMReviewType reviewType;
     LocalDate startDate;
-    ReviewStatus status;
+    PMReviewStatus status;
     Integer count;
 }

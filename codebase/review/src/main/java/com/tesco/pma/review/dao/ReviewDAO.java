@@ -1,8 +1,8 @@
 package com.tesco.pma.review.dao;
 
-import com.tesco.pma.api.ReviewStatus;
-import com.tesco.pma.api.ReviewType;
-import com.tesco.pma.review.domain.ColleagueReviews;
+import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMReviewType;
+import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.PMCycleReviewTypeProperties;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
@@ -79,7 +79,7 @@ public interface ReviewDAO {
      */
     Review getReview(@Param("performanceCycleUuid") UUID performanceCycleUuid,
                      @Param("colleagueUuid") UUID colleagueUuid,
-                     @Param("type") ReviewType type,
+                     @Param("type") PMReviewType type,
                      @Param("number") Integer number);
 
     /**
@@ -92,7 +92,7 @@ public interface ReviewDAO {
      */
     List<Review> getReviews(@Param("performanceCycleUuid") UUID performanceCycleUuid,
                             @Param("colleagueUuid") UUID colleagueUuid,
-                            @Param("type") ReviewType type);
+                            @Param("type") PMReviewType type);
 
     /**
      * Returns list of colleagues reviews by managerUuid
@@ -100,7 +100,7 @@ public interface ReviewDAO {
      * @param managerUuid an identifier of colleague
      * @return a list of colleagues reviews with active reviews
      */
-    List<ColleagueReviews> getTeamReviews(@Param("managerUuid") UUID managerUuid);
+    List<ColleagueTimeline> getTeamReviews(@Param("managerUuid") UUID managerUuid);
 
     /**
      * Creates a review
@@ -117,7 +117,7 @@ public interface ReviewDAO {
      * @return number of updated reviews
      */
     int updateReview(@Param("review") Review review,
-                     @Param("allowedReviewStatuses") Collection<ReviewStatus> allowedReviewStatuses);
+                     @Param("allowedReviewStatuses") Collection<PMReviewStatus> allowedReviewStatuses);
 
     /**
      * Updates a review status
@@ -132,10 +132,10 @@ public interface ReviewDAO {
      */
     int updateReviewStatus(@Param("performanceCycleUuid") UUID performanceCycleUuid,
                            @Param("colleagueUuid") UUID colleagueUuid,
-                           @Param("type") ReviewType type,
+                           @Param("type") PMReviewType type,
                            @Param("number") Integer number,
-                           @Param("newStatus") ReviewStatus newStatus,
-                           @Param("prevReviewStatuses") Collection<ReviewStatus> prevReviewStatuses);
+                           @Param("newStatus") PMReviewStatus newStatus,
+                           @Param("prevReviewStatuses") Collection<PMReviewStatus> prevReviewStatuses);
 
     /**
      * Delete a review by business key
@@ -148,9 +148,9 @@ public interface ReviewDAO {
      */
     int deleteReview(@Param("performanceCycleUuid") UUID performanceCycleUuid,
                      @Param("colleagueUuid") UUID colleagueUuid,
-                     @Param("type") ReviewType type,
+                     @Param("type") PMReviewType type,
                      @Param("number") Integer number,
-                     @Param("allowedReviewStatuses") Collection<ReviewStatus> allowedReviewStatuses);
+                     @Param("allowedReviewStatuses") Collection<PMReviewStatus> allowedReviewStatuses);
 
     /**
      * Re-numerate reviews with number >= startNumber using the following formula:
@@ -164,7 +164,7 @@ public interface ReviewDAO {
      */
     int renumerateReviews(@Param("performanceCycleUuid") UUID performanceCycleUuid,
                           @Param("colleagueUuid") UUID colleagueUuid,
-                          @Param("type") ReviewType type,
+                          @Param("type") PMReviewType type,
                           @Param("startNumber") Integer startNumber);
 
     /**
@@ -199,7 +199,7 @@ public interface ReviewDAO {
      * @return a PMCycleReviewTypeProperties
      */
     PMCycleReviewTypeProperties getPMCycleReviewTypeProperties(@Param("cycleUuid") UUID cycleUuid,
-                                                               @Param("type") ReviewType type);
+                                                               @Param("type") PMReviewType type);
 
     /**
      * Returns review stats by PM cycleUuid, colleagueUuid and review type
@@ -211,7 +211,7 @@ public interface ReviewDAO {
      */
     ReviewStats getReviewStats(@Param("cycleUuid") UUID cycleUuid,
                                @Param("colleagueUuid") UUID colleagueUuid,
-                               @Param("type") ReviewType type);
+                               @Param("type") PMReviewType type);
 
 
     /**

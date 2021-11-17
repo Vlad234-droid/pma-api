@@ -136,7 +136,7 @@
             <column name="end_time" type="TIMESTAMPTZ">
                 <constraints nullable="true"/>
             </column>
-            <column name="properties" type="VARCHAR">
+            <column name="properties" type="jsonb">
                 <constraints nullable="true"/>
             </column>
             <column name="metadata" type="jsonb">

@@ -1,8 +1,8 @@
 package com.tesco.pma.review.domain;
 
 
-import com.tesco.pma.api.ReviewStatus;
-import com.tesco.pma.api.ReviewType;
+import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMReviewType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,10 +24,10 @@ import java.util.stream.Collectors;
 public class ReviewStats {
     UUID cycleUuid;
     UUID colleagueUuid;
-    ReviewType type;
+    PMReviewType type;
     List<ReviewStatusCounter> statusStats;
 
-    public Map<ReviewStatus, Integer> getMapStatusStats() {
+    public Map<PMReviewStatus, Integer> getMapStatusStats() {
         if (statusStats == null) {
             return Collections.emptyMap();
         }

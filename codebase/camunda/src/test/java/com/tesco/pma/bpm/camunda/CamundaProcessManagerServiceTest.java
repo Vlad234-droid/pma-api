@@ -1,14 +1,7 @@
 package com.tesco.pma.bpm.camunda;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
+import com.tesco.pma.bpm.api.ProcessExecutionException;
+import com.tesco.pma.exception.InitializationException;
 import org.apache.commons.io.IOUtils;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngineConfiguration;
@@ -25,15 +18,21 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.tesco.pma.bpm.api.ProcessExecutionException;
-import com.tesco.pma.exception.InitializationException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class CamundaProcessManagerServiceTest {
@@ -101,7 +100,7 @@ public class CamundaProcessManagerServiceTest {
 
     @Test
     public void deployProcessTest() throws FileNotFoundException, InitializationException {
-        deploymentId = processManager.deployProcess(new File(PROCESS_ARCHIVE_PATH));
+        deploymentId = processManager.deployProcessArchive(new File(PROCESS_ARCHIVE_PATH)).getId();
         long deploymentCount = repositoryService.createDeploymentQuery().deploymentId(deploymentId).count();
         assertEquals(1, deploymentCount, "Should be 1 deployed process");
     }

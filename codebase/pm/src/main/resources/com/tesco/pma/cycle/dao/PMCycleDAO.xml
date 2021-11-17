@@ -7,7 +7,6 @@
         <result property="entryConfigKey" column="entry_config_key"/>
         <result property="templateUUID" column="template_uuid"/>
         <result property="name" column="name"/>
-        <result property="createdBy" column="created_by"/>
         <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.cycle.api.PMCycleStatus"/>
@@ -15,8 +14,18 @@
                 javaType="com.tesco.pma.cycle.api.PMCycleType"/>
         <result property="startTime" column="start_time"/>
         <result property="endTime" column="end_time"/>
-        <result property="properties" column="properties"/>
+        <result property="properties" column="properties"
+                typeHandler="com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler"
+                javaType="com.tesco.pma.api.MapJson"/>
         <result property="jsonMetadata" column="metadata"/>
+        <association property="createdBy" column="{uuid=created_by}" select="getColleagueByUuid"/>
+    </resultMap>
+
+    <resultMap id="colleagueMap" type="com.tesco.pma.colleague.api.ColleagueSimple">
+        <result property="uuid" column="uuid"/>
+        <result property="firstName" column="first_name"/>
+        <result property="middleName" column="middle_name"/>
+        <result property="lastName" column="last_name"/>
     </resultMap>
 
     <sql id="addStatusIdCondition">
@@ -49,11 +58,11 @@
                 #{cycle.name},
                 #{cycle.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleType},
                 #{cycle.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus},
-                #{cycle.createdBy},
+                #{cycle.createdBy.uuid},
                 #{now},
                 #{cycle.startTime},
                 #{cycle.endTime},
-                #{cycle.properties},
+                #{cycle.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
                 #{cycle.jsonMetadata}::jsonb
                 );
     </insert>
@@ -71,10 +80,22 @@
         <include refid="addStatusIdCondition"/>
     </update>
 
-    <select id="getByStatus" resultMap="cycleResultMap">
-        SELECT *
+
+    <select id="getAll" resultMap="cycleResultMap">
+        SELECT uuid,
+        entry_config_key,
+        template_uuid,
+        name,
+        type_id,
+        status_id,
+        created_by,
+        start_time,
+        end_time,
+        properties
+        <if test="includeMetadata">
+            ,metadata
+        </if>
         FROM pm_cycle
-        WHERE status_id = #{status.id}
     </select>
 
     <select id="getByColleague" resultMap="cycleResultMap">
@@ -103,4 +124,13 @@
         set metadata = #{metadata}::jsonb
         WHERE uuid = #{uuid}
     </insert>
+
+    <select id="getColleagueByUuid" resultMap="colleagueMap">
+        select uuid,
+               first_name,
+               middle_name,
+               last_name
+        from colleague
+        where uuid = #{uuid}
+    </select>
 </mapper>

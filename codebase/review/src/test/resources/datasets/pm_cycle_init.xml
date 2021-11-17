@@ -10,7 +10,6 @@
             creation_time="2021-09-20 10:45:12.448057"
             start_time="2021-09-20 10:45:12.448057"
             end_time="2021-09-21 10:45:12.448057"
-            properties="test"
             metadata="
 {
     &quot;cycle&quot;: {
@@ -25,11 +24,7 @@
           &quot;id&quot;: &quot;Activity_1xk9nhh&quot;,
           &quot;code&quot;: &quot;End of Year Review&quot;,
           &quot;description&quot;: &quot;End of Year Review&quot;,
-          &quot;type&quot;: {
-            &quot;id&quot;: null,
-            &quot;code&quot;: &quot;review&quot;,
-            &quot;description&quot;: null
-          },
+          &quot;type&quot;: &quot;review&quot;,
           &quot;properties&quot;: {
             &quot;pm_type&quot;: &quot;review&quot;,
             &quot;pm_review_type&quot;: &quot;eyr&quot;,
@@ -38,22 +33,14 @@
             &quot;pm_review_min&quot;: &quot;1&quot;,
             &quot;pm_review_max&quot;: &quot;1&quot;
           },
-          &quot;reviewType&quot;: {
-            &quot;id&quot;: null,
-            &quot;code&quot;: &quot;eyr&quot;,
-            &quot;description&quot;: null
-          },
+          &quot;reviewType&quot;: &quot;eyr&quot;,
           &quot;form&quot;: null
         },
         {
           &quot;id&quot;: &quot;Activity_1scuf3c&quot;,
           &quot;code&quot;: &quot;Mid Year Review&quot;,
           &quot;description&quot;: &quot;Mid Year Review&quot;,
-          &quot;type&quot;: {
-            &quot;id&quot;: null,
-            &quot;code&quot;: &quot;review&quot;,
-            &quot;description&quot;: null
-          },
+          &quot;type&quot;: &quot;review&quot;,
           &quot;properties&quot;: {
             &quot;pm_type&quot;: &quot;review&quot;,
             &quot;pm_review_type&quot;: &quot;myr&quot;,
@@ -62,22 +49,14 @@
             &quot;pm_review_min&quot;: &quot;1&quot;,
             &quot;pm_review_max&quot;: &quot;1&quot;
           },
-          &quot;reviewType&quot;: {
-            &quot;id&quot;: null,
-            &quot;code&quot;: &quot;myr&quot;,
-            &quot;description&quot;: null
-          },
+          &quot;reviewType&quot;: &quot;myr&quot;,
           &quot;form&quot;: null
         },
         {
           &quot;id&quot;: &quot;Activity_017n9fs&quot;,
           &quot;code&quot;: &quot;Q3&quot;,
           &quot;description&quot;: &quot;Q3&quot;,
-          &quot;type&quot;: {
-            &quot;id&quot;: null,
-            &quot;code&quot;: &quot;timeline_point&quot;,
-            &quot;description&quot;: null
-          },
+          &quot;type&quot;: &quot;timeline_point&quot;,
           &quot;properties&quot;: {
             &quot;pm_type&quot;: &quot;timeline_point&quot;,
             &quot;pm_timeline_point_start_time&quot;: &quot;2022-01-01&quot;,
@@ -88,11 +67,7 @@
           &quot;id&quot;: &quot;Activity_0i2qhx0&quot;,
           &quot;code&quot;: &quot;Q1&quot;,
           &quot;description&quot;: &quot;Q1&quot;,
-          &quot;type&quot;: {
-            &quot;id&quot;: null,
-            &quot;code&quot;: &quot;timeline_point&quot;,
-            &quot;description&quot;: null
-          },
+          &quot;type&quot;: &quot;timeline_point&quot;,
           &quot;properties&quot;: {
             &quot;pm_type&quot;: &quot;timeline_point&quot;,
             &quot;pm_timeline_point_start_time&quot;: &quot;2021-07-01&quot;,
@@ -103,11 +78,7 @@
           &quot;id&quot;: &quot;Activity_1bu82ro&quot;,
           &quot;code&quot;: &quot;Objectives&quot;,
           &quot;description&quot;: &quot;Objectives&quot;,
-          &quot;type&quot;: {
-            &quot;id&quot;: null,
-            &quot;code&quot;: &quot;review&quot;,
-            &quot;description&quot;: null
-          },
+          &quot;type&quot;: &quot;review&quot;,
           &quot;properties&quot;: {
             &quot;pm_review_min&quot;: &quot;3&quot;,
             &quot;pm_review_max&quot;: &quot;5&quot;,
@@ -116,20 +87,12 @@
             &quot;pm_form_key&quot;: &quot;forms/type_1_objective.form&quot;,
             &quot;pm_review_start_time&quot;: &quot;2021-04-01&quot;
           },
-          &quot;reviewType&quot;: {
-            &quot;id&quot;: null,
-            &quot;code&quot;: &quot;objective&quot;,
-            &quot;description&quot;: null
-          },
+          &quot;reviewType&quot;: &quot;objective&quot;,
           &quot;form&quot;: {
             &quot;id&quot;: null,
             &quot;code&quot;: &quot;forms/type_1_objective.form&quot;,
             &quot;description&quot;: null,
-            &quot;type&quot;: {
-              &quot;id&quot;: null,
-              &quot;code&quot;: &quot;form&quot;,
-              &quot;description&quot;: null
-            },
+            &quot;type&quot;: &quot;form&quot;,
             &quot;properties&quot;: {},
             &quot;key&quot;: &quot;forms/type_1_objective.form&quot;,
             &quot;json&quot;: &quot;&quot;
