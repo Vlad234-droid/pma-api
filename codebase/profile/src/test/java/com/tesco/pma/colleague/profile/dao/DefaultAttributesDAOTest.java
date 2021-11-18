@@ -10,8 +10,6 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DefaultAttributesDAOTest extends AbstractDAOTest {
@@ -28,7 +26,7 @@ public class DefaultAttributesDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    public void findByCriteriaAndCategoryTest(){
+    public void findByCriteriaAndCategoryTest() {
         var attrs = defaultAttributesDAO.findByCriteriaAndCategory(DefaultAttributeCriteria.ALL_COLLEAGUES,
                 DefaultAttributeCategory.NOTIFICATION);
 
@@ -36,7 +34,7 @@ public class DefaultAttributesDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    public void findByCriteriasAndCategoryTest(){
+    public void findByCriteriasAndCategoryTest() {
         var criterias = List.of(DefaultAttributeCriteria.ALL_COLLEAGUES, DefaultAttributeCriteria.WK_4_5_ONLY);
 
         var attrs = defaultAttributesDAO.findByCriteriasAndCategory(

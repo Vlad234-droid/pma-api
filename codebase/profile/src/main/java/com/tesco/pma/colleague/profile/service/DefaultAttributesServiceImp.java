@@ -3,11 +3,17 @@ package com.tesco.pma.colleague.profile.service;
 import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
 import com.tesco.pma.colleague.profile.dao.DefaultAttributesDAO;
-import com.tesco.pma.colleague.profile.domain.*;
+import com.tesco.pma.colleague.profile.domain.DefaultAttributeCategory;
+import com.tesco.pma.colleague.profile.domain.DefaultAttributeCriteria;
+import com.tesco.pma.colleague.profile.domain.DefaultAttribute;
+import com.tesco.pma.colleague.profile.domain.TypedAttribute;
+import com.tesco.pma.colleague.profile.domain.AttributeType;
 import com.tesco.pma.cycle.api.PMReviewType;
+import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,10 +25,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DefaultAttributesServiceImp implements DefaultAttributesService {
 
+    private static final String Q1_CODE_VALUE = "Q1";
+    private static final String Q3_CODE_VALUE = "Q3";
+
     private final DefaultAttributesDAO defaultAttributesDAO;
     private final ProfileService profileService;
     private final ReviewService reviewService;
 
+    @Override
     public void updateDefaultAttributes(UUID colleagueId) {
 
         var colleague = profileService.findColleagueByColleagueUuid(colleagueId);
@@ -36,17 +46,21 @@ public class DefaultAttributesServiceImp implements DefaultAttributesService {
 
     private List<DefaultAttributeCriteria> defineCriterias(Colleague colleague) {
 
-        List<DefaultAttributeCriteria> result = new ArrayList<>();
+        var result = new ArrayList<DefaultAttributeCriteria>();
         result.add(DefaultAttributeCriteria.ALL_COLLEAGUES);
 
-        if (colleague.getWorkRelationships().get(0).getIsManager()) {
-            result.add(DefaultAttributeCriteria.LINE_MANAGER_ONLY);
-        }
+        if (CollectionUtils.isNotEmpty(colleague.getWorkRelationships())) {
+            var workRel = colleague.getWorkRelationships().get(0);
 
-        var workLevel = colleague.getWorkRelationships().get(0).getWorkLevel();
+            if (workRel.getIsManager()) {
+                result.add(DefaultAttributeCriteria.LINE_MANAGER_ONLY);
+            }
 
-        if(workLevel == WorkRelationship.WorkLevel.WL4 || workLevel == WorkRelationship.WorkLevel.WL5) {
-            result.add(DefaultAttributeCriteria.WK_4_5_ONLY);
+            var workLevel = workRel.getWorkLevel();
+
+            if (workLevel == WorkRelationship.WorkLevel.WL4 || workLevel == WorkRelationship.WorkLevel.WL5) {
+                result.add(DefaultAttributeCriteria.WK_4_5_ONLY);
+            }
         }
 
         var timelinePoints = reviewService.getCycleTimelineByColleague(colleague.getColleagueUUID());
@@ -60,9 +74,17 @@ public class DefaultAttributesServiceImp implements DefaultAttributesService {
             if (timelinePoint.getReviewType() == PMReviewType.OBJECTIVE) {
                 result.add(DefaultAttributeCriteria.COLLEAGUES_WITH_OBJECTIVES_ONLY);
             }
-        }
 
-        //TODO
+            if (timelinePoint.getType() == PMElementType.TIMELINE_POINT) {
+                if (Q1_CODE_VALUE.equals(timelinePoint.getCode())) {
+                    result.add(DefaultAttributeCriteria.COLLEAGUES_WITH_Q1_REMINDERS_ONLY);
+                }
+
+                if (Q3_CODE_VALUE.equals(timelinePoint.getCode())) {
+                    result.add(DefaultAttributeCriteria.COLLEAGUES_WITH_Q3_REMINDERS_ONLY);
+                }
+            }
+        }
 
         return result;
     }
