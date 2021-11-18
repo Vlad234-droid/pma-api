@@ -3,6 +3,7 @@ package com.tesco.pma.colleague.security.configuration;
 import com.tesco.pma.colleague.security.rolefetch.RoleFetchFilter;
 import com.tesco.pma.colleague.security.rolefetch.RoleFetchService;
 import com.tesco.pma.colleague.security.rolefetch.RolesMapper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -43,7 +44,7 @@ public class RoleFetchConfiguration {
      * @return FilterRegistrationBean
      */
     @Bean
-    public RolesMapper accountRolesMapper(@NotNull final Map<String, List<String>> rolesMapping) {
+    public RolesMapper accountRolesMapper(@Qualifier("rolesMapping") @NotNull final Map<String, List<String>> rolesMapping) {
         final var mapper = new RolesMapper();
 
         // Invert mapping : from "PMA role" -> "Tesco group" to "Tesco group" -> "PMA role"
