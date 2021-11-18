@@ -37,11 +37,16 @@ public class RoleFetchConfiguration {
         return filterRegistration;
     }
 
+    /**
+     * Register the servlet filter for processing configuration role mapping
+     *
+     * @return FilterRegistrationBean
+     */
     @Bean
     public RolesMapper accountRolesMapper(@NotNull final Map<String, List<String>> rolesMapping) {
         final var mapper = new RolesMapper();
 
-        // Invert
+        // Invert mapping : from "PMA role" -> "Tesco group" to "Tesco group" -> "PMA role"
         final var attributeToRole = new HashMap<String, String>();
         for (Map.Entry<String, List<String>> entry : rolesMapping.entrySet()) {
             for (String attribute : entry.getValue()) {

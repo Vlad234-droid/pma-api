@@ -8,6 +8,12 @@ import java.util.UUID;
  */
 public interface RoleFetchService {
 
+    /**
+     * Try to find roles in account storage
+     *
+     * @param colleagueUuid
+     * @return List of roles
+     */
     Collection<String> findRolesInAccountStorage(UUID colleagueUuid);
 
 }

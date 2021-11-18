@@ -21,6 +21,9 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.UUID;
 
+/**
+ * Servlet filter for fetching roles from account storage
+ */
 @AllArgsConstructor
 public class RoleFetchFilter extends OncePerRequestFilter {
 
@@ -78,6 +81,13 @@ public class RoleFetchFilter extends OncePerRequestFilter {
 
     }
 
+    /**
+     * Adds roles from account storage to existing list of authorities
+     *
+     * @param original
+     * @param roles
+     * @return Updated authentication
+     */
     private Authentication merge(Authentication original, Collection<String> roles) {
         final Collection<GrantedAuthority> authorities = new LinkedHashSet<>(original.getAuthorities());
         roles.forEach(role -> {
