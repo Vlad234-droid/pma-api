@@ -146,28 +146,6 @@
                    END;
     </select>
 
-    <update id="updateColleague" flushCache="true">
-        UPDATE colleague
-        SET first_name       = #{colleague.firstName},
-            middle_name      = #{colleague.middleName},
-            last_name        = #{colleague.lastName},
-            email            = #{colleague.email},
-            primary_entity   = #{colleague.primaryEntity},
-            salary_frequency = #{colleague.salaryFrequency},
-            iam_source       = #{colleague.iamSource},
-            iam_id           = #{colleague.iamId},
-            manager_uuid     = #{colleague.managerUuid},
-            employment_type  = #{colleague.employmentType},
-            hire_date        = #{colleague.hireDate},
-            leaving_date     = #{colleague.leavingDate},
-            is_manager       = #{colleague.manager},
-            country_code     = #{colleague.country.code},
-            work_level       = #{colleague.workLevel.code},
-            department_id    = #{colleague.department.id},
-            job_id           = #{colleague.job.id}
-        WHERE uuid = #{colleague.uuid}
-    </update>
-
     <insert id="insertJob" flushCache="true">
         INSERT INTO job (id, code, name, cost_category)
         VALUES (#{job.id},

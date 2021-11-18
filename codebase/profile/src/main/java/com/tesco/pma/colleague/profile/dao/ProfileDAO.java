@@ -78,14 +78,6 @@ public interface ProfileDAO {
     boolean isColleagueExists(@Param("uuid") UUID colleagueUuid);
 
     /**
-     * Update a Colleague attributes
-     *
-     * @param colleague a Colleague attribute
-     * @return number of updated colleagues
-     */
-    int updateColleague(@Param("colleague") ColleagueEntity colleague);
-
-    /**
      * Insert new job or update exists job
      *
      * @param job

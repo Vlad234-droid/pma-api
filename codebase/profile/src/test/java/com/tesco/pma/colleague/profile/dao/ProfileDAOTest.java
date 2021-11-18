@@ -181,16 +181,15 @@ public class ProfileDAOTest extends AbstractDAOTest {
     void updateColleagueSucceeded() {
         var colleague = getCorrectColleague();
 
-        final int updated = dao.updateColleague(colleague);
+        dao.saveColleague(colleague);
 
-        assertThat(updated).isEqualTo(1);
     }
 
     @Test
     void updateColleagueThrowDataIntegrityViolationException() {
         var colleague = getIncorrectColleague();
 
-        assertThatCode(() -> dao.updateColleague(colleague))
+        assertThatCode(() -> dao.saveColleague(colleague))
                 .isExactlyInstanceOf(DataIntegrityViolationException.class)
                 .hasMessageContaining("ERROR: insert or update on table \"colleague\" violates foreign key constraint");
     }

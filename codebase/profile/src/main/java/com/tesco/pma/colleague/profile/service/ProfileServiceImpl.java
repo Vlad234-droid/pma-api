@@ -150,7 +150,8 @@ public class ProfileServiceImpl implements ProfileService {
         try {
             ColleagueEntity changedLocalColleague = colleagueFactsApiLocalMapper.colleagueFactsApiToLocal(colleague);
             updateDictionaries(existingLocalColleague, changedLocalColleague);
-            updated = profileDAO.updateColleague(changedLocalColleague);
+            profileDAO.saveColleague(changedLocalColleague);
+            updated = 1;
         } catch (DataIntegrityViolationException exception) {
             String message = String.format("Data integrity violation exception = %s", exception.getMessage());
             log.error(LogFormatter.formatMessage(ErrorCodes.DATA_INTEGRITY_VIOLATION_EXCEPTION, message));
