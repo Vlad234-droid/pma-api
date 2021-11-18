@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Look back",
+      "type": "textfield",
+      "id": "Field_0geokc1",
+      "key": "look_back",
+      "validate": {
+        "required": true,
+        "maxLength": 500,
+        "minLength": 10
+      }
+    },
+    {
+      "label": "Look forward",
+      "type": "textfield",
+      "id": "Field_07pc4bt",
+      "key": "look_forward",
+      "validate": {
+        "required": true,
+        "minLength": 10,
+        "maxLength": 500
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Outstanding",
+          "value": "Outstanding"
+        },
+        {
+          "label": "Satisfactory",
+          "value": "Satisfactory"
+        },
+        {
+          "label": "Great",
+          "value": "Great"
+        },
+        {
+          "label": "Below expected",
+          "value": "Below expected"
+        }
+      ],
+      "label": "What",
+      "type": "select",
+      "id": "Field_1lasfcg",
+      "key": "what",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Outstanding",
+          "value": "Outstanding"
+        },
+        {
+          "label": "Satisfactory",
+          "value": "Satisfactory"
+        },
+        {
+          "label": "Great",
+          "value": "Great"
+        },
+        {
+          "label": "Below expected",
+          "value": "Below expected"
+        }
+      ],
+      "label": "How",
+      "type": "select",
+      "id": "Field_0s32np0",
+      "key": "how",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "type_1_myr_form"
+}
