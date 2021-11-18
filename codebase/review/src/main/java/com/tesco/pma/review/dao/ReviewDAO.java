@@ -83,6 +83,14 @@ public interface ReviewDAO {
                      @Param("number") Integer number);
 
     /**
+     * Returns a review by an identifier of review
+     *
+     * @param reviewUuid an identifier of review
+     * @return a Review
+     */
+    Review getReviewByUuid(@Param("reviewUuid") UUID reviewUuid);
+
+    /**
      * Returns a review by performance cycle, colleague and review type.
      *
      * @param performanceCycleUuid an identifier of performance cycle
