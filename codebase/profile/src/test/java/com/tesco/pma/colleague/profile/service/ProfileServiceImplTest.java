@@ -1,6 +1,5 @@
 package com.tesco.pma.colleague.profile.service;
 
-import com.tesco.pma.colleague.profile.dao.ColleagueDAO;
 import com.tesco.pma.colleague.profile.dao.ProfileDAO;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.profile.service.util.ColleagueFactsApiLocalMapper;
@@ -48,9 +47,6 @@ class ProfileServiceImplTest extends AbstractProfileTests {
 
     @MockBean
     private ProfileDAO profileDAO;
-
-    @MockBean
-    private ColleagueDAO colleagueDAO;
 
     @MockBean
     private ProfileAttributeDAO mockProfileDAO;

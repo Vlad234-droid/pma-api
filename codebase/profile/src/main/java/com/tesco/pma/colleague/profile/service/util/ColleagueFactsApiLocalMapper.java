@@ -37,8 +37,7 @@ public class ColleagueFactsApiLocalMapper {
             IS_WORK_RELATIONSHIP_ACTIVE = workRelationship -> workRelationship.getWorkingStatus().equals(
             com.tesco.pma.colleague.api.workrelationships.WorkRelationship.WorkingStatus.ACTIVE);
 
-    public Colleague localToColleagueFactsApi(ColleagueEntity oc, UUID colleagueUuid,
-                                                     boolean child) {
+    public Colleague localToColleagueFactsApi(ColleagueEntity oc, UUID colleagueUuid, boolean child) {
         var colleague = new Colleague();
         colleague.setColleagueUUID(colleagueUuid);
         colleague.setCountryCode(oc.getCountry().getCode());
@@ -96,7 +95,7 @@ public class ColleagueFactsApiLocalMapper {
         wr.setJob(getJob(oc));
         wr.setManagerUUID(oc.getManagerUuid());
         if (wr.getManagerUUID() != null) {
-            ColleagueEntity mng = profileDAO.getColleague(wr.getManagerUUID());
+            var mng = profileDAO.getColleague(wr.getManagerUUID());
             if (mng != null) {
                 wr.setManager(localToColleagueFactsApi(mng, wr.getManagerUUID(), true));
             }

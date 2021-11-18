@@ -1,7 +1,6 @@
 package com.tesco.pma.colleague.profile.service;
 
 import com.tesco.pma.colleague.api.Colleague;
-import com.tesco.pma.colleague.profile.dao.ColleagueDAO;
 import com.tesco.pma.colleague.profile.dao.ProfileAttributeDAO;
 import com.tesco.pma.colleague.profile.dao.ProfileDAO;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
@@ -40,7 +39,6 @@ import java.util.UUID;
 public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileDAO profileDAO;
-    private final ColleagueDAO colleagueDAO;
     private final ProfileAttributeDAO profileAttributeDAO;
     private final ColleagueApiService colleagueApiService;
     private final NamedMessageSourceAccessor messages;
@@ -152,7 +150,7 @@ public class ProfileServiceImpl implements ProfileService {
         try {
             ColleagueEntity changedLocalColleague = colleagueFactsApiLocalMapper.colleagueFactsApiToLocal(colleague);
             updateDictionaries(existingLocalColleague, changedLocalColleague);
-            updated = colleagueDAO.update(changedLocalColleague);
+            updated = profileDAO.updateColleague(changedLocalColleague);
         } catch (DataIntegrityViolationException exception) {
             String message = String.format("Data integrity violation exception = %s", exception.getMessage());
             log.error(LogFormatter.formatMessage(ErrorCodes.DATA_INTEGRITY_VIOLATION_EXCEPTION, message));
@@ -170,25 +168,25 @@ public class ProfileServiceImpl implements ProfileService {
         // Country
         ColleagueEntity.Country changedCountry = changedLocalColleague.getCountry();
         if (changedCountry != null && !existingLocalColleague.getCountry().getCode().equals(changedCountry.getCode())) {
-            colleagueDAO.insertCountry(changedCountry);
+            profileDAO.insertCountry(changedCountry);
         }
 
         // Department
         ColleagueEntity.Department changedDepartment = changedLocalColleague.getDepartment();
         if (changedDepartment != null && !existingLocalColleague.getDepartment().getId().equals(changedDepartment.getId())) {
-            colleagueDAO.insertDepartment(changedDepartment);
+            profileDAO.insertDepartment(changedDepartment);
         }
 
         // Job
         ColleagueEntity.Job changedJob = changedLocalColleague.getJob();
         if (changedJob != null && !existingLocalColleague.getJob().getCode().equals(changedJob.getId())) {
-            colleagueDAO.insertJob(changedJob);
+            profileDAO.insertJob(changedJob);
         }
 
         // Work level
         ColleagueEntity.WorkLevel changedWorkLevel = changedLocalColleague.getWorkLevel();
         if (changedWorkLevel != null && !existingLocalColleague.getWorkLevel().getCode().equals(changedWorkLevel.getCode())) {
-            colleagueDAO.insertWorkLevel(changedWorkLevel);
+            profileDAO.insertWorkLevel(changedWorkLevel);
         }
     }
 
