@@ -107,11 +107,11 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review getReviewByUuid(UUID reviewUuid) {
-        var res = reviewDAO.getReviewByUuid(reviewUuid);
+    public Review getReview(UUID uuid) {
+        var res = reviewDAO.read(uuid);
         if (res == null) {
             throw notFound(REVIEW_NOT_FOUND_BY_UUID,
-                    Map.of(REVIEW_UUID_PARAMETER_NAME, reviewUuid));
+                    Map.of(REVIEW_UUID_PARAMETER_NAME, uuid));
         }
         return res;
     }

@@ -185,7 +185,7 @@
           and r.number = #{number}
     </select>
 
-    <select id="getReviewByUuid" resultMap="reviewResultMap">
+    <select id="read" resultMap="reviewResultMap">
         SELECT r.uuid,
                r.colleague_uuid,
                r.performance_cycle_uuid,
@@ -194,7 +194,7 @@
                r.properties,
                r.status_id
         FROM review r
-        WHERE r.uuid = #{reviewUuid}
+        WHERE r.uuid = #{uuid}
     </select>
 
     <select id="getReviews" resultMap="reviewResultMap">

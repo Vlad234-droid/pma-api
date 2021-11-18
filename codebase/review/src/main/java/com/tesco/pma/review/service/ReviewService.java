@@ -38,10 +38,10 @@ public interface ReviewService {
     /**
      * Returns a review by an identifier of review
      *
-     * @param reviewUuid an identifier of review
+     * @param uuid an identifier of review
      * @return a Review
      */
-    Review getReviewByUuid(@NotNull UUID reviewUuid);
+    Review getReview(@NotNull UUID uuid);
 
     /**
      * Finds reviews by performanceCycleUuid, colleagueUuid and review type

@@ -122,7 +122,7 @@ public class ReviewEndpoint {
     /**
      * Get call using a Path param and return a review as JSON.
      *
-     * @param reviewUuid an identifier of review
+     * @param uuid an identifier of review
      * @return a RestResponse parameterized with review
      */
     @Operation(summary = "Get a review by its identifier", tags = {"review"})
@@ -130,8 +130,8 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Review not found", content = @Content)
     @GetMapping(path = "/reviews/{uuid}",
             produces = APPLICATION_JSON_VALUE)
-    public RestResponse<Review> getReviewByUuid(@PathVariable("uuid") UUID reviewUuid) {
-        return success(reviewService.getReviewByUuid(reviewUuid));
+    public RestResponse<Review> getReviewByUuid(@PathVariable("uuid") UUID uuid) {
+        return success(reviewService.getReview(uuid));
     }
 
     /**

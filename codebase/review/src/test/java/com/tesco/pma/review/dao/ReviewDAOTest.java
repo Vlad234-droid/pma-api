@@ -215,7 +215,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     @Test
     @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void getReviewByUuid() {
-        final var result = instance.getReviewByUuid(REVIEW_UUID);
+        final var result = instance.read(REVIEW_UUID);
 
         assertThat(result)
                 .asInstanceOf(type(Review.class))
