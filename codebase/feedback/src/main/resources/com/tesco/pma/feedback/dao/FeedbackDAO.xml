@@ -64,34 +64,34 @@
     <sql id="getSortField">
         <choose>
             <when test="sort.field == 'uuid'">
-                uuid
+                f.uuid
             </when>
             <when test="sort.field == 'colleague-uuid'">
-                colleague_uuid
+                f.colleague_uuid
             </when>
             <when test="sort.field == 'target-colleague-uuid'">
-                target_colleague_uuid
+                f.target_colleague_uuid
             </when>
             <when test="sort.field == 'target-type'">
-                target_type_id
+                f.target_type_id
             </when>
             <when test="sort.field == 'target-id'">
-                target_id
+                f.target_id
             </when>
             <when test="sort.field == 'read'">
-                read
+                f.read
             </when>
             <when test="sort.field == 'status'">
-                status_id
+                f.status_id
             </when>
             <when test="sort.field == 'created-time'">
-                created_time
+                f.created_time
             </when>
             <when test="sort.field == 'updated-time'">
-                updated_time
+                f.updated_time
             </when>
             <otherwise>
-                updated_time
+                f.updated_time
             </otherwise>
         </choose>
     </sql>
@@ -99,34 +99,34 @@
     <sql id="getFilterField">
         <choose>
             <when test="filter.property == 'uuid'">
-                uuid
+                f.uuid
             </when>
             <when test="filter.property == 'colleague-uuid'">
-                colleague_uuid
+                f.colleague_uuid
             </when>
             <when test="filter.property == 'target-colleague-uuid'">
-                target_colleague_uuid
+                f.target_colleague_uuid
             </when>
             <when test="filter.property == 'target-type'">
-                target_type_id
+                f.target_type_id
             </when>
             <when test="filter.property == 'target-id'">
-                target_id
+                f.target_id
             </when>
             <when test="filter.property == 'read'">
-                read
+                f.read
             </when>
             <when test="filter.property == 'status'">
-                status_id
+                f.status_id
             </when>
             <when test="filter.property == 'created-time'">
-                created_time
+                f.created_time
             </when>
             <when test="filter.property == 'updated-time'">
-                updated_time
+                f.updated_time
             </when>
             <otherwise>
-                updated_time
+                f.updated_time
             </otherwise>
         </choose>
     </sql>
