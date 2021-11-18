@@ -44,6 +44,7 @@ public class PMCycleEndpoint {
     private static final String CYCLE_UUID_PARAMETER_NAME = "cycleUuid";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     public static final String INCLUDE_METADATA = "includeMetadata";
+    public static final String DEFAULT_USER_UUID = "10000000-0000-0000-0000-000000000002";
 
     private final PMCycleService service;
     private final NamedMessageSourceAccessor messageSourceAccessor;
@@ -115,7 +116,7 @@ public class PMCycleEndpoint {
             content = @Content)
     @GetMapping(value = "/pm-cycles/", produces = APPLICATION_JSON_VALUE)
     public RestResponse<List<PMCycle>> getAll(@RequestParam(value = INCLUDE_METADATA, defaultValue = "false")
-                                                          boolean includeMetadata) {
+                                                      boolean includeMetadata) {
         return success(service.getAll(includeMetadata));
     }
 
@@ -164,7 +165,7 @@ public class PMCycleEndpoint {
             consumes = MimeTypeUtils.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse<?> updateJsonMetadata(@PathVariable("uuid") UUID uuid,
-                                             @RequestBody String metadata) {
+                                              @RequestBody String metadata) {
         service.updateJsonMetadata(uuid, metadata);
         return RestResponse.success();
     }
@@ -174,6 +175,8 @@ public class PMCycleEndpoint {
     }
 
     private String resolveUserName() {
-        return auditorAware.getCurrentAuditor();
+        //TODO change after security integration
+        String currentAuditor = auditorAware.getCurrentAuditor();
+        return currentAuditor.isEmpty() ? DEFAULT_USER_UUID : currentAuditor;
     }
 }

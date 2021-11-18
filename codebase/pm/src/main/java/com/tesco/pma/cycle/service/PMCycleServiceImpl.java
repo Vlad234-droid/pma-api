@@ -3,6 +3,7 @@ package com.tesco.pma.cycle.service;
 import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.bpm.api.ProcessExecutionException;
 import com.tesco.pma.bpm.api.ProcessManagerService;
+import com.tesco.pma.colleague.api.ColleagueSimple;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
@@ -86,23 +87,22 @@ public class PMCycleServiceImpl implements PMCycleService {
         log.debug("Request to publish Performance cycle : {}", cycle);
         UUID cycleUuid = intCreateCycle(cycle, loggedUserName).getUuid();
 
-        if (null == cycle.getMetadata() || cycle.getMetadata().getCycle().getCode().isEmpty()) {
+        String processName = resolveProcessName(cycle.getJsonMetadata());
+
+        if (null == processName || processName.isEmpty()) {
             throw pmCycleException(ErrorCodes.PROCESS_NAME_IS_EMPTY, Map.of(CYCLE_UUID_PARAMETER_NAME, cycleUuid));
         }
 
-        var templateCode = cycle.getMetadata().getCycle().getCode();
-
         try {
-
             var props = cycle.getProperties() != null ? cycle.getProperties().getMapJson() : Collections.EMPTY_MAP;
 
-            var processUUID = processManagerService.runProcess(templateCode, props);
+            var processUUID = processManagerService.runProcess(processName, props);
             log.info("Started process: {}", processUUID);
 
             var pmRuntimeProcess = PMRuntimeProcess.builder()
                     .bpmProcessId(UUID.fromString(processUUID))
                     .cycleUuid(cycleUuid)
-                    .businessKey(templateCode)
+                    .businessKey(processName)
                     .build();
 
             pmRuntimeProcess = pmProcessService.register(pmRuntimeProcess, PMProcessStatus.STARTED);
@@ -113,7 +113,7 @@ public class PMCycleServiceImpl implements PMCycleService {
             log.error("Performance cycle publish error, cause: ", e);
             intUpdateStatus(cycleUuid, FAILED);
             throw pmCycleException(ErrorCodes.PROCESS_EXECUTION_EXCEPTION, Map.of(CYCLE_UUID_PARAMETER_NAME, cycleUuid,
-                    PROCESS_NAME_PARAMETER_NAME, templateCode));
+                    PROCESS_NAME_PARAMETER_NAME, processName));
         }
 
         return cycle;
@@ -212,7 +212,10 @@ public class PMCycleServiceImpl implements PMCycleService {
         log.debug("Request to create Performance cycle : {}", cycle);
         cycle.setUuid(UUID.randomUUID());
         cycle.setStatus(DRAFT);
-        //TODO set created by
+        cycle.setCreatedBy(ColleagueSimple
+                .builder()
+                .uuid(UUID.fromString(loggedUserName))
+                .build());
         try {
             cycleDAO.create(cycle);
             log.debug("Performance cycle created UUID: {}", cycle.getUuid());
@@ -248,6 +251,11 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     private PMCycleException pmCycleException(ErrorCodeAware errorCode, Map<String, ?> params) {
         return new PMCycleException(errorCode.getCode(), messageSourceAccessor.getMessage(errorCode.getCode(), params), null, null);
+    }
+
+    private String resolveProcessName(String jsonMetadata) {
+
+        return "type_1";
     }
 
 
