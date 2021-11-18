@@ -3,6 +3,20 @@
 
 <mapper namespace="com.tesco.pma.review.dao.ReviewAuditLogDAO">
 
+    <resultMap id="auditOrgObjectiveReportResultMap" type="com.tesco.pma.review.domain.AuditOrgObjectiveReport">
+        <result property="action" column="action_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.api.ActionType"/>
+        <result property="updatedTime" column="updated_time"/>
+        <association property="updatedBy" column="{uuid=updated_by}" select="getColleagueByUuid"/>
+    </resultMap>
+
+    <resultMap id="colleagueMap" type="com.tesco.pma.colleague.api.ColleagueSimple">
+        <result property="uuid" column="uuid"/>
+        <result property="firstName" column="first_name"/>
+        <result property="middleName" column="middle_name"/>
+        <result property="lastName" column="last_name"/>
+    </resultMap>
+
     <insert id="intLogReviewUpdating" flushCache="true">
         INSERT INTO review_change_status_hi (review_uuid,
                                              new_status_id,
@@ -27,4 +41,24 @@
                 #{updatedTime});
     </insert>
 
+    <select id="getAuditOrgObjectiveReport" resultMap="auditOrgObjectiveReportResultMap">
+        select ooah.action_id,
+        ooah.updated_time,
+        ooah.updated_by
+        from org_objective_action_hi ooah
+        order by updated_time desc
+        LIMIT #{requestQuery.limit}
+        <if test="requestQuery.offset != null">
+            OFFSET #{requestQuery.offset}
+        </if>
+    </select>
+
+    <select id="getColleagueByUuid" resultMap="colleagueMap">
+        select uuid,
+               first_name,
+               middle_name,
+               last_name
+        from colleague
+        where uuid = #{uuid}
+    </select>
 </mapper>

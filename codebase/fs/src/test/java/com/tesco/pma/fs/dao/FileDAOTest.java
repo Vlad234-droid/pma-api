@@ -62,12 +62,12 @@ public class FileDAOTest extends AbstractDAOTest {
         fileData.setType(FORM);
         fileData.setStatus(ACTIVE);
         fileData.setDescription("other file");
-        fileData.setCreatedBy("test");
+        fileData.setCreatedBy(UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65765"));
         fileData.setCreatedTime(Instant.parse("2021-11-03T22:38:14Z"));
         fileData.setFileName("test3.txt");
         fileData.setFileDate(Instant.parse("2021-04-22T08:50:08Z"));
         fileData.setFileLength(0);
-        fileData.setFileContent(new byte[] {});
+        fileData.setFileContent(new byte[]{});
         return fileData;
     }
 }

@@ -11,8 +11,10 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.ReviewCreationException;
 import com.tesco.pma.exception.ReviewDeletionException;
 import com.tesco.pma.exception.ReviewUpdateException;
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
 import com.tesco.pma.review.dao.ReviewDAO;
+import com.tesco.pma.review.domain.AuditOrgObjectiveReport;
 import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.OrgObjective;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -73,7 +76,6 @@ public class ReviewServiceImpl implements ReviewService {
     private static final String MANAGER_UUID_PARAMETER_NAME = "managerUuid";
     private static final String PERFORMANCE_CYCLE_UUID_PARAMETER_NAME = "performanceCycleUuid";
     private static final String TYPE_PARAMETER_NAME = "type";
-    private static final String BUSINESS_UNIT_UUID_PARAMETER_NAME = "businessUnitUuid";
     private static final String NUMBER_PARAMETER_NAME = "number";
     private static final String VERSION_PARAMETER_NAME = "version";
     private static final String STATUS_PARAMETER_NAME = "status";
@@ -203,7 +205,7 @@ public class ReviewServiceImpl implements ReviewService {
                                               List<Review> reviews,
                                               PMReviewStatus status,
                                               String reason,
-                                              String loggedUserName) {
+                                              UUID loggedUserUuid) {
         reviews.forEach(review -> {
             var prevStatuses = getPrevStatusesForChangeStatus(type, status);
             if (0 == prevStatuses.size()) {
@@ -222,7 +224,7 @@ public class ReviewServiceImpl implements ReviewService {
                         colleagueUuid,
                         type,
                         review.getNumber());
-                reviewAuditLogDAO.logReviewUpdating(actualReview, status, reason, loggedUserName);
+                reviewAuditLogDAO.logReviewUpdating(actualReview, status, reason, loggedUserUuid);
             } else {
                 throw notFound(REVIEWS_NOT_FOUND_FOR_STATUS_UPDATE,
                         Map.of(STATUS_PARAMETER_NAME, status,
@@ -257,7 +259,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public List<OrgObjective> createOrgObjectives(List<OrgObjective> orgObjectives, String loggedUserName) {
+    public List<OrgObjective> createOrgObjectives(List<OrgObjective> orgObjectives, UUID loggedUserUuid) {
         var currentOrgObjectives = reviewDAO.getOrgObjectives();
         if (listEqualsIgnoreOrder(currentOrgObjectives, orgObjectives, ORG_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR)) {
             return currentOrgObjectives;
@@ -281,7 +283,7 @@ public class ReviewServiceImpl implements ReviewService {
             }
 
         });
-        reviewAuditLogDAO.logOrgObjectiveAction(SAVE, loggedUserName);
+        reviewAuditLogDAO.logOrgObjectiveAction(SAVE, loggedUserUuid);
         return results;
     }
 
@@ -296,10 +298,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public List<OrgObjective> publishOrgObjectives(String loggedUserName) {
+    public List<OrgObjective> publishOrgObjectives(UUID loggedUserUuid) {
         reviewDAO.unpublishOrgObjectives();
         reviewDAO.publishOrgObjectives();
-        reviewAuditLogDAO.logOrgObjectiveAction(PUBLISH, loggedUserName);
+        reviewAuditLogDAO.logOrgObjectiveAction(PUBLISH, loggedUserUuid);
         return getPublishedOrgObjectives();
     }
 
@@ -340,6 +342,11 @@ public class ReviewServiceImpl implements ReviewService {
             }
         }
         return cycleTimeline;
+    }
+
+    @Override
+    public List<AuditOrgObjectiveReport> getAuditOrgObjectiveReport(RequestQuery requestQuery) {
+        return reviewAuditLogDAO.getAuditOrgObjectiveReport(requestQuery);
     }
 
     private ReviewStatusCounter getTimelineReviewStatusCounter(UUID cycleUuid, UUID colleagueUuid, PMReviewType reviewType) {

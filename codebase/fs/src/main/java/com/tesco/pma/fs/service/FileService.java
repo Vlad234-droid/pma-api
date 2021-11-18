@@ -23,7 +23,7 @@ public interface FileService {
      * @return uploaded file
      * @throws RegistrationException if failed to save file data to database
      */
-    File upload(@NotNull File fileData, @NotNull UploadMetadata uploadMetadata, @NotNull String creatorId);
+    File upload(@NotNull File fileData, @NotNull UploadMetadata uploadMetadata, @NotNull UUID creatorId);
 
     /**
      * Read all information about file by its identifier

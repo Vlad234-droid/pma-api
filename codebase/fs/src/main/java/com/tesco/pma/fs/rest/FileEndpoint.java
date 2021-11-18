@@ -67,7 +67,7 @@ public class FileEndpoint {
     public static final String INCLUDE_FILE_CONTENT = "includeFileContent";
 
     private final FileService fileService;
-    private final AuditorAware<String> auditorAware;
+    private final AuditorAware<UUID> auditorAware;
 
     @Operation(
             summary = "Get File information by its uuid",

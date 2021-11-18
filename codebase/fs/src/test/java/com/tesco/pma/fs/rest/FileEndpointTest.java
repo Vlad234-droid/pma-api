@@ -34,7 +34,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     private static final String RESOURCES_PATH = "/com/tesco/pma/fs/rest/";
     private static final String FILE_NAME = "test1.txt";
-    private static final String CREATOR_ID = "test";
+    private static final UUID CREATOR_ID = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65765");
     private static final String PATH = "/home/dev";
     private static final String FILES_URL = "/files";
 

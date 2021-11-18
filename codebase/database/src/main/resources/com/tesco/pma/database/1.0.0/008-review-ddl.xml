@@ -295,7 +295,8 @@
                 <constraints nullable="false"/>
             </column>
             <column name="change_reason" type="VARCHAR"/>
-            <column name="updated_by" type="VARCHAR(50)">
+            <column name="updated_by" type="${uuid_type}"
+                    remarks="Identifier of user who made changes">
                 <constraints nullable="false"/>
             </column>
             <column name="updated_time" type="TIMESTAMPTZ">
@@ -359,8 +360,8 @@
                     remarks="Action">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="org_objective_action_hi_pk"/>
             </column>
-            <column name="updated_by" type="VARCHAR(50)"
-                    remarks="User who made changes"/>
+            <column name="updated_by" type="${uuid_type}"
+                    remarks="Identifier of user who made changes"/>
             <column name="updated_time" type="TIMESTAMPTZ"
                     remarks="Timestamp with zone when changes were applied">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="org_objective_action_hi_pk"/>

@@ -4,6 +4,8 @@ import com.tesco.pma.cycle.api.PMReviewStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.pagination.RequestQuery;
+import com.tesco.pma.review.domain.AuditOrgObjectiveReport;
 import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.OrgObjective;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
@@ -97,7 +99,7 @@ public interface ReviewService {
      * @param reviews              list of review
      * @param status               a new review status
      * @param reason               a reason of changing status
-     * @param loggedUserName       a logged user
+     * @param loggedUserUuid       an identifier of logged user
      * @return a ObjectiveStatus
      * @throws NotFoundException if review doesn't exist.
      */
@@ -107,7 +109,7 @@ public interface ReviewService {
                                        List<Review> reviews,
                                        @NotNull PMReviewStatus status,
                                        @Size(max = 250) String reason,
-                                       @NotNull String loggedUserName);
+                                       @NotNull UUID loggedUserUuid);
 
     /**
      * Deletes review by business key.
@@ -126,12 +128,13 @@ public interface ReviewService {
     /**
      * Create organisation objectives
      *
-     * @param orgObjectives a list of organisation objectives
+     * @param orgObjectives  a list of organisation objectives
+     * @param loggedUserUuid an identifier of logged user
      * @return Created organisation objectives
      * @throws DatabaseConstraintViolationException organisation objective already exist.
      */
     List<OrgObjective> createOrgObjectives(List<OrgObjective> orgObjectives,
-                                           @NotNull String loggedUserName);
+                                           @NotNull UUID loggedUserUuid);
 
     /**
      * Get all organisation objectives
@@ -143,10 +146,10 @@ public interface ReviewService {
     /**
      * Publish the last version of organisation objectives
      *
-     * @param loggedUserName a logged user
+     * @param loggedUserUuid an identifier of logged user
      * @return a working organisation objectives
      */
-    List<OrgObjective> publishOrgObjectives(@NotNull String loggedUserName);
+    List<OrgObjective> publishOrgObjectives(@NotNull UUID loggedUserUuid);
 
     /**
      * Get published organisation objectives
@@ -163,4 +166,7 @@ public interface ReviewService {
      * @throws NotFoundException if timeline doesn't exist.
      */
     List<PMCycleTimelinePoint> getCycleTimelineByColleague(UUID colleagueUuid);
+
+
+    List<AuditOrgObjectiveReport> getAuditOrgObjectiveReport(@NotNull RequestQuery requestQuery);
 }

@@ -6,8 +6,10 @@ import com.tesco.pma.configuration.CaseInsensitiveEnumEditor;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
+import com.tesco.pma.review.domain.AuditOrgObjectiveReport;
 import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.OrgObjective;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,7 +44,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class ReviewEndpoint {
 
     private final ReviewService reviewService;
-    private final AuditorAware<String> auditorAware;
+    private final AuditorAware<UUID> auditorAware;
     private final PMCycleService pmCycleService;
 
     private static final String CURRENT_PARAMETER_NAME = "CURRENT";
@@ -208,7 +211,7 @@ public class ReviewEndpoint {
                 request.getReviews(),
                 status,
                 request.getReason(),
-                resolveUserName()
+                resolveUserUuid()
         ));
     }
 
@@ -259,7 +262,7 @@ public class ReviewEndpoint {
             produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse<List<OrgObjective>> createOrgObjectives(@RequestBody List<OrgObjective> orgObjectives) {
-        return RestResponse.success(reviewService.createOrgObjectives(orgObjectives, resolveUserName()));
+        return RestResponse.success(reviewService.createOrgObjectives(orgObjectives, resolveUserUuid()));
     }
 
     /**
@@ -294,10 +297,18 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Organisation objectives have been published")
     @PostMapping(value = "/org-objectives/publish", produces = APPLICATION_JSON_VALUE)
     public RestResponse<List<OrgObjective>> publishOrgObjectives() {
-        return success(reviewService.publishOrgObjectives(resolveUserName()));
+        return success(reviewService.publishOrgObjectives(resolveUserUuid()));
     }
 
-    private String resolveUserName() {
+    @Operation(summary = "Get audit log of organisation objective actions", tags = {"org-objective"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found audit log data")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Audit log data not found", content = @Content)
+    @GetMapping(value = "/audit-logs", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<List<AuditOrgObjectiveReport>> getAuditLogReport(@NotNull RequestQuery requestQuery) {
+        return success(reviewService.getAuditOrgObjectiveReport(requestQuery));
+    }
+
+    private UUID resolveUserUuid() {
         return auditorAware.getCurrentAuditor();
     }
 
