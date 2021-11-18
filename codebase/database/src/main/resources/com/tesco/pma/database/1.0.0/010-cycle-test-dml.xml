@@ -201,7 +201,7 @@
         "form": {
           "id": "forms/type_1_eyr.form",
           "code": "forms/type_1_eyr.form",
-          "description": null,
+          "description": "End of Year Review form",
           "type": "FORM",
           "properties": {},
           "key": "forms/type_1_eyr.form",
