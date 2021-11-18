@@ -164,18 +164,11 @@ public class ProfileEndpoint {
         return RestResponse.success(importService.getRequestErrors(requestUuid));
     }
 
-    @Operation(summary = "Autocomplete search among colleagues by full name", tags = {"colleagues"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Search among colleagues by full name")
-    @GetMapping(value = "/suggestions", produces = MimeTypeUtils.APPLICATION_JSON_VALUE, params = {"fullName"})
-    public RestResponse<List<Colleague>> getSuggestionsFullName(@RequestParam String fullName) {
-        return RestResponse.success(profileService.getSuggestions(fullName, null));
-    }
-
     @Operation(summary = "Autocomplete search among colleagues by full name and manager ID", tags = {"colleagues"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Search among colleagues by full name and manager ID")
-    @GetMapping(value = "/suggestions", produces = MimeTypeUtils.APPLICATION_JSON_VALUE, params = {"fullName", "managerId"})
-    public RestResponse<List<Colleague>> getSuggestionsAmongSubordinatesFullName(@RequestParam String fullName,
-                                                                                 @RequestParam UUID managerId) {
+    @GetMapping(value = "/suggestions", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public RestResponse<List<Colleague>> getSuggestions(@RequestParam("names") String fullName,
+                                                        @RequestParam(value = "manager-uuid", required = false) UUID managerId) {
         return RestResponse.success(profileService.getSuggestions(fullName, managerId));
     }
 
