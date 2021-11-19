@@ -32,12 +32,13 @@ import static com.tesco.pma.cycle.api.PMCycleStatus.COMPLETED;
 import static com.tesco.pma.cycle.api.PMCycleStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMCycleStatus.FAILED;
 import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
+import static com.tesco.pma.cycle.api.model.PMCycleElement.PM_CYCLE_START_TIME;
+import static com.tesco.pma.cycle.api.model.PMCycleElement.PM_CYCLE_TYPE;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_ALREADY_EXISTS;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_BY_UUID;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_COLLEAGUE;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_FOR_STATUS_UPDATE;
-import static java.lang.Boolean.TRUE;
 import static java.util.Set.of;
 
 @Slf4j
@@ -97,9 +98,10 @@ public class PMCycleServiceImpl implements PMCycleService {
         String templateCode = "type_1";
 
         try {
-            var props = Map.of("needsObjective", TRUE,
-                    "needsEyr", TRUE,
-                    "needsMyr", TRUE);
+            var props = Map.of(
+                    PM_CYCLE_TYPE, cycle.getType(),
+                    PM_CYCLE_START_TIME, cycle.getStartTime()
+            );
 
             var processUUID = processManagerService.runProcess(templateCode, props);
             log.debug("Started process: {}", processUUID);
