@@ -8,6 +8,7 @@ import com.tesco.pma.fs.api.FileType;
 import com.tesco.pma.fs.dao.FileDAO;
 import com.tesco.pma.fs.domain.File;
 import com.tesco.pma.fs.domain.UploadMetadata;
+import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import java.util.UUID;
 import static com.tesco.pma.exception.ErrorCodes.ERROR_FILE_NOT_FOUND;
 import static com.tesco.pma.fs.api.FileStatus.DRAFT;
 import static com.tesco.pma.fs.exception.ErrorCodes.ERROR_FILE_REGISTRATION_FAILED;
+import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 
 /**
  * File service implementation
@@ -80,5 +82,16 @@ public class FileServiceImpl implements FileService {
         );
 
         return fileDao.findByRequestQuery(requestQuery, statusFilters, typeFilters, includeFileContent);
+    }
+
+    @Override
+    public File get(String fileName, String path, boolean includeFileContent) {
+        var requestQuery = new RequestQuery();
+        requestQuery.setFilters(Arrays.asList(new Condition("file-name", EQUALS, fileName),
+                                              new Condition("path", EQUALS, path)));
+
+        return get(requestQuery, includeFileContent).stream()
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException(ERROR_FILE_NOT_FOUND.name(), "File was not found", fileName));
     }
 }
