@@ -4,8 +4,10 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.RegistrationException;
 import com.tesco.pma.fs.domain.File;
 import com.tesco.pma.fs.domain.UploadMetadata;
+import com.tesco.pma.pagination.RequestQuery;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -34,4 +36,13 @@ public interface FileService {
      * @throws NotFoundException if file by uuid is not found
      */
     File get(@NotNull UUID fileUuid, boolean includeFileContent);
+
+    /**
+     * Read all information about files applying search, filter and sorting
+     *
+     * @param requestQuery filter, sorting, offset
+     * @param includeFileContent identifies if include file content
+     * @return filtered files data
+     */
+    List<File> get(@NotNull RequestQuery requestQuery, boolean includeFileContent);
 }
