@@ -8,6 +8,7 @@ import com.tesco.pma.fs.api.FileStatus;
 import com.tesco.pma.fs.api.FileType;
 import com.tesco.pma.fs.domain.File;
 import com.tesco.pma.fs.domain.UploadMetadata;
+import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,14 +21,15 @@ import org.springframework.test.context.ActiveProfiles;
 import com.tesco.pma.fs.dao.FileDAO;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.UUID;
 
 import static com.tesco.pma.fs.api.FileStatus.ACTIVE;
 import static com.tesco.pma.fs.api.FileStatus.INACTIVE;
 import static com.tesco.pma.fs.api.FileType.BPMN;
 import static com.tesco.pma.fs.api.FileType.FORM;
+import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -88,6 +90,13 @@ public class FileServiceImplTest {
     }
 
     @Test
+    void getByUuidThrowsExceptionWhenDaoReturnsNull() {
+        when(fileDao.read(FILE_UUID_1, true)).thenReturn(null);
+
+        assertThrows(NotFoundException.class, () -> service.get(FILE_UUID_1, true));
+    }
+
+    @Test
     void getByRequestQuery() {
         var filesData = asList(buildFileData(FILE_NAME, FILE_UUID_1, 1));
         var includeFileContent = false;
@@ -117,18 +126,32 @@ public class FileServiceImplTest {
         var includeFileContent = true;
         var requestQuery = new RequestQuery();
         when(fileDao.findByRequestQuery(any(RequestQuery.class), anyList(), anyList(), eq(includeFileContent)))
-                .thenReturn(Collections.emptyList());
+                .thenReturn(emptyList());
 
         var result = service.get(requestQuery, includeFileContent);
 
-        assertEquals(Collections.emptyList(), result);
+        assertEquals(emptyList(), result);
     }
 
     @Test
-    void getByUuidThrowsExceptionWhenDaoReturnsNull() {
-        when(fileDao.read(FILE_UUID_1, true)).thenReturn(null);
+    void getByFileNameAndPath() {
+        var fileData = buildFileData(FILE_NAME, FILE_UUID_1, 1);
+        var includeFileContent = false;
+        var requestQuery = new RequestQuery();
+        requestQuery.setFilters(asList(new Condition("path", EQUALS, PATH), new Condition("file-name", EQUALS, FILE_NAME)));
+        when(fileDao.findByRequestQuery(eq(requestQuery), any(), any(), eq(includeFileContent))).thenReturn(asList(fileData));
 
-        assertThrows(NotFoundException.class, () -> service.get(FILE_UUID_1, true));
+        var result = service.get(PATH, FILE_NAME, includeFileContent);
+
+        assertEquals(fileData, result);
+    }
+
+    @Test
+    void getByFileNameAndPathThrowsExceptionWhenDaoReturnsNull() {
+        var includeFileContent = true;
+        when(fileDao.findByRequestQuery(any(), any(), any(), eq(includeFileContent))).thenReturn(emptyList());
+
+        assertThrows(NotFoundException.class, () -> service.get("/not/existed", "not_existed_file.txt", includeFileContent));
     }
 
     private File buildFileData(String fileName, UUID uuid, Integer version) {

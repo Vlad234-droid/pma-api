@@ -45,4 +45,16 @@ public interface FileService {
      * @return filtered files data
      */
     List<File> get(@NotNull RequestQuery requestQuery, boolean includeFileContent);
+
+
+    /**
+     * Read all information about file by its name and path with the last version
+     *
+     * @param path file path
+     * @param fileName file name
+     * @param includeFileContent identifies if include file content
+     * @return file data
+     * @throws NotFoundException if file by name and path is not found
+     */
+    File get(@NotNull String path, @NotNull String fileName, boolean includeFileContent);
 }
