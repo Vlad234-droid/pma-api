@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import static com.tesco.pma.fs.api.FileStatus.ACTIVE;
 import static com.tesco.pma.fs.api.FileType.FORM;
+import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Condition.Operand.GREATER_THAN;
 import static com.tesco.pma.pagination.Condition.Operand.IN;
 import static java.util.Arrays.asList;
@@ -93,6 +94,19 @@ public class FileDAOTest extends AbstractDAOTest {
         assertThat(result).isNotEmpty();
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getUuid()).isEqualTo(FILE_UUID_3);
+    }
+
+    @Test
+    @DataSet(BASE_PATH_TO_DATA_SET + "file_init.xml")
+    void findByRequestQueryWithFilterByUuid() {
+        final var requestQuery = new RequestQuery();
+        requestQuery.setFilters(asList(new Condition("uuid", EQUALS, FILE_UUID_2)));
+
+        final var result = instance.findByRequestQuery(requestQuery, emptyList(), emptyList(), true);
+
+        assertThat(result).isNotEmpty();
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getUuid()).isEqualTo(FILE_UUID_2);
     }
 
     @Test
