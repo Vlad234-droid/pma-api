@@ -85,10 +85,10 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public File get(String fileName, String path, boolean includeFileContent) {
+    public File get(String path, String fileName, boolean includeFileContent) {
         var requestQuery = new RequestQuery();
-        requestQuery.setFilters(Arrays.asList(new Condition("file-name", EQUALS, fileName),
-                                              new Condition("path", EQUALS, path)));
+        requestQuery.setFilters(Arrays.asList(new Condition("path", EQUALS, path),
+                                              new Condition("file-name", EQUALS, fileName)));
 
         return get(requestQuery, includeFileContent).stream()
                 .findFirst()

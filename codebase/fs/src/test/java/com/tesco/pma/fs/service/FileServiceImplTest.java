@@ -138,10 +138,10 @@ public class FileServiceImplTest {
         var fileData = buildFileData(FILE_NAME, FILE_UUID_1, 1);
         var includeFileContent = false;
         var requestQuery = new RequestQuery();
-        requestQuery.setFilters(asList(new Condition("file-name", EQUALS, FILE_NAME), new Condition("path", EQUALS, PATH)));
+        requestQuery.setFilters(asList(new Condition("path", EQUALS, PATH), new Condition("file-name", EQUALS, FILE_NAME)));
         when(fileDao.findByRequestQuery(eq(requestQuery), any(), any(), eq(includeFileContent))).thenReturn(asList(fileData));
 
-        var result = service.get(FILE_NAME, PATH, includeFileContent);
+        var result = service.get(PATH, FILE_NAME, includeFileContent);
 
         assertEquals(fileData, result);
     }
@@ -151,7 +151,7 @@ public class FileServiceImplTest {
         var includeFileContent = true;
         when(fileDao.findByRequestQuery(any(), any(), any(), eq(includeFileContent))).thenReturn(emptyList());
 
-        assertThrows(NotFoundException.class, () -> service.get("not_existed_file.txt", "/not/existed", includeFileContent));
+        assertThrows(NotFoundException.class, () -> service.get("/not/existed", "not_existed_file.txt", includeFileContent));
     }
 
     private File buildFileData(String fileName, UUID uuid, Integer version) {

@@ -50,11 +50,11 @@ public interface FileService {
     /**
      * Read all information about file by its name and path with the last version
      *
-     * @param fileName file name
      * @param path file path
+     * @param fileName file name
      * @param includeFileContent identifies if include file content
      * @return file data
      * @throws NotFoundException if file by name and path is not found
      */
-    File get(@NotNull String fileName, @NotNull String path, boolean includeFileContent);
+    File get(@NotNull String path, @NotNull String fileName, boolean includeFileContent);
 }
