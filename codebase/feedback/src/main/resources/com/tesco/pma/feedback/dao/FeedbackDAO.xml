@@ -64,34 +64,34 @@
     <sql id="getSortField">
         <choose>
             <when test="sort.field == 'uuid'">
-                uuid
+                f.uuid
             </when>
             <when test="sort.field == 'colleague-uuid'">
-                colleague_uuid
+                f.colleague_uuid
             </when>
             <when test="sort.field == 'target-colleague-uuid'">
-                target_colleague_uuid
+                f.target_colleague_uuid
             </when>
             <when test="sort.field == 'target-type'">
-                target_type_id
+                f.target_type_id
             </when>
             <when test="sort.field == 'target-id'">
-                target_id
+                f.target_id
             </when>
             <when test="sort.field == 'read'">
-                read
+                f.read
             </when>
             <when test="sort.field == 'status'">
-                status_id
+                f.status_id
             </when>
             <when test="sort.field == 'created-time'">
-                created_time
+                f.created_time
             </when>
             <when test="sort.field == 'updated-time'">
-                updated_time
+                f.updated_time
             </when>
             <otherwise>
-                updated_time
+                f.updated_time
             </otherwise>
         </choose>
     </sql>
@@ -99,34 +99,34 @@
     <sql id="getFilterField">
         <choose>
             <when test="filter.property == 'uuid'">
-                uuid
+                f.uuid
             </when>
             <when test="filter.property == 'colleague-uuid'">
-                colleague_uuid
+                f.colleague_uuid
             </when>
             <when test="filter.property == 'target-colleague-uuid'">
-                target_colleague_uuid
+                f.target_colleague_uuid
             </when>
             <when test="filter.property == 'target-type'">
-                target_type_id
+                f.target_type_id
             </when>
             <when test="filter.property == 'target-id'">
-                target_id
+                f.target_id
             </when>
             <when test="filter.property == 'read'">
-                read
+                f.read
             </when>
             <when test="filter.property == 'status'">
-                status_id
+                f.status_id
             </when>
             <when test="filter.property == 'created-time'">
-                created_time
+                f.created_time
             </when>
             <when test="filter.property == 'updated-time'">
-                updated_time
+                f.updated_time
             </when>
             <otherwise>
-                updated_time
+                f.updated_time
             </otherwise>
         </choose>
     </sql>
@@ -134,8 +134,8 @@
     <sql id="prepareValues">
         <foreach item="value" collection="filter.value" separator="," open="(" close=")">
             <choose>
-                <when test="filter.property == 'uuid'">
-                    #{value}::uuid
+                <when test="filter.property == 'status' or filter.property == 'target-type'">
+                    #{value}::INTEGER
                 </when>
                 <otherwise>
                     #{value}
@@ -176,22 +176,22 @@
                     IS NOT NULL
                 </if>
             </when>
-            <when test="filter.operand.name == 'LESS_THAN' and (filter.property != 'created-time' and filter.property != 'updated-time')">
+            <when test="filter.operand.name == 'LESS_THAN' and (filter.property == 'created-time' or filter.property == 'updated-time')">
                 <include refid="getFilterField"/> &lt; '${filter.value}'
             </when>
-            <when test="filter.operand.name == 'LESS_THAN_EQUALS' and (filter.property != 'created-time' and filter.property != 'updated-time')">
+            <when test="filter.operand.name == 'LESS_THAN_EQUALS' and (filter.property == 'created-time' or filter.property == 'updated-time')">
                 <include refid="getFilterField"/> &lt;= '${filter.value}'
             </when>
-            <when test="filter.operand.name == 'GREATER_THAN' and (filter.property != 'created-time' and filter.property != 'updated-time')">
+            <when test="filter.operand.name == 'GREATER_THAN' and (filter.property == 'created-time' or filter.property == 'updated-time')">
                 <include refid="getFilterField"/> &gt; '${filter.value}'
             </when>
-            <when test="filter.operand.name == 'GREATER_THAN_EQUALS' and (filter.property != 'created-time' and filter.property != 'updated-time')">
+            <when test="filter.operand.name == 'GREATER_THAN_EQUALS' and (filter.property == 'created-time' or filter.property == 'updated-time')">
                 <include refid="getFilterField"/> &gt;= '${filter.value}'
             </when>
         </choose>
     </sql>
 
-    <select id="getByUuid" flushCache="true" resultMap="feedbackMap">
+    <sql id="select">
         SELECT f.uuid,
                f.colleague_uuid,
                f.target_colleague_uuid,
@@ -231,49 +231,15 @@
                  LEFT JOIN job tcj on c.job_id = tcj.id
                  LEFT JOIN department tcd on c.department_id = tcd.id
                  LEFT JOIN profile_attributes tcpa ON f.target_colleague_uuid = tcpa.colleague_uuid
+    </sql>
+
+    <select id="getByUuid" flushCache="true" resultMap="feedbackMap">
+        <include refid="select"></include>
         WHERE f.uuid = #{uuid}
     </select>
 
     <select id="findAll" flushCache="true" resultMap="feedbackMap">
-        SELECT f.uuid,
-               f.colleague_uuid,
-               f.target_colleague_uuid,
-               f.target_type_id,
-               f.target_id,
-               f.read,
-               f.status_id,
-               f.created_time,
-               f.updated_time,
-               fi.uuid          as fi_uuid,
-               fi.code          as fi_code,
-               fi.content       as fi_content,
-               fi.feedback_uuid as fi_feedbackUuid,
-               c.uuid           as c_uuid,
-               c.first_name     as c_firstName,
-               c.middle_name    as c_middleName,
-               c.last_name      as c_lastName,
-               cj.name          as c_job,
-               cd.name          as c_department,
-               cpa.name         as cpa_name,
-               cpa.value        as cpa_value,
-               tc.uuid          as tc_uuid,
-               tc.first_name    as tc_firstName,
-               tc.middle_name   as tc_middleName,
-               tc.last_name     as tc_lastName,
-               tcj.name         as tc_job,
-               tcd.name         as tc_department,
-               tcpa.name        as tcpa_name,
-               tcpa.value       as tcpa_value
-        FROM feedback f
-                 LEFT JOIN feedback_item fi ON f.uuid = fi.feedback_uuid
-                 JOIN colleague c ON f.colleague_uuid = c.uuid
-                 LEFT JOIN job cj on c.job_id = cj.id
-                 LEFT JOIN department cd on c.department_id = cd.id
-                 LEFT JOIN profile_attributes cpa ON f.target_colleague_uuid = cpa.colleague_uuid
-                 JOIN colleague tc ON f.target_colleague_uuid = tc.uuid
-                 LEFT JOIN job tcj on c.job_id = tcj.id
-                 LEFT JOIN department tcd on c.department_id = tcd.id
-                 LEFT JOIN profile_attributes tcpa ON f.target_colleague_uuid = tcpa.colleague_uuid
+        <include refid="select"></include>
         WHERE 1 = 1
         <if test="!requestQuery.filters.isEmpty()">
             <foreach collection="requestQuery.filters" item="filter" index="index" open=" AND " separator=" AND ">

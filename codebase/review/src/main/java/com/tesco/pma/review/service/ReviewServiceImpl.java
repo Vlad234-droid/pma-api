@@ -54,6 +54,7 @@ import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND_BY_MANAGER;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND_FOR_STATUS_UPDATE;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_ALREADY_EXISTS;
+import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_BY_UUID;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_FOR_COLLEAGUE;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_FOR_DELETE;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_FOR_UPDATE;
@@ -71,6 +72,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final PMCycleService pmCycleService;
 
+    private static final String REVIEW_UUID_PARAMETER_NAME = "reviewUuid";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     private static final String MANAGER_UUID_PARAMETER_NAME = "managerUuid";
     private static final String PERFORMANCE_CYCLE_UUID_PARAMETER_NAME = "performanceCycleUuid";
@@ -101,6 +103,16 @@ public class ReviewServiceImpl implements ReviewService {
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
                             TYPE_PARAMETER_NAME, type,
                             NUMBER_PARAMETER_NAME, number));
+        }
+        return res;
+    }
+
+    @Override
+    public Review getReview(UUID uuid) {
+        var res = reviewDAO.read(uuid);
+        if (res == null) {
+            throw notFound(REVIEW_NOT_FOUND_BY_UUID,
+                    Map.of(REVIEW_UUID_PARAMETER_NAME, uuid));
         }
         return res;
     }

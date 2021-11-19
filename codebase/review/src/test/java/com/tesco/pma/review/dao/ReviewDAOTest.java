@@ -225,6 +225,21 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    void getReviewByUuid() {
+        final var result = instance.read(REVIEW_UUID);
+
+        assertThat(result)
+                .asInstanceOf(type(Review.class))
+                .returns(COLLEAGUE_UUID, from(Review::getColleagueUuid))
+                .returns(PERFORMANCE_CYCLE_UUID, from(Review::getPerformanceCycleUuid))
+                .returns(OBJECTIVE, from(Review::getType))
+                .returns(NUMBER_1, from(Review::getNumber))
+                .returns(REVIEW_PROPERTIES_INIT, from(Review::getProperties))
+                .returns(DRAFT, from(Review::getStatus));
+    }
+
+    @Test
     @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void getReviewNotExist() {
         final var result = instance.getReview(
