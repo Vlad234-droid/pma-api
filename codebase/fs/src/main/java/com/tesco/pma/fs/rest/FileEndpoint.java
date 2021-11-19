@@ -7,6 +7,7 @@ import com.tesco.pma.fs.domain.File;
 import com.tesco.pma.fs.domain.FilesUploadMetadata;
 import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.logging.TraceUtils;
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
 
 import com.tesco.pma.rest.RestResponse;
@@ -83,14 +84,28 @@ public class FileEndpoint {
         return success(fileService.get(fileUuid, includeFileContent));
     }
 
+    @Operation(
+            summary = "Get Files information applying search, filter and sorting",
+            description = "Get Files information applying search, filter and sorting",
+            tags = "file",
+            responses = {
+                    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found filtered files data"),
+                    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Files data not found", content = @Content),
+            })
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public RestResponse<List<File>> get(RequestQuery requestQuery,
+                                        @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true") boolean includeFileContent) {
+        return success(fileService.get(requestQuery, includeFileContent));
+    }
+
     /**
      * GET call to download file.
      *
      * @return a RestResponse with downloaded file
      * @throws IOException if the resource cannot be resolved
      */
-    @Operation(summary = "Download file",
-            description = "Download file",
+    @Operation(summary = "Download File",
+            description = "Download File",
             tags = "file")
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "File downloaded")
     @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Invalid id supplied", content = @Content)
@@ -111,8 +126,8 @@ public class FileEndpoint {
     }
 
     @Operation(
-            summary = "Upload files",
-            description = "Upload files",
+            summary = "Upload Files",
+            description = "Upload Files",
             tags = "file",
             requestBody = @RequestBody(
                     required = true,
