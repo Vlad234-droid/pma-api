@@ -123,10 +123,10 @@ public class ProfileDAOTest extends AbstractDAOTest {
         colleague.setManager(true);
         colleague.setEmploymentType("ET");
 
-        dao.saveCountry(country);
-        dao.saveDepartment(dep);
-        dao.saveJob(job);
-        dao.saveWorkLevel(workLevel);
+        dao.updateCountry(country);
+        dao.updateDepartment(dep);
+        dao.updateJob(job);
+        dao.updateWorkLevel(workLevel);
 
         dao.saveColleague(colleague);
 
@@ -180,9 +180,8 @@ public class ProfileDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
     void updateColleagueSucceeded() {
         var colleague = getCorrectColleague();
-
-        dao.saveColleague(colleague);
-
+        final int inserted = dao.saveColleague(colleague);
+        assertThat(inserted).isEqualTo(1);
     }
 
     @Test
@@ -197,56 +196,56 @@ public class ProfileDAOTest extends AbstractDAOTest {
     @Test
     void insertJobWithExistsId() {
         var job = getJob("1");
-        final int inserted = dao.insertJob(job);
+        final int inserted = dao.updateJob(job);
         assertThat(inserted).isEqualTo(1);
     }
 
     @Test
     void insertJobWithNotExistsId() {
         var job = getJob("3");
-        final int inserted = dao.insertJob(job);
+        final int inserted = dao.updateJob(job);
         assertThat(inserted).isEqualTo(1);
     }
 
     @Test
     void insertCountryWithExistsCode() {
         var country = getCountry("GB");
-        final int inserted = dao.insertCountry(country);
+        final int inserted = dao.updateCountry(country);
         assertThat(inserted).isEqualTo(1);
     }
 
     @Test
     void insertCountryWithNotExistsCode() {
         var country = getCountry("ZZ");
-        final int inserted = dao.insertCountry(country);
+        final int inserted = dao.updateCountry(country);
         assertThat(inserted).isEqualTo(1);
     }
 
     @Test
     void insertWorkLevelWithExistsCode() {
         var workLevel = getWorkLevel("WL1");
-        final int inserted = dao.insertWorkLevel(workLevel);
+        final int inserted = dao.updateWorkLevel(workLevel);
         assertThat(inserted).isEqualTo(1);
     }
 
     @Test
     void insertWorkLevelWithNotExistsCode() {
         var workLevel = getWorkLevel("WL7");
-        final int inserted = dao.insertWorkLevel(workLevel);
+        final int inserted = dao.updateWorkLevel(workLevel);
         assertThat(inserted).isEqualTo(1);
     }
 
     @Test
     void insertDepartmentWithExistsId() {
         var department = getDepartment("1");
-        final int inserted = dao.insertDepartment(department);
+        final int inserted = dao.updateDepartment(department);
         assertThat(inserted).isEqualTo(1);
     }
 
     @Test
     void insertDepartmentWithNotExistsId() {
         var department = getDepartment("5");
-        final int inserted = dao.insertDepartment(department);
+        final int inserted = dao.updateDepartment(department);
         assertThat(inserted).isEqualTo(1);
     }
 

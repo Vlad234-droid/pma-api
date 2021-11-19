@@ -22,9 +22,8 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 /**
- * Utility class for mapping between Colleague Facts API json format and database representation
+ * Class for mapping between Colleague Facts API json format and database representation
  */
-@SuppressWarnings("PMD.UseUtilityClass")
 @Component
 @RequiredArgsConstructor
 public class ColleagueFactsApiLocalMapper {

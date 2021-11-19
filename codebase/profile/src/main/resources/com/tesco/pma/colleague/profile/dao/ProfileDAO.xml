@@ -92,24 +92,28 @@
         WHERE c.iam_id = #{iamId}
     </select>
 
-    <insert id="saveWorkLevel" flushCache="true">
-        INSERT INTO work_level(code, name)
-        VALUES (#{workLevel.code}, #{workLevel.name}) ON CONFLICT(code) DO NOTHING
+    <insert id="updateWorkLevel" flushCache="true">
+        INSERT INTO work_level (code, name)
+        VALUES (#{workLevel.code}, #{workLevel.name}) ON CONFLICT (code) DO
+        UPDATE SET name = EXCLUDED.name
     </insert>
 
-    <insert id="saveCountry" flushCache="true">
-        INSERT INTO country(code, name)
-        VALUES (#{country.code}, #{country.name}) ON CONFLICT(code) DO NOTHING
+    <insert id="updateCountry" flushCache="true">
+        INSERT INTO country (code, name)
+        VALUES (#{country.code}, #{country.name}) ON CONFLICT (code) DO
+        UPDATE SET name = EXCLUDED.name
     </insert>
 
-    <insert id="saveDepartment" flushCache="true">
-        INSERT INTO department(id, name, business_type)
-        VALUES (#{department.id}, #{department.name}, #{department.businessType}) ON CONFLICT(id) DO NOTHING
+    <insert id="updateDepartment" flushCache="true">
+        INSERT INTO department (id, name, business_type)
+        VALUES (#{department.id}, #{department.name}, #{department.businessType}) ON CONFLICT (id) DO
+        UPDATE SET (name, business_type) = (EXCLUDED.name, EXCLUDED.business_type)
     </insert>
 
-    <insert id="saveJob" flushCache="true">
-        INSERT INTO job(id, code, name, cost_category)
-        VALUES (#{job.id}, #{job.code}, #{job.name}, #{job.costCategory}) ON CONFLICT(id) DO NOTHING
+    <insert id="updateJob" flushCache="true">
+        INSERT INTO job (id, code, name, cost_category)
+        VALUES (#{job.id}, #{job.code}, #{job.name}, #{job.costCategory}) ON CONFLICT (id) DO
+        UPDATE SET (code, name, cost_category) = (EXCLUDED.code, EXCLUDED.name, EXCLUDED.cost_category)
     </insert>
 
     <insert id="saveColleague" flushCache="true">
@@ -145,40 +149,5 @@
                    ELSE false
                    END;
     </select>
-
-    <insert id="insertJob" flushCache="true">
-        INSERT INTO job (id, code, name, cost_category)
-        VALUES (#{job.id},
-                #{job.code},
-                #{job.name},
-                #{job.costCategory})
-            ON CONFLICT (id) DO UPDATE SET
-                                    (code, name, cost_category) = (EXCLUDED.code, EXCLUDED.name, EXCLUDED.cost_category)
-    </insert>
-
-    <insert id="insertCountry" flushCache="true">
-        INSERT INTO country (code, name)
-        VALUES (#{country.code},
-                #{country.name})
-            ON CONFLICT (code) DO UPDATE SET
-            name = EXCLUDED.name
-    </insert>
-
-    <insert id="insertWorkLevel" flushCache="true">
-        INSERT INTO work_level (code, name)
-        VALUES (#{workLevel.code},
-                #{workLevel.name})
-            ON CONFLICT (code) DO UPDATE SET
-            name = EXCLUDED.name
-    </insert>
-
-    <insert id="insertDepartment" flushCache="true">
-        INSERT INTO department (id, name, business_type)
-        VALUES (#{department.id},
-                #{department.name},
-                #{department.businessType})
-            ON CONFLICT (id) DO UPDATE SET
-                                    (name, business_type) = (EXCLUDED.name, EXCLUDED.business_type)
-    </insert>
 
 </mapper>

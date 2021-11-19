@@ -150,8 +150,7 @@ public class ProfileServiceImpl implements ProfileService {
         try {
             ColleagueEntity changedLocalColleague = colleagueFactsApiLocalMapper.colleagueFactsApiToLocal(colleague);
             updateDictionaries(existingLocalColleague, changedLocalColleague);
-            profileDAO.saveColleague(changedLocalColleague);
-            updated = 1;
+            updated = profileDAO.saveColleague(changedLocalColleague);
         } catch (DataIntegrityViolationException exception) {
             String message = String.format("Data integrity violation exception = %s", exception.getMessage());
             log.error(LogFormatter.formatMessage(ErrorCodes.DATA_INTEGRITY_VIOLATION_EXCEPTION, message));
@@ -169,25 +168,25 @@ public class ProfileServiceImpl implements ProfileService {
         // Country
         ColleagueEntity.Country changedCountry = changedLocalColleague.getCountry();
         if (changedCountry != null && !existingLocalColleague.getCountry().getCode().equals(changedCountry.getCode())) {
-            profileDAO.insertCountry(changedCountry);
+            profileDAO.updateCountry(changedCountry);
         }
 
         // Department
         ColleagueEntity.Department changedDepartment = changedLocalColleague.getDepartment();
         if (changedDepartment != null && !existingLocalColleague.getDepartment().getId().equals(changedDepartment.getId())) {
-            profileDAO.insertDepartment(changedDepartment);
+            profileDAO.updateDepartment(changedDepartment);
         }
 
         // Job
         ColleagueEntity.Job changedJob = changedLocalColleague.getJob();
         if (changedJob != null && !existingLocalColleague.getJob().getCode().equals(changedJob.getId())) {
-            profileDAO.insertJob(changedJob);
+            profileDAO.updateJob(changedJob);
         }
 
         // Work level
         ColleagueEntity.WorkLevel changedWorkLevel = changedLocalColleague.getWorkLevel();
         if (changedWorkLevel != null && !existingLocalColleague.getWorkLevel().getCode().equals(changedWorkLevel.getCode())) {
-            profileDAO.insertWorkLevel(changedWorkLevel);
+            profileDAO.updateWorkLevel(changedWorkLevel);
         }
     }
 
