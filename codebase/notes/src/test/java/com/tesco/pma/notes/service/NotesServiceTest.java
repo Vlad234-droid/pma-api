@@ -32,8 +32,11 @@ public class NotesServiceTest {
 
     @BeforeEach
     public void init(){
+        var colleague = new Colleague();
+        colleague.setColleagueUUID(currentUserUuid);
+
         currentUser = new User();
-        currentUser.setColleagueUuid(currentUserUuid);
+        currentUser.setColleague(colleague);
     }
 
     @Test
@@ -51,7 +54,7 @@ public class NotesServiceTest {
         Mockito.when(profileService.findColleagueByColleagueUuid(referenceUuid)).thenReturn(colleague);
 
         var note = new Note();
-        note.setOwnerColleagueUuid(currentUser.getColleagueUuid());
+        note.setOwnerColleagueUuid(currentUser.getColleague().getColleagueUUID());
         note.setReferenceColleagueUuid(referenceUuid);
 
         Assertions.assertThrows(NoteIntegrityException.class, () -> {
@@ -64,8 +67,8 @@ public class NotesServiceTest {
     public void createNoteWithOwnerEqualsReferenceTest(){
 
         var note = new Note();
-        note.setOwnerColleagueUuid(currentUser.getColleagueUuid());
-        note.setReferenceColleagueUuid(currentUser.getColleagueUuid());
+        note.setOwnerColleagueUuid(currentUser.getColleague().getColleagueUUID());
+        note.setReferenceColleagueUuid(currentUser.getColleague().getColleagueUUID());
 
         Assertions.assertThrows(NoteIntegrityException.class, () -> {
             notesService.createNote(note);

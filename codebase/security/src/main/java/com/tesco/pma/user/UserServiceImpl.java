@@ -104,7 +104,10 @@ public class UserServiceImpl implements UserService {
                     .findAny();
 
             if (auth2UserAuthority.isPresent()) {
-                user = new User(colleagueUuid);
+                var colleague = new Colleague();
+                colleague.setColleagueUUID(colleagueUuid);
+                user = new User();
+                user.setColleague(colleague);
                 mapOidcUserInfoToUser(new OidcUserInfo(auth2UserAuthority.get().getAttributes()), user);
             }
         }
@@ -158,31 +161,24 @@ public class UserServiceImpl implements UserService {
 
     private User mapColleagueToUser(final Colleague source) {
         final var user = new User();
-        user.setColleagueUuid(source.getColleagueUUID());
-
-        final var profile = source.getProfile();
-        if (source.getProfile() != null) {
-            user.setTitle(profile.getTitle());
-            user.setFirstName(profile.getFirstName());
-            user.setMiddleName(profile.getMiddleName());
-            user.setLastName(profile.getLastName());
-            user.setGender(profile.getGender());
-        }
-
-        final var contact = source.getContact();
-        if (contact != null) {
-            user.setEmail(contact.getEmail());
-        }
-
+        user.setColleague(source);
         return user;
     }
 
     private User mapOidcUserInfoToUser(OidcUserInfo source, User target) {
-        target.setFirstName(source.getGivenName());
-        target.setMiddleName(source.getMiddleName());
-        target.setGender(source.getGender());
-        target.setLastName(source.getFamilyName());
-        target.setEmail(source.getEmail());
+        var profile = new Profile();
+        profile.setFirstName(source.getGivenName());
+        profile.setMiddleName(source.getMiddleName());
+        profile.setGender(source.getGender());
+        profile.setLastName(source.getFamilyName());
+
+        var contact = new Contact();
+        contact.setEmail(source.getEmail());
+
+        var colleague = target.getColleague();
+        colleague.setProfile(profile);
+        colleague.setContact(contact);
+
         return target;
     }
 

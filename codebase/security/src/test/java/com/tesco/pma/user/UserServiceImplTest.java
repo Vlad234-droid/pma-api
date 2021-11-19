@@ -174,18 +174,26 @@ class UserServiceImplTest {
     @Test
     void findUserByAuthenticationNotFoundInColleagueApiThenFallbackToOidcTokenThatPresent() {
         final var colleagueUuid = randomUUID();
-        final var expectedUser = new User(colleagueUuid);
-        expectedUser.setFirstName(RANDOM.nextObject(String.class));
-        expectedUser.setLastName(RANDOM.nextObject(String.class));
-        expectedUser.setMiddleName(RANDOM.nextObject(String.class));
-        expectedUser.setGender(RANDOM.nextObject(String.class));
-        expectedUser.setEmail(RANDOM.nextObject(String.class));
+        final var expectedUser = new User();
+        var profile = new Profile();
+        profile.setFirstName(RANDOM.nextObject(String.class));
+        profile.setMiddleName(RANDOM.nextObject(String.class));
+        profile.setGender(RANDOM.nextObject(String.class));
+        profile.setLastName(RANDOM.nextObject(String.class));
+        var contact = new Contact();
+        contact.setEmail(RANDOM.nextObject(String.class));
+        var colleague = new Colleague();
+        colleague.setColleagueUUID(colleagueUuid);
+        colleague.setProfile(profile);
+        colleague.setContact(contact);
+        expectedUser.setColleague(colleague);
+
         final var oAuth2UserAuthority = new OAuth2UserAuthority(Map.of(
-                StandardClaimNames.GIVEN_NAME, expectedUser.getFirstName(),
-                StandardClaimNames.FAMILY_NAME, expectedUser.getLastName(),
-                StandardClaimNames.MIDDLE_NAME, expectedUser.getMiddleName(),
-                StandardClaimNames.GENDER, expectedUser.getGender(),
-                StandardClaimNames.EMAIL, expectedUser.getEmail()
+                StandardClaimNames.GIVEN_NAME, expectedUser.getColleague().getProfile().getFirstName(),
+                StandardClaimNames.FAMILY_NAME, expectedUser.getColleague().getProfile().getLastName(),
+                StandardClaimNames.MIDDLE_NAME, expectedUser.getColleague().getProfile().getMiddleName(),
+                StandardClaimNames.GENDER, expectedUser.getColleague().getProfile().getGender(),
+                StandardClaimNames.EMAIL, expectedUser.getColleague().getContact().getEmail()
         ));
         final var auth = new TestingAuthenticationToken(colleagueUuid.toString(), CREDENTIALS, List.of(oAuth2UserAuthority));
         findColleagueByColleagueUuidNotFoundCall(colleagueUuid);
@@ -236,13 +244,20 @@ class UserServiceImplTest {
 
     private Consumer<User> colleagueProperlyMapped(Colleague colleague) {
         return user -> assertThat(user)
-                .returns(colleague.getColleagueUUID(), from(User::getColleagueUuid))
-                .returns(Optional.ofNullable(colleague.getProfile()).map(Profile::getTitle).orElse(null), from(User::getTitle))
-                .returns(Optional.ofNullable(colleague.getProfile()).map(Profile::getFirstName).orElse(null), from(User::getFirstName))
-                .returns(Optional.ofNullable(colleague.getProfile()).map(Profile::getMiddleName).orElse(null), from(User::getMiddleName))
-                .returns(Optional.ofNullable(colleague.getProfile()).map(Profile::getLastName).orElse(null), from(User::getLastName))
-                .returns(Optional.ofNullable(colleague.getProfile()).map(Profile::getGender).orElse(null), from(User::getGender))
-                .returns(Optional.ofNullable(colleague.getContact()).map(Contact::getEmail).orElse(null), from(User::getEmail));
+                .returns(colleague.getColleagueUUID(),
+                        from(u -> u.getColleague().getColleagueUUID()))
+                .returns(Optional.ofNullable(colleague.getProfile()).map(Profile::getTitle).orElse(null),
+                        from(u -> u.getColleague().getProfile().getTitle()))
+                .returns(Optional.ofNullable(colleague.getProfile()).map(Profile::getFirstName).orElse(null),
+                        from(u -> u.getColleague().getProfile().getFirstName()))
+                .returns(Optional.ofNullable(colleague.getProfile()).map(Profile::getMiddleName).orElse(null),
+                        from(u -> u.getColleague().getProfile().getMiddleName()))
+                .returns(Optional.ofNullable(colleague.getProfile()).map(Profile::getLastName).orElse(null),
+                        from(u -> u.getColleague().getProfile().getLastName()))
+                .returns(Optional.ofNullable(colleague.getProfile()).map(Profile::getGender).orElse(null),
+                        from(u -> u.getColleague().getProfile().getGender()))
+                .returns(Optional.ofNullable(colleague.getContact()).map(Contact::getEmail).orElse(null),
+                        from(u -> u.getColleague().getContact().getEmail()));
     }
 
     private static Stream<Arguments> provideAuthoritiesAndExpectedRoles() {

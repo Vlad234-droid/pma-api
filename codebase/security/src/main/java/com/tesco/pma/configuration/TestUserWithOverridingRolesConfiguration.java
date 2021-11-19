@@ -1,6 +1,7 @@
 package com.tesco.pma.configuration;
 
 import com.tesco.pma.api.User;
+import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.security.UserRoleNames;
@@ -129,7 +130,10 @@ public class TestUserWithOverridingRolesConfiguration {
         }
 
         private User createUser(UUID colleagueUuid, Collection<String> roles) {
-            final var user = new User(colleagueUuid);
+            final var user = new User();
+            final var colleague = new Colleague();
+            colleague.setColleagueUUID(colleagueUuid);
+            user.setColleague(colleague);
             user.setRoles(roles);
             return user;
         }
