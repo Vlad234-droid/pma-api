@@ -15,10 +15,26 @@ import static java.time.Instant.now;
 
 public interface ReviewAuditLogDAO {
 
+    /**
+     * Log review status changes
+     *
+     * @param review       a review
+     * @param newStatus    a new review status
+     * @param changeReason a reason of changing status
+     * @param updatedBy    an identifier of user who made changes
+     * @return number of inserted rows
+     */
     default int logReviewUpdating(Review review, PMReviewStatus newStatus, String changeReason, UUID updatedBy) {
         return intLogReviewUpdating(review, newStatus, changeReason, updatedBy, now());
     }
 
+    /**
+     * Log organisation objective actions
+     *
+     * @param actionType a type of action (SAVE, PUBLISH etc.)
+     * @param updatedBy  an identifier of user who made actions
+     * @return number of inserted rows
+     */
     default int logOrgObjectiveAction(ActionType actionType, UUID updatedBy) {
         return intLogOrgObjectiveAction(actionType, updatedBy, now());
     }
@@ -33,5 +49,11 @@ public interface ReviewAuditLogDAO {
                                  @Param("updatedBy") UUID updatedBy,
                                  @Param("updatedTime") Instant updatedTime);
 
+    /**
+     * Get report of organisation objective actions
+     *
+     * @param requestQuery a request query
+     * @return a list of AuditOrgObjectiveReport
+     */
     List<AuditOrgObjectiveReport> getAuditOrgObjectiveReport(@Param("requestQuery") RequestQuery requestQuery);
 }

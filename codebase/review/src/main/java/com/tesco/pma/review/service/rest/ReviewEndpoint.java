@@ -295,6 +295,7 @@ public class ReviewEndpoint {
 
     @Operation(summary = "Publish organisation objectives", tags = {"org-objective"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Organisation objectives have been published")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Organisation objectives not found", content = @Content)
     @PostMapping(value = "/org-objectives/publish", produces = APPLICATION_JSON_VALUE)
     public RestResponse<List<OrgObjective>> publishOrgObjectives() {
         return success(reviewService.publishOrgObjectives(resolveUserUuid()));
@@ -302,7 +303,6 @@ public class ReviewEndpoint {
 
     @Operation(summary = "Get audit log of organisation objective actions", tags = {"org-objective"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found audit log data")
-    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Audit log data not found", content = @Content)
     @GetMapping(value = "/audit-logs", produces = APPLICATION_JSON_VALUE)
     public RestResponse<List<AuditOrgObjectiveReport>> getAuditLogReport(@NotNull RequestQuery requestQuery) {
         return success(reviewService.getAuditOrgObjectiveReport(requestQuery));

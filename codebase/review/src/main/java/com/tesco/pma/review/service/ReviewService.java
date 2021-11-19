@@ -140,6 +140,7 @@ public interface ReviewService {
      * Get all organisation objectives
      *
      * @return a list of all organisation objectives
+     * @throws NotFoundException if organisation objective doesn't exist.
      */
     List<OrgObjective> getAllOrgObjectives();
 
@@ -148,6 +149,7 @@ public interface ReviewService {
      *
      * @param loggedUserUuid an identifier of logged user
      * @return a working organisation objectives
+     * @throws NotFoundException if organisation objective doesn't exist.
      */
     List<OrgObjective> publishOrgObjectives(@NotNull UUID loggedUserUuid);
 
@@ -155,6 +157,7 @@ public interface ReviewService {
      * Get published organisation objectives
      *
      * @return a list of published organisation objectives
+     * @throws NotFoundException if published organisation objective doesn't exist.
      */
     List<OrgObjective> getPublishedOrgObjectives();
 
@@ -167,6 +170,11 @@ public interface ReviewService {
      */
     List<PMCycleTimelinePoint> getCycleTimelineByColleague(UUID colleagueUuid);
 
-
+    /**
+     * Get report of organisation objective actions
+     *
+     * @param requestQuery a request query
+     * @return a list of AuditOrgObjectiveReport
+     */
     List<AuditOrgObjectiveReport> getAuditOrgObjectiveReport(@NotNull RequestQuery requestQuery);
 }

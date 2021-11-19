@@ -18,7 +18,7 @@
                 typeHandler="com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler"
                 javaType="com.tesco.pma.api.MapJson"/>
         <result property="jsonMetadata" column="metadata"/>
-        <association property="createdBy" column="{uuid=updated_by}" select="getColleagueByUuid"/>
+        <association property="createdBy" column="{uuid=created_by}" select="getColleagueByUuid"/>
     </resultMap>
 
     <resultMap id="colleagueMap" type="com.tesco.pma.colleague.api.ColleagueSimple">

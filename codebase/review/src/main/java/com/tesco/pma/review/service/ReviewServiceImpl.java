@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -300,7 +299,9 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public List<OrgObjective> publishOrgObjectives(UUID loggedUserUuid) {
         reviewDAO.unpublishOrgObjectives();
-        reviewDAO.publishOrgObjectives();
+        if (0 == reviewDAO.publishOrgObjectives()) {
+            throw notFound(ORG_OBJECTIVES_NOT_FOUND, Map.of());
+        }
         reviewAuditLogDAO.logOrgObjectiveAction(PUBLISH, loggedUserUuid);
         return getPublishedOrgObjectives();
     }
