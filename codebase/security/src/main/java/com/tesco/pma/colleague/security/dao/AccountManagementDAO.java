@@ -135,4 +135,13 @@ public interface AccountManagementDAO {
      * @return Account
      */
     Account findAccountByIamId(@Param("iamId") String iamId);
+
+    /**
+     * Find account by colleague UUID
+     *
+     * @param colleagueUuid
+     * @return Account
+     */
+    Account findAccountByColleagueUuid(@Param("colleagueUuid") UUID colleagueUuid);
+
 }

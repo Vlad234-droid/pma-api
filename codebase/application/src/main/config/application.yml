@@ -230,8 +230,10 @@ camunda:
     auto-deployment-enabled: true
     deployment-resource-pattern: classpath:com/tesco/pma/flow/type_1.bpmn,
                                            com/tesco/pma/flow/type_2.bpmn,
+                                           com/tesco/pma/flow/type_4.bpmn,
                                            com/tesco/pma/flow/forms/type_1_objective.form,
-                                           com/tesco/pma/flow/forms/type_2_objective.form
+                                           com/tesco/pma/flow/forms/type_2_objective.form,
+                                           com/tesco/pma/flow/forms/type_4_eyr.form
 
 ---
 spring:

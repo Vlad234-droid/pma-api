@@ -1,11 +1,13 @@
-package com.tesco.pma.api;
+package com.tesco.pma.cycle.api;
 
+import com.tesco.pma.api.DictionaryItem;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
-public enum ReviewStatus implements DictionaryItem<Integer> {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public enum PMReviewStatus implements DictionaryItem<Integer> {
 
     DRAFT(1, "Review is saved as draft"),
     WAITING_FOR_APPROVAL(2, "Review was submitted but not yet approved"),

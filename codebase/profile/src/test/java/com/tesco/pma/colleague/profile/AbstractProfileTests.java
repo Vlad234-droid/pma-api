@@ -1,5 +1,6 @@
 package com.tesco.pma.colleague.profile;
 
+import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.profile.domain.AttributeType;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
@@ -42,8 +43,12 @@ public abstract class AbstractProfileTests {
         return NAMES[index - 1];
     }
 
-    protected ColleagueEntity randomColleague() {
+    protected ColleagueEntity randomColleagueEntity() {
         return RANDOM.nextObject(ColleagueEntity.class);
+    }
+
+    protected Colleague randomColleague() {
+        return RANDOM.nextObject(Colleague.class);
     }
 
 }

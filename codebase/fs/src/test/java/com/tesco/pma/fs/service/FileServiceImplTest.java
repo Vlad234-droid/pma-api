@@ -1,9 +1,14 @@
 package com.tesco.pma.fs.service;
 
+import com.tesco.pma.api.DictionaryFilter;
+import com.tesco.pma.api.RequestQueryToDictionaryFilterConverter;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.RegistrationException;
+import com.tesco.pma.fs.api.FileStatus;
+import com.tesco.pma.fs.api.FileType;
 import com.tesco.pma.fs.domain.File;
 import com.tesco.pma.fs.domain.UploadMetadata;
+import com.tesco.pma.pagination.RequestQuery;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -14,15 +19,19 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.tesco.pma.fs.dao.FileDAO;
 
-import java.io.IOException;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.UUID;
 
-import static com.tesco.pma.fs.domain.FileStatus.ACTIVE;
-import static com.tesco.pma.fs.domain.FileType.FORM;
+import static com.tesco.pma.fs.api.FileStatus.ACTIVE;
+import static com.tesco.pma.fs.api.FileStatus.INACTIVE;
+import static com.tesco.pma.fs.api.FileType.BPMN;
+import static com.tesco.pma.fs.api.FileType.FORM;
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -43,6 +52,9 @@ public class FileServiceImplTest {
     @MockBean
     private FileDAO fileDao;
 
+    @MockBean
+    private RequestQueryToDictionaryFilterConverter toDictionaryFilterConverter;
+
     @Test
     void upload() {
         var fileData = buildFileData(FILE_NAME, FILE_UUID_1, 1);
@@ -57,7 +69,7 @@ public class FileServiceImplTest {
     }
 
     @Test
-    void uploadThrowsExceptionWhenDaoReturnsNotOne() throws IOException {
+    void uploadThrowsExceptionWhenDaoReturnsNotOne() {
         var fileData = buildFileData(FILE_NAME, FILE_UUID_1, 1);
         var uploadMetadata = new UploadMetadata();
         when(fileDao.create(fileData)).thenReturn(-1);
@@ -73,6 +85,43 @@ public class FileServiceImplTest {
         var result = service.get(FILE_UUID_1, false);
 
         assertEquals(fileData, result);
+    }
+
+    @Test
+    void getByRequestQuery() {
+        var filesData = asList(buildFileData(FILE_NAME, FILE_UUID_1, 1));
+        var includeFileContent = false;
+        var requestQuery = new RequestQuery();
+        var includeStatusFilter = DictionaryFilter.includeFilter(ACTIVE);
+        var excludeStatusFilter = DictionaryFilter.excludeFilter(INACTIVE);
+        var includeTypeFilter = DictionaryFilter.includeFilter(FORM);
+        var excludeTypeFilter = DictionaryFilter.excludeFilter(BPMN);
+        when(toDictionaryFilterConverter.convert(requestQuery, true, "status", FileStatus.class))
+                .thenReturn(includeStatusFilter);
+        when(toDictionaryFilterConverter.convert(requestQuery, false, "status", FileStatus.class))
+                .thenReturn(excludeStatusFilter);
+        when(toDictionaryFilterConverter.convert(requestQuery, true, "type", FileType.class))
+                .thenReturn(includeTypeFilter);
+        when(toDictionaryFilterConverter.convert(requestQuery, false, "type", FileType.class))
+                .thenReturn(excludeTypeFilter);
+        when(fileDao.findByRequestQuery(requestQuery, asList(includeStatusFilter, excludeStatusFilter),
+                asList(includeTypeFilter, excludeTypeFilter), includeFileContent)).thenReturn(filesData);
+
+        var result = service.get(requestQuery, includeFileContent);
+
+        assertEquals(filesData, result);
+    }
+
+    @Test
+    void getByRequestQueryReturnsNothingWhenDaoFindNothing() {
+        var includeFileContent = true;
+        var requestQuery = new RequestQuery();
+        when(fileDao.findByRequestQuery(any(RequestQuery.class), anyList(), anyList(), eq(includeFileContent)))
+                .thenReturn(Collections.emptyList());
+
+        var result = service.get(requestQuery, includeFileContent);
+
+        assertEquals(Collections.emptyList(), result);
     }
 
     @Test

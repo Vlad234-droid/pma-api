@@ -119,4 +119,21 @@
         WHERE iam_id = #{iamId};
     </select>
 
+    <select id="findAccountByColleagueUuid" resultMap="accountsResultMap">
+        SELECT a.id              as id,
+               a.name            as name,
+               a.type_id         as type_id,
+               a.status_id       as status_id,
+               a.iam_id          as iam_id,
+               a.employee_number as employee_number,
+               a.last_login      as last_login,
+               r.id              as role_id,
+               r.code            as role_code
+        FROM pm_account a
+                 INNER JOIN colleague c ON c.iam_id = a.iam_id
+                 LEFT JOIN pm_account_role ar ON a.id = ar.account_id
+                 LEFT JOIN pm_role r ON ar.role_id = r.id
+        WHERE c.uuid = #{colleagueUuid};
+    </select>
+
 </mapper>

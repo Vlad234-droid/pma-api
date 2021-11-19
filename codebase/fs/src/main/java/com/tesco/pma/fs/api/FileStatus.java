@@ -1,4 +1,4 @@
-package com.tesco.pma.fs.domain;
+package com.tesco.pma.fs.api;
 
 import com.tesco.pma.api.DictionaryItem;
 import lombok.Getter;

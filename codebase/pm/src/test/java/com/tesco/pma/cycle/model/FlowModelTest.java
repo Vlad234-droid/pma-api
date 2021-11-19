@@ -1,29 +1,39 @@
-package com.tesco.pma.process.model;
+package com.tesco.pma.cycle.model;
 
-import com.tesco.pma.cycle.api.model.PMCycleElement;
-import com.tesco.pma.cycle.api.model.PMCycleMetadata;
+import com.tesco.pma.cycle.api.PMReviewType;
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.cycle.LocalTestConfig;
+import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.cycle.api.model.PMFormElement;
 import com.tesco.pma.cycle.api.model.PMReviewElement;
+import com.tesco.pma.cycle.exception.ParseException;
 import org.apache.commons.io.IOUtils;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.bpm.model.bpmn.instance.Activity;
-import org.camunda.bpm.model.bpmn.instance.Process;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 15.10.2021 Time: 11:10
+ * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a>
+ * Date: 15.10.2021 Time: 11:10
  */
+@ActiveProfiles("test")
+@SpringBootTest(classes = LocalTestConfig.class)
 class FlowModelTest {
     private static final String PROCESS_NAME = "GROUPS_HO_S_WL1";
     private static final String PROCESS_NAME_2 = "GROUP_HO_S_WL1";
@@ -38,7 +48,11 @@ class FlowModelTest {
     private static final String FORM_TYPE_2_OBJECTIVE = "forms/type_2_objective.form";
 
     private final ResourceProvider resourceProvider = new FormsResourceProvider();
-    private final PMProcessModelParser parser = new PMProcessModelParser(resourceProvider);
+
+    private PMProcessModelParser parser;
+
+    @Autowired
+    private NamedMessageSourceAccessor messageSourceAccessor;
 
     private static class FormsResourceProvider implements ResourceProvider {
         @Override
@@ -54,24 +68,29 @@ class FlowModelTest {
         }
     }
 
+    @BeforeEach
+    void init() {
+        parser = new PMProcessModelParser(resourceProvider, messageSourceAccessor);
+    }
+
     @Test
     void readModel() throws IOException {
-        checkModel(PROCESS_NAME, FILE_NAME_PM_V1, FORM_1);
+        checkModel(PROCESS_NAME, FILE_NAME_PM_V1, FORM_1, 2, 2);
     }
 
     @Test
     void readModel2() throws IOException {
-        checkModel(PROCESS_NAME_2, FILE_NAME_PM_V2, FORM_1);
+        Assertions.assertThrows(ParseException.class, () -> checkModel(PROCESS_NAME_2, FILE_NAME_PM_V2, FORM_1, 3, 3));
     }
 
     @Test
     void readType1() throws IOException {
-        checkModel(PROCESS_NAME_TYPE_1, PROCESS_NAME_TYPE_1 + ".bpmn", FORM_TYPE_1_OBJECTIVE);
+        checkModel(PROCESS_NAME_TYPE_1, PROCESS_NAME_TYPE_1 + ".bpmn", FORM_TYPE_1_OBJECTIVE, 5, 3);
     }
 
     @Test
     void readType2() throws IOException {
-        checkModel(PROCESS_NAME_TYPE_2, PROCESS_NAME_TYPE_2 + ".bpmn", FORM_TYPE_2_OBJECTIVE);
+        checkModel(PROCESS_NAME_TYPE_2, PROCESS_NAME_TYPE_2 + ".bpmn", FORM_TYPE_2_OBJECTIVE, 5, 3);
     }
 
     @Test
@@ -102,25 +121,30 @@ class FlowModelTest {
         Assertions.assertEquals(expected, PMProcessModelParser.defaultValue("Set objectives ", ""));
     }
 
-    private void checkModel(String processName, String processFileName, String formName) throws IOException {
+    private void checkModel(String processName, String processFileName, String formName, int tlSize, int reviewsCount) throws IOException {
         var model = getModel(processFileName);
-        Process process = model.getModelElementById(processName);
-        assertNotNull(process);
+        var metadata = parser.parse(model);
+        assertNotNull(metadata);
+        var cycle = metadata.getCycle();
+        assertNotNull(cycle);
+        assertEquals(processName, cycle.getId());
+        assertEquals(processName, cycle.getCode());
 
-        var metadata = new PMCycleMetadata();
-        var cycle = new PMCycleElement();
-        cycle.setCode(process.getId());
-        cycle.setDescription(process.getName());
-        metadata.setCycle(cycle);
+        assertEquals(tlSize, cycle.getTimelinePoints().size());
 
-        var tasks = model.getModelElementsByType(Activity.class);
-        parser.parse(cycle, tasks);
+        var reviews = cycle.getTimelinePoints().stream()
+                .filter(t -> PMElementType.REVIEW.name().equalsIgnoreCase(t.getType().name()))
+                .map(t -> (PMReviewElement) t)
+                .collect(Collectors.toList());
+        assertEquals(reviewsCount, reviews.size());
 
-        assertEquals(3, cycle.getReviews().size());
+        checkObjective(formName, reviews);
+    }
 
-        Optional<PMReviewElement> oObjective =
-                cycle.getReviews().stream().filter(r -> "OBJECTIVE".equalsIgnoreCase(r.getReviewType().getCode()))
-                        .findFirst();
+    private void checkObjective(String formName, List<PMReviewElement> reviews) {
+        Optional<PMReviewElement> oObjective = reviews.stream()
+                .filter(r -> PMReviewType.OBJECTIVE.name().equalsIgnoreCase(r.getReviewType().getCode()))
+                .findFirst();
         assertTrue(oObjective.isPresent());
         PMFormElement form = oObjective.get().getForm();
         assertNotNull(form);

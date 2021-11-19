@@ -1,13 +1,13 @@
 package com.tesco.pma.review.service;
 
+import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.review.domain.ColleagueReviews;
+import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
-import com.tesco.pma.api.ReviewStatus;
-import com.tesco.pma.api.ReviewType;
 import com.tesco.pma.review.domain.WorkingGroupObjective;
 
 import javax.validation.constraints.NotNull;
@@ -32,8 +32,16 @@ public interface ReviewService {
      */
     Review getReview(@NotNull UUID performanceCycleUuid,
                      @NotNull UUID colleagueUuid,
-                     @NotNull ReviewType type,
+                     @NotNull PMReviewType type,
                      @NotNull Integer number);
+
+    /**
+     * Returns a review by an identifier of review
+     *
+     * @param uuid an identifier of review
+     * @return a Review
+     */
+    Review getReview(@NotNull UUID uuid);
 
     /**
      * Finds reviews by performanceCycleUuid, colleagueUuid and review type
@@ -46,7 +54,7 @@ public interface ReviewService {
      */
     List<Review> getReviews(@NotNull UUID performanceCycleUuid,
                             @NotNull UUID colleagueUuid,
-                            @NotNull ReviewType type);
+                            @NotNull PMReviewType type);
 
     /**
      * Finds list of colleagues reviews by managerUuid
@@ -54,7 +62,7 @@ public interface ReviewService {
      * @param managerUuid an identifier of colleague
      * @return a list of colleagues reviews
      */
-    List<ColleagueReviews> getTeamReviews(@NotNull UUID managerUuid);
+    List<ColleagueTimeline> getTeamReviews(@NotNull UUID managerUuid);
 
     /**
      * Creates review.
@@ -86,7 +94,7 @@ public interface ReviewService {
      */
     List<Review> updateReviews(@NotNull UUID performanceCycleUuid,
                                @NotNull UUID colleagueUuid,
-                               @NotNull ReviewType type,
+                               @NotNull PMReviewType type,
                                List<Review> reviews);
 
     /**
@@ -102,13 +110,13 @@ public interface ReviewService {
      * @return a ObjectiveStatus
      * @throws NotFoundException if review doesn't exist.
      */
-    ReviewStatus updateReviewsStatus(@NotNull UUID performanceCycleUuid,
-                                     @NotNull UUID colleagueUuid,
-                                     @NotNull ReviewType type,
-                                     List<Review> reviews,
-                                     @NotNull ReviewStatus status,
-                                     @Size(max = 250) String reason,
-                                     @NotNull String loggedUserName);
+    PMReviewStatus updateReviewsStatus(@NotNull UUID performanceCycleUuid,
+                                       @NotNull UUID colleagueUuid,
+                                       @NotNull PMReviewType type,
+                                       List<Review> reviews,
+                                       @NotNull PMReviewStatus status,
+                                       @Size(max = 250) String reason,
+                                       @NotNull String loggedUserName);
 
     /**
      * Deletes review by business key.
@@ -121,7 +129,7 @@ public interface ReviewService {
      */
     void deleteReview(@NotNull UUID performanceCycleUuid,
                       @NotNull UUID colleagueUuid,
-                      @NotNull ReviewType type,
+                      @NotNull PMReviewType type,
                       @NotNull Integer number);
 
     /**

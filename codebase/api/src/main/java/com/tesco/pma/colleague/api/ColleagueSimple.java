@@ -1,26 +1,24 @@
-package com.tesco.pma.review.domain;
+package com.tesco.pma.colleague.api;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
-import java.util.List;
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Builder
-public class ColleagueReviews {
+@SuperBuilder
+public class ColleagueSimple {
     UUID uuid;
     String firstName;
+    String middleName;
     String lastName;
     String jobName;
     String businessType;
-    List<SimplifiedReview> reviews;
-    List<PMCycleTimelinePoint> timeline;
 }

@@ -1,8 +1,11 @@
 package com.tesco.pma.fs.dao;
 
+import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.fs.domain.File;
+import com.tesco.pma.pagination.RequestQuery;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface FileDAO {
@@ -15,6 +18,21 @@ public interface FileDAO {
      * @return file data
      */
     File read(@Param("fileUuid") UUID fileUuid, @Param("includeFileContent") boolean includeFileContent);
+
+    /**
+     * Read all information about files with the latest version applying search, filter and sorting
+     *
+     * @param requestQuery filter, sorting and pagination
+     * @param statusFilters filters by file status
+     * @param typeFilters filters by file type
+     * @param includeFileContent identifies if include file content
+     *
+     * @return filtered files data
+     */
+    List<File> findByRequestQuery(@Param("requestQuery") RequestQuery requestQuery,
+                                  @Param("statusFilters") List<DictionaryFilter> statusFilters,
+                                  @Param("typeFilters") List<DictionaryFilter> typeFilters,
+                                  @Param("includeFileContent") boolean includeFileContent);
 
     /**
      * Save file information to database with maximum+1 version

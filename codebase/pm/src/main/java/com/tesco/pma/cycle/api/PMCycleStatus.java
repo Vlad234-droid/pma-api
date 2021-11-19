@@ -12,7 +12,10 @@ public enum PMCycleStatus implements DictionaryItem<Integer> {
 
     COMPLETED(3, "Performance cycle is completed"),
 
-    DRAFT(4, "Performance cycle in draft");
+    DRAFT(4, "Performance cycle in draft"),
+
+
+    FAILED(5,"Performance cycle start failed");
 
     private final Integer id;
     private final String description;

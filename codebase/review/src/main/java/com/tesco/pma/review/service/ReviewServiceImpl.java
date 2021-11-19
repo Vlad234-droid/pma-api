@@ -1,8 +1,8 @@
 package com.tesco.pma.review.service;
 
-import com.tesco.pma.api.ReviewStatus;
-import com.tesco.pma.api.ReviewType;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
@@ -12,7 +12,7 @@ import com.tesco.pma.exception.ReviewDeletionException;
 import com.tesco.pma.exception.ReviewUpdateException;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
 import com.tesco.pma.review.dao.ReviewDAO;
-import com.tesco.pma.review.domain.ColleagueReviews;
+import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
@@ -33,13 +33,13 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.tesco.pma.api.PMElementType.REVIEW;
-import static com.tesco.pma.api.ReviewStatus.APPROVED;
-import static com.tesco.pma.api.ReviewStatus.COMPLETED;
-import static com.tesco.pma.api.ReviewStatus.DECLINED;
-import static com.tesco.pma.api.ReviewStatus.DRAFT;
-import static com.tesco.pma.api.ReviewStatus.WAITING_FOR_APPROVAL;
-import static com.tesco.pma.api.ReviewType.OBJECTIVE;
+import static com.tesco.pma.cycle.api.PMReviewStatus.APPROVED;
+import static com.tesco.pma.cycle.api.PMReviewStatus.COMPLETED;
+import static com.tesco.pma.cycle.api.PMReviewStatus.DECLINED;
+import static com.tesco.pma.cycle.api.PMReviewStatus.DRAFT;
+import static com.tesco.pma.cycle.api.PMReviewStatus.WAITING_FOR_APPROVAL;
+import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
+import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
 import static com.tesco.pma.review.exception.ErrorCodes.ALLOWED_STATUSES_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.BUSINESS_UNIT_NOT_EXISTS;
 import static com.tesco.pma.review.exception.ErrorCodes.CANNOT_DELETE_REVIEW_COUNT_CONSTRAINT;
@@ -51,6 +51,7 @@ import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND_BY_MANAGER;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND_FOR_STATUS_UPDATE;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_ALREADY_EXISTS;
+import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_BY_UUID;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_FOR_COLLEAGUE;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_FOR_DELETE;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_FOR_UPDATE;
@@ -69,6 +70,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final PMCycleService pmCycleService;
 
+    private static final String REVIEW_UUID_PARAMETER_NAME = "reviewUuid";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     private static final String MANAGER_UUID_PARAMETER_NAME = "managerUuid";
     private static final String PERFORMANCE_CYCLE_UUID_PARAMETER_NAME = "performanceCycleUuid";
@@ -92,7 +94,7 @@ public class ReviewServiceImpl implements ReviewService {
                     .thenComparing(GroupObjective::getTitle);
 
     @Override
-    public Review getReview(UUID performanceCycleUuid, UUID colleagueUuid, ReviewType type, Integer number) {
+    public Review getReview(UUID performanceCycleUuid, UUID colleagueUuid, PMReviewType type, Integer number) {
         var res = reviewDAO.getReview(performanceCycleUuid, colleagueUuid, type, number);
         if (res == null) {
             throw notFound(REVIEW_NOT_FOUND_FOR_COLLEAGUE,
@@ -105,7 +107,17 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<Review> getReviews(UUID performanceCycleUuid, UUID colleagueUuid, ReviewType type) {
+    public Review getReview(UUID uuid) {
+        var res = reviewDAO.read(uuid);
+        if (res == null) {
+            throw notFound(REVIEW_NOT_FOUND_BY_UUID,
+                    Map.of(REVIEW_UUID_PARAMETER_NAME, uuid));
+        }
+        return res;
+    }
+
+    @Override
+    public List<Review> getReviews(UUID performanceCycleUuid, UUID colleagueUuid, PMReviewType type) {
         List<Review> results = reviewDAO.getReviews(performanceCycleUuid, colleagueUuid, type);
         if (results == null) {
             throw notFound(REVIEWS_NOT_FOUND,
@@ -117,8 +129,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<ColleagueReviews> getTeamReviews(UUID managerUuid) {
-        List<ColleagueReviews> results = reviewDAO.getTeamReviews(managerUuid);
+    public List<ColleagueTimeline> getTeamReviews(UUID managerUuid) {
+        List<ColleagueTimeline> results = reviewDAO.getTeamReviews(managerUuid);
         if (results == null) {
             throw notFound(REVIEWS_NOT_FOUND_BY_MANAGER,
                     Map.of(MANAGER_UUID_PARAMETER_NAME, managerUuid));
@@ -160,7 +172,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public List<Review> updateReviews(UUID performanceCycleUuid,
                                       UUID colleagueUuid,
-                                      ReviewType type,
+                                      PMReviewType type,
                                       List<Review> reviews) {
         List<Review> results = new ArrayList<>();
         for (int idx = 0; idx < reviews.size(); idx++) {
@@ -197,13 +209,13 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public ReviewStatus updateReviewsStatus(UUID performanceCycleUuid,
-                                            UUID colleagueUuid,
-                                            ReviewType type,
-                                            List<Review> reviews,
-                                            ReviewStatus status,
-                                            String reason,
-                                            String loggedUserName) {
+    public PMReviewStatus updateReviewsStatus(UUID performanceCycleUuid,
+                                              UUID colleagueUuid,
+                                              PMReviewType type,
+                                              List<Review> reviews,
+                                              PMReviewStatus status,
+                                              String reason,
+                                              String loggedUserName) {
         reviews.forEach(review -> {
             var prevStatuses = getPrevStatusesForChangeStatus(type, status);
             if (0 == prevStatuses.size()) {
@@ -241,7 +253,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public void deleteReview(UUID performanceCycleUuid,
                              UUID colleagueUuid,
-                             ReviewType type,
+                             PMReviewType type,
                              Integer number) {
         intDeleteReview(
                 performanceCycleUuid,
@@ -374,7 +386,7 @@ public class ReviewServiceImpl implements ReviewService {
         return cycleTimeline;
     }
 
-    private ReviewStatusCounter getTimelineReviewStatusCounter(UUID cycleUuid, UUID colleagueUuid, ReviewType reviewType) {
+    private ReviewStatusCounter getTimelineReviewStatusCounter(UUID cycleUuid, UUID colleagueUuid, PMReviewType reviewType) {
         var reviewStats = reviewDAO.getReviewStats(cycleUuid, colleagueUuid, reviewType);
         if (null == reviewStats || 0 == reviewStats.getStatusStats().size()) {
             return null;
@@ -422,7 +434,7 @@ public class ReviewServiceImpl implements ReviewService {
         return true;
     }
 
-    private List<ReviewStatus> getAllowedStatusesForUpdate(ReviewType reviewType, ReviewStatus newStatus) {
+    private List<PMReviewStatus> getAllowedStatusesForUpdate(PMReviewType reviewType, PMReviewStatus newStatus) {
         var allowedStatusesForUpdate = getStatusesForUpdate(reviewType);
         var prevStatusesForChangeStatus = getPrevStatusesForChangeStatus(reviewType, newStatus);
         return allowedStatusesForUpdate.stream()
@@ -488,7 +500,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     private void intDeleteReview(UUID performanceCycleUuid,
                                  UUID colleagueUuid,
-                                 ReviewType type,
+                                 PMReviewType type,
                                  Integer number) {
         var reviewTypeProperties = reviewDAO.getPMCycleReviewTypeProperties(performanceCycleUuid, type);
         var reviewCount = reviewDAO.getReviewStats(performanceCycleUuid, colleagueUuid, type)
@@ -521,11 +533,11 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    private List<ReviewStatus> getStatusesForCreate() {
+    private List<PMReviewStatus> getStatusesForCreate() {
         return List.of(DRAFT, WAITING_FOR_APPROVAL);
     }
 
-    private List<ReviewStatus> getStatusesForUpdate(ReviewType reviewType) {
+    private List<PMReviewStatus> getStatusesForUpdate(PMReviewType reviewType) {
         if (reviewType.equals(OBJECTIVE)) {
             return List.of(DRAFT, DECLINED, APPROVED);
         } else {
@@ -533,7 +545,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    private List<ReviewStatus> getStatusesForDelete(ReviewType reviewType) {
+    private List<PMReviewStatus> getStatusesForDelete(PMReviewType reviewType) {
         if (reviewType.equals(OBJECTIVE)) {
             return List.of(DRAFT, DECLINED, APPROVED);
         } else {
@@ -541,7 +553,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    private List<ReviewStatus> getPrevStatusesForChangeStatus(ReviewType reviewType, ReviewStatus newStatus) {
+    private List<PMReviewStatus> getPrevStatusesForChangeStatus(PMReviewType reviewType, PMReviewStatus newStatus) {
         if (reviewType.equals(OBJECTIVE)) {
             switch (newStatus) {
                 case DRAFT:
@@ -565,7 +577,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     private void checkReviewStateAfterUpdate(UUID performanceCycleUuid,
                                              UUID colleagueUuid,
-                                             ReviewType type) {
+                                             PMReviewType type) {
         if (OBJECTIVE == type) {
 
             var reviewTypeProperties = reviewDAO.getPMCycleReviewTypeProperties(performanceCycleUuid, type);

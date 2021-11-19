@@ -3,7 +3,7 @@ package com.tesco.pma.review.dao;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.tesco.pma.api.MapJson;
-import com.tesco.pma.api.ReviewStatus;
+import com.tesco.pma.cycle.api.PMReviewStatus;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.PMCycleReviewTypeProperties;
@@ -27,13 +27,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.tesco.pma.api.PMElementType.REVIEW;
-import static com.tesco.pma.api.PMElementType.TIMELINE_POINT;
-import static com.tesco.pma.api.ReviewStatus.APPROVED;
-import static com.tesco.pma.api.ReviewStatus.DECLINED;
-import static com.tesco.pma.api.ReviewStatus.DRAFT;
-import static com.tesco.pma.api.ReviewStatus.WAITING_FOR_APPROVAL;
-import static com.tesco.pma.api.ReviewType.OBJECTIVE;
+import static com.tesco.pma.cycle.api.PMReviewStatus.APPROVED;
+import static com.tesco.pma.cycle.api.PMReviewStatus.DECLINED;
+import static com.tesco.pma.cycle.api.PMReviewStatus.DRAFT;
+import static com.tesco.pma.cycle.api.PMReviewStatus.WAITING_FOR_APPROVAL;
+import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
+import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
+import static com.tesco.pma.cycle.api.model.PMElementType.TIMELINE_POINT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
 import static org.assertj.core.api.InstanceOfAssertFactories.type;
@@ -49,7 +49,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     private static final UUID BUSINESS_UNIT_UUID_NOT_EXIST = UUID.fromString("ffb9ab0b-f50f-4442-8900-000000000000");
     private static final UUID COLLEAGUE_UUID = UUID.fromString("ccb9ab0b-f50f-4442-8900-b03777ee00ec");
     private static final UUID COLLEAGUE_UUID_NOT_EXIST = UUID.fromString("ccb9ab0b-f50f-4442-8900-000000000000");
-    private static final UUID PERFORMANCE_CYCLE_UUID = UUID.fromString("0c5d9cb1-22cf-4fcd-a19a-9e70df6bc941");
+    private static final UUID PERFORMANCE_CYCLE_UUID = UUID.fromString("0c5d9cb1-22cf-4fcd-a19a-9e70df6bc941");;
     private static final Integer NUMBER_1 = 1;
     private static final Integer NUMBER_2 = 2;
     private static final String TITLE_PROPERTY_NAME = "title";
@@ -214,6 +214,21 @@ class ReviewDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    void getReviewByUuid() {
+        final var result = instance.read(REVIEW_UUID);
+
+        assertThat(result)
+                .asInstanceOf(type(Review.class))
+                .returns(COLLEAGUE_UUID, from(Review::getColleagueUuid))
+                .returns(PERFORMANCE_CYCLE_UUID, from(Review::getPerformanceCycleUuid))
+                .returns(OBJECTIVE, from(Review::getType))
+                .returns(NUMBER_1, from(Review::getNumber))
+                .returns(REVIEW_PROPERTIES_INIT, from(Review::getProperties))
+                .returns(DRAFT, from(Review::getStatus));
+    }
+
+    @Test
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void getReviewNotExist() {
         final var result = instance.getReview(
                 PERFORMANCE_CYCLE_UUID,
@@ -235,7 +250,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .type(OBJECTIVE)
                 .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
-                .status(ReviewStatus.DRAFT)
+                .status(PMReviewStatus.DRAFT)
                 .build();
 
         final int rowsInserted = instance.createReview(review);
@@ -254,7 +269,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .type(OBJECTIVE)
                 .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
-                .status(ReviewStatus.DRAFT)
+                .status(PMReviewStatus.DRAFT)
                 .build();
 
         Assertions.assertThatThrownBy(() -> instance.createReview(review))
@@ -366,7 +381,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .type(OBJECTIVE)
                 .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
-                .status(ReviewStatus.DRAFT)
+                .status(PMReviewStatus.DRAFT)
                 .build();
 
         final var result = instance.updateReview(review, List.of(DRAFT, DECLINED, APPROVED));
