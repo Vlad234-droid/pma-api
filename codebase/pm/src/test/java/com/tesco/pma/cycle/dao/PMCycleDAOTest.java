@@ -9,11 +9,13 @@ import com.tesco.pma.colleague.api.ColleagueSimple;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.PMCycleType;
+import com.tesco.pma.cycle.dao.config.PMCycleTypeHandlerConfig;
 import com.tesco.pma.dao.AbstractDAOTest;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.json.BasicJsonTester;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
@@ -32,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@ContextConfiguration(classes = PMCycleTypeHandlerConfig.class)
 class PMCycleDAOTest extends AbstractDAOTest {
 
     private static final UUID COLLEAGUE_UUID = UUID.fromString("d1810821-d1a9-48b5-9745-d0841151911f");
@@ -100,21 +103,6 @@ class PMCycleDAOTest extends AbstractDAOTest {
         var actual = dao.read(CYCLE_UUID);
         var expectedJson = json.from(metadata);
         assertThat(expectedJson).isEqualToJson(actual.getJsonMetadata());
-    }
-
-    @Test
-    void createCycleWithMetadata() throws Exception {
-        var cycle = createCycle(CYCLE_UUID_3);
-        var metadata = IOUtils.toString(Objects.requireNonNull(getClass()
-                .getResourceAsStream("/com/tesco/pma/cycle/dao/type_1_metadata.json")), StandardCharsets.UTF_8);
-        cycle.setJsonMetadata(metadata);
-        dao.createInt(cycle, Instant.now());
-
-        var actual = dao.read(CYCLE_UUID_3);
-        var expectedJson = json.from(metadata);
-        assertThat(expectedJson).isEqualToJson(actual.getJsonMetadata());
-        assertThat(CYCLE_UUID_3).isEqualTo(actual.getUuid());
-
     }
 
     private PMCycle createCycle(UUID uuid) {

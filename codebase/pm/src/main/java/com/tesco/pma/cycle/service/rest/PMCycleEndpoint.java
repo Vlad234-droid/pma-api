@@ -176,7 +176,6 @@ public class PMCycleEndpoint {
 
     private String resolveUserName() {
         //TODO change after security integration
-        String currentAuditor = auditorAware.getCurrentAuditor();
-        return currentAuditor.isEmpty() ? DEFAULT_USER_UUID : currentAuditor;
+        return DEFAULT_USER_UUID;
     }
 }

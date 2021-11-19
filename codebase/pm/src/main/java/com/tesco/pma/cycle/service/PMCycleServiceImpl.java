@@ -87,7 +87,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         log.debug("Request to publish Performance cycle : {}", cycle);
         UUID cycleUuid = intCreateCycle(cycle, loggedUserName).getUuid();
 
-        String processName = resolveProcessName(cycle.getJsonMetadata());
+        String processName = cycle.getMetadata().getCycle().getCode();
 
         if (null == processName || processName.isEmpty()) {
             throw pmCycleException(ErrorCodes.PROCESS_NAME_IS_EMPTY, Map.of(CYCLE_UUID_PARAMETER_NAME, cycleUuid));
@@ -111,8 +111,12 @@ public class PMCycleServiceImpl implements PMCycleService {
             intUpdateStatus(cycleUuid, ACTIVE);
         } catch (ProcessExecutionException e) {
             log.error("Performance cycle publish error, cause: ", e);
-            intUpdateStatus(cycleUuid, FAILED);
-            throw pmCycleException(ErrorCodes.PROCESS_EXECUTION_EXCEPTION, Map.of(CYCLE_UUID_PARAMETER_NAME, cycleUuid,
+            try {
+                intUpdateStatus(cycleUuid, FAILED);
+            } catch (NotFoundException ex) {
+                log.error("Performance cycle change status error, cause: ", ex);
+            }
+            throw pmCycleException(ErrorCodes.PROCESS_EXECUTION_EXCEPTION, Map.of(CYCLE_UUID_PARAMETER_NAME, cycleUuid,//NOPMD
                     PROCESS_NAME_PARAMETER_NAME, processName));
         }
 
@@ -252,11 +256,5 @@ public class PMCycleServiceImpl implements PMCycleService {
     private PMCycleException pmCycleException(ErrorCodeAware errorCode, Map<String, ?> params) {
         return new PMCycleException(errorCode.getCode(), messageSourceAccessor.getMessage(errorCode.getCode(), params), null, null);
     }
-
-    private String resolveProcessName(String jsonMetadata) {
-
-        return "type_1";
-    }
-
 
 }

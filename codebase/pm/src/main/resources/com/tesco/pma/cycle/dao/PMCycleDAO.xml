@@ -18,6 +18,9 @@
                 typeHandler="com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler"
                 javaType="com.tesco.pma.api.MapJson"/>
         <result property="jsonMetadata" column="metadata"/>
+        <result property="metadata" column="metadata"
+                typeHandler="com.tesco.pma.cycle.dao.utils.PMCycleJsonbTypeHandler"
+                javaType="com.tesco.pma.cycle.api.model.PMCycleMetadata"/>
         <association property="createdBy" column="{uuid=created_by}" select="getColleagueByUuid"/>
     </resultMap>
 
@@ -50,8 +53,7 @@
          start_time,
          end_time,
          properties,
-         metadata
-        )
+         metadata)
         VALUES (#{cycle.uuid},
                 #{cycle.entryConfigKey},
                 #{cycle.templateUUID},
@@ -63,8 +65,7 @@
                 #{cycle.startTime},
                 #{cycle.endTime},
                 #{cycle.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-                #{cycle.jsonMetadata}::jsonb
-                );
+                #{cycle.metadata, jdbcType=OTHER, typeHandler=com.tesco.pma.cycle.dao.utils.PMCycleJsonbTypeHandler});
     </insert>
 
     <select id="read" resultMap="cycleResultMap">
@@ -100,21 +101,21 @@
 
     <select id="getByColleague" resultMap="cycleResultMap">
         select aa.* from (select
-            pmc.uuid,
-            pmc.entry_config_key,
-            pmc.template_uuid,
-            pmc.name,
-            pmc.type_id,
-            pcc.status_id,
-            pmc.created_by,
-            pmc.creation_time,
-            pcc.start_time,
-            pcc.end_time,
-            pcc.properties,
-            pmc.metadata
-            from pm_cycle pmc
-            join pm_colleague_cycle pcc on pmc.uuid = pcc.cycle_uuid
-            where pcc.colleague_uuid = #{colleagueUuid}) aa
+        pmc.uuid,
+        pmc.entry_config_key,
+        pmc.template_uuid,
+        pmc.name,
+        pmc.type_id,
+        pcc.status_id,
+        pmc.created_by,
+        pmc.creation_time,
+        pcc.start_time,
+        pcc.end_time,
+        pcc.properties,
+        pmc.metadata
+        from pm_cycle pmc
+        join pm_colleague_cycle pcc on pmc.uuid = pcc.cycle_uuid
+        where pcc.colleague_uuid = #{colleagueUuid}) aa
         where 1 = 1
         <include refid="addStatusIdCondition"/>
     </select>
