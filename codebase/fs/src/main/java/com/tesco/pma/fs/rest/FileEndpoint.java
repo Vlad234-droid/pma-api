@@ -124,7 +124,7 @@ public class FileEndpoint {
     @GetMapping(path = "/versions", produces = MediaType.APPLICATION_JSON_VALUE)
     public RestResponse<List<File>> getAllVersions(@RequestParam("path") String path,
                                                    @RequestParam("fileName") String fileName,
-                                                   @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true")
+                                                   @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false")
                                                            boolean includeFileContent) {
         return success(fileService.getAllVersions(path, fileName, includeFileContent));
     }
