@@ -12,6 +12,7 @@ import com.tesco.pma.exception.ReviewCreationException;
 import com.tesco.pma.exception.ReviewDeletionException;
 import com.tesco.pma.exception.ReviewUpdateException;
 import com.tesco.pma.pagination.RequestQuery;
+import com.tesco.pma.review.dao.OrgObjectiveDAO;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
 import com.tesco.pma.review.dao.ReviewDAO;
 import com.tesco.pma.review.domain.AuditOrgObjectiveReport;
@@ -68,6 +69,7 @@ import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_STATUS_NOT_ALLOWE
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewDAO reviewDAO;
+    private final OrgObjectiveDAO orgObjectiveDAO;
     private final ReviewAuditLogDAO reviewAuditLogDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final PMCycleService pmCycleService;
@@ -271,36 +273,12 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public List<OrgObjective> createOrgObjectives(List<OrgObjective> orgObjectives, UUID loggedUserUuid) {
-        var currentOrgObjectives = reviewDAO.getOrgObjectives();
-        if (listEqualsIgnoreOrder(currentOrgObjectives, orgObjectives, ORG_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR)) {
-            return currentOrgObjectives;
-        }
-        List<OrgObjective> results = new ArrayList<>();
-        final var newVersion = reviewDAO.getMaxVersionOrgObjective() + 1;
-        orgObjectives.forEach(orgObjective -> {
-            try {
-                orgObjective.setUuid(UUID.randomUUID());
-                orgObjective.setStatus(OrgObjectiveStatus.DRAFT);
-                orgObjective.setVersion(newVersion);
-                reviewDAO.createOrgObjective(orgObjective);
-                results.add(orgObjective);
-            } catch (DuplicateKeyException e) {
-                throw databaseConstraintViolation(
-                        ORG_OBJECTIVE_ALREADY_EXISTS,
-                        Map.of(NUMBER_PARAMETER_NAME, orgObjective.getNumber(),
-                                VERSION_PARAMETER_NAME, orgObjective.getVersion()),
-                        e);
-
-            }
-
-        });
-        reviewAuditLogDAO.logOrgObjectiveAction(SAVE, loggedUserUuid);
-        return results;
+        return intCreateOrgObjectives(orgObjectives, loggedUserUuid);
     }
 
     @Override
     public List<OrgObjective> getAllOrgObjectives() {
-        List<OrgObjective> results = reviewDAO.getOrgObjectives();
+        List<OrgObjective> results = orgObjectiveDAO.getAll();
         if (results == null) {
             throw notFound(ORG_OBJECTIVES_NOT_FOUND, Map.of());
         }
@@ -310,17 +288,19 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public List<OrgObjective> publishOrgObjectives(UUID loggedUserUuid) {
-        reviewDAO.unpublishOrgObjectives();
-        if (0 == reviewDAO.publishOrgObjectives()) {
-            throw notFound(ORG_OBJECTIVES_NOT_FOUND, Map.of());
-        }
-        reviewAuditLogDAO.logOrgObjectiveAction(PUBLISH, loggedUserUuid);
-        return getPublishedOrgObjectives();
+        return intPublishOrgObjectives(loggedUserUuid);
+    }
+
+    @Override
+    @Transactional
+    public List<OrgObjective> createAndPublishOrgObjectives(List<OrgObjective> orgObjectives, UUID loggedUserUuid) {
+        intCreateOrgObjectives(orgObjectives, loggedUserUuid);
+        return intPublishOrgObjectives(loggedUserUuid);
     }
 
     @Override
     public List<OrgObjective> getPublishedOrgObjectives() {
-        List<OrgObjective> results = reviewDAO.getPublishedOrgObjectives();
+        List<OrgObjective> results = orgObjectiveDAO.getAllPublished();
         if (results == null) {
             throw notFound(ORG_OBJECTIVES_NOT_FOUND, Map.of());
         }
@@ -435,7 +415,7 @@ public class ReviewServiceImpl implements ReviewService {
                         Map.of(OPERATION_PARAMETER_NAME, CREATE_OPERATION_NAME));
             }
             if (allowedStatuses.contains(review.getStatus())) {
-                reviewDAO.createReview(review);
+                reviewDAO.create(review);
                 return review;
             } else {
                 throw createReviewException(
@@ -462,7 +442,7 @@ public class ReviewServiceImpl implements ReviewService {
                     Map.of(OPERATION_PARAMETER_NAME, UPDATE_OPERATION_NAME));
         }
 
-        if (1 == reviewDAO.updateReview(review, allowedStatuses)) {
+        if (1 == reviewDAO.update(review, allowedStatuses)) {
             return review;
         } else {
             throw notFound(REVIEW_NOT_FOUND_FOR_UPDATE,
@@ -507,6 +487,43 @@ public class ReviewServiceImpl implements ReviewService {
                             NUMBER_PARAMETER_NAME, number,
                             ALLOWED_STATUSES_PARAMETER_NAME, allowedStatuses));
         }
+    }
+
+    private List<OrgObjective> intCreateOrgObjectives(List<OrgObjective> orgObjectives, UUID loggedUserUuid) {
+        var currentOrgObjectives = orgObjectiveDAO.getAll();
+        if (listEqualsIgnoreOrder(currentOrgObjectives, orgObjectives, ORG_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR)) {
+            return currentOrgObjectives;
+        }
+        List<OrgObjective> results = new ArrayList<>();
+        final var newVersion = orgObjectiveDAO.getMaxVersion() + 1;
+        orgObjectives.forEach(orgObjective -> {
+            try {
+                orgObjective.setUuid(UUID.randomUUID());
+                orgObjective.setStatus(OrgObjectiveStatus.DRAFT);
+                orgObjective.setVersion(newVersion);
+                orgObjectiveDAO.create(orgObjective);
+                results.add(orgObjective);
+            } catch (DuplicateKeyException e) {
+                throw databaseConstraintViolation(
+                        ORG_OBJECTIVE_ALREADY_EXISTS,
+                        Map.of(NUMBER_PARAMETER_NAME, orgObjective.getNumber(),
+                                VERSION_PARAMETER_NAME, orgObjective.getVersion()),
+                        e);
+
+            }
+
+        });
+        reviewAuditLogDAO.logOrgObjectiveAction(SAVE, loggedUserUuid);
+        return results;
+    }
+
+    private List<OrgObjective> intPublishOrgObjectives(UUID loggedUserUuid) {
+        orgObjectiveDAO.unpublish();
+        if (0 == orgObjectiveDAO.publish()) {
+            throw notFound(ORG_OBJECTIVES_NOT_FOUND, Map.of());
+        }
+        reviewAuditLogDAO.logOrgObjectiveAction(PUBLISH, loggedUserUuid);
+        return getPublishedOrgObjectives();
     }
 
     private List<PMReviewStatus> getStatusesForCreate() {

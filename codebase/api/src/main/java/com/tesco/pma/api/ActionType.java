@@ -1,10 +1,11 @@
 package com.tesco.pma.api;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum ActionType implements DictionaryItem<Integer> {
 
     SAVE(1, "Save"),

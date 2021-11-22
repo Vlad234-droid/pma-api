@@ -3,16 +3,6 @@
 
 <mapper namespace="com.tesco.pma.review.dao.ReviewDAO">
 
-    <resultMap id="orgObjectiveResultMap" type="com.tesco.pma.review.domain.OrgObjective">
-        <id property="uuid" column="uuid"/>
-        <result property="number" column="number"/>
-        <result property="status" column="status_id"
-                typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.api.OrgObjectiveStatus"/>
-        <result property="title" column="title"/>
-        <result property="version" column="version"/>
-    </resultMap>
-
     <resultMap id="reviewResultMap" type="com.tesco.pma.review.domain.Review">
         <id property="uuid" column="uuid"/>
         <result property="colleagueUuid" column="colleague_uuid"/>
@@ -75,83 +65,7 @@
         <result property="startDate" column="start_date" typeHandler="org.apache.ibatis.type.LocalDateTypeHandler"/>
     </resultMap>
 
-    <insert id="createOrgObjective" flushCache="true">
-        INSERT INTO org_objective
-        (uuid,
-         number,
-         status_id,
-         title,
-         version)
-        VALUES (#{orgObjective.uuid},
-                #{orgObjective.number},
-                #{orgObjective.status.id},
-                #{orgObjective.title},
-                #{orgObjective.version})
-    </insert>
-
-    <select id="getOrgObjective" resultMap="orgObjectiveResultMap">
-        SELECT go.uuid,
-               go.number,
-               go.status_id,
-               go.title,
-               go.version
-        FROM org_objective go
-        WHERE go.uuid = #{orgObjectiveUuid}
-    </select>
-
-    <select id="getOrgObjectives" resultMap="orgObjectiveResultMap">
-        with max_version as (
-        <include refid="getMaxVersion"/>
-        )
-        select go.uuid,
-        go.number,
-        go.status_id,
-        go.title,
-        go.version
-        from org_objective go
-        inner join max_version mv
-        on (go.version = mv.version)
-        order by go.number
-    </select>
-
-    <select id="getPublishedOrgObjectives" resultMap="orgObjectiveResultMap">
-        select go.uuid,
-               go.number,
-               go.status_id,
-               go.title,
-               go.version
-        from org_objective go
-        WHERE go.status_id = 2
-        order by go.number
-    </select>
-
-    <delete id="deleteOrgObjective">
-        DELETE
-        FROM org_objective
-        WHERE uuid = #{orgObjectiveUuid}
-    </delete>
-
-    <select id="getMaxVersionOrgObjective" resultType="int">
-        <include refid="getMaxVersion"/>
-    </select>
-
-    <update id="publishOrgObjectives" flushCache="true">
-        with max_version as (
-        <include refid="getMaxVersion"/>
-        )
-        update org_objective go
-        set status_id = 2
-        from max_version mv
-        where go.version = mv.version;
-    </update>
-
-    <update id="unpublishOrgObjectives" flushCache="true">
-        update org_objective go
-        set status_id = 3
-        where go.status_id = 2;
-    </update>
-
-    <insert id="createReview" flushCache="true">
+    <insert id="create" flushCache="true">
         INSERT INTO review
         (uuid,
          colleague_uuid,
@@ -256,7 +170,7 @@
           and number >= #{startNumber}
     </update>
 
-    <update id="updateReview" flushCache="true">
+    <update id="update" flushCache="true">
         UPDATE review
         SET properties =
         #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},

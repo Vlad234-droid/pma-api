@@ -3,7 +3,6 @@ package com.tesco.pma.review.dao;
 import com.tesco.pma.cycle.api.PMReviewStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.review.domain.ColleagueTimeline;
-import com.tesco.pma.review.domain.OrgObjective;
 import com.tesco.pma.review.domain.PMCycleReviewTypeProperties;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
@@ -15,68 +14,9 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Interface to perform database operation on objective
+ * Interface to perform database operation on reviews
  */
 public interface ReviewDAO {
-
-    /**
-     * Returns an organisation objective
-     *
-     * @param orgObjectiveUuid an identifier
-     * @return an OrgObjective
-     */
-    OrgObjective getOrgObjective(@Param("orgObjectiveUuid") UUID orgObjectiveUuid);
-
-    /**
-     * Returns a list of organisation objectives for max version
-     *
-     * @return a list of organisation objectives for max version
-     */
-    List<OrgObjective> getOrgObjectives();
-
-    /**
-     * Returns a list of published organisation objectives
-     *
-     * @return a list of organisation objectives
-     */
-    List<OrgObjective> getPublishedOrgObjectives();
-
-    /**
-     * Creates an organisation objective
-     *
-     * @param orgObjective an organisation objective
-     * @return number of created organisation objectives
-     */
-    int createOrgObjective(@Param("orgObjective") OrgObjective orgObjective);
-
-    /**
-     * Delete an organisation objective
-     *
-     * @param orgObjectiveUuid an identifier
-     * @return number of deleted organisation objectives
-     */
-    int deleteOrgObjective(@Param("orgObjectiveUuid") UUID orgObjectiveUuid);
-
-    /**
-     * Returns max version of organisation objectives
-     *
-     * @return max version of organisation objectives
-     */
-    int getMaxVersionOrgObjective();
-
-    /**
-     * Publish organisation objectives
-     *
-     * @return number of published organisation objectives
-     */
-    int publishOrgObjectives();
-
-    /**
-     * Un-publish organisation objectives
-     *
-     * @return number of un-published organisation objectives
-     */
-    int unpublishOrgObjectives();
 
     /**
      * Returns a review by performance cycle, colleague, review type and sequence number.
@@ -126,7 +66,7 @@ public interface ReviewDAO {
      * @param review a Review
      * @return number of created reviews
      */
-    int createReview(@Param("review") Review review);
+    int create(@Param("review") Review review);
 
     /**
      * Update a review
@@ -134,8 +74,8 @@ public interface ReviewDAO {
      * @param review a Review
      * @return number of updated reviews
      */
-    int updateReview(@Param("review") Review review,
-                     @Param("allowedReviewStatuses") Collection<PMReviewStatus> allowedReviewStatuses);
+    int update(@Param("review") Review review,
+               @Param("allowedReviewStatuses") Collection<PMReviewStatus> allowedReviewStatuses);
 
     /**
      * Updates a review status

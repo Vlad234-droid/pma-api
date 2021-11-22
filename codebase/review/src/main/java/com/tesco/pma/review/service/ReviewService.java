@@ -156,10 +156,21 @@ public interface ReviewService {
      * Publish the last version of organisation objectives
      *
      * @param loggedUserUuid an identifier of logged user
-     * @return a working organisation objectives
+     * @return Published organisation objectives
      * @throws NotFoundException if organisation objective doesn't exist.
      */
     List<OrgObjective> publishOrgObjectives(@NotNull UUID loggedUserUuid);
+
+    /**
+     * Create and publish the last version of organisation objectives
+     *
+     * @param orgObjectives  a list of organisation objectives
+     * @param loggedUserUuid an identifier of logged user
+     * @return Published organisation objectives
+     * @throws DatabaseConstraintViolationException organisation objective already exist.
+     */
+    List<OrgObjective> createAndPublishOrgObjectives(List<OrgObjective> orgObjectives,
+                                                     @NotNull UUID loggedUserUuid);
 
     /**
      * Get published organisation objectives

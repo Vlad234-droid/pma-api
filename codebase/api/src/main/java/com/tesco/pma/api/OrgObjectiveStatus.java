@@ -1,10 +1,11 @@
 package com.tesco.pma.api;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum OrgObjectiveStatus implements DictionaryItem<Integer> {
 
     DRAFT(1, "Organisation objective is saved as draft"),

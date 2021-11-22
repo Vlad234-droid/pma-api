@@ -308,10 +308,18 @@ public class ReviewEndpoint {
         return success(reviewService.getPublishedOrgObjectives());
     }
 
-    @Operation(summary = "Publish organisation objectives", tags = {"org-objective"})
+    @Operation(summary = "Create and publish organisation objectives", tags = {"org-objective"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Organisation objectives have been published")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Organisation objectives not found", content = @Content)
     @PostMapping(value = "/org-objectives/publish", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<List<OrgObjective>> createAndPublishOrgObjectives(@RequestBody List<OrgObjective> orgObjectives) {
+        return success(reviewService.createAndPublishOrgObjectives(orgObjectives, resolveUserUuid()));
+    }
+
+    @Operation(summary = "Publish organisation objectives", tags = {"org-objective"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Organisation objectives have been published")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Organisation objectives not found", content = @Content)
+    @PutMapping(value = "/org-objectives/publish", produces = APPLICATION_JSON_VALUE)
     public RestResponse<List<OrgObjective>> publishOrgObjectives() {
         return success(reviewService.publishOrgObjectives(resolveUserUuid()));
     }

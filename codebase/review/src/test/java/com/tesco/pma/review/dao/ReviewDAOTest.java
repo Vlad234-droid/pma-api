@@ -2,11 +2,9 @@ package com.tesco.pma.review.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.tesco.pma.api.OrgObjectiveStatus;
 import com.tesco.pma.api.MapJson;
 import com.tesco.pma.cycle.api.PMReviewStatus;
 import com.tesco.pma.dao.AbstractDAOTest;
-import com.tesco.pma.review.domain.OrgObjective;
 import com.tesco.pma.review.domain.PMCycleReviewTypeProperties;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
@@ -100,112 +98,6 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet("cleanup.xml")
-    @ExpectedDataSet("org_objective_create_expected_1.xml")
-    void createOrgObjectiveSucceeded() {
-
-        final var orgObjective = OrgObjective.builder()
-                .uuid(ORG_OBJECTIVE_UUID)
-                .number(NUMBER_1)
-                .status(OrgObjectiveStatus.DRAFT)
-                .title(TITLE_1)
-                .version(VERSION_1)
-                .build();
-
-        final int rowsInserted = instance.createOrgObjective(orgObjective);
-
-        assertThat(rowsInserted).isOne();
-    }
-
-    @Test
-    @DataSet("org_objective_init.xml")
-    void createOrgObjectiveAlreadyExist() {
-
-        final var orgObjective = OrgObjective.builder()
-                .uuid(ORG_OBJECTIVE_UUID_2)
-                .number(NUMBER_1)
-                .status(OrgObjectiveStatus.DRAFT)
-                .title(TITLE_1)
-                .version(VERSION_1)
-                .build();
-
-        Assertions.assertThatThrownBy(() -> instance.createOrgObjective(orgObjective))
-                .isInstanceOf(DuplicateKeyException.class);
-    }
-
-    @Test
-    @DataSet("org_objective_init.xml")
-    void getOrgObjective() {
-        final var result = instance.getOrgObjective(ORG_OBJECTIVE_UUID_2);
-
-        assertThat(result)
-                .asInstanceOf(type(OrgObjective.class))
-                .returns(NUMBER_1, from(OrgObjective::getNumber))
-                .returns(OrgObjectiveStatus.DRAFT, from(OrgObjective::getStatus))
-                .returns(VERSION_1, from(OrgObjective::getVersion));
-    }
-
-    @Test
-    @DataSet("org_objective_init.xml")
-    void getOrgObjectiveNotExist() {
-        final var result = instance.getOrgObjective(ORG_OBJECTIVE_UUID_NOT_EXIST);
-
-        assertThat(result).isNull();
-    }
-
-    @Test
-    @DataSet("org_objective_init.xml")
-    void getOrgObjectives() {
-        final var result = instance.getOrgObjectives();
-
-        assertThat(result).isNotEmpty();
-        assertThat(result.size()).isEqualTo(1);
-
-        assertThat(result.get(0))
-                .returns(NUMBER_1, from(OrgObjective::getNumber))
-                .returns(OrgObjectiveStatus.DRAFT, from(OrgObjective::getStatus))
-                .returns(ORG_TITLE_UPDATE, from(OrgObjective::getTitle))
-                .returns(VERSION_3, from(OrgObjective::getVersion));
-    }
-
-    @Test
-    @DataSet("org_objective_init.xml")
-    void deleteOrgObjectiveNotExist() {
-        final var result = instance.deleteOrgObjective(ORG_OBJECTIVE_UUID_NOT_EXIST);
-        assertThat(result).isZero();
-    }
-
-    @Test
-    @DataSet("org_objective_init.xml")
-    void deleteOrgObjectiveSucceeded() {
-        final var result = instance.deleteOrgObjective(ORG_OBJECTIVE_UUID_2);
-        assertThat(result).isOne();
-    }
-
-    @Test
-    @DataSet("org_objective_init.xml")
-    void getMaxVersionOrgObjective() {
-        final var result = instance.getMaxVersionOrgObjective();
-        assertThat(result).isEqualTo(3);
-    }
-
-    @Test
-    @DataSet("org_objective_init.xml")
-    @ExpectedDataSet("org_objective_publish_expected_1.xml")
-    void publishOrgObjectiveSucceeded() {
-        final var result = instance.publishOrgObjectives();
-        assertThat(result).isOne();
-    }
-
-    @Test
-    @DataSet("org_objective_init.xml")
-    @ExpectedDataSet("org_objective_unpublish_expected_1.xml")
-    void unpublishOrgObjectiveSucceeded() {
-        final var result = instance.unpublishOrgObjectives();
-        assertThat(result).isOne();
-    }
-
-    @Test
     @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
     void getReview() {
         final var result = instance.getReview(
@@ -265,7 +157,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .status(PMReviewStatus.DRAFT)
                 .build();
 
-        final int rowsInserted = instance.createReview(review);
+        final int rowsInserted = instance.create(review);
 
         assertThat(rowsInserted).isOne();
     }
@@ -284,7 +176,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .status(PMReviewStatus.DRAFT)
                 .build();
 
-        Assertions.assertThatThrownBy(() -> instance.createReview(review))
+        Assertions.assertThatThrownBy(() -> instance.create(review))
                 .isInstanceOf(DuplicateKeyException.class);
     }
 
@@ -344,7 +236,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .status(DRAFT)
                 .build();
 
-        final var result = instance.updateReview(review, List.of(DRAFT, DECLINED, APPROVED));
+        final var result = instance.update(review, List.of(DRAFT, DECLINED, APPROVED));
 
         assertThat(result).isOne();
     }
@@ -361,7 +253,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .status(WAITING_FOR_APPROVAL)
                 .build();
 
-        final var result = instance.updateReview(review, List.of(DRAFT, DECLINED, APPROVED));
+        final var result = instance.update(review, List.of(DRAFT, DECLINED, APPROVED));
 
         assertThat(result).isZero();
     }
@@ -396,7 +288,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .status(PMReviewStatus.DRAFT)
                 .build();
 
-        final var result = instance.updateReview(review, List.of(DRAFT, DECLINED, APPROVED));
+        final var result = instance.update(review, List.of(DRAFT, DECLINED, APPROVED));
 
         assertThat(result).isOne();
     }
