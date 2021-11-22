@@ -78,7 +78,7 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the file data by its path and name"),
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
             })
-    @GetMapping(path = "/latestVersion", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/last", produces = MediaType.APPLICATION_JSON_VALUE)
     public RestResponse<File> get(@RequestParam("path") String path,
                                   @RequestParam("fileName") String fileName,
                                   @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true") boolean includeFileContent) {
@@ -110,7 +110,23 @@ public class FileEndpoint {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public RestResponse<List<File>> get(RequestQuery requestQuery,
                                         @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true") boolean includeFileContent) {
-        return success(fileService.get(requestQuery, includeFileContent));
+        return success(fileService.get(requestQuery, includeFileContent, true));
+    }
+
+    @Operation(
+            summary = "Get all information about File with All Versions by its name and path",
+            description = "Get all information about File with All Versions by its name and path",
+            tags = "file",
+            responses = {
+                    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the file data of all versions by path and name"),
+                    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
+            })
+    @GetMapping(path = "/versions", produces = MediaType.APPLICATION_JSON_VALUE)
+    public RestResponse<List<File>> getAllVersions(@RequestParam("path") String path,
+                                                   @RequestParam("fileName") String fileName,
+                                                   @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true")
+                                                           boolean includeFileContent) {
+        return success(fileService.getAllVersions(path, fileName, includeFileContent));
     }
 
     /**
