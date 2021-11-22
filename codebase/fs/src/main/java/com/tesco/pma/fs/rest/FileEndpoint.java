@@ -71,8 +71,23 @@ public class FileEndpoint {
     private final AuditorAware<String> auditorAware;
 
     @Operation(
-            summary = "Get File information by its uuid",
-            description = "Get File information by its uuid",
+            summary = "Get Files information with the latest version by file name and path",
+            description = "Get Files information with the latest version by file name and path",
+            tags = "file",
+            responses = {
+                    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the file data by its path and name"),
+                    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
+            })
+    @GetMapping(path = "/latestVersion", produces = MediaType.APPLICATION_JSON_VALUE)
+    public RestResponse<File> get(@RequestParam("path") String path,
+                                  @RequestParam("fileName") String fileName,
+                                  @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true") boolean includeFileContent) {
+        return success(fileService.get(path, fileName, includeFileContent));
+    }
+
+    @Operation(
+            summary = "Get File information with the latest version by its uuid",
+            description = "Get File information with the latest version by its uuid",
             tags = "file",
             responses = {
                     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the file data by its uuid"),
@@ -85,8 +100,8 @@ public class FileEndpoint {
     }
 
     @Operation(
-            summary = "Get Files information applying search, filter and sorting",
-            description = "Get Files information applying search, filter and sorting",
+            summary = "Get Files information with the latest version applying search, filter and sorting",
+            description = "Get Files information with the latest version applying search, filter and sorting",
             tags = "file",
             responses = {
                     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found filtered files data"),
