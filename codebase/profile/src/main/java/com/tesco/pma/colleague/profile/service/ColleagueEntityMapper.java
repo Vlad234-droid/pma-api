@@ -20,7 +20,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @UtilityClass
-public class ColleagueMapper {
+public class ColleagueEntityMapper {
+
     List<ColleagueEntity> mapColleagues(List<FieldSet> data, Set<ColleagueEntity.WorkLevel> workLevels,
                                         Set<ColleagueEntity.Country> countries, Set<ColleagueEntity.Department> departments,
                                         Set<ColleagueEntity.Job> jobs) {

@@ -40,7 +40,7 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Override
-    public ConfigEntryResponse getStructure(UUID configEntryUuid) {
+    public ConfigEntryResponse getUnpublishedStructure(UUID configEntryUuid) {
         var fullStructure = dao.getFullStructure(configEntryUuid);
         return CollectionUtils.firstElement(buildStructure(fullStructure));
     }
@@ -162,10 +162,24 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
 
     @Override
     public List<ConfigEntryResponse> getUnpublishedRoots() {
-        return dao.findAllRootEntries()
+        return dao.findAllUnpublishedRootEntries()
                 .stream()
                 .map(this::buildResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ConfigEntryResponse> getPublishedRoots() {
+        return dao.findAllPublishedRootEntries()
+                .stream()
+                .map(this::buildResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ConfigEntryResponse getPublishedStructure(UUID entryUuid) {
+        var structure = dao.findPublishedConfigEntryChildStructure(entryUuid);
+        return CollectionUtils.firstElement(buildStructure(structure));
     }
 
     @Override
@@ -180,7 +194,7 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
         var parts = compositeKey.split("/");
         var searchKey = IntStream.range(0, parts.length)
                 .filter(i -> i % 2 == 1).mapToObj(i -> parts[i]).collect(Collectors.joining("/"));
-        return dao.findColleaguesByTypes(searchKey);
+        return dao.findColleaguesByCompositeKey(searchKey);
     }
 
     private String buildCompositeKeySearchTerm(String key) {

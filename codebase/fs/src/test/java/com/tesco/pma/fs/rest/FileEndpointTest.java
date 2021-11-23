@@ -72,7 +72,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getByRequestQuery() throws Exception {
-        when(service.get(any(RequestQuery.class), eq(false))).thenReturn(asList(buildFileData(FILE_UUID_1, 1)));
+        when(service.get(any(RequestQuery.class), eq(false), eq(true))).thenReturn(asList(buildFileData(FILE_UUID_1, 1)));
 
         var result = performGet(status().isOk(), FILES_URL + "?status_in[0]=ACTIVE&file-length_gt=16&includeFileContent=false");
 
@@ -81,9 +81,29 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getByRequestQueryHasEmptyDataResponseWhenServiceReturnsNothing() throws Exception {
-        when(service.get(any(RequestQuery.class), eq(false))).thenReturn(emptyList());
+        when(service.get(any(RequestQuery.class), eq(false), eq(true))).thenReturn(emptyList());
 
         var result = performGet(status().isOk(), FILES_URL + "?includeFileContent=false");
+
+        assertResponseContent(result.getResponse(), "file_get_empty_data_response.json");
+    }
+
+    @Test
+    void getAllVersions() throws Exception {
+        when(service.getAllVersions(PATH, FILE_NAME, false)).thenReturn(asList(buildFileData(FILE_UUID_1, 1)));
+
+        var result = performGet(status().isOk(),
+                FILES_URL + "/versions?path=" + PATH + "&fileName=" + FILE_NAME + "&includeFileContent=false");
+
+        assertResponseContent(result.getResponse(), "files_get_ok_response.json");
+    }
+
+    @Test
+    void getAllVersionsHasEmptyDataResponseWhenServiceReturnsNothing() throws Exception {
+        when(service.getAllVersions(PATH, FILE_NAME, false)).thenReturn(emptyList());
+
+        var result = performGet(status().isOk(),
+                FILES_URL + "/versions?path=" + PATH + "&fileName=" + FILE_NAME + "&includeFileContent=false");
 
         assertResponseContent(result.getResponse(), "file_get_empty_data_response.json");
     }
