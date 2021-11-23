@@ -21,8 +21,8 @@ import java.io.UnsupportedEncodingException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -220,16 +220,13 @@ public abstract class AbstractEndpointTest {
     }
 
     protected RequestPostProcessor allRoles() {
-        String authorityString = UserRoleNames.ALL.stream().map(role -> "ROLE_" + role).collect(Collectors.joining(","));
+        var authorityString = UserRoleNames.ALL.stream().map(role -> "ROLE_" + role).collect(Collectors.joining(","));
         return SecurityMockMvcRequestPostProcessors.jwt()
                 .authorities(AuthorityUtils.commaSeparatedStringToAuthorityList(authorityString));
     }
 
     protected RequestPostProcessor roles(String... roles) {
-        List<String> authorities = new ArrayList<>(roles.length);
-        for (String role : roles) {
-            authorities.add("ROLE_" + role);
-        }
+        var authorities = Arrays.stream(roles).filter(Objects::nonNull).map(role -> "ROLE_" + role).collect(Collectors.toList());
         return SecurityMockMvcRequestPostProcessors.jwt()
                 .authorities(AuthorityUtils.createAuthorityList(authorities.toArray(new String[0])));
     }

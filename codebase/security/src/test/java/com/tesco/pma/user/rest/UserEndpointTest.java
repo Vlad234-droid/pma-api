@@ -7,6 +7,8 @@ import com.tesco.pma.rest.AbstractEndpointTest;
 import com.tesco.pma.user.UserService;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,15 +25,12 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = UserEndpoint.class, properties = {
-        "tesco.application.security.enabled=true"
-})
+@WebMvcTest(controllers = UserEndpoint.class)
 class UserEndpointTest extends AbstractEndpointTest {
     static final EasyRandom RANDOM = new EasyRandom();
     static final String ERRORS_0_CODE_JSON_PATH = "$.errors[0].code";
@@ -39,16 +38,25 @@ class UserEndpointTest extends AbstractEndpointTest {
     @MockBean
     protected UserService mockUserService;
 
-    @Test
-    void getUserByColleagueUuidSucceeded() throws Exception {
+    @ParameterizedTest
+    @CsvSource({
+            "200,Admin",
+            "200,Colleague",
+            "200,LineManager",
+            "200,PeopleTeam",
+            "200,TalentAdmin",
+            "200,ProcessManager"
+    })
+    void getUserByColleagueUuidSucceeded(int status, String role) throws Exception {
         final var user = randomUser();
         final var colleagueUuid = user.getColleague().getColleagueUUID();
         when(mockUserService.findUserByColleagueUuid(eq(colleagueUuid)))
                 .thenReturn(Optional.of(user));
 
         mvc.perform(get("/users/{colleagueUuid}", colleagueUuid)
-                .accept(APPLICATION_JSON))
-                .andExpect(status().isOk())
+                        .with(roles(role))
+                        .accept(APPLICATION_JSON))
+                .andExpect(status().is(status))
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.data.colleague.colleagueUUID", equalTo(colleagueUuid.toString())));
     }
@@ -61,7 +69,8 @@ class UserEndpointTest extends AbstractEndpointTest {
                 .thenReturn(Optional.empty());
 
         mvc.perform(get("/users/{colleagueUuid}", colleagueUuid)
-                .accept(APPLICATION_JSON))
+                        .with(colleague())
+                        .accept(APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath(ERRORS_0_CODE_JSON_PATH, equalTo(ErrorCodes.USER_NOT_FOUND.getCode())));
@@ -76,7 +85,8 @@ class UserEndpointTest extends AbstractEndpointTest {
                 .thenReturn(Optional.of(user));
 
         mvc.perform(get("/users/iam-ids/{iamId}", iamId)
-                .accept(APPLICATION_JSON))
+                        .with(colleague())
+                        .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.data.colleague.colleagueUUID", equalTo(user.getColleague().getColleagueUUID().toString())));
@@ -90,7 +100,8 @@ class UserEndpointTest extends AbstractEndpointTest {
                 .thenReturn(Optional.empty());
 
         mvc.perform(get("/users/iam-ids/{iamId}", iamId)
-                .accept(APPLICATION_JSON))
+                        .with(colleague())
+                        .accept(APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath(ERRORS_0_CODE_JSON_PATH, equalTo(ErrorCodes.USER_NOT_FOUND.getCode())));
@@ -103,8 +114,8 @@ class UserEndpointTest extends AbstractEndpointTest {
                 .thenReturn(Optional.of(user));
 
         mvc.perform(get("/users/me")
-                .with(colleagueWithSubject(user.getColleague().getColleagueUUID().toString()))
-                .accept(APPLICATION_JSON))
+                        .with(colleagueWithSubject(user.getColleague().getColleagueUUID().toString()))
+                        .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.data.colleague.colleagueUUID", equalTo(user.getColleague().getColleagueUUID().toString())));
@@ -121,8 +132,8 @@ class UserEndpointTest extends AbstractEndpointTest {
                 .thenReturn(Optional.empty());
 
         mvc.perform(get("/users/me")
-                .with(colleagueWithSubject(subject))
-                .accept(APPLICATION_JSON))
+                        .with(colleagueWithSubject(subject))
+                        .accept(APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath(ERRORS_0_CODE_JSON_PATH, equalTo(ErrorCodes.USER_NOT_FOUND.getCode())))
