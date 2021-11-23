@@ -207,10 +207,12 @@ tesco:
       colleague-api:
         base-url: ${TESCO_API_BASE_URL}/colleague/v2/colleagues
     event-mapping:
-      # TODO add real events
-      # sample events
-      E_START_1: com.tesco.pma.bpm.action.RunFlowByEventAction
-      E_START_2: com.tesco.pma.bpm.action.RunFlowByEventAction
+      # Review notifications events
+      PM_REVIEW_BEFORE_START: com.tesco.pma.bpm.action.RunFlowByEventAction
+      PM_REVIEW_SUBMITTED: com.tesco.pma.bpm.action.RunFlowByEventAction
+      PM_REVIEW_APPROVED: com.tesco.pma.bpm.action.RunFlowByEventAction
+      PM_REVIEW_DECLINED: com.tesco.pma.bpm.action.RunFlowByEventAction
+      PM_REVIEW_BEFORE_END: com.tesco.pma.bpm.action.RunFlowByEventAction
     user-management:
         page:
           size: 100
@@ -233,7 +235,9 @@ camunda:
                                            com/tesco/pma/flow/type_4.bpmn,
                                            com/tesco/pma/flow/forms/type_1_objective.form,
                                            com/tesco/pma/flow/forms/type_2_objective.form,
-                                           com/tesco/pma/flow/forms/type_4_eyr.form
+                                           com/tesco/pma/flow/forms/type_4_eyr.form,
+                                           com/tesco/pma/flow/review_notifications.bpmn,
+                                           com/tesco/pma/flow/review_notifications.dmn
 
 ---
 spring:

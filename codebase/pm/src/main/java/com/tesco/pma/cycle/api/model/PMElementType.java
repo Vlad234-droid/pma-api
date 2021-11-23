@@ -9,5 +9,14 @@ public enum PMElementType {
     TIMELINE_POINT,
     REVIEW,
     FORM,
-    CYCLE
+    CYCLE;
+
+    public static PMElementType getByCode(String code) {
+        for (PMElementType type : values()) {
+            if (type.name().equalsIgnoreCase(code)) {
+                return type;
+            }
+        }
+        return null;
+    }
 }
