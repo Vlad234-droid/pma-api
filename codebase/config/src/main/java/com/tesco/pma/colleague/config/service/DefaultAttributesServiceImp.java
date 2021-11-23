@@ -1,7 +1,7 @@
 package com.tesco.pma.colleague.config.service;
 
 import com.tesco.pma.colleague.api.Colleague;
-import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
+import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
 import com.tesco.pma.colleague.config.dao.DefaultAttributesDAO;
 import com.tesco.pma.colleague.config.domain.DefaultAttributeCategory;
 import com.tesco.pma.colleague.config.domain.DefaultAttributeCriteria;
@@ -64,7 +64,7 @@ public class DefaultAttributesServiceImp implements DefaultAttributesService {
 
             var workLevel = workRel.getWorkLevel();
 
-            if (workLevel == WorkRelationship.WorkLevel.WL4 || workLevel == WorkRelationship.WorkLevel.WL5) {
+            if (workLevel == WorkLevel.WL4 || workLevel == WorkLevel.WL5) {
                 result.add(DefaultAttributeCriteria.WL_4_OR_5);
             }
         }

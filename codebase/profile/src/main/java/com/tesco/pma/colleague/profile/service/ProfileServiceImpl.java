@@ -165,8 +165,7 @@ public class ProfileServiceImpl implements ProfileService {
         return updated;
     }
 
-    @Override
-    public List<TypedAttribute> findProfileAttributes(UUID colleagueUuid) {
+    private List<TypedAttribute> findProfileAttributes(UUID colleagueUuid) {
         return profileAttributeDAO.get(colleagueUuid);
     }
 
