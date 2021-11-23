@@ -49,7 +49,7 @@ public class FileServiceImplTest {
 
     private static final UUID FILE_UUID_1 = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65765");
     private static final String FILE_NAME = "test1.txt";
-    private static final String CREATOR_ID = "test";
+    private static final UUID CREATOR_ID = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65767");
     private static final String PATH = "/home/dev";
 
     @Autowired

@@ -25,6 +25,6 @@
     />
     <review_link
             review_uuid="ddb9ab0b-f50f-4442-8900-b03777ee0011"
-            group_objective_uuid="aab9ab0b-f50f-4442-8900-b03777ee0011"
+            org_objective_uuid="aab9ab0b-f50f-4442-8900-b03777ee0011"
     />
 </dataset>

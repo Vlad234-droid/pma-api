@@ -1,26 +1,33 @@
 package com.tesco.pma.configuration.audit;
 
-import lombok.Setter;
+import com.tesco.pma.exception.NotFoundException;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.UUID;
+
+import static com.tesco.pma.exception.ErrorCodes.UNAUTHENTICATED;
 
 /**
  * Implementation of {@link AuditorAware} that tries to obtain current auditor from current spring security authentication name.
- *
- * <p>In case current {@link org.springframework.security.core.Authentication} is null fallback to 'unknownAuditor' property
- * witch defaults to 'unknown'.
  */
-public class SpringSecurityAuditorAware implements AuditorAware<String> {
-    private static final String DEFAULT_UNKNOWN_AUDITOR = "unknown";
+@AllArgsConstructor
+public class SpringSecurityAuditorAware implements AuditorAware<UUID> {
+    private static final UUID DEFAULT_UNKNOWN_AUDITOR_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
 
-    @Setter
-    private String unknownAuditor = DEFAULT_UNKNOWN_AUDITOR;
+    private final boolean securityEnabled;
 
     @Override
-    public String getCurrentAuditor() {
-        final var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-            return authentication.getName();
+    public UUID getCurrentAuditor() {
+        if (securityEnabled) {
+            final var authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null) {
+                return UUID.fromString(authentication.getName());
+            } else {
+                throw new NotFoundException(UNAUTHENTICATED.getCode(), "User is unauthenticated");
+            }
+        } else {
+            return DEFAULT_UNKNOWN_AUDITOR_UUID;
         }
-        return unknownAuditor;
     }
 }
