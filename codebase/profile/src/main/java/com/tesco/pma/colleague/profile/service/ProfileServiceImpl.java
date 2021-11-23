@@ -12,6 +12,7 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.logging.LogFormatter;
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.service.colleague.ColleagueApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +27,7 @@ import java.util.UUID;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
-import java.util.Collections;
 
 /**
  * Implementation of {@link ProfileService}.
@@ -136,6 +135,11 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public ColleagueEntity getColleague(UUID colleagueUuid) {
         return profileDAO.getColleague(colleagueUuid);
+    }
+
+    @Override
+    public List<Colleague> getSuggestions(RequestQuery requestQuery) {
+        return profileDAO.findColleagueSuggestionsByFullName(requestQuery);
     }
 
     @Override

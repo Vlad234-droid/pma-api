@@ -8,6 +8,7 @@ import com.tesco.pma.colleague.api.Profile;
 import com.tesco.pma.colleague.api.service.ServiceDates;
 import com.tesco.pma.colleague.api.workrelationships.Department;
 import com.tesco.pma.colleague.api.workrelationships.Job;
+import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
 import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
 import com.tesco.pma.colleague.profile.dao.ProfileDAO;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
@@ -85,7 +86,7 @@ public class ColleagueFactsApiLocalMapper {
 
     private WorkRelationship getWorkRelationship(ColleagueEntity oc) {
         var wr = new WorkRelationship();
-        wr.setWorkLevel(WorkRelationship.WorkLevel.getByCode(oc.getWorkLevel().getCode()));
+        wr.setWorkLevel(WorkLevel.getByCode(oc.getWorkLevel().getCode()));
         wr.setPrimaryEntity(oc.getPrimaryEntity());
         wr.setSalaryFrequency(oc.getSalaryFrequency());
         wr.setIsManager(oc.isManager());

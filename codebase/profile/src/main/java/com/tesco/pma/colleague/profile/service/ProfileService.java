@@ -82,6 +82,12 @@ public interface ProfileService {
      */
     ColleagueEntity getColleague(UUID colleagueUuid);
 
+    /**
+     * Search colleagues
+     *
+     * @param requestQuery
+     * @return colleagues list
+     */
     List<Colleague> getSuggestions(RequestQuery requestQuery);
 
 }
