@@ -15,6 +15,7 @@ import static com.tesco.pma.security.UserRoleNames.LINE_MANAGER;
 import static com.tesco.pma.security.UserRoleNames.PEOPLE_TEAM;
 import static com.tesco.pma.security.UserRoleNames.PROCESS_MANAGER;
 import static com.tesco.pma.security.UserRoleNames.TALENT_ADMIN;
+import static com.tesco.pma.security.UserRoleNames.ALL;
 
 /**
  * Pma specific {@link MethodSecurityExpressionOperations}.
@@ -113,6 +114,15 @@ public class PmaMethodSecurityExpressionOperations implements MethodSecurityExpr
      */
     public boolean isProcessManager() {
         return hasRole(PROCESS_MANAGER);
+    }
+
+    /**
+     * Check if user has any role.
+     *
+     * @return true - if user has an any role, false otherwise.
+     */
+    public boolean hasAnyRole() {
+        return hasAnyRole(ALL.toArray(new String[0]));
     }
 
 }
