@@ -30,6 +30,7 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
     private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/organisation/dao/";
     private static final UUID CE_UUID = UUID.fromString("dc55e38f-d4cc-4420-b20c-d9fcfed8ba40");
     private static final UUID CE_UUID_2 = UUID.fromString("a7a76484-bbe2-4b61-b6f6-ea260159a340");
+    private static final UUID CE_UUID_3 = UUID.fromString("6bc4f35b-4fd2-4e95-986e-765e4fd9b037");
     private static final String COMPOSITE_KEY_FILTER = "BU/WCE%/#v2";
 
     @Autowired
@@ -115,12 +116,12 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
         assertThat(result)
                 .hasSize(2)
                 .element(0)
-                .returns(UUID.fromString("6bc4f35b-4fd2-4e95-986e-765e4fd9b037"), ConfigEntry::getUuid);
+                .returns(CE_UUID_3, ConfigEntry::getUuid);
 
         assertThat(result)
                 .element(1)
                 .returns(UUID.fromString("aedff942-2e19-44e0-9c23-bd8f152a937f"), ConfigEntry::getUuid)
-                .returns(UUID.fromString("6bc4f35b-4fd2-4e95-986e-765e4fd9b037"), ConfigEntry::getParentUuid);
+                .returns(CE_UUID_3, ConfigEntry::getParentUuid);
     }
 
     @Test
@@ -172,9 +173,9 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "config_entries_init.xml"})
-    void findAllRootEntries() {
+    void findAllUnpublishedRootEntries() {
 
-        var result = dao.findAllRootEntries();
+        var result = dao.findAllUnpublishedRootEntries();
 
         assertThat(result).hasSize(3);
 
@@ -182,7 +183,33 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
 
         assertTrue(uuids.contains(CE_UUID));
         assertTrue(uuids.contains(UUID.fromString("56141037-6e2d-45f0-b47f-4875e68dd1d7")));
-        assertTrue(uuids.contains(UUID.fromString("6bc4f35b-4fd2-4e95-986e-765e4fd9b037")));
+        assertTrue(uuids.contains(CE_UUID_3));
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "config_entries_init.xml"})
+    void findAllPublishedRootEntries() {
+
+        var result = dao.findAllPublishedRootEntries();
+
+        assertThat(result).singleElement()
+                .returns(CE_UUID_3, ConfigEntry::getUuid);
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "config_entries_init.xml"})
+    void findPublishedConfigEntryChildStructure() {
+        final var unpublishedResult = dao.findPublishedConfigEntryChildStructure(CE_UUID);
+
+        assertThat(unpublishedResult).isEmpty();
+
+        final var result = dao.findPublishedConfigEntryChildStructure(CE_UUID_3);
+
+        assertThat(result)
+                .hasSize(2)
+                .element(1)
+                .returns(UUID.fromString("aedff942-2e19-44e0-9c23-bd8f152a937f"), ConfigEntry::getUuid)
+                .returns(CE_UUID_3, ConfigEntry::getParentUuid);
     }
 
     @Test
@@ -215,7 +242,7 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
     @MethodSource("provideArgsForGettingColleagues")
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues-config.xml"})
     void readColleaguesByKey(String key, Set<UUID> colleagueUuids) {
-        var colleagues = dao.findColleaguesByTypes(key);
+        var colleagues = dao.findColleaguesByCompositeKey(key);
 
         assertEquals(colleagueUuids.size(), colleagues.size());
 

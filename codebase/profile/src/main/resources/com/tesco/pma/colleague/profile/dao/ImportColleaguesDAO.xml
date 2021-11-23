@@ -8,13 +8,14 @@
         <result column="file_name" property="fileName"/>
         <result column="status_id" property="status" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.colleague.profile.domain.ImportRequestStatus"/>
+        <result column="created_by" property="createdBy"/>
         <result column="creation_time" property="creationTime"/>
         <result column="last_update_time" property="lastUpdateTime"/>
     </resultMap>
 
     <insert id="registerRequest" flushCache="true">
-        INSERT INTO import_request(uuid, file_name, status_id, creation_time, last_update_time)
-        VALUES (#{request.uuid}, #{request.fileName}, #{request.status.id}, #{now}, #{now})
+        INSERT INTO import_request(uuid, file_name, status_id, creation_time, last_update_time, created_by)
+        VALUES (#{request.uuid}, #{request.fileName}, #{request.status.id}, #{now}, #{now}, #{request.createdBy})
     </insert>
 
     <update id="updateRequest" flushCache="true">
