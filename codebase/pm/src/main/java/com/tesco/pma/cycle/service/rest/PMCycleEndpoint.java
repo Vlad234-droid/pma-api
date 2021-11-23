@@ -1,7 +1,6 @@
 package com.tesco.pma.cycle.service.rest;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.service.PMCycleService;
@@ -51,7 +50,6 @@ public class PMCycleEndpoint {
 
     private final PMCycleService service;
     private final NamedMessageSourceAccessor messageSourceAccessor;
-    private final AuditorAware<String> auditorAware;
 
 
     /**
