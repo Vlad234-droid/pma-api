@@ -211,7 +211,9 @@
             , file_content
         </if>
         FROM file
-        WHERE (path, file_name, version) IN
+        WHERE 1 = 1
+        <if test="latest">
+        AND (path, file_name, version) IN
         (SELECT path, file_name, MAX(version)
         FROM file
         GROUP BY path, file_name)
@@ -221,6 +223,7 @@
         <foreach collection="typeFilters" item="typeFilter" index="i" separator=",">
             <include refid="addTypeIdCondition"/>
         </foreach>
+        </if>
 
         <if test="!requestQuery.filters.isEmpty()">
             <foreach collection="requestQuery.filters" item="filter" index="index">
@@ -245,7 +248,9 @@
             </foreach>
         </if>
 
+        <if test="requestQuery.limit != null">
         LIMIT #{requestQuery.limit}
+        </if>
         <if test="requestQuery.offset != null">
             OFFSET #{requestQuery.offset}
         </if>
