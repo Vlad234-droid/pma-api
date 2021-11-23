@@ -209,15 +209,52 @@
         JOIN department d ON d.id = c.department_id
 
         WHERE
-        <foreach item="name" index="i" collection="names" open="(" separator=" OR " close=")">
-            lower(c.first_name) like '%${name}%'
-            OR lower(c.middle_name) like '%${name}%'
-            OR lower(c.last_name) like '%${name}%'
-        </foreach>
+            <if test="!requestQuery.filters.isEmpty()">
+                <foreach collection="requestQuery.filters" item="filter" index="index" open="(" separator=" OR " close=")">
+                    <if test="filter.property == 'firstName' or filter.property == 'middleName' or filter.property == 'lastName'">
+                        <choose>
+                            <when test="filter.operand.name == 'LIKE'">
+                                UPPER(<include refid="getFilterField"/>) like UPPER('%${filter.value}%')
+                            </when>
+                            <when test="filter.operand.name == 'EQUALS'">
+                                UPPER(<include refid="getFilterField"/>) = UPPER(#{filter.value})
+                            </when>
+                        </choose>
+                    </if>
+                </foreach>
 
-        <if test="managerId!=null">
-            AND c.manager_uuid = #{managerId}
+                <if test="requestQuery.getFiltersProperties().contains('managerUUID')">
+                    AND
+                    <foreach collection="requestQuery.filters" item="filter" index="index" open="(" separator=" AND " close=")">
+                        <if test="filter.operand.name == 'EQUALS' AND filter.property == 'managerUUID'">
+                            <include refid="getFilterField"/> = #{filter.value}
+                        </if>
+                    </foreach>
+                </if>
+            </if>
+
+        LIMIT #{requestQuery.limit}
+
+        <if test="requestQuery.offset != null">
+            OFFSET #{requestQuery.offset}
         </if>
     </select>
+
+    <sql id="getFilterField">
+        <choose>
+            <when test="filter.property == 'firstName'">
+                c.first_name
+            </when>
+            <when test="filter.property == 'middleName'">
+                c.middle_name
+            </when>
+            <when test="filter.property == 'lastName'">
+                c.last_name
+            </when>
+            <when test="filter.property == 'managerUUID'">
+                c.manager_uuid
+            </when>
+        </choose>
+    </sql>
 
 </mapper>

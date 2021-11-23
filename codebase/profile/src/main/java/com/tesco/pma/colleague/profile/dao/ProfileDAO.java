@@ -2,6 +2,7 @@ package com.tesco.pma.colleague.profile.dao;
 
 import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
+import com.tesco.pma.pagination.RequestQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -79,9 +80,8 @@ public interface ProfileDAO {
     /**
      * Get colleague suggestions by full name
      *
-     * @param names
+     * @param requestQuery
      * @return list colleagues
      */
-    List<Colleague> findColleagueSuggestionsByFullName(@Param("names") List<String> names,
-                                                       @Param("managerId") UUID managerId);
+    List<Colleague> findColleagueSuggestionsByFullName(@Param("requestQuery") RequestQuery requestQuery);
 }

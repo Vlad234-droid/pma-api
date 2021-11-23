@@ -37,6 +37,7 @@ public class Condition {
         LESS_THAN_EQUALS("_lte"),
         GREATER_THAN("_gt"),
         GREATER_THAN_EQUALS("_gte"),
+        LIKE("_like"),
         NULL("_null");
 
         private final String suffix;

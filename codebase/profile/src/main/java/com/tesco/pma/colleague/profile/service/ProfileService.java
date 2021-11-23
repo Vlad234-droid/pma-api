@@ -4,6 +4,7 @@ import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
+import com.tesco.pma.pagination.RequestQuery;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -71,6 +72,6 @@ public interface ProfileService {
      */
     ColleagueEntity getColleague(UUID colleagueUuid);
 
-    List<Colleague> getSuggestions(String fullName, UUID managerId);
+    List<Colleague> getSuggestions(RequestQuery requestQuery);
 
 }

@@ -19,8 +19,8 @@ import com.tesco.pma.colleague.profile.exception.ErrorCodes;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.pagination.RequestQuery;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,10 +31,8 @@ import java.util.UUID;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link ProfileService}.
@@ -160,13 +158,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<Colleague> getSuggestions(String fullName, UUID managerId) {
-        var names = Arrays.stream(fullName.split(StringUtils.SPACE))
-                .map(String::trim)
-                .map(String::toLowerCase)
-                .collect(Collectors.toList());
-
-        return profileDAO.findColleagueSuggestionsByFullName(names, managerId);
+    public List<Colleague> getSuggestions(RequestQuery requestQuery) {
+        return profileDAO.findColleagueSuggestionsByFullName(requestQuery);
     }
 
     private ServiceDates getServiceDates(ColleagueEntity oc) {

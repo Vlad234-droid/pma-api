@@ -4,12 +4,13 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.dao.AbstractDAOTest;
+import com.tesco.pma.pagination.RequestQuery;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -176,15 +177,21 @@ public class ProfileDAOTest extends AbstractDAOTest {
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
     void findColleagueSuggestionsByFullName() {
-        assertEquals(9, dao.findColleagueSuggestionsByFullName(List.of("first"), null).size());
-        assertEquals(2, dao.findColleagueSuggestionsByFullName(List.of("john"), null).size());
-        assertEquals(1, dao.findColleagueSuggestionsByFullName(List.of("ro"), null).size());
-        assertEquals(2, dao.findColleagueSuggestionsByFullName(List.of("dow"), null).size());
-        assertEquals(2, dao.findColleagueSuggestionsByFullName(List.of("ohn"), null).size());
-        assertEquals(1, dao.findColleagueSuggestionsByFullName(List.of("rodgers"), null).size());
-        assertEquals(1, dao.findColleagueSuggestionsByFullName(List.of("ron", "rodgers"), null).size());
 
-        var colleague = dao.findColleagueSuggestionsByFullName(List.of("john", "dow"), null).get(0);
+        assertEquals(9, dao.findColleagueSuggestionsByFullName(
+                createRQ(Map.of("firstName_like", "fiRst"))).size());
+
+        assertEquals(1, dao.findColleagueSuggestionsByFullName(
+                createRQ(Map.of(
+                        "firstName_like", "JohN",
+                        "managerUUID_equals", "c409869b-2acf-45cd-8cc6-e13af2e6f935"))).size());
+
+        assertEquals(1, dao.findColleagueSuggestionsByFullName(createRQ(Map.of("firstName_like","ohn"))).size());
+
+        var colleague = dao.findColleagueSuggestionsByFullName(createRQ(Map.of(
+                "firstName_eq", "John",
+                "lastName_eq", "Dow"
+            ))).get(0);
 
         assertEquals("119e0d2b-1dc2-409f-8198-ecd66e59d47a", colleague.getColleagueUUID().toString());
         assertEquals("Tesco Bank", colleague.getWorkRelationships().get(0).getPrimaryEntity());
@@ -203,5 +210,11 @@ public class ProfileDAOTest extends AbstractDAOTest {
         assertNotNull(colleague.getServiceDates().getHireDate());
         assertNotNull(colleague.getServiceDates().getLeavingDate());
 
+    }
+
+    private RequestQuery createRQ(Map<String, Object> filters){
+        var result = new RequestQuery();
+        filters.forEach(result::addFilters);
+        return result;
     }
 }

@@ -13,6 +13,7 @@ import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,7 +35,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
@@ -167,9 +167,8 @@ public class ProfileEndpoint {
     @Operation(summary = "Autocomplete search among colleagues by full name and manager ID", tags = {"colleagues"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Search among colleagues by full name and manager ID")
     @GetMapping(value = "/suggestions", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    public RestResponse<List<Colleague>> getSuggestions(@RequestParam("names") String fullName,
-                                                        @RequestParam(value = "manager-uuid", required = false) UUID managerId) {
-        return RestResponse.success(profileService.getSuggestions(fullName, managerId));
+    public RestResponse<List<Colleague>> getSuggestions(RequestQuery requestQuery) {
+        return RestResponse.success(profileService.getSuggestions(requestQuery));
     }
 
 }
