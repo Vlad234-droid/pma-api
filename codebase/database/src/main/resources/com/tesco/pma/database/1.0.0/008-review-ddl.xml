@@ -328,7 +328,7 @@
         <insert tableName="action_type">
             <column name="id" value="1"/>
             <column name="code" value="SAVE"/>
-            <column name="description" value="Save"/>
+            <column name="description" value="Save as draft"/>
         </insert>
         <insert tableName="action_type">
             <column name="id" value="2"/>
