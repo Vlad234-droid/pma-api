@@ -185,6 +185,12 @@ public abstract class AbstractEndpointTest {
                 .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.COLLEAGUE));
     }
 
+    protected RequestPostProcessor colleagueWithSubject(String subject) {
+        return SecurityMockMvcRequestPostProcessors.jwt()
+                .jwt(builder -> builder.subject(subject))
+                .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.COLLEAGUE));
+    }
+
     protected RequestPostProcessor admin() {
         return SecurityMockMvcRequestPostProcessors.jwt()
                 .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.ADMIN));
