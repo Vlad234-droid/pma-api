@@ -26,13 +26,15 @@ public interface FileDAO {
      * @param statusFilters filters by file status
      * @param typeFilters filters by file type
      * @param includeFileContent identifies if include file content
+     * @param latest identifies if latest version data needed
      *
      * @return filtered files data
      */
     List<File> findByRequestQuery(@Param("requestQuery") RequestQuery requestQuery,
                                   @Param("statusFilters") List<DictionaryFilter> statusFilters,
                                   @Param("typeFilters") List<DictionaryFilter> typeFilters,
-                                  @Param("includeFileContent") boolean includeFileContent);
+                                  @Param("includeFileContent") boolean includeFileContent,
+                                  @Param("latest") boolean latest);
 
     /**
      * Save file information to database with maximum+1 version

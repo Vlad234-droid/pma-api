@@ -127,7 +127,7 @@
             <column name="description" type="VARCHAR(500)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_by" type="VARCHAR(50)">
+            <column name="created_by" type="${uuid_type}">
                 <constraints nullable="false"/>
             </column>
             <column name="created_time" type="TIMESTAMPTZ">

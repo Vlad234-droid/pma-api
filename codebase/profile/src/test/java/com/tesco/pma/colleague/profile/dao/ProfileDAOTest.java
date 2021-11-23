@@ -1,14 +1,17 @@
 package com.tesco.pma.colleague.profile.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.dao.AbstractDAOTest;
+import com.tesco.pma.pagination.RequestQuery;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
+import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -247,6 +250,50 @@ public class ProfileDAOTest extends AbstractDAOTest {
         var department = getDepartment("5");
         final int inserted = dao.updateDepartment(department);
         assertThat(inserted).isEqualTo(1);
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
+    void findColleagueSuggestionsByFullName() {
+
+        assertEquals(9, dao.findColleagueSuggestionsByFullName(
+                createRQ(Map.of("firstName_like", "fiRst"))).size());
+
+        assertEquals(1, dao.findColleagueSuggestionsByFullName(
+                createRQ(Map.of(
+                        "firstName_like", "JohN",
+                        "managerUUID_equals", "c409869b-2acf-45cd-8cc6-e13af2e6f935"))).size());
+
+        assertEquals(1, dao.findColleagueSuggestionsByFullName(createRQ(Map.of("firstName_like","ohn"))).size());
+
+        var colleague = dao.findColleagueSuggestionsByFullName(createRQ(Map.of(
+                "firstName_eq", "John",
+                "lastName_eq", "Dow"
+        ))).get(0);
+
+        assertEquals("119e0d2b-1dc2-409f-8198-ecd66e59d47a", colleague.getColleagueUUID().toString());
+        assertEquals("Tesco Bank", colleague.getWorkRelationships().get(0).getPrimaryEntity());
+        assertEquals(WorkLevel.WL1, colleague.getWorkRelationships().get(0).getWorkLevel());
+        assertEquals("2", colleague.getWorkRelationships().get(0).getJob().getId());
+        assertEquals("ANNUAL", colleague.getWorkRelationships().get(0).getSalaryFrequency());
+        assertEquals("ET", colleague.getWorkRelationships().get(0).getEmploymentType());
+        //assertEquals("c409869b-2acf-45cd-8cc6-e13af2e6f935", colleague.getWorkRelationships().get(0).getManagerUUID().toString());
+        assertEquals("4", colleague.getWorkRelationships().get(0).getDepartment().getId());
+        assertEquals("John", colleague.getProfile().getFirstName());
+        assertEquals("Dow", colleague.getProfile().getLastName());
+        assertEquals("Michael", colleague.getProfile().getMiddleName());
+        assertEquals("test@test", colleague.getContact().getEmail());
+        assertEquals("TPX2", colleague.getExternalSystems().getIam().getId());
+        assertEquals("Test", colleague.getExternalSystems().getIam().getSource());
+        assertNotNull(colleague.getServiceDates().getHireDate());
+        assertNotNull(colleague.getServiceDates().getLeavingDate());
+
+    }
+
+    private RequestQuery createRQ(Map<String, Object> filters){
+        var result = new RequestQuery();
+        filters.forEach(result::addFilters);
+        return result;
     }
 
     private ColleagueEntity getCorrectColleague() {

@@ -3,14 +3,6 @@
 
 <mapper namespace="com.tesco.pma.review.dao.ReviewDAO">
 
-    <resultMap id="groupObjectiveResultMap" type="com.tesco.pma.review.domain.GroupObjective">
-        <id property="uuid" column="uuid"/>
-        <result property="businessUnitUuid" column="business_unit_uuid"/>
-        <result property="number" column="number"/>
-        <result property="title" column="title"/>
-        <result property="version" column="version"/>
-    </resultMap>
-
     <resultMap id="reviewResultMap" type="com.tesco.pma.review.domain.Review">
         <id property="uuid" column="uuid"/>
         <result property="colleagueUuid" column="colleague_uuid"/>
@@ -44,13 +36,6 @@
         </collection>
     </resultMap>
 
-    <resultMap id="workingGroupObjectiveResultMap" type="com.tesco.pma.review.domain.WorkingGroupObjective">
-        <id property="businessUnitUuid" column="business_unit_uuid"/>
-        <id property="version" column="version"/>
-        <result property="updaterId" column="updated_by"/>
-        <result property="updateTime" column="updated_time"/>
-    </resultMap>
-
     <resultMap id="cycleReviewTypePropertiesResultMap" type="com.tesco.pma.review.domain.PMCycleReviewTypeProperties">
         <id property="cycleUuid" column="cycle_uuid"/>
         <result property="type" column="review_type_code" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
@@ -80,79 +65,7 @@
         <result property="startDate" column="start_date" typeHandler="org.apache.ibatis.type.LocalDateTypeHandler"/>
     </resultMap>
 
-    <insert id="createGroupObjective" flushCache="true">
-        INSERT INTO group_objective
-        (uuid,
-         business_unit_uuid,
-         number,
-         title,
-         version)
-        VALUES (#{groupObjective.uuid},
-                #{groupObjective.businessUnitUuid},
-                #{groupObjective.number},
-                #{groupObjective.title},
-                #{groupObjective.version})
-    </insert>
-
-    <select id="getGroupObjective" resultMap="groupObjectiveResultMap">
-        SELECT go.uuid,
-               go.business_unit_uuid,
-               go.number,
-               go.title,
-               go.version
-        FROM group_objective go
-        WHERE go.uuid = #{groupObjectiveUuid}
-    </select>
-
-    <select id="getGroupObjectivesByBusinessUnitUuid" resultMap="groupObjectiveResultMap">
-        with max_version as (
-        <include refid="getMaxVersion">
-            <property name="businessUnitUuid" value="#{businessUnitUuid}"/>
-        </include>
-        )
-        select go.uuid,
-        go.business_unit_uuid,
-        go.number,
-        go.title,
-        go.version
-        from group_objective go
-        inner join max_version mv
-        on (go.version = mv.version)
-        WHERE go.business_unit_uuid = #{businessUnitUuid}
-        order by go.number
-    </select>
-
-    <select id="getWorkingGroupObjectivesByBusinessUnitUuid" resultMap="groupObjectiveResultMap">
-        with working_version as (
-            select version
-            from working_group_objective wgo
-            where wgo.business_unit_uuid = #{businessUnitUuid}
-        )
-        select go.uuid,
-               go.business_unit_uuid,
-               go.number,
-               go.title,
-               go.version
-        from group_objective go
-         inner join working_version wv
-        on (go.version = wv.version)
-        WHERE go.business_unit_uuid = #{businessUnitUuid}
-        order by go.number
-    </select>
-
-    <delete id="deleteGroupObjective">
-        DELETE
-        FROM group_objective
-        WHERE uuid = #{groupObjectiveUuid}
-    </delete>
-
-    <select id="getMaxVersionGroupObjective" resultType="int">
-        <include refid="getMaxVersion">
-            <property name="businessUnitUuid" value="#{businessUnitUuid}"/>
-        </include>
-    </select>
-
-    <insert id="createReview" flushCache="true">
+    <insert id="create" flushCache="true">
         INSERT INTO review
         (uuid,
          colleague_uuid,
@@ -257,7 +170,7 @@
           and number >= #{startNumber}
     </update>
 
-    <update id="updateReview" flushCache="true">
+    <update id="update" flushCache="true">
         UPDATE review
         SET properties =
         #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
@@ -289,40 +202,9 @@
         </if>
     </update>
 
-    <insert id="insertOrUpdateWorkingGroupObjective" flushCache="true">
-        INSERT INTO working_group_objective
-        (business_unit_uuid,
-         version,
-         updated_by,
-         updated_time)
-        VALUES (#{workingGroupObjective.businessUnitUuid},
-                #{workingGroupObjective.version},
-                #{workingGroupObjective.updaterId},
-                #{workingGroupObjective.updateTime}) ON CONFLICT (business_unit_uuid)
-                DO
-        UPDATE
-            SET version = EXCLUDED.version,
-            updated_by = EXCLUDED.updated_by,
-            updated_time = EXCLUDED.updated_time
-        WHERE working_group_objective.business_unit_uuid = EXCLUDED.business_unit_uuid;
-    </insert>
-
-    <select id="getWorkingGroupObjective" resultMap="workingGroupObjectiveResultMap">
-        SELECT *
-        FROM working_group_objective
-        WHERE business_unit_uuid = #{businessUnitUuid}
-    </select>
-
-    <delete id="deleteWorkingGroupObjective">
-        DELETE
-        FROM working_group_objective
-        WHERE business_unit_uuid = #{businessUnitUuid}
-    </delete>
-
     <sql id="getMaxVersion">
         select coalesce(max(version), 0) as version
-        from group_objective go
-        where go.business_unit_uuid = #{businessUnitUuid}
+        from org_objective go
     </sql>
 
     <select id="getPMCycleReviewTypeProperties" resultMap="cycleReviewTypePropertiesResultMap">
