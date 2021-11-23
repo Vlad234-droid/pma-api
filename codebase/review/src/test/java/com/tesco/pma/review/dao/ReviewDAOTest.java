@@ -49,7 +49,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     private static final UUID BUSINESS_UNIT_UUID_NOT_EXIST = UUID.fromString("ffb9ab0b-f50f-4442-8900-000000000000");
     private static final UUID COLLEAGUE_UUID = UUID.fromString("ccb9ab0b-f50f-4442-8900-b03777ee00ec");
     private static final UUID COLLEAGUE_UUID_NOT_EXIST = UUID.fromString("ccb9ab0b-f50f-4442-8900-000000000000");
-    private static final UUID PERFORMANCE_CYCLE_UUID = UUID.fromString("0c5d9cb1-22cf-4fcd-a19a-9e70df6bc941");
+    private static final UUID PERFORMANCE_CYCLE_UUID = UUID.fromString("0c5d9cb1-22cf-4fcd-a19a-9e70df6bc941");;
     private static final Integer NUMBER_1 = 1;
     private static final Integer NUMBER_2 = 2;
     private static final String TITLE_PROPERTY_NAME = "title";
@@ -201,6 +201,21 @@ class ReviewDAOTest extends AbstractDAOTest {
                 COLLEAGUE_UUID,
                 OBJECTIVE,
                 NUMBER_1);
+
+        assertThat(result)
+                .asInstanceOf(type(Review.class))
+                .returns(COLLEAGUE_UUID, from(Review::getColleagueUuid))
+                .returns(PERFORMANCE_CYCLE_UUID, from(Review::getPerformanceCycleUuid))
+                .returns(OBJECTIVE, from(Review::getType))
+                .returns(NUMBER_1, from(Review::getNumber))
+                .returns(REVIEW_PROPERTIES_INIT, from(Review::getProperties))
+                .returns(DRAFT, from(Review::getStatus));
+    }
+
+    @Test
+    @DataSet({"group_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    void getReviewByUuid() {
+        final var result = instance.read(REVIEW_UUID);
 
         assertThat(result)
                 .asInstanceOf(type(Review.class))

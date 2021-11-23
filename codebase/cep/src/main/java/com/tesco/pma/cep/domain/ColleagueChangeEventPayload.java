@@ -1,9 +1,12 @@
 package com.tesco.pma.cep.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tesco.pma.api.Identified;
-import lombok.Value;
-import lombok.experimental.Accessors;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -15,8 +18,9 @@ import java.util.UUID;
  * <p>For more information:
  * @see <a href="https://github.dev.global.tesco.org/24Colleague/ColleagueEventingPlatform/wiki/Event-Producer-Colleague-Changes">here</a>
  */
-@Value
-@Accessors(fluent = true)
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@JsonIgnoreProperties({"id"})
 public class ColleagueChangeEventPayload implements Identified<UUID> {
 
     /**
@@ -28,7 +32,8 @@ public class ColleagueChangeEventPayload implements Identified<UUID> {
      * colleagueUUID is a field in UUID format. It holds the information whose data has changes.
      * It is a uuid of a colleague taken from Identity
      */
-    UUID colleagueUUID;
+    @JsonProperty("colleagueUUID")
+    UUID colleagueUuid;
 
     /**
      * effectiveDate is a field in format YYYY-MM-DD. It stores information since when are these changes applicable.
@@ -45,7 +50,7 @@ public class ColleagueChangeEventPayload implements Identified<UUID> {
 
     @Override
     public UUID getId() {
-        return colleagueUUID;
+        return colleagueUuid;
     }
 
 }

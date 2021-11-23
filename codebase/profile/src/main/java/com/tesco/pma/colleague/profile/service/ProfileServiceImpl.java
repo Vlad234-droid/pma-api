@@ -1,36 +1,32 @@
 package com.tesco.pma.colleague.profile.service;
 
 import com.tesco.pma.colleague.api.Colleague;
-import com.tesco.pma.colleague.api.Contact;
-import com.tesco.pma.colleague.api.ExternalSystems;
-import com.tesco.pma.colleague.api.IamSourceSystem;
-import com.tesco.pma.colleague.api.Profile;
-import com.tesco.pma.colleague.api.service.ServiceDates;
-import com.tesco.pma.colleague.api.workrelationships.Department;
-import com.tesco.pma.colleague.api.workrelationships.Job;
-import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
 import com.tesco.pma.colleague.profile.dao.ProfileAttributeDAO;
 import com.tesco.pma.colleague.profile.dao.ProfileDAO;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.exception.ErrorCodes;
+import com.tesco.pma.colleague.profile.service.util.ColleagueFactsApiLocalMapper;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.logging.LogFormatter;
+import com.tesco.pma.service.colleague.ColleagueApiService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 /**
  * Implementation of {@link ProfileService}.
@@ -38,16 +34,15 @@ import java.util.function.Predicate;
 @Service
 @Validated
 @RequiredArgsConstructor
+@Slf4j
 //todo @CacheConfig(cacheNames = "aggregatedColleagues")
 public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileDAO profileDAO;
     private final ProfileAttributeDAO profileAttributeDAO;
+    private final ColleagueApiService colleagueApiService;
     private final NamedMessageSourceAccessor messages;
-
-    private static final Predicate<com.tesco.pma.colleague.api.workrelationships.WorkRelationship>
-            IS_WORK_RELATIONSHIP_ACTIVE = workRelationship -> workRelationship.getWorkingStatus().equals(
-            com.tesco.pma.colleague.api.workrelationships.WorkRelationship.WorkingStatus.ACTIVE);
+    private final ColleagueFactsApiLocalMapper colleagueFactsApiLocalMapper;
 
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     private static final String PROFILE_ATTRIBUTE_NAME_PARAMETER_NAME = "profileAttributeName";
@@ -133,7 +128,7 @@ public class ProfileServiceImpl implements ProfileService {
     public Colleague findColleagueByColleagueUuid(UUID colleagueUuid) {
         var oc = profileDAO.getColleague(colleagueUuid);
         //todo try to download and insert colleagueApiService.findColleagueByUuid(colleagueUuid)
-        return oc != null ? getColleague(oc, colleagueUuid, false) : null;
+        return oc != null ? colleagueFactsApiLocalMapper.localToColleagueFactsApi(oc, colleagueUuid, false) : null;
     }
 
     @Override
@@ -141,100 +136,59 @@ public class ProfileServiceImpl implements ProfileService {
         return profileDAO.getColleague(colleagueUuid);
     }
 
-    private Colleague getColleague(ColleagueEntity oc, UUID colleagueUuid, boolean child) {
-        var colleague = new Colleague();
-        colleague.setColleagueUUID(colleagueUuid);
-        colleague.setCountryCode(oc.getCountry().getCode());
-        colleague.setProfile(getProfile(oc));
-        colleague.setContact(getContact(oc));
-        if (!child) {
-            colleague.setWorkRelationships(Collections.singletonList(getWorkRelationship(oc)));
-            colleague.setExternalSystems(getExternalSystems(oc));
-            colleague.setServiceDates(getServiceDates(oc));
+    @Override
+    // TODO To optimize logic for update only changed attributes
+    public int updateColleague(UUID colleagueUuid, Collection<String> changedAttributes) {
+        int updated = 0;
+
+        var existingLocalColleague = profileDAO.getColleague(colleagueUuid);
+        Colleague colleague = colleagueApiService.findColleagueByUuid(colleagueUuid);
+        if (existingLocalColleague == null || colleague == null) {
+            return updated;
         }
-        return colleague;
-    }
 
-    private ServiceDates getServiceDates(ColleagueEntity oc) {
-        var serviceDates = new ServiceDates();
-        serviceDates.setHireDate(oc.getHireDate());
-        serviceDates.setLeavingDate(oc.getLeavingDate());
-        return serviceDates;
-    }
-
-    private Contact getContact(ColleagueEntity oc) {
-        if (oc.getEmail() != null) {
-            var contact = new Contact();
-            contact.setEmail(oc.getEmail());
-            return contact;
+        try {
+            ColleagueEntity changedLocalColleague = colleagueFactsApiLocalMapper.colleagueFactsApiToLocal(colleague);
+            updateDictionaries(existingLocalColleague, changedLocalColleague);
+            updated = profileDAO.saveColleague(changedLocalColleague);
+        } catch (DataIntegrityViolationException exception) {
+            String message = String.format("Data integrity violation exception = %s", exception.getMessage());
+            log.error(LogFormatter.formatMessage(ErrorCodes.DATA_INTEGRITY_VIOLATION_EXCEPTION, message));
         }
-        return null;
-    }
 
-    private ExternalSystems getExternalSystems(ColleagueEntity oc) {
-        var es = new ExternalSystems();
-        var iam = new IamSourceSystem();
-        iam.setId(oc.getIamId());
-        iam.setSource(oc.getIamSource());
-        es.setIam(iam);
-        return es;
-    }
-
-    private Profile getProfile(ColleagueEntity oc) {
-        var profile = new Profile();
-        profile.setFirstName(oc.getFirstName());
-        profile.setMiddleName(oc.getMiddleName());
-        profile.setLastName(oc.getLastName());
-        return profile;
-    }
-
-    private WorkRelationship getWorkRelationship(ColleagueEntity oc) {
-        var wr = new WorkRelationship();
-        wr.setWorkLevel(WorkRelationship.WorkLevel.getByCode(oc.getWorkLevel().getCode()));
-        wr.setPrimaryEntity(oc.getPrimaryEntity());
-        wr.setSalaryFrequency(oc.getSalaryFrequency());
-        wr.setIsManager(oc.isManager());
-        wr.setEmploymentType(oc.getEmploymentType());
-        wr.setDepartment(getDepartment(oc));
-        wr.setJob(getJob(oc));
-        wr.setManagerUUID(oc.getManagerUuid());
-        if (wr.getManagerUUID() != null) {
-            var mng = profileDAO.getColleague(wr.getManagerUUID());
-            if (mng != null) {
-                wr.setManager(getColleague(mng, wr.getManagerUUID(), true));
-            }
-        }
-        return wr;
-    }
-
-    private Job getJob(ColleagueEntity oc) {
-        var ocJob = oc.getJob();
-        if (ocJob != null) {
-            var job = new Job();
-            job.setId(ocJob.getId());
-            job.setName(ocJob.getName());
-            job.setCode(ocJob.getCode());
-            job.setCostCategory(ocJob.getCostCategory());
-            return job;
-        }
-        return null;
-    }
-
-    private Department getDepartment(ColleagueEntity oc) {
-        var ocDp = oc.getDepartment();
-        if (ocDp != null) {
-            var dp = new Department();
-            dp.setId(ocDp.getId());
-            dp.setName(ocDp.getName());
-            dp.setBusinessType(ocDp.getBusinessType());
-            return dp;
-        }
-        return null;
+        return updated;
     }
 
     @Override
     public List<TypedAttribute> findProfileAttributes(UUID colleagueUuid) {
         return profileAttributeDAO.get(colleagueUuid);
+    }
+
+    private void updateDictionaries(ColleagueEntity existingLocalColleague,
+                                    ColleagueEntity changedLocalColleague) {
+        // Country
+        ColleagueEntity.Country changedCountry = changedLocalColleague.getCountry();
+        if (changedCountry != null && !existingLocalColleague.getCountry().getCode().equals(changedCountry.getCode())) {
+            profileDAO.updateCountry(changedCountry);
+        }
+
+        // Department
+        ColleagueEntity.Department changedDepartment = changedLocalColleague.getDepartment();
+        if (changedDepartment != null && !existingLocalColleague.getDepartment().getId().equals(changedDepartment.getId())) {
+            profileDAO.updateDepartment(changedDepartment);
+        }
+
+        // Job
+        ColleagueEntity.Job changedJob = changedLocalColleague.getJob();
+        if (changedJob != null && !existingLocalColleague.getJob().getCode().equals(changedJob.getId())) {
+            profileDAO.updateJob(changedJob);
+        }
+
+        // Work level
+        ColleagueEntity.WorkLevel changedWorkLevel = changedLocalColleague.getWorkLevel();
+        if (changedWorkLevel != null && !existingLocalColleague.getWorkLevel().getCode().equals(changedWorkLevel.getCode())) {
+            profileDAO.updateWorkLevel(changedWorkLevel);
+        }
     }
 
     private NotFoundException notFound(String paramName, Object paramValue) {

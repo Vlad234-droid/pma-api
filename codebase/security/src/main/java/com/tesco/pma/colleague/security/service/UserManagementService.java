@@ -7,6 +7,7 @@ import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusReques
 import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * User management service
@@ -68,5 +69,12 @@ public interface UserManagementService {
      * @return Account information
      */
     Account findAccountByIamId(String iamId);
+
+    /**
+     * Find account by colleague UUID
+     * @param colleagueUuid
+     * @return Account information
+     */
+    Account findAccountByColleagueUuid(UUID colleagueUuid);
 
 }

@@ -51,7 +51,7 @@ public class ColleagueChangesEndpoint {
     @PostMapping("/events")
     @PreAuthorize("authentication.name == @cepProperties.subject")
     public void processColleagueChangeEvent(@RequestBody EventRequest<ColleagueChangeEventPayload> eventRequest) {
-        if (Objects.isNull(eventRequest.getPayload()) || Objects.isNull(eventRequest.getPayload().eventType())) {
+        if (Objects.isNull(eventRequest.getPayload()) || Objects.isNull(eventRequest.getPayload().getEventType())) {
             log.warn(LogFormatter.formatMessage(ErrorCodes.EVENT_PAYLOAD_ERROR, "Invalid payload was received from CEP"));
             log.debug(String.format("Tried to process a event request %s", eventRequest));
             return;

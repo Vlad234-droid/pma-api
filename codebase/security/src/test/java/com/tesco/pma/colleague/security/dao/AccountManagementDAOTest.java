@@ -17,7 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 // TODO Implement all tests
-@DataSet({"com/tesco/pma/colleague/security/dao/accounts_init.xml"})
+@DataSet({"com/tesco/pma/colleague/security/dao/accounts_init.xml",
+        "com/tesco/pma/colleague/security/dao/colleagues_init.xml"})
 class AccountManagementDAOTest extends AbstractDAOTest {
 
     @Autowired
@@ -109,5 +110,24 @@ class AccountManagementDAOTest extends AbstractDAOTest {
         assertThat(account.getStatus()).isEqualTo(AccountStatus.ENABLED);
         assertThat(account.getType()).isEqualTo(AccountType.USER);
     }
+
+    @Test
+    void findAccountByColleagueUuidShouldReturnAccount() {
+        var account= dao.findAccountByColleagueUuid(UUID.fromString("10000000-0000-0000-0000-000000000001"));
+
+        assertThat(account.getId()).isEqualTo(UUID.fromString("a3d51c49-0ab3-448e-ae31-2c865e27c6ea"));
+        assertThat(account.getStatus()).isEqualTo(AccountStatus.ENABLED);
+        assertThat(account.getType()).isEqualTo(AccountType.USER);
+        assertThat(account.getRoles()).isNotEmpty();
+        assertThat(account.getRoles().size()).isEqualTo(3);
+    }
+
+    @Test
+    void findAccountByColleagueUuidShouldReturnNull() {
+        var account= dao.findAccountByColleagueUuid(UUID.fromString("10000000-0000-0000-0000-000000000002"));
+
+        assertThat(account).isNull();
+    }
+
 
 }
