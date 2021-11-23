@@ -27,7 +27,7 @@ public class DefaultAttributesDAOTest extends AbstractDAOTest {
 
     @Test
     public void findByCriteriaAndCategoryTest() {
-        var attrs = defaultAttributesDAO.findByCriteriaAndCategory(DefaultAttributeCriteria.ALL_COLLEAGUES,
+        var attrs = defaultAttributesDAO.findByCriteriaAndCategory(DefaultAttributeCriteria.ALL,
                 DefaultAttributeCategory.NOTIFICATION);
 
         assertTrue(attrs.size()>0);
@@ -35,7 +35,7 @@ public class DefaultAttributesDAOTest extends AbstractDAOTest {
 
     @Test
     public void findByCriteriasAndCategoryTest() {
-        var criterias = List.of(DefaultAttributeCriteria.ALL_COLLEAGUES, DefaultAttributeCriteria.WK_4_5_ONLY);
+        var criterias = List.of(DefaultAttributeCriteria.ALL, DefaultAttributeCriteria.WL_4_OR_5);
 
         var attrs = defaultAttributesDAO.findByCriteriasAndCategory(
                 criterias, DefaultAttributeCategory.NOTIFICATION);

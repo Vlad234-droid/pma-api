@@ -6,7 +6,9 @@ import com.tesco.pma.colleague.config.dao.DefaultAttributesDAO;
 import com.tesco.pma.colleague.config.domain.DefaultAttribute;
 import com.tesco.pma.colleague.config.domain.DefaultAttributeCategory;
 import com.tesco.pma.colleague.config.domain.DefaultAttributeCriteria;
+import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.service.ReviewService;
@@ -15,6 +17,7 @@ import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -23,9 +26,10 @@ public class DefaultAttributesServiceTest {
     private final DefaultAttributesDAO defaultAttributesDAO = Mockito.mock(DefaultAttributesDAO.class);
     private final ProfileService profileService = Mockito.mock(ProfileService.class);
     private final ReviewService reviewService = Mockito.mock(ReviewService.class);
+    private final NamedMessageSourceAccessor messages = Mockito.mock(NamedMessageSourceAccessor.class);
 
     private final DefaultAttributesService defaultAttributesService =
-            new DefaultAttributesServiceImp(defaultAttributesDAO, profileService, reviewService);
+            new DefaultAttributesServiceImp(defaultAttributesDAO, profileService, reviewService, messages);
 
     @Test
     public void updateDefaultAttributesTest(){
@@ -39,10 +43,10 @@ public class DefaultAttributesServiceTest {
         colleague.setWorkRelationships(List.of(wl));
 
         var defaultAttrs = new ArrayList<DefaultAttribute>();
-        defaultAttrs.add(createDefaultAttr("Test1", DefaultAttributeCriteria.ALL_COLLEAGUES));
-        defaultAttrs.add(createDefaultAttr("Test1-2", DefaultAttributeCriteria.ALL_COLLEAGUES));
-        defaultAttrs.add(createDefaultAttr("Test2", DefaultAttributeCriteria.LINE_MANAGER_ONLY));
-        defaultAttrs.add(createDefaultAttr("Test3", DefaultAttributeCriteria.COLLEAGUES_WITH_MID_YEAR_REVIEW_ONLY));
+        defaultAttrs.add(createDefaultAttr("Test1", DefaultAttributeCriteria.ALL));
+        defaultAttrs.add(createDefaultAttr("Test1-2", DefaultAttributeCriteria.ALL));
+        defaultAttrs.add(createDefaultAttr("Test2", DefaultAttributeCriteria.LINE_MANAGER));
+        defaultAttrs.add(createDefaultAttr("Test3", DefaultAttributeCriteria.MYR));
 
         var cycle = new PMCycleTimelinePoint();
         cycle.setReviewType(PMReviewType.MYR);
@@ -50,11 +54,14 @@ public class DefaultAttributesServiceTest {
         var cycle2 = new PMCycleTimelinePoint();
         cycle2.setReviewType(PMReviewType.MYR);
 
+        var colleagueProfile = new ColleagueProfile();
+        colleagueProfile.setProfileAttributes(new ArrayList<>());
+
         Mockito.when(profileService.findColleagueByColleagueUuid(Mockito.eq(colleagueId)))
                 .thenReturn(colleague);
 
-        Mockito.when(profileService.findProfileAttributes(Mockito.eq(colleagueId)))
-                .thenReturn(new ArrayList<>());
+        Mockito.when(profileService.findProfileByColleagueUuid(Mockito.eq(colleagueId)))
+                .thenReturn(Optional.of(colleagueProfile));
 
         Mockito.when(reviewService.getCycleTimelineByColleague(Mockito.eq(colleagueId)))
                 .thenReturn(List.of(cycle, cycle2));
