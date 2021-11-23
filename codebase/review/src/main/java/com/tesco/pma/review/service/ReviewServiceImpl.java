@@ -547,24 +547,19 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private List<PMReviewStatus> getPrevStatusesForChangeStatus(PMReviewType reviewType, PMReviewStatus newStatus) {
-        if (reviewType.equals(OBJECTIVE)) {
-            switch (newStatus) {
-                case DRAFT:
-                    return List.of(DRAFT);
-                case WAITING_FOR_APPROVAL:
-                    return List.of(DRAFT, WAITING_FOR_APPROVAL, DECLINED);
-                case APPROVED:
-                    return List.of(WAITING_FOR_APPROVAL, APPROVED);
-                case DECLINED:
-                    return List.of(WAITING_FOR_APPROVAL, DECLINED);
-                case COMPLETED:
-                    return List.of(APPROVED, COMPLETED);
-                default:
-                    return Collections.emptyList();
-            }
-        } else {
-            // TODO: 11/6/2021 should be implemented after receiving requirements
-            return Collections.emptyList();
+        switch (newStatus) {
+            case DRAFT:
+                return List.of(DRAFT);
+            case WAITING_FOR_APPROVAL:
+                return List.of(DRAFT, WAITING_FOR_APPROVAL, DECLINED);
+            case APPROVED:
+                return List.of(WAITING_FOR_APPROVAL, APPROVED);
+            case DECLINED:
+                return List.of(WAITING_FOR_APPROVAL, DECLINED);
+            case COMPLETED:
+                return List.of(APPROVED, COMPLETED);
+            default:
+                return Collections.emptyList();
         }
     }
 
