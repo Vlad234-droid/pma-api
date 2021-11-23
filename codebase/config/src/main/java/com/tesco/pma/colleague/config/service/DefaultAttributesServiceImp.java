@@ -1,20 +1,21 @@
-package com.tesco.pma.colleague.profile.service;
+package com.tesco.pma.colleague.config.service;
 
 import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
-import com.tesco.pma.colleague.profile.dao.DefaultAttributesDAO;
-import com.tesco.pma.colleague.profile.domain.DefaultAttributeCategory;
-import com.tesco.pma.colleague.profile.domain.DefaultAttributeCriteria;
-import com.tesco.pma.colleague.profile.domain.DefaultAttribute;
+import com.tesco.pma.colleague.config.dao.DefaultAttributesDAO;
+import com.tesco.pma.colleague.config.domain.DefaultAttributeCategory;
+import com.tesco.pma.colleague.config.domain.DefaultAttributeCriteria;
+import com.tesco.pma.colleague.config.domain.DefaultAttribute;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.domain.AttributeType;
+import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,7 @@ public class DefaultAttributesServiceImp implements DefaultAttributesService {
         var result = new ArrayList<DefaultAttributeCriteria>();
         result.add(DefaultAttributeCriteria.ALL_COLLEAGUES);
 
-        if (CollectionUtils.isNotEmpty(colleague.getWorkRelationships())) {
+        if (!CollectionUtils.isEmpty(colleague.getWorkRelationships())) {
             var workRel = colleague.getWorkRelationships().get(0);
 
             if (workRel.getIsManager()) {

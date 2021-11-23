@@ -1,8 +1,8 @@
-package com.tesco.pma.colleague.profile.dao;
+package com.tesco.pma.colleague.config.dao;
 
-import com.tesco.pma.colleague.profile.domain.DefaultAttribute;
-import com.tesco.pma.colleague.profile.domain.DefaultAttributeCategory;
-import com.tesco.pma.colleague.profile.domain.DefaultAttributeCriteria;
+import com.tesco.pma.colleague.config.domain.DefaultAttribute;
+import com.tesco.pma.colleague.config.domain.DefaultAttributeCategory;
+import com.tesco.pma.colleague.config.domain.DefaultAttributeCriteria;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

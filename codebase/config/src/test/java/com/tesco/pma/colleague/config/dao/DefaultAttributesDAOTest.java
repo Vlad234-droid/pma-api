@@ -1,8 +1,8 @@
-package com.tesco.pma.colleague.profile.dao;
+package com.tesco.pma.colleague.config.dao;
 
-import com.tesco.pma.colleague.profile.domain.DefaultAttribute;
-import com.tesco.pma.colleague.profile.domain.DefaultAttributeCategory;
-import com.tesco.pma.colleague.profile.domain.DefaultAttributeCriteria;
+import com.tesco.pma.colleague.config.domain.DefaultAttribute;
+import com.tesco.pma.colleague.config.domain.DefaultAttributeCategory;
+import com.tesco.pma.colleague.config.domain.DefaultAttributeCriteria;
 import com.tesco.pma.dao.AbstractDAOTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

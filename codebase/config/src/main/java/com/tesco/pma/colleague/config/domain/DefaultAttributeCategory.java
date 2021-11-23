@@ -1,4 +1,4 @@
-package com.tesco.pma.colleague.profile.domain;
+package com.tesco.pma.colleague.config.domain;
 
 import com.tesco.pma.api.DictionaryItem;
 import lombok.AccessLevel;
