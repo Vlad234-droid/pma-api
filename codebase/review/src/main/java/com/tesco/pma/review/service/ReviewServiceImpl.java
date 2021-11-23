@@ -53,6 +53,7 @@ import static com.tesco.pma.review.exception.ErrorCodes.ORG_OBJECTIVES_NOT_FOUND
 import static com.tesco.pma.review.exception.ErrorCodes.ORG_OBJECTIVE_ALREADY_EXISTS;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND_BY_MANAGER;
+import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND_FOR_COLLEAGUE;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND_FOR_STATUS_UPDATE;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_ALREADY_EXISTS;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_BY_UUID;
@@ -127,6 +128,17 @@ public class ReviewServiceImpl implements ReviewService {
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
                             TYPE_PARAMETER_NAME, type));
+        }
+        return results;
+    }
+
+    @Override
+    public List<Review> getReviewsByColleague(UUID performanceCycleUuid, UUID colleagueUuid) {
+        List<Review> results = reviewDAO.getReviewsByColleague(performanceCycleUuid, colleagueUuid);
+        if (results == null) {
+            throw notFound(REVIEWS_NOT_FOUND_FOR_COLLEAGUE,
+                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
+                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid));
         }
         return results;
     }
@@ -220,7 +232,7 @@ public class ReviewServiceImpl implements ReviewService {
                                               String reason,
                                               UUID loggedUserUuid) {
         reviews.forEach(review -> {
-            var prevStatuses = getPrevStatusesForChangeStatus(type, status);
+            var prevStatuses = getPrevStatusesForChangeStatus(status);
             if (0 == prevStatuses.size()) {
                 throw notFound(ALLOWED_STATUSES_NOT_FOUND,
                         Map.of(OPERATION_PARAMETER_NAME, CHANGE_STATUS_OPERATION_NAME));
@@ -390,7 +402,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     private List<PMReviewStatus> getAllowedStatusesForUpdate(PMReviewType reviewType, PMReviewStatus newStatus) {
         var allowedStatusesForUpdate = getStatusesForUpdate(reviewType);
-        var prevStatusesForChangeStatus = getPrevStatusesForChangeStatus(reviewType, newStatus);
+        var prevStatusesForChangeStatus = getPrevStatusesForChangeStatus(newStatus);
         return allowedStatusesForUpdate.stream()
                 .filter(prevStatusesForChangeStatus::contains)
                 .collect(Collectors.toList());
@@ -544,7 +556,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    private List<PMReviewStatus> getPrevStatusesForChangeStatus(PMReviewType reviewType, PMReviewStatus newStatus) {
+    private List<PMReviewStatus> getPrevStatusesForChangeStatus(PMReviewStatus newStatus) {
         switch (newStatus) {
             case DRAFT:
                 return List.of(DRAFT);
