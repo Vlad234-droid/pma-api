@@ -1,8 +1,11 @@
 package com.tesco.pma.colleague.profile.dao;
 
+import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
+import com.tesco.pma.pagination.RequestQuery;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -83,4 +86,11 @@ public interface ProfileDAO {
      */
     boolean isColleagueExists(@Param("uuid") UUID colleagueUuid);
 
+    /**
+     * Get colleague suggestions by full name
+     *
+     * @param requestQuery
+     * @return list colleagues
+     */
+    List<Colleague> findColleagueSuggestionsByFullName(@Param("requestQuery") RequestQuery requestQuery);
 }
