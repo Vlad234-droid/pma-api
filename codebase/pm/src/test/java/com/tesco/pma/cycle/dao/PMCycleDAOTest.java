@@ -45,6 +45,7 @@ class PMCycleDAOTest extends AbstractDAOTest {
     public static final String TEST_KEY = "TestKey";
     public static final String TEST_CYCLE_NAME = "TestCycleName";
     public static final String SDF_PATTERN = "yyyy-MM-dd";
+    public static final String UPDATED_NAME = "updated_name";
 
     private final BasicJsonTester json = new BasicJsonTester(getClass());
 
@@ -104,6 +105,16 @@ class PMCycleDAOTest extends AbstractDAOTest {
         var expectedJson = json.from(metadata);
         assertThat(expectedJson).isEqualToJson(actual.getJsonMetadata());
     }
+
+    @Test
+    @DataSet("pm_cycle_edit_init.xml")
+    @ExpectedDataSet(value = "pm_cycle_edit_expected.xml", compareOperation = CompareOperation.CONTAINS)
+    void update() {
+        var actualCycle = dao.read(CYCLE_UUID);
+        actualCycle.setName(UPDATED_NAME);
+        dao.update(actualCycle, null);
+    }
+
 
     private PMCycle createCycle(UUID uuid) {
 

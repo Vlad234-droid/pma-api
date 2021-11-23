@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -141,26 +140,21 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
     @Override
-    public PMCycle update(PMCycle uuid, Collection<PMCycleStatus> oldStatuses) {
-        throw new UnsupportedOperationException(NOT_IMPLEMENTED_YET);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<PMCycle> getByStatus(PMCycleStatus status) {
-        var cycles = cycleDAO.getByStatus(status);
-        if (null == cycles || cycles.isEmpty()) {
-            throw notFound(PM_CYCLE_NOT_FOUND,
-                    Map.of(STATUS_PARAMETER_NAME, status));
+    @Transactional
+    public PMCycle update(PMCycle cycle) {
+        var pmCycleStatusDictionaryFilter = UPDATE_STATUS_RULE_MAP.get(cycle.getStatus());
+        if (1 != cycleDAO.update(cycle, pmCycleStatusDictionaryFilter)) {
+            throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID,
+                    Map.of(CYCLE_UUID_PARAMETER_NAME, cycle.getUuid()));
         }
-        return cycles;
+        return cycle;
     }
 
     @Override
     @Transactional(readOnly = true)
     public PMCycle getCurrentByColleague(UUID colleagueUuid) {
-        DictionaryFilter<PMCycleStatus> activeFilter = DictionaryFilter.includeFilter(Set.of(ACTIVE));
-        List<PMCycle> cycles = cycleDAO.getByColleague(colleagueUuid, activeFilter);
+        var activeFilter = DictionaryFilter.includeFilter(Set.of(ACTIVE));
+        var cycles = cycleDAO.getByColleague(colleagueUuid, activeFilter);
         if (null == cycles || cycles.isEmpty()) {
             throw notFound(PM_CYCLE_NOT_FOUND_COLLEAGUE,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid));

@@ -5,6 +5,8 @@ import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.service.PMCycleService;
+import com.tesco.pma.exception.InvalidParameterException;
+import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_METADATA_NOT_FOUND;
@@ -60,11 +63,11 @@ public class PMCycleEndpoint {
     @Operation(summary = "Create performance cycle",
             description = "Performance cycle created",
             tags = {"performance-cycle"})
-    @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
+    @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Performance cycle created")
     @PostMapping(value = "/pm-cycles", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse<PMCycle> create(@RequestBody PMCycle cycle) {
-        return success(service.create(cycle, resolveUserName()));
+        return success(service.create(cycle, resolveUser()));
     }
 
     /**
@@ -76,13 +79,44 @@ public class PMCycleEndpoint {
     @Operation(summary = "Publish performance cycle",
             description = "Performance cycle published",
             tags = {"performance-cycle"})
-    @ApiResponse(responseCode = HttpStatusCodes.ACCEPTED, description = "Successful operation")
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "SPerformance cycle published")
     @PutMapping(value = "/pm-cycles/publish", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public RestResponse<PMCycle> publish(@RequestBody PMCycle cycle) {
 
-        return success(service.publish(cycle, resolveUserName()));
+        return success(service.publish(cycle, resolveUser()));
     }
+
+    /**
+     * {@code PUT  /pm-cycles/:uuid} : Updates an existing performance cycle.
+     *
+     * @param uuid  the uuid of the performance cycle to update.
+     * @param cycle the performance cycle to update.
+     * @return the {@link RestResponse} with status {@code 200 (OK)} and with body the updated performance cycle,
+     * or with status {@code 400 (Bad Request)} if the performance cycle is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the performance cycle couldn't be updated.
+     * @throws InvalidParameterException InvalidParameterException
+     * @throws InvalidPayloadException   InvalidPayloadException
+     */
+    @Operation(summary = "Updates an existing performance cycle",
+            description = "Performance cycle edited",
+            tags = {"performance-cycle"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle updated")
+    @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Invalid UUID")
+    @PutMapping(value = "/pm-cycles/{uuid}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public RestResponse<PMCycle> update(@PathVariable(value = "uuid", required = false) final UUID uuid,
+                                        @RequestBody PMCycle cycle) {
+        if (cycle.getUuid() == null) {
+            throw new InvalidPayloadException(HttpStatusCodes.BAD_REQUEST, "UUID must not be null", "pm-cycle.uuid");
+        }
+        if (!Objects.equals(uuid, cycle.getUuid())) {
+            throw new InvalidParameterException(HttpStatusCodes.BAD_REQUEST, "Path uuid does not match body uuid", "pm-cycle.uuid");
+        }
+
+        return success(service.update(cycle));
+    }
+
 
     /**
      * PATCH call to change PMCycle status
@@ -174,7 +208,7 @@ public class PMCycleEndpoint {
         return "{\"success\": true, \"data\": " + jsonMetadata + "}";
     }
 
-    private String resolveUserName() {
+    private String resolveUser() {
         //TODO change after security integration
         return DEFAULT_USER_UUID;
     }

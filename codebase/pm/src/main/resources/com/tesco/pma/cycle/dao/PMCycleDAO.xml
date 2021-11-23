@@ -81,6 +81,15 @@
         <include refid="addStatusIdCondition"/>
     </update>
 
+    <update id="update">
+        UPDATE pm_cycle
+        SET name = #{cycle.name},
+            start_time = #{cycle.startTime},
+            properties = #{cycle.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+            metadata   = #{cycle.metadata, jdbcType=OTHER, typeHandler=com.tesco.pma.cycle.dao.utils.PMCycleJsonbTypeHandler}
+        WHERE uuid = #{cycle.uuid}
+    </update>
+
 
     <select id="getAll" resultMap="cycleResultMap">
         SELECT uuid,
