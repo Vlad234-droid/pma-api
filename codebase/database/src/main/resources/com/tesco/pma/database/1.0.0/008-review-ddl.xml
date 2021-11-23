@@ -327,7 +327,7 @@
         <comment>Init table org_objective_status</comment>
         <insert tableName="action_type">
             <column name="id" value="1"/>
-            <column name="code" value="SAVE"/>
+            <column name="code" value="SAVE_AS_DRAFT"/>
             <column name="description" value="Save as draft"/>
         </insert>
         <insert tableName="action_type">
@@ -342,7 +342,7 @@
         </insert>
         <rollback>
             <delete tableName="action_type">
-                <where>code = 'SAVE'</where>
+                <where>code = 'SAVE_AS_DRAFT'</where>
             </delete>
             <delete tableName="action_type">
                 <where>code = 'PUBLISH'</where>

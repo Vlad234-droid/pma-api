@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum ActionType implements DictionaryItem<Integer> {
 
-    SAVE(1, "Save as draft"),
+    SAVE_AS_DRAFT(1, "Save as draft"),
     PUBLISH(2, "Publish"),
     UNPUBLISH(3, "Un-publish");
 

@@ -18,7 +18,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 import static com.tesco.pma.api.ActionType.PUBLISH;
-import static com.tesco.pma.api.ActionType.SAVE;
+import static com.tesco.pma.api.ActionType.SAVE_AS_DRAFT;
 import static com.tesco.pma.cycle.api.PMReviewStatus.APPROVED;
 import static com.tesco.pma.cycle.api.PMReviewStatus.WAITING_FOR_APPROVAL;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,7 +58,7 @@ class ReviewAuditLogDAOTest extends AbstractDAOTest {
     @DataSet("cleanup.xml")
     @ExpectedDataSet("org_objective_action_hi_expected_1.xml")
     void intLogOrgObjectiveAction() {
-        final var result = instance.intLogOrgObjectiveAction(SAVE, COLLEAGUE_UUID, UPDATE_TIME);
+        final var result = instance.intLogOrgObjectiveAction(SAVE_AS_DRAFT, COLLEAGUE_UUID, UPDATE_TIME);
         assertThat(result).isOne();
     }
 

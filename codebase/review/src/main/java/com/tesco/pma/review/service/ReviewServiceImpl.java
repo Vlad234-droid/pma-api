@@ -37,7 +37,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.tesco.pma.api.ActionType.PUBLISH;
-import static com.tesco.pma.api.ActionType.SAVE;
+import static com.tesco.pma.api.ActionType.SAVE_AS_DRAFT;
 import static com.tesco.pma.cycle.api.PMReviewStatus.APPROVED;
 import static com.tesco.pma.cycle.api.PMReviewStatus.COMPLETED;
 import static com.tesco.pma.cycle.api.PMReviewStatus.DECLINED;
@@ -513,7 +513,7 @@ public class ReviewServiceImpl implements ReviewService {
             }
 
         });
-        reviewAuditLogDAO.logOrgObjectiveAction(SAVE, loggedUserUuid);
+        reviewAuditLogDAO.logOrgObjectiveAction(SAVE_AS_DRAFT, loggedUserUuid);
         return results;
     }
 
