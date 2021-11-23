@@ -4,6 +4,7 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.ReviewDeletionException;
 import com.tesco.pma.review.LocalTestConfig;
+import com.tesco.pma.review.dao.OrgObjectiveDAO;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
 import com.tesco.pma.review.dao.ReviewDAO;
 import com.tesco.pma.review.domain.PMCycleReviewTypeProperties;
@@ -49,6 +50,9 @@ class ReviewServiceImplTest {
     private ReviewDAO mockReviewDAO;
 
     @MockBean
+    private OrgObjectiveDAO mockOrgObjective;
+
+    @MockBean
     private ReviewAuditLogDAO mockReviewAuditLogDAO;
 
     @MockBean
@@ -82,7 +86,7 @@ class ReviewServiceImplTest {
                 .status(DRAFT)
                 .build();
 
-        when(mockReviewDAO.updateReview(any(), any()))
+        when(mockReviewDAO.update(any(), any()))
                 .thenReturn(1);
         when(mockReviewDAO.getReview(any(), any(), any(), any()))
                 .thenReturn(beforeReview);
@@ -109,7 +113,7 @@ class ReviewServiceImplTest {
         when(mockReviewDAO.getPMCycleReviewTypeProperties(any(), any()))
                 .thenReturn(reviewTypeProperties);
 
-        when(mockReviewDAO.createReview(any(Review.class)))
+        when(mockReviewDAO.create(any(Review.class)))
                 .thenReturn(1);
 
         final var res = reviewService.createReview(expectedReview);

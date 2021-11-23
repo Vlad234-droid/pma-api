@@ -1,8 +1,8 @@
 <dataset>
-    <group_objective
+    <org_objective
             uuid="aab9ab0b-f50f-4442-8900-b03777ee0012"
-            business_unit_uuid="ffb9ab0b-f50f-4442-8900-b03777ee00ef"
             number="1"
+            status_id="1"
             title="Title #1"
             version="1"
     />

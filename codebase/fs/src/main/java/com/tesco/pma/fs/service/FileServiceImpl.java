@@ -42,7 +42,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     @Transactional
-    public File upload(File fileData, UploadMetadata uploadMetadata, String creatorId) {
+    public File upload(File fileData, UploadMetadata uploadMetadata, UUID creatorId) {
         fileData.setUuid(UUID.randomUUID());
 
         var currMomentInUTC = Instant.now();
