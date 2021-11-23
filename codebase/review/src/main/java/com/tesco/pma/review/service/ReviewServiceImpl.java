@@ -329,8 +329,6 @@ public class ReviewServiceImpl implements ReviewService {
                 if (null != reviewStatusCounter) {
                     timelinePoint.setStatus(reviewStatusCounter.getStatus());
                     timelinePoint.setCount(reviewStatusCounter.getCount());
-                } else {
-                    break;
                 }
             }
         }
