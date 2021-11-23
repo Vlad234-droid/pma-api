@@ -9,6 +9,7 @@ import com.tesco.pma.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,6 +53,7 @@ public class UserEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "User found")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "User not found")
     @GetMapping(path = "/me")
+    @PreAuthorize("hasAnyRole()")
     public RestResponse<User> getMe() {
         final var authentication = SecurityContextHolder.getContext().getAuthentication();
         final var userOptional = userService.findUserByAuthentication(authentication);

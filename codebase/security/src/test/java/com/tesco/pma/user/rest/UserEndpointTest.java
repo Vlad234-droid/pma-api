@@ -29,7 +29,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = UserEndpoint.class)
+@WebMvcTest(controllers = UserEndpoint.class, properties = {
+        "tesco.application.security.enabled=true"
+})
 class UserEndpointTest extends AbstractEndpointTest {
     static final EasyRandom RANDOM = new EasyRandom();
     static final String ERRORS_0_CODE_JSON_PATH = "$.errors[0].code";
@@ -101,7 +103,7 @@ class UserEndpointTest extends AbstractEndpointTest {
                 .thenReturn(Optional.of(user));
 
         mvc.perform(get("/users/me")
-                .with(user(user.getColleague().getColleagueUUID().toString()))
+                .with(colleagueWithSubject(user.getColleague().getColleagueUUID().toString()))
                 .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
@@ -114,22 +116,22 @@ class UserEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getMeNotFound() throws Exception {
-        final var userName = "test-user";
+        final var subject = randomUuid().toString();
         when(mockUserService.findUserByAuthentication(any()))
                 .thenReturn(Optional.empty());
 
         mvc.perform(get("/users/me")
-                .with(user(userName))
+                .with(colleagueWithSubject(subject))
                 .accept(APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath(ERRORS_0_CODE_JSON_PATH, equalTo(ErrorCodes.USER_NOT_FOUND.getCode())))
                 .andExpect(jsonPath("$.errors[0].message", containsString("authentication.name")))
-                .andExpect(jsonPath("$.errors[0].message", containsString(userName)));
+                .andExpect(jsonPath("$.errors[0].message", containsString(subject)));
 
         final var authenticationCaptor = ArgumentCaptor.forClass(Authentication.class);
         verify(mockUserService).findUserByAuthentication(authenticationCaptor.capture());
-        assertThat(authenticationCaptor.getValue().getName()).isEqualTo(userName);
+        assertThat(authenticationCaptor.getValue().getName()).isEqualTo(subject);
     }
 
     private UUID randomUuid() {
