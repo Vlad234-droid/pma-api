@@ -78,6 +78,7 @@ public interface ProfileService {
      *
      * @param colleagueUuid - colleague identifier
      * @return colleague object
+     * @throws com.tesco.pma.exception.NotFoundException if colleague is not present into DB
      */
     ColleagueEntity getColleague(UUID colleagueUuid);
 

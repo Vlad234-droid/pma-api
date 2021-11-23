@@ -230,4 +230,54 @@ public interface ReviewDAO {
      */
     List<PMCycleTimelinePoint> getTimeline(@Param("cycleUuid") UUID cycleUuid);
 
+    /**
+     * Creates record into shared_objective table
+     *
+     * @param managerUuid - manager identifier
+     * @param cycleUuid   - performance cycle identifier
+     * @return number of inserted rows
+     */
+    int shareManagerObjective(@Param("managerUuid") UUID managerUuid, @Param("cycleUuid") UUID cycleUuid);
+
+    /**
+     * Deletes record from shared_objective table
+     *
+     * @param managerUuid - manager identifier
+     * @param cycleUuid   - performance cycle identifier
+     * @return number of deleted rows
+     */
+    int stopSharingManagerObjective(@Param("managerUuid") UUID managerUuid, @Param("cycleUuid") UUID cycleUuid);
+
+    /**
+     * Check if record exists into shared_objective table
+     *
+     * @param managerUuid - manager identifier
+     * @param cycleUuid   - performance cycle identifier
+     * @return true/false
+     */
+    boolean isManagerShareObjectives(@Param("managerUuid") UUID managerUuid, @Param("cycleUuid") UUID cycleUuid);
+
+    /**
+     * Get list of approved objectives by manager and performance cycle
+     *
+     * @param managerUuid - manager identifier
+     * @param cycleUuid   - performance cycle identifier
+     * @return list of objectives
+     */
+    default List<Review> getManagerSharedObjectives(UUID managerUuid, UUID cycleUuid) {
+        return getReviewsByParams(managerUuid, cycleUuid, PMReviewType.OBJECTIVE, PMReviewStatus.APPROVED);
+    }
+
+    /**
+     * Returns a review by performance cycle, colleague, review type and status.
+     *
+     * @param colleagueUuid an identifier of colleague
+     * @param cycleUuid     an identifier of performance cycle
+     * @param reviewType    a review type
+     * @param reviewStatus  a review status
+     * @return a list of reviews
+     */
+    List<Review> getReviewsByParams(@Param("colleagueUuid") UUID colleagueUuid, @Param("cycleUuid") UUID cycleUuid,
+                                    @Param("type") PMReviewType reviewType, @Param("status") PMReviewStatus reviewStatus);
+
 }

@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
@@ -180,11 +181,11 @@ public class PMCycleServiceImpl implements PMCycleService {
     public PMCycle getCurrentByColleague(UUID colleagueUuid) {
         DictionaryFilter<PMCycleStatus> activeFilter = DictionaryFilter.includeFilter(Set.of(ACTIVE));
         List<PMCycle> result = cycleDAO.getByColleague(colleagueUuid, activeFilter);
-        if (result == null || result.isEmpty()) {
+        if (CollectionUtils.isEmpty(result)) {
             throw notFound(PM_CYCLE_NOT_FOUND_COLLEAGUE,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid));
         }
-        return result.iterator().next();
+        return CollectionUtils.firstElement(result);
     }
 
     @Override

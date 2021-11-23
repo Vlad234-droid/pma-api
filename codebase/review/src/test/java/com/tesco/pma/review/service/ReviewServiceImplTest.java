@@ -1,5 +1,6 @@
 package com.tesco.pma.review.service;
 
+import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.ReviewDeletionException;
@@ -53,6 +54,9 @@ class ReviewServiceImplTest {
 
     @MockBean
     private PMCycleService pmCycleService;
+
+    @MockBean
+    private ProfileService profileService;
 
     @SpyBean
     private ReviewServiceImpl reviewService;

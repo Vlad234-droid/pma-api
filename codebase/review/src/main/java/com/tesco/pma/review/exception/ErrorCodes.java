@@ -67,7 +67,15 @@ public enum ErrorCodes implements ErrorCodeAware {
     /**
      * Min review's number limit reached
      */
-    CANNOT_DELETE_REVIEW_COUNT_CONSTRAINT;
+    CANNOT_DELETE_REVIEW_COUNT_CONSTRAINT,
+    /**
+     * Objective sharing already enabled
+     */
+    OBJECTIVE_SHARING_ALREADY_ENABLED,
+    /**
+     * Objective sharing was not enabled
+     */
+    OBJECTIVE_SHARING_NOT_ENABLED;
 
     @Override
     public String getCode() {

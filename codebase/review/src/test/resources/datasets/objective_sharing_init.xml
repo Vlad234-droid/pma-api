@@ -1,0 +1,68 @@
+<dataset>
+
+    <job id="1" code="TL" name="Team lead" cost_category="cc"/>
+
+    <country name="GB" code="GB"/>
+
+    <work_level name="WL1" code="WL1"/>
+
+    <department id="1" name="Bank" business_type="Bank"/>
+
+    <colleague uuid="10000000-0000-0000-0000-000000000001"
+               first_name="first_name"
+               middle_name="middle_name"
+               last_name="last_name"
+               email="test@test"
+               primary_entity="Tesco Bank"
+               salary_frequency="ANNUAL"
+               iam_source="Test"
+               iam_id="string 1"
+               job_id="1"
+               country_code="GB"
+               work_level="WL1"
+               department_id="1"/>
+
+    <colleague uuid="10000000-0000-0000-0000-000000000002"
+               first_name="first_name"
+               middle_name="middle_name"
+               last_name="last_name"
+               email="test@test"
+               primary_entity="Tesco Bank"
+               salary_frequency="ANNUAL"
+               iam_source="Test"
+               iam_id="string 2"
+               job_id="1"
+               country_code="GB"
+               work_level="WL1"
+               department_id="1"/>
+
+    <shared_objective manager_uuid="10000000-0000-0000-0000-000000000002"
+                      cycle_uuid="0c5d9cb1-22cf-4fcd-a19a-9e70df6bc941"/>
+
+    <review
+            uuid="ddb9ab0b-f50f-4442-8900-b03777ee0012"
+            colleague_uuid="10000000-0000-0000-0000-000000000002"
+            performance_cycle_uuid="0c5d9cb1-22cf-4fcd-a19a-9e70df6bc941"
+            type_id="1"
+            number="1"
+            properties="{&quot;title&quot;: &quot;Title init&quot;,
+                         &quot;description&quot;: &quot;Description init&quot;,
+                         &quot;meets&quot;: &quot;Meets init&quot;,
+                         &quot;exceeds&quot;: &quot;Exceeds init&quot;}"
+            status_id="3"
+    />
+
+    <review
+            uuid="ddb9ab0b-f50f-4442-8900-b03777ee0014"
+            colleague_uuid="10000000-0000-0000-0000-000000000002"
+            performance_cycle_uuid="0c5d9cb1-22cf-4fcd-a19a-9e70df6bc941"
+            type_id="1"
+            number="2"
+            properties="{&quot;title&quot;: &quot;Title init&quot;,
+                         &quot;description&quot;: &quot;Description init&quot;,
+                         &quot;meets&quot;: &quot;Meets init&quot;,
+                         &quot;exceeds&quot;: &quot;Exceeds init&quot;}"
+            status_id="1"
+    />
+
+</dataset>

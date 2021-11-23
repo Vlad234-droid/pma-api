@@ -185,4 +185,37 @@ public interface ReviewService {
      * @throws NotFoundException if timeline doesn't exist.
      */
     List<PMCycleTimelinePoint> getCycleTimelineByColleague(UUID colleagueUuid);
+
+    /**
+     * Enable sharing manager's objectives
+     *
+     * @param managerUuid - manager identifier
+     * @param cycleUuid   - performance cycle identifier
+     */
+    void shareManagerObjective(UUID managerUuid, UUID cycleUuid);
+
+    /**
+     * Disable sharing manager's objectives
+     *
+     * @param managerUuid - manager identifier
+     * @param cycleUuid   - performance cycle identifier
+     */
+    void stopSharingManagerObjective(UUID managerUuid, UUID cycleUuid);
+
+    /**
+     * Check if manager enable sharing objectives
+     *
+     * @param managerUuid - manager identifier
+     * @param cycleUuid   - performance cycle identifier
+     * @return true/false
+     */
+    boolean isManagerShareObjectives(UUID managerUuid, UUID cycleUuid);
+
+    /**
+     * Get list of manager's shared approved objectives for colleague
+     *
+     * @param colleagueUuid - colleague identifier
+     * @return list of shared approved objectives
+     */
+    List<Review> getSharedObjectivesForColleague(UUID colleagueUuid);
 }

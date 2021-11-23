@@ -1,5 +1,7 @@
 package com.tesco.pma.review.service;
 
+import com.tesco.pma.colleague.profile.exception.ErrorCodes;
+import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMReviewStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
@@ -10,6 +12,7 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.ReviewCreationException;
 import com.tesco.pma.exception.ReviewDeletionException;
 import com.tesco.pma.exception.ReviewUpdateException;
+import com.tesco.pma.logging.LogFormatter;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
 import com.tesco.pma.review.dao.ReviewDAO;
 import com.tesco.pma.review.domain.ColleagueTimeline;
@@ -19,6 +22,7 @@ import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStatusCounter;
 import com.tesco.pma.review.domain.WorkingGroupObjective;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +51,8 @@ import static com.tesco.pma.review.exception.ErrorCodes.GROUP_OBJECTIVES_NOT_FOU
 import static com.tesco.pma.review.exception.ErrorCodes.GROUP_OBJECTIVE_ALREADY_EXISTS;
 import static com.tesco.pma.review.exception.ErrorCodes.MAX_REVIEW_NUMBER_CONSTRAINT_VIOLATION;
 import static com.tesco.pma.review.exception.ErrorCodes.MIN_REVIEW_NUMBER_CONSTRAINT_VIOLATION;
+import static com.tesco.pma.review.exception.ErrorCodes.OBJECTIVE_SHARING_ALREADY_ENABLED;
+import static com.tesco.pma.review.exception.ErrorCodes.OBJECTIVE_SHARING_NOT_ENABLED;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND_BY_MANAGER;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND_FOR_STATUS_UPDATE;
@@ -61,6 +67,7 @@ import static java.time.Instant.now;
 /**
  * Implementation of {@link ReviewService}.
  */
+@Slf4j
 @Service
 @Validated
 @RequiredArgsConstructor
@@ -69,6 +76,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewAuditLogDAO reviewAuditLogDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final PMCycleService pmCycleService;
+    private final ProfileService profileService;
 
     private static final String REVIEW_UUID_PARAMETER_NAME = "reviewUuid";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
@@ -384,6 +392,52 @@ public class ReviewServiceImpl implements ReviewService {
             }
         }
         return cycleTimeline;
+    }
+
+    @Override
+    public void shareManagerObjective(UUID managerUuid, UUID cycleUuid) {
+        try {
+            reviewDAO.shareManagerObjective(managerUuid, cycleUuid);
+        } catch (DuplicateKeyException e) {
+            throw databaseConstraintViolation(
+                    OBJECTIVE_SHARING_ALREADY_ENABLED,
+                    Map.of(MANAGER_UUID_PARAMETER_NAME, managerUuid,
+                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, cycleUuid),
+                    e);
+        }
+
+    }
+
+    @Override
+    public void stopSharingManagerObjective(UUID managerUuid, UUID cycleUuid) {
+        var removed = reviewDAO.stopSharingManagerObjective(managerUuid, cycleUuid);
+        if (1 != removed) {
+            throw notFound(OBJECTIVE_SHARING_NOT_ENABLED,
+                    Map.of(MANAGER_UUID_PARAMETER_NAME, managerUuid,
+                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, cycleUuid), null);
+        }
+    }
+
+    @Override
+    public boolean isManagerShareObjectives(UUID managerUuid, UUID cycleUuid) {
+        return reviewDAO.isManagerShareObjectives(managerUuid, cycleUuid);
+    }
+
+    @Override
+    public List<Review> getSharedObjectivesForColleague(UUID colleagueUuid) {
+        var managerUuid = profileService.getColleague(colleagueUuid).getManagerUuid();
+        if (managerUuid == null) {
+            log.warn(LogFormatter.formatMessage(ErrorCodes.COLLEAGUES_MANAGER_NOT_FOUND,
+                    String.format("Colleague's %s manager is null", colleagueUuid)));
+            return Collections.emptyList();
+        }
+        var cycle = pmCycleService.getCurrentByColleague(managerUuid);
+        if (!isManagerShareObjectives(managerUuid, cycle.getUuid())) {
+            log.warn(LogFormatter.formatMessage(messageSourceAccessor, OBJECTIVE_SHARING_NOT_ENABLED,
+                    Map.of(MANAGER_UUID_PARAMETER_NAME, managerUuid, PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, cycle.getUuid())));
+            return Collections.emptyList();
+        }
+        return reviewDAO.getManagerSharedObjectives(managerUuid, cycle.getUuid());
     }
 
     private ReviewStatusCounter getTimelineReviewStatusCounter(UUID cycleUuid, UUID colleagueUuid, PMReviewType reviewType) {
