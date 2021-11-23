@@ -14,8 +14,8 @@
     <bpmn:subProcess id="Activity_1bu82ro" name="Objectives">
       <bpmn:extensionElements>
         <camunda:properties>
-          <camunda:property name="pm_review_min" value="3" />
-          <camunda:property name="pm_review_max" value="3" />
+          <camunda:property name="pm_review_min" value="5" />
+          <camunda:property name="pm_review_max" value="5" />
           <camunda:property name="pm_review_type" value="objective" />
           <camunda:property name="pm_type" value="review" />
           <camunda:property name="pm_form_key" value="forms/type_2_objective.form" />

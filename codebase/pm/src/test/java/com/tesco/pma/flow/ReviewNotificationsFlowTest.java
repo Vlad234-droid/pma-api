@@ -23,13 +23,13 @@ import org.springframework.test.context.ActiveProfiles;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
 
-    public static final String DECISION_TABLE_TASK = "decision_table";
+    private static final String DECISION_TABLE_TASK = "decision_table";
 
-    public static final String PM_REVIEW_SUBMITTED = "PM_REVIEW_SUBMITTED";
-    public static final String PM_REVIEW_APPROVED = "PM_REVIEW_APPROVED";
-    public static final String PM_REVIEW_DECLINED = "PM_REVIEW_DECLINED";
-    public static final String PM_REVIEW_BEFORE_START = "PM_REVIEW_BEFORE_START";
-    public static final String PM_REVIEW_BEFORE_END = "PM_REVIEW_BEFORE_END";
+    private static final String PM_REVIEW_SUBMITTED = "PM_REVIEW_SUBMITTED";
+    private static final String PM_REVIEW_APPROVED = "PM_REVIEW_APPROVED";
+    private static final String PM_REVIEW_DECLINED = "PM_REVIEW_DECLINED";
+    private static final String PM_REVIEW_BEFORE_START = "PM_REVIEW_BEFORE_START";
+    private static final String PM_REVIEW_BEFORE_END = "PM_REVIEW_BEFORE_END";
 
     @SpyBean(name = "initReviewNotification")
     private InitReviewNotification initTask;
