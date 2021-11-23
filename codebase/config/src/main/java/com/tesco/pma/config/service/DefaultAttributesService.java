@@ -1,4 +1,4 @@
-package com.tesco.pma.colleague.config.service;
+package com.tesco.pma.config.service;
 
 import java.util.UUID;
 

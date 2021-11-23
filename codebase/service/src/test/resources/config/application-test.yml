@@ -54,7 +54,7 @@ spring:
                               com.tesco.pma.colleague.security.domain,
                               com.tesco.pma.notes.model,
                               com.tesco.pma.fs.domain,
-                              com.tesco.pma.colleague.config.domain
+                              com.tesco.pma.config.domain
         configuration-properties:
           base-package: com.tesco.pma.dao,
                         com.tesco.pma.colleague.profile.dao,
@@ -64,7 +64,7 @@ spring:
                         com.tesco.pma.colleague.security.dao,
                         com.tesco.pma.notes.dao,
                         com.tesco.pma.fs.dao,
-                        com.tesco.pma.colleague.config.dao
+                        com.tesco.pma.config.dao
           batchSize: 100
     postgres-version: 11.11
     testdb:

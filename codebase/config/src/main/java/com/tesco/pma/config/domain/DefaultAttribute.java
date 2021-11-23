@@ -1,4 +1,4 @@
-package com.tesco.pma.colleague.config.domain;
+package com.tesco.pma.config.domain;
 
 import lombok.Data;
 

@@ -1,15 +1,15 @@
-package com.tesco.pma.colleague.config.service;
+package com.tesco.pma.config.service;
 
 import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
-import com.tesco.pma.colleague.config.dao.DefaultAttributesDAO;
-import com.tesco.pma.colleague.config.domain.DefaultAttributeCategory;
-import com.tesco.pma.colleague.config.domain.DefaultAttributeCriteria;
-import com.tesco.pma.colleague.config.domain.DefaultAttribute;
-import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.domain.AttributeType;
+import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.exception.ErrorCodes;
 import com.tesco.pma.colleague.profile.service.ProfileService;
+import com.tesco.pma.config.dao.DefaultAttributesDAO;
+import com.tesco.pma.config.domain.DefaultAttribute;
+import com.tesco.pma.config.domain.DefaultAttributeCategory;
+import com.tesco.pma.config.domain.DefaultAttributeCriteria;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.model.PMElementType;

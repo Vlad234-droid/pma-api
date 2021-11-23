@@ -1,8 +1,8 @@
-package com.tesco.pma.colleague.config.dao;
+package com.tesco.pma.config.dao;
 
-import com.tesco.pma.colleague.config.domain.DefaultAttribute;
-import com.tesco.pma.colleague.config.domain.DefaultAttributeCategory;
-import com.tesco.pma.colleague.config.domain.DefaultAttributeCriteria;
+import com.tesco.pma.config.domain.DefaultAttribute;
+import com.tesco.pma.config.domain.DefaultAttributeCategory;
+import com.tesco.pma.config.domain.DefaultAttributeCriteria;
 import com.tesco.pma.dao.AbstractDAOTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DefaultAttributesDAOTest extends AbstractDAOTest {
