@@ -184,39 +184,51 @@ public abstract class AbstractEndpointTest {
     }
 
     protected RequestPostProcessor colleague() {
-        return SecurityMockMvcRequestPostProcessors.jwt()
-                .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.COLLEAGUE));
+        return initRequestPostProcessor(UserRoleNames.COLLEAGUE);
     }
 
-    protected RequestPostProcessor colleagueWithSubject(String subject) {
-        return SecurityMockMvcRequestPostProcessors.jwt()
-                .jwt(builder -> builder.subject(subject))
-                .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.COLLEAGUE));
+    protected RequestPostProcessor colleague(String subject) {
+        return initRequestPostProcessor(UserRoleNames.COLLEAGUE, subject);
     }
 
     protected RequestPostProcessor admin() {
-        return SecurityMockMvcRequestPostProcessors.jwt()
-                .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.ADMIN));
+        return initRequestPostProcessor(UserRoleNames.ADMIN);
+    }
+
+    protected RequestPostProcessor admin(String subject) {
+        return initRequestPostProcessor(UserRoleNames.ADMIN, subject);
     }
 
     protected RequestPostProcessor lineManager() {
-        return SecurityMockMvcRequestPostProcessors.jwt()
-                .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.LINE_MANAGER));
+        return initRequestPostProcessor(UserRoleNames.LINE_MANAGER);
+    }
+
+    protected RequestPostProcessor lineManager(String subject) {
+        return initRequestPostProcessor(UserRoleNames.LINE_MANAGER, subject);
     }
 
     protected RequestPostProcessor peopleTeam() {
-        return SecurityMockMvcRequestPostProcessors.jwt()
-                .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.PEOPLE_TEAM));
+        return initRequestPostProcessor(UserRoleNames.PEOPLE_TEAM);
+    }
+
+    protected RequestPostProcessor peopleTeam(String subject) {
+        return initRequestPostProcessor(UserRoleNames.PEOPLE_TEAM, subject);
     }
 
     protected RequestPostProcessor talentAdmin() {
-        return SecurityMockMvcRequestPostProcessors.jwt()
-                .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.TALENT_ADMIN));
+        return initRequestPostProcessor(UserRoleNames.TALENT_ADMIN);
+    }
+
+    protected RequestPostProcessor talentAdmin(String subject) {
+        return initRequestPostProcessor(UserRoleNames.TALENT_ADMIN, subject);
     }
 
     protected RequestPostProcessor processManager() {
-        return SecurityMockMvcRequestPostProcessors.jwt()
-                .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.PROCESS_MANAGER));
+        return initRequestPostProcessor(UserRoleNames.PROCESS_MANAGER);
+    }
+
+    protected RequestPostProcessor processManager(String subject) {
+        return initRequestPostProcessor(UserRoleNames.PROCESS_MANAGER, subject);
     }
 
     protected RequestPostProcessor allRoles() {
@@ -229,6 +241,16 @@ public abstract class AbstractEndpointTest {
         var authorities = Arrays.stream(roles).filter(Objects::nonNull).map(role -> "ROLE_" + role).collect(Collectors.toList());
         return SecurityMockMvcRequestPostProcessors.jwt()
                 .authorities(AuthorityUtils.createAuthorityList(authorities.toArray(new String[0])));
+    }
+
+    private RequestPostProcessor initRequestPostProcessor(String role) {
+        return initRequestPostProcessor(role, "user");
+    }
+
+    private RequestPostProcessor initRequestPostProcessor(String role, String subject) {
+        return SecurityMockMvcRequestPostProcessors.jwt()
+                .jwt(builder -> builder.subject(subject))
+                .authorities(AuthorityUtils.createAuthorityList("ROLE_" + role));
     }
 
     protected RequestPostProcessor security(String role) {

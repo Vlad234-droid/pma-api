@@ -114,7 +114,7 @@ class UserEndpointTest extends AbstractEndpointTest {
                 .thenReturn(Optional.of(user));
 
         mvc.perform(get("/users/me")
-                        .with(colleagueWithSubject(user.getColleague().getColleagueUUID().toString()))
+                        .with(colleague(user.getColleague().getColleagueUUID().toString()))
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
@@ -132,7 +132,7 @@ class UserEndpointTest extends AbstractEndpointTest {
                 .thenReturn(Optional.empty());
 
         mvc.perform(get("/users/me")
-                        .with(colleagueWithSubject(subject))
+                        .with(colleague(subject))
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(APPLICATION_JSON))
