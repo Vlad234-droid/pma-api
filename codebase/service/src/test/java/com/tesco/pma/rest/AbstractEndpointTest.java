@@ -21,7 +21,10 @@ import java.io.UnsupportedEncodingException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -201,6 +204,36 @@ public abstract class AbstractEndpointTest {
                 .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.LINE_MANAGER));
     }
 
+    protected RequestPostProcessor peopleTeam() {
+        return SecurityMockMvcRequestPostProcessors.jwt()
+                .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.PEOPLE_TEAM));
+    }
+
+    protected RequestPostProcessor talentAdmin() {
+        return SecurityMockMvcRequestPostProcessors.jwt()
+                .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.TALENT_ADMIN));
+    }
+
+    protected RequestPostProcessor processManager() {
+        return SecurityMockMvcRequestPostProcessors.jwt()
+                .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.PROCESS_MANAGER));
+    }
+
+    protected RequestPostProcessor allRoles() {
+        String authorityString = UserRoleNames.ALL.stream().map(role -> "ROLE_" + role).collect(Collectors.joining(","));
+        return SecurityMockMvcRequestPostProcessors.jwt()
+                .authorities(AuthorityUtils.commaSeparatedStringToAuthorityList(authorityString));
+    }
+
+    protected RequestPostProcessor roles(String... roles) {
+        List<String> authorities = new ArrayList<>(roles.length);
+        for (String role : roles) {
+            authorities.add("ROLE_" + role);
+        }
+        return SecurityMockMvcRequestPostProcessors.jwt()
+                .authorities(AuthorityUtils.createAuthorityList(authorities.toArray(new String[0])));
+    }
+
     protected RequestPostProcessor security(String role) {
         final RequestPostProcessor requestPostProcessor;
         switch (role) {
@@ -212,6 +245,15 @@ public abstract class AbstractEndpointTest {
                 break;
             case UserRoleNames.LINE_MANAGER:
                 requestPostProcessor = lineManager();
+                break;
+            case UserRoleNames.PEOPLE_TEAM:
+                requestPostProcessor = peopleTeam();
+                break;
+            case UserRoleNames.TALENT_ADMIN:
+                requestPostProcessor = talentAdmin();
+                break;
+            case UserRoleNames.PROCESS_MANAGER:
+                requestPostProcessor = processManager();
                 break;
             case "Anonymous":
                 requestPostProcessor = SecurityMockMvcRequestPostProcessors.anonymous();
