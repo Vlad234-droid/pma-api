@@ -3,12 +3,10 @@ package com.tesco.pma.review.dao;
 import com.tesco.pma.cycle.api.PMReviewStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.review.domain.ColleagueTimeline;
-import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.PMCycleReviewTypeProperties;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStats;
-import com.tesco.pma.review.domain.WorkingGroupObjective;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
@@ -16,57 +14,9 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Interface to perform database operation on objective
+ * Interface to perform database operation on reviews
  */
 public interface ReviewDAO {
-
-    /**
-     * Returns a group objective
-     *
-     * @param groupObjectiveUuid an identifier
-     * @return a GroupObjective
-     */
-    GroupObjective getGroupObjective(@Param("groupObjectiveUuid") UUID groupObjectiveUuid);
-
-    /**
-     * Returns a list of group objectives for max version
-     *
-     * @param businessUnitUuid an identifier of business unit
-     * @return a list of Group Objectives for max version
-     */
-    List<GroupObjective> getGroupObjectivesByBusinessUnitUuid(@Param("businessUnitUuid") UUID businessUnitUuid);
-
-    /**
-     * Returns a list of working group objectives
-     *
-     * @param businessUnitUuid an identifier of business unit
-     * @return a list of Group Objectives
-     */
-    List<GroupObjective> getWorkingGroupObjectivesByBusinessUnitUuid(@Param("businessUnitUuid") UUID businessUnitUuid);
-
-    /**
-     * Creates a group objective
-     *
-     * @param groupObjective a GroupObjective
-     * @return number of created group objectives
-     */
-    int createGroupObjective(@Param("groupObjective") GroupObjective groupObjective);
-
-    /**
-     * Delete a group objective
-     *
-     * @param groupObjectiveUuid an identifier
-     * @return number of deleted group objectives
-     */
-    int deleteGroupObjective(@Param("groupObjectiveUuid") UUID groupObjectiveUuid);
-
-    /**
-     * Returns max version of group objectives
-     *
-     * @param businessUnitUuid an identifier of business unit
-     * @return max version of group objectives
-     */
-    int getMaxVersionGroupObjective(@Param("businessUnitUuid") UUID businessUnitUuid);
 
     /**
      * Returns a review by performance cycle, colleague, review type and sequence number.
@@ -116,7 +66,7 @@ public interface ReviewDAO {
      * @param review a Review
      * @return number of created reviews
      */
-    int createReview(@Param("review") Review review);
+    int create(@Param("review") Review review);
 
     /**
      * Update a review
@@ -124,8 +74,8 @@ public interface ReviewDAO {
      * @param review a Review
      * @return number of updated reviews
      */
-    int updateReview(@Param("review") Review review,
-                     @Param("allowedReviewStatuses") Collection<PMReviewStatus> allowedReviewStatuses);
+    int update(@Param("review") Review review,
+               @Param("allowedReviewStatuses") Collection<PMReviewStatus> allowedReviewStatuses);
 
     /**
      * Updates a review status
@@ -174,30 +124,6 @@ public interface ReviewDAO {
                           @Param("colleagueUuid") UUID colleagueUuid,
                           @Param("type") PMReviewType type,
                           @Param("startNumber") Integer startNumber);
-
-    /**
-     * Insert or update a working group objective
-     *
-     * @param workingGroupObjective a WorkingGroupObjective
-     * @return number of inserted or updated working group objectives
-     */
-    int insertOrUpdateWorkingGroupObjective(@Param("workingGroupObjective") WorkingGroupObjective workingGroupObjective);
-
-    /**
-     * Returns a working group objective
-     *
-     * @param businessUnitUuid an identifier of business unit
-     * @return a WorkingGroupObjective
-     */
-    WorkingGroupObjective getWorkingGroupObjective(@Param("businessUnitUuid") UUID businessUnitUuid);
-
-    /**
-     * Delete a working group objective
-     *
-     * @param businessUnitUuid an identifier of business unit
-     * @return number of deleted working group objectives
-     */
-    int deleteWorkingGroupObjective(@Param("businessUnitUuid") UUID businessUnitUuid);
 
     /**
      * Returns properties of review type by PM cycleUuid and review type

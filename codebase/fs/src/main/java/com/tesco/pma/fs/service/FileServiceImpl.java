@@ -10,11 +10,13 @@ import com.tesco.pma.fs.domain.File;
 import com.tesco.pma.fs.domain.UploadMetadata;
 import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
+import com.tesco.pma.pagination.Sort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +27,7 @@ import static com.tesco.pma.exception.ErrorCodes.ERROR_FILE_NOT_FOUND;
 import static com.tesco.pma.fs.api.FileStatus.DRAFT;
 import static com.tesco.pma.fs.exception.ErrorCodes.ERROR_FILE_REGISTRATION_FAILED;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
+import static com.tesco.pma.pagination.Sort.SortOrder.DESC;
 
 /**
  * File service implementation
@@ -39,7 +42,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     @Transactional
-    public File upload(File fileData, UploadMetadata uploadMetadata, String creatorId) {
+    public File upload(File fileData, UploadMetadata uploadMetadata, UUID creatorId) {
         fileData.setUuid(UUID.randomUUID());
 
         var currMomentInUTC = Instant.now();
@@ -70,7 +73,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public List<File> get(RequestQuery requestQuery, boolean includeFileContent) {
+    public List<File> get(RequestQuery requestQuery, boolean includeFileContent, boolean latest) {
         var statusFilters = Arrays.asList(
                 toDictionaryFilterConverter.convert(requestQuery, true, "status", FileStatus.class),
                 toDictionaryFilterConverter.convert(requestQuery, false, "status", FileStatus.class)
@@ -81,7 +84,7 @@ public class FileServiceImpl implements FileService {
                 toDictionaryFilterConverter.convert(requestQuery, false, "type", FileType.class)
         );
 
-        return fileDao.findByRequestQuery(requestQuery, statusFilters, typeFilters, includeFileContent);
+        return fileDao.findByRequestQuery(requestQuery, statusFilters, typeFilters, includeFileContent, latest);
     }
 
     @Override
@@ -90,8 +93,19 @@ public class FileServiceImpl implements FileService {
         requestQuery.setFilters(Arrays.asList(new Condition("path", EQUALS, path),
                                               new Condition("file-name", EQUALS, fileName)));
 
-        return get(requestQuery, includeFileContent).stream()
+        return get(requestQuery, includeFileContent, true).stream()
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException(ERROR_FILE_NOT_FOUND.name(), "File was not found", fileName));
+    }
+
+    @Override
+    public List<File> getAllVersions(@NotNull String path, @NotNull String fileName, boolean includeFileContent) {
+        var requestQuery = new RequestQuery();
+        requestQuery.setFilters(Arrays.asList(new Condition("path", EQUALS, path),
+                new Condition("file-name", EQUALS, fileName)));
+        requestQuery.setLimit(null);
+        requestQuery.setSort(Arrays.asList(new Sort("version", DESC)));
+
+        return get(requestQuery, includeFileContent, false);
     }
 }

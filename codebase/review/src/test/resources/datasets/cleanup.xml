@@ -1,7 +1,9 @@
 <dataset>
-    <group_objective/>
+    <org_objective/>
     <review_link/>
     <review/>
-    <working_group_objective/>
     <pm_cycle/>
+    <org_objective_action_hi/>
+    <review_change_status_hi/>
+    <colleague/>
 </dataset>

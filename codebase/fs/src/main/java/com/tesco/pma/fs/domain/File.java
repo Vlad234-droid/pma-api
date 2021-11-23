@@ -30,7 +30,7 @@ public class File extends UploadMetadata implements Identified<UUID> {
 
     Integer fileLength;
 
-    String createdBy;
+    UUID createdBy;
 
     Instant createdTime;
 

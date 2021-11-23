@@ -12,6 +12,7 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.logging.LogFormatter;
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.service.colleague.ColleagueApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,12 +22,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
 
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_NOT_FOUND;
 
@@ -140,6 +141,11 @@ public class ProfileServiceImpl implements ProfileService {
             throw notFound("uuid", colleagueUuid);
         }
         return colleague;
+    }
+
+    @Override
+    public List<Colleague> getSuggestions(RequestQuery requestQuery) {
+        return profileDAO.findColleagueSuggestionsByFullName(requestQuery);
     }
 
     @Override
