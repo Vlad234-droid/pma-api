@@ -120,24 +120,28 @@
         WHERE c.iam_id = #{iamId}
     </select>
 
-    <insert id="saveWorkLevel" flushCache="true">
-        INSERT INTO work_level(code, name)
-        VALUES (#{workLevel.code}, #{workLevel.name}) ON CONFLICT(code) DO NOTHING
+    <insert id="updateWorkLevel" flushCache="true">
+        INSERT INTO work_level (code, name)
+        VALUES (#{workLevel.code}, #{workLevel.name}) ON CONFLICT (code) DO
+        UPDATE SET name = EXCLUDED.name
     </insert>
 
-    <insert id="saveCountry" flushCache="true">
-        INSERT INTO country(code, name)
-        VALUES (#{country.code}, #{country.name}) ON CONFLICT(code) DO NOTHING
+    <insert id="updateCountry" flushCache="true">
+        INSERT INTO country (code, name)
+        VALUES (#{country.code}, #{country.name}) ON CONFLICT (code) DO
+        UPDATE SET name = EXCLUDED.name
     </insert>
 
-    <insert id="saveDepartment" flushCache="true">
-        INSERT INTO department(id, name, business_type)
-        VALUES (#{department.id}, #{department.name}, #{department.businessType}) ON CONFLICT(id) DO NOTHING
+    <insert id="updateDepartment" flushCache="true">
+        INSERT INTO department (id, name, business_type)
+        VALUES (#{department.id}, #{department.name}, #{department.businessType}) ON CONFLICT (id) DO
+        UPDATE SET (name, business_type) = (EXCLUDED.name, EXCLUDED.business_type)
     </insert>
 
-    <insert id="saveJob" flushCache="true">
-        INSERT INTO job(id, code, name, cost_category)
-        VALUES (#{job.id}, #{job.code}, #{job.name}, #{job.costCategory}) ON CONFLICT(id) DO NOTHING
+    <insert id="updateJob" flushCache="true">
+        INSERT INTO job (id, code, name, cost_category)
+        VALUES (#{job.id}, #{job.code}, #{job.name}, #{job.costCategory}) ON CONFLICT (id) DO
+        UPDATE SET (code, name, cost_category) = (EXCLUDED.code, EXCLUDED.name, EXCLUDED.cost_category)
     </insert>
 
     <insert id="saveColleague" flushCache="true">
@@ -176,31 +180,31 @@
 
     <select id="findColleagueSuggestionsByFullName" resultMap="colleagueApiMap">
         SELECT
-            c.uuid,
-            c.first_name as p_firstName,
-            c.middle_name as p_middleName,
-            c.last_name as p_lastName,
-            c.email as c_email,
-            c.primary_entity,
-            c.salary_frequency,
-            c.iam_source,
-            c.iam_id,
-            c.manager_uuid,
-            c.employment_type,
-            c.hire_date as sd_hireDate,
-            c.leaving_date as sd_leavingDate,
-            c.is_manager,
-            j.id            as j_id,
-            j.code          as j_code,
-            j.name          as j_name,
-            j.cost_category as j_costCategory,
-            co.code         as co_code,
-            co.name         as co_name,
-            wl.code         as wl_code,
-            wl.name         as wl_name,
-            d.id            as d_id,
-            d.name          as d_name,
-            d.business_type as d_businessType
+        c.uuid,
+        c.first_name as p_firstName,
+        c.middle_name as p_middleName,
+        c.last_name as p_lastName,
+        c.email as c_email,
+        c.primary_entity,
+        c.salary_frequency,
+        c.iam_source,
+        c.iam_id,
+        c.manager_uuid,
+        c.employment_type,
+        c.hire_date as sd_hireDate,
+        c.leaving_date as sd_leavingDate,
+        c.is_manager,
+        j.id            as j_id,
+        j.code          as j_code,
+        j.name          as j_name,
+        j.cost_category as j_costCategory,
+        co.code         as co_code,
+        co.name         as co_name,
+        wl.code         as wl_code,
+        wl.name         as wl_name,
+        d.id            as d_id,
+        d.name          as d_name,
+        d.business_type as d_businessType
 
         FROM colleague c
         JOIN job j ON j.id = c.job_id
@@ -209,29 +213,29 @@
         JOIN department d ON d.id = c.department_id
 
         WHERE
-            <if test="!requestQuery.filters.isEmpty()">
-                <foreach collection="requestQuery.filters" item="filter" index="index" open="(" separator=" OR " close=")">
-                    <if test="filter.property == 'firstName' or filter.property == 'middleName' or filter.property == 'lastName'">
-                        <choose>
-                            <when test="filter.operand.name == 'LIKE'">
-                                UPPER(<include refid="getFilterField"/>) like UPPER('%${filter.value}%')
-                            </when>
-                            <when test="filter.operand.name == 'EQUALS'">
-                                UPPER(<include refid="getFilterField"/>) = UPPER(#{filter.value})
-                            </when>
-                        </choose>
+        <if test="!requestQuery.filters.isEmpty()">
+            <foreach collection="requestQuery.filters" item="filter" index="index" open="(" separator=" OR " close=")">
+                <if test="filter.property == 'firstName' or filter.property == 'middleName' or filter.property == 'lastName'">
+                    <choose>
+                        <when test="filter.operand.name == 'LIKE'">
+                            UPPER(<include refid="getFilterField"/>) like UPPER('%${filter.value}%')
+                        </when>
+                        <when test="filter.operand.name == 'EQUALS'">
+                            UPPER(<include refid="getFilterField"/>) = UPPER(#{filter.value})
+                        </when>
+                    </choose>
+                </if>
+            </foreach>
+
+            <if test="requestQuery.getFiltersProperties().contains('managerUUID')">
+                AND
+                <foreach collection="requestQuery.filters" item="filter" index="index" open="(" separator=" AND " close=")">
+                    <if test="filter.operand.name == 'EQUALS' AND filter.property == 'managerUUID'">
+                        <include refid="getFilterField"/> = #{filter.value}
                     </if>
                 </foreach>
-
-                <if test="requestQuery.getFiltersProperties().contains('managerUUID')">
-                    AND
-                    <foreach collection="requestQuery.filters" item="filter" index="index" open="(" separator=" AND " close=")">
-                        <if test="filter.operand.name == 'EQUALS' AND filter.property == 'managerUUID'">
-                            <include refid="getFilterField"/> = #{filter.value}
-                        </if>
-                    </foreach>
-                </if>
             </if>
+        </if>
 
         LIMIT #{requestQuery.limit}
 

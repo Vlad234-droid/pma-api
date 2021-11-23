@@ -8,7 +8,7 @@ import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
-import com.tesco.pma.review.domain.ColleagueReviews;
+import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
@@ -120,6 +120,21 @@ public class ReviewEndpoint {
     }
 
     /**
+     * Get call using a Path param and return a review as JSON.
+     *
+     * @param uuid an identifier of review
+     * @return a RestResponse parameterized with review
+     */
+    @Operation(summary = "Get a review by its identifier", tags = {"review"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the Review")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Review not found", content = @Content)
+    @GetMapping(path = "/reviews/{uuid}",
+            produces = APPLICATION_JSON_VALUE)
+    public RestResponse<Review> getReviewByUuid(@PathVariable("uuid") UUID uuid) {
+        return success(reviewService.getReview(uuid));
+    }
+
+    /**
      * Get call using a Path param and return a list of reviews as JSON.
      *
      * @param cycleUuid     an identifier of performance cycle
@@ -149,7 +164,7 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Reviews not found", content = @Content)
     @GetMapping(path = "/managers/{managerUuid}/reviews",
             produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<ColleagueReviews>> getTeamReviews(@PathVariable("managerUuid") UUID managerUuid) {
+    public RestResponse<List<ColleagueTimeline>> getTeamReviews(@PathVariable("managerUuid") UUID managerUuid) {
         return success(reviewService.getTeamReviews(managerUuid));
     }
 

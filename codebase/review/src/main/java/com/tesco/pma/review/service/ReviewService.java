@@ -1,13 +1,13 @@
 package com.tesco.pma.review.service;
 
+import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.review.domain.ColleagueReviews;
+import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.GroupObjective;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
-import com.tesco.pma.cycle.api.PMReviewStatus;
-import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.review.domain.WorkingGroupObjective;
 
 import javax.validation.constraints.NotNull;
@@ -36,6 +36,14 @@ public interface ReviewService {
                      @NotNull Integer number);
 
     /**
+     * Returns a review by an identifier of review
+     *
+     * @param uuid an identifier of review
+     * @return a Review
+     */
+    Review getReview(@NotNull UUID uuid);
+
+    /**
      * Finds reviews by performanceCycleUuid, colleagueUuid and review type
      *
      * @param performanceCycleUuid an identifier of performance cycle
@@ -54,7 +62,7 @@ public interface ReviewService {
      * @param managerUuid an identifier of colleague
      * @return a list of colleagues reviews
      */
-    List<ColleagueReviews> getTeamReviews(@NotNull UUID managerUuid);
+    List<ColleagueTimeline> getTeamReviews(@NotNull UUID managerUuid);
 
     /**
      * Creates review.

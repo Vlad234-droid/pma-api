@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -34,7 +35,7 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
     private FeedbackService service;
 
     @Test
-    void createFeedback() throws Exception {
+    void createFeedbacks() throws Exception {
         //given
         Feedback feedback = TestDataUtil.buildFeedback();
         when(service.create(feedback)).thenReturn(feedback);
@@ -42,7 +43,7 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
         //when
         mvc.perform(post("/feedbacks")
                 .contentType(APPLICATION_JSON)
-                .content(OBJECT_MAPPER.writeValueAsString(feedback)))
+                .content(OBJECT_MAPPER.writeValueAsString(Collections.singletonList(feedback))))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(APPLICATION_JSON));
 

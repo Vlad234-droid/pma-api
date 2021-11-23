@@ -36,4 +36,6 @@ public interface PMCycleDAO {
     }
 
     int updateMetadata(@Param("uuid") UUID uuid, @Param("metadata") String metadata);
+
+    List<PMCycle> getAll(boolean includeMetadata);
 }

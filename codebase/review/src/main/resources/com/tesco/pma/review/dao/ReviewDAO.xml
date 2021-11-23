@@ -26,7 +26,7 @@
                 javaType="com.tesco.pma.cycle.api.PMReviewStatus"/>
     </resultMap>
 
-    <resultMap id="colleagueReviewsResultMap" type="com.tesco.pma.review.domain.ColleagueReviews">
+    <resultMap id="colleagueReviewsResultMap" type="com.tesco.pma.review.domain.ColleagueTimeline">
         <id property="uuid" column="uuid"/>
         <result property="firstName" column="first_name"/>
         <result property="lastName" column="last_name"/>
@@ -185,6 +185,18 @@
           and r.number = #{number}
     </select>
 
+    <select id="read" resultMap="reviewResultMap">
+        SELECT r.uuid,
+               r.colleague_uuid,
+               r.performance_cycle_uuid,
+               r.type_id,
+               r.number,
+               r.properties,
+               r.status_id
+        FROM review r
+        WHERE r.uuid = #{uuid}
+    </select>
+
     <select id="getReviews" resultMap="reviewResultMap">
         SELECT r.uuid,
                r.colleague_uuid,
@@ -315,15 +327,17 @@
 
     <select id="getPMCycleReviewTypeProperties" resultMap="cycleReviewTypePropertiesResultMap">
         select r.cycle_uuid,
-               upper(json_extract_path_text(r.timeline_points, 'reviewType'))   as review_type_code,
+               upper(json_extract_path_text(r.timeline_points, 'reviewType')) as review_type_code,
                json_extract_path_text(r.timeline_points, 'properties', 'pm_review_min') as min,
        json_extract_path_text(r.timeline_points, 'properties', 'pm_review_max') as max
-        from (select c.uuid                                                                         as cycle_uuid,
+        from (select c.uuid as cycle_uuid,
             json_array_elements((metadata -> 'cycle' -> 'timelinePoints')::json) as timeline_points
             from pm_cycle c
             where c.uuid = #{cycleUuid}) as r
-        where upper(json_extract_path_text(r.timeline_points, 'type')) = 'REVIEW'
-          and upper(json_extract_path_text(r.timeline_points, 'reviewType')) = #{type}
+        where upper (json_extract_path_text(r.timeline_points
+            , 'type')) = 'REVIEW'
+          and upper (json_extract_path_text(r.timeline_points
+            , 'reviewType')) = #{type}
     </select>
 
     <select id="getReviewStats" resultMap="reviewStatsResultMap">
@@ -345,13 +359,13 @@
     <select id="getTimeline" resultMap="cycleTimelinePointResultMap">
         with timeline_point_enriched as (
             select tp.cycle_uuid,
-                   json_extract_path_text(tp.timeline_point, 'code')                as timeline_code,
-                   json_extract_path_text(tp.timeline_point, 'description')         as timeline_description,
-                   upper(json_extract_path_text(tp.timeline_point, 'type'))         as element_type_code,
-                   upper(json_extract_path_text(tp.timeline_point, 'reviewType'))   as review_type_code,
+                   json_extract_path_text(tp.timeline_point, 'code')                  as timeline_code,
+                   json_extract_path_text(tp.timeline_point, 'description')           as timeline_description,
+                   upper(json_extract_path_text(tp.timeline_point, 'type'))           as element_type_code,
+                   upper(json_extract_path_text(tp.timeline_point, 'reviewType'))     as review_type_code,
                    json_extract_path_text(tp.timeline_point, 'properties', 'pm_type') as props_type,
                    tp.timeline_point
-            from (select c.uuid                                                                         as cycle_uuid,
+            from (select c.uuid                                                                 as cycle_uuid,
                          json_array_elements((metadata -> 'cycle' -> 'timelinePoints')::json) as timeline_point
                   from pm_cycle c
                   where c.uuid = #{cycleUuid}) as tp)
@@ -361,9 +375,10 @@
                tpe.element_type_code,
                tpe.review_type_code,
                to_date(json_extract_path_text(tpe.timeline_point, 'properties',
-                                              concat('pm_', tpe.props_type, '_start_time')), 'YYYY-MM-DD') as start_date,
+                                              concat('pm_', tpe.props_type, '_start_time')),
+                       'YYYY-MM-DD')                                                 as start_date,
                json_extract_path_text(tpe.timeline_point, 'properties',
-                                      concat('pm_', tpe.props_type, '_start_delay'))                       as start_delay
+                                      concat('pm_', tpe.props_type, '_start_delay')) as start_delay
         from timeline_point_enriched tpe
         order by json_extract_path_text(tpe.timeline_point, 'properties', concat('pm_', tpe.props_type, '_start_time'))
     </select>

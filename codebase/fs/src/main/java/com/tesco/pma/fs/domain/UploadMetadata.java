@@ -1,5 +1,7 @@
 package com.tesco.pma.fs.domain;
 
+import com.tesco.pma.fs.api.FileStatus;
+import com.tesco.pma.fs.api.FileType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
