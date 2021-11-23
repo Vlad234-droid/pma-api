@@ -23,3 +23,5 @@ include 'feedback'
 include 'security'
 include 'notes'
 include 'fs'
+include 'tip'
+
