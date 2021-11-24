@@ -8,6 +8,7 @@ import org.springframework.context.support.MessageSourceAccessor;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class NamedMessageSourceAccessor extends MessageSourceAccessor {
     public NamedMessageSourceAccessor(MessageSource messageSource) {
@@ -36,5 +37,16 @@ public class NamedMessageSourceAccessor extends MessageSourceAccessor {
         }
         var message = getMessage(code);
         return StringSubstitutor.replace(message, params, "{", "}");
+    }
+
+    public String getMessageForParams(String code, Map<String, ?> params) {
+        if (StringUtils.isEmpty(code)) {
+            return null;
+        }
+        String mapAsString = params.keySet().stream().sorted()
+                .map(key -> key + "=" + params.get(key))
+                .collect(Collectors.joining(", ", "{", "}"));
+        var message = getMessage(code);
+        return StringSubstitutor.replace(message, Map.of("params", mapAsString), "{", "}");
     }
 }

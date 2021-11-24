@@ -125,6 +125,21 @@
         order by r.number
     </select>
 
+    <select id="getReviewsByColleague" resultMap="reviewResultMap">
+        SELECT r.uuid,
+               r.colleague_uuid,
+               r.performance_cycle_uuid,
+               r.type_id,
+               r.number,
+               r.properties,
+               r.status_id
+        FROM review r
+        WHERE r.colleague_uuid = #{colleagueUuid}
+          and r.performance_cycle_uuid = #{performanceCycleUuid}
+        order by r.type_id,
+                 r.number
+    </select>
+
     <select id="getTeamReviews" resultMap="colleagueReviewsResultMap">
         select c.uuid,
                c.first_name,
