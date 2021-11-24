@@ -169,7 +169,7 @@
             <column name="name">Salaried</column>
             <column name="type_id">3</column>
             <column name="version">1</column>
-            <column name="parent_uuid">10000000-0000-0000-0001-000000000003</column>
+            <column name="parent_uuid">10000000-0000-0000-0002-000000000004</column>
             <column name="composite_key">l1/roi/l2/ho_c/l3/salaried/#v1</column>
         </insert>
         <insert tableName="config_entry">

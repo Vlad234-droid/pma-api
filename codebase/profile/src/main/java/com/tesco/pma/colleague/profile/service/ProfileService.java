@@ -4,8 +4,10 @@ import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
+import com.tesco.pma.pagination.RequestQuery;
 
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -48,6 +50,15 @@ public interface ProfileService {
     List<TypedAttribute> deleteProfileAttributes(@NotNull UUID colleagueUuid, List<TypedAttribute> profileAttributes);
 
     /**
+     * Update colleague changed attributes
+     *
+     * @param colleagueUuid
+     * @param changedAttributes
+     * @return Number of updated records
+     */
+    int updateColleague(@NotNull UUID colleagueUuid, Collection<String> changedAttributes);
+
+    /**
      * Find colleague by uuid
      *
      * @param colleagueUuid - colleague identifier
@@ -70,5 +81,13 @@ public interface ProfileService {
      * @return colleague object
      */
     ColleagueEntity getColleague(UUID colleagueUuid);
+
+    /**
+     * Search colleagues
+     *
+     * @param requestQuery
+     * @return colleagues list
+     */
+    List<Colleague> getSuggestions(RequestQuery requestQuery);
 
 }

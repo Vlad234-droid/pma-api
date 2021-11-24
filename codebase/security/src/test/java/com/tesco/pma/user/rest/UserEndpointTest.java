@@ -1,6 +1,7 @@
 package com.tesco.pma.user.rest;
 
 import com.tesco.pma.api.User;
+import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import com.tesco.pma.user.UserService;
@@ -39,7 +40,7 @@ class UserEndpointTest extends AbstractEndpointTest {
     @Test
     void getUserByColleagueUuidSucceeded() throws Exception {
         final var user = randomUser();
-        final var colleagueUuid = user.getColleagueUuid();
+        final var colleagueUuid = user.getColleague().getColleagueUUID();
         when(mockUserService.findUserByColleagueUuid(eq(colleagueUuid)))
                 .thenReturn(Optional.of(user));
 
@@ -47,7 +48,7 @@ class UserEndpointTest extends AbstractEndpointTest {
                 .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
-                .andExpect(jsonPath("$.data.colleagueUuid", equalTo(colleagueUuid.toString())));
+                .andExpect(jsonPath("$.data.colleague.colleagueUUID", equalTo(colleagueUuid.toString())));
     }
 
     @Test
@@ -76,7 +77,7 @@ class UserEndpointTest extends AbstractEndpointTest {
                 .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
-                .andExpect(jsonPath("$.data.colleagueUuid", equalTo(user.getColleagueUuid().toString())));
+                .andExpect(jsonPath("$.data.colleague.colleagueUUID", equalTo(user.getColleague().getColleagueUUID().toString())));
     }
 
     @Test
@@ -100,15 +101,15 @@ class UserEndpointTest extends AbstractEndpointTest {
                 .thenReturn(Optional.of(user));
 
         mvc.perform(get("/users/me")
-                .with(user(user.getColleagueUuid().toString()))
+                .with(user(user.getColleague().getColleagueUUID().toString()))
                 .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
-                .andExpect(jsonPath("$.data.colleagueUuid", equalTo(user.getColleagueUuid().toString())));
+                .andExpect(jsonPath("$.data.colleague.colleagueUUID", equalTo(user.getColleague().getColleagueUUID().toString())));
 
         final var authenticationCaptor = ArgumentCaptor.forClass(Authentication.class);
         verify(mockUserService).findUserByAuthentication(authenticationCaptor.capture());
-        assertThat(authenticationCaptor.getValue().getName()).isEqualTo(user.getColleagueUuid().toString());
+        assertThat(authenticationCaptor.getValue().getName()).isEqualTo(user.getColleague().getColleagueUUID().toString());
     }
 
     @Test
@@ -136,7 +137,12 @@ class UserEndpointTest extends AbstractEndpointTest {
     }
 
     private User randomUser() {
-        return RANDOM.nextObject(User.class);
+        var colleague = new Colleague();
+        colleague.setColleagueUUID(randomUuid());
+
+        var user = new User();
+        user.setColleague(colleague);
+        return user;
     }
 
 }

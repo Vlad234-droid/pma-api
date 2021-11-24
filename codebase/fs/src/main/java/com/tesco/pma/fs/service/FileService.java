@@ -4,8 +4,10 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.RegistrationException;
 import com.tesco.pma.fs.domain.File;
 import com.tesco.pma.fs.domain.UploadMetadata;
+import com.tesco.pma.pagination.RequestQuery;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -23,7 +25,7 @@ public interface FileService {
      * @return uploaded file
      * @throws RegistrationException if failed to save file data to database
      */
-    File upload(@NotNull File fileData, @NotNull UploadMetadata uploadMetadata, @NotNull String creatorId);
+    File upload(@NotNull File fileData, @NotNull UploadMetadata uploadMetadata, @NotNull UUID creatorId);
 
     /**
      * Read all information about file by its identifier
@@ -34,4 +36,36 @@ public interface FileService {
      * @throws NotFoundException if file by uuid is not found
      */
     File get(@NotNull UUID fileUuid, boolean includeFileContent);
+
+    /**
+     * Read all information about files applying search, filter and sorting
+     *
+     * @param requestQuery filter, sorting, offset
+     * @param includeFileContent identifies if include file content
+     * @param latest identifies if latest version data needed
+     * @return filtered files data
+     */
+    List<File> get(@NotNull RequestQuery requestQuery, boolean includeFileContent, boolean latest);
+
+
+    /**
+     * Read all information about file by its name and path with the latest version
+     *
+     * @param path file path
+     * @param fileName file name
+     * @param includeFileContent identifies if include file content
+     * @return file data
+     * @throws NotFoundException if file by name and path is not found
+     */
+    File get(@NotNull String path, @NotNull String fileName, boolean includeFileContent);
+
+    /**
+     * Read all information about file with all versions by its name and path
+     *
+     * @param path file path
+     * @param fileName file name
+     * @param includeFileContent identifies if include file content
+     * @return file data with all versions
+     */
+    List<File> getAllVersions(@NotNull String path, @NotNull String fileName, boolean includeFileContent);
 }

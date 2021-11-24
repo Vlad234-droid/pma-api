@@ -41,13 +41,13 @@ public enum ErrorCodes implements ErrorCodeAware {
      */
     BUSINESS_UNIT_NOT_EXISTS,
     /**
-     * Group objective already exists
+     * Organisation objective already exists
      */
-    GROUP_OBJECTIVE_ALREADY_EXISTS,
+    ORG_OBJECTIVE_ALREADY_EXISTS,
     /**
-     * Group objectives not found
+     * Organisation objectives not found
      */
-    GROUP_OBJECTIVES_NOT_FOUND,
+    ORG_OBJECTIVES_NOT_FOUND,
     /**
      * Allowed statuses not found
      */

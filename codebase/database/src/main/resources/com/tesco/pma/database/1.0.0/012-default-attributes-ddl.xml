@@ -1,0 +1,326 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet author="adublyanin" id="1">
+        <createTable tableName="default_attributes">
+            <column name="id" type="${uuid_type}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="default_attr_pk"/>
+            </column>
+
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="value" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="criteria_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="category_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="adublyanin" id="2">
+        <insert tableName="default_attributes">
+            <column name="id" value="a2aa57b5-a6cd-4fe6-90ca-eae82e4b4c3f"/>
+            <column name="name" value="Receive tips"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="1"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="0a2b8295-74ae-4dfb-b3a2-73b3c14c9cf3"/>
+            <column name="name" value="Organisation objectives"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="2"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="8509dd55-75b5-40f7-aee2-d9bddf9e997c"/>
+            <column name="name" value="LM Objectives approved for sharing"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="3"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="a33240cc-7a91-4024-a3ad-81b281e79339"/>
+            <column name="name" value="LM sharing start"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="1"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="4d847622-d7f3-407c-9038-9808e2d4fff6"/>
+            <column name="name" value="LM sharing end"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="1"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="9f50eaf9-47d6-47dd-ab51-a4b2083a7f46"/>
+            <column name="name" value="Feedback given"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="1"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="ff8e85ed-1b2c-4c29-b2c8-c53839b28389"/>
+            <column name="name" value="Respond to feedback requests"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="1"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="37b3e7ee-e5a6-482e-8f42-52816a6748aa"/>
+            <column name="name" value="Request feedback"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="1"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="a78be25d-28f6-4baf-9cca-a5500cb28122"/>
+            <column name="name" value="Mid-year before review start"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="4"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="37337bbb-4518-4819-a60e-48691c884ac4"/>
+            <column name="name" value="Mid-year submission"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="3"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="6b097911-c5c5-4566-9c57-e4a868af457c"/>
+            <column name="name" value="Mid-year approval"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="3"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="d60ac6ae-bb20-4eb3-aa07-931319527997"/>
+            <column name="name" value="Mid-year declined"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="4"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="abced75e-31f1-4abd-9747-4efec91bde7e"/>
+            <column name="name" value="Mid-year before review end"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="4"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="45f157fb-b890-47ce-9b6c-64580e70cb27"/>
+            <column name="name" value="Year-End before year-end start"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="1"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="c2b5edf5-ab3f-4a47-85fa-a6419801a0aa"/>
+            <column name="name" value="Year-End submission"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="3"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="c73fb045-501c-4f35-a35d-d61f9a5fe47e"/>
+            <column name="name" value="Year-End approval"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="1"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="064c8eaa-3f95-4c34-9de8-5c0e5b87bbe9"/>
+            <column name="name" value="Year-End declined"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="1"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="127d5d71-7496-4097-9d4c-4a20854ffb7a"/>
+            <column name="name" value="Year-End before review end"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="1"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="5ce9ec34-bf53-4d4a-aa16-6abba182369e"/>
+            <column name="name" value="Q1 reminder"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="5"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="6ca50288-76c2-4dfb-9d66-d9613319f1f6"/>
+            <column name="name" value="Q3 reminder"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="6"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="54c5c691-bbcd-40eb-90a3-22206086a5da"/>
+            <column name="name" value="Before cycle start - Colleague"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="1"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="83f0e736-c812-41ee-9685-75d9a6fb7803"/>
+            <column name="name" value="Before cycle start - LM"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="3"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="b42207eb-7017-4b0c-8bd5-a7dc95c86395"/>
+            <column name="name" value="Before cycle end - Colleague"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="1"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="ce7a7446-53ca-42c0-90c5-0a238b5583b4"/>
+            <column name="name" value="Before cycle end - LM"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="3"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="ebd35f19-030c-4f38-aad5-ff5ffff6a092"/>
+            <column name="name" value="Objective submitted"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="3"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="794e44ef-dc7a-4410-9e49-417c6c796339"/>
+            <column name="name" value="Objective approved"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="7"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <insert tableName="default_attributes">
+            <column name="id" value="89a192bd-32c2-4775-a9e6-32e59b037d58"/>
+            <column name="name" value="Objective declined"/>
+            <column name="value" value="true"/>
+            <column name="criteria_id" value="7"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="default_attributes">
+                <where>id = 'a2aa57b5-a6cd-4fe6-90ca-eae82e4b4c3f'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '0a2b8295-74ae-4dfb-b3a2-73b3c14c9cf3'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '8509dd55-75b5-40f7-aee2-d9bddf9e997c'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = 'a33240cc-7a91-4024-a3ad-81b281e79339'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '4d847622-d7f3-407c-9038-9808e2d4fff6'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '9f50eaf9-47d6-47dd-ab51-a4b2083a7f46'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = 'ff8e85ed-1b2c-4c29-b2c8-c53839b28389'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '37b3e7ee-e5a6-482e-8f42-52816a6748aa'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '6b097911-c5c5-4566-9c57-e4a868af457c'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = 'd60ac6ae-bb20-4eb3-aa07-931319527997'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = 'abced75e-31f1-4abd-9747-4efec91bde7e'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '45f157fb-b890-47ce-9b6c-64580e70cb27'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = 'c2b5edf5-ab3f-4a47-85fa-a6419801a0aa'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = 'c73fb045-501c-4f35-a35d-d61f9a5fe47e'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '064c8eaa-3f95-4c34-9de8-5c0e5b87bbe9'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '127d5d71-7496-4097-9d4c-4a20854ffb7a'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '5ce9ec34-bf53-4d4a-aa16-6abba182369e'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '6ca50288-76c2-4dfb-9d66-d9613319f1f6'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '54c5c691-bbcd-40eb-90a3-22206086a5da'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '83f0e736-c812-41ee-9685-75d9a6fb7803'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = 'b42207eb-7017-4b0c-8bd5-a7dc95c86395'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = 'ce7a7446-53ca-42c0-90c5-0a238b5583b4'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = 'ebd35f19-030c-4f38-aad5-ff5ffff6a092'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '794e44ef-dc7a-4410-9e49-417c6c796339'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '89a192bd-32c2-4775-a9e6-32e59b037d58'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

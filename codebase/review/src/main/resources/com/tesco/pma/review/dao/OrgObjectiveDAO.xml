@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.review.dao.OrgObjectiveDAO">
+
+    <resultMap id="orgObjectiveResultMap" type="com.tesco.pma.review.domain.OrgObjective">
+        <id property="uuid" column="uuid"/>
+        <result property="number" column="number"/>
+        <result property="status" column="status_id"
+                typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.api.OrgObjectiveStatus"/>
+        <result property="title" column="title"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <insert id="create" flushCache="true">
+        INSERT INTO org_objective
+        (uuid,
+         number,
+         status_id,
+         title,
+         version)
+        VALUES (#{orgObjective.uuid},
+                #{orgObjective.number},
+                #{orgObjective.status.id},
+                #{orgObjective.title},
+                #{orgObjective.version})
+    </insert>
+
+    <select id="read" resultMap="orgObjectiveResultMap">
+        SELECT go.uuid,
+               go.number,
+               go.status_id,
+               go.title,
+               go.version
+        FROM org_objective go
+        WHERE go.uuid = #{uuid}
+    </select>
+
+    <select id="getAll" resultMap="orgObjectiveResultMap">
+        with max_version as (
+        <include refid="getMaxVersion"/>
+        )
+        select go.uuid,
+        go.number,
+        go.status_id,
+        go.title,
+        go.version
+        from org_objective go
+        inner join max_version mv
+        on (go.version = mv.version)
+        order by go.number
+    </select>
+
+    <select id="getAllPublished" resultMap="orgObjectiveResultMap">
+        select go.uuid,
+               go.number,
+               go.status_id,
+               go.title,
+               go.version
+        from org_objective go
+        WHERE go.status_id = 2
+        order by go.number
+    </select>
+
+    <delete id="delete">
+        DELETE
+        FROM org_objective
+        WHERE uuid = #{uuid}
+    </delete>
+
+    <select id="getMaxVersion" resultType="int">
+        <include refid="getMaxVersion"/>
+    </select>
+
+    <update id="publish" flushCache="true">
+        with max_version as (
+        <include refid="getMaxVersion"/>
+        )
+        update org_objective go
+        set status_id = 2
+        from max_version mv
+        where go.version = mv.version;
+    </update>
+
+    <update id="unpublish" flushCache="true">
+        update org_objective go
+        set status_id = 3
+        where go.status_id = 2;
+    </update>
+
+    <sql id="getMaxVersion">
+        select coalesce(max(version), 0) as version
+        from org_objective go
+    </sql>
+</mapper>

@@ -4,6 +4,7 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.RegistrationException;
 import com.tesco.pma.fs.domain.File;
 import com.tesco.pma.fs.service.FileService;
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
@@ -17,10 +18,13 @@ import java.io.InputStream;
 import java.time.Instant;
 import java.util.UUID;
 
-import static com.tesco.pma.fs.domain.FileStatus.ACTIVE;
-import static com.tesco.pma.fs.domain.FileType.FORM;
+import static com.tesco.pma.fs.api.FileStatus.ACTIVE;
+import static com.tesco.pma.fs.api.FileType.FORM;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,7 +38,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     private static final String RESOURCES_PATH = "/com/tesco/pma/fs/rest/";
     private static final String FILE_NAME = "test1.txt";
-    private static final String CREATOR_ID = "test";
+    private static final UUID CREATOR_ID = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65765");
     private static final String PATH = "/home/dev";
     private static final String FILES_URL = "/files";
 
@@ -64,6 +68,44 @@ public class FileEndpointTest extends AbstractEndpointTest {
         when(service.get(FILE_UUID_1, true)).thenThrow(NotFoundException.class);
 
         performGet(status().isNotFound(), FILES_URL + "/" + FILE_UUID_1);
+    }
+
+    @Test
+    void getByRequestQuery() throws Exception {
+        when(service.get(any(RequestQuery.class), eq(false), eq(true))).thenReturn(asList(buildFileData(FILE_UUID_1, 1)));
+
+        var result = performGet(status().isOk(), FILES_URL + "?status_in[0]=ACTIVE&file-length_gt=16&includeFileContent=false");
+
+        assertResponseContent(result.getResponse(), "files_get_ok_response.json");
+    }
+
+    @Test
+    void getByRequestQueryHasEmptyDataResponseWhenServiceReturnsNothing() throws Exception {
+        when(service.get(any(RequestQuery.class), eq(false), eq(true))).thenReturn(emptyList());
+
+        var result = performGet(status().isOk(), FILES_URL + "?includeFileContent=false");
+
+        assertResponseContent(result.getResponse(), "file_get_empty_data_response.json");
+    }
+
+    @Test
+    void getAllVersions() throws Exception {
+        when(service.getAllVersions(PATH, FILE_NAME, false)).thenReturn(asList(buildFileData(FILE_UUID_1, 1)));
+
+        var result = performGet(status().isOk(),
+                FILES_URL + "/versions?path=" + PATH + "&fileName=" + FILE_NAME + "&includeFileContent=false");
+
+        assertResponseContent(result.getResponse(), "files_get_ok_response.json");
+    }
+
+    @Test
+    void getAllVersionsHasEmptyDataResponseWhenServiceReturnsNothing() throws Exception {
+        when(service.getAllVersions(PATH, FILE_NAME, false)).thenReturn(emptyList());
+
+        var result = performGet(status().isOk(),
+                FILES_URL + "/versions?path=" + PATH + "&fileName=" + FILE_NAME + "&includeFileContent=false");
+
+        assertResponseContent(result.getResponse(), "file_get_empty_data_response.json");
     }
 
     @Test

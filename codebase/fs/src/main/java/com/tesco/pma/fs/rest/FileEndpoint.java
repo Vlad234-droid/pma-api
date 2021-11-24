@@ -7,6 +7,7 @@ import com.tesco.pma.fs.domain.File;
 import com.tesco.pma.fs.domain.FilesUploadMetadata;
 import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.logging.TraceUtils;
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
 
 import com.tesco.pma.rest.RestResponse;
@@ -67,11 +68,26 @@ public class FileEndpoint {
     public static final String INCLUDE_FILE_CONTENT = "includeFileContent";
 
     private final FileService fileService;
-    private final AuditorAware<String> auditorAware;
+    private final AuditorAware<UUID> auditorAware;
 
     @Operation(
-            summary = "Get File information by its uuid",
-            description = "Get File information by its uuid",
+            summary = "Get Files information with the latest version by file name and path",
+            description = "Get Files information with the latest version by file name and path",
+            tags = "file",
+            responses = {
+                    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the file data by its path and name"),
+                    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
+            })
+    @GetMapping(path = "/last", produces = MediaType.APPLICATION_JSON_VALUE)
+    public RestResponse<File> get(@RequestParam("path") String path,
+                                  @RequestParam("fileName") String fileName,
+                                  @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true") boolean includeFileContent) {
+        return success(fileService.get(path, fileName, includeFileContent));
+    }
+
+    @Operation(
+            summary = "Get File information with the latest version by its uuid",
+            description = "Get File information with the latest version by its uuid",
             tags = "file",
             responses = {
                     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the file data by its uuid"),
@@ -83,14 +99,44 @@ public class FileEndpoint {
         return success(fileService.get(fileUuid, includeFileContent));
     }
 
+    @Operation(
+            summary = "Get Files information with the latest version applying search, filter and sorting",
+            description = "Get Files information with the latest version applying search, filter and sorting",
+            tags = "file",
+            responses = {
+                    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found filtered files data"),
+                    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Files data not found", content = @Content),
+            })
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public RestResponse<List<File>> get(RequestQuery requestQuery,
+                                        @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true") boolean includeFileContent) {
+        return success(fileService.get(requestQuery, includeFileContent, true));
+    }
+
+    @Operation(
+            summary = "Get all information about File with All Versions by its name and path",
+            description = "Get all information about File with All Versions by its name and path",
+            tags = "file",
+            responses = {
+                    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the file data of all versions by path and name"),
+                    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
+            })
+    @GetMapping(path = "/versions", produces = MediaType.APPLICATION_JSON_VALUE)
+    public RestResponse<List<File>> getAllVersions(@RequestParam("path") String path,
+                                                   @RequestParam("fileName") String fileName,
+                                                   @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false")
+                                                           boolean includeFileContent) {
+        return success(fileService.getAllVersions(path, fileName, includeFileContent));
+    }
+
     /**
      * GET call to download file.
      *
      * @return a RestResponse with downloaded file
      * @throws IOException if the resource cannot be resolved
      */
-    @Operation(summary = "Download file",
-            description = "Download file",
+    @Operation(summary = "Download File",
+            description = "Download File",
             tags = "file")
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "File downloaded")
     @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Invalid id supplied", content = @Content)
@@ -111,8 +157,8 @@ public class FileEndpoint {
     }
 
     @Operation(
-            summary = "Upload files",
-            description = "Upload files",
+            summary = "Upload Files",
+            description = "Upload Files",
             tags = "file",
             requestBody = @RequestBody(
                     required = true,
