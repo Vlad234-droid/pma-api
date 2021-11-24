@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.Authentication;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -54,7 +55,7 @@ class UserEndpointTest extends AbstractEndpointTest {
                 .thenReturn(Optional.of(user));
 
         mvc.perform(get("/users/{colleagueUuid}", colleagueUuid)
-                        .with(roles(role))
+                        .with(roles(List.of(role)))
                         .accept(APPLICATION_JSON))
                 .andExpect(status().is(status))
                 .andExpect(content().contentType(APPLICATION_JSON))
