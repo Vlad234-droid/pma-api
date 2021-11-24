@@ -45,3 +45,4 @@ out/
 
 codebase/application/src/main/config/application.properties
 codebase/application/SERVICE_HOME_IS_UNDEFINED/**
+codebase/run-local.cmd
