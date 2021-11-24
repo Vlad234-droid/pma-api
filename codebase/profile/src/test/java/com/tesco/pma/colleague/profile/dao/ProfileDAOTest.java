@@ -259,10 +259,15 @@ public class ProfileDAOTest extends AbstractDAOTest {
         assertEquals(9, dao.findColleagueSuggestionsByFullName(
                 createRQ(Map.of("firstName_like", "fiRst"))).size());
 
-        assertEquals(1, dao.findColleagueSuggestionsByFullName(
+        var colleagues = dao.findColleagueSuggestionsByFullName(
                 createRQ(Map.of(
                         "firstName_like", "JohN",
-                        "managerUUID_equals", "c409869b-2acf-45cd-8cc6-e13af2e6f935"))).size());
+                        "managerUUID_equals", "c409869b-2acf-45cd-8cc6-e13af2e6f935")));
+
+        assertEquals(1, colleagues.size());
+
+        assertEquals("c409869b-2acf-45cd-8cc6-e13af2e6f935", colleagues.get(0)
+                .getWorkRelationships().get(0).getManagerUUID().toString());
 
         assertEquals(1, dao.findColleagueSuggestionsByFullName(createRQ(Map.of("firstName_like","ohn"))).size());
 
