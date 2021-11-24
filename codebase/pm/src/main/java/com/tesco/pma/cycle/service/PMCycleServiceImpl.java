@@ -21,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
@@ -53,7 +52,6 @@ public class PMCycleServiceImpl implements PMCycleService {
     private final ProcessManagerService processManagerService;
     private final PMProcessService pmProcessService;
 
-    public static final String NOT_IMPLEMENTED_YET = "Not implemented yet";
     private static final String ORG_KEY_PARAMETER_NAME = "organisationKey";
     private static final String TEMPLATE_UUID_PARAMETER_NAME = "templateUUID";
     private static final String CYCLE_UUID_PARAMETER_NAME = "cycleUuid";
