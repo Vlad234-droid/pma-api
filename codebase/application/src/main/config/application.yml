@@ -220,7 +220,7 @@ tesco:
 camunda:
   bpm:
     database:
-      schema-update: true
+      schema-update: false
     metrics:
       enabled: true
     #      db-reporter-activate: true

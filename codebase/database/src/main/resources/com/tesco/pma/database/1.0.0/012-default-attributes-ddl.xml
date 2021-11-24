@@ -243,6 +243,84 @@
             <column name="criteria_id" value="7"/>
             <column name="category_id" value="1"/>
         </insert>
+
+        <rollback>
+            <delete tableName="default_attributes">
+                <where>id = 'a2aa57b5-a6cd-4fe6-90ca-eae82e4b4c3f'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '0a2b8295-74ae-4dfb-b3a2-73b3c14c9cf3'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '8509dd55-75b5-40f7-aee2-d9bddf9e997c'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = 'a33240cc-7a91-4024-a3ad-81b281e79339'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '4d847622-d7f3-407c-9038-9808e2d4fff6'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '9f50eaf9-47d6-47dd-ab51-a4b2083a7f46'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = 'ff8e85ed-1b2c-4c29-b2c8-c53839b28389'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '37b3e7ee-e5a6-482e-8f42-52816a6748aa'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '6b097911-c5c5-4566-9c57-e4a868af457c'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = 'd60ac6ae-bb20-4eb3-aa07-931319527997'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = 'abced75e-31f1-4abd-9747-4efec91bde7e'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '45f157fb-b890-47ce-9b6c-64580e70cb27'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = 'c2b5edf5-ab3f-4a47-85fa-a6419801a0aa'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = 'c73fb045-501c-4f35-a35d-d61f9a5fe47e'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '064c8eaa-3f95-4c34-9de8-5c0e5b87bbe9'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '127d5d71-7496-4097-9d4c-4a20854ffb7a'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '5ce9ec34-bf53-4d4a-aa16-6abba182369e'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '6ca50288-76c2-4dfb-9d66-d9613319f1f6'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '54c5c691-bbcd-40eb-90a3-22206086a5da'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '83f0e736-c812-41ee-9685-75d9a6fb7803'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = 'b42207eb-7017-4b0c-8bd5-a7dc95c86395'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = 'ce7a7446-53ca-42c0-90c5-0a238b5583b4'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = 'ebd35f19-030c-4f38-aad5-ff5ffff6a092'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '794e44ef-dc7a-4410-9e49-417c6c796339'</where>
+            </delete>
+            <delete tableName="default_attributes">
+                <where>id = '89a192bd-32c2-4775-a9e6-32e59b037d58'</where>
+            </delete>
+        </rollback>
     </changeSet>
 
 </databaseChangeLog>
