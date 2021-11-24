@@ -8,6 +8,7 @@ dependencies {
     implementation project(':spring')
     implementation project(':bpm')
     implementation project(':camunda')
+    implementation project(':fs')
 
     implementation project(':service')
 
