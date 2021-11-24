@@ -23,7 +23,7 @@ create table ACT_GE_PROPERTY (
     REV_ integer,
     primary key (NAME_)
 );
---rollback drop table ACT_GE_PROPERTY;
+--rollback drop table ACT_GE_PROPERTY CASCADE;
 
 insert into ACT_GE_PROPERTY
 values ('schema.version', 'fox', 1);
@@ -63,7 +63,7 @@ create table ACT_GE_BYTEARRAY (
     REMOVAL_TIME_ timestamp,
     primary key (ID_)
 );
---rollback drop table ACT_GE_BYTEARRAY;
+--rollback drop table ACT_GE_BYTEARRAY CASCADE;
 
 create table ACT_GE_SCHEMA_LOG (
     ID_ varchar(64),
@@ -71,7 +71,7 @@ create table ACT_GE_SCHEMA_LOG (
     VERSION_ varchar(255),
     primary key (ID_)
 );
---rollback drop table ACT_GE_SCHEMA_LOG;
+--rollback drop table ACT_GE_SCHEMA_LOG CASCADE;
 
 insert into ACT_GE_SCHEMA_LOG
 values ('0', CURRENT_TIMESTAMP, '7.15.0');
@@ -84,7 +84,7 @@ create table ACT_RE_DEPLOYMENT (
     TENANT_ID_ varchar(64),
     primary key (ID_)
 );
---rollback drop table ACT_RE_DEPLOYMENT;
+--rollback drop table ACT_RE_DEPLOYMENT CASCADE;
 
 create table ACT_RU_EXECUTION (
     ID_ varchar(64),
@@ -109,7 +109,7 @@ create table ACT_RU_EXECUTION (
     TENANT_ID_ varchar(64),
     primary key (ID_)
 );
---rollback drop table ACT_RU_EXECUTION;
+--rollback drop table ACT_RU_EXECUTION CASCADE;
 
 create table ACT_RU_JOB (
     ID_ varchar(64) NOT NULL,
@@ -140,7 +140,7 @@ create table ACT_RU_JOB (
     CREATE_TIME_ timestamp,
     primary key (ID_)
 );
---rollback drop table ACT_RU_JOB;
+--rollback drop table ACT_RU_JOB CASCADE;
 
 create table ACT_RU_JOBDEF (
     ID_ varchar(64) NOT NULL,
@@ -156,7 +156,7 @@ create table ACT_RU_JOBDEF (
     DEPLOYMENT_ID_ varchar(64),
     primary key (ID_)
 );
---rollback drop table ACT_RU_JOBDEF;
+--rollback drop table ACT_RU_JOBDEF CASCADE;
 
 create table ACT_RE_PROCDEF (
     ID_ varchar(64) NOT NULL,
@@ -176,7 +176,7 @@ create table ACT_RE_PROCDEF (
     STARTABLE_ boolean NOT NULL default TRUE,
     primary key (ID_)
 );
---rollback drop table ACT_RE_PROCDEF;
+--rollback drop table ACT_RE_PROCDEF CASCADE;
 
 create table ACT_RU_TASK (
     ID_ varchar(64),
@@ -202,7 +202,7 @@ create table ACT_RU_TASK (
     TENANT_ID_ varchar(64),
     primary key (ID_)
 );
---rollback drop table ACT_RU_TASK;
+--rollback drop table ACT_RU_TASK CASCADE;
 
 create table ACT_RU_IDENTITYLINK (
     ID_ varchar(64),
@@ -215,7 +215,7 @@ create table ACT_RU_IDENTITYLINK (
     TENANT_ID_ varchar(64),
     primary key (ID_)
 );
---rollback drop table ACT_RU_IDENTITYLINK;
+--rollback drop table ACT_RU_IDENTITYLINK CASCADE;
 
 create table ACT_RU_VARIABLE (
     ID_ varchar(64) not null,
@@ -240,7 +240,7 @@ create table ACT_RU_VARIABLE (
     TENANT_ID_ varchar(64),
     primary key (ID_)
 );
---rollback drop table ACT_RU_VARIABLE;
+--rollback drop table ACT_RU_VARIABLE CASCADE;
 
 create table ACT_RU_EVENT_SUBSCR (
     ID_ varchar(64) not null,
@@ -255,7 +255,7 @@ create table ACT_RU_EVENT_SUBSCR (
     TENANT_ID_ varchar(64),
     primary key (ID_)
 );
---rollback drop table ACT_RU_EVENT_SUBSCR;
+--rollback drop table ACT_RU_EVENT_SUBSCR CASCADE;
 
 create table ACT_RU_INCIDENT (
   ID_ varchar(64) not null,
@@ -276,7 +276,7 @@ create table ACT_RU_INCIDENT (
   ANNOTATION_ varchar(4000),
   primary key (ID_)
 );
---rollback drop table ACT_RU_INCIDENT;
+--rollback drop table ACT_RU_INCIDENT CASCADE;
 
 create table ACT_RU_AUTHORIZATION (
   ID_ varchar(64) not null,
@@ -291,7 +291,7 @@ create table ACT_RU_AUTHORIZATION (
   ROOT_PROC_INST_ID_ varchar(64),
   primary key (ID_)
 );
---rollback drop table ACT_RU_AUTHORIZATION;
+--rollback drop table ACT_RU_AUTHORIZATION CASCADE;
 
 create table ACT_RU_FILTER (
   ID_ varchar(64) not null,
@@ -303,7 +303,7 @@ create table ACT_RU_FILTER (
   PROPERTIES_ TEXT,
   primary key (ID_)
 );
---rollback drop table ACT_RU_FILTER;
+--rollback drop table ACT_RU_FILTER CASCADE;
 
 create table ACT_RU_METER_LOG (
   ID_ varchar(64) not null,
@@ -314,7 +314,7 @@ create table ACT_RU_METER_LOG (
   MILLISECONDS_ bigint DEFAULT 0,
   primary key (ID_)
 );
---rollback drop table ACT_RU_METER_LOG;
+--rollback drop table ACT_RU_METER_LOG CASCADE;
 
 create table ACT_RU_TASK_METER_LOG (
   ID_ varchar(64) not null,
@@ -322,7 +322,7 @@ create table ACT_RU_TASK_METER_LOG (
   TIMESTAMP_ timestamp,
   primary key (ID_)
 );
---rollback drop table ACT_RU_TASK_METER_LOG;
+--rollback drop table ACT_RU_TASK_METER_LOG CASCADE;
 
 create table ACT_RU_EXT_TASK (
   ID_ varchar(64) not null,
@@ -344,7 +344,7 @@ create table ACT_RU_EXT_TASK (
   PRIORITY_ bigint NOT NULL DEFAULT 0,
   primary key (ID_)
 );
---rollback drop table ACT_RU_EXT_TASK;
+--rollback drop table ACT_RU_EXT_TASK CASCADE;
 
 create table ACT_RU_BATCH (
   ID_ varchar(64) not null,
@@ -363,7 +363,7 @@ create table ACT_RU_BATCH (
   CREATE_USER_ID_ varchar(255),
   primary key (ID_)
 );
---rollback drop table ACT_RU_BATCH;
+--rollback drop table ACT_RU_BATCH CASCADE;
 
 create index ACT_IDX_EXE_ROOT_PI on ACT_RU_EXECUTION(ROOT_PROC_INST_ID_);
 create index ACT_IDX_EXEC_BUSKEY on ACT_RU_EXECUTION(BUSINESS_KEY_);

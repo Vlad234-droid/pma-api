@@ -42,7 +42,7 @@ create table ACT_HI_DECINST (
     TENANT_ID_ varchar(64),
     primary key (ID_)
 );
---rollback drop table ACT_HI_DECINST;
+--rollback drop table ACT_HI_DECINST CASCADE;
 
 /* create history decision input table */
 create table ACT_HI_DEC_IN (
@@ -62,7 +62,7 @@ create table ACT_HI_DEC_IN (
     REMOVAL_TIME_ timestamp,
     primary key (ID_)
 );
---rollback drop table ACT_HI_DEC_IN;
+--rollback drop table ACT_HI_DEC_IN CASCADE;
 
 /* create history decision output table */
 create table ACT_HI_DEC_OUT (
@@ -85,7 +85,7 @@ create table ACT_HI_DEC_OUT (
     REMOVAL_TIME_ timestamp,
     primary key (ID_)
 );
---rollback drop table ACT_HI_DEC_OUT;
+--rollback drop table ACT_HI_DEC_OUT CASCADE;
 
 create index ACT_IDX_HI_DEC_INST_ID on ACT_HI_DECINST(DEC_DEF_ID_);
 create index ACT_IDX_HI_DEC_INST_KEY on ACT_HI_DECINST(DEC_DEF_KEY_);

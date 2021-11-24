@@ -24,14 +24,14 @@ create table ACT_ID_GROUP (
     TYPE_ varchar(255),
     primary key (ID_)
 );
---rollback drop table ACT_ID_GROUP;
+--rollback drop table ACT_ID_GROUP CASCADE;
 
 create table ACT_ID_MEMBERSHIP (
     USER_ID_ varchar(64),
     GROUP_ID_ varchar(64),
     primary key (USER_ID_, GROUP_ID_)
 );
---rollback drop table ACT_ID_MEMBERSHIP;
+--rollback drop table ACT_ID_MEMBERSHIP CASCADE;
 
 create table ACT_ID_USER (
     ID_ varchar(64),
@@ -46,7 +46,7 @@ create table ACT_ID_USER (
     PICTURE_ID_ varchar(64),
     primary key (ID_)
 );
---rollback drop table ACT_ID_USER;
+--rollback drop table ACT_ID_USER CASCADE;
 
 create table ACT_ID_INFO (
     ID_ varchar(64),
@@ -59,7 +59,7 @@ create table ACT_ID_INFO (
     PARENT_ID_ varchar(255),
     primary key (ID_)
 );
---rollback drop table ACT_ID_INFO;
+--rollback drop table ACT_ID_INFO CASCADE;
 
 create table ACT_ID_TENANT (
     ID_ varchar(64),
@@ -67,7 +67,7 @@ create table ACT_ID_TENANT (
     NAME_ varchar(255),
     primary key (ID_)
 );
---rollback drop table ACT_ID_TENANT;
+--rollback drop table ACT_ID_TENANT CASCADE;
 
 create table ACT_ID_TENANT_MEMBER (
     ID_ varchar(64) not null,
@@ -76,7 +76,7 @@ create table ACT_ID_TENANT_MEMBER (
     GROUP_ID_ varchar(64),
     primary key (ID_)
 );
---rollback drop table ACT_ID_TENANT_MEMBER;
+--rollback drop table ACT_ID_TENANT_MEMBER CASCADE;
 
 create index ACT_IDX_MEMB_GROUP on ACT_ID_MEMBERSHIP(GROUP_ID_);
 alter table ACT_ID_MEMBERSHIP

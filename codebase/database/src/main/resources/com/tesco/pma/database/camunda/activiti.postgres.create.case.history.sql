@@ -33,7 +33,7 @@ create table ACT_HI_CASEINST (
     primary key (ID_),
     unique (CASE_INST_ID_)
 );
---rollback drop table ACT_HI_CASEINST;
+--rollback drop table ACT_HI_CASEINST CASCADE;
 
 create table ACT_HI_CASEACTINST (
     ID_ varchar(64) not null,
@@ -54,7 +54,7 @@ create table ACT_HI_CASEACTINST (
     TENANT_ID_ varchar(64),
     primary key (ID_)
 );
---rollback drop table ACT_HI_CASEACTINST;
+--rollback drop table ACT_HI_CASEACTINST CASCADE;
 
 create index ACT_IDX_HI_CAS_I_CLOSE on ACT_HI_CASEINST(CLOSE_TIME_);
 create index ACT_IDX_HI_CAS_I_BUSKEY on ACT_HI_CASEINST(BUSINESS_KEY_);
