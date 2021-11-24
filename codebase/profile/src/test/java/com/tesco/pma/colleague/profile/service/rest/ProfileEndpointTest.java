@@ -1,6 +1,7 @@
 package com.tesco.pma.colleague.profile.service.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.service.ImportColleagueService;
@@ -18,7 +19,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -29,15 +32,14 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = ProfileEndpoint.class, properties = {
-        "tesco.application.security.enabled=false",
-})
+@WebMvcTest(controllers = ProfileEndpoint.class)
 class ProfileEndpointTest extends AbstractEndpointTest {
 
     private static final EasyRandom RANDOM = new EasyRandom();
@@ -65,7 +67,6 @@ class ProfileEndpointTest extends AbstractEndpointTest {
     void tearDown() {
     }
 
-    /* todo fix recursion
     @Test
     void getProfileByColleagueUuidShouldReturnProfileBy() throws Exception {
 
@@ -73,11 +74,12 @@ class ProfileEndpointTest extends AbstractEndpointTest {
                 .thenReturn(Optional.of(randomProfileResponse()));
 
         mvc.perform(get("/colleagues/{colleagueUuid}", colleagueUuid)
+                        .with(allRoles(colleagueUuid.toString()))
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON));
 
-    }*/
+    }
 
     @Test
     void updateProfileAttributesShouldReturnUpdatedProfileAttributes() throws Exception {
@@ -90,9 +92,10 @@ class ProfileEndpointTest extends AbstractEndpointTest {
 
         // when
         ResultActions resultActions = mvc.perform(put("/colleagues/{colleagueUuid}/attributes", colleagueUuid)
-                        .contentType(APPLICATION_JSON)
-                        .content(jsonTester.write(profileAttributes).getJson())
-                        .accept(APPLICATION_JSON));
+                .with(colleague(colleagueUuid.toString()))
+                .contentType(APPLICATION_JSON)
+                .content(jsonTester.write(profileAttributes).getJson())
+                .accept(APPLICATION_JSON));
 
         // then
         andExpect(resultActions, status().isOk(), profileAttributes);
@@ -110,6 +113,7 @@ class ProfileEndpointTest extends AbstractEndpointTest {
 
         // when
         ResultActions resultActions = mvc.perform(post("/colleagues/{colleagueUuid}/attributes", colleagueUuid)
+                .with(colleague(colleagueUuid.toString()))
                 .contentType(APPLICATION_JSON)
                 .content(jsonTester.write(profileAttributes).getJson())
                 .accept(APPLICATION_JSON));
@@ -130,6 +134,7 @@ class ProfileEndpointTest extends AbstractEndpointTest {
 
         // when
         ResultActions resultActions = mvc.perform(delete("/colleagues/{colleagueUuid}/attributes", colleagueUuid)
+                .with(colleague(colleagueUuid.toString()))
                 .contentType(APPLICATION_JSON)
                 .content(jsonTester.write(profileAttributes).getJson())
                 .accept(APPLICATION_JSON));
@@ -140,7 +145,10 @@ class ProfileEndpointTest extends AbstractEndpointTest {
     }
 
     private ColleagueProfile randomProfileResponse() {
-        return RANDOM.nextObject(ColleagueProfile.class);
+        var colleagueProfile = new ColleagueProfile();
+        colleagueProfile.setColleague(new Colleague());
+        colleagueProfile.setProfileAttributes(new ArrayList<>());
+        return colleagueProfile;
     }
 
     private List<TypedAttribute> profileAttributes(int size) {

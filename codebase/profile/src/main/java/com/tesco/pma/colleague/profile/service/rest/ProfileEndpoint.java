@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.MimeTypeUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,6 +61,7 @@ public class ProfileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Profile found")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Profile not found")
     @GetMapping(path = "/{colleagueUuid}")
+    @PreAuthorize("hasAnyRole()")
     public RestResponse<ColleagueProfile> getProfileByColleagueUuid(@PathVariable UUID colleagueUuid) {
         return RestResponse.success(profileService.findProfileByColleagueUuid(colleagueUuid)
                 .orElseThrow(() -> notFound("colleagueUuid", colleagueUuid)));
@@ -72,10 +74,11 @@ public class ProfileEndpoint {
      * @param profileAttributes profile attributes
      * @return a RestResponse parameterized with profile attributes
      */
-    @Operation(summary = "Update existing Profile", description = "Update existing profile attributes", tags = {"profile"})
+    @Operation(summary = "Update existing profile attributes", description = "Update existing profile attributes", tags = {"profile"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Profile attributes updated")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Profile not found", content = @Content)
     @PutMapping(path = "{colleagueUuid}/attributes", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague() and isCurrentUser(#colleagueUuid)")
     public RestResponse<List<TypedAttribute>> updateProfileAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                                                       @RequestBody @Valid List<TypedAttribute> profileAttributes) {
         return RestResponse.success(profileService.updateProfileAttributes(colleagueUuid, profileAttributes));
@@ -92,6 +95,7 @@ public class ProfileEndpoint {
     @ApiResponse(responseCode = CREATED, description = "Successful operation")
     @PostMapping(path = "{colleagueUuid}/attributes", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isColleague() and isCurrentUser(#colleagueUuid)")
     public RestResponse<List<TypedAttribute>> createProfileAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                                                       @RequestBody @Valid List<TypedAttribute> profileAttributes) {
         return RestResponse.success(profileService.createProfileAttributes(colleagueUuid, profileAttributes));
@@ -109,6 +113,7 @@ public class ProfileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Profile attributes deleted")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Profile not found", content = @Content)
     @DeleteMapping(path = "{colleagueUuid}/attributes", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague() and isCurrentUser(#colleagueUuid)")
     public RestResponse<List<TypedAttribute>> deleteProfileAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                                                       @RequestBody @Valid List<TypedAttribute> profileAttributes) {
         return RestResponse.success(profileService.deleteProfileAttributes(colleagueUuid, profileAttributes));
@@ -136,6 +141,7 @@ public class ProfileEndpoint {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isAdmin()")
     public RestResponse<ImportReport> importColleagues(@RequestPart("file") MultipartFile file) {
 
         if (file.isEmpty()) {
@@ -153,6 +159,7 @@ public class ProfileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Request found")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Request not found")
     @GetMapping(path = "/requests/{requestUuid}")
+    @PreAuthorize("isAdmin()")
     public RestResponse<ImportRequest> getImportRequest(@PathVariable UUID requestUuid) {
         return RestResponse.success(importService.getRequest(requestUuid));
     }
@@ -160,6 +167,7 @@ public class ProfileEndpoint {
     @Operation(summary = "Get import request errors by request uuid", tags = "profile")
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Request errors found")
     @GetMapping(path = "/requests/{requestUuid}/errors")
+    @PreAuthorize("isAdmin()")
     public RestResponse<List<ImportError>> getImportRequestErrors(@PathVariable UUID requestUuid) {
         return RestResponse.success(importService.getRequestErrors(requestUuid));
     }
@@ -167,6 +175,7 @@ public class ProfileEndpoint {
     @Operation(summary = "Autocomplete search among colleagues by full name and manager ID", tags = {"colleagues"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Search among colleagues by full name and manager ID")
     @GetMapping(value = "/suggestions", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isLineManager() or isPeopleTeam()")
     public RestResponse<List<Colleague>> getSuggestions(RequestQuery requestQuery) {
         return RestResponse.success(profileService.getSuggestions(requestQuery));
     }
