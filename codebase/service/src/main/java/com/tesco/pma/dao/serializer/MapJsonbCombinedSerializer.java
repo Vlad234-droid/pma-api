@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class MapJsonbCombinedSerializer {
 
-    public static class ReviewPropertiesJsonbDeserializer extends JsonDeserializer<MapJson> {
+    public static class MapJsonbDeserializer extends JsonDeserializer<MapJson> {
 
         @Override
         public MapJson deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
@@ -41,7 +41,7 @@ public class MapJsonbCombinedSerializer {
         }
     }
 
-    public static class ReviewPropertiesJsonbSerializer extends JsonSerializer<MapJson> {
+    public static class MapJsonbSerializer extends JsonSerializer<MapJson> {
 
         @Override
         public void serialize(MapJson value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
@@ -60,9 +60,9 @@ public class MapJsonbCombinedSerializer {
     }
 
     public SimpleModule getSimpleModule() {
-        var module = new SimpleModule(ReviewPropertiesJsonbSerializer.class.getSimpleName());
-        module.addSerializer(new MapJsonbCombinedSerializer.ReviewPropertiesJsonbSerializer());
-        module.addDeserializer(MapJson.class, new MapJsonbCombinedSerializer.ReviewPropertiesJsonbDeserializer());
+        var module = new SimpleModule(MapJsonbSerializer.class.getSimpleName());
+        module.addSerializer(new MapJsonbSerializer());
+        module.addDeserializer(MapJson.class, new MapJsonbDeserializer());
         return module;
     }
 }

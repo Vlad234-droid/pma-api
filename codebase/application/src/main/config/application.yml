@@ -58,7 +58,8 @@ spring:
                               com.tesco.pma.feedback.api,
                               com.tesco.pma.colleague.security.domain,
                               com.tesco.pma.notes.model,
-                              com.tesco.pma.fs.domain
+                              com.tesco.pma.fs.domain,
+                              com.tesco.pma.config.domain
         configuration-properties:
           base-package: com.tesco.pma.dao,
                         com.tesco.pma.colleague.profile.dao,
@@ -69,7 +70,8 @@ spring:
                         com.tesco.pma.feedback.dao,
                         com.tesco.pma.colleague.security.dao,
                         com.tesco.pma.notes.dao,
-                        com.tesco.pma.fs.dao
+                        com.tesco.pma.fs.dao,
+                        com.tesco.pma.config.dao
           batchSize: 500
     camunda:
       # Camunda database config
@@ -218,7 +220,7 @@ tesco:
 camunda:
   bpm:
     database:
-      schema-update: true
+      schema-update: false
     metrics:
       enabled: true
     #      db-reporter-activate: true
