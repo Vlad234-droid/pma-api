@@ -40,7 +40,7 @@ create table ACT_HI_PROCINST (
     primary key (ID_),
     unique (PROC_INST_ID_)
 );
---rollback drop table ACT_HI_PROCINST;
+--rollback drop table ACT_HI_PROCINST CASCADE;
 
 create table ACT_HI_ACTINST (
     ID_ varchar(64) not null,
@@ -66,7 +66,7 @@ create table ACT_HI_ACTINST (
     REMOVAL_TIME_ timestamp,
     primary key (ID_)
 );
---rollback drop table ACT_HI_ACTINST;
+--rollback drop table ACT_HI_ACTINST CASCADE;
 
 create table ACT_HI_TASKINST (
     ID_ varchar(64) not null,
@@ -97,7 +97,7 @@ create table ACT_HI_TASKINST (
     REMOVAL_TIME_ timestamp,
     primary key (ID_)
 );
---rollback drop table ACT_HI_TASKINST;
+--rollback drop table ACT_HI_TASKINST CASCADE;
 
 create table ACT_HI_VARINST (
     ID_ varchar(64) not null,
@@ -126,7 +126,7 @@ create table ACT_HI_VARINST (
     REMOVAL_TIME_ timestamp,
     primary key (ID_)
 );
---rollback drop table ACT_HI_VARINST;
+--rollback drop table ACT_HI_VARINST CASCADE;
 
 create table ACT_HI_DETAIL (
     ID_ varchar(64) not null,
@@ -159,7 +159,7 @@ create table ACT_HI_DETAIL (
     INITIAL_ boolean,
     primary key (ID_)
 );
---rollback drop table ACT_HI_DETAIL;
+--rollback drop table ACT_HI_DETAIL CASCADE;
 
 create table ACT_HI_IDENTITYLINK (
     ID_ varchar(64) not null,
@@ -177,7 +177,7 @@ create table ACT_HI_IDENTITYLINK (
     REMOVAL_TIME_ timestamp,
     primary key (ID_)
 );
---rollback drop table ACT_HI_IDENTITYLINK;
+--rollback drop table ACT_HI_IDENTITYLINK CASCADE;
 
 create table ACT_HI_COMMENT (
     ID_ varchar(64) not null,
@@ -194,7 +194,7 @@ create table ACT_HI_COMMENT (
     REMOVAL_TIME_ timestamp,
     primary key (ID_)
 );
---rollback drop table ACT_HI_COMMENT;
+--rollback drop table ACT_HI_COMMENT CASCADE;
 
 create table ACT_HI_ATTACHMENT (
     ID_ varchar(64) not null,
@@ -213,7 +213,7 @@ create table ACT_HI_ATTACHMENT (
     REMOVAL_TIME_ timestamp,
     primary key (ID_)
 );
---rollback drop table ACT_HI_ATTACHMENT;
+--rollback drop table ACT_HI_ATTACHMENT CASCADE;
 
 create table ACT_HI_OP_LOG (
     ID_ varchar(64) not null,
@@ -245,7 +245,7 @@ create table ACT_HI_OP_LOG (
 	ANNOTATION_ varchar(4000),
     primary key (ID_)
 );
---rollback drop table ACT_HI_OP_LOG;
+--rollback drop table ACT_HI_OP_LOG CASCADE;
 
 create table ACT_HI_INCIDENT (
   ID_ varchar(64) not null,
@@ -271,7 +271,7 @@ create table ACT_HI_INCIDENT (
   REMOVAL_TIME_ timestamp,
   primary key (ID_)
 );
---rollback drop table ACT_HI_INCIDENT;
+--rollback drop table ACT_HI_INCIDENT CASCADE;
 
 create table ACT_HI_JOB_LOG (
     ID_ varchar(64) not null,
@@ -300,7 +300,7 @@ create table ACT_HI_JOB_LOG (
     REMOVAL_TIME_ timestamp,
     primary key (ID_)
 );
---rollback drop table ACT_HI_JOB_LOG;
+--rollback drop table ACT_HI_JOB_LOG CASCADE;
 
 create table ACT_HI_BATCH (
     ID_ varchar(64) not null,
@@ -318,7 +318,7 @@ create table ACT_HI_BATCH (
     REMOVAL_TIME_ timestamp,
     primary key (ID_)
 );
---rollback drop table ACT_HI_BATCH;
+--rollback drop table ACT_HI_BATCH CASCADE;
 
 create table ACT_HI_EXT_TASK_LOG (
     ID_ varchar(64) not null,
@@ -342,7 +342,7 @@ create table ACT_HI_EXT_TASK_LOG (
     REMOVAL_TIME_ timestamp,
     primary key (ID_)
 );
---rollback drop table ACT_HI_EXT_TASK_LOG;
+--rollback drop table ACT_HI_EXT_TASK_LOG CASCADE;
 
 create index ACT_IDX_HI_PRO_INST_END on ACT_HI_PROCINST(END_TIME_);
 create index ACT_IDX_HI_PRO_I_BUSKEY on ACT_HI_PROCINST(BUSINESS_KEY_);
