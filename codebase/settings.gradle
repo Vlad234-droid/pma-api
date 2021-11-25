@@ -23,5 +23,6 @@ include 'feedback'
 include 'security'
 include 'notes'
 include 'fs'
+include 'config'
 include 'tip'
 

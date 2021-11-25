@@ -33,6 +33,14 @@ public enum ErrorCodes implements ErrorCodeAware {
      */
     PM_PARSE_NOT_FOUND,
     /**
+     * Process name was not found in metadata or empty
+     */
+    PROCESS_NAME_IS_EMPTY,
+    /**
+     * Process execution exception
+     */
+    PROCESS_EXECUTION_EXCEPTION,
+    /**
      * The passed value cannot be blank
      */
     PM_PARSE_IS_BLANK;

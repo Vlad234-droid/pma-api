@@ -6,13 +6,14 @@ import com.tesco.pma.configuration.CaseInsensitiveEnumEditor;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
+import com.tesco.pma.review.domain.AuditOrgObjectiveReport;
 import com.tesco.pma.review.domain.ColleagueTimeline;
-import com.tesco.pma.review.domain.GroupObjective;
+import com.tesco.pma.review.domain.OrgObjective;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
-import com.tesco.pma.review.domain.WorkingGroupObjective;
 import com.tesco.pma.review.domain.request.UpdateReviewsStatusRequest;
 import com.tesco.pma.review.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,7 +44,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class ReviewEndpoint {
 
     private final ReviewService reviewService;
-    private final AuditorAware<String> auditorAware;
+    private final AuditorAware<UUID> auditorAware;
     private final PMCycleService pmCycleService;
 
     private static final String CURRENT_PARAMETER_NAME = "CURRENT";
@@ -154,6 +156,23 @@ public class ReviewEndpoint {
     }
 
     /**
+     * Get call using a Path param and return a list of reviews as JSON.
+     *
+     * @param cycleUuid     an identifier of performance cycle
+     * @param colleagueUuid an identifier of colleague
+     * @return a RestResponse parameterized with list of reviews
+     */
+    @Operation(summary = "Get a list of reviews by its cycleUuid, colleagueUuid", tags = {"review"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found reviews")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Reviews not found", content = @Content)
+    @GetMapping(path = "/colleagues/{colleagueUuid}/pm-cycles/{cycleUuid}/reviews",
+            produces = APPLICATION_JSON_VALUE)
+    public RestResponse<List<Review>> getReviewsByColleague(@PathVariable("colleagueUuid") UUID colleagueUuid,
+                                                            @PathVariable("cycleUuid") String cycleUuid) {
+        return success(reviewService.getReviewsByColleague(getPMCycleUuid(colleagueUuid, cycleUuid), colleagueUuid));
+    }
+
+    /**
      * Get call using a Path param and return a list of colleagues reviews as JSON.
      *
      * @param managerUuid an identifier of colleague
@@ -224,7 +243,7 @@ public class ReviewEndpoint {
                 request.getReviews(),
                 status,
                 request.getReason(),
-                resolveUserName()
+                resolveUserUuid()
         ));
     }
 
@@ -262,68 +281,74 @@ public class ReviewEndpoint {
     }
 
     /**
-     * POST call to create group's objectives.
+     * POST call to create organisation objectives.
      *
-     * @param businessUnitUuid business unit an identifier
-     * @param groupObjectives  group's objectives
-     * @return a RestResponse parameterized with group's objectives
+     * @param orgObjectives organisation objectives
+     * @return a RestResponse parameterized with list of organisation objectives
      */
-    @Operation(summary = "Create new group's objectives", description = "Group's objectives created", tags = {"objective"})
+    @Operation(summary = "Create new organisation objectives",
+            description = "Organisation objectives created",
+            tags = {"org-objective"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
-    @PostMapping(path = "/business-units/{businessUnitUuid}/objectives",
+    @PostMapping(path = "/org-objectives",
             produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<List<GroupObjective>> createGroupObjectives(@PathVariable("businessUnitUuid") UUID businessUnitUuid,
-                                                                    @RequestBody List<GroupObjective> groupObjectives) {
-        return RestResponse.success(reviewService.createGroupObjectives(businessUnitUuid, groupObjectives));
+    public RestResponse<List<OrgObjective>> createOrgObjectives(@RequestBody List<OrgObjective> orgObjectives) {
+        return RestResponse.success(reviewService.createOrgObjectives(orgObjectives, resolveUserUuid()));
     }
 
     /**
-     * Get call using a Path param and return a list of Group Objectives as JSON.
+     * Get call to return a list of organisation objectives as JSON.
      *
-     * @param businessUnitUuid business unit an identifier
-     * @return a RestResponse parameterized with list of Group Objectives
+     * @return a RestResponse parameterized with list of organisation objectives
      */
-    @Operation(summary = "Get all group's objectives by business unit", tags = {"objective"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found Group Objectives")
-    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Group Objectives not found", content = @Content)
-    @GetMapping(path = "/business-units/{businessUnitUuid}/objectives",
+    @Operation(summary = "Get all organisation objectives", tags = {"org-objective"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found organisation objectives")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Organisation objectives not found", content = @Content)
+    @GetMapping(path = "/org-objectives",
             produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<GroupObjective>> getGroupObjectives(@PathVariable("businessUnitUuid") UUID businessUnitUuid) {
-        return success(reviewService.getAllGroupObjectives(businessUnitUuid));
+    public RestResponse<List<OrgObjective>> getOrgObjectives() {
+        return success(reviewService.getAllOrgObjectives());
     }
 
     /**
-     * Get call using a Path param and return a list of published Group Objectives as JSON.
+     * Get call to return a list of published organisation objectives as JSON.
      *
-     * @param businessUnitUuid business unit an identifier
-     * @return a RestResponse parameterized with list of published Group Objectives
+     * @return a RestResponse parameterized with list of published organisation objectives
      */
-    @Operation(summary = "Get published group's objectives by business unit", tags = {"objective"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found Group Objectives")
-    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Group Objectives not found", content = @Content)
-    @GetMapping(path = "/business-units/{businessUnitUuid}/objectives/published",
+    @Operation(summary = "Get published organisation objectives", tags = {"org-objective"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found organisation objectives")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Organisation objectives not found", content = @Content)
+    @GetMapping(path = "/org-objectives/published",
             produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<GroupObjective>> getPublishedGroupObjectives(@PathVariable("businessUnitUuid") UUID businessUnitUuid) {
-        return success(reviewService.getPublishedGroupObjectives(businessUnitUuid));
+    public RestResponse<List<OrgObjective>> getPublishedOrgObjectives() {
+        return success(reviewService.getPublishedOrgObjectives());
     }
 
-    @Operation(summary = "Publish group's objectives", tags = {"objective"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Group's objectives have been published")
-    @PostMapping(value = "/business-units/{businessUnitUuid}/objectives/publish", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<WorkingGroupObjective> publishBusinessUnitStructure(@PathVariable("businessUnitUuid") UUID businessUnitUuid) {
-        return success(reviewService.publishGroupObjectives(businessUnitUuid, resolveUserName()));
+    @Operation(summary = "Create and publish organisation objectives", tags = {"org-objective"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Organisation objectives have been published")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Organisation objectives not found", content = @Content)
+    @PostMapping(value = "/org-objectives/publish", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<List<OrgObjective>> createAndPublishOrgObjectives(@RequestBody List<OrgObjective> orgObjectives) {
+        return success(reviewService.createAndPublishOrgObjectives(orgObjectives, resolveUserUuid()));
     }
 
-    @Operation(summary = "Unpublish group's objectives", tags = {"objective"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Group's objectives have been unpublished")
-    @DeleteMapping(value = "/business-units/{businessUnitUuid}/objectives/publish", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<?> unpublishBusinessUnitStructure(@PathVariable("businessUnitUuid") UUID businessUnitUuid) {
-        reviewService.unpublishGroupObjectives(businessUnitUuid);
-        return RestResponse.success();
+    @Operation(summary = "Publish organisation objectives", tags = {"org-objective"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Organisation objectives have been published")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Organisation objectives not found", content = @Content)
+    @PutMapping(value = "/org-objectives/publish", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<List<OrgObjective>> publishOrgObjectives() {
+        return success(reviewService.publishOrgObjectives(resolveUserUuid()));
     }
 
-    private String resolveUserName() {
+    @Operation(summary = "Get audit log of organisation objective actions", tags = {"org-objective"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found audit log data")
+    @GetMapping(value = "/audit-logs", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<List<AuditOrgObjectiveReport>> getAuditLogReport(@NotNull RequestQuery requestQuery) {
+        return success(reviewService.getAuditOrgObjectiveReport(requestQuery));
+    }
+
+    private UUID resolveUserUuid() {
         return auditorAware.getCurrentAuditor();
     }
 

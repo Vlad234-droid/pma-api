@@ -1,5 +1,6 @@
 package com.tesco.pma.review.service;
 
+import com.tesco.pma.api.OrgObjectiveStatus;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMReviewStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
@@ -10,14 +11,16 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.ReviewCreationException;
 import com.tesco.pma.exception.ReviewDeletionException;
 import com.tesco.pma.exception.ReviewUpdateException;
+import com.tesco.pma.pagination.RequestQuery;
+import com.tesco.pma.review.dao.OrgObjectiveDAO;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
 import com.tesco.pma.review.dao.ReviewDAO;
+import com.tesco.pma.review.domain.AuditOrgObjectiveReport;
 import com.tesco.pma.review.domain.ColleagueTimeline;
-import com.tesco.pma.review.domain.GroupObjective;
+import com.tesco.pma.review.domain.OrgObjective;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStatusCounter;
-import com.tesco.pma.review.domain.WorkingGroupObjective;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -33,6 +36,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.tesco.pma.api.ActionType.PUBLISH;
+import static com.tesco.pma.api.ActionType.SAVE_AS_DRAFT;
 import static com.tesco.pma.cycle.api.PMReviewStatus.APPROVED;
 import static com.tesco.pma.cycle.api.PMReviewStatus.COMPLETED;
 import static com.tesco.pma.cycle.api.PMReviewStatus.DECLINED;
@@ -41,22 +46,14 @@ import static com.tesco.pma.cycle.api.PMReviewStatus.WAITING_FOR_APPROVAL;
 import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
 import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
 import static com.tesco.pma.review.exception.ErrorCodes.ALLOWED_STATUSES_NOT_FOUND;
-import static com.tesco.pma.review.exception.ErrorCodes.BUSINESS_UNIT_NOT_EXISTS;
 import static com.tesco.pma.review.exception.ErrorCodes.CANNOT_DELETE_REVIEW_COUNT_CONSTRAINT;
-import static com.tesco.pma.review.exception.ErrorCodes.GROUP_OBJECTIVES_NOT_FOUND;
-import static com.tesco.pma.review.exception.ErrorCodes.GROUP_OBJECTIVE_ALREADY_EXISTS;
 import static com.tesco.pma.review.exception.ErrorCodes.MAX_REVIEW_NUMBER_CONSTRAINT_VIOLATION;
 import static com.tesco.pma.review.exception.ErrorCodes.MIN_REVIEW_NUMBER_CONSTRAINT_VIOLATION;
-import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND;
-import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND_BY_MANAGER;
-import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND_FOR_STATUS_UPDATE;
+import static com.tesco.pma.review.exception.ErrorCodes.ORG_OBJECTIVES_NOT_FOUND;
+import static com.tesco.pma.review.exception.ErrorCodes.ORG_OBJECTIVE_ALREADY_EXISTS;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_ALREADY_EXISTS;
-import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_BY_UUID;
-import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_FOR_COLLEAGUE;
-import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_FOR_DELETE;
-import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_FOR_UPDATE;
+import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_STATUS_NOT_ALLOWED;
-import static java.time.Instant.now;
 
 /**
  * Implementation of {@link ReviewService}.
@@ -66,6 +63,7 @@ import static java.time.Instant.now;
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewDAO reviewDAO;
+    private final OrgObjectiveDAO orgObjectiveDAO;
     private final ReviewAuditLogDAO reviewAuditLogDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final PMCycleService pmCycleService;
@@ -75,7 +73,6 @@ public class ReviewServiceImpl implements ReviewService {
     private static final String MANAGER_UUID_PARAMETER_NAME = "managerUuid";
     private static final String PERFORMANCE_CYCLE_UUID_PARAMETER_NAME = "performanceCycleUuid";
     private static final String TYPE_PARAMETER_NAME = "type";
-    private static final String BUSINESS_UNIT_UUID_PARAMETER_NAME = "businessUnitUuid";
     private static final String NUMBER_PARAMETER_NAME = "number";
     private static final String VERSION_PARAMETER_NAME = "version";
     private static final String STATUS_PARAMETER_NAME = "status";
@@ -89,15 +86,15 @@ public class ReviewServiceImpl implements ReviewService {
     private static final String DELETE_OPERATION_NAME = "DELETE";
     private static final String UPDATE_OPERATION_NAME = "UPDATE";
     private static final String CHANGE_STATUS_OPERATION_NAME = "CHANGE STATUS";
-    private static final Comparator<GroupObjective> GROUP_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR =
-            Comparator.comparing(GroupObjective::getNumber)
-                    .thenComparing(GroupObjective::getTitle);
+    private static final Comparator<OrgObjective> ORG_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR =
+            Comparator.comparing(OrgObjective::getNumber)
+                    .thenComparing(OrgObjective::getTitle);
 
     @Override
     public Review getReview(UUID performanceCycleUuid, UUID colleagueUuid, PMReviewType type, Integer number) {
         var res = reviewDAO.getReview(performanceCycleUuid, colleagueUuid, type, number);
         if (res == null) {
-            throw notFound(REVIEW_NOT_FOUND_FOR_COLLEAGUE,
+            throw notFound(REVIEW_NOT_FOUND,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
                             TYPE_PARAMETER_NAME, type,
@@ -110,7 +107,7 @@ public class ReviewServiceImpl implements ReviewService {
     public Review getReview(UUID uuid) {
         var res = reviewDAO.read(uuid);
         if (res == null) {
-            throw notFound(REVIEW_NOT_FOUND_BY_UUID,
+            throw notFound(REVIEW_NOT_FOUND,
                     Map.of(REVIEW_UUID_PARAMETER_NAME, uuid));
         }
         return res;
@@ -120,7 +117,7 @@ public class ReviewServiceImpl implements ReviewService {
     public List<Review> getReviews(UUID performanceCycleUuid, UUID colleagueUuid, PMReviewType type) {
         List<Review> results = reviewDAO.getReviews(performanceCycleUuid, colleagueUuid, type);
         if (results == null) {
-            throw notFound(REVIEWS_NOT_FOUND,
+            throw notFound(REVIEW_NOT_FOUND,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
                             TYPE_PARAMETER_NAME, type));
@@ -129,10 +126,21 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public List<Review> getReviewsByColleague(UUID performanceCycleUuid, UUID colleagueUuid) {
+        List<Review> results = reviewDAO.getReviewsByColleague(performanceCycleUuid, colleagueUuid);
+        if (results == null) {
+            throw notFound(REVIEW_NOT_FOUND,
+                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
+                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid));
+        }
+        return results;
+    }
+
+    @Override
     public List<ColleagueTimeline> getTeamReviews(UUID managerUuid) {
         List<ColleagueTimeline> results = reviewDAO.getTeamReviews(managerUuid);
         if (results == null) {
-            throw notFound(REVIEWS_NOT_FOUND_BY_MANAGER,
+            throw notFound(REVIEW_NOT_FOUND,
                     Map.of(MANAGER_UUID_PARAMETER_NAME, managerUuid));
         } else {
             results.forEach(colleagueReviews -> {
@@ -157,7 +165,7 @@ public class ReviewServiceImpl implements ReviewService {
                 review.getType(),
                 review.getNumber());
         if (null == reviewBefore) {
-            throw notFound(REVIEW_NOT_FOUND_FOR_COLLEAGUE,
+            throw notFound(REVIEW_NOT_FOUND,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, review.getColleagueUuid(),
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, review.getPerformanceCycleUuid(),
                             TYPE_PARAMETER_NAME, review.getType(),
@@ -215,9 +223,9 @@ public class ReviewServiceImpl implements ReviewService {
                                               List<Review> reviews,
                                               PMReviewStatus status,
                                               String reason,
-                                              String loggedUserName) {
+                                              UUID loggedUserUuid) {
         reviews.forEach(review -> {
-            var prevStatuses = getPrevStatusesForChangeStatus(type, status);
+            var prevStatuses = getPrevStatusesForChangeStatus(status);
             if (0 == prevStatuses.size()) {
                 throw notFound(ALLOWED_STATUSES_NOT_FOUND,
                         Map.of(OPERATION_PARAMETER_NAME, CHANGE_STATUS_OPERATION_NAME));
@@ -234,9 +242,9 @@ public class ReviewServiceImpl implements ReviewService {
                         colleagueUuid,
                         type,
                         review.getNumber());
-                reviewAuditLogDAO.logReviewUpdating(actualReview, status, reason, loggedUserName);
+                reviewAuditLogDAO.logReviewUpdating(actualReview, status, reason, loggedUserUuid);
             } else {
-                throw notFound(REVIEWS_NOT_FOUND_FOR_STATUS_UPDATE,
+                throw notFound(REVIEW_NOT_FOUND,
                         Map.of(STATUS_PARAMETER_NAME, status,
                                 COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
                                 PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
@@ -269,81 +277,37 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public List<GroupObjective> createGroupObjectives(UUID businessUnitUuid,
-                                                      List<GroupObjective> groupObjectives) {
-        var currentGroupObjectives = reviewDAO.getGroupObjectivesByBusinessUnitUuid(businessUnitUuid);
-        if (listEqualsIgnoreOrder(currentGroupObjectives, groupObjectives, GROUP_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR)) {
-            return currentGroupObjectives;
-        }
-        List<GroupObjective> results = new ArrayList<>();
-        final var newVersion = reviewDAO.getMaxVersionGroupObjective(businessUnitUuid) + 1;
-        groupObjectives.forEach(groupObjective -> {
-            try {
-                groupObjective.setUuid(UUID.randomUUID());
-                groupObjective.setBusinessUnitUuid(businessUnitUuid);
-                groupObjective.setVersion(newVersion);
-                if (1 == reviewDAO.createGroupObjective(groupObjective)) {
-                    results.add(groupObjective);
-                } else {
-                    //todo it will work after implementation foreign keys
-                    throw notFound(BUSINESS_UNIT_NOT_EXISTS,
-                            Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, groupObjective.getBusinessUnitUuid()));
-                }
-            } catch (DuplicateKeyException e) {
-                throw databaseConstraintViolation(
-                        GROUP_OBJECTIVE_ALREADY_EXISTS,
-                        Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, groupObjective.getBusinessUnitUuid(),
-                                NUMBER_PARAMETER_NAME, groupObjective.getNumber(),
-                                VERSION_PARAMETER_NAME, groupObjective.getVersion()),
-                        e);
-
-            }
-
-        });
-        return results;
+    public List<OrgObjective> createOrgObjectives(List<OrgObjective> orgObjectives, UUID loggedUserUuid) {
+        return intCreateOrgObjectives(orgObjectives, loggedUserUuid);
     }
 
     @Override
-    public List<GroupObjective> getAllGroupObjectives(UUID businessUnitUuid) {
-        List<GroupObjective> results = reviewDAO.getGroupObjectivesByBusinessUnitUuid(businessUnitUuid);
+    public List<OrgObjective> getAllOrgObjectives() {
+        List<OrgObjective> results = orgObjectiveDAO.getAll();
         if (results == null) {
-            throw notFound(GROUP_OBJECTIVES_NOT_FOUND,
-                    Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, businessUnitUuid));
+            throw notFound(ORG_OBJECTIVES_NOT_FOUND, Map.of());
         }
         return results;
     }
 
     @Override
     @Transactional
-    public WorkingGroupObjective publishGroupObjectives(UUID businessUnitUuid,
-                                                        String loggedUserName) {
-        final var version = reviewDAO.getMaxVersionGroupObjective(businessUnitUuid);
-        final var workingGroupObjective = getWorkingGroupObjective(businessUnitUuid, version);
-        workingGroupObjective.setUpdaterId(loggedUserName);
-        if (1 == reviewDAO.insertOrUpdateWorkingGroupObjective(workingGroupObjective)) {
-            return workingGroupObjective;
-        } else {
-            //todo it will work after implementation foreign keys
-            throw notFound(BUSINESS_UNIT_NOT_EXISTS,
-                    Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, businessUnitUuid));
-        }
+    public List<OrgObjective> publishOrgObjectives(UUID loggedUserUuid) {
+        return intPublishOrgObjectives(loggedUserUuid);
     }
 
     @Override
     @Transactional
-    public void unpublishGroupObjectives(UUID businessUnitUuid) {
-        if (1 != reviewDAO.deleteWorkingGroupObjective(businessUnitUuid)) {
-            throw notFound(BUSINESS_UNIT_NOT_EXISTS,
-                    Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, businessUnitUuid));
-        }
+    public List<OrgObjective> createAndPublishOrgObjectives(List<OrgObjective> orgObjectives, UUID loggedUserUuid) {
+        intCreateOrgObjectives(orgObjectives, loggedUserUuid);
+        return intPublishOrgObjectives(loggedUserUuid);
     }
 
     @Override
-    public List<GroupObjective> getPublishedGroupObjectives(UUID businessUnitUuid) {
-        List<GroupObjective> results = reviewDAO.getWorkingGroupObjectivesByBusinessUnitUuid(businessUnitUuid);
+    public List<OrgObjective> getPublishedOrgObjectives() {
+        List<OrgObjective> results = orgObjectiveDAO.getAllPublished();
         if (results == null) {
-            throw notFound(GROUP_OBJECTIVES_NOT_FOUND,
-                    Map.of(BUSINESS_UNIT_UUID_PARAMETER_NAME, businessUnitUuid));
+            throw notFound(ORG_OBJECTIVES_NOT_FOUND, Map.of());
         }
         return results;
     }
@@ -353,14 +317,6 @@ public class ReviewServiceImpl implements ReviewService {
                                                                              Throwable cause) {
         return new DatabaseConstraintViolationException(errorCode.getCode(),
                 messageSourceAccessor.getMessage(errorCode.getCode(), params), null, cause);
-    }
-
-    private WorkingGroupObjective getWorkingGroupObjective(UUID businessUnitUuid, int version) {
-        return WorkingGroupObjective.builder()
-                .businessUnitUuid(businessUnitUuid)
-                .version(version)
-                .updateTime(now())
-                .build();
     }
 
     @Override
@@ -378,12 +334,15 @@ public class ReviewServiceImpl implements ReviewService {
                 if (null != reviewStatusCounter) {
                     timelinePoint.setStatus(reviewStatusCounter.getStatus());
                     timelinePoint.setCount(reviewStatusCounter.getCount());
-                } else {
-                    break;
                 }
             }
         }
         return cycleTimeline;
+    }
+
+    @Override
+    public List<AuditOrgObjectiveReport> getAuditOrgObjectiveReport(RequestQuery requestQuery) {
+        return reviewAuditLogDAO.getAuditOrgObjectiveReport(requestQuery);
     }
 
     private ReviewStatusCounter getTimelineReviewStatusCounter(UUID cycleUuid, UUID colleagueUuid, PMReviewType reviewType) {
@@ -436,7 +395,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     private List<PMReviewStatus> getAllowedStatusesForUpdate(PMReviewType reviewType, PMReviewStatus newStatus) {
         var allowedStatusesForUpdate = getStatusesForUpdate(reviewType);
-        var prevStatusesForChangeStatus = getPrevStatusesForChangeStatus(reviewType, newStatus);
+        var prevStatusesForChangeStatus = getPrevStatusesForChangeStatus(newStatus);
         return allowedStatusesForUpdate.stream()
                 .filter(prevStatusesForChangeStatus::contains)
                 .collect(Collectors.toList());
@@ -459,7 +418,7 @@ public class ReviewServiceImpl implements ReviewService {
                         Map.of(OPERATION_PARAMETER_NAME, CREATE_OPERATION_NAME));
             }
             if (allowedStatuses.contains(review.getStatus())) {
-                reviewDAO.createReview(review);
+                reviewDAO.create(review);
                 return review;
             } else {
                 throw createReviewException(
@@ -486,11 +445,12 @@ public class ReviewServiceImpl implements ReviewService {
                     Map.of(OPERATION_PARAMETER_NAME, UPDATE_OPERATION_NAME));
         }
 
-        if (1 == reviewDAO.updateReview(review, allowedStatuses)) {
+        if (1 == reviewDAO.update(review, allowedStatuses)) {
             return review;
         } else {
-            throw notFound(REVIEW_NOT_FOUND_FOR_UPDATE,
-                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, review.getColleagueUuid(),
+            throw notFound(REVIEW_NOT_FOUND,
+                    Map.of(OPERATION_PARAMETER_NAME, UPDATE_OPERATION_NAME,
+                            COLLEAGUE_UUID_PARAMETER_NAME, review.getColleagueUuid(),
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, review.getPerformanceCycleUuid(),
                             TYPE_PARAMETER_NAME, review.getType(),
                             NUMBER_PARAMETER_NAME, review.getNumber(),
@@ -524,13 +484,51 @@ public class ReviewServiceImpl implements ReviewService {
                 type,
                 number,
                 allowedStatuses)) {
-            throw deleteReviewException(REVIEW_NOT_FOUND_FOR_DELETE,
-                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
+            throw notFound(REVIEW_NOT_FOUND,
+                    Map.of(OPERATION_PARAMETER_NAME, DELETE_OPERATION_NAME,
+                            COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
                             TYPE_PARAMETER_NAME, type,
                             NUMBER_PARAMETER_NAME, number,
                             ALLOWED_STATUSES_PARAMETER_NAME, allowedStatuses));
         }
+    }
+
+    private List<OrgObjective> intCreateOrgObjectives(List<OrgObjective> orgObjectives, UUID loggedUserUuid) {
+        var currentOrgObjectives = orgObjectiveDAO.getAll();
+        if (listEqualsIgnoreOrder(currentOrgObjectives, orgObjectives, ORG_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR)) {
+            return currentOrgObjectives;
+        }
+        List<OrgObjective> results = new ArrayList<>();
+        final var newVersion = orgObjectiveDAO.getMaxVersion() + 1;
+        orgObjectives.forEach(orgObjective -> {
+            try {
+                orgObjective.setUuid(UUID.randomUUID());
+                orgObjective.setStatus(OrgObjectiveStatus.DRAFT);
+                orgObjective.setVersion(newVersion);
+                orgObjectiveDAO.create(orgObjective);
+                results.add(orgObjective);
+            } catch (DuplicateKeyException e) {
+                throw databaseConstraintViolation(
+                        ORG_OBJECTIVE_ALREADY_EXISTS,
+                        Map.of(NUMBER_PARAMETER_NAME, orgObjective.getNumber(),
+                                VERSION_PARAMETER_NAME, orgObjective.getVersion()),
+                        e);
+
+            }
+
+        });
+        reviewAuditLogDAO.logOrgObjectiveAction(SAVE_AS_DRAFT, loggedUserUuid);
+        return results;
+    }
+
+    private List<OrgObjective> intPublishOrgObjectives(UUID loggedUserUuid) {
+        orgObjectiveDAO.unpublish();
+        if (0 == orgObjectiveDAO.publish()) {
+            throw notFound(ORG_OBJECTIVES_NOT_FOUND, Map.of());
+        }
+        reviewAuditLogDAO.logOrgObjectiveAction(PUBLISH, loggedUserUuid);
+        return getPublishedOrgObjectives();
     }
 
     private List<PMReviewStatus> getStatusesForCreate() {
@@ -553,25 +551,20 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    private List<PMReviewStatus> getPrevStatusesForChangeStatus(PMReviewType reviewType, PMReviewStatus newStatus) {
-        if (reviewType.equals(OBJECTIVE)) {
-            switch (newStatus) {
-                case DRAFT:
-                    return List.of(DRAFT);
-                case WAITING_FOR_APPROVAL:
-                    return List.of(DRAFT, WAITING_FOR_APPROVAL, DECLINED);
-                case APPROVED:
-                    return List.of(WAITING_FOR_APPROVAL, APPROVED);
-                case DECLINED:
-                    return List.of(WAITING_FOR_APPROVAL, DECLINED);
-                case COMPLETED:
-                    return List.of(APPROVED, COMPLETED);
-                default:
-                    return Collections.emptyList();
-            }
-        } else {
-            // TODO: 11/6/2021 should be implemented after receiving requirements
-            return Collections.emptyList();
+    private List<PMReviewStatus> getPrevStatusesForChangeStatus(PMReviewStatus newStatus) {
+        switch (newStatus) {
+            case DRAFT:
+                return List.of(DRAFT);
+            case WAITING_FOR_APPROVAL:
+                return List.of(DRAFT, WAITING_FOR_APPROVAL, DECLINED);
+            case APPROVED:
+                return List.of(WAITING_FOR_APPROVAL, APPROVED);
+            case DECLINED:
+                return List.of(WAITING_FOR_APPROVAL, DECLINED);
+            case COMPLETED:
+                return List.of(APPROVED, COMPLETED);
+            default:
+                return Collections.emptyList();
         }
     }
 
@@ -594,11 +587,11 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private NotFoundException notFound(ErrorCodeAware errorCode, Map<String, ?> params) {
-        return notFound(errorCode, params, null);
-    }
-
-    private NotFoundException notFound(ErrorCodeAware errorCode, Map<String, ?> params, Throwable cause) {
-        return new NotFoundException(errorCode.getCode(), messageSourceAccessor.getMessage(errorCode.getCode(), params), null, cause);
+        return new NotFoundException(
+                errorCode.getCode(),
+                messageSourceAccessor.getMessageForParams(errorCode.getCode(), params),
+                null,
+                null);
     }
 
     private ReviewCreationException createReviewException(ErrorCodeAware errorCode, Map<String, ?> params) {

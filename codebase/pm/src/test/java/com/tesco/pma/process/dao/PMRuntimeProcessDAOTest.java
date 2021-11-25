@@ -3,8 +3,10 @@ package com.tesco.pma.process.dao;
 import java.util.List;
 import java.util.UUID;
 
+import com.tesco.pma.cycle.dao.config.PMCycleTypeHandlerConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
@@ -21,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 13.10.2021 Time: 22:40
  */
+@ContextConfiguration(classes = PMCycleTypeHandlerConfig.class)
 class PMRuntimeProcessDAOTest extends AbstractDAOTest {
 
     private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/process/dao/";

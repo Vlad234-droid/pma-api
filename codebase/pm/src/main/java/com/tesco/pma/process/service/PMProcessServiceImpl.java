@@ -12,17 +12,12 @@ import com.tesco.pma.process.api.PMProcessStatus;
 import com.tesco.pma.process.api.PMRuntimeProcess;
 import com.tesco.pma.process.dao.PMRuntimeProcessDAO;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.IOUtils;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 
@@ -35,28 +30,11 @@ public class PMProcessServiceImpl implements PMProcessService {
     private static final String ID = "id";
     private static final String STATUS = "status";
     private static final String STATUS_FILTER = "status_filter";
-    private static final String FORMS_PATH = "/com/tesco/pma/flow/";
 
     private final PMRuntimeProcessDAO dao;
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final ProcessEngine processEngine;
-
-    private final ResourceProvider resourceProvider = new FormsResourceProvider();
-
-    //todo implement provider
-    private static class FormsResourceProvider implements ResourceProvider {
-        @Override
-        public InputStream read(String resourceName) throws IOException {
-            return getClass().getResourceAsStream(FORMS_PATH + resourceName);
-        }
-
-        @Override
-        public String resourceToString(final String resourceName) throws IOException {
-            try (InputStream is = getClass().getResourceAsStream(FORMS_PATH + resourceName)) {
-                return IOUtils.toString(is, StandardCharsets.UTF_8);
-            }
-        }
-    }
+    private final ResourceProvider resourceProvider;
 
     @Override
     @Transactional

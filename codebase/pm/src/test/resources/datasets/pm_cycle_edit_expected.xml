@@ -1,0 +1,13 @@
+<dataset>
+    <pm_cycle
+            uuid="5d8a71fe-9cc6-4f3a-9ab6-75f08e6886d4"
+            entry_config_key="entry_config_key"
+            template_uuid="d1810821-d1a9-48b5-9745-d0841151911f"
+            name="updated_name"
+            status_id="1"
+            type_id="1"
+            created_by="d0e1e77c-37f2-4260-9440-bbe98ae76112"
+            creation_time="2021-09-20 10:45:12.448057"
+            start_time="2021-09-20 10:45:12.448057"
+            end_time="2021-09-21 10:45:12.448057"/>
+</dataset>

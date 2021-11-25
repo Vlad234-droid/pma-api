@@ -4,4 +4,5 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-annotations:${fasterxmlJacksonAnnotationVersion}")
     implementation ("org.apache.commons:commons-lang3:${commonsLangVersion}")
     implementation("org.springframework.security:spring-security-core:${springSecurityVersion}")
+    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:${springBootMybatisVersion}")
 }

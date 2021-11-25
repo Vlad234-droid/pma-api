@@ -1,23 +1,21 @@
-package com.tesco.pma.review.domain;
+package com.tesco.pma.api;
 
+import com.tesco.pma.colleague.api.ColleagueSimple;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 import java.time.Instant;
-import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Builder
-public class WorkingGroupObjective {
-    UUID businessUnitUuid;
-    Integer version;
-    String updaterId;
-    Instant updateTime;
+@SuperBuilder
+public class GeneralAuditReport {
+    ColleagueSimple updatedBy;
+    Instant updatedTime;
 }
