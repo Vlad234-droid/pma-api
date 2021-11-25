@@ -16,6 +16,7 @@
         <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.cycle.api.PMReviewStatus"/>
+        <result property="changeStatusReason" column="change_reason"/>
     </resultMap>
 
     <resultMap id="colleagueReviewsResultMap" type="com.tesco.pma.review.domain.ColleagueTimeline">
@@ -84,60 +85,50 @@
     </insert>
 
     <select id="getReview" resultMap="reviewResultMap">
-        SELECT r.uuid,
-               r.colleague_uuid,
-               r.performance_cycle_uuid,
-               r.type_id,
-               r.number,
-               r.properties,
-               r.status_id
-        FROM review r
+        with change_status_reason as (
+        <include refid="changeStatusReasonQuery"/>
+        where r.colleague_uuid = #{colleagueUuid}
+        and r.performance_cycle_uuid = #{performanceCycleUuid}
+        and r.type_id = #{type.id}
+        and r.number = #{number})
+        <include refid="reviewQuery"/>
         WHERE r.colleague_uuid = #{colleagueUuid}
-          and r.performance_cycle_uuid = #{performanceCycleUuid}
-          and r.type_id = #{type.id}
-          and r.number = #{number}
+        and r.performance_cycle_uuid = #{performanceCycleUuid}
+        and r.type_id = #{type.id}
+        and r.number = #{number}
     </select>
 
     <select id="read" resultMap="reviewResultMap">
-        SELECT r.uuid,
-               r.colleague_uuid,
-               r.performance_cycle_uuid,
-               r.type_id,
-               r.number,
-               r.properties,
-               r.status_id
-        FROM review r
+        with change_status_reason as (
+        <include refid="changeStatusReasonQuery"/>
+        where r.uuid = #{uuid})
+        <include refid="reviewQuery"/>
         WHERE r.uuid = #{uuid}
     </select>
 
     <select id="getReviews" resultMap="reviewResultMap">
-        SELECT r.uuid,
-               r.colleague_uuid,
-               r.performance_cycle_uuid,
-               r.type_id,
-               r.number,
-               r.properties,
-               r.status_id
-        FROM review r
+        with change_status_reason as (
+        <include refid="changeStatusReasonQuery"/>
+        where r.colleague_uuid = #{colleagueUuid}
+        and r.performance_cycle_uuid = #{performanceCycleUuid}
+        and r.type_id = #{type.id})
+        <include refid="reviewQuery"/>
         WHERE r.colleague_uuid = #{colleagueUuid}
-          and r.performance_cycle_uuid = #{performanceCycleUuid}
-          and r.type_id = #{type.id}
+        and r.performance_cycle_uuid = #{performanceCycleUuid}
+        and r.type_id = #{type.id}
         order by r.number
     </select>
 
     <select id="getReviewsByColleague" resultMap="reviewResultMap">
-        SELECT r.uuid,
-               r.colleague_uuid,
-               r.performance_cycle_uuid,
-               r.type_id,
-               r.number,
-               r.properties,
-               r.status_id
-        FROM review r
+        with change_status_reason as (
+        <include refid="changeStatusReasonQuery"/>
+        where r.colleague_uuid = #{colleagueUuid}
+        and r.performance_cycle_uuid = #{performanceCycleUuid})
+        <include refid="reviewQuery"/>
         WHERE r.colleague_uuid = #{colleagueUuid}
-          and r.performance_cycle_uuid = #{performanceCycleUuid}
+        and r.performance_cycle_uuid = #{performanceCycleUuid}
         order by r.type_id,
-                 r.number
+        r.number
     </select>
 
     <select id="getTeamReviews" resultMap="colleagueReviewsResultMap">
@@ -279,4 +270,31 @@
         from timeline_point_enriched tpe
         order by json_extract_path_text(tpe.timeline_point, 'properties', concat('pm_', tpe.props_type, '_start_time'))
     </select>
+
+    <sql id="changeStatusReasonQuery">
+        select rcsh.review_uuid,
+               rcsh.new_status_id,
+               rcsh.updated_time,
+               rcsh.change_reason,
+               row_number() over (partition by r.uuid order by rcsh.updated_time desc) rn
+        from review_change_status_hi rcsh
+                 inner join review r
+                            on (r.uuid = rcsh.review_uuid)
+    </sql>
+
+    <sql id="reviewQuery">
+        SELECT r.uuid,
+               r.colleague_uuid,
+               r.performance_cycle_uuid,
+               r.type_id,
+               r.number,
+               r.properties,
+               r.status_id,
+               csr.change_reason
+        FROM review r
+                 left join change_status_reason csr
+                           on (r.uuid = csr.review_uuid
+                               and r.status_id = csr.new_status_id
+                               and csr.rn = 1)
+    </sql>
 </mapper>
