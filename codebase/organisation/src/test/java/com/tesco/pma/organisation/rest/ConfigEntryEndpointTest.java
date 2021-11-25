@@ -25,9 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = ConfigEntryEndpoint.class, properties = {
-        "tesco.application.security.enabled=false",
-})
+@WebMvcTest(controllers = ConfigEntryEndpoint.class)
 class ConfigEntryEndpointTest extends AbstractEndpointTest {
 
     private static final UUID ENTRY_UUID = UUID.fromString("fe33d24d-1fd2-4e68-8dff-6220609a80df");
@@ -48,7 +46,8 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
         when(service.getUnpublishedStructure(ENTRY_UUID)).thenReturn(getConfigEntryResponse());
 
         var result = mvc.perform(get("/config-entries/{entryUuid}/unpublished", ENTRY_UUID)
-                .accept(APPLICATION_JSON))
+                        .with(lineManager())
+                        .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andReturn()
@@ -63,7 +62,8 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
         when(service.getPublishedChildStructureByCompositeKey(COMPOSITE_KEY)).thenReturn(List.of(getConfigEntryResponse()));
 
         var result = mvc.perform(get("/config-entries").param("compositeKey", COMPOSITE_KEY)
-                .accept(APPLICATION_JSON))
+                        .with(lineManager())
+                        .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andReturn()
@@ -78,7 +78,8 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
         when(service.getUnpublishedChildStructureByCompositeKey(COMPOSITE_KEY)).thenReturn(List.of(getConfigEntryResponse()));
 
         var result = mvc.perform(get("/config-entries/unpublished").param("compositeKey", COMPOSITE_KEY)
-                .accept(APPLICATION_JSON))
+                        .with(peopleTeam())
+                        .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andReturn()
@@ -93,7 +94,8 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
         when(service.getUnpublishedRoots()).thenReturn(List.of(getConfigEntryResponse()));
 
         var result = mvc.perform(get("/config-entries/roots/unpublished")
-                .accept(APPLICATION_JSON))
+                        .with(peopleTeam())
+                        .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andReturn()
@@ -106,8 +108,9 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
     void create() throws Exception {
 
         mvc.perform(post("/config-entries")
-                .contentType(APPLICATION_JSON)
-                .content(OBJECT_MAPPER.writeValueAsString(getConfigEntry())))
+                        .with(admin())
+                        .contentType(APPLICATION_JSON)
+                        .content(OBJECT_MAPPER.writeValueAsString(getConfigEntry())))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andReturn()
@@ -120,8 +123,9 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
     void updateConfigEntry() throws Exception {
 
         mvc.perform(put("/config-entries/{entryUuid}", ENTRY_UUID)
-                .contentType(APPLICATION_JSON)
-                .content(OBJECT_MAPPER.writeValueAsString(getConfigEntry())))
+                        .with(admin())
+                        .contentType(APPLICATION_JSON)
+                        .content(OBJECT_MAPPER.writeValueAsString(getConfigEntry())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andReturn()
@@ -133,7 +137,8 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
     @Test
     void deleteConfigEntry() throws Exception {
 
-        mvc.perform(delete("/config-entries/{entryUuid}", ENTRY_UUID))
+        mvc.perform(delete("/config-entries/{entryUuid}", ENTRY_UUID)
+                        .with(admin()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andReturn()
@@ -145,7 +150,8 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
     @Test
     void publishEntryConfigStructure() throws Exception {
 
-        mvc.perform(post("/config-entries/{entryUuid}/publish", ENTRY_UUID))
+        mvc.perform(post("/config-entries/{entryUuid}/publish", ENTRY_UUID)
+                        .with(admin()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andReturn()
@@ -157,7 +163,8 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
     @Test
     void unpublishEntryConfigStructure() throws Exception {
 
-        mvc.perform(delete("/config-entries/{entryUuid}/publish", ENTRY_UUID))
+        mvc.perform(delete("/config-entries/{entryUuid}/publish", ENTRY_UUID)
+                        .with(admin()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andReturn()

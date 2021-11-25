@@ -12,6 +12,7 @@ dependencies {
 
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:${springBootMybatisVersion}")
     implementation("org.springframework.boot:spring-boot-starter:${springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-security")
 
     implementation("org.springdoc:springdoc-openapi-core:${openApiCoreVersion}")
     implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
@@ -21,6 +22,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude group: 'junit' // excluding junit 4
     }
+    testImplementation("org.springframework.security:spring-security-test")
 
     testCompile project(':service').sourceSets.test.output
 
