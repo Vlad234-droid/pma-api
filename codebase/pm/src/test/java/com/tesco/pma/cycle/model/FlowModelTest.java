@@ -7,7 +7,7 @@ import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.cycle.api.model.PMFormElement;
 import com.tesco.pma.cycle.api.model.PMReviewElement;
 import com.tesco.pma.cycle.exception.ParseException;
-import org.apache.commons.io.IOUtils;
+import com.tesco.pma.process.service.ClasspathResourceProvider;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.junit.jupiter.api.Assertions;
@@ -18,8 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,26 +45,12 @@ class FlowModelTest {
     private static final String FORM_TYPE_1_OBJECTIVE = "forms/type_1_objective.form";
     private static final String FORM_TYPE_2_OBJECTIVE = "forms/type_2_objective.form";
 
-    private final ResourceProvider resourceProvider = new FormsResourceProvider();
+    private final ResourceProvider resourceProvider = new ClasspathResourceProvider();
 
     private PMProcessModelParser parser;
 
     @Autowired
     private NamedMessageSourceAccessor messageSourceAccessor;
-
-    private static class FormsResourceProvider implements ResourceProvider {
-        @Override
-        public InputStream read(String resourceName) throws IOException {
-            return getClass().getResourceAsStream(RESOURCES_PATH + resourceName);
-        }
-
-        @Override
-        public String resourceToString(final String resourceName) throws IOException {
-            try (InputStream is = getClass().getResourceAsStream(RESOURCES_PATH + resourceName)) {
-                return IOUtils.toString(is, StandardCharsets.UTF_8);
-            }
-        }
-    }
 
     @BeforeEach
     void init() {
@@ -152,6 +136,6 @@ class FlowModelTest {
     }
 
     private BpmnModelInstance getModel(String processFileName) throws IOException {
-        return Bpmn.readModelFromStream(resourceProvider.read(processFileName));
+        return Bpmn.readModelFromStream(resourceProvider.read(RESOURCES_PATH, processFileName));
     }
 }

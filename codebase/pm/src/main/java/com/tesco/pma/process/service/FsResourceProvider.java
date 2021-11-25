@@ -19,26 +19,24 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class FsResourceProvider implements ResourceProvider {
 
-    private static final String FORMS_PATH = "forms/";
-
     private final FileService fileService;
     private final ResourceProvider classpathResourceProvider;
 
     @Override
-    public InputStream read(String resourceName) throws IOException {
+    public InputStream read(String resourcePath, String resourceName) throws IOException {
         try {
             return new ByteArrayInputStream(
-                    fileService.get(FORMS_PATH, resourceName, true).getFileContent());
+                    fileService.get(resourcePath, resourceName, true).getFileContent());
 
-        } catch (Exception e){
+        } catch (Exception e) {
             log.warn("Resource {} not found in DB", resourceName, e);
-            return classpathResourceProvider.read(resourceName);
+            return classpathResourceProvider.read(resourcePath, resourceName);
         }
     }
 
     @Override
-    public String resourceToString(final String resourceName) throws IOException {
-        try (InputStream is = this.read(resourceName)) {
+    public String resourceToString(String resourcePath, String resourceName) throws IOException {
+        try (InputStream is = this.read(resourcePath, resourceName)) {
             return IOUtils.toString(is, StandardCharsets.UTF_8);
         }
     }
