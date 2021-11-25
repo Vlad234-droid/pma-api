@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.tip.dao.TipDAO">
+
+    <resultMap id="tipMap" type="com.tesco.pma.tip.api.Tip">
+        <id property="uuid" column="uuid"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="imageLink" column="image_link"/>
+        <result property="published" column="published"/>
+        <result property="history" column="history" typeHandler="org.apache.ibatis.type.ArrayTypeHandler"/>
+        <result property="createdTime" column="created_time"/>
+        <result property="updatedTime" column="updated_time"/>
+        <association property="targetOrganisation" autoMapping="true" columnPrefix="o_"
+                     javaType="com.tesco.pma.organisation.api.ConfigEntry"/>
+    </resultMap>
+
+    <sql id="select">
+        SELECT t.uuid,
+               t.title,
+               t.description,
+               t.published,
+               t.history,
+               t.created_time,
+               t.updated_time,
+               ce.uuid          as o_uuid,
+               ce.name          as o_name,
+               ce.composite_key as o_composite_key
+        FROM tip t
+                 LEFT JOIN config_entry ce on ce.uuid = t.target_organisation_uuid
+    </sql>
+
+    <select id="selectAll" flushCache="true" resultMap="tipMap">
+        <include refid="select"/>
+    </select>
+
+    <select id="selectByUuid" flushCache="true" resultMap="tipMap">
+        <include refid="select"/>
+        WHERE t.uuid = #{uuid}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="uuid" keyColumn="uuid" flushCache="true">
+        INSERT INTO tip (uuid,
+                         title,
+                         description,
+                         target_organisation_uuid,
+                         image_link,
+                         published,
+                         created_time,
+                         updated_time)
+        VALUES (#{tip.uuid},
+                #{tip.title},
+                #{tip.description},
+                #{tip.targetOrganisation.uuid},
+                #{tip.imageLink},
+                #{tip.published},
+                #{tip.createdTime},
+                #{tip.updatedTime})
+    </insert>
+
+    <update id="update">
+        UPDATE tip
+        SET title                    = #{tip.title},
+            description              = #{tip.description},
+            target_organisation_uuid = #{tip.targetOrganisation.uuid},
+            image_link               = #{tip.imageLink},
+            published                = false,
+            updated_time             = #{tip.updatedTime}
+        WHERE uuid = #{tip.uuid}
+    </update>
+
+    <delete id="delete">
+        DELETE
+        FROM tip
+        WHERE uuid = #{uuid}
+    </delete>
+
+    <update id="publish">
+        UPDATE tip
+        SET published = true,
+            history   = #{history, typeHandler=org.apache.ibatis.type.ArrayTypeHandler}
+        WHERE uuid = #{uuid}
+    </update>
+
+</mapper>

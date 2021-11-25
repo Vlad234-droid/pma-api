@@ -11,10 +11,10 @@
             <column name="uuid" type="${uuid_type}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="title" type="varchar(50)" remarks="Free text field.">
+            <column name="title" type="varchar(50)" remarks="Title.">
                 <constraints nullable="false"/>
             </column>
-            <column name="description" type="varchar(255)" remarks="Free text field.">
+            <column name="description" type="varchar(255)" remarks="Description.">
                 <constraints nullable="false"/>
             </column>
             <column name="target_organisation_uuid" type="${uuid_type}" remarks="Link to organisation level.">
@@ -23,18 +23,13 @@
                              referencedTableName="config_entry"
                              referencedColumnNames="uuid"/>
             </column>
-            <column name="image_file_uuid" type="${uuid_type}" remarks="Link to file.">
-                <constraints nullable="false"
-                             foreignKeyName="fk_tip__image_file_uuid"
-                             referencedTableName="file"
-                             referencedColumnNames="uuid"/>
-            </column>
-            <column name="version" type="INTEGER">
+            <column name="image_link" type="text" remarks="Image file URI.">
                 <constraints nullable="false"/>
             </column>
             <column name="published" type="boolean" remarks="False for unpublished tip.">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
+            <column name="history" type="timestamptz []" remarks="Last 5 records of date and hour when the Tip was published."/>
             <column name="created_time" type="timestamptz">
                 <constraints nullable="false"/>
             </column>
@@ -43,7 +38,7 @@
             </column>
         </createTable>
         <addUniqueConstraint
-                columnNames="title, description, target_uuid, version"
+                columnNames="title, description, target_organisation_uuid"
                 constraintName="composite_unique_tip"
                 tableName="tip"
         />

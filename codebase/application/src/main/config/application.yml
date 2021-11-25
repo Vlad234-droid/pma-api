@@ -58,7 +58,8 @@ spring:
                               com.tesco.pma.feedback.api,
                               com.tesco.pma.colleague.security.domain,
                               com.tesco.pma.notes.model,
-                              com.tesco.pma.fs.domain
+                              com.tesco.pma.fs.domain,
+                              com.tesco.pma.tip.api
         configuration-properties:
           base-package: com.tesco.pma.dao,
                         com.tesco.pma.colleague.profile.dao,
@@ -69,7 +70,8 @@ spring:
                         com.tesco.pma.feedback.dao,
                         com.tesco.pma.colleague.security.dao,
                         com.tesco.pma.notes.dao,
-                        com.tesco.pma.fs.dao
+                        com.tesco.pma.fs.dao,
+                        com.tesco.pma.tip.dao
           batchSize: 500
     camunda:
       # Camunda database config
@@ -102,7 +104,8 @@ spring:
       com/tesco/pma/colleague/profile/import/AppImportMessages,
       com/tesco/pma/colleague/security/exception/AppExceptionMessage,
       com/tesco/pma/notes/exception/AppNotesMessages,
-      com/tesco/pma/fs/exception/AppExceptionMessage
+      com/tesco/pma/fs/exception/AppExceptionMessage,
+      com/tesco/pma/tip/exception/AppExceptionMessage
     encoding: UTF-8
   async-executor:
     core-pool-size: 2
@@ -145,6 +148,7 @@ springdoc:
 validation:
   mapping-locations:
     - classpath:com/tesco/pma/feedback/validation/constraints-feedback.xml
+    - classpath:com/tesco/pma/tip/validation/constraints-tip.xml
     - classpath:com/tesco/pma/validation/constraints-files-upload-metadata.xml
     - classpath:com/tesco/pma/validation/constraints-upload-metadata.xml
   messages:

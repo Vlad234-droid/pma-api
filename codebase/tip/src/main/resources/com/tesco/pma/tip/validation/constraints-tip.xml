@@ -1,0 +1,40 @@
+<constraint-mappings
+        xmlns="http://xmlns.jcp.org/xml/ns/validation/mapping"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/validation/mapping
+            http://xmlns.jcp.org/xml/ns/validation/mapping/validation-mapping-2.0.xsd"
+        version="2.0">
+    <default-package>com.tesco.pma.tip.api</default-package>
+    <bean class="Tip" ignore-annotations="true">
+        <field name="uuid">
+            <constraint annotation="javax.validation.constraints.Null">
+                <groups>
+                    <value>com.tesco.pma.validation.ValidationGroup$WithoutId</value>
+                </groups>
+            </constraint>
+            <constraint annotation="javax.validation.constraints.NotNull">
+                <groups>
+                    <value>com.tesco.pma.validation.ValidationGroup$WithId</value>
+                </groups>
+            </constraint>
+        </field>
+        <field name="title">
+            <constraint annotation="javax.validation.constraints.NotNull"/>
+            <constraint annotation="javax.validation.constraints.Size">
+                <element name="max">50</element>
+            </constraint>
+        </field>
+        <field name="description">
+            <constraint annotation="javax.validation.constraints.NotNull"/>
+            <constraint annotation="javax.validation.constraints.Size">
+                <element name="max">255</element>
+            </constraint>
+        </field>
+        <field name="targetOrganisation">
+            <constraint annotation="javax.validation.constraints.NotNull"/>
+        </field>
+        <field name="imageLink">
+            <constraint annotation="javax.validation.constraints.NotNull"/>
+        </field>
+    </bean>
+</constraint-mappings>
