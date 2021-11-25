@@ -2,6 +2,7 @@ package com.tesco.pma.cycle.service;
 
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
+import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 
@@ -83,5 +84,13 @@ public interface PMCycleService {
     void updateJsonMetadata(@NotNull UUID uuid, @NotNull String metadata);
 
     List<PMCycle> getAll(boolean includeMetadata);
+
+    /**
+     * Get PMCycleMetadata by file UUID
+     *
+     * @param fileUuid File UUID
+     * @return PMCycleMetadata
+     */
+    PMCycleMetadata getMetadata(@NotNull UUID fileUuid);
 }
 

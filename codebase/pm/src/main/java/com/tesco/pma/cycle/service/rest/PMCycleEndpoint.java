@@ -3,6 +3,7 @@ package com.tesco.pma.cycle.service.rest;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
+import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.exception.InvalidPayloadException;
@@ -200,6 +201,16 @@ public class PMCycleEndpoint {
                                               @RequestBody String metadata) {
         service.updateJsonMetadata(uuid, metadata);
         return RestResponse.success();
+    }
+
+    @Operation(summary = "Get performance cycle metadata by file UUID",
+            tags = {"performance-cycle"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found performance cycle metadata by file UUID")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle metadata not found",
+            content = @Content)
+    @GetMapping(value = "/pm-cycles/files/{uuid}/metadata", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<PMCycleMetadata> getPmCycleMetadata(@PathVariable("uuid") UUID uuid) {
+        return success(service.getMetadata(uuid));
     }
 
     private String jsonMetadataToRestResponse(String jsonMetadata) {
