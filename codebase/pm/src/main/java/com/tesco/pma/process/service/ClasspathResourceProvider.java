@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 @Service
-public class FormsResourceProvider implements ResourceProvider {
+public class ClasspathResourceProvider implements ResourceProvider {
 
     private static final String FORMS_PATH = "/com/tesco/pma/flow/";
 
