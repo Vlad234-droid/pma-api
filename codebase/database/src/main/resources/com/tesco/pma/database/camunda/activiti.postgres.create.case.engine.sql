@@ -33,7 +33,7 @@ create table ACT_RE_CASE_DEF (
     HISTORY_TTL_ integer,
     primary key (ID_)
 );
---rollback drop table ACT_RE_CASE_DEF;
+--rollback drop table ACT_RE_CASE_DEF CASCADE;
 
 /* create case execution table */
 create table ACT_RU_CASE_EXECUTION (
@@ -52,7 +52,7 @@ create table ACT_RU_CASE_EXECUTION (
     TENANT_ID_ varchar(64),
     primary key (ID_)
 );
---rollback drop table ACT_RU_CASE_EXECUTION;
+--rollback drop table ACT_RU_CASE_EXECUTION CASCADE;
 
 /* create case sentry part table */
 create table ACT_RU_CASE_SENTRY_PART (
@@ -71,7 +71,7 @@ create table ACT_RU_CASE_SENTRY_PART (
     TENANT_ID_ varchar(64),
     primary key (ID_)
 );
---rollback drop table ACT_RU_CASE_SENTRY_PART;
+--rollback drop table ACT_RU_CASE_SENTRY_PART CASCADE;
 
 /* create index on business key */
 create index ACT_IDX_CASE_EXEC_BUSKEY on ACT_RU_CASE_EXECUTION(BUSINESS_KEY_);

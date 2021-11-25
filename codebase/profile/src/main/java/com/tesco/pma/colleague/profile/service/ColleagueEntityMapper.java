@@ -49,7 +49,7 @@ public class ColleagueEntityMapper {
                     colleague.setEmploymentType(getValueNullSafe(fs, "employment_type"));
                     colleague.setHireDate(getISODate(getValueNullSafe(fs, "hire_date")));
                     colleague.setLeavingDate(getISODate(getValueNullSafe(fs, "leaving_date")));
-                    colleague.setManager("1".equals(getValueNullSafe(fs, "is_manager")));
+                    colleague.setManager(getBooleanValueNullSafe(fs, "is_manager", "1"));
                     return colleague;
                 }).collect(Collectors.toList());
     }
@@ -62,8 +62,19 @@ public class ColleagueEntityMapper {
         return value.getFormatted();
     }
 
-    private static UUID getUuidValueNullSafe(Map<String, Value> fs, String collumnName) {
-        var value = fs.get(collumnName);
+    private static boolean getBooleanValueNullSafe(Map<String, Value> fs, String columnName, String trueValue) {
+        var value = fs.get(columnName);
+        if (value == null || StringUtils.isEmpty(value.getFormatted())) {
+            return false;
+        }
+        if (ValueType.BOOLEAN == value.getType()) {
+            return Boolean.parseBoolean(value.getFormatted());
+        }
+        return trueValue.equalsIgnoreCase(value.getFormatted());
+    }
+
+    private static UUID getUuidValueNullSafe(Map<String, Value> fs, String columnName) {
+        var value = fs.get(columnName);
         if (value == null || StringUtils.isEmpty(value.getFormatted())) {
             return null;
         }

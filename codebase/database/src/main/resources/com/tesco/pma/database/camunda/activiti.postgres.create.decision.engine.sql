@@ -35,7 +35,7 @@ create table ACT_RE_DECISION_DEF (
     VERSION_TAG_ varchar(64),
     primary key (ID_)
 );
---rollback drop table ACT_RE_DECISION_DEF;
+--rollback drop table ACT_RE_DECISION_DEF CASCADE;
 
 /* create decision requirements definition table */
 create table ACT_RE_DECISION_REQ_DEF (
@@ -51,7 +51,7 @@ create table ACT_RE_DECISION_REQ_DEF (
     TENANT_ID_ varchar(64),
     primary key (ID_)
 );
---rollback drop table ACT_RE_DECISION_REQ_DEF;
+--rollback drop table ACT_RE_DECISION_REQ_DEF CASCADE;
 
 alter table ACT_RE_DECISION_DEF
     add constraint ACT_FK_DEC_REQ
