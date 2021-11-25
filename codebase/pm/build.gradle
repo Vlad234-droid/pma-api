@@ -12,6 +12,8 @@ dependencies {
 
     implementation project(':service')
 
+    implementation("org.springframework.boot:spring-boot-starter-security")
+
     implementation("org.springdoc:springdoc-openapi-core:${openApiCoreVersion}")
     implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
 
@@ -32,6 +34,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}") {
         exclude group: 'junit' // excluding junit 4
     }
+    testImplementation("org.springframework.security:spring-security-test")
     testImplementation("commons-io:commons-io:${commonsIoVersion}")
 
     testImplementation project(':service').sourceSets.test.output
