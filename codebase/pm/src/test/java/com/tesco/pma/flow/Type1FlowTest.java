@@ -3,6 +3,7 @@ package com.tesco.pma.flow;
 import com.tesco.pma.bpm.camunda.flow.AbstractCamundaSpringBootTest;
 import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
 import com.tesco.pma.cycle.api.PMCycle;
+import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.flow.handlers.FlowParameters;
 import com.tesco.pma.flow.handlers.ProcessTimelinePoint;
 import org.junit.jupiter.api.Test;
@@ -27,16 +28,23 @@ public class Type1FlowTest extends AbstractCamundaSpringBootTest {
     private static final String PROCESS_ID_TYPE_1 = "type_1_test";
     private static final LocalDateTime CYCLE_START_TIME = LocalDateTime.of(2021, 4, 1, 0, 0);
 
-    @SpyBean(name = "process_timeline_point")
-    private ProcessTimelinePoint processTimelinePoint;
+    @SpyBean(name = "process_timeline_point_eyr")
+    private ProcessTimelinePoint processTimelinePointEyr;
+
+    @SpyBean(name = "process_timeline_point_myr")
+    private ProcessTimelinePoint processTimelinePointMyr;
 
     @Test
     void checkTimeLinePoint() {
-        assertThatForProcess(runProcess(PROCESS_ID_TYPE_1, Map.of(FlowParameters.PM_CYCLE.name(), getCycle(CYCLE_START_TIME))))
-                .activity("process_timeline_point").executedOnce();
+        assertThatForProcess(runProcess(PROCESS_ID_TYPE_1,
+                Map.of(FlowParameters.PM_CYCLE.name(), getCycle(CYCLE_START_TIME))))
+                .activity("process_timeline_point_eyr").executedOnce()
+                .activity("process_timeline_point_myr").executedOnce();
     }
 
     private PMCycle getCycle(LocalDateTime cycleStartTime) {
-        return PMCycle.builder().startTime(cycleStartTime.toInstant(ZoneOffset.UTC)).build();
+        return PMCycle.builder()
+                .type(PMCycleType.FISCAL)
+                .startTime(cycleStartTime.toInstant(ZoneOffset.UTC)).build();
     }
 }

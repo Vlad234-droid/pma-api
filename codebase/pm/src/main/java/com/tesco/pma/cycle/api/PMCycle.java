@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -18,7 +19,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class PMCycle {
+public class PMCycle implements Serializable {
+    private static final long serialVersionUID = -6820865590572330952L;
+
     UUID uuid;
     String entryConfigKey;
     UUID templateUUID;
