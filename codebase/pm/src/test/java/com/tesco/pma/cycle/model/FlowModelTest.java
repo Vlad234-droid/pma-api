@@ -7,7 +7,7 @@ import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.cycle.api.model.PMFormElement;
 import com.tesco.pma.cycle.api.model.PMReviewElement;
 import com.tesco.pma.cycle.exception.ParseException;
-import com.tesco.pma.process.service.ClasspathResourceProvider;
+import org.apache.commons.io.IOUtils;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.junit.jupiter.api.Assertions;
@@ -18,6 +18,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,16 +47,37 @@ class FlowModelTest {
     private static final String FORM_TYPE_1_OBJECTIVE = "forms/type_1_objective.form";
     private static final String FORM_TYPE_2_OBJECTIVE = "forms/type_2_objective.form";
 
-    private final ResourceProvider resourceProvider = new ClasspathResourceProvider();
+    private final ResourceProvider resourceProvider = new FormsResourceProvider(RESOURCES_PATH);
 
     private PMProcessModelParser parser;
 
     @Autowired
     private NamedMessageSourceAccessor messageSourceAccessor;
 
+    private static class FormsResourceProvider implements ResourceProvider {
+
+        private final String resourcePath;
+
+        public FormsResourceProvider(String resourcePath){
+            this.resourcePath = resourcePath;
+        }
+
+        @Override
+        public InputStream read(String resourcePath, String resourceName) throws IOException {
+            return getClass().getResourceAsStream(this.resourcePath + resourceName);
+        }
+
+        @Override
+        public String resourceToString(String resourcePath, String resourceName) throws IOException {
+            try (InputStream is = getClass().getResourceAsStream(this.resourcePath + resourceName)) {
+                return IOUtils.toString(is, StandardCharsets.UTF_8);
+            }
+        }
+    }
+
     @BeforeEach
     void init() {
-        parser = new PMProcessModelParser(resourceProvider, messageSourceAccessor);
+        parser = new PMProcessModelParser(new FormsResourceProvider(RESOURCES_PATH + "forms/"), messageSourceAccessor);
     }
 
     @Test
