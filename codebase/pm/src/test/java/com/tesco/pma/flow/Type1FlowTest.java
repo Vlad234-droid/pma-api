@@ -28,18 +28,18 @@ public class Type1FlowTest extends AbstractCamundaSpringBootTest {
     private static final String PROCESS_ID_TYPE_1 = "type_1_test";
     private static final LocalDateTime CYCLE_START_TIME = LocalDateTime.of(2021, 4, 1, 0, 0);
 
-    @SpyBean(name = "process_timeline_point_eyr")
+    @SpyBean(name = "processTimelinePointEyr")
     private ProcessTimelinePoint processTimelinePointEyr;
 
-    @SpyBean(name = "process_timeline_point_myr")
-    private ProcessTimelinePoint processTimelinePointMyr;
+//    @SpyBean(name = "processTimelinePointMyr")
+//    private ProcessTimelinePoint processTimelinePointMyr;
 
     @Test
     void checkTimeLinePoint() {
         assertThatForProcess(runProcess(PROCESS_ID_TYPE_1,
                 Map.of(FlowParameters.PM_CYCLE.name(), getCycle(CYCLE_START_TIME))))
-                .activity("process_timeline_point_eyr").executedOnce()
-                .activity("process_timeline_point_myr").executedOnce();
+                .activity("processTimelinePointEyr").executedOnce();
+//                .activity("processTimelinePointMyr").executedOnce();
     }
 
     private PMCycle getCycle(LocalDateTime cycleStartTime) {
