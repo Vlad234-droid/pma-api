@@ -1,5 +1,6 @@
 package com.tesco.pma.tip.service;
 
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.tip.api.Tip;
 
 import java.util.List;
@@ -17,9 +18,10 @@ public interface TipService {
     Tip create(Tip tip);
 
     /**
+     * @param requestQuery filter, sort, offset
      * @return the list of tips
      */
-    List<Tip> findAll();
+    List<Tip> findAll(RequestQuery requestQuery);
 
     /**
      * @param uuid of the entity

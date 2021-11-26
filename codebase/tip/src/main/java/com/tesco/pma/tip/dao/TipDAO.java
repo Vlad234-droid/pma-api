@@ -1,5 +1,6 @@
 package com.tesco.pma.tip.dao;
 
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.tip.api.Tip;
 import org.apache.ibatis.annotations.Param;
 
@@ -11,7 +12,7 @@ public interface TipDAO {
 
     int insert(@Param("tip") Tip tip);
 
-    List<Tip> selectAll();
+    List<Tip> selectAll(@Param("requestQuery") RequestQuery requestQuery);
 
     Tip selectByUuid(@Param("uuid") UUID uuid);
 

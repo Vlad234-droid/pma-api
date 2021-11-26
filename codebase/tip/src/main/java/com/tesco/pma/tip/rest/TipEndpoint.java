@@ -1,12 +1,14 @@
 package com.tesco.pma.tip.rest;
 
 import com.tesco.pma.exception.InvalidParameterException;
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import com.tesco.pma.tip.api.Tip;
 import com.tesco.pma.tip.service.TipService;
 import com.tesco.pma.validation.ValidationGroup;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,13 +62,30 @@ public class TipEndpoint {
     /**
      * {@code GET  /tips} : get all the tips.
      *
+     * @param requestQuery filter, sort, offset
      * @return the {@link RestResponse} with status {@code 200 (OK)} and the list of tips in body.
      */
     @GetMapping("/tips")
     @Operation(summary = "Get tips", tags = {"tip"})
-    public RestResponse<List<Tip>> read() {
+    public RestResponse<List<Tip>> read(@Parameter(example = "{\n"
+            + "    \"_sort\": \"title:DESC,updated-time:ASC\",\n"
+            + "    \"published\": \"true\",\n"
+            + "    \"organization-key_ne\": \"l1/group/l2/ho_c/l3/salaried/l4/wl5/#v1\",\n"
+            + "    \"title_contains\": \"A\",\n"
+            + "    \"description_ncontains\": \"B\",\n"
+            + "    \"uuid_in\": [\"982b2124-b712-429f-aad1-656cbcadc1b5\",\"80741a5e-c41c-47a0-9181-d202e9d077b7\"],\n"
+            + "    \"organization-name_nin\": [\"WL1\",\"WL2\"],\n"
+            + "    \"created-time_lt\": \"2021-11-26T14:18:42.615Z\",\n"
+            + "    \"created-time_lte\": \"2021-11-26T14:18:42.615Z\",\n"
+            + "    \"updated-time_gt\": \"2021-11-25T14:36:33.587Z\",\n"
+            + "    \"updated-time_gte\": \"2021-11-25T14:36:33.587Z\",\n"
+            + "    \"organization-name_null\": \"true\",\n"
+            + "    \"_start\": \"1\",\n"
+            + "    \"_limit\": \"7\",\n"
+            + "    \"_search\": \"A\"\n"
+            + "  }") RequestQuery requestQuery) {
         log.debug("REST request to get a Tips");
-        return RestResponse.success(tipService.findAll());
+        return RestResponse.success(tipService.findAll(requestQuery));
     }
 
     /**

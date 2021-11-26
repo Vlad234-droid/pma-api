@@ -16,6 +16,136 @@
                      javaType="com.tesco.pma.organisation.api.ConfigEntry"/>
     </resultMap>
 
+    <sql id="getSortField">
+        <choose>
+            <when test="sort.field == 'title'">
+                t.title
+            </when>
+            <when test="sort.field == 'description'">
+                t.description
+            </when>
+            <when test="sort.field == 'published'">
+                t.published
+            </when>
+            <when test="sort.field == 'organization-name'">
+                ce.name
+            </when>
+            <when test="sort.field == 'organization-key'">
+                ce.composite_key
+            </when>
+            <when test="sort.field == 'created-time'">
+                t.created_time
+            </when>
+            <when test="sort.field == 'updated-time'">
+                t.updated_time
+            </when>
+            <otherwise>
+                t.created_time
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="getFilterField">
+        AND
+        <choose>
+            <when test="filter.property == 'uuid'">
+                t.uuid
+            </when>
+            <when test="filter.property == 'title'">
+                t.title
+            </when>
+            <when test="filter.property == 'description'">
+                t.description
+            </when>
+            <when test="filter.property == 'published'">
+                t.published
+            </when>
+            <when test="filter.property == 'organization-name'">
+                ce.name
+            </when>
+            <when test="filter.property == 'organization-key'">
+                ce.composite_key
+            </when>
+            <when test="filter.property == 'created-time'">
+                t.created_time
+            </when>
+            <when test="filter.property == 'updated-time'">
+                t.updated_time
+            </when>
+            <otherwise>
+                t.created_time
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="prepareValues">
+        <foreach item="value" collection="filter.value" separator="," open="(" close=")">
+            <choose>
+                <when test="filter.property == 'uuid'">
+                    #{value}::uuid
+                </when>
+                <otherwise>
+                    #{value}
+                </otherwise>
+            </choose>
+        </foreach>
+    </sql>
+
+    <sql id="getExpression">
+        <choose>
+            <when test="filter.operand.name == 'EQUALS' and filter.property != 'created-time' and filter.property != 'updated-time'">
+                <include refid="getFilterField"/>
+                = '${filter.value}'
+            </when>
+            <when test="filter.operand.name == 'NOT_EQUALS' and filter.property != 'created-time' and filter.property != 'updated-time'">
+                <include refid="getFilterField"/>
+                != '${filter.value}'
+            </when>
+            <when test="filter.operand.name == 'CONTAINS' and (filter.property == 'title' or filter.property == 'description' or
+                                                               filter.property == 'organization-name' or filter.property == 'organization-key')">
+                <include refid="getFilterField"/>
+                LIKE '%'||UPPER('${filter.value}')||'%'
+            </when>
+            <when test="filter.operand.name == 'NOT_CONTAINS' and (filter.property == 'title' or filter.property == 'description' or
+                                                               filter.property == 'organization-name' or filter.property == 'organization-key')">
+                <include refid="getFilterField"/>
+                NOT LIKE '%'||UPPER('${filter.value}')||'%'
+            </when>
+            <when test="filter.operand.name == 'IN' and filter.property != 'created-time' and filter.property != 'updated-time'">
+                <include refid="getFilterField"/>
+                IN
+                <include refid="prepareValues"/>
+            </when>
+            <when test="filter.operand.name == 'NOT_IN' and filter.property != 'created-time' and filter.property != 'updated-time'">
+                <include refid="getFilterField"/>
+                NOT IN
+                <include refid="prepareValues"/>
+            </when>
+            <when test="filter.operand.name == 'NULL'">
+                <if test="filter.value == 'true'">
+                    <include refid="getFilterField"/>
+                    IS NULL
+                </if>
+                <if test="filter.value == 'false'">
+                    <include refid="getFilterField"/>
+                    IS NOT NULL
+                </if>
+            </when>
+            <when test="filter.operand.name == 'LESS_THAN' and (filter.property == 'created-time' or filter.property == 'updated-time')">
+                <include refid="getFilterField"/> &lt; '${filter.value}'
+            </when>
+            <when test="filter.operand.name == 'LESS_THAN_EQUALS' and (filter.property == 'created-time' or filter.property == 'updated-time')">
+                <include refid="getFilterField"/> &lt;= '${filter.value}'
+            </when>
+            <when test="filter.operand.name == 'GREATER_THAN' and (filter.property == 'created-time' or filter.property == 'updated-time')">
+                <include refid="getFilterField"/> &gt; '${filter.value}'
+            </when>
+            <when test="filter.operand.name == 'GREATER_THAN_EQUALS' and (filter.property == 'created-time' or filter.property == 'updated-time')">
+                <include refid="getFilterField"/> &gt;= '${filter.value}'
+            </when>
+        </choose>
+    </sql>
+
     <sql id="select">
         SELECT t.uuid,
                t.title,
@@ -27,13 +157,39 @@
                t.updated_time,
                ce.uuid          as o_uuid,
                ce.name          as o_name,
-               ce.composite_key as o_composite_key
+               ce.composite_key as o_compositeKey
         FROM tip t
                  LEFT JOIN config_entry ce on ce.uuid = t.target_organisation_uuid
     </sql>
 
     <select id="selectAll" flushCache="true" resultMap="tipMap">
         <include refid="select"/>
+        WHERE 1 = 1
+        <if test="!requestQuery.filters.isEmpty()">
+            <foreach collection="requestQuery.filters" item="filter" index="index">
+                <include refid="getExpression"/>
+            </foreach>
+        </if>
+        <if test="requestQuery.search != null and requestQuery.search != ''">
+            AND ( UPPER(t.title) LIKE '%'||UPPER(#{requestQuery.search})||'%'
+            OR UPPER(t.description) LIKE '%'||UPPER(#{requestQuery.search})||'%' )
+        </if>
+        <if test="requestQuery.sort.isEmpty()">
+            ORDER BY t.created_time DESC
+        </if>
+        <if test="!requestQuery.sort.isEmpty()">
+            ORDER BY
+            <foreach collection="requestQuery.sort" item="sort" index="index" separator=",">
+                <include refid="getSortField"/>
+                ${sort.order.name}
+            </foreach>
+        </if>
+        <if test="requestQuery.limit != null">
+            LIMIT #{requestQuery.limit}
+        </if>
+        <if test="requestQuery.offset != null">
+            OFFSET #{requestQuery.offset}
+        </if>
     </select>
 
     <select id="selectByUuid" flushCache="true" resultMap="tipMap">

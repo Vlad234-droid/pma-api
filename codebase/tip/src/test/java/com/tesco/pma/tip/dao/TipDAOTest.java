@@ -2,6 +2,7 @@ package com.tesco.pma.tip.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.dao.AbstractDAOTest;
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.tip.api.Tip;
 import com.tesco.pma.tip.util.TestDataUtil;
 import org.junit.jupiter.api.Test;
@@ -68,8 +69,11 @@ class TipDAOTest extends AbstractDAOTest {
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "tip_init.xml"})
     void selectAll() {
+        //given
+        RequestQuery requestQuery = new RequestQuery();
+
         //when
-        List<Tip> result = underTest.selectAll();
+        List<Tip> result = underTest.selectAll(requestQuery);
 
         //then
         assertThat(result)
