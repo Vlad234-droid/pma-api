@@ -371,9 +371,10 @@ public class ReviewServiceImpl implements ReviewService {
     public void stopSharingManagerObjective(UUID managerUuid, UUID cycleUuid) {
         var removed = reviewDAO.stopSharingManagerObjective(managerUuid, cycleUuid);
         if (1 != removed) {
-            throw notFound(OBJECTIVE_SHARING_NOT_ENABLED,
-                    Map.of(MANAGER_UUID_PARAMETER_NAME, managerUuid,
-                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, cycleUuid), null);
+            throw new NotFoundException(OBJECTIVE_SHARING_NOT_ENABLED.getCode(),
+                    messageSourceAccessor.getMessage(OBJECTIVE_SHARING_NOT_ENABLED,
+                            Map.of(MANAGER_UUID_PARAMETER_NAME, managerUuid,
+                                    PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, cycleUuid)));
         }
     }
 

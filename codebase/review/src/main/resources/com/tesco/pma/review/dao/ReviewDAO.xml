@@ -322,22 +322,16 @@
     </select>
 
     <select id="getReviewsByParams" resultMap="reviewResultMap">
-        SELECT r.uuid,
-               r.colleague_uuid,
-               r.performance_cycle_uuid,
-               r.type_id,
-               r.number,
-               r.properties,
-               r.status_id,
-               csr.change_reason
-        FROM review r
-                 LEFT JOIN change_status_reason csr
-                           ON (r.uuid = csr.review_uuid
-                               AND r.status_id = csr.new_status_id
-                               AND csr.rn = 1)
+        with change_status_reason as (
+        <include refid="changeStatusReasonQuery"/>
         WHERE r.colleague_uuid = #{colleagueUuid}
-          AND r.performance_cycle_uuid = #{cycleUuid}
-          AND r.type_id = #{type.id}
-          AND r.status_id = #{status.id}
+            AND r.performance_cycle_uuid = #{cycleUuid}
+            AND r.type_id = #{type.id}
+            AND r.status_id = #{status.id})
+        <include refid="reviewQuery"/>
+        WHERE r.colleague_uuid = #{colleagueUuid}
+            AND r.performance_cycle_uuid = #{cycleUuid}
+            AND r.type_id = #{type.id}
+            AND r.status_id = #{status.id}
     </select>
 </mapper>
