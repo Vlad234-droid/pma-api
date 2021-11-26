@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +38,7 @@ public class OrganisationDictionaryEndpoint {
             tags = {"organisation-dictionary"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the organisation dictionary")
     @GetMapping(value = "{code}", produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAdmin() or isColleague() or isLineManager() or isPeopleTeam()")
     public RestResponse<OrganisationDictionary> findOrganisationDictionary(@PathVariable String code) {
         return RestResponse.success(service.findOrganisationDictionary(code));
     }
@@ -44,6 +46,7 @@ public class OrganisationDictionaryEndpoint {
     @Operation(summary = "Get all organisation dictionaries", tags = {"organisation-dictionary"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "List of organisation dictionaries")
     @GetMapping(produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAdmin() or isColleague() or isLineManager() or isPeopleTeam()")
     public RestResponse<List<OrganisationDictionary>> findAllOrganisationDictionaries() {
         return RestResponse.success(service.findAllOrganisationDictionaries());
     }
@@ -53,6 +56,7 @@ public class OrganisationDictionaryEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Created organisation dictionary")
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isAdmin()")
     public RestResponse<OrganisationDictionary> create(@RequestBody OrganisationDictionary organisationDictionary) {
         return RestResponse.success(service.create(organisationDictionary));
     }
@@ -60,6 +64,7 @@ public class OrganisationDictionaryEndpoint {
     @Operation(summary = "Update organisation dictionary", tags = {"organisation-dictionary"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Updated organisation dictionary")
     @PutMapping(value = "/{code}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAdmin()")
     public RestResponse<?> update(@PathVariable String code, @RequestBody OrganisationDictionary organisationDictionary) {
         organisationDictionary.setCode(code);
         return RestResponse.success(service.update(organisationDictionary));
@@ -68,6 +73,7 @@ public class OrganisationDictionaryEndpoint {
     @Operation(summary = "Delete organisation dictionary", tags = {"organisation-dictionary"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Deleted organisation dictionary")
     @DeleteMapping(value = "/{code}", produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAdmin()")
     public RestResponse<?> delete(@PathVariable String code) {
         service.delete(code);
         return RestResponse.success();
