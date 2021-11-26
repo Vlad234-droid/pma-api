@@ -51,14 +51,8 @@ import static com.tesco.pma.review.exception.ErrorCodes.MAX_REVIEW_NUMBER_CONSTR
 import static com.tesco.pma.review.exception.ErrorCodes.MIN_REVIEW_NUMBER_CONSTRAINT_VIOLATION;
 import static com.tesco.pma.review.exception.ErrorCodes.ORG_OBJECTIVES_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.ORG_OBJECTIVE_ALREADY_EXISTS;
-import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND;
-import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND_BY_MANAGER;
-import static com.tesco.pma.review.exception.ErrorCodes.REVIEWS_NOT_FOUND_FOR_STATUS_UPDATE;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_ALREADY_EXISTS;
-import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_BY_UUID;
-import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_FOR_COLLEAGUE;
-import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_FOR_DELETE;
-import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND_FOR_UPDATE;
+import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_STATUS_NOT_ALLOWED;
 
 /**
@@ -100,7 +94,7 @@ public class ReviewServiceImpl implements ReviewService {
     public Review getReview(UUID performanceCycleUuid, UUID colleagueUuid, PMReviewType type, Integer number) {
         var res = reviewDAO.getReview(performanceCycleUuid, colleagueUuid, type, number);
         if (res == null) {
-            throw notFound(REVIEW_NOT_FOUND_FOR_COLLEAGUE,
+            throw notFound(REVIEW_NOT_FOUND,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
                             TYPE_PARAMETER_NAME, type,
@@ -113,7 +107,7 @@ public class ReviewServiceImpl implements ReviewService {
     public Review getReview(UUID uuid) {
         var res = reviewDAO.read(uuid);
         if (res == null) {
-            throw notFound(REVIEW_NOT_FOUND_BY_UUID,
+            throw notFound(REVIEW_NOT_FOUND,
                     Map.of(REVIEW_UUID_PARAMETER_NAME, uuid));
         }
         return res;
@@ -123,7 +117,7 @@ public class ReviewServiceImpl implements ReviewService {
     public List<Review> getReviews(UUID performanceCycleUuid, UUID colleagueUuid, PMReviewType type) {
         List<Review> results = reviewDAO.getReviews(performanceCycleUuid, colleagueUuid, type);
         if (results == null) {
-            throw notFound(REVIEWS_NOT_FOUND,
+            throw notFound(REVIEW_NOT_FOUND,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
                             TYPE_PARAMETER_NAME, type));
@@ -132,10 +126,21 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public List<Review> getReviewsByColleague(UUID performanceCycleUuid, UUID colleagueUuid) {
+        List<Review> results = reviewDAO.getReviewsByColleague(performanceCycleUuid, colleagueUuid);
+        if (results == null) {
+            throw notFound(REVIEW_NOT_FOUND,
+                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
+                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid));
+        }
+        return results;
+    }
+
+    @Override
     public List<ColleagueTimeline> getTeamReviews(UUID managerUuid) {
         List<ColleagueTimeline> results = reviewDAO.getTeamReviews(managerUuid);
         if (results == null) {
-            throw notFound(REVIEWS_NOT_FOUND_BY_MANAGER,
+            throw notFound(REVIEW_NOT_FOUND,
                     Map.of(MANAGER_UUID_PARAMETER_NAME, managerUuid));
         } else {
             results.forEach(colleagueReviews -> {
@@ -160,7 +165,7 @@ public class ReviewServiceImpl implements ReviewService {
                 review.getType(),
                 review.getNumber());
         if (null == reviewBefore) {
-            throw notFound(REVIEW_NOT_FOUND_FOR_COLLEAGUE,
+            throw notFound(REVIEW_NOT_FOUND,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, review.getColleagueUuid(),
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, review.getPerformanceCycleUuid(),
                             TYPE_PARAMETER_NAME, review.getType(),
@@ -220,7 +225,7 @@ public class ReviewServiceImpl implements ReviewService {
                                               String reason,
                                               UUID loggedUserUuid) {
         reviews.forEach(review -> {
-            var prevStatuses = getPrevStatusesForChangeStatus(type, status);
+            var prevStatuses = getPrevStatusesForChangeStatus(status);
             if (0 == prevStatuses.size()) {
                 throw notFound(ALLOWED_STATUSES_NOT_FOUND,
                         Map.of(OPERATION_PARAMETER_NAME, CHANGE_STATUS_OPERATION_NAME));
@@ -239,7 +244,7 @@ public class ReviewServiceImpl implements ReviewService {
                         review.getNumber());
                 reviewAuditLogDAO.logReviewUpdating(actualReview, status, reason, loggedUserUuid);
             } else {
-                throw notFound(REVIEWS_NOT_FOUND_FOR_STATUS_UPDATE,
+                throw notFound(REVIEW_NOT_FOUND,
                         Map.of(STATUS_PARAMETER_NAME, status,
                                 COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
                                 PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
@@ -329,8 +334,6 @@ public class ReviewServiceImpl implements ReviewService {
                 if (null != reviewStatusCounter) {
                     timelinePoint.setStatus(reviewStatusCounter.getStatus());
                     timelinePoint.setCount(reviewStatusCounter.getCount());
-                } else {
-                    break;
                 }
             }
         }
@@ -392,7 +395,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     private List<PMReviewStatus> getAllowedStatusesForUpdate(PMReviewType reviewType, PMReviewStatus newStatus) {
         var allowedStatusesForUpdate = getStatusesForUpdate(reviewType);
-        var prevStatusesForChangeStatus = getPrevStatusesForChangeStatus(reviewType, newStatus);
+        var prevStatusesForChangeStatus = getPrevStatusesForChangeStatus(newStatus);
         return allowedStatusesForUpdate.stream()
                 .filter(prevStatusesForChangeStatus::contains)
                 .collect(Collectors.toList());
@@ -445,8 +448,9 @@ public class ReviewServiceImpl implements ReviewService {
         if (1 == reviewDAO.update(review, allowedStatuses)) {
             return review;
         } else {
-            throw notFound(REVIEW_NOT_FOUND_FOR_UPDATE,
-                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, review.getColleagueUuid(),
+            throw notFound(REVIEW_NOT_FOUND,
+                    Map.of(OPERATION_PARAMETER_NAME, UPDATE_OPERATION_NAME,
+                            COLLEAGUE_UUID_PARAMETER_NAME, review.getColleagueUuid(),
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, review.getPerformanceCycleUuid(),
                             TYPE_PARAMETER_NAME, review.getType(),
                             NUMBER_PARAMETER_NAME, review.getNumber(),
@@ -480,8 +484,9 @@ public class ReviewServiceImpl implements ReviewService {
                 type,
                 number,
                 allowedStatuses)) {
-            throw deleteReviewException(REVIEW_NOT_FOUND_FOR_DELETE,
-                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
+            throw notFound(REVIEW_NOT_FOUND,
+                    Map.of(OPERATION_PARAMETER_NAME, DELETE_OPERATION_NAME,
+                            COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
                             TYPE_PARAMETER_NAME, type,
                             NUMBER_PARAMETER_NAME, number,
@@ -546,25 +551,20 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    private List<PMReviewStatus> getPrevStatusesForChangeStatus(PMReviewType reviewType, PMReviewStatus newStatus) {
-        if (reviewType.equals(OBJECTIVE)) {
-            switch (newStatus) {
-                case DRAFT:
-                    return List.of(DRAFT);
-                case WAITING_FOR_APPROVAL:
-                    return List.of(DRAFT, WAITING_FOR_APPROVAL, DECLINED);
-                case APPROVED:
-                    return List.of(WAITING_FOR_APPROVAL, APPROVED);
-                case DECLINED:
-                    return List.of(WAITING_FOR_APPROVAL, DECLINED);
-                case COMPLETED:
-                    return List.of(APPROVED, COMPLETED);
-                default:
-                    return Collections.emptyList();
-            }
-        } else {
-            // TODO: 11/6/2021 should be implemented after receiving requirements
-            return Collections.emptyList();
+    private List<PMReviewStatus> getPrevStatusesForChangeStatus(PMReviewStatus newStatus) {
+        switch (newStatus) {
+            case DRAFT:
+                return List.of(DRAFT);
+            case WAITING_FOR_APPROVAL:
+                return List.of(DRAFT, WAITING_FOR_APPROVAL, DECLINED);
+            case APPROVED:
+                return List.of(WAITING_FOR_APPROVAL, APPROVED);
+            case DECLINED:
+                return List.of(WAITING_FOR_APPROVAL, DECLINED);
+            case COMPLETED:
+                return List.of(APPROVED, COMPLETED);
+            default:
+                return Collections.emptyList();
         }
     }
 
@@ -587,11 +587,11 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private NotFoundException notFound(ErrorCodeAware errorCode, Map<String, ?> params) {
-        return notFound(errorCode, params, null);
-    }
-
-    private NotFoundException notFound(ErrorCodeAware errorCode, Map<String, ?> params, Throwable cause) {
-        return new NotFoundException(errorCode.getCode(), messageSourceAccessor.getMessage(errorCode.getCode(), params), null, cause);
+        return new NotFoundException(
+                errorCode.getCode(),
+                messageSourceAccessor.getMessageForParams(errorCode.getCode(), params),
+                null,
+                null);
     }
 
     private ReviewCreationException createReviewException(ErrorCodeAware errorCode, Map<String, ?> params) {
