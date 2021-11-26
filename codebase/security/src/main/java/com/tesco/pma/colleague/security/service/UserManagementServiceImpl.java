@@ -95,9 +95,9 @@ public class UserManagementServiceImpl implements UserManagementService {
             throw duplicatedAccountException(e, request.getName());
         }
 
-        Collection<Integer> roles = remappingRoles(request.getRole());
-        if (!roles.isEmpty()) {
-            updateRoles(true, request.getName(), roles);
+        Collection<Integer> roleIds = remappingRoles(request.getRoleId());
+        if (!roleIds.isEmpty()) {
+            updateRoles(true, request.getName(), roleIds);
         }
 
     }
@@ -105,15 +105,15 @@ public class UserManagementServiceImpl implements UserManagementService {
     @Override
     @Transactional
     public void grantRole(RoleRequest request) {
-        Collection<Integer> roles = remappingRoles(request.getRole());
-        updateRoles(true, request.getAccountName(), roles);
+        Collection<Integer> roleIds = remappingRoles(request.getRole());
+        updateRoles(true, request.getAccountName(), roleIds);
     }
 
     @Override
     @Transactional
     public void revokeRole(RoleRequest request) {
-        Collection<Integer> roles = remappingRoles(request.getRole());
-        updateRoles(false, request.getAccountName(), roles);
+        Collection<Integer> roleIds = remappingRoles(request.getRole());
+        updateRoles(false, request.getAccountName(), roleIds);
     }
 
     @Override
@@ -143,7 +143,7 @@ public class UserManagementServiceImpl implements UserManagementService {
                 account.setRoles(null);
             } else if (roles.size() == 1) {
                 Integer roleId = roles.iterator().next().getId();
-                account.setRole(roleId);
+                account.setRoleId(roleId);
                 account.setRoles(null);
             }
         }).collect(Collectors.toList());
@@ -166,14 +166,14 @@ public class UserManagementServiceImpl implements UserManagementService {
         return retValue;
     }
 
-    private void updateRoles(boolean granted, String accountName, Collection<Integer> roles) {
+    private void updateRoles(boolean granted, String accountName, Collection<Integer> roleIds) {
         Optional<Account> optionalAccount = findAccountByName(accountName);
         if (optionalAccount.isEmpty()) {
             throw accountNotFoundException(accountName);
         }
 
         UUID accountId = optionalAccount.get().getId();
-        for (Integer roleId : roles) {
+        for (Integer roleId : roleIds) {
             try {
                 if (granted) {
                     accountManagementDAO.assignRole(accountId, roleId);

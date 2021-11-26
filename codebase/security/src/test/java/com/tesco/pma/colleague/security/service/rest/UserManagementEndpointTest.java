@@ -95,7 +95,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
 
         // given
         CreateAccountRequest createAccountRequest = randomObject(CreateAccountRequest.class);
-        createAccountRequest.setRole(1);
+        createAccountRequest.setRoleId(1);
 
         // when
         ResultActions resultActions = mvc.perform(
@@ -113,7 +113,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
 
         // given
         CreateAccountRequest createAccountRequest = randomObject(CreateAccountRequest.class);
-        createAccountRequest.setRole(List.of(1, 2, 3));
+        createAccountRequest.setRoleId(List.of(1, 2, 3));
 
         // when
         ResultActions resultActions = mvc.perform(
