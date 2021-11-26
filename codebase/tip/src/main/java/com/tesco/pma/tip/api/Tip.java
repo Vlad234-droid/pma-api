@@ -4,13 +4,16 @@ import com.tesco.pma.organisation.api.ConfigEntry;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.UUID;
 
 @Data
 @SuppressWarnings("PMD.ShortClassName")
-public class Tip {
+public class Tip implements Serializable {
+
+    private static final long serialVersionUID = 232382738998179416L;
 
     private UUID uuid;
 

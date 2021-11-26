@@ -20,6 +20,7 @@
         SELECT t.uuid,
                t.title,
                t.description,
+               t.image_link,
                t.published,
                t.history,
                t.created_time,
