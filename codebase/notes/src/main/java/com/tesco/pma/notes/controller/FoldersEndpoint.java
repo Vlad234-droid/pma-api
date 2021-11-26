@@ -59,7 +59,7 @@ public class FoldersEndpoint {
         return RestResponse.success(notesService.updateFolder(folder));
     }
 
-    @Operation(summary = "Delete a Note", tags = {"Notes"})
+    @Operation(summary = "Delete a Folder", tags = {"Notes"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Delete a Folder")
     @DeleteMapping(value = "/{id}",produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
