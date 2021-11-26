@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Data
@@ -14,7 +15,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @SuperBuilder
-public class ColleagueSimple {
+public class ColleagueSimple implements Serializable {
+    private static final long serialVersionUID = -2579287324831609301L;
+
     UUID uuid;
     String firstName;
     String middleName;
