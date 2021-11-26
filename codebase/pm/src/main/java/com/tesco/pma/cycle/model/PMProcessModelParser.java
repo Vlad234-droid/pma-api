@@ -20,6 +20,7 @@ import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperties;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperty;
 
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -168,9 +169,11 @@ public class PMProcessModelParser {
             return new String[]{StringUtils.EMPTY, fullPath};
         }
 
+        var path = Path.of(fullPath);
+
         return new String[]{
-                fullPath.substring(0, fullPath.lastIndexOf('/') + 1),
-                fullPath.substring(fullPath.lastIndexOf('/') + 1)};
+                path.getParent().toString(),
+                path.getFileName().toString()};
     }
 
     String getFormName(String key) {
