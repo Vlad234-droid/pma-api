@@ -1,7 +1,6 @@
 package com.tesco.pma.review.service;
 
 import com.tesco.pma.api.OrgObjectiveStatus;
-import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMReviewStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
@@ -23,7 +22,6 @@ import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStatusCounter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +58,6 @@ import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_STATUS_NOT_ALLOWE
 /**
  * Implementation of {@link ReviewService}.
  */
-@Slf4j
 @Service
 @Validated
 @RequiredArgsConstructor
@@ -70,7 +67,6 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewAuditLogDAO reviewAuditLogDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final PMCycleService pmCycleService;
-    private final ProfileService profileService;
 
     private static final String REVIEW_UUID_PARAMETER_NAME = "reviewUuid";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
