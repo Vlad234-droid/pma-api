@@ -36,7 +36,7 @@
                work_level="WL1"
                department_id="1"/>
 
-    <shared_objective manager_uuid="10000000-0000-0000-0000-000000000002"
+    <shared_objective colleague_uuid="10000000-0000-0000-0000-000000000002"
                       cycle_uuid="0c5d9cb1-22cf-4fcd-a19a-9e70df6bc941"/>
 
     <review

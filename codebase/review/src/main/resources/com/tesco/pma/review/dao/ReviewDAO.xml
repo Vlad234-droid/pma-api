@@ -298,40 +298,4 @@
                                and csr.rn = 1)
     </sql>
 
-    <insert id="shareManagerObjective">
-        INSERT INTO shared_objective(manager_uuid, cycle_uuid)
-        VALUES (#{managerUuid}, #{cycleUuid})
-    </insert>
-
-    <delete id="stopSharingManagerObjective">
-        DELETE
-        FROM shared_objective
-        WHERE manager_uuid = #{managerUuid}
-          AND cycle_uuid = #{cycleUuid}
-    </delete>
-
-    <select id="isManagerShareObjectives" resultType="boolean">
-        SELECT CASE
-                   WHEN (EXISTS(SELECT true
-                                FROM shared_objective
-                                WHERE manager_uuid = #{managerUuid}
-                                  AND cycle_uuid = #{cycleUuid}))
-                       THEN true
-                   ELSE false
-                   END;
-    </select>
-
-    <select id="getReviewsByParams" resultMap="reviewResultMap">
-        with change_status_reason as (
-        <include refid="changeStatusReasonQuery"/>
-        WHERE r.colleague_uuid = #{colleagueUuid}
-            AND r.performance_cycle_uuid = #{cycleUuid}
-            AND r.type_id = #{type.id}
-            AND r.status_id = #{status.id})
-        <include refid="reviewQuery"/>
-        WHERE r.colleague_uuid = #{colleagueUuid}
-            AND r.performance_cycle_uuid = #{cycleUuid}
-            AND r.type_id = #{type.id}
-            AND r.status_id = #{status.id}
-    </select>
 </mapper>

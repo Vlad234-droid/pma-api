@@ -1,9 +1,9 @@
 package com.tesco.pma.review.service.rest;
 
-import com.tesco.pma.cycle.api.PMReviewStatus;
-import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.configuration.CaseInsensitiveEnumEditor;
 import com.tesco.pma.configuration.audit.AuditorAware;
+import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.pagination.RequestQuery;
@@ -346,39 +346,6 @@ public class ReviewEndpoint {
     @GetMapping(value = "/audit-logs", produces = APPLICATION_JSON_VALUE)
     public RestResponse<List<AuditOrgObjectiveReport>> getAuditLogReport(@NotNull RequestQuery requestQuery) {
         return success(reviewService.getAuditOrgObjectiveReport(requestQuery));
-    }
-
-    @Operation(summary = "Share manager objectives", tags = {"objective-sharing"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Objectives sharing have been enabled")
-    @PostMapping(value = "/pm-cycle/{pmCycle}/managers/{managerUuid}/objectives/sharing", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<?> shareManagerObjective(@PathVariable("pmCycle") UUID pmCycle,
-                                                 @PathVariable("managerUuid") UUID managerUuid) {
-        reviewService.shareManagerObjective(managerUuid, pmCycle);
-        return RestResponse.success();
-    }
-
-    @Operation(summary = "Stop sharing manager objectives", tags = {"objective-sharing"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Objectives sharing have been disabled")
-    @DeleteMapping(value = "/pm-cycle/{pmCycle}/managers/{managerUuid}/objectives/sharing", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<?> stopSharingManagerObjective(@PathVariable("pmCycle") UUID pmCycle,
-                                                       @PathVariable("managerUuid") UUID managerUuid) {
-        reviewService.stopSharingManagerObjective(managerUuid, pmCycle);
-        return RestResponse.success();
-    }
-
-    @Operation(summary = "Check if manager objectives is shared", tags = {"objective-sharing"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Info about sharing objectives")
-    @GetMapping(value = "/pm-cycle/{pmCycle}/managers/{managerUuid}/objectives/sharing", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<Boolean> isManagerShareObjectives(@PathVariable("pmCycle") UUID pmCycle,
-                                                          @PathVariable("managerUuid") UUID managerUuid) {
-        return RestResponse.success(reviewService.isManagerShareObjectives(managerUuid, pmCycle));
-    }
-
-    @Operation(summary = "Get all shared objectives by their manager", tags = {"objective-sharing"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Shared objectives")
-    @GetMapping(value = "/colleagues/{colleagueUuid}/objectives/sharing", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<Review>> isManagerShareObjectives(@PathVariable("colleagueUuid") UUID colleagueUuid) {
-        return RestResponse.success(reviewService.getSharedObjectivesForColleague(colleagueUuid));
     }
 
     private UUID resolveUserUuid() {

@@ -6,7 +6,7 @@
     <changeSet author="mdiadia" id="1">
         <createTable remarks="Objective sharing table"
                      tableName="shared_objective">
-            <column name="manager_uuid" type="${uuid_type}">
+            <column name="colleague_uuid" type="${uuid_type}">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="shared_objective_pk"/>
             </column>
             <column name="cycle_uuid" type="${uuid_type}">
@@ -16,7 +16,7 @@
     </changeSet>
 
     <changeSet author="mdiadia" id="2">
-        <addForeignKeyConstraint baseColumnNames="manager_uuid" baseTableName="shared_objective"
+        <addForeignKeyConstraint baseColumnNames="colleague_uuid" baseTableName="shared_objective"
                                  constraintName="shared_objective_manager_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="uuid" referencedTableName="colleague" validate="true"/>

@@ -70,8 +70,6 @@ class ReviewDAOTest extends AbstractDAOTest {
                     MEETS_PROPERTY_NAME, MEETS_UPDATE,
                     EXCEEDS_PROPERTY_NAME, EXCEEDS_UPDATE
             ));
-    private static final UUID MANAGER_UUID = UUID.fromString("10000000-0000-0000-0000-000000000001");
-    private static final UUID MANAGER_UUID_2 = UUID.fromString("10000000-0000-0000-0000-000000000002");
 
     @Autowired
     private ReviewDAO instance;
@@ -373,47 +371,5 @@ class ReviewDAOTest extends AbstractDAOTest {
 
         assertThat(result.get(3))
                 .isEqualTo(q3);
-    }
-
-    @Test
-    @DataSet({"pm_cycle_init.xml", "objective_sharing_init.xml"})
-    void shareManagerObjective() {
-        var managerShareObjectives = instance.isManagerShareObjectives(MANAGER_UUID, PERFORMANCE_CYCLE_UUID);
-        Assertions.assertThat(managerShareObjectives).isFalse();
-
-        var count = instance.shareManagerObjective(MANAGER_UUID, PERFORMANCE_CYCLE_UUID);
-        assertThat(count).isEqualTo(1);
-
-        managerShareObjectives = instance.isManagerShareObjectives(MANAGER_UUID, PERFORMANCE_CYCLE_UUID);
-        Assertions.assertThat(managerShareObjectives).isTrue();
-    }
-
-    @Test
-    @DataSet({"pm_cycle_init.xml", "objective_sharing_init.xml"})
-    void stopSharingManagerObjective() {
-        var managerShareObjectives = instance.isManagerShareObjectives(MANAGER_UUID_2, PERFORMANCE_CYCLE_UUID);
-        Assertions.assertThat(managerShareObjectives).isTrue();
-
-        var count = instance.stopSharingManagerObjective(MANAGER_UUID_2, PERFORMANCE_CYCLE_UUID);
-        assertThat(count).isEqualTo(1);
-
-        managerShareObjectives = instance.isManagerShareObjectives(MANAGER_UUID_2, PERFORMANCE_CYCLE_UUID);
-        Assertions.assertThat(managerShareObjectives).isFalse();
-    }
-
-    @Test
-    @DataSet({"pm_cycle_init.xml", "objective_sharing_init.xml"})
-    void getManagerSharedObjectives() {
-        var reviews = instance.getManagerSharedObjectives(MANAGER_UUID_2, PERFORMANCE_CYCLE_UUID);
-
-        assertThat(reviews)
-                .singleElement()
-                .asInstanceOf(type(Review.class))
-                .returns(MANAGER_UUID_2, from(Review::getColleagueUuid))
-                .returns(PERFORMANCE_CYCLE_UUID, from(Review::getPerformanceCycleUuid))
-                .returns(OBJECTIVE, from(Review::getType))
-                .returns(NUMBER_1, from(Review::getNumber))
-                .returns(REVIEW_PROPERTIES_INIT, from(Review::getProperties))
-                .returns(APPROVED, from(Review::getStatus));
     }
 }

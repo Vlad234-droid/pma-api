@@ -138,7 +138,7 @@ public class ProfileServiceImpl implements ProfileService {
     public ColleagueEntity getColleague(UUID colleagueUuid) {
         var colleague = profileDAO.getColleague(colleagueUuid);
         if (colleague == null) {
-            throw notFound("uuid", colleagueUuid);
+            throw notFound(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid);
         }
         return colleague;
     }
