@@ -95,9 +95,9 @@ public class UserManagementServiceImpl implements UserManagementService {
             throw duplicatedAccountException(e, request.getName());
         }
 
-        Collection<String> roles = remappingRoles(request.getRole());
-        if (!roles.isEmpty()) {
-            updateRoles(true, request.getName(), roles);
+        Collection<Integer> roleIds = remappingRoles(request.getRoleId());
+        if (!roleIds.isEmpty()) {
+            updateRoles(true, request.getName(), roleIds);
         }
 
     }
@@ -105,15 +105,15 @@ public class UserManagementServiceImpl implements UserManagementService {
     @Override
     @Transactional
     public void grantRole(RoleRequest request) {
-        Collection<String> roles = remappingRoles(request.getRole());
-        updateRoles(true, request.getAccountName(), roles);
+        Collection<Integer> roleIds = remappingRoles(request.getRole());
+        updateRoles(true, request.getAccountName(), roleIds);
     }
 
     @Override
     @Transactional
     public void revokeRole(RoleRequest request) {
-        Collection<String> roles = remappingRoles(request.getRole());
-        updateRoles(false, request.getAccountName(), roles);
+        Collection<Integer> roleIds = remappingRoles(request.getRole());
+        updateRoles(false, request.getAccountName(), roleIds);
     }
 
     @Override
@@ -142,8 +142,8 @@ public class UserManagementServiceImpl implements UserManagementService {
             if (roles.isEmpty()) {
                 account.setRoles(null);
             } else if (roles.size() == 1) {
-                String roleId = String.valueOf(roles.iterator().next().getId());
-                account.setRole(roleId);
+                Integer roleId = roles.iterator().next().getId();
+                account.setRoleId(roleId);
                 account.setRoles(null);
             }
         }).collect(Collectors.toList());
@@ -151,34 +151,34 @@ public class UserManagementServiceImpl implements UserManagementService {
 
     /**
      *
-     * @param role - Acceptable values in input json are String or list of String
+     * @param role - Acceptable values in input json are Integer or list of Integer
      * @return
      */
-    private Collection<String> remappingRoles(Object role) {
-        Collection<String> retValue = new HashSet<>();
+    private Collection<Integer> remappingRoles(Object role) {
+        Collection<Integer> retValue = new HashSet<>();
         if (role != null) {
             if (Collection.class.isAssignableFrom(role.getClass())) {
                 retValue.addAll((Collection) role);
-            } else if (role instanceof String) {
-                retValue.add((String) role);
+            } else if (role instanceof Integer) {
+                retValue.add((Integer) role);
             }
         }
         return retValue;
     }
 
-    private void updateRoles(boolean granted, String accountName, Collection<String> roles) {
+    private void updateRoles(boolean granted, String accountName, Collection<Integer> roleIds) {
         Optional<Account> optionalAccount = findAccountByName(accountName);
         if (optionalAccount.isEmpty()) {
             throw accountNotFoundException(accountName);
         }
 
         UUID accountId = optionalAccount.get().getId();
-        for (String roleId : roles) {
+        for (Integer roleId : roleIds) {
             try {
                 if (granted) {
-                    accountManagementDAO.assignRole(accountId, Integer.parseInt(roleId));
+                    accountManagementDAO.assignRole(accountId, roleId);
                 } else {
-                    accountManagementDAO.removeRole(accountId, Integer.parseInt(roleId));
+                    accountManagementDAO.removeRole(accountId, roleId);
                 }
             } catch (DuplicateKeyException e) {
                 throw duplicatedRoleException(e, accountName, roleId);
@@ -229,7 +229,7 @@ public class UserManagementServiceImpl implements UserManagementService {
     }
 
     private DatabaseConstraintViolationException duplicatedRoleException(DuplicateKeyException exception,
-                                                                         String accountName, String roleName) {
+                                                                         String accountName, Integer roleName) {
         return new DatabaseConstraintViolationException(ErrorCodes.SECURITY_DUPLICATED_ROLE.name(),
                 messages.getMessage(ErrorCodes.SECURITY_DUPLICATED_ROLE,
                         Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName,
