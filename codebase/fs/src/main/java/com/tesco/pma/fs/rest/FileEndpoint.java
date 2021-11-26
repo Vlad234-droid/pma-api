@@ -27,6 +27,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -79,6 +80,7 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
             })
     @GetMapping(path = "/last", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAdmin()")
     public RestResponse<File> get(@RequestParam("path") String path,
                                   @RequestParam("fileName") String fileName,
                                   @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true") boolean includeFileContent) {
@@ -94,6 +96,7 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
             })
     @GetMapping("{fileUuid}")
+    @PreAuthorize("isAdmin()")
     public RestResponse<File> get(@PathVariable UUID fileUuid,
                                   @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true") boolean includeFileContent) {
         return success(fileService.get(fileUuid, includeFileContent));
@@ -108,6 +111,7 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Files data not found", content = @Content),
             })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAdmin()")
     public RestResponse<List<File>> get(RequestQuery requestQuery,
                                         @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true") boolean includeFileContent) {
         return success(fileService.get(requestQuery, includeFileContent, true));
@@ -122,6 +126,7 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
             })
     @GetMapping(path = "/versions", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAdmin()")
     public RestResponse<List<File>> getAllVersions(@RequestParam("path") String path,
                                                    @RequestParam("fileName") String fileName,
                                                    @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false")
@@ -146,6 +151,7 @@ public class FileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.FORBIDDEN, description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Internal Server Error", content = @Content)
     @GetMapping("/download/{fileUuid}")
+    @PreAuthorize("isAdmin()")
     public ResponseEntity<Resource> download(@PathVariable UUID fileUuid) {
         var file = fileService.get(fileUuid, true);
         byte[] content = file.getFileContent();
@@ -175,6 +181,7 @@ public class FileEndpoint {
     )
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isAdmin()")
     public RestResponse<List<File>> upload(
             @RequestPart("uploadMetadata")
             @Valid @Parameter(schema = @Schema(type = "string", format = "binary")) FilesUploadMetadata filesUploadMetadata,

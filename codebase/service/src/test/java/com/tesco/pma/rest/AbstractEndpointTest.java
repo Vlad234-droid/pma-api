@@ -39,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @ContextConfiguration(classes = TestConfig.class)
 @WithMockUser(username = AbstractEndpointTest.MOCK_CREATOR_ID)
+@SuppressWarnings("PMD.TooManyMethods")
 public abstract class AbstractEndpointTest {
 
     protected static final UUID RP_UUID = UUID.fromString("7f8218ac-2537-4091-9baf-84b37df450e6");
