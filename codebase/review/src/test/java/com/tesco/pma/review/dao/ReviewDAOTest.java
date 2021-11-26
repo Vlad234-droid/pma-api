@@ -57,6 +57,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     private static final String EXCEEDS_UPDATE = "Exceeds update";
     private static final String OBJECTIVES_CODE_NAME = "Objectives";
     private static final String Q3_CODE_NAME = "Q3";
+    private static final String CHANGE_STATUS_REASON_DECLINED = "To DECLINED 2";
     private static final MapJson REVIEW_PROPERTIES_INIT = new MapJson(
             Map.of(TITLE_PROPERTY_NAME, TITLE_INIT,
                     DESCRIPTION_PROPERTY_NAME, DESCRIPTION_INIT,
@@ -107,6 +108,26 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .returns(NUMBER_1, from(Review::getNumber))
                 .returns(REVIEW_PROPERTIES_INIT, from(Review::getProperties))
                 .returns(DRAFT, from(Review::getStatus));
+    }
+
+    @Test
+    @DataSet({"review_change_status_hi_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    void getReviewDeclinedChangeReason() {
+        final var result = instance.getReview(
+                PERFORMANCE_CYCLE_UUID,
+                COLLEAGUE_UUID,
+                OBJECTIVE,
+                NUMBER_2);
+
+        assertThat(result)
+                .asInstanceOf(type(Review.class))
+                .returns(COLLEAGUE_UUID, from(Review::getColleagueUuid))
+                .returns(PERFORMANCE_CYCLE_UUID, from(Review::getPerformanceCycleUuid))
+                .returns(OBJECTIVE, from(Review::getType))
+                .returns(NUMBER_2, from(Review::getNumber))
+                .returns(REVIEW_PROPERTIES_INIT, from(Review::getProperties))
+                .returns(DECLINED, from(Review::getStatus))
+                .returns(CHANGE_STATUS_REASON_DECLINED, from(Review::getChangeStatusReason));
     }
 
     @Test
@@ -322,7 +343,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .returns(PERFORMANCE_CYCLE_UUID, from(ReviewStats::getCycleUuid))
                 .returns(COLLEAGUE_UUID, from(ReviewStats::getColleagueUuid))
                 .returns(OBJECTIVE, from(ReviewStats::getType))
-                .returns(Map.of(DRAFT, 2), from(ReviewStats::getMapStatusStats));
+                .returns(Map.of(DRAFT, 1, DECLINED, 1), from(ReviewStats::getMapStatusStats));
     }
 
     @Test

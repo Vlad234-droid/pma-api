@@ -7,22 +7,28 @@ import com.tesco.pma.colleague.api.ColleagueSimple;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
+import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import com.tesco.pma.cycle.dao.PMCycleDAO;
 import com.tesco.pma.cycle.exception.ErrorCodes;
 import com.tesco.pma.cycle.exception.PMCycleException;
+import com.tesco.pma.cycle.model.PMProcessModelParser;
+import com.tesco.pma.cycle.model.ResourceProvider;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.process.api.PMProcessStatus;
 import com.tesco.pma.process.api.PMRuntimeProcess;
 import com.tesco.pma.process.service.PMProcessService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.camunda.bpm.model.bpmn.Bpmn;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
+import java.io.ByteArrayInputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +57,8 @@ public class PMCycleServiceImpl implements PMCycleService {
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final ProcessManagerService processManagerService;
     private final PMProcessService pmProcessService;
+    private final FileService fileService;
+    private final ResourceProvider resourceProvider;
 
     private static final String ORG_KEY_PARAMETER_NAME = "organisationKey";
     private static final String TEMPLATE_UUID_PARAMETER_NAME = "templateUUID";
@@ -180,6 +188,14 @@ public class PMCycleServiceImpl implements PMCycleService {
                     Map.of(INCLUDE_METADATA_PARAMETER_NAME, includeMetadata));
         }
         return results;
+    }
+
+    @Override
+    public PMCycleMetadata getMetadata(UUID fileUuid) {
+        var file = fileService.get(fileUuid, true);
+        var model = Bpmn.readModelFromStream(new ByteArrayInputStream(file.getFileContent()));
+        var parser = new PMProcessModelParser(resourceProvider, messageSourceAccessor);
+        return parser.parse(model);
     }
 
     @Override

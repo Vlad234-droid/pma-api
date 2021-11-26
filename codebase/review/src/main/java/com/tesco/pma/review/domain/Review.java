@@ -25,4 +25,5 @@ public class Review {
     Integer number;
     MapJson properties;
     PMReviewStatus status;
+    String changeStatusReason;
 }
