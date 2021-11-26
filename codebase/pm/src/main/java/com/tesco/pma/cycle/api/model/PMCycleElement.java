@@ -13,6 +13,8 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PMCycleElement extends PMElement {
+    private static final long serialVersionUID = -8336744174325602486L;
+
     public static final String PM_CYCLE = "cycle";
     public static final String PM_CYCLE_PREFIX = PM_PREFIX + PM_CYCLE + "_";
 

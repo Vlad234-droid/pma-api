@@ -47,7 +47,7 @@ public class Account implements Identified<UUID> {
     private String employeeNumber;
 
     @JsonProperty(value = "role")
-    private String role;
+    private Integer roleId;
 
     @JsonProperty(value = "roles")
     private Collection<Role> roles = new HashSet<>();

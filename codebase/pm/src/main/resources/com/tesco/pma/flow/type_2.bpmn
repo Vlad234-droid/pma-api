@@ -11,11 +11,11 @@
         <camunda:property name="pm_cycle_max" value="5" />
       </camunda:properties>
     </bpmn:extensionElements>
-    <bpmn:subProcess id="Activity_1bu82ro" name="Objectives">
+    <bpmn:subProcess id="objectives" name="Objectives">
       <bpmn:extensionElements>
         <camunda:properties>
-          <camunda:property name="pm_review_min" value="3" />
-          <camunda:property name="pm_review_max" value="3" />
+          <camunda:property name="pm_review_min" value="5" />
+          <camunda:property name="pm_review_max" value="5" />
           <camunda:property name="pm_review_type" value="objective" />
           <camunda:property name="pm_type" value="review" />
           <camunda:property name="pm_form_key" value="forms/type_2_objective.form" />
@@ -56,8 +56,8 @@
     </bpmn:task>
     <bpmn:sequenceFlow id="Flow_0nbbfyl" sourceRef="Event_0e0xeep" targetRef="Activity_1vkxs1y" />
     <bpmn:sequenceFlow id="Flow_1qhm8xl" sourceRef="Activity_1vkxs1y" targetRef="Activity_02ikug4" />
-    <bpmn:sequenceFlow id="Flow_1c2mhm6" sourceRef="Gateway_1msj1uv" targetRef="Activity_1bu82ro" />
-    <bpmn:sequenceFlow id="Flow_10o56ax" sourceRef="Gateway_1msj1uv" targetRef="Activity_1xk9nhh" />
+    <bpmn:sequenceFlow id="Flow_1c2mhm6" sourceRef="Gateway_1msj1uv" targetRef="objectives" />
+    <bpmn:sequenceFlow id="Flow_10o56ax" sourceRef="Gateway_1msj1uv" targetRef="endOfYearReview" />
     <bpmn:endEvent id="Event_0v9jvii">
       <bpmn:incoming>Flow_0y1flzn</bpmn:incoming>
       <bpmn:incoming>Flow_1yhukqj</bpmn:incoming>
@@ -65,10 +65,10 @@
       <bpmn:incoming>Flow_1wxy8ol</bpmn:incoming>
       <bpmn:incoming>Flow_1rfkre9</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0y1flzn" sourceRef="Activity_1xk9nhh" targetRef="Event_0v9jvii" />
-    <bpmn:sequenceFlow id="Flow_10nqhon" sourceRef="Gateway_1msj1uv" targetRef="Activity_1scuf3c" />
-    <bpmn:sequenceFlow id="Flow_1yhukqj" sourceRef="Activity_1scuf3c" targetRef="Event_0v9jvii" />
-    <bpmn:scriptTask id="Activity_1xk9nhh" name="End of Year&#10;Review" scriptFormat="groovy">
+    <bpmn:sequenceFlow id="Flow_0y1flzn" sourceRef="endOfYearReview" targetRef="Event_0v9jvii" />
+    <bpmn:sequenceFlow id="Flow_10nqhon" sourceRef="Gateway_1msj1uv" targetRef="midYearReview" />
+    <bpmn:sequenceFlow id="Flow_1yhukqj" sourceRef="midYearReview" targetRef="Event_0v9jvii" />
+    <bpmn:scriptTask id="endOfYearReview" name="End of Year&#10;Review" scriptFormat="groovy">
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="pm_type" value="review" />
@@ -87,7 +87,7 @@
 "${execution.getCurrentActivityName()}" +
 " ${java.time.LocalDateTime.now()}"</bpmn:script>
     </bpmn:scriptTask>
-    <bpmn:scriptTask id="Activity_1scuf3c" name="Mid Year&#10;Review" scriptFormat="groovy">
+    <bpmn:scriptTask id="midYearReview" name="Mid Year&#10;Review" scriptFormat="groovy">
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="pm_type" value="review" />
@@ -106,7 +106,7 @@
 "${execution.getCurrentActivityName()}" +
 " ${java.time.LocalDateTime.now()}"</bpmn:script>
     </bpmn:scriptTask>
-    <bpmn:sequenceFlow id="Flow_0f4zlnq" sourceRef="Activity_1bu82ro" targetRef="Event_0v9jvii" />
+    <bpmn:sequenceFlow id="Flow_0f4zlnq" sourceRef="objectives" targetRef="Event_0v9jvii" />
     <bpmn:parallelGateway id="Gateway_1msj1uv">
       <bpmn:incoming>Flow_17pv9j1</bpmn:incoming>
       <bpmn:outgoing>Flow_1c2mhm6</bpmn:outgoing>
@@ -115,7 +115,7 @@
       <bpmn:outgoing>Flow_1i8797i</bpmn:outgoing>
       <bpmn:outgoing>Flow_1r6dvjh</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:scriptTask id="Activity_017n9fs" name="Q3" scriptFormat="groovy">
+    <bpmn:scriptTask id="q3" name="Q3" scriptFormat="groovy">
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="pm_type" value="timeline_point" />
@@ -129,9 +129,9 @@
 "${execution.getCurrentActivityName()}" +
 " ${java.time.LocalDateTime.now()}"</bpmn:script>
     </bpmn:scriptTask>
-    <bpmn:sequenceFlow id="Flow_1wxy8ol" sourceRef="Activity_017n9fs" targetRef="Event_0v9jvii" />
-    <bpmn:sequenceFlow id="Flow_1i8797i" sourceRef="Gateway_1msj1uv" targetRef="Activity_017n9fs" />
-    <bpmn:scriptTask id="Activity_0i2qhx0" name="Q1" scriptFormat="groovy">
+    <bpmn:sequenceFlow id="Flow_1wxy8ol" sourceRef="q3" targetRef="Event_0v9jvii" />
+    <bpmn:sequenceFlow id="Flow_1i8797i" sourceRef="Gateway_1msj1uv" targetRef="q3" />
+    <bpmn:scriptTask id="q1" name="Q1" scriptFormat="groovy">
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="pm_type" value="timeline_point" />
@@ -145,8 +145,8 @@
 "${execution.getCurrentActivityName()}" +
 " ${java.time.LocalDateTime.now()}"</bpmn:script>
     </bpmn:scriptTask>
-    <bpmn:sequenceFlow id="Flow_1r6dvjh" sourceRef="Gateway_1msj1uv" targetRef="Activity_0i2qhx0" />
-    <bpmn:sequenceFlow id="Flow_1rfkre9" sourceRef="Activity_0i2qhx0" targetRef="Event_0v9jvii" />
+    <bpmn:sequenceFlow id="Flow_1r6dvjh" sourceRef="Gateway_1msj1uv" targetRef="q1" />
+    <bpmn:sequenceFlow id="Flow_1rfkre9" sourceRef="q1" targetRef="Event_0v9jvii" />
     <bpmn:startEvent id="Event_0e0xeep" name="Cycle start">
       <bpmn:extensionElements>
         <camunda:executionListener event="start">
@@ -237,7 +237,7 @@
         <di:waypoint x="196" y="210" />
         <di:waypoint x="240" y="210" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Activity_1bu82ro_di" bpmnElement="Activity_1bu82ro" isExpanded="true">
+      <bpmndi:BPMNShape id="Activity_1bu82ro_di" bpmnElement="objectives" isExpanded="true">
         <dc:Bounds x="340" y="310" width="570" height="160" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1jzbke3_di" bpmnElement="Flow_1jzbke3">
@@ -270,19 +270,19 @@
       <bpmndi:BPMNShape id="Event_0v9jvii_di" bpmnElement="Event_0v9jvii">
         <dc:Bounds x="1222" y="192" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0pi7zaw_di" bpmnElement="Activity_1xk9nhh">
+      <bpmndi:BPMNShape id="Activity_0pi7zaw_di" bpmnElement="endOfYearReview">
         <dc:Bounds x="1050" y="70" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0av6cmn_di" bpmnElement="Activity_1scuf3c">
+      <bpmndi:BPMNShape id="Activity_0av6cmn_di" bpmnElement="midYearReview">
         <dc:Bounds x="770" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1mwce77_di" bpmnElement="Gateway_1msj1uv">
         <dc:Bounds x="555" y="185" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_017n9fs_di" bpmnElement="Activity_017n9fs">
+      <bpmndi:BPMNShape id="Activity_017n9fs_di" bpmnElement="q3">
         <dc:Bounds x="910" y="120" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0i2qhx0_di" bpmnElement="Activity_0i2qhx0">
+      <bpmndi:BPMNShape id="Activity_0i2qhx0_di" bpmnElement="q1">
         <dc:Bounds x="630" y="220" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1pdy112_di" bpmnElement="Event_0e0xeep">
