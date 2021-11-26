@@ -57,7 +57,7 @@
     <bpmn:sequenceFlow id="Flow_0nbbfyl" sourceRef="Event_0e0xeep" targetRef="Activity_1vkxs1y" />
     <bpmn:sequenceFlow id="Flow_1qhm8xl" sourceRef="Activity_1vkxs1y" targetRef="Activity_02ikug4" />
     <bpmn:sequenceFlow id="Flow_1c2mhm6" sourceRef="Gateway_1msj1uv" targetRef="objectives" />
-    <bpmn:sequenceFlow id="Flow_10o56ax" sourceRef="Gateway_1msj1uv" targetRef="end_of_year_review" />
+    <bpmn:sequenceFlow id="Flow_10o56ax" sourceRef="Gateway_1msj1uv" targetRef="endOfYearReview" />
     <bpmn:endEvent id="Event_0v9jvii">
       <bpmn:incoming>Flow_0y1flzn</bpmn:incoming>
       <bpmn:incoming>Flow_1yhukqj</bpmn:incoming>
@@ -65,10 +65,10 @@
       <bpmn:incoming>Flow_1wxy8ol</bpmn:incoming>
       <bpmn:incoming>Flow_1rfkre9</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0y1flzn" sourceRef="end_of_year_review" targetRef="Event_0v9jvii" />
-    <bpmn:sequenceFlow id="Flow_10nqhon" sourceRef="Gateway_1msj1uv" targetRef="mid_year_review" />
-    <bpmn:sequenceFlow id="Flow_1yhukqj" sourceRef="mid_year_review" targetRef="Event_0v9jvii" />
-    <bpmn:scriptTask id="end_of_year_review" name="End of Year&#10;Review" scriptFormat="groovy">
+    <bpmn:sequenceFlow id="Flow_0y1flzn" sourceRef="endOfYearReview" targetRef="Event_0v9jvii" />
+    <bpmn:sequenceFlow id="Flow_10nqhon" sourceRef="Gateway_1msj1uv" targetRef="midYearReview" />
+    <bpmn:sequenceFlow id="Flow_1yhukqj" sourceRef="midYearReview" targetRef="Event_0v9jvii" />
+    <bpmn:scriptTask id="endOfYearReview" name="End of Year&#10;Review" scriptFormat="groovy">
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="pm_type" value="review" />
@@ -87,7 +87,7 @@
 "${execution.getCurrentActivityName()}" +
 " ${java.time.LocalDateTime.now()}"</bpmn:script>
     </bpmn:scriptTask>
-    <bpmn:scriptTask id="mid_year_review" name="Mid Year&#10;Review" scriptFormat="groovy">
+    <bpmn:scriptTask id="midYearReview" name="Mid Year&#10;Review" scriptFormat="groovy">
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="pm_type" value="review" />
@@ -270,10 +270,10 @@
       <bpmndi:BPMNShape id="Event_0v9jvii_di" bpmnElement="Event_0v9jvii">
         <dc:Bounds x="1222" y="192" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0pi7zaw_di" bpmnElement="end_of_year_review">
+      <bpmndi:BPMNShape id="Activity_0pi7zaw_di" bpmnElement="endOfYearReview">
         <dc:Bounds x="1050" y="70" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0av6cmn_di" bpmnElement="mid_year_review">
+      <bpmndi:BPMNShape id="Activity_0av6cmn_di" bpmnElement="midYearReview">
         <dc:Bounds x="770" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1mwce77_di" bpmnElement="Gateway_1msj1uv">
