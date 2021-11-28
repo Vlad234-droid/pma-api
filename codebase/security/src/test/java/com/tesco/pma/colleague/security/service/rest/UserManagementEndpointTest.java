@@ -32,9 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = UserManagementEndpoint.class, properties = {
-        "tesco.application.security.enabled=false",
-})
+@WebMvcTest(controllers = UserManagementEndpoint.class)
 // TODO Implement all tests
 class UserManagementEndpointTest extends AbstractEndpointTest {
 
@@ -70,6 +68,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
                 .thenReturn(randomObjects(Account.class, 3));
 
         mvc.perform(get(ACCOUNTS_URL_TEMPLATE)
+                        .with(admin())
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON));
@@ -83,6 +82,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
                 .thenReturn(randomObjects(Account.class, 3));
 
         mvc.perform(get(ACCOUNTS_URL_TEMPLATE)
+                        .with(admin())
                         .param("nextPageToken", "10")
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -100,6 +100,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
         // when
         ResultActions resultActions = mvc.perform(
                 post(ACCOUNTS_URL_TEMPLATE)
+                        .with(admin())
                         .contentType(APPLICATION_JSON)
                         .content(createAccountRequestJsonTester.write(createAccountRequest).getJson()));
 
@@ -118,6 +119,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
         // when
         ResultActions resultActions = mvc.perform(
                 post(ACCOUNTS_URL_TEMPLATE)
+                        .with(admin())
                         .contentType(APPLICATION_JSON)
                         .content(createAccountRequestJsonTester.write(createAccountRequest).getJson()));
 
@@ -135,6 +137,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
         // when
         ResultActions resultActions = mvc.perform(
                 put(ACCOUNTS_URL_TEMPLATE)
+                        .with(admin())
                         .contentType(APPLICATION_JSON)
                         .content(changeAccountStatusRequestJsonTester.write(changeAccountStatusRequest).getJson()));
 
@@ -153,6 +156,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
         // when
         ResultActions resultActions = mvc.perform(
                 put(ACCOUNTS_URL_TEMPLATE)
+                        .with(admin())
                         .contentType(APPLICATION_JSON)
                         .content(changeAccountStatusRequestJsonTester.write(changeAccountStatusRequest).getJson()));
 
@@ -169,6 +173,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
                 .thenReturn(randomObjects(Role.class, 3));
 
         mvc.perform(get(ACCOUNTS_URL_TEMPLATE)
+                        .with(admin())
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON));
@@ -185,6 +190,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
         // when
         ResultActions resultActions = mvc.perform(
                 post(ROLES_URL_TEMPLATE)
+                        .with(admin())
                         .contentType(APPLICATION_JSON)
                         .content(roleRequestJsonTester.write(roleRequest).getJson()));
 
@@ -203,6 +209,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
         // when
         ResultActions resultActions = mvc.perform(
                 post(ROLES_URL_TEMPLATE)
+                        .with(admin())
                         .contentType(APPLICATION_JSON)
                         .content(roleRequestJsonTester.write(roleRequest).getJson()));
 
@@ -221,6 +228,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
         // when
         ResultActions resultActions = mvc.perform(
                 post(ROLES_URL_TEMPLATE)
+                        .with(admin())
                         .contentType(APPLICATION_JSON)
                         .content(roleRequestJsonTester.write(roleRequest).getJson()));
 
@@ -239,6 +247,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
         // when
         ResultActions resultActions = mvc.perform(
                 delete(ROLES_URL_TEMPLATE)
+                        .with(admin())
                         .contentType(APPLICATION_JSON)
                         .content(roleRequestJsonTester.write(roleRequest).getJson()));
 
