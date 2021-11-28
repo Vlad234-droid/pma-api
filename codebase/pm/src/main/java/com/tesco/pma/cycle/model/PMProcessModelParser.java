@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.tesco.pma.cycle.api.model.PMCycleElement.PM_CYCLE_TYPE;
 import static com.tesco.pma.cycle.api.model.PMElement.PM_TYPE;
@@ -51,6 +52,34 @@ public class PMProcessModelParser {
 
     private final ResourceProvider resourceProvider;
     private final NamedMessageSourceAccessor messageSourceAccessor;
+
+    /**
+     * Utility method to get external properties
+     *
+     * @param element source element
+     * @return collection of Camunda properties
+     */
+    public static Collection<CamundaProperty> getCamundaProperties(BaseElement element) {
+        var extensionElements = element.getExtensionElements();
+        if (extensionElements != null) {
+            var propsQuery = extensionElements.getElementsQuery().filterByType(CamundaProperties.class);
+            if (propsQuery.count() > 0) {
+                return propsQuery.singleResult().getCamundaProperties();
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    /**
+     * Utility method to get external properties
+     *
+     * @param element source element
+     * @return map of properties
+     */
+    public static Map<String, String> getExternalProperties(BaseElement element) {
+        return getCamundaProperties(element).stream()
+                .collect(Collectors.toMap(CamundaProperty::getCamundaName, CamundaProperty::getCamundaValue));
+    }
 
     /**
      * Parse the model and return the metadata
@@ -85,17 +114,6 @@ public class PMProcessModelParser {
             }
         });
         return cycle;
-    }
-
-    private Collection<CamundaProperty> getCamundaProperties(BaseElement element) {
-        var extensionElements = element.getExtensionElements();
-        if (extensionElements != null) {
-            var propsQuery = extensionElements.getElementsQuery().filterByType(CamundaProperties.class);
-            if (propsQuery.count() > 0) {
-                return propsQuery.singleResult().getCamundaProperties();
-            }
-        }
-        return Collections.emptyList();
     }
 
     private void processTask(PMCycleElement cycle, Activity task) {

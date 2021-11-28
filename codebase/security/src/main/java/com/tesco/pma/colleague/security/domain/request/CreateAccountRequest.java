@@ -23,5 +23,5 @@ public class CreateAccountRequest {
     private AccountStatus status;
 
     @JsonProperty("role")
-    private Object role;
+    private Object roleId;
 }

@@ -12,6 +12,8 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PMReviewElement extends PMTimelinePointElement {
+    private static final long serialVersionUID = -7424090313139450792L;
+
     public static final String PM_REVIEW = "review";
     public static final String PM_REVIEW_PREFIX = PM_PREFIX + PM_REVIEW + "_";
     public static final String PM_REVIEW_TYPE = PM_REVIEW_PREFIX + "type";

@@ -101,7 +101,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         }
 
         try {
-            var props = cycle.getProperties() != null ? cycle.getProperties().getMapJson() : Collections.EMPTY_MAP;
+            Map<String, ?> props = cycle.getProperties() != null ? cycle.getProperties().getMapJson() : Collections.emptyMap();
 
             var processUUID = processManagerService.runProcess(processName, props);
             log.info("Started process: {}", processUUID);
