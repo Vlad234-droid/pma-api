@@ -61,7 +61,7 @@ public class ProfileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Profile found")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Profile not found")
     @GetMapping(path = "/{colleagueUuid}")
-    @PreAuthorize("hasAnyRole()")
+    @PreAuthorize("isColleague()")
     public RestResponse<ColleagueProfile> getProfileByColleagueUuid(@PathVariable UUID colleagueUuid) {
         return RestResponse.success(profileService.findProfileByColleagueUuid(colleagueUuid)
                 .orElseThrow(() -> notFound("colleagueUuid", colleagueUuid)));
@@ -95,7 +95,7 @@ public class ProfileEndpoint {
     @ApiResponse(responseCode = CREATED, description = "Successful operation")
     @PostMapping(path = "{colleagueUuid}/attributes", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("isColleague() and isCurrentUser(#colleagueUuid)")
+    @PreAuthorize("isAdmin() and isCurrentUser(#colleagueUuid)")
     public RestResponse<List<TypedAttribute>> createProfileAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                                                       @RequestBody @Valid List<TypedAttribute> profileAttributes) {
         return RestResponse.success(profileService.createProfileAttributes(colleagueUuid, profileAttributes));
@@ -113,7 +113,7 @@ public class ProfileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Profile attributes deleted")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Profile not found", content = @Content)
     @DeleteMapping(path = "{colleagueUuid}/attributes", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isColleague() and isCurrentUser(#colleagueUuid)")
+    @PreAuthorize("isAdmin() and isCurrentUser(#colleagueUuid)")
     public RestResponse<List<TypedAttribute>> deleteProfileAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                                                       @RequestBody @Valid List<TypedAttribute> profileAttributes) {
         return RestResponse.success(profileService.deleteProfileAttributes(colleagueUuid, profileAttributes));
@@ -175,7 +175,7 @@ public class ProfileEndpoint {
     @Operation(summary = "Autocomplete search among colleagues by full name and manager ID", tags = {"colleagues"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Search among colleagues by full name and manager ID")
     @GetMapping(value = "/suggestions", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    @PreAuthorize("isLineManager() or isPeopleTeam()")
+    @PreAuthorize("isColleague()")
     public RestResponse<List<Colleague>> getSuggestions(RequestQuery requestQuery) {
         return RestResponse.success(profileService.getSuggestions(requestQuery));
     }

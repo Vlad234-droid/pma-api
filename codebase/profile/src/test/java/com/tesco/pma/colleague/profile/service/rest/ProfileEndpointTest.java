@@ -113,7 +113,7 @@ class ProfileEndpointTest extends AbstractEndpointTest {
 
         // when
         ResultActions resultActions = mvc.perform(post("/colleagues/{colleagueUuid}/attributes", colleagueUuid)
-                .with(colleague(colleagueUuid.toString()))
+                .with(admin(colleagueUuid.toString()))
                 .contentType(APPLICATION_JSON)
                 .content(jsonTester.write(profileAttributes).getJson())
                 .accept(APPLICATION_JSON));
@@ -134,7 +134,7 @@ class ProfileEndpointTest extends AbstractEndpointTest {
 
         // when
         ResultActions resultActions = mvc.perform(delete("/colleagues/{colleagueUuid}/attributes", colleagueUuid)
-                .with(colleague(colleagueUuid.toString()))
+                .with(admin(colleagueUuid.toString()))
                 .contentType(APPLICATION_JSON)
                 .content(jsonTester.write(profileAttributes).getJson())
                 .accept(APPLICATION_JSON));
