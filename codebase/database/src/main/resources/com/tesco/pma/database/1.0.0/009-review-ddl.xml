@@ -253,13 +253,13 @@
             <column name="description" value="Organisation objective was unpublished"/>
         </insert>
         <rollback>
-            <delete tableName="pm_review_status">
+            <delete tableName="pm_org_objective_status">
                 <where>code = 'DRAFT'</where>
             </delete>
-            <delete tableName="pm_review_status">
+            <delete tableName="pm_org_objective_status">
                 <where>code = 'PUBLISHED'</where>
             </delete>
-            <delete tableName="pm_review_status">
+            <delete tableName="pm_org_objective_status">
                 <where>code = 'UNPUBLISHED'</where>
             </delete>
         </rollback>
