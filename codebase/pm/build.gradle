@@ -11,6 +11,7 @@ dependencies {
     implementation project(':fs')
 
     implementation project(':service')
+    implementation project(':organisation')
 
     implementation("org.springdoc:springdoc-openapi-core:${openApiCoreVersion}")
     implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
