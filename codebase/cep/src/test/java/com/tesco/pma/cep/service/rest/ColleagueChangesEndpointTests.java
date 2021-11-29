@@ -11,7 +11,6 @@ import org.mockito.internal.stubbing.answers.DoesNothing;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.util.concurrent.TimeUnit;
@@ -24,7 +23,6 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -154,10 +152,6 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
                         .accept(APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(resultMatcher);
-    }
-
-    private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor jwtWithSubject(String s) {
-        return jwt().jwt(builder -> builder.subject(s));
     }
 
 }
