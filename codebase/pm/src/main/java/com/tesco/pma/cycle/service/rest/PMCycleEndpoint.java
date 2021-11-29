@@ -208,7 +208,6 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found performance cycle metadata by file UUID")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle metadata not found",
             content = @Content)
-    @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Exception while parsing a form")
     @GetMapping(value = "/pm-cycles/files/{uuid}/metadata", produces = APPLICATION_JSON_VALUE)
     public RestResponse<PMCycleMetadata> getPmCycleMetadata(@PathVariable("uuid") UUID uuid) {
         return success(service.getMetadata(uuid));
