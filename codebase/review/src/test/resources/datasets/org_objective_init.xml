@@ -1,26 +1,26 @@
 <dataset>
-    <org_objective
+    <pm_org_objective
             uuid="aab9ab0b-f50f-4442-8900-b03777ee0011"
             number="1"
             status_id="1"
             title="Title #1"
             version="1"
     />
-    <org_objective
+    <pm_org_objective
             uuid="aab9ab0b-f50f-4442-8900-b03777ee0012"
             number="2"
             status_id="1"
             title="Title #2"
             version="1"
     />
-    <org_objective
+    <pm_org_objective
             uuid="aab9ab0b-f50f-4442-8900-b03777ee0013"
             number="1"
             status_id="2"
             title="Title #1"
             version="2"
     />
-    <org_objective
+    <pm_org_objective
             uuid="aab9ab0b-f50f-4442-8900-b03777ee0014"
             number="1"
             status_id="1"
