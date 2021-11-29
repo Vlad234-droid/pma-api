@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="review_notifications_decisions" name="Review Notifications" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
+  <decision id="review_notifications" name="Send review&#10;notification or not">
+    <informationRequirement id="InformationRequirement_01u2w81">
+      <requiredInput href="#InputData_1r3ahyr" />
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_12ixx6t">
+      <requiredInput href="#InputData_17p8c9j" />
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_0w0zust">
+      <requiredInput href="#InputData_1g0u5hf" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_1dpms3v" hitPolicy="FIRST">
+      <input id="InputClause_0anirp2" label="Event Name" biodi:width="254">
+        <inputExpression id="LiteralExpression_0jpa5sp" typeRef="string">
+          <text>EVENT_NAME</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0165gnz" label="Review Type" biodi:width="150">
+        <inputExpression id="LiteralExpression_168f57s" typeRef="string">
+          <text>REVIEW_TYPE</text>
+        </inputExpression>
+      </input>
+      <input id="Input_1" label="is Manager" biodi:width="150">
+        <inputExpression id="InputExpression_1" typeRef="boolean">
+          <text>IS_MANAGER</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="Send" name="SEND" typeRef="boolean" biodi:width="150" />
+      <rule id="DecisionRule_0elotx5">
+        <inputEntry id="UnaryTests_0puabg3">
+          <text>"PM_REVIEW_BEFORE_START"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1i4tjw3">
+          <text>"MYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1pa49aq">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0exew74">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_122xnsy">
+        <inputEntry id="UnaryTests_08p0h32">
+          <text>"PM_REVIEW_SUBMITTED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_135h9gi">
+          <text>"MYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1pao4ot">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0t1y2vo">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_117lcnh">
+        <inputEntry id="UnaryTests_15zqaq3">
+          <text>"PM_REVIEW_APPROVED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1nk1zbq">
+          <text>"MYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_159zctw">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0jj9zf9">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0eawc4x">
+        <inputEntry id="UnaryTests_0tammby">
+          <text>"PM_REVIEW_DECLINED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_06m3d5i">
+          <text>"MYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1lhshp7">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_01p0tho">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0d9dsnr">
+        <inputEntry id="UnaryTests_1aejvad">
+          <text>"PM_REVIEW_BEFORE_END"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0fkphmm">
+          <text>"MYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1a8t90x">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ogco7w">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1ulk2bx">
+        <inputEntry id="UnaryTests_0nno71t">
+          <text>"PM_REVIEW_BEFORE_START"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0c5wksc">
+          <text>"EYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1qncg8f">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0eziy99">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0htd5ki">
+        <inputEntry id="UnaryTests_0jhgh9x">
+          <text>"PM_REVIEW_SUBMITTED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_11alljx">
+          <text>"EYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_153d3hy">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1sh4rp8">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0v5108s">
+        <inputEntry id="UnaryTests_1cilzkb">
+          <text>"PM_REVIEW_APPROVED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0tpcpyr">
+          <text>"EYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1qhctv6">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1mx1hxi">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_01ol67b">
+        <inputEntry id="UnaryTests_19frjxy">
+          <text>"PM_REVIEW_DECLINED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0hmj3c0">
+          <text>"EYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0m4shc9">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1bqyzn8">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1xbw130">
+        <inputEntry id="UnaryTests_0aaf1by">
+          <text>"PM_REVIEW_BEFORE_END"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0p8h424">
+          <text>"EYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1onb8dp">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0agwr1g">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1n9rprq">
+        <inputEntry id="UnaryTests_0h6z98a">
+          <text>"PM_REVIEW_SUBMITTED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_09krgrr">
+          <text>"OBJECTIVE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_17z1um1">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_110qg59">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_15x3tsr">
+        <inputEntry id="UnaryTests_0h260de">
+          <text>"PM_REVIEW_APPROVED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0990r3n">
+          <text>"OBJECTIVE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1lj9is7">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0srrk3g">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_169ja8y">
+        <inputEntry id="UnaryTests_04xdait">
+          <text>"PM_REVIEW_DECLINED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0dvrmm2">
+          <text>"OBJECTIVE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0brreqr">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_164d8zp">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0k5q2rg">
+        <description>Default: do not send</description>
+        <inputEntry id="UnaryTests_11aaqfm">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1bhj09l">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0gwfijc">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1vayiaq">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <inputData id="InputData_1r3ahyr" name="Review Type" />
+  <inputData id="InputData_17p8c9j" name="is Manager" />
+  <inputData id="InputData_1g0u5hf" name="Event Name" />
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="review_notifications">
+        <dc:Bounds height="80" width="180" x="270" y="100" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_0mmc55j" dmnElementRef="InputData_1r3ahyr">
+        <dc:Bounds height="45" width="125" x="297" y="227" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_0af514x" dmnElementRef="InformationRequirement_01u2w81">
+        <di:waypoint x="360" y="227" />
+        <di:waypoint x="360" y="200" />
+        <di:waypoint x="360" y="180" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DMNShape_00jg8de" dmnElementRef="InputData_17p8c9j">
+        <dc:Bounds height="45" width="125" x="437" y="227" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_14yza5o" dmnElementRef="InformationRequirement_12ixx6t">
+        <di:waypoint x="500" y="227" />
+        <di:waypoint x="405" y="200" />
+        <di:waypoint x="405" y="180" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DMNShape_0jl626x" dmnElementRef="InputData_1g0u5hf">
+        <dc:Bounds height="45" width="125" x="157" y="227" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_0domkdg" dmnElementRef="InformationRequirement_0w0zust">
+        <di:waypoint x="220" y="227" />
+        <di:waypoint x="315" y="200" />
+        <di:waypoint x="315" y="180" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

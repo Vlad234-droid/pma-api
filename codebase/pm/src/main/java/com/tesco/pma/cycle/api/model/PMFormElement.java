@@ -11,6 +11,8 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PMFormElement extends PMElement {
+    private static final long serialVersionUID = -2034323460586581869L;
+
     public static final String PM_FORM = "form";
     public static final String PM_FORM_PREFIX = PM_PREFIX + PM_FORM + "_";
     public static final String PM_FORM_KEY = PM_FORM_PREFIX + "key";

@@ -11,6 +11,8 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PMTimelinePointElement extends PMElement {
+    private static final long serialVersionUID = 8220411457724646393L;
+
     public static final String PM_TIMELINE_POINT = "timeline_point";
     public static final String PM_TIMELINE_POINT_PREFIX = PM_PREFIX + PM_TIMELINE_POINT + "_";
     public static final String PM_TIMELINE_POINT_START_TIME = PM_TIMELINE_POINT_PREFIX + "start_time";

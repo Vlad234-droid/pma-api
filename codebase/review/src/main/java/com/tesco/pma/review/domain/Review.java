@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Data
@@ -17,13 +18,15 @@ import java.util.UUID;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class Review {
+public class Review implements Serializable {
+    private static final long serialVersionUID = 310609427305520535L;
+
     UUID uuid;
+    PMReviewType type;
+    PMReviewStatus status;
+    Integer number;
     UUID performanceCycleUuid;
     UUID colleagueUuid;
-    PMReviewType type;
-    Integer number;
     MapJson properties;
-    PMReviewStatus status;
     String changeStatusReason;
 }

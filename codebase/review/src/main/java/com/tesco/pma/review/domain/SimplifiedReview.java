@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Data
@@ -16,7 +17,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class SimplifiedReview {
+public class SimplifiedReview implements Serializable {
+    private static final long serialVersionUID = -771526432976133963L;
+
     UUID uuid;
     PMReviewType type;
     PMReviewStatus status;
