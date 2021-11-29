@@ -1,5 +1,7 @@
 package com.tesco.pma.event;
 
+import com.tesco.pma.event.exception.EventSendingException;
+
 import java.util.Collection;
 import java.util.Collections;
 
@@ -8,19 +10,17 @@ public interface EventSender {
     /**
      * Send events to target destination
      * @param events events
-     * @param target destination
      * @throws EventSendingException runtime exception
      */
-    void sendEvents(Collection<Event> events, String target);
+    void sendEvents(Collection<Event> events);
 
     /**
      * Send event to target destination
      * @param event an event
-     * @param target destination
      * @throws EventSendingException runtime exception
      */
-    default void send(Event event, String target) {
-        sendEvents(Collections.singletonList(event), target);
+    default void send(Event event) {
+        sendEvents(Collections.singletonList(event));
     }
 
     /**

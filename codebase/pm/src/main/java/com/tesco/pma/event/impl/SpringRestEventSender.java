@@ -2,6 +2,11 @@ package com.tesco.pma.event.impl;
 
 import java.util.Collection;
 
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.event.exception.ErrorCodes;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.tesco.pma.event.Event;
 import com.tesco.pma.event.EventSender;
-import com.tesco.pma.event.EventSendingException;
+import com.tesco.pma.event.exception.EventSendingException;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -18,34 +23,35 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class SpringRestEventSender implements EventSender {
 
-    private static final String EVENT_HANDLE_METHOD = "/event/handle";
+    @Value("${tesco.application.external-endpoints.events-api.base-url}")
+    private String eventHandleApi;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
+    private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Override
-    public void sendEvents(Collection<Event> events, String target) {
-        try {
-            for (Event event : events) {
-                try {
-                    HttpEntity<Event> requestBody = new HttpEntity<>(event);
-                    ResponseEntity<Event> result = restTemplate.postForEntity(target + EVENT_HANDLE_METHOD, requestBody, Event.class);
-                    log.info("Event: {} was send to '{}'", event, target + EVENT_HANDLE_METHOD);
-                    if (result.getStatusCode() != HttpStatus.OK) {
-                        log.info("Sending event " + event.getEventName() + result.toString());
-                        throw new EventSendingException("Sending event " + event.getEventName() + ", to" + target + EVENT_HANDLE_METHOD
-                                + ", received: " + result.getStatusCode());
-                    }
-                } catch (Exception e) {
-                    log.error("Event: {} can't be sent to '{}'", event, target);
-                    throw e;
+    public void sendEvents(@NonNull Collection<Event> events) {
+        for (Event event : events) {
+            try {
+                HttpEntity<Event> requestBody = new HttpEntity<>(event);
+                ResponseEntity<Event> result = restTemplate.postForEntity(eventHandleApi, requestBody, Event.class);
+
+                log.info("Event: {} was send to '{}'", event, eventHandleApi);
+
+                if (result.getStatusCode() != HttpStatus.OK) {
+
+                    throw new EventSendingException(ErrorCodes.EVENT_SENDING_ERROR.getCode(),
+                            messageSourceAccessor.getMessage(eventHandleApi));
                 }
+
+            } catch (Exception e) {
+                log.error("Error while sending event {} to {}", event, eventHandleApi, e);
             }
-        } catch (Exception e) {
-            log.error("Exception occurs during sending event: {}", events, e);
-            throw new EventSendingException(e);
         }
+
     }
 
     @Override
