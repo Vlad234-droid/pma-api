@@ -22,6 +22,11 @@ public enum ErrorCodes implements ErrorCodeAware {
     IMPORT_REQUEST_NOT_FOUND,
 
     /**
+     * Colleague not found
+     */
+    COLLEAGUE_NOT_FOUND,
+
+    /**
      * Duplicate key exception
      */
     DATA_INTEGRITY_VIOLATION_EXCEPTION;
