@@ -109,12 +109,12 @@
         </createTable>
         <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="pm_timeline_point"
                                  constraintName="pm_timeline_point_status_id_fk" deferrable="false"
-                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="pm_status"
                                  validate="true"/>
         <addForeignKeyConstraint baseColumnNames="colleague_cycle_uuid" baseTableName="pm_timeline_point"
                                  constraintName="pm_timeline_point_colleague_cycle_uuid_fk" deferrable="false"
-                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="uuid" referencedTableName="pm_colleague_cycle"
                                  validate="true"/>
         <addUniqueConstraint columnNames="colleague_cycle_uuid, code"
@@ -198,17 +198,17 @@
         </createTable>
         <addForeignKeyConstraint baseColumnNames="tl_point_uuid" baseTableName="pm_review"
                                  constraintName="pm_review_tl_point_uuid_fk" deferrable="false"
-                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="uuid" referencedTableName="pm_timeline_point"
                                  validate="true"/>
         <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="pm_review"
                                  constraintName="pm_review_status_id_fk" deferrable="false"
-                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="pm_status"
                                  validate="true"/>
         <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="pm_review"
                                  constraintName="pm_review_type_id_fk" deferrable="false"
-                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="pm_review_type"
                                  validate="true"/>
         <addUniqueConstraint columnNames="tl_point_uuid, type_id, number"
@@ -291,7 +291,7 @@
         </createTable>
         <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="pm_org_objective"
                                  constraintName="pm_org_objective_status_id_fk" deferrable="false"
-                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="pm_status"
                                  validate="true"/>
         <addUniqueConstraint columnNames="version, number"

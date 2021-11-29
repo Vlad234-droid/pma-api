@@ -100,7 +100,7 @@
                                  referencedColumnNames="id" referencedTableName="pm_rt_process_status" validate="true"/>
         <addForeignKeyConstraint baseColumnNames="cycle_uuid" baseTableName="pm_rt_process"
                                  constraintName="pm_rt_process_cycle_uuid_fk" deferrable="false"
-                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="uuid" referencedTableName="pm_cycle"
                                  validate="true"/>
     </changeSet>

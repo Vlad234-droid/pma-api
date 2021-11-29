@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PMCycleDAOTest extends AbstractDAOTest {
 
     private static final UUID COLLEAGUE_UUID = UUID.fromString("d1810821-d1a9-48b5-9745-d0841151911f");
-    private static final UUID CYCLE_UUID = UUID.fromString("5d8a71fe-9cc6-4f3a-9ab6-75f08e6886d4");
+    private static final UUID CYCLE_UUID = UUID.fromString("10000000-0000-0000-0000-000000000000");
     private static final UUID CYCLE_UUID_3 = UUID.fromString("5d8a71fe-9cc6-4f3a-9ab6-75f08e6886d5");
     private static final UUID CYCLE_CREATE_UUID = UUID.fromString("5ff53f32-39c8-4a14-86ba-58b87c8da4e6");
     private static final UUID TEMPLATE_UUID = UUID.fromString("bd36be33-25f4-4db7-90e9-0df0e6e8f04a");
@@ -63,7 +63,7 @@ class PMCycleDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet("pm_colleague_cycle_init.xml")
+    @DataSet({"pm_cycle_init.xml", "pm_colleague_cycle_init.xml"})
     void getByColleague() {
         List<PMCycle> byColleague = dao.getByColleague(COLLEAGUE_UUID, null);
         assertThat(byColleague).isNotEmpty();
@@ -71,7 +71,7 @@ class PMCycleDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet("pm_colleague_cycle_init.xml")
+    @DataSet({"pm_cycle_init.xml", "pm_colleague_cycle_init.xml"})
     void getActiveByColleague() {
         List<PMCycle> byColleague = dao.getByColleague(COLLEAGUE_UUID, DictionaryFilter.includeFilter(Set.of(ACTIVE)));
         assertThat(byColleague).isNotEmpty();
@@ -88,7 +88,7 @@ class PMCycleDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet("pm_colleague_cycle_init.xml")
+    @DataSet({"pm_cycle_init.xml", "pm_colleague_cycle_init.xml"})
     @ExpectedDataSet(value = "pm_update_cycle_status_expected_1.xml", compareOperation = CompareOperation.CONTAINS)
     void changeCycleStatus() {
         dao.updateStatus(CYCLE_UUID, PMCycleStatus.INACTIVE, null);
@@ -96,7 +96,7 @@ class PMCycleDAOTest extends AbstractDAOTest {
 
 
     @Test
-    @DataSet("pm_colleague_cycle_init.xml")
+    @DataSet({"pm_cycle_init.xml", "pm_colleague_cycle_init.xml"})
     void getMetadata() throws Exception {
         var metadata = IOUtils.toString(Objects.requireNonNull(getClass()
                 .getResourceAsStream("/com/tesco/pma/cycle/dao/type_1_metadata.json")), StandardCharsets.UTF_8);
@@ -107,7 +107,7 @@ class PMCycleDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet("pm_cycle_edit_init.xml")
+    @DataSet("pm_cycle_init.xml")
     @ExpectedDataSet(value = "pm_cycle_edit_expected.xml", compareOperation = CompareOperation.CONTAINS)
     void update() {
         var actualCycle = dao.read(CYCLE_UUID);
