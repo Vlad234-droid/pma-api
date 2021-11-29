@@ -1,6 +1,7 @@
 package com.tesco.pma.event.impl;
 
 import java.util.Collection;
+import java.util.Map;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.event.exception.ErrorCodes;
@@ -15,7 +16,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.tesco.pma.event.Event;
 import com.tesco.pma.event.EventSender;
-import com.tesco.pma.event.exception.EventSendingException;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -41,16 +41,17 @@ public class SpringRestEventSender implements EventSender {
                 HttpEntity<Event> requestBody = new HttpEntity<>(event);
                 ResponseEntity<Event> result = restTemplate.postForEntity(url, requestBody, Event.class);
 
-                log.info("Event: {} was send to '{}'", event, eventHandleApiConfig);
-
                 if (result.getStatusCode() != HttpStatus.OK) {
 
-                    throw new EventSendingException(ErrorCodes.EVENT_SENDING_ERROR.getCode(),
-                            messageSourceAccessor.getMessage(ErrorCodes.EVENT_SENDING_ERROR));
+                    log.error(messageSourceAccessor.getMessage(ErrorCodes.EVENT_SENDING_ERROR,
+                            Map.of("event", event, "url", url)));
                 }
 
+                log.info("Event: {} was send to '{}'", event, eventHandleApiConfig);
+
             } catch (Exception e) {
-                log.error("Error while sending event {} to {}", event, url, e);
+                log.error(messageSourceAccessor.getMessage(ErrorCodes.EVENT_SENDING_ERROR,
+                        Map.of("event", event, "url", url)), e);
             }
         }
 

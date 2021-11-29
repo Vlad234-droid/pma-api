@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-public class ColleaguesEventsPropagationHandlerTest {
+public class ColleagueEventsSendHandlerTest {
 
     private static final String EXPRESSION_VALUE = "injectedValue";
     private static final String COMPOUND_KEY = "CompoundKey";
@@ -28,7 +28,7 @@ public class ColleaguesEventsPropagationHandlerTest {
     @Mock
     private EventSender eventSender;
 
-    private ColleaguesEventsPropagationHandler handler;
+    private ColleagueEventsSendHandler handler;
     private ExecutionContext executionContext;
     private PMCycle pmCycle;
     private final List<ColleagueEntity> colleagueEntities = new ArrayList<>();
@@ -38,7 +38,7 @@ public class ColleaguesEventsPropagationHandlerTest {
         MockitoAnnotations.openMocks(this);
         Expression expression = Mockito.mock(Expression.class);
         Mockito.when(expression.getExpressionText()).thenReturn(EXPRESSION_VALUE);
-        handler = new ColleaguesEventsPropagationHandler(configEntryService, eventSender);
+        handler = new ColleagueEventsSendHandler(configEntryService, eventSender);
         handler.setInjectedValue(expression);
         executionContext = Mockito.mock(ExecutionContext.class);
         pmCycle = Mockito.mock(PMCycle.class);

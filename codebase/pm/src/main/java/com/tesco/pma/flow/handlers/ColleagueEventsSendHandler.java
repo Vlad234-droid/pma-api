@@ -1,6 +1,7 @@
 package com.tesco.pma.flow.handlers;
 
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
+import com.tesco.pma.bpm.api.flow.FlowMessages;
 import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.cycle.api.PMCycle;
@@ -12,13 +13,13 @@ import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.Expression;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class ColleaguesEventsPropagationHandler extends CamundaAbstractFlowHandler {
-
-    private static final String COLLEAGUE_UUID_PROP = "colleagueUuid";
+public class ColleagueEventsSendHandler extends CamundaAbstractFlowHandler {
 
     private Expression injectedValue;
 
@@ -37,13 +38,20 @@ public class ColleaguesEventsPropagationHandler extends CamundaAbstractFlowHandl
 
     }
 
-    private Event createEvent(UUID colleagueId) {
-        var event = new EventSupport(injectedValue.getExpressionText());
-        event.putProperty(COLLEAGUE_UUID_PROP, colleagueId);
+    protected Event createEvent(UUID colleagueId) {
+        var event = new EventSupport(getInjectedValue());
+        event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueId);
         return event;
     }
 
     public void setInjectedValue(Expression expression) {
         this.injectedValue = expression;
+    }
+
+    public String getInjectedValue() {
+        Objects.requireNonNull(injectedValue, "injectedValue must be specified");
+        return Optional.ofNullable(injectedValue.getExpressionText())
+                .orElseThrow(() -> new IllegalStateException(FlowMessages.FLOW_ERROR_RUNTIME
+                        .format("Wrong injectedValue: %s", injectedValue.getExpressionText())));
     }
 }

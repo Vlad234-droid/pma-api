@@ -18,5 +18,7 @@ public enum FlowParameters {
     START_DATE,
     BEFORE_START_DATE,
     BEFORE_END_DATE,
-    END_DATE
+    END_DATE,
+
+    COLLEAGUE_UUID
 }
