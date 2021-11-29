@@ -11,6 +11,7 @@ import org.mockito.internal.stubbing.answers.DoesNothing;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.util.concurrent.TimeUnit;
@@ -23,6 +24,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -105,14 +107,14 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
     void processColleagueChangeEventsWithInvalidPayload() throws Exception {
 
         mvc.perform(post(POST_EVENT_PATH)
-                        .with(admin(TEST_CEP_SUBJECT))
+                        .with(jwtWithSubject(TEST_CEP_SUBJECT))
                         .content("{\"payload\":{}}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isAccepted());
 
         mvc.perform(post(POST_EVENT_PATH)
-                        .with(admin(TEST_CEP_SUBJECT))
+                        .with(jwtWithSubject(TEST_CEP_SUBJECT))
                         .content("{}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -135,7 +137,7 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
 
     @Test
     void processColleagueChangeEventForbiddenWithSubjectNotMatch() throws Exception {
-        mvc.perform(post(POST_EVENT_PATH).with(admin("not-cep-subject"))
+        mvc.perform(post(POST_EVENT_PATH).with(jwtWithSubject("not-cep-subject"))
                         .content(json.from(JIT_REQUEST_CEP_JSON).getJson())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -146,12 +148,16 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
 
     private void callEventRequest(String jsonSource, ResultMatcher resultMatcher) throws Exception {
         mvc.perform(post(POST_EVENT_PATH)
-                        .with(admin(TEST_CEP_SUBJECT))
+                        .with(jwtWithSubject(TEST_CEP_SUBJECT))
                         .content(json.from(jsonSource).getJson())
                         .contentType(APPLICATION_JSON)
                         .accept(APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(resultMatcher);
+    }
+
+    private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor jwtWithSubject(String s) {
+        return jwt().jwt(builder -> builder.subject(s));
     }
 
 }
