@@ -55,7 +55,7 @@ public class FeedbackEndpoint {
     @Validated({ValidationGroup.OnCreate.class, Default.class})
     @Operation(summary = "Create a new list of feedbacks with items", tags = {"feedback"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "List of feedbacks created")
-    @PreAuthorize("(isLineManager() or isPeopleTeam()) and isCurrentUser(#feedbacks[0].colleagueUuid)")
+    @PreAuthorize("isColleague() and isCurrentUser(#feedbacks[0].colleagueUuid)")
     public RestResponse<List<Feedback>> createFeedbacks(@Valid @RequestBody List<Feedback> feedbacks) throws URISyntaxException {
         log.debug("REST request to save Feedbacks : {}", feedbacks);
         List<Feedback> result = feedbacks.stream().map(feedbackService::create).collect(Collectors.toList());
@@ -77,7 +77,7 @@ public class FeedbackEndpoint {
     @Operation(summary = "Updates an existing feedback", tags = {"feedback"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Feedback updated")
     @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Invalid UUID")
-    @PreAuthorize("(isLineManager() or isPeopleTeam()) and isCurrentUser(#feedback.colleagueUuid)")
+    @PreAuthorize("isColleague() and isCurrentUser(#feedback.colleagueUuid)")
     public RestResponse<Feedback> updateFeedback(
             @PathVariable(value = "uuid", required = false) final UUID uuid,
             @Valid @RequestBody Feedback feedback
@@ -107,7 +107,7 @@ public class FeedbackEndpoint {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Mark an existing feedback as read", tags = {"feedback"})
     @ApiResponse(responseCode = HttpStatusCodes.NO_CONTENT, description = "Mark as read successfully")
-    @PreAuthorize("isColleague() or isLineManager() or isPeopleTeam()")
+    @PreAuthorize("isColleague()")
     public RestResponse<Void> markAsRead(
             @PathVariable(value = "uuid", required = true) final UUID uuid
     ) throws URISyntaxException {
@@ -124,7 +124,7 @@ public class FeedbackEndpoint {
      */
     @GetMapping("/feedbacks")
     @Operation(summary = "Get all feedbacks with all items", tags = {"feedback"})
-    @PreAuthorize("isColleague() or isLineManager() or isPeopleTeam()")
+    @PreAuthorize("isColleague()")
     public RestResponse<List<Feedback>> getAllFeedbacks(RequestQuery requestQuery) {
         log.debug("REST request to get a feedbacks of Feedbacks");
         return RestResponse.success(feedbackService.findAll(requestQuery));
@@ -138,7 +138,7 @@ public class FeedbackEndpoint {
      */
     @GetMapping("/feedbacks/{uuid}")
     @Operation(summary = "Get feedback by UUID with all items", tags = {"feedback"})
-    @PreAuthorize("isColleague() or isLineManager() or isPeopleTeam()")
+    @PreAuthorize("isColleague()")
     public RestResponse<Feedback> getFeedback(@PathVariable UUID uuid) {
         log.debug("REST request to get Feedback : {}", uuid);
         Feedback feedback = feedbackService.findOne(uuid);
