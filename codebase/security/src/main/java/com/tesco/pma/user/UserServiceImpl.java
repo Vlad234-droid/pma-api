@@ -10,6 +10,7 @@ import com.tesco.pma.colleague.profile.service.util.ColleagueFactsApiLocalMapper
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.configuration.security.AppendGrantedAuthoritiesBearerTokenAuthenticationMerger;
 import com.tesco.pma.exception.ExternalSystemException;
+import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.security.UserRoleNames;
 import com.tesco.pma.service.colleague.client.ColleagueApiClient;
 import lombok.RequiredArgsConstructor;
@@ -144,11 +145,12 @@ public class UserServiceImpl implements UserService {
 
     private Colleague tryFindColleagueByUuid(UUID colleagueUuid) {
         // First attempt - try to find in local storage
-        var oc = profileService.getColleague(colleagueUuid);
-        if (oc != null) {
+        try {
+            var oc = profileService.getColleague(colleagueUuid);
             return colleagueFactsApiLocalMapper.localToColleagueFactsApi(oc, colleagueUuid, false);
+        } catch (NotFoundException ex) {
+            // ignored
         }
-
         // Second attempt - try to find with using external Colleague Facts API
         try {
             return colleagueApiClient.findColleagueByColleagueUuid(colleagueUuid);
