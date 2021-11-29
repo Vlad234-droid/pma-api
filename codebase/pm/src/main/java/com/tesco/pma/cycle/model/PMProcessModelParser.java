@@ -20,6 +20,7 @@ import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperties;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperty;
 
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -169,7 +170,8 @@ public class PMProcessModelParser {
         if (!StringUtils.isBlank(formKey)) {
             try {
                 var formName = getFormName(formKey);
-                var formJson = resourceProvider.resourceToString(formName);
+                var formFullPath = splitFullPath(formName);
+                var formJson = resourceProvider.resourceToString(formFullPath[0], formFullPath[1]);
 
                 pmReview.setForm(new PMFormElement(formKey, formName, formJson));
             } catch (Exception e) {
@@ -177,6 +179,19 @@ public class PMProcessModelParser {
             }
         }
         return pmReview;
+    }
+
+    private String[] splitFullPath(String fullPath) {
+
+        if (!fullPath.contains("/")) {
+            return new String[]{StringUtils.EMPTY, fullPath};
+        }
+
+        var path = Path.of(fullPath);
+
+        return new String[]{
+                path.getParent().toString(),
+                path.getFileName().toString()};
     }
 
     String getFormName(String key) {

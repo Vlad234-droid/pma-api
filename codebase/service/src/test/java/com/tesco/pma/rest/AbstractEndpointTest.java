@@ -291,4 +291,10 @@ public abstract class AbstractEndpointTest {
         }
         return requestPostProcessor;
     }
+
+    protected SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor jwtWithSubject(String s) {
+        return SecurityMockMvcRequestPostProcessors.jwt().jwt(builder -> builder.subject(s));
+    }
+
+
 }
