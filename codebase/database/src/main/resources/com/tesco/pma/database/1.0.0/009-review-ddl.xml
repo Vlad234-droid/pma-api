@@ -5,11 +5,11 @@
 
 
     <changeSet author="ypashynskyi" id="1">
-        <createTable tableName="review_status"
-                     remarks="Dictionary of review's statuses">
+        <createTable tableName="pm_status"
+                     remarks="Dictionary of PM statuses">
             <column name="id" type="integer"
                     remarks="A unique identifier for status">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="review_status_pk"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pm_status_pk"/>
             </column>
             <column name="code" type="VARCHAR(30)"
                     remarks="Shortname of status">
@@ -24,65 +24,110 @@
 
     <changeSet author="ypashynskyi" id="2">
         <comment>Init table review_status</comment>
-        <insert tableName="review_status">
+        <insert tableName="pm_status">
             <column name="id" value="1"/>
             <column name="code" value="DRAFT"/>
-            <column name="description" value="Review is saved as draft"/>
+            <column name="description" value="Saved as draft"/>
         </insert>
-        <insert tableName="review_status">
+        <insert tableName="pm_status">
             <column name="id" value="2"/>
             <column name="code" value="WAITING_FOR_APPROVAL"/>
             <column name="description"
-                    value="Review was submitted but not yet approved"/>
+                    value="Submitted but not yet approved"/>
         </insert>
-        <insert tableName="review_status">
+        <insert tableName="pm_status">
             <column name="id" value="3"/>
             <column name="code" value="APPROVED"/>
-            <column name="description" value="Review was approved"/>
+            <column name="description" value="Approved"/>
         </insert>
-        <insert tableName="review_status">
+        <insert tableName="pm_status">
             <column name="id" value="4"/>
             <column name="code" value="DECLINED"/>
-            <column name="description" value="Review was declined"/>
+            <column name="description" value="Declined"/>
         </insert>
-        <insert tableName="review_status">
+        <insert tableName="pm_status">
             <column name="id" value="5"/>
             <column name="code" value="COMPLETED"/>
-            <column name="description" value="Review is completed"/>
+            <column name="description" value="Completed"/>
         </insert>
-        <insert tableName="review_status">
+        <insert tableName="pm_status">
             <column name="id" value="6"/>
             <column name="code" value="OVERDUE"/>
-            <column name="description" value="Review was overdue"/>
+            <column name="description" value="Overdue"/>
         </insert>
         <rollback>
-            <delete tableName="review_status">
+            <delete tableName="pm_status">
                 <where>code = 'DRAFT'</where>
             </delete>
-            <delete tableName="review_status">
+            <delete tableName="pm_status">
                 <where>code = 'WAITING_FOR_APPROVAL'</where>
             </delete>
-            <delete tableName="review_status">
+            <delete tableName="pm_status">
                 <where>code = 'APPROVED'</where>
             </delete>
-            <delete tableName="review_status">
+            <delete tableName="pm_status">
                 <where>code = 'RETURNED'</where>
             </delete>
-            <delete tableName="review_status">
+            <delete tableName="pm_status">
                 <where>code = 'COMPLETED'</where>
             </delete>
-            <delete tableName="review_status">
+            <delete tableName="pm_status">
                 <where>code = 'OVERDUE'</where>
             </delete>
         </rollback>
     </changeSet>
 
     <changeSet author="ypashynskyi" id="3">
-        <createTable tableName="review_type"
+        <createTable tableName="pm_timeline_point"
+                     remarks="Table of PM timeline points">
+            <column name="uuid" type="${uuid_type}"
+                    remarks="A unique identifier of timeline point">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pm_timeline_point_pk"/>
+            </column>
+            <column name="colleague_cycle_uuid" type="${uuid_type}"
+                    remarks="A unique identifier for colleague performance cycle">
+                <constraints nullable="false"/>
+            </column>
+            <column name="code" type="varchar"
+                    remarks="Code of timeline point">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_time" type="TIMESTAMPTZ"
+                    remarks="Start time of timeline point">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_time" type="TIMESTAMPTZ"
+                    remarks="End time of timeline point">
+                <constraints nullable="false"/>
+            </column>
+            <column name="properties" type="jsonb"
+                    remarks="Properties of review"/>
+            <column name="status_id" type="integer"
+                    remarks="Status of timeline point">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="pm_timeline_point"
+                                 constraintName="pm_timeline_point_status_id_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="pm_status"
+                                 validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="colleague_cycle_uuid" baseTableName="pm_timeline_point"
+                                 constraintName="pm_timeline_point_colleague_cycle_uuid_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="uuid" referencedTableName="pm_colleague_cycle"
+                                 validate="true"/>
+        <addUniqueConstraint columnNames="colleague_cycle_uuid, code"
+                             constraintName="pm_timeline_point_unique"
+                             tableName="pm_timeline_point"/>
+    </changeSet>
+
+    <changeSet author="ypashynskyi" id="4">
+        <createTable tableName="pm_review_type"
                      remarks="Dictionary of review's types">
             <column name="id" type="integer"
                     remarks="A unique identifier for type">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="review_type_pk"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pm_review_type_pk"/>
             </column>
             <column name="code" type="VARCHAR(30)"
                     remarks="Shortname of type">
@@ -95,49 +140,45 @@
         </createTable>
     </changeSet>
 
-    <changeSet author="ypashynskyi" id="4">
-        <comment>Init table review_type</comment>
-        <insert tableName="review_type">
+    <changeSet author="ypashynskyi" id="5">
+        <comment>Init table pm_review_type</comment>
+        <insert tableName="pm_review_type">
             <column name="id" value="1"/>
             <column name="code" value="OBJECTIVE"/>
             <column name="description" value="Objective review"/>
         </insert>
-        <insert tableName="review_type">
+        <insert tableName="pm_review_type">
             <column name="id" value="2"/>
             <column name="code" value="MYR"/>
             <column name="description" value="Mid year review"/>
         </insert>
-        <insert tableName="review_type">
+        <insert tableName="pm_review_type">
             <column name="id" value="3"/>
             <column name="code" value="EYR"/>
             <column name="description" value="End of year review"/>
         </insert>
         <rollback>
-            <delete tableName="review_type">
+            <delete tableName="pm_review_type">
                 <where>code = 'OBJECTIVE'</where>
             </delete>
-            <delete tableName="review_type">
+            <delete tableName="pm_review_type">
                 <where>code = 'MYR'</where>
             </delete>
-            <delete tableName="review_type">
+            <delete tableName="pm_review_type">
                 <where>code = 'EYR'</where>
             </delete>
         </rollback>
     </changeSet>
 
-    <changeSet author="ypashynskyi" id="5">
-        <createTable tableName="review"
+    <changeSet author="ypashynskyi" id="6">
+        <createTable tableName="pm_review"
                      remarks="Table of PMA reviews">
             <column name="uuid" type="${uuid_type}"
                     remarks="A unique identifier for review">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="review_pk"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pm_review_pk"/>
             </column>
-            <column name="performance_cycle_uuid" type="${uuid_type}"
-                    remarks="A unique identifier for performance cycle">
-                <constraints nullable="false"/>
-            </column>
-            <column name="colleague_uuid" type="${uuid_type}"
-                    remarks="A unique identifier for every colleague. It is the user id present in Identity.">
+            <column name="tl_point_uuid" type="${uuid_type}"
+                    remarks="A unique identifier of timeline point">
                 <constraints nullable="false"/>
             </column>
             <column name="type_id" type="integer"
@@ -155,33 +196,33 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="review"
-                                 constraintName="review_status_id_fk" deferrable="false"
+        <addForeignKeyConstraint baseColumnNames="tl_point_uuid" baseTableName="pm_review"
+                                 constraintName="pm_review_tl_point_uuid_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
-                                 referencedColumnNames="id" referencedTableName="review_status"
+                                 referencedColumnNames="uuid" referencedTableName="pm_timeline_point"
                                  validate="true"/>
-        <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="review"
-                                 constraintName="review_type_id_fk" deferrable="false"
+        <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="pm_review"
+                                 constraintName="pm_review_status_id_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
-                                 referencedColumnNames="id" referencedTableName="review_type"
+                                 referencedColumnNames="id" referencedTableName="pm_status"
                                  validate="true"/>
-        <addForeignKeyConstraint baseColumnNames="performance_cycle_uuid" baseTableName="review"
-                                 constraintName="performance_cycle_uuid_fk" deferrable="false"
+        <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="pm_review"
+                                 constraintName="pm_review_type_id_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
-                                 referencedColumnNames="uuid" referencedTableName="pm_cycle"
+                                 referencedColumnNames="id" referencedTableName="pm_review_type"
                                  validate="true"/>
-        <addUniqueConstraint columnNames="performance_cycle_uuid, colleague_uuid, type_id, number"
-                             constraintName="review_unique"
-                             tableName="review"/>
+        <addUniqueConstraint columnNames="tl_point_uuid, type_id, number"
+                             constraintName="pm_review_unique"
+                             tableName="pm_review"/>
     </changeSet>
 
 
-    <changeSet author="ypashynskyi" id="6">
-        <createTable tableName="org_objective_status"
+    <changeSet author="ypashynskyi" id="7">
+        <createTable tableName="pm_org_objective_status"
                      remarks="Dictionary of organisation objective statuses">
             <column name="id" type="integer"
                     remarks="A unique identifier for status">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="org_objective_status_pk"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pm_org_objective_status_pk"/>
             </column>
             <column name="code" type="VARCHAR(30)"
                     remarks="Shortname of status">
@@ -194,53 +235,53 @@
         </createTable>
     </changeSet>
 
-    <changeSet author="ypashynskyi" id="7">
+    <changeSet author="ypashynskyi" id="8">
         <comment>Init table org_objective_status</comment>
-        <insert tableName="org_objective_status">
+        <insert tableName="pm_org_objective_status">
             <column name="id" value="1"/>
             <column name="code" value="DRAFT"/>
             <column name="description" value="Organisation objective is saved as draft"/>
         </insert>
-        <insert tableName="org_objective_status">
+        <insert tableName="pm_org_objective_status">
             <column name="id" value="2"/>
             <column name="code" value="PUBLISHED"/>
             <column name="description" value="Organisation objective was published"/>
         </insert>
-        <insert tableName="org_objective_status">
+        <insert tableName="pm_org_objective_status">
             <column name="id" value="3"/>
             <column name="code" value="UNPUBLISHED"/>
             <column name="description" value="Organisation objective was unpublished"/>
         </insert>
         <rollback>
-            <delete tableName="review_status">
+            <delete tableName="pm_review_status">
                 <where>code = 'DRAFT'</where>
             </delete>
-            <delete tableName="review_status">
+            <delete tableName="pm_review_status">
                 <where>code = 'PUBLISHED'</where>
             </delete>
-            <delete tableName="review_status">
+            <delete tableName="pm_review_status">
                 <where>code = 'UNPUBLISHED'</where>
             </delete>
         </rollback>
     </changeSet>
 
-    <changeSet author="ypashynskyi" id="8">
-        <createTable tableName="org_objective"
+    <changeSet author="ypashynskyi" id="9">
+        <createTable tableName="pm_org_objective"
                      remarks="Table of organization objectives">
             <column name="uuid" type="${uuid_type}"
                     remarks="A unique identifier for org objective">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="org_objective_pk"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pm_org_objective_pk"/>
             </column>
             <column name="number" type="integer"
                     remarks="A sequence number for business unit's objective">
                 <constraints nullable="false"/>
             </column>
             <column name="status_id" type="integer"
-                    remarks="Status of review">
+                    remarks="Status of organisation objective">
                 <constraints nullable="false"/>
             </column>
             <column name="version" type="integer"
-                    remarks="Version of business unit's objective">
+                    remarks="Version of organisation objective">
                 <constraints nullable="false"/>
             </column>
             <column name="title" type="varchar(50)"
@@ -248,45 +289,21 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="org_objective"
-                                 constraintName="org_objective_status_id_fk" deferrable="false"
+        <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="pm_org_objective"
+                                 constraintName="pm_org_objective_status_id_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
-                                 referencedColumnNames="id" referencedTableName="review_status"
+                                 referencedColumnNames="id" referencedTableName="pm_status"
                                  validate="true"/>
         <addUniqueConstraint columnNames="version, number"
-                             constraintName="org_objective_unique"
-                             tableName="org_objective"/>
-    </changeSet>
-
-    <changeSet author="ypashynskyi" id="9">
-        <createTable tableName="review_link"
-                     remarks="Table for links from review to org objective">
-            <column name="review_uuid" type="${uuid_type}"
-                    remarks="A unique identifier for review">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="review_link_pk"/>
-            </column>
-            <column name="org_objective_uuid" type="${uuid_type}"
-                    remarks="A unique identifier for organisation objective">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <addForeignKeyConstraint baseColumnNames="review_uuid" baseTableName="review_link"
-                                 constraintName="review_link_review_uuid_fk" deferrable="false"
-                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
-                                 referencedColumnNames="uuid" referencedTableName="review"
-                                 validate="true"/>
-        <addForeignKeyConstraint baseColumnNames="org_objective_uuid" baseTableName="review_link"
-                                 constraintName="review_link_org_objective_uuid_fk" deferrable="false"
-                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
-                                 referencedColumnNames="uuid" referencedTableName="org_objective"
-                                 validate="true"/>
+                             constraintName="pm_org_objective_unique"
+                             tableName="pm_org_objective"/>
     </changeSet>
 
     <changeSet author="ypashynskyi" id="10">
         <createTable remarks="History of changing review's statuses"
-                     tableName="review_change_status_hi">
+                     tableName="pm_review_change_status_hi">
             <column name="review_uuid" type="${uuid_type}">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="review_change_status_hi_pk"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pm_review_change_status_hi_pk"/>
             </column>
             <column name="old_status_id" type="INTEGER">
                 <constraints nullable="false"/>
@@ -300,17 +317,27 @@
                 <constraints nullable="false"/>
             </column>
             <column name="updated_time" type="TIMESTAMPTZ">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="review_change_status_hi_pk"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pm_review_change_status_hi_pk"/>
             </column>
         </createTable>
+        <addForeignKeyConstraint baseColumnNames="old_status_id" baseTableName="pm_review_change_status_hi"
+                                 constraintName="pm_review_change_status_hi_old_status_id_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="pm_status"
+                                 validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="new_status_id" baseTableName="pm_review_change_status_hi"
+                                 constraintName="pm_review_change_status_hi_new_status_id_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="pm_status"
+                                 validate="true"/>
     </changeSet>
 
     <changeSet author="ypashynskyi" id="11">
-        <createTable tableName="action_type"
+        <createTable tableName="pm_action_type"
                      remarks="Dictionary of actions">
             <column name="id" type="integer"
                     remarks="A unique identifier for action">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="action_type_pk"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pm_action_type_pk"/>
             </column>
             <column name="code" type="VARCHAR(30)"
                     remarks="Shortname of action">
@@ -325,52 +352,52 @@
 
     <changeSet author="ypashynskyi" id="12">
         <comment>Init table org_objective_status</comment>
-        <insert tableName="action_type">
+        <insert tableName="pm_action_type">
             <column name="id" value="1"/>
             <column name="code" value="SAVE_AS_DRAFT"/>
             <column name="description" value="Save as draft"/>
         </insert>
-        <insert tableName="action_type">
+        <insert tableName="pm_action_type">
             <column name="id" value="2"/>
             <column name="code" value="PUBLISH"/>
             <column name="description" value="Publish"/>
         </insert>
-        <insert tableName="action_type">
+        <insert tableName="pm_action_type">
             <column name="id" value="3"/>
             <column name="code" value="UNPUBLISH"/>
             <column name="description" value="Un-publish"/>
         </insert>
         <rollback>
-            <delete tableName="action_type">
+            <delete tableName="pm_action_type">
                 <where>code = 'SAVE_AS_DRAFT'</where>
             </delete>
-            <delete tableName="action_type">
+            <delete tableName="pm_action_type">
                 <where>code = 'PUBLISH'</where>
             </delete>
-            <delete tableName="action_type">
+            <delete tableName="pm_action_type">
                 <where>code = 'UNPUBLISH'</where>
             </delete>
         </rollback>
     </changeSet>
 
     <changeSet author="ypashynskyi" id="13">
-        <createTable tableName="org_objective_action_hi"
+        <createTable tableName="pm_org_objective_action_hi"
                      remarks="Table of organization objectives actions history">
             <column name="action_id" type="integer"
                     remarks="Action">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="org_objective_action_hi_pk"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pm_org_objective_action_hi_pk"/>
             </column>
             <column name="updated_by" type="${uuid_type}"
                     remarks="Identifier of user who made changes"/>
             <column name="updated_time" type="TIMESTAMPTZ"
                     remarks="Timestamp with zone when changes were applied">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="org_objective_action_hi_pk"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pm_org_objective_action_hi_pk"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="action_id" baseTableName="org_objective_action_hi"
-                                 constraintName="org_objective_action_hi_action_id_fk" deferrable="false"
+        <addForeignKeyConstraint baseColumnNames="action_id" baseTableName="pm_org_objective_action_hi"
+                                 constraintName="pm_org_objective_action_hi_action_id_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
-                                 referencedColumnNames="id" referencedTableName="action_type"
+                                 referencedColumnNames="id" referencedTableName="pm_action_type"
                                  validate="true"/>
     </changeSet>
 

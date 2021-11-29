@@ -33,8 +33,16 @@
                                  constraintName="colleague_cycle_status_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="pm_cycle_status" validate="true"/>
-
-        <!-- todo        add foreignKey constraints  -->
+        <addForeignKeyConstraint baseColumnNames="cycle_uuid" baseTableName="pm_colleague_cycle"
+                                 constraintName="pm_colleague_cycle_cycle_uuid_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="uuid" referencedTableName="pm_cycle"
+                                 validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="colleague_uuid" baseTableName="pm_colleague_cycle"
+                                 constraintName="pm_colleague_cycle_colleague_uuid_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="uuid" referencedTableName="colleague"
+                                 validate="true"/>
     </changeSet>
 
 </databaseChangeLog>
