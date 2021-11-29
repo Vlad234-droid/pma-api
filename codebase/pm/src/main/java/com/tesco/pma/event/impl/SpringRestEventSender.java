@@ -19,7 +19,7 @@ import com.tesco.pma.event.exception.EventSendingException;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Send event to URL - target, method /event/handle
+ * Send event to URL
  */
 @Slf4j
 @Component
@@ -27,28 +27,30 @@ import lombok.extern.slf4j.Slf4j;
 public class SpringRestEventSender implements EventSender {
 
     @Value("${tesco.application.external-endpoints.events-api.base-url}")
-    private String eventHandleApi;
+    private String eventHandleApiConfig;
 
     private final RestTemplate restTemplate;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Override
-    public void sendEvents(@NonNull Collection<Event> events) {
+    public void sendEvents(@NonNull Collection<Event> events, String target) {
+        var url = target == null ? eventHandleApiConfig : target;
+
         for (Event event : events) {
             try {
                 HttpEntity<Event> requestBody = new HttpEntity<>(event);
-                ResponseEntity<Event> result = restTemplate.postForEntity(eventHandleApi, requestBody, Event.class);
+                ResponseEntity<Event> result = restTemplate.postForEntity(url, requestBody, Event.class);
 
-                log.info("Event: {} was send to '{}'", event, eventHandleApi);
+                log.info("Event: {} was send to '{}'", event, eventHandleApiConfig);
 
                 if (result.getStatusCode() != HttpStatus.OK) {
 
                     throw new EventSendingException(ErrorCodes.EVENT_SENDING_ERROR.getCode(),
-                            messageSourceAccessor.getMessage(eventHandleApi));
+                            messageSourceAccessor.getMessage(ErrorCodes.EVENT_SENDING_ERROR));
                 }
 
             } catch (Exception e) {
-                log.error("Error while sending event {} to {}", event, eventHandleApi, e);
+                log.error("Error while sending event {} to {}", event, url, e);
             }
         }
 

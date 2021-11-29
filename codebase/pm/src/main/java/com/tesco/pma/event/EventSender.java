@@ -10,17 +10,37 @@ public interface EventSender {
     /**
      * Send events to target destination
      * @param events events
+     * @param target destination url
      * @throws EventSendingException runtime exception
      */
-    void sendEvents(Collection<Event> events);
+    void sendEvents(Collection<Event> events, String target);
+
+    /**
+     * Send events to default target destination
+     * @param events events
+     * @throws EventSendingException runtime exception
+     */
+    default void sendEvents(Collection<Event> events) {
+        sendEvents(events, null);
+    }
 
     /**
      * Send event to target destination
      * @param event an event
+     * @param target destination url
+     * @throws EventSendingException runtime exception
+     */
+    default void send(Event event, String target) {
+        sendEvents(Collections.singletonList(event), target);
+    }
+
+    /**
+     * Send event to default target destination
+     * @param event an event
      * @throws EventSendingException runtime exception
      */
     default void send(Event event) {
-        sendEvents(Collections.singletonList(event));
+        sendEvents(Collections.singletonList(event), null);
     }
 
     /**
