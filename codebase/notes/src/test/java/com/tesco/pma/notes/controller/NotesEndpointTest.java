@@ -22,9 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = NotesEndpoint.class, properties = {
-        "tesco.application.security.enabled=false",
-})
+@WebMvcTest(controllers = NotesEndpoint.class)
 public class NotesEndpointTest extends AbstractEndpointTest {
 
     private final UUID colleagueUuid = UUID.randomUUID();
@@ -42,11 +40,13 @@ public class NotesEndpointTest extends AbstractEndpointTest {
     @Test
     void create() throws Exception {
 
-        var note = createNote(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
+        var ownerId = UUID.randomUUID();
+        var note = createNote(UUID.randomUUID(), UUID.randomUUID(), ownerId);
 
         when(notesService.createNote(note)).thenReturn(note);
 
         mvc.perform(post("/notes")
+                        .with(lineManager(ownerId.toString()))
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(note)))
@@ -59,11 +59,13 @@ public class NotesEndpointTest extends AbstractEndpointTest {
     @Test
     void update() throws Exception {
 
-        var note = createNote(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
+        var ownerId = UUID.randomUUID();
+        var note = createNote(UUID.randomUUID(), UUID.randomUUID(), ownerId);
 
         when(notesService.updateNote(note)).thenReturn(note);
 
         mvc.perform(put("/notes/{id}", note.getId())
+                        .with(lineManager(ownerId.toString()))
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(note)))
@@ -76,11 +78,13 @@ public class NotesEndpointTest extends AbstractEndpointTest {
     @Test
     void updateNotFound() throws Exception {
 
-        var note = createNote(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
+        var ownerId = UUID.randomUUID();
+        var note = createNote(UUID.randomUUID(), UUID.randomUUID(), ownerId);
 
         when(notesService.updateNote(note)).thenThrow(new NotFoundException(HttpStatusCodes.NOT_FOUND, "Not found"));
 
         mvc.perform(put("/notes/{id}", note.getId())
+                        .with(lineManager(ownerId.toString()))
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(note)))
@@ -96,6 +100,7 @@ public class NotesEndpointTest extends AbstractEndpointTest {
                 .thenReturn(new ArrayList<>());
 
         mvc.perform(get("/notes?ownerId={colleagueUuid}", colleagueUuid)
+                        .with(colleague())
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON));

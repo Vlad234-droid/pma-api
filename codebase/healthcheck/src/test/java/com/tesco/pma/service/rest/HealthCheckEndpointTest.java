@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 
 import java.time.Instant;
 import java.util.List;
@@ -88,7 +89,7 @@ class HealthCheckEndpointTest extends AbstractEndpointTest {
 
     @Test
     void cannotGetStatusIfUnauthorized() throws Exception {
-        performGetWith(anonymous(), status().isUnauthorized(), STATUS_TEMPLATE);
+        performGetWith(anonymous(), status().isUnauthorized(), MediaType.APPLICATION_JSON, STATUS_TEMPLATE);
 
         verifyNoInteractions(overallHealthIndicator);
     }
@@ -103,7 +104,7 @@ class HealthCheckEndpointTest extends AbstractEndpointTest {
         when(readinessHealthIndicator.health()).thenReturn(health);
         when(livenessHealthIndicator.health()).thenReturn(health);
 
-        var result = performGetWith(anonymous(), status().isOk(), urlTemplate);
+        var result = performGetWith(anonymous(), status().isOk(), MediaType.APPLICATION_JSON, urlTemplate);
 
         assertResponseContent(result.getResponse(), expectedFileNameWithResponse);
     }
@@ -128,7 +129,7 @@ class HealthCheckEndpointTest extends AbstractEndpointTest {
 
     @Test
     void cannotGetOverallHealthCheckIfUnauthorized() throws Exception {
-        performGetWith(anonymous(), status().isUnauthorized(), HEALTH_CHECK_TEMPLATE);
+        performGetWith(anonymous(), status().isUnauthorized(), MediaType.APPLICATION_JSON, HEALTH_CHECK_TEMPLATE);
 
         verifyNoInteractions(overallHealthIndicator);
     }

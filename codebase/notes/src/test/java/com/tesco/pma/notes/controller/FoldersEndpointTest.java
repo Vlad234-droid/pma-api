@@ -19,9 +19,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = FoldersEndpoint.class, properties = {
-        "tesco.application.security.enabled=false",
-})
+@WebMvcTest(controllers = FoldersEndpoint.class)
 public class FoldersEndpointTest extends AbstractEndpointTest {
 
     private final UUID colleagueUuid = UUID.randomUUID();
@@ -39,11 +37,13 @@ public class FoldersEndpointTest extends AbstractEndpointTest {
     @Test
     void create() throws Exception {
 
-        var folder = createFolder(UUID.randomUUID(), UUID.randomUUID());
+        var ownerId = UUID.randomUUID();
+        var folder = createFolder(UUID.randomUUID(), ownerId);
 
         when(notesService.createFolder(folder)).thenReturn(folder);
 
         mvc.perform(post("/notes/folders")
+                        .with(lineManager(ownerId.toString()))
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(folder)))
@@ -56,11 +56,13 @@ public class FoldersEndpointTest extends AbstractEndpointTest {
     @Test
     void update() throws Exception {
 
-        var folder = createFolder(UUID.randomUUID(), UUID.randomUUID());
+        var ownerId = UUID.randomUUID();
+        var folder = createFolder(UUID.randomUUID(), ownerId);
 
         when(notesService.updateFolder(folder)).thenReturn(folder);
 
         mvc.perform(put("/notes/folders/{id}", folder.getId())
+                        .with(lineManager(ownerId.toString()))
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(folder)))
@@ -73,11 +75,13 @@ public class FoldersEndpointTest extends AbstractEndpointTest {
     @Test
     void updateNotFound() throws Exception {
 
-        var folder = createFolder(UUID.randomUUID(), UUID.randomUUID());
+        var ownerId = UUID.randomUUID();
+        var folder = createFolder(UUID.randomUUID(), ownerId);
 
         when(notesService.updateFolder(folder)).thenThrow(new NotFoundException(HttpStatusCodes.NOT_FOUND, "Not found"));
 
         mvc.perform(put("/notes/folders/{id}", folder.getId())
+                        .with(lineManager(ownerId.toString()))
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(folder)))
@@ -92,7 +96,7 @@ public class FoldersEndpointTest extends AbstractEndpointTest {
         when(notesService.findFolderByOwner(colleagueUuid))
                 .thenReturn(new ArrayList<>());
 
-        mvc.perform(get("/notes/folders?ownerId={colleagueUuid}", colleagueUuid)
+        mvc.perform(get("/notes/folders?ownerId={colleagueUuid}", colleagueUuid).with(colleague())
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON));

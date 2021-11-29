@@ -91,11 +91,12 @@ public abstract class AbstractEndpointTest {
                 .andReturn();
     }
 
-    protected MvcResult performMultipartWith(RequestPostProcessor postProcessor, MockMultipartFile fileToUpload,
+    protected MvcResult performMultipartWith(RequestPostProcessor postProcessor,
+                                             MockMultipartFile uploadMetadata, MockMultipartFile fileToUpload,
                                              ResultMatcher status,
                                              String urlTemplate, Object... uriVars) throws Exception {
         return mvc.perform(multipart(urlTemplate, uriVars)
-                .file(fileToUpload).with(postProcessor))
+                .file(fileToUpload).file(uploadMetadata).with(postProcessor))
                 .andExpect(status)
                 .andReturn();
     }
@@ -124,11 +125,12 @@ public abstract class AbstractEndpointTest {
                 .andReturn();
     }
 
-    protected MvcResult performGetWith(RequestPostProcessor postProcessor, ResultMatcher status,
+    protected MvcResult performGetWith(RequestPostProcessor postProcessor, ResultMatcher status, MediaType contentType,
                                        String urlTemplate, Object... uriVars) throws Exception {
         return mvc.perform(get(urlTemplate, uriVars).with(postProcessor))
                 .andDo(print())
                 .andExpect(status)
+                .andExpect(content().contentTypeCompatibleWith(contentType))
                 .andReturn();
     }
 
