@@ -71,6 +71,8 @@ class ReviewDAOTest extends AbstractDAOTest {
                     EXCEEDS_PROPERTY_NAME, EXCEEDS_UPDATE
             ));
 
+    private static final UUID COLLEAGUE_UUID_2 = UUID.fromString("10000000-0000-0000-0000-000000000002");
+
     @Autowired
     private ReviewDAO instance;
 
@@ -371,5 +373,21 @@ class ReviewDAOTest extends AbstractDAOTest {
 
         assertThat(result.get(3))
                 .isEqualTo(q3);
+    }
+
+    @Test
+    @DataSet({"pm_cycle_init.xml", "objective_sharing_init.xml"})
+    void getColleagueSharedObjectives() {
+        var reviews = instance.getReviewsByParams(COLLEAGUE_UUID_2, PERFORMANCE_CYCLE_UUID, OBJECTIVE, APPROVED);
+
+        assertThat(reviews)
+                .singleElement()
+                .asInstanceOf(type(Review.class))
+                .returns(COLLEAGUE_UUID_2, from(Review::getColleagueUuid))
+                .returns(PERFORMANCE_CYCLE_UUID, from(Review::getPerformanceCycleUuid))
+                .returns(OBJECTIVE, from(Review::getType))
+                .returns(NUMBER_1, from(Review::getNumber))
+                .returns(REVIEW_PROPERTIES_INIT, from(Review::getProperties))
+                .returns(APPROVED, from(Review::getStatus));
     }
 }
