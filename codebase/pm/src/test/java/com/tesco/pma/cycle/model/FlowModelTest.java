@@ -1,8 +1,8 @@
 package com.tesco.pma.cycle.model;
 
-import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.LocalTestConfig;
+import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.cycle.api.model.PMFormElement;
 import com.tesco.pma.cycle.api.model.PMReviewElement;
@@ -20,7 +20,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class FlowModelTest {
     private static final String PROCESS_NAME = "GROUPS_HO_S_WL1";
     private static final String PROCESS_NAME_2 = "GROUP_HO_S_WL1";
-    private static final String RESOURCES_PATH = "com/tesco/pma/flow/";
+    private static final String RESOURCES_PATH = "/com/tesco/pma/flow/";
     private static final String FORM_1 = "forms/pm_o_1.form";
     private static final String FORM_2 = "pm_o_2.form";
     private static final String FILE_NAME_PM_V1 = "pm_v1.bpmn";
@@ -66,7 +65,7 @@ class FlowModelTest {
 
         @Override
         public String resourceToString(String resourcePath, String resourceName) throws IOException {
-            return this.resourceProvider.resourceToString(Path.of(RESOURCES_PATH, resourcePath).toString(), resourceName);
+            return this.resourceProvider.resourceToString(FilenameUtils.concat(RESOURCES_PATH, resourcePath), resourceName);
         }
     }
 
