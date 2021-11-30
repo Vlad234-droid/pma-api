@@ -1,8 +1,7 @@
 <dataset>
-    <review
+    <pm_review
             uuid="ddb9ab0b-f50f-4442-8900-b03777ee0012"
-            colleague_uuid="ccb9ab0b-f50f-4442-8900-b03777ee00ec"
-            performance_cycle_uuid="0c5d9cb1-22cf-4fcd-a19a-9e70df6bc941"
+            tl_point_uuid="10000000-0000-0000-1000-000000000000"
             type_id="1"
             number="1"
             properties="{&quot;title&quot;: &quot;Title init&quot;,
@@ -11,10 +10,9 @@
                          &quot;exceeds&quot;: &quot;Exceeds init&quot;}"
             status_id="4"
     />
-    <review
+    <pm_review
             uuid="ddb9ab0b-f50f-4442-8900-b03777ee0025"
-            colleague_uuid="ccb9ab0b-f50f-4442-8900-b03777ee00ec"
-            performance_cycle_uuid="0c5d9cb1-22cf-4fcd-a19a-9e70df6bc941"
+            tl_point_uuid="10000000-0000-0000-2000-000000000000"
             type_id="2"
             number="1"
             properties="{&quot;title&quot;: &quot;Title init&quot;,

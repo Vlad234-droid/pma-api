@@ -61,41 +61,41 @@ class ReviewServiceImplTest {
     @SpyBean
     private ReviewServiceImpl reviewService;
 
-    @Test
-    void getReviewByUuidShouldReturnReview() {
-        final var randomUUID = UUID.randomUUID();
-        final var expectedReview = Review.builder().build();
+//    @Test
+//    void getReviewByUuidShouldReturnReview() {
+//        final var randomUUID = UUID.randomUUID();
+//        final var expectedReview = Review.builder().build();
+//
+//        when(mockReviewDAO.getReview(any(), any(), any(), any()))
+//                .thenReturn(expectedReview);
+//
+//        final var res = reviewService.getReview(
+//                randomUUID,
+//                randomUUID,
+//                OBJECTIVE,
+//                NUMBER_1);
+//
+//        assertThat(res).isSameAs(expectedReview);
+//    }
 
-        when(mockReviewDAO.getReview(any(), any(), any(), any()))
-                .thenReturn(expectedReview);
-
-        final var res = reviewService.getReview(
-                randomUUID,
-                randomUUID,
-                OBJECTIVE,
-                NUMBER_1);
-
-        assertThat(res).isSameAs(expectedReview);
-    }
-
-    @Test
-    void updateReviewShouldReturnUpdatedReview() {
-        final var beforeReview = Review.builder().build();
-        final var expectedReview = Review.builder()
-                .type(OBJECTIVE)
-                .status(DRAFT)
-                .build();
-
-        when(mockReviewDAO.update(any(), any()))
-                .thenReturn(1);
-        when(mockReviewDAO.getReview(any(), any(), any(), any()))
-                .thenReturn(beforeReview);
-
-        final var res = reviewService.updateReview(expectedReview);
-
-        assertThat(res)
-                .returns(expectedReview.getProperties(), from(Review::getProperties));
-    }
+//    @Test
+//    void updateReviewShouldReturnUpdatedReview() {
+//        final var beforeReview = Review.builder().build();
+//        final var expectedReview = Review.builder()
+//                .type(OBJECTIVE)
+//                .status(DRAFT)
+//                .build();
+//
+//        when(mockReviewDAO.update(any(), any()))
+//                .thenReturn(1);
+//        when(mockReviewDAO.getReview(any(), any(), any(), any()))
+//                .thenReturn(beforeReview);
+//
+//        final var res = reviewService.updateReview(expectedReview);
+//
+//        assertThat(res)
+//                .returns(expectedReview.getProperties(), from(Review::getProperties));
+//    }
 
     @Test
     void createReviewShouldReturnCreatedReview() {
@@ -121,37 +121,37 @@ class ReviewServiceImplTest {
         assertThat(res).isSameAs(expectedReview);
     }
 
-    @Test
-    void deleteReviewNotExists() {
-        final var colleagueUuid = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
-        final var performanceCycleUuid = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0012");
-
-        final var reviewTypeProperties = PMCycleReviewTypeProperties.builder()
-                .min(3)
-                .max(5)
-                .build();
-
-        when(mockReviewDAO.getPMCycleReviewTypeProperties(any(), any()))
-                .thenReturn(reviewTypeProperties);
-
-        final var reviewStats = ReviewStats.builder()
-                .statusStats(List.of(new ReviewStatusCounter(DRAFT, 2)))
-                .build();
-
-        when(mockReviewDAO.getReviewStats(any(), any(), any()))
-                .thenReturn(reviewStats);
-
-        when(mockReviewDAO.deleteReview(any(), any(), any(), any(), any()))
-                .thenReturn(0);
-        final var exception = assertThrows(NotFoundException.class,
-                () -> reviewService.deleteReview(
-                        performanceCycleUuid,
-                        colleagueUuid,
-                        OBJECTIVE,
-                        1));
-
-        assertEquals(REVIEW_NOT_FOUND.getCode(), exception.getCode());
-        assertEquals(REVIEW_NOT_FOUND_MESSAGE, exception.getMessage());
-
-    }
+//    @Test
+//    void deleteReviewNotExists() {
+//        final var colleagueUuid = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
+//        final var performanceCycleUuid = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0012");
+//
+//        final var reviewTypeProperties = PMCycleReviewTypeProperties.builder()
+//                .min(3)
+//                .max(5)
+//                .build();
+//
+//        when(mockReviewDAO.getPMCycleReviewTypeProperties(any(), any()))
+//                .thenReturn(reviewTypeProperties);
+//
+//        final var reviewStats = ReviewStats.builder()
+//                .statusStats(List.of(new ReviewStatusCounter(DRAFT, 2)))
+//                .build();
+//
+//        when(mockReviewDAO.getReviewStats(any(), any(), any()))
+//                .thenReturn(reviewStats);
+//
+//        when(mockReviewDAO.deleteReview(any(), any(), any(), any(), any()))
+//                .thenReturn(0);
+//        final var exception = assertThrows(NotFoundException.class,
+//                () -> reviewService.deleteReview(
+//                        performanceCycleUuid,
+//                        colleagueUuid,
+//                        OBJECTIVE,
+//                        1));
+//
+//        assertEquals(REVIEW_NOT_FOUND.getCode(), exception.getCode());
+//        assertEquals(REVIEW_NOT_FOUND_MESSAGE, exception.getMessage());
+//
+//    }
 }

@@ -1,10 +1,10 @@
 <dataset>
-    <review_change_status_hi
+    <pm_review_change_status_hi
             review_uuid="ddb9ab0b-f50f-4442-8900-b03777ee0011"
             old_status_id="2"
             new_status_id="3"
             change_reason="Test reason"
-            updated_by="ccb9ab0b-f50f-4442-8900-b03777ee00ec"
+            updated_by="10000000-0000-0000-0000-000000000000"
             updated_time="2021-11-18 18:35:24.000000"
     />
 </dataset>

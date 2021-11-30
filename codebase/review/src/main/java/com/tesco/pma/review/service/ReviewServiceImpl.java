@@ -92,15 +92,16 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Review getReview(UUID performanceCycleUuid, UUID colleagueUuid, PMReviewType type, Integer number) {
-        var res = reviewDAO.getReview(performanceCycleUuid, colleagueUuid, type, number);
-        if (res == null) {
-            throw notFound(REVIEW_NOT_FOUND,
-                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
-                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
-                            TYPE_PARAMETER_NAME, type,
-                            NUMBER_PARAMETER_NAME, number));
-        }
-        return res;
+//        var res = reviewDAO.getReview(performanceCycleUuid, colleagueUuid, type, number);
+//        if (res == null) {
+//            throw notFound(REVIEW_NOT_FOUND,
+//                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
+//                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
+//                            TYPE_PARAMETER_NAME, type,
+//                            NUMBER_PARAMETER_NAME, number));
+//        }
+//        return res;
+        return null;
     }
 
     @Override
@@ -115,25 +116,27 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<Review> getReviews(UUID performanceCycleUuid, UUID colleagueUuid, PMReviewType type) {
-        List<Review> results = reviewDAO.getReviews(performanceCycleUuid, colleagueUuid, type);
-        if (results == null) {
-            throw notFound(REVIEW_NOT_FOUND,
-                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
-                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
-                            TYPE_PARAMETER_NAME, type));
-        }
-        return results;
+//        List<Review> results = reviewDAO.getReviews(performanceCycleUuid, colleagueUuid, type);
+//        if (results == null) {
+//            throw notFound(REVIEW_NOT_FOUND,
+//                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
+//                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
+//                            TYPE_PARAMETER_NAME, type));
+//        }
+//        return results;
+        return null;
     }
 
     @Override
     public List<Review> getReviewsByColleague(UUID performanceCycleUuid, UUID colleagueUuid) {
-        List<Review> results = reviewDAO.getReviewsByColleague(performanceCycleUuid, colleagueUuid);
-        if (results == null) {
-            throw notFound(REVIEW_NOT_FOUND,
-                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
-                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid));
-        }
-        return results;
+//        List<Review> results = reviewDAO.getReviewsByColleague(performanceCycleUuid, colleagueUuid);
+//        if (results == null) {
+//            throw notFound(REVIEW_NOT_FOUND,
+//                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
+//                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid));
+//        }
+//        return results;
+        return null;
     }
 
     @Override
@@ -159,21 +162,22 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public Review updateReview(Review review) {
-        var reviewBefore = reviewDAO.getReview(
-                review.getPerformanceCycleUuid(),
-                review.getColleagueUuid(),
-                review.getType(),
-                review.getNumber());
-        if (null == reviewBefore) {
-            throw notFound(REVIEW_NOT_FOUND,
-                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, review.getColleagueUuid(),
-                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, review.getPerformanceCycleUuid(),
-                            TYPE_PARAMETER_NAME, review.getType(),
-                            NUMBER_PARAMETER_NAME, review.getNumber()));
-        }
-        review.setUuid(reviewBefore.getUuid());
-        review.setNumber(reviewBefore.getNumber());
-        return intUpdateReview(review);
+//        var reviewBefore = reviewDAO.getReview(
+//                review.getPerformanceCycleUuid(),
+//                review.getColleagueUuid(),
+//                review.getType(),
+//                review.getNumber());
+//        if (null == reviewBefore) {
+//            throw notFound(REVIEW_NOT_FOUND,
+//                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, review.getColleagueUuid(),
+//                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, review.getPerformanceCycleUuid(),
+//                            TYPE_PARAMETER_NAME, review.getType(),
+//                            NUMBER_PARAMETER_NAME, review.getNumber()));
+//        }
+//        review.setUuid(reviewBefore.getUuid());
+//        review.setNumber(reviewBefore.getNumber());
+//        return intUpdateReview(review);
+        return null;
     }
 
     @Override
@@ -182,37 +186,38 @@ public class ReviewServiceImpl implements ReviewService {
                                       UUID colleagueUuid,
                                       PMReviewType type,
                                       List<Review> reviews) {
-        List<Review> results = new ArrayList<>();
-        for (int idx = 0; idx < reviews.size(); idx++) {
-            var review = reviews.get(idx);
-            review.setPerformanceCycleUuid(performanceCycleUuid);
-            review.setColleagueUuid(colleagueUuid);
-            review.setType(type);
-            var reviewBefore = reviewDAO.getReview(
-                    review.getPerformanceCycleUuid(),
-                    review.getColleagueUuid(),
-                    review.getType(),
-                    idx + 1);
-            if (null == reviewBefore) {
-                review.setNumber(idx + 1);
-                intCreateReview(review);
-            } else {
-                review.setUuid(reviewBefore.getUuid());
-                review.setNumber(reviewBefore.getNumber());
-                intUpdateReview(review);
-            }
-            results.add(review);
-        }
-        List<Review> prevReviews = reviewDAO.getReviews(performanceCycleUuid, colleagueUuid, type);
-        if (prevReviews.size() > reviews.size()) {
-            for (int i = reviews.size() + 1; i <= prevReviews.size(); i++) {
-                intDeleteReview(performanceCycleUuid, colleagueUuid, type, i);
-            }
-        }
-
-        checkReviewStateAfterUpdate(performanceCycleUuid, colleagueUuid, type);
-
-        return results;
+//        List<Review> results = new ArrayList<>();
+//        for (int idx = 0; idx < reviews.size(); idx++) {
+//            var review = reviews.get(idx);
+//            review.setPerformanceCycleUuid(performanceCycleUuid);
+//            review.setColleagueUuid(colleagueUuid);
+//            review.setType(type);
+//            var reviewBefore = reviewDAO.getReview(
+//                    review.getPerformanceCycleUuid(),
+//                    review.getColleagueUuid(),
+//                    review.getType(),
+//                    idx + 1);
+//            if (null == reviewBefore) {
+//                review.setNumber(idx + 1);
+//                intCreateReview(review);
+//            } else {
+//                review.setUuid(reviewBefore.getUuid());
+//                review.setNumber(reviewBefore.getNumber());
+//                intUpdateReview(review);
+//            }
+//            results.add(review);
+//        }
+//        List<Review> prevReviews = reviewDAO.getReviews(performanceCycleUuid, colleagueUuid, type);
+//        if (prevReviews.size() > reviews.size()) {
+//            for (int i = reviews.size() + 1; i <= prevReviews.size(); i++) {
+//                intDeleteReview(performanceCycleUuid, colleagueUuid, type, i);
+//            }
+//        }
+//
+//        checkReviewStateAfterUpdate(performanceCycleUuid, colleagueUuid, type);
+//
+//        return results;
+        return null;
     }
 
     @Override
@@ -224,37 +229,38 @@ public class ReviewServiceImpl implements ReviewService {
                                               PMReviewStatus status,
                                               String reason,
                                               UUID loggedUserUuid) {
-        reviews.forEach(review -> {
-            var prevStatuses = getPrevStatusesForChangeStatus(status);
-            if (0 == prevStatuses.size()) {
-                throw notFound(ALLOWED_STATUSES_NOT_FOUND,
-                        Map.of(OPERATION_PARAMETER_NAME, CHANGE_STATUS_OPERATION_NAME));
-            }
-            if (1 == reviewDAO.updateReviewStatus(
-                    performanceCycleUuid,
-                    colleagueUuid,
-                    type,
-                    review.getNumber(),
-                    status,
-                    prevStatuses)) {
-                var actualReview = reviewDAO.getReview(
-                        performanceCycleUuid,
-                        colleagueUuid,
-                        type,
-                        review.getNumber());
-                reviewAuditLogDAO.logReviewUpdating(actualReview, status, reason, loggedUserUuid);
-            } else {
-                throw notFound(REVIEW_NOT_FOUND,
-                        Map.of(STATUS_PARAMETER_NAME, status,
-                                COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
-                                PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
-                                TYPE_PARAMETER_NAME, type,
-                                NUMBER_PARAMETER_NAME, review.getNumber(),
-                                PREV_STATUSES_PARAMETER_NAME, prevStatuses));
-            }
-        });
-
-        return status;
+//        reviews.forEach(review -> {
+//            var prevStatuses = getPrevStatusesForChangeStatus(status);
+//            if (0 == prevStatuses.size()) {
+//                throw notFound(ALLOWED_STATUSES_NOT_FOUND,
+//                        Map.of(OPERATION_PARAMETER_NAME, CHANGE_STATUS_OPERATION_NAME));
+//            }
+//            if (1 == reviewDAO.updateReviewStatus(
+//                    performanceCycleUuid,
+//                    colleagueUuid,
+//                    type,
+//                    review.getNumber(),
+//                    status,
+//                    prevStatuses)) {
+//                var actualReview = reviewDAO.getReview(
+//                        performanceCycleUuid,
+//                        colleagueUuid,
+//                        type,
+//                        review.getNumber());
+//                reviewAuditLogDAO.logReviewUpdating(actualReview, status, reason, loggedUserUuid);
+//            } else {
+//                throw notFound(REVIEW_NOT_FOUND,
+//                        Map.of(STATUS_PARAMETER_NAME, status,
+//                                COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
+//                                PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
+//                                TYPE_PARAMETER_NAME, type,
+//                                NUMBER_PARAMETER_NAME, review.getNumber(),
+//                                PREV_STATUSES_PARAMETER_NAME, prevStatuses));
+//            }
+//        });
+//
+//        return status;
+        return null;
     }
 
     @Override
@@ -268,11 +274,11 @@ public class ReviewServiceImpl implements ReviewService {
                 colleagueUuid,
                 type,
                 number);
-        reviewDAO.renumerateReviews(
-                performanceCycleUuid,
-                colleagueUuid,
-                type,
-                number + 1);
+//        reviewDAO.renumerateReviews(
+//                performanceCycleUuid,
+//                colleagueUuid,
+//                type,
+//                number + 1);
     }
 
     @Override
@@ -346,27 +352,28 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private ReviewStatusCounter getTimelineReviewStatusCounter(UUID cycleUuid, UUID colleagueUuid, PMReviewType reviewType) {
-        var reviewStats = reviewDAO.getReviewStats(cycleUuid, colleagueUuid, reviewType);
-        if (null == reviewStats || 0 == reviewStats.getStatusStats().size()) {
-            return null;
-        }
-        if (OBJECTIVE == reviewType) {
-            var mapStatusStats = reviewStats.getMapStatusStats();
-            var minObjectives = reviewDAO.getPMCycleReviewTypeProperties(cycleUuid, reviewType).getMin();
-            if (mapStatusStats.containsKey(APPROVED) && mapStatusStats.get(APPROVED) >= minObjectives) {
-                return new ReviewStatusCounter(APPROVED, mapStatusStats.get(APPROVED));
-            } else if (mapStatusStats.containsKey(WAITING_FOR_APPROVAL) && mapStatusStats.get(WAITING_FOR_APPROVAL) >= minObjectives) {
-                return new ReviewStatusCounter(WAITING_FOR_APPROVAL, mapStatusStats.get(WAITING_FOR_APPROVAL));
-            } else if (mapStatusStats.containsKey(DECLINED)) {
-                return new ReviewStatusCounter(DECLINED, mapStatusStats.get(DECLINED));
-            } else if (mapStatusStats.containsKey(DRAFT)) {
-                return new ReviewStatusCounter(DRAFT, mapStatusStats.get(DRAFT));
-            } else {
-                return null;
-            }
-        } else {
-            return reviewStats.getStatusStats().get(0);
-        }
+//        var reviewStats = reviewDAO.getReviewStats(cycleUuid, colleagueUuid, reviewType);
+//        if (null == reviewStats || 0 == reviewStats.getStatusStats().size()) {
+//            return null;
+//        }
+//        if (OBJECTIVE == reviewType) {
+//            var mapStatusStats = reviewStats.getMapStatusStats();
+//            var minObjectives = reviewDAO.getPMCycleReviewTypeProperties(cycleUuid, reviewType).getMin();
+//            if (mapStatusStats.containsKey(APPROVED) && mapStatusStats.get(APPROVED) >= minObjectives) {
+//                return new ReviewStatusCounter(APPROVED, mapStatusStats.get(APPROVED));
+//            } else if (mapStatusStats.containsKey(WAITING_FOR_APPROVAL) && mapStatusStats.get(WAITING_FOR_APPROVAL) >= minObjectives) {
+//                return new ReviewStatusCounter(WAITING_FOR_APPROVAL, mapStatusStats.get(WAITING_FOR_APPROVAL));
+//            } else if (mapStatusStats.containsKey(DECLINED)) {
+//                return new ReviewStatusCounter(DECLINED, mapStatusStats.get(DECLINED));
+//            } else if (mapStatusStats.containsKey(DRAFT)) {
+//                return new ReviewStatusCounter(DRAFT, mapStatusStats.get(DRAFT));
+//            } else {
+//                return null;
+//            }
+//        } else {
+//            return reviewStats.getStatusStats().get(0);
+//        }
+        return null;
     }
 
     private static <T> boolean listEqualsIgnoreOrder(List<T> list1, List<T> list2, Comparator<? super T> comparator) {
@@ -402,96 +409,98 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     public Review intCreateReview(Review review) {
-        review.setUuid(UUID.randomUUID());
-        var reviewTypeProperties = reviewDAO.getPMCycleReviewTypeProperties(review.getPerformanceCycleUuid(), review.getType());
-        if (reviewTypeProperties.getMax() < review.getNumber()) {
-            throw createReviewException(
-                    MAX_REVIEW_NUMBER_CONSTRAINT_VIOLATION,
-                    Map.of(MAX_PARAMETER_NAME, reviewTypeProperties.getMax(),
-                            NUMBER_PARAMETER_NAME, review.getNumber())
-            );
-        }
-        try {
-            var allowedStatuses = getStatusesForCreate();
-            if (0 == allowedStatuses.size()) {
-                throw notFound(ALLOWED_STATUSES_NOT_FOUND,
-                        Map.of(OPERATION_PARAMETER_NAME, CREATE_OPERATION_NAME));
-            }
-            if (allowedStatuses.contains(review.getStatus())) {
-                reviewDAO.create(review);
-                return review;
-            } else {
-                throw createReviewException(
-                        REVIEW_STATUS_NOT_ALLOWED,
-                        Map.of(STATUS_PARAMETER_NAME, review.getStatus(),
-                                OPERATION_PARAMETER_NAME, CREATE_OPERATION_NAME)
-                );
-            }
-        } catch (DuplicateKeyException e) {
-            throw databaseConstraintViolation(
-                    REVIEW_ALREADY_EXISTS,
-                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, review.getColleagueUuid(),
-                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, review.getPerformanceCycleUuid(),
-                            TYPE_PARAMETER_NAME, review.getType(),
-                            NUMBER_PARAMETER_NAME, review.getNumber()),
-                    e);
-        }
+//        review.setUuid(UUID.randomUUID());
+//        var reviewTypeProperties = reviewDAO.getPMCycleReviewTypeProperties(review.getPerformanceCycleUuid(), review.getType());
+//        if (reviewTypeProperties.getMax() < review.getNumber()) {
+//            throw createReviewException(
+//                    MAX_REVIEW_NUMBER_CONSTRAINT_VIOLATION,
+//                    Map.of(MAX_PARAMETER_NAME, reviewTypeProperties.getMax(),
+//                            NUMBER_PARAMETER_NAME, review.getNumber())
+//            );
+//        }
+//        try {
+//            var allowedStatuses = getStatusesForCreate();
+//            if (0 == allowedStatuses.size()) {
+//                throw notFound(ALLOWED_STATUSES_NOT_FOUND,
+//                        Map.of(OPERATION_PARAMETER_NAME, CREATE_OPERATION_NAME));
+//            }
+//            if (allowedStatuses.contains(review.getStatus())) {
+//                reviewDAO.create(review);
+//                return review;
+//            } else {
+//                throw createReviewException(
+//                        REVIEW_STATUS_NOT_ALLOWED,
+//                        Map.of(STATUS_PARAMETER_NAME, review.getStatus(),
+//                                OPERATION_PARAMETER_NAME, CREATE_OPERATION_NAME)
+//                );
+//            }
+//        } catch (DuplicateKeyException e) {
+//            throw databaseConstraintViolation(
+//                    REVIEW_ALREADY_EXISTS,
+//                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, review.getColleagueUuid(),
+//                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, review.getPerformanceCycleUuid(),
+//                            TYPE_PARAMETER_NAME, review.getType(),
+//                            NUMBER_PARAMETER_NAME, review.getNumber()),
+//                    e);
+//        }
+        return null;
     }
 
     private Review intUpdateReview(Review review) {
-        var allowedStatuses = getAllowedStatusesForUpdate(review.getType(), review.getStatus());
-        if (0 == allowedStatuses.size()) {
-            throw notFound(ALLOWED_STATUSES_NOT_FOUND,
-                    Map.of(OPERATION_PARAMETER_NAME, UPDATE_OPERATION_NAME));
-        }
-
-        if (1 == reviewDAO.update(review, allowedStatuses)) {
-            return review;
-        } else {
-            throw notFound(REVIEW_NOT_FOUND,
-                    Map.of(OPERATION_PARAMETER_NAME, UPDATE_OPERATION_NAME,
-                            COLLEAGUE_UUID_PARAMETER_NAME, review.getColleagueUuid(),
-                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, review.getPerformanceCycleUuid(),
-                            TYPE_PARAMETER_NAME, review.getType(),
-                            NUMBER_PARAMETER_NAME, review.getNumber(),
-                            ALLOWED_STATUSES_PARAMETER_NAME, allowedStatuses));
-        }
+//        var allowedStatuses = getAllowedStatusesForUpdate(review.getType(), review.getStatus());
+//        if (0 == allowedStatuses.size()) {
+//            throw notFound(ALLOWED_STATUSES_NOT_FOUND,
+//                    Map.of(OPERATION_PARAMETER_NAME, UPDATE_OPERATION_NAME));
+//        }
+//
+//        if (1 == reviewDAO.update(review, allowedStatuses)) {
+//            return review;
+//        } else {
+//            throw notFound(REVIEW_NOT_FOUND,
+//                    Map.of(OPERATION_PARAMETER_NAME, UPDATE_OPERATION_NAME,
+//                            COLLEAGUE_UUID_PARAMETER_NAME, review.getColleagueUuid(),
+//                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, review.getPerformanceCycleUuid(),
+//                            TYPE_PARAMETER_NAME, review.getType(),
+//                            NUMBER_PARAMETER_NAME, review.getNumber(),
+//                            ALLOWED_STATUSES_PARAMETER_NAME, allowedStatuses));
+//        }
+        return null;
     }
 
     private void intDeleteReview(UUID performanceCycleUuid,
                                  UUID colleagueUuid,
                                  PMReviewType type,
                                  Integer number) {
-        var reviewTypeProperties = reviewDAO.getPMCycleReviewTypeProperties(performanceCycleUuid, type);
-        var reviewCount = reviewDAO.getReviewStats(performanceCycleUuid, colleagueUuid, type)
-                .getStatusStats()
-                .stream()
-                .mapToInt(ReviewStatusCounter::getCount)
-                .sum();
-        if (reviewCount == reviewTypeProperties.getMin()) {
-            throw deleteReviewException(CANNOT_DELETE_REVIEW_COUNT_CONSTRAINT,
-                    Map.of(MIN_PARAMETER_NAME, reviewTypeProperties.getMin()));
-        }
-
-        var allowedStatuses = getStatusesForDelete(type);
-        if (0 == allowedStatuses.size()) {
-            throw notFound(ALLOWED_STATUSES_NOT_FOUND,
-                    Map.of(OPERATION_PARAMETER_NAME, DELETE_OPERATION_NAME));
-        }
-        if (1 != reviewDAO.deleteReview(
-                performanceCycleUuid,
-                colleagueUuid,
-                type,
-                number,
-                allowedStatuses)) {
-            throw notFound(REVIEW_NOT_FOUND,
-                    Map.of(OPERATION_PARAMETER_NAME, DELETE_OPERATION_NAME,
-                            COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
-                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
-                            TYPE_PARAMETER_NAME, type,
-                            NUMBER_PARAMETER_NAME, number,
-                            ALLOWED_STATUSES_PARAMETER_NAME, allowedStatuses));
-        }
+//        var reviewTypeProperties = reviewDAO.getPMCycleReviewTypeProperties(performanceCycleUuid, type);
+//        var reviewCount = reviewDAO.getReviewStats(performanceCycleUuid, colleagueUuid, type)
+//                .getStatusStats()
+//                .stream()
+//                .mapToInt(ReviewStatusCounter::getCount)
+//                .sum();
+//        if (reviewCount == reviewTypeProperties.getMin()) {
+//            throw deleteReviewException(CANNOT_DELETE_REVIEW_COUNT_CONSTRAINT,
+//                    Map.of(MIN_PARAMETER_NAME, reviewTypeProperties.getMin()));
+//        }
+//
+//        var allowedStatuses = getStatusesForDelete(type);
+//        if (0 == allowedStatuses.size()) {
+//            throw notFound(ALLOWED_STATUSES_NOT_FOUND,
+//                    Map.of(OPERATION_PARAMETER_NAME, DELETE_OPERATION_NAME));
+//        }
+//        if (1 != reviewDAO.deleteReview(
+//                performanceCycleUuid,
+//                colleagueUuid,
+//                type,
+//                number,
+//                allowedStatuses)) {
+//            throw notFound(REVIEW_NOT_FOUND,
+//                    Map.of(OPERATION_PARAMETER_NAME, DELETE_OPERATION_NAME,
+//                            COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
+//                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
+//                            TYPE_PARAMETER_NAME, type,
+//                            NUMBER_PARAMETER_NAME, number,
+//                            ALLOWED_STATUSES_PARAMETER_NAME, allowedStatuses));
+//        }
     }
 
     private List<OrgObjective> intCreateOrgObjectives(List<OrgObjective> orgObjectives, UUID loggedUserUuid) {
@@ -571,19 +580,19 @@ public class ReviewServiceImpl implements ReviewService {
     private void checkReviewStateAfterUpdate(UUID performanceCycleUuid,
                                              UUID colleagueUuid,
                                              PMReviewType type) {
-        if (OBJECTIVE == type) {
-
-            var reviewTypeProperties = reviewDAO.getPMCycleReviewTypeProperties(performanceCycleUuid, type);
-            var mapStatusStats = reviewDAO.getReviewStats(performanceCycleUuid, colleagueUuid, type).getMapStatusStats();
-
-            if (mapStatusStats.containsKey(WAITING_FOR_APPROVAL)
-                    && mapStatusStats.get(WAITING_FOR_APPROVAL) < reviewTypeProperties.getMin()) {
-                throw updateReviewException(MIN_REVIEW_NUMBER_CONSTRAINT_VIOLATION,
-                        Map.of(COUNT_PARAMETER_NAME, mapStatusStats.get(WAITING_FOR_APPROVAL),
-                                STATUS_PARAMETER_NAME, WAITING_FOR_APPROVAL,
-                                MIN_PARAMETER_NAME, reviewTypeProperties.getMin()));
-            }
-        }
+//        if (OBJECTIVE == type) {
+//
+//            var reviewTypeProperties = reviewDAO.getPMCycleReviewTypeProperties(performanceCycleUuid, type);
+//            var mapStatusStats = reviewDAO.getReviewStats(performanceCycleUuid, colleagueUuid, type).getMapStatusStats();
+//
+//            if (mapStatusStats.containsKey(WAITING_FOR_APPROVAL)
+//                    && mapStatusStats.get(WAITING_FOR_APPROVAL) < reviewTypeProperties.getMin()) {
+//                throw updateReviewException(MIN_REVIEW_NUMBER_CONSTRAINT_VIOLATION,
+//                        Map.of(COUNT_PARAMETER_NAME, mapStatusStats.get(WAITING_FOR_APPROVAL),
+//                                STATUS_PARAMETER_NAME, WAITING_FOR_APPROVAL,
+//                                MIN_PARAMETER_NAME, reviewTypeProperties.getMin()));
+//            }
+//        }
     }
 
     private NotFoundException notFound(ErrorCodeAware errorCode, Map<String, ?> params) {

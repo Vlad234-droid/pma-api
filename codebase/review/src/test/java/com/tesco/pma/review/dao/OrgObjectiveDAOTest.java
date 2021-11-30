@@ -51,7 +51,7 @@ class OrgObjectiveDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet("cleanup.xml")
-    @ExpectedDataSet("org_objective_create_expected_1.xml")
+    @ExpectedDataSet("pm_org_objective_create_expected_1.xml")
     void createOrgObjectiveSucceeded() {
 
         final var orgObjective = OrgObjective.builder()
@@ -68,7 +68,7 @@ class OrgObjectiveDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet("org_objective_init.xml")
+    @DataSet("pm_org_objective_init.xml")
     void createOrgObjectiveAlreadyExist() {
 
         final var orgObjective = OrgObjective.builder()
@@ -84,7 +84,7 @@ class OrgObjectiveDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet("org_objective_init.xml")
+    @DataSet("pm_org_objective_init.xml")
     void getOrgObjective() {
         final var result = instance.read(ORG_OBJECTIVE_UUID_2);
 
@@ -96,7 +96,7 @@ class OrgObjectiveDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet("org_objective_init.xml")
+    @DataSet("pm_org_objective_init.xml")
     void getOrgObjectiveNotExist() {
         final var result = instance.read(ORG_OBJECTIVE_UUID_NOT_EXIST);
 
@@ -104,7 +104,7 @@ class OrgObjectiveDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet("org_objective_init.xml")
+    @DataSet("pm_org_objective_init.xml")
     void getOrgObjectives() {
         final var result = instance.getAll();
 
@@ -119,37 +119,37 @@ class OrgObjectiveDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet("org_objective_init.xml")
+    @DataSet("pm_org_objective_init.xml")
     void deleteOrgObjectiveNotExist() {
         final var result = instance.delete(ORG_OBJECTIVE_UUID_NOT_EXIST);
         assertThat(result).isZero();
     }
 
     @Test
-    @DataSet("org_objective_init.xml")
+    @DataSet("pm_org_objective_init.xml")
     void deleteOrgObjectiveSucceeded() {
         final var result = instance.delete(ORG_OBJECTIVE_UUID_2);
         assertThat(result).isOne();
     }
 
     @Test
-    @DataSet("org_objective_init.xml")
+    @DataSet("pm_org_objective_init.xml")
     void getMaxVersionOrgObjective() {
         final var result = instance.getMaxVersion();
         assertThat(result).isEqualTo(3);
     }
 
     @Test
-    @DataSet("org_objective_init.xml")
-    @ExpectedDataSet("org_objective_publish_expected_1.xml")
+    @DataSet("pm_org_objective_init.xml")
+    @ExpectedDataSet("pm_org_objective_publish_expected_1.xml")
     void publishOrgObjectiveSucceeded() {
         final var result = instance.publish();
         assertThat(result).isOne();
     }
 
     @Test
-    @DataSet("org_objective_init.xml")
-    @ExpectedDataSet("org_objective_unpublish_expected_1.xml")
+    @DataSet("pm_org_objective_init.xml")
+    @ExpectedDataSet("pm_org_objective_unpublish_expected_1.xml")
     void unpublishOrgObjectiveSucceeded() {
         final var result = instance.unpublish();
         assertThat(result).isOne();

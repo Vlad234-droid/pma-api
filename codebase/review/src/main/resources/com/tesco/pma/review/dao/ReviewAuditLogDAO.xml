@@ -18,12 +18,12 @@
     </resultMap>
 
     <insert id="intLogReviewUpdating" flushCache="true">
-        INSERT INTO review_change_status_hi (review_uuid,
-                                             new_status_id,
-                                             old_status_id,
-                                             change_reason,
-                                             updated_by,
-                                             updated_time)
+        INSERT INTO pm_review_change_status_hi (review_uuid,
+                                                new_status_id,
+                                                old_status_id,
+                                                change_reason,
+                                                updated_by,
+                                                updated_time)
         VALUES (#{review.uuid},
                 #{newStatus, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMReviewStatus},
                 #{review.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.api.newStatus, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMReviewStatus},
@@ -33,9 +33,9 @@
     </insert>
 
     <insert id="intLogOrgObjectiveAction" flushCache="true">
-        INSERT INTO org_objective_action_hi (action_id,
-                                             updated_by,
-                                             updated_time)
+        INSERT INTO pm_org_objective_action_hi (action_id,
+                                                updated_by,
+                                                updated_time)
         VALUES (#{actionType, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.api.newStatus, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.api.ActionType},
                 #{updatedBy},
                 #{updatedTime});
@@ -45,7 +45,7 @@
         select ooah.action_id,
         ooah.updated_time,
         ooah.updated_by
-        from org_objective_action_hi ooah
+        from pm_org_objective_action_hi ooah
         order by updated_time desc
         LIMIT #{requestQuery.limit}
         <if test="requestQuery.offset != null">

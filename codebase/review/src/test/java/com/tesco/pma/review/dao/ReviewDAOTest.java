@@ -5,10 +5,11 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.tesco.pma.api.MapJson;
 import com.tesco.pma.cycle.api.PMReviewStatus;
 import com.tesco.pma.dao.AbstractDAOTest;
+import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.PMCycleReviewTypeProperties;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
-import com.tesco.pma.review.domain.ReviewStats;
+import com.tesco.pma.review.domain.SimplifiedReview;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,9 +39,15 @@ import static org.assertj.core.api.InstanceOfAssertFactories.type;
 
 class ReviewDAOTest extends AbstractDAOTest {
     private static final UUID REVIEW_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
+    private static final UUID DECLINED_REVIEW_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0012");
+    private static final UUID MYR_REVIEW_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0025");
+    private static final UUID REVIEW_UUID_NOT_EXIST = UUID.fromString("ddb9ab0b-f50f-4442-8900-000000000000");
+    private static final UUID TIMELINE_POINT_UUID = UUID.fromString("10000000-0000-0000-1000-000000000000");
+    private static final UUID MYR_TIMELINE_POINT_UUID = UUID.fromString("10000000-0000-0000-2000-000000000000");
+    private static final UUID MANAGER_UUID = UUID.fromString("10000000-0000-0000-0000-000000000001");
     private static final UUID COLLEAGUE_UUID = UUID.fromString("ccb9ab0b-f50f-4442-8900-b03777ee00ec");
-    private static final UUID COLLEAGUE_UUID_NOT_EXIST = UUID.fromString("ccb9ab0b-f50f-4442-8900-000000000000");
-    private static final UUID PERFORMANCE_CYCLE_UUID = UUID.fromString("0c5d9cb1-22cf-4fcd-a19a-9e70df6bc941");
+    private static final UUID TIMELINE_POINT_UUID_NOT_EXIST = UUID.fromString("ccb9ab0b-f50f-4442-8900-000000000000");
+    private static final UUID PERFORMANCE_CYCLE_UUID = UUID.fromString("10000000-1000-0000-0000-000000000000");
     private static final Integer NUMBER_1 = 1;
     private static final Integer NUMBER_2 = 2;
     private static final String TITLE_PROPERTY_NAME = "title";
@@ -71,8 +78,6 @@ class ReviewDAOTest extends AbstractDAOTest {
                     EXCEEDS_PROPERTY_NAME, EXCEEDS_UPDATE
             ));
 
-    private static final UUID COLLEAGUE_UUID_2 = UUID.fromString("10000000-0000-0000-0000-000000000002");
-
     @Autowired
     private ReviewDAO instance;
 
@@ -91,109 +96,17 @@ class ReviewDAOTest extends AbstractDAOTest {
     void tearDown() {
     }
 
-    @Test
-    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
-    void getReview() {
-        final var result = instance.getReview(
-                PERFORMANCE_CYCLE_UUID,
-                COLLEAGUE_UUID,
-                OBJECTIVE,
-                NUMBER_1);
-
-        assertThat(result)
-                .asInstanceOf(type(Review.class))
-                .returns(COLLEAGUE_UUID, from(Review::getColleagueUuid))
-                .returns(PERFORMANCE_CYCLE_UUID, from(Review::getPerformanceCycleUuid))
-                .returns(OBJECTIVE, from(Review::getType))
-                .returns(NUMBER_1, from(Review::getNumber))
-                .returns(REVIEW_PROPERTIES_INIT, from(Review::getProperties))
-                .returns(DRAFT, from(Review::getStatus));
-    }
 
     @Test
-    @DataSet({"review_change_status_hi_init.xml", "pm_cycle_init.xml", "review_init.xml"})
-    void getReviewDeclinedChangeReason() {
-        final var result = instance.getReview(
-                PERFORMANCE_CYCLE_UUID,
-                COLLEAGUE_UUID,
-                OBJECTIVE,
-                NUMBER_2);
-
-        assertThat(result)
-                .asInstanceOf(type(Review.class))
-                .returns(COLLEAGUE_UUID, from(Review::getColleagueUuid))
-                .returns(PERFORMANCE_CYCLE_UUID, from(Review::getPerformanceCycleUuid))
-                .returns(OBJECTIVE, from(Review::getType))
-                .returns(NUMBER_2, from(Review::getNumber))
-                .returns(REVIEW_PROPERTIES_INIT, from(Review::getProperties))
-                .returns(DECLINED, from(Review::getStatus))
-                .returns(CHANGE_STATUS_REASON_DECLINED, from(Review::getChangeStatusReason));
-    }
-
-    @Test
-    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
-    void getReviews() {
-        final var result = instance.getReviews(
-                PERFORMANCE_CYCLE_UUID,
-                COLLEAGUE_UUID,
-                MYR);
-
-        assertThat(result.get(0))
-                .asInstanceOf(type(Review.class))
-                .returns(COLLEAGUE_UUID, from(Review::getColleagueUuid))
-                .returns(PERFORMANCE_CYCLE_UUID, from(Review::getPerformanceCycleUuid))
-                .returns(MYR, from(Review::getType))
-                .returns(NUMBER_1, from(Review::getNumber))
-                .returns(REVIEW_PROPERTIES_INIT, from(Review::getProperties))
-                .returns(DRAFT, from(Review::getStatus));
-    }
-
-    @Test
-    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
-    void getReviewsByColleague() {
-        final var result = instance.getReviewsByColleague(
-                PERFORMANCE_CYCLE_UUID,
-                COLLEAGUE_UUID);
-
-        assertThat(result.size())
-                .isEqualTo(3);
-    }
-
-    @Test
-    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
-    void getReviewByUuid() {
-        final var result = instance.read(REVIEW_UUID);
-
-        assertThat(result)
-                .asInstanceOf(type(Review.class))
-                .returns(COLLEAGUE_UUID, from(Review::getColleagueUuid))
-                .returns(PERFORMANCE_CYCLE_UUID, from(Review::getPerformanceCycleUuid))
-                .returns(OBJECTIVE, from(Review::getType))
-                .returns(NUMBER_1, from(Review::getNumber))
-                .returns(REVIEW_PROPERTIES_INIT, from(Review::getProperties))
-                .returns(DRAFT, from(Review::getStatus));
-    }
-
-    @Test
-    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
-    void getReviewNotExist() {
-        final var result = instance.getReview(
-                PERFORMANCE_CYCLE_UUID,
-                COLLEAGUE_UUID_NOT_EXIST,
-                OBJECTIVE,
-                NUMBER_1);
-
-        assertThat(result).isNull();
-    }
-
-    @Test
-    @DataSet({"pm_cycle_init.xml", "cleanup.xml"})
-    @ExpectedDataSet("review_create_expected_1.xml")
-    void createReviewSucceeded() {
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml"})
+    @ExpectedDataSet("pm_review_create_expected_1.xml")
+    void createSucceeded() {
         final var review = Review.builder()
                 .uuid(REVIEW_UUID)
-                .colleagueUuid(COLLEAGUE_UUID)
-                .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
+                .tlPointUuid(TIMELINE_POINT_UUID)
                 .type(OBJECTIVE)
                 .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
@@ -206,13 +119,16 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
-    void createReviewAlreadyExist() {
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml",
+            "pm_review_init.xml"})
+    void createAlreadyExist() {
 
         final var review = Review.builder()
                 .uuid(REVIEW_UUID)
-                .colleagueUuid(COLLEAGUE_UUID)
-                .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
+                .tlPointUuid(TIMELINE_POINT_UUID)
                 .type(OBJECTIVE)
                 .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
@@ -224,55 +140,56 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
-    void deleteReviewNotExist() {
-        final var result = instance.deleteReview(
-                PERFORMANCE_CYCLE_UUID,
-                COLLEAGUE_UUID_NOT_EXIST,
-                OBJECTIVE,
-                NUMBER_1,
-                List.of(DRAFT, DECLINED, APPROVED));
-        assertThat(result).isZero();
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml",
+            "pm_review_init.xml"})
+    void read() {
+        final var result = instance.read(REVIEW_UUID);
+
+        assertThat(result)
+                .asInstanceOf(type(Review.class))
+                .returns(TIMELINE_POINT_UUID, from(Review::getTlPointUuid))
+                .returns(OBJECTIVE, from(Review::getType))
+                .returns(NUMBER_1, from(Review::getNumber))
+                .returns(REVIEW_PROPERTIES_INIT, from(Review::getProperties))
+                .returns(DRAFT, from(Review::getStatus));
     }
 
-    @Test
-    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
-    void deleteReviewSucceeded() {
-        final var result = instance.deleteReview(
-                PERFORMANCE_CYCLE_UUID,
-                COLLEAGUE_UUID,
-                OBJECTIVE,
-                NUMBER_1,
-                List.of(DRAFT, DECLINED, APPROVED));
-        assertThat(result).isOne();
-    }
 
     @Test
-    @DataSet({"review_init.xml"})
-    @ExpectedDataSet("review_delete_renumerate_expected_1.xml")
-    void deleteAndRenumerateReviewsSucceeded() {
-        instance.deleteReview(
-                PERFORMANCE_CYCLE_UUID,
-                COLLEAGUE_UUID,
-                OBJECTIVE,
-                NUMBER_1,
-                List.of(DRAFT, DECLINED, APPROVED));
-        final var result = instance.renumerateReviews(
-                PERFORMANCE_CYCLE_UUID,
-                COLLEAGUE_UUID,
-                OBJECTIVE,
-                NUMBER_2);
-        assertThat(result).isOne();
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml",
+            "pm_review_init.xml",
+            "pm_review_change_status_hi_init.xml"})
+    void getReviewDeclinedChangeReason() {
+        final var result = instance.read(DECLINED_REVIEW_UUID);
+
+        assertThat(result)
+                .asInstanceOf(type(Review.class))
+                .returns(TIMELINE_POINT_UUID, from(Review::getTlPointUuid))
+                .returns(OBJECTIVE, from(Review::getType))
+                .returns(NUMBER_2, from(Review::getNumber))
+                .returns(REVIEW_PROPERTIES_INIT, from(Review::getProperties))
+                .returns(DECLINED, from(Review::getStatus))
+                .returns(CHANGE_STATUS_REASON_DECLINED, from(Review::getChangeStatusReason));
     }
 
+
     @Test
-    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
-    @ExpectedDataSet("review_update_expected_1.xml")
-    void updateReviewSucceeded() {
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml",
+            "pm_review_init.xml"})
+    @ExpectedDataSet("pm_review_update_expected_1.xml")
+    void updateSucceeded() {
         final var review = Review.builder()
                 .uuid(REVIEW_UUID)
-                .colleagueUuid(COLLEAGUE_UUID)
-                .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
+                .tlPointUuid(TIMELINE_POINT_UUID)
                 .type(OBJECTIVE)
                 .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_UPDATE)
@@ -285,11 +202,14 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
-    void updateReviewNotExist() {
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml",
+            "pm_review_init.xml"})
+    void updateNotExist() {
         final var review = Review.builder()
-                .colleagueUuid(COLLEAGUE_UUID_NOT_EXIST)
-                .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
+                .tlPointUuid(TIMELINE_POINT_UUID_NOT_EXIST)
                 .type(OBJECTIVE)
                 .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_UPDATE)
@@ -302,18 +222,166 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
-    @ExpectedDataSet("review_update_status_1.xml")
-    void updateReviewStatusSucceeded() {
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml",
+            "pm_review_init.xml"})
+    @ExpectedDataSet("pm_review_delete_expected_1.xml")
+    void deleteSucceeded() {
+        final var result = instance.delete(
+                REVIEW_UUID,
+                List.of(DRAFT, DECLINED, APPROVED));
+        assertThat(result).isOne();
+    }
 
-        final var result = instance.updateReviewStatus(
-                PERFORMANCE_CYCLE_UUID,
-                COLLEAGUE_UUID,
+    @Test
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml",
+            "pm_review_init.xml"})
+    @ExpectedDataSet("pm_review_init.xml")
+    void deleteNotExist() {
+        final var result = instance.delete(
+                REVIEW_UUID_NOT_EXIST,
+                List.of(DRAFT, DECLINED, APPROVED));
+        assertThat(result).isZero();
+    }
+
+
+    @Test
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml",
+            "pm_review_init.xml"})
+    void getByParams() {
+        var reviews = instance.getByParams(
+                MYR_TIMELINE_POINT_UUID,
+                MYR,
+                DRAFT,
+                null
+        );
+
+        assertThat(reviews)
+                .singleElement()
+                .asInstanceOf(type(Review.class))
+                .returns(MYR_TIMELINE_POINT_UUID, from(Review::getTlPointUuid))
+                .returns(MYR, from(Review::getType))
+                .returns(NUMBER_1, from(Review::getNumber))
+                .returns(REVIEW_PROPERTIES_INIT, from(Review::getProperties))
+                .returns(DRAFT, from(Review::getStatus));
+    }
+
+    @Test
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml",
+            "pm_review_init.xml"})
+    void getTeamReviews() {
+        final var simplifiedReviews = List.of(
+                SimplifiedReview.builder()
+                        .uuid(REVIEW_UUID)
+                        .type(OBJECTIVE)
+                        .status(DRAFT)
+                        .number(NUMBER_1)
+                        .build(),
+                SimplifiedReview.builder()
+                        .uuid(DECLINED_REVIEW_UUID)
+                        .type(OBJECTIVE)
+                        .status(DECLINED)
+                        .number(NUMBER_2)
+                        .build(),
+                SimplifiedReview.builder()
+                        .uuid(MYR_REVIEW_UUID)
+                        .type(MYR)
+                        .status(DRAFT)
+                        .number(NUMBER_1)
+                        .build()
+        );
+
+        final var result = instance.getTeamReviews(MANAGER_UUID);
+
+        assertThat(result)
+                .singleElement()
+                .asInstanceOf(type(ColleagueTimeline.class))
+                .returns(null, from(ColleagueTimeline::getTimeline))
+                .returns(simplifiedReviews, from(ColleagueTimeline::getReviews));
+    }
+
+    @Test
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml",
+            "pm_review_init.xml"})
+    @ExpectedDataSet("pm_review_update_status_1.xml")
+    void updateStatusByParamsSucceeded() {
+
+        final var result = instance.updateStatusByParams(
+                TIMELINE_POINT_UUID,
                 OBJECTIVE,
                 NUMBER_1,
                 WAITING_FOR_APPROVAL,
                 Collections.singleton(DRAFT));
 
+        assertThat(result).isOne();
+    }
+
+    @Test
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml",
+            "pm_review_init.xml"})
+    @ExpectedDataSet("pm_review_delete_expected_1.xml")
+    void deleteByParamsSucceeded() {
+        final var result = instance.deleteByParams(
+                TIMELINE_POINT_UUID,
+                OBJECTIVE,
+                null,
+                NUMBER_1,
+                List.of(DRAFT, DECLINED, APPROVED));
+        assertThat(result).isOne();
+    }
+
+    @Test
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml",
+            "pm_review_init.xml"})
+    @ExpectedDataSet("pm_review_init.xml")
+    void deleteByParamsNotExist() {
+        final var result = instance.deleteByParams(
+                TIMELINE_POINT_UUID_NOT_EXIST,
+                OBJECTIVE,
+                null,
+                NUMBER_1,
+                List.of(DRAFT, DECLINED, APPROVED));
+        assertThat(result).isZero();
+    }
+
+    @Test
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml",
+            "pm_review_init.xml"})
+    @ExpectedDataSet("pm_review_delete_renumerate_expected_1.xml")
+    void deleteAndRenumerateReviewsSucceeded() {
+        instance.deleteByParams(
+                TIMELINE_POINT_UUID,
+                OBJECTIVE,
+                null,
+                NUMBER_1,
+                List.of(DRAFT, DECLINED, APPROVED));
+        final var result = instance.renumerateReviews(
+                TIMELINE_POINT_UUID,
+                OBJECTIVE,
+                NUMBER_2);
         assertThat(result).isOne();
     }
 
@@ -330,24 +398,28 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .returns(5, from(PMCycleReviewTypeProperties::getMax));
     }
 
-    @Test
-    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
-    void getReviewStats() {
-        final var result = instance.getReviewStats(
-                PERFORMANCE_CYCLE_UUID,
-                COLLEAGUE_UUID,
-                OBJECTIVE);
+//    @Test
+//    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
+//    void getReviewStats() {
+//        final var result = instance.getReviewStats(
+//                PERFORMANCE_CYCLE_UUID,
+//                COLLEAGUE_UUID,
+//                OBJECTIVE);
+//
+//        assertThat(result)
+//                .asInstanceOf(type(ReviewStats.class))
+//                .returns(PERFORMANCE_CYCLE_UUID, from(ReviewStats::getCycleUuid))
+//                .returns(COLLEAGUE_UUID, from(ReviewStats::getColleagueUuid))
+//                .returns(OBJECTIVE, from(ReviewStats::getType))
+//                .returns(Map.of(DRAFT, 1, DECLINED, 1), from(ReviewStats::getMapStatusStats));
+//    }
 
-        assertThat(result)
-                .asInstanceOf(type(ReviewStats.class))
-                .returns(PERFORMANCE_CYCLE_UUID, from(ReviewStats::getCycleUuid))
-                .returns(COLLEAGUE_UUID, from(ReviewStats::getColleagueUuid))
-                .returns(OBJECTIVE, from(ReviewStats::getType))
-                .returns(Map.of(DRAFT, 1, DECLINED, 1), from(ReviewStats::getMapStatusStats));
-    }
-
     @Test
-    @DataSet({"pm_cycle_init.xml", "cleanup.xml"})
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml",
+            "pm_review_init.xml"})
     void getTimeline() {
         final var result = instance.getTimeline(PERFORMANCE_CYCLE_UUID);
 
@@ -375,19 +447,4 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .isEqualTo(q3);
     }
 
-    @Test
-    @DataSet({"pm_cycle_init.xml", "objective_sharing_init.xml"})
-    void getColleagueSharedObjectives() {
-        var reviews = instance.getReviewsByParams(COLLEAGUE_UUID_2, PERFORMANCE_CYCLE_UUID, OBJECTIVE, APPROVED);
-
-        assertThat(reviews)
-                .singleElement()
-                .asInstanceOf(type(Review.class))
-                .returns(COLLEAGUE_UUID_2, from(Review::getColleagueUuid))
-                .returns(PERFORMANCE_CYCLE_UUID, from(Review::getPerformanceCycleUuid))
-                .returns(OBJECTIVE, from(Review::getType))
-                .returns(NUMBER_1, from(Review::getNumber))
-                .returns(REVIEW_PROPERTIES_INIT, from(Review::getProperties))
-                .returns(APPROVED, from(Review::getStatus));
-    }
 }

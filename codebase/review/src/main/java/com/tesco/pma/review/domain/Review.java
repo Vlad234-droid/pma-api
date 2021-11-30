@@ -22,7 +22,7 @@ public class Review implements Serializable {
     private static final long serialVersionUID = 310609427305520535L;
 
     UUID uuid;
-    UUID timelinePointUuid;
+    UUID tlPointUuid;
     PMReviewType type;
     Integer number;
     MapJson properties;
