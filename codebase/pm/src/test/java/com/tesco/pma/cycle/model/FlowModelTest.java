@@ -66,7 +66,7 @@ class FlowModelTest {
 
         @Override
         public String resourceToString(String resourcePath, String resourceName) throws IOException {
-            return this.resourceProvider.resourceToString(Path.of(RESOURCES_PATH, resourcePath).toString(), resourceName);
+            return this.resourceProvider.resourceToString(FilenameUtils.concat(RESOURCES_PATH, resourcePath), resourceName);
         }
     }
 
