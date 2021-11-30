@@ -6,13 +6,14 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Data
 @SuppressWarnings("PMD.ShortClassName")
 public class Tip implements Serializable {
 
-    private static final long serialVersionUID = 8847134507429298846L;
+    private static final long serialVersionUID = -8380094330281630022L;
 
     @Schema(description = "Backend field for DB record.")
     private UUID pkUuid;
@@ -40,6 +41,9 @@ public class Tip implements Serializable {
 
     @Schema(description = "Published checkbox.", example = "false")
     private Boolean published = Boolean.FALSE;
+
+    @Schema(description = "All history of tip's changing.")
+    private List<Tip> history;
 
     @Schema(defaultValue = "Now.")
     private Instant createdTime;

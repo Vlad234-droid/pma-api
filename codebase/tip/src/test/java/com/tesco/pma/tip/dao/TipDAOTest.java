@@ -78,7 +78,7 @@ class TipDAOTest extends AbstractDAOTest {
         //then
         assertThat(result)
                 .hasSize(2)
-                .element(1)
+                .element(0)
                 .returns(TestDataUtil.TIP_UUID, Tip::getUuid);
     }
 

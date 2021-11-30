@@ -14,6 +14,19 @@
         <result property="updatedTime" column="updated_time"/>
         <association property="targetOrganisation" autoMapping="true" columnPrefix="o_"
                      javaType="com.tesco.pma.organisation.api.ConfigEntry"/>
+        <collection property="history" ofType="com.tesco.pma.tip.api.Tip">
+            <id property="pkUuid" column="pk_uuid"/>
+            <result property="uuid" column="h_uuid"/>
+            <result property="version" column="h_version"/>
+            <result property="title" column="h_title"/>
+            <result property="description" column="h_description"/>
+            <result property="imageLink" column="h_imageLink"/>
+            <result property="published" column="h_published"/>
+            <result property="createdTime" column="h_createdTime"/>
+            <result property="updatedTime" column="h_updatedTime"/>
+            <association property="targetOrganisation" autoMapping="true" columnPrefix="ho_"
+                         javaType="com.tesco.pma.organisation.api.ConfigEntry"/>
+        </collection>
     </resultMap>
 
     <sql id="getSortField">
@@ -155,11 +168,24 @@
                t.published,
                t.created_time,
                t.updated_time,
-               ce.uuid          as o_uuid,
-               ce.name          as o_name,
-               ce.composite_key as o_compositeKey
+               ce.uuid           as o_uuid,
+               ce.name           as o_name,
+               ce.composite_key  as o_compositeKey,
+               h.uuid            as h_uuid,
+               h.version         as h_version,
+               h.title           as h_title,
+               h.description     as h_description,
+               h.image_link      as h_imageLink,
+               h.published       as h_published,
+               h.created_time    as h_createdTime,
+               h.updated_time    as h_updatedTime,
+               hce.uuid          as ho_uuid,
+               hce.name          as ho_name,
+               hce.composite_key as ho_compositeKey
         FROM tip t
-                 LEFT JOIN config_entry ce on ce.uuid = t.target_organisation_uuid
+                 LEFT JOIN config_entry ce ON ce.uuid = t.target_organisation_uuid
+                 LEFT JOIN tip h ON h.uuid = t.uuid
+                 LEFT JOIN config_entry hce ON hce.uuid = h.target_organisation_uuid
         WHERE (t.uuid, t.version) IN
               (SELECT uuid, MAX(version)
                FROM tip
@@ -178,7 +204,7 @@
             OR UPPER(t.description) LIKE '%'||UPPER(#{requestQuery.search})||'%' )
         </if>
         <if test="requestQuery.sort.isEmpty()">
-            ORDER BY t.created_time DESC
+            ORDER BY t.updated_time DESC
         </if>
         <if test="!requestQuery.sort.isEmpty()">
             ORDER BY
