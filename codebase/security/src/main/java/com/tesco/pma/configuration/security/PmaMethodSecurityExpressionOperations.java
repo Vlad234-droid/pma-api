@@ -139,7 +139,7 @@ public class PmaMethodSecurityExpressionOperations implements MethodSecurityExpr
      *
      * @return true - if user is a Colleague of work level, false otherwise.
      */
-    public boolean isColleagueOf(String... workLevelCodes) {
+    public boolean hasColleagueWorkLevel(String... workLevelCodes) {
         var currentUserId = getCurrentUserId();
         var colleague = profileService.getColleague(currentUserId);
         var workLevelCodesList = Arrays.asList(workLevelCodes);
