@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
+import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_NOT_FOUND;
+
 /**
  * Implementation of {@link ProfileService}.
  */
@@ -134,7 +136,11 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public ColleagueEntity getColleague(UUID colleagueUuid) {
-        return profileDAO.getColleague(colleagueUuid);
+        var colleague = profileDAO.getColleague(colleagueUuid);
+        if (colleague == null) {
+            throw notFound(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid);
+        }
+        return colleague;
     }
 
     @Override
@@ -197,8 +203,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private NotFoundException notFound(String paramName, Object paramValue) {
-        return new NotFoundException(ErrorCodes.PROFILE_NOT_FOUND.getCode(),
-                messages.getMessage(ErrorCodes.PROFILE_NOT_FOUND,
+        return new NotFoundException(PROFILE_NOT_FOUND.getCode(),
+                messages.getMessage(PROFILE_NOT_FOUND,
                         Map.of("param_name", paramName, "param_value", paramValue)));
     }
 

@@ -60,7 +60,6 @@ public class PMCycleServiceImpl implements PMCycleService {
     private final FileService fileService;
     private final ResourceProvider resourceProvider;
 
-    public static final String NOT_IMPLEMENTED_YET = "Not implemented yet";
     private static final String ORG_KEY_PARAMETER_NAME = "organisationKey";
     private static final String TEMPLATE_UUID_PARAMETER_NAME = "templateUUID";
     private static final String CYCLE_UUID_PARAMETER_NAME = "cycleUuid";
