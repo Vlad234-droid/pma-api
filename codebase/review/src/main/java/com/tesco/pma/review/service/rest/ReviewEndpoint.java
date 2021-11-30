@@ -320,7 +320,7 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Organisation objectives not found", content = @Content)
     @GetMapping(path = "/org-objectives",
             produces = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isColleague() or isLineManager() or isPeopleTeam()")
+    @PreAuthorize("isColleagueOf('WL4', 'WL5')")
     public RestResponse<List<OrgObjective>> getOrgObjectives() {
         return success(reviewService.getAllOrgObjectives());
     }

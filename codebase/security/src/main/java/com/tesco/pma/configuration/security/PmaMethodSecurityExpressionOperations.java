@@ -1,12 +1,16 @@
 package com.tesco.pma.configuration.security;
 
+import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.security.UserRoleNames;
 import lombok.NonNull;
 import lombok.experimental.Delegate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.UUID;
 
 import static com.tesco.pma.security.UserRoleNames.ADMIN;
@@ -48,8 +52,13 @@ public class PmaMethodSecurityExpressionOperations implements MethodSecurityExpr
     @NonNull
     private final MethodSecurityExpressionOperations delegate;
 
-    public PmaMethodSecurityExpressionOperations(@NonNull MethodSecurityExpressionOperations delegate) {
+    @NonNull
+    private final ProfileService profileService;
+
+    public PmaMethodSecurityExpressionOperations(@NonNull MethodSecurityExpressionOperations delegate,
+                                                 @NonNull ProfileService profileService) {
         this.delegate = delegate;
+        this.profileService = profileService;
         log.info("MethodSecurityExpressionOperations delegate: {}", delegate);
     }
 
@@ -76,7 +85,7 @@ public class PmaMethodSecurityExpressionOperations implements MethodSecurityExpr
             return false;
         }
 
-        var currentUserId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
+        var currentUserId = getCurrentUserId();
         return userId.equals(currentUserId);
     }
 
@@ -123,6 +132,26 @@ public class PmaMethodSecurityExpressionOperations implements MethodSecurityExpr
      */
     public boolean hasAnyRole() {
         return hasAnyRole(ALL.toArray(new String[0]));
+    }
+
+    /**
+     * Check if user has {@link UserRoleNames#COLLEAGUE} role and at least one of {@code workLevelCodes}
+     *
+     * @return true - if user is a Colleague of work level, false otherwise.
+     */
+    public boolean isColleagueOf(String... workLevelCodes) {
+        var currentUserId = getCurrentUserId();
+        var colleague = profileService.getColleague(currentUserId);
+        var workLevelCodesList = Arrays.asList(workLevelCodes);
+
+        if (!CollectionUtils.isEmpty(workLevelCodesList) && hasRole(COLLEAGUE)) {
+            return workLevelCodesList.stream().anyMatch(wl -> wl.equalsIgnoreCase(colleague.getWorkLevel().getCode()));
+        }
+        return false;
+    }
+
+    private UUID getCurrentUserId() {
+        return UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
 }
