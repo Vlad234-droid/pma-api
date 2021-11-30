@@ -10,7 +10,6 @@ import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.configuration.security.AppendGrantedAuthoritiesBearerTokenAuthenticationMerger;
 import com.tesco.pma.exception.ExternalSystemException;
-import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.security.UserRoleNames;
 import com.tesco.pma.service.colleague.client.ColleagueApiClient;
 import lombok.RequiredArgsConstructor;
