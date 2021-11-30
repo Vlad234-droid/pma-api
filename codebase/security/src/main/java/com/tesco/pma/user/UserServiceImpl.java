@@ -5,12 +5,11 @@ import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.api.Contact;
 import com.tesco.pma.colleague.api.FindColleaguesRequest;
 import com.tesco.pma.colleague.api.Profile;
+import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
-import com.tesco.pma.colleague.profile.service.util.ColleagueFactsApiLocalMapper;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.configuration.security.AppendGrantedAuthoritiesBearerTokenAuthenticationMerger;
 import com.tesco.pma.exception.ExternalSystemException;
-import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.security.UserRoleNames;
 import com.tesco.pma.service.colleague.client.ColleagueApiClient;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +47,6 @@ public class UserServiceImpl implements UserService {
     private final ProfileService profileService;
     private final ColleagueApiClient colleagueApiClient;
     private final NamedMessageSourceAccessor messages;
-    private final ColleagueFactsApiLocalMapper colleagueFactsApiLocalMapper;
 
     @Override
     public Optional<User> findUserByColleagueUuid(final UUID colleagueUuid) {
@@ -137,23 +135,25 @@ public class UserServiceImpl implements UserService {
         // skip nonexistent/notfound users
         return colleagueUuids.stream()
                 .distinct()
-                .map(this::tryFindColleagueByUuid)
+                .map(this::tryFindColleagueProfileByUuid)
                 .filter(Objects::nonNull)
-                .map(this::mapColleagueToUser)
+                .map(this::mapColleagueProfileToUser)
                 .collect(Collectors.toList());
     }
 
-    private Colleague tryFindColleagueByUuid(UUID colleagueUuid) {
+    private ColleagueProfile tryFindColleagueProfileByUuid(UUID colleagueUuid) {
         // First attempt - try to find in local storage
-        try {
-            var oc = profileService.getColleague(colleagueUuid);
-            return colleagueFactsApiLocalMapper.localToColleagueFactsApi(oc, colleagueUuid, false);
-        } catch (NotFoundException ex) {
-            // ignored
+        var optionalColleagueProfile = profileService.findProfileByColleagueUuid(colleagueUuid);
+        if (optionalColleagueProfile.isPresent()) {
+            return optionalColleagueProfile.get();
         }
+
         // Second attempt - try to find with using external Colleague Facts API
         try {
-            return colleagueApiClient.findColleagueByColleagueUuid(colleagueUuid);
+            var colleague = colleagueApiClient.findColleagueByColleagueUuid(colleagueUuid);
+            var colleagueProfile = new ColleagueProfile();
+            colleagueProfile.setColleague(colleague);
+            return colleagueProfile;
         } catch (HttpClientErrorException.NotFound exception) {
             return null;
         } catch (RestClientException e) {
@@ -164,6 +164,13 @@ public class UserServiceImpl implements UserService {
     private User mapColleagueToUser(final Colleague source) {
         final var user = new User();
         user.setColleague(source);
+        return user;
+    }
+
+    private User mapColleagueProfileToUser(final ColleagueProfile source) {
+        final var user = new User();
+        user.setColleague(source.getColleague());
+        user.setProfileAttributes(source.getProfileAttributes());
         return user;
     }
 
