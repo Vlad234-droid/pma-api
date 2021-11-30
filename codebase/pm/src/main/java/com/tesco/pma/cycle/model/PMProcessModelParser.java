@@ -193,7 +193,7 @@ public class PMProcessModelParser {
             return new String[]{StringUtils.EMPTY, fullPath};
         }
 
-        var path = Path.of(fullPath);
+        final var path = Path.of(fullPath);
 
         return new String[]{
                 path.getParent().toString(),

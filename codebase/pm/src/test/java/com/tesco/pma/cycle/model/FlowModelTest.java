@@ -8,6 +8,7 @@ import com.tesco.pma.cycle.api.model.PMFormElement;
 import com.tesco.pma.cycle.api.model.PMReviewElement;
 import com.tesco.pma.cycle.exception.ParseException;
 import com.tesco.pma.process.service.ClasspathResourceProvider;
+import org.apache.commons.io.FilenameUtils;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.junit.jupiter.api.Assertions;
@@ -60,7 +61,7 @@ class FlowModelTest {
 
         @Override
         public InputStream read(String resourcePath, String resourceName) throws IOException {
-            return this.resourceProvider.read(Path.of(RESOURCES_PATH, resourcePath).toString(), resourceName);
+            return this.resourceProvider.read(FilenameUtils.concat(RESOURCES_PATH, resourcePath), resourceName);
         }
 
         @Override
