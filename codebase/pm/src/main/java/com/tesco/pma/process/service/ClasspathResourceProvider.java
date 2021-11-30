@@ -14,7 +14,7 @@ public class ClasspathResourceProvider implements ResourceProvider {
 
     @Override
     public InputStream read(String resourcePath, String resourceName) throws IOException {
-        return getClass().getResourceAsStream(Path.of(resourcePath, resourceName).toString());
+        return getClass().getClassLoader().getResourceAsStream(Path.of(resourcePath, resourceName).toString());
     }
 
     @Override

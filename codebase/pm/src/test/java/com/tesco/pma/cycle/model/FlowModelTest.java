@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class FlowModelTest {
     private static final String PROCESS_NAME = "GROUPS_HO_S_WL1";
     private static final String PROCESS_NAME_2 = "GROUP_HO_S_WL1";
-    private static final String RESOURCES_PATH = "/com/tesco/pma/flow/";
+    private static final String RESOURCES_PATH = "com/tesco/pma/flow/";
     private static final String FORM_1 = "forms/pm_o_1.form";
     private static final String FORM_2 = "pm_o_2.form";
     private static final String FILE_NAME_PM_V1 = "pm_v1.bpmn";
