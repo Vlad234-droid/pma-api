@@ -170,7 +170,7 @@ public class PMProcessModelParser {
         if (!StringUtils.isBlank(formKey)) {
             try {
                 var formName = getFormName(formKey);
-                var formFullPath = splitFullPath(formName);
+                var formFullPath = splitCompoundFullPath(formName);
                 var formJson = resourceProvider.resourceToString(formFullPath[0], formFullPath[1]);
 
                 pmReview.setForm(new PMFormElement(formKey, formName, formJson));
@@ -181,7 +181,13 @@ public class PMProcessModelParser {
         return pmReview;
     }
 
-    private String[] splitFullPath(String fullPath) {
+    private String[] splitCompoundFullPath(String compoundFullPath) {
+
+        var fullPath = compoundFullPath;
+
+        if (compoundFullPath.contains(":")) {
+            fullPath = StringUtils.substringAfterLast(compoundFullPath, ":");
+        }
 
         if (!fullPath.contains("/")) {
             return new String[]{StringUtils.EMPTY, fullPath};
