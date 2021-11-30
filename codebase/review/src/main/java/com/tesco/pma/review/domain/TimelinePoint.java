@@ -2,7 +2,6 @@ package com.tesco.pma.review.domain;
 
 import com.tesco.pma.api.MapJson;
 import com.tesco.pma.cycle.api.PMReviewStatus;
-import com.tesco.pma.cycle.api.PMReviewType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.UUID;
 
 @Data
@@ -18,14 +18,14 @@ import java.util.UUID;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class Review implements Serializable {
-    private static final long serialVersionUID = 310609427305520535L;
+public class TimelinePoint implements Serializable {
+    private static final long serialVersionUID = 1819211912152945571L;
 
     UUID uuid;
-    UUID timelinePointUuid;
-    PMReviewType type;
-    Integer number;
+    UUID colleagueCycleUuid;
+    String code;
+    Instant startTime;
+    Instant endTime;
     MapJson properties;
     PMReviewStatus status;
-    String changeStatusReason;
 }

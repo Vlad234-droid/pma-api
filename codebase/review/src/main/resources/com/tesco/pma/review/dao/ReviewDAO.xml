@@ -5,8 +5,7 @@
 
     <resultMap id="reviewResultMap" type="com.tesco.pma.review.domain.Review">
         <id property="uuid" column="uuid"/>
-        <result property="colleagueUuid" column="colleague_uuid"/>
-        <result property="performanceCycleUuid" column="performance_cycle_uuid"/>
+        <result property="timelinePointUuid" column="timeline_point_uuid"/>
         <result property="type" column="type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.cycle.api.PMReviewType"/>
         <result property="number" column="number"/>
