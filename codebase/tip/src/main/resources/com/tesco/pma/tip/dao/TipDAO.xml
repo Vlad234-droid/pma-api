@@ -5,11 +5,11 @@
 
     <resultMap id="tipMap" type="com.tesco.pma.tip.api.Tip">
         <id property="uuid" column="uuid"/>
+        <result property="version" column="version"/>
         <result property="title" column="title"/>
         <result property="description" column="description"/>
         <result property="imageLink" column="image_link"/>
         <result property="published" column="published"/>
-        <result property="history" column="history" typeHandler="org.apache.ibatis.type.ArrayTypeHandler"/>
         <result property="createdTime" column="created_time"/>
         <result property="updatedTime" column="updated_time"/>
         <association property="targetOrganisation" autoMapping="true" columnPrefix="o_"
@@ -148,11 +148,11 @@
 
     <sql id="select">
         SELECT t.uuid,
+               t.version,
                t.title,
                t.description,
                t.image_link,
                t.published,
-               t.history,
                t.created_time,
                t.updated_time,
                ce.uuid          as o_uuid,
@@ -160,11 +160,14 @@
                ce.composite_key as o_compositeKey
         FROM tip t
                  LEFT JOIN config_entry ce on ce.uuid = t.target_organisation_uuid
+        WHERE (t.uuid, t.version) IN
+              (SELECT uuid, MAX(version)
+               FROM tip
+               GROUP BY uuid)
     </sql>
 
-    <select id="selectAll" flushCache="true" resultMap="tipMap">
+    <select id="findByRequestQuery" flushCache="true" resultMap="tipMap">
         <include refid="select"/>
-        WHERE 1 = 1
         <if test="!requestQuery.filters.isEmpty()">
             <foreach collection="requestQuery.filters" item="filter" index="index">
                 <include refid="getExpression"/>
@@ -192,13 +195,15 @@
         </if>
     </select>
 
-    <select id="selectByUuid" flushCache="true" resultMap="tipMap">
+    <select id="findByUuid" flushCache="true" resultMap="tipMap">
         <include refid="select"/>
-        WHERE t.uuid = #{uuid}
+        AND t.uuid = #{uuid}
     </select>
 
-    <insert id="insert" useGeneratedKeys="true" keyProperty="uuid" keyColumn="uuid" flushCache="true">
-        INSERT INTO tip (uuid,
+    <insert id="create" useGeneratedKeys="true" keyProperty="uuid" keyColumn="uuid" flushCache="true">
+        INSERT INTO tip (pk_uuid,
+                         uuid,
+                         version,
                          title,
                          description,
                          target_organisation_uuid,
@@ -206,7 +211,9 @@
                          published,
                          created_time,
                          updated_time)
-        VALUES (#{tip.uuid},
+        VALUES (#{tip.pkUuid},
+                #{tip.uuid},
+                #{tip.version},
                 #{tip.title},
                 #{tip.description},
                 #{tip.targetOrganisation.uuid},
@@ -216,28 +223,10 @@
                 #{tip.updatedTime})
     </insert>
 
-    <update id="update">
-        UPDATE tip
-        SET title                    = #{tip.title},
-            description              = #{tip.description},
-            target_organisation_uuid = #{tip.targetOrganisation.uuid},
-            image_link               = #{tip.imageLink},
-            published                = false,
-            updated_time             = #{tip.updatedTime}
-        WHERE uuid = #{tip.uuid}
-    </update>
-
     <delete id="delete">
         DELETE
         FROM tip
         WHERE uuid = #{uuid}
     </delete>
-
-    <update id="publish">
-        UPDATE tip
-        SET published = true,
-            history   = #{history, typeHandler=org.apache.ibatis.type.ArrayTypeHandler}
-        WHERE uuid = #{uuid}
-    </update>
 
 </mapper>

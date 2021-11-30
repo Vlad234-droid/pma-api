@@ -18,6 +18,9 @@
                 </groups>
             </constraint>
         </field>
+        <field name="pkUuid">
+            <constraint annotation="javax.validation.constraints.Null"/>
+        </field>
         <field name="title">
             <constraint annotation="javax.validation.constraints.NotNull"/>
             <constraint annotation="javax.validation.constraints.Size">

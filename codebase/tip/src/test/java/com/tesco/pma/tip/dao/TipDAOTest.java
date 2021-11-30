@@ -11,7 +11,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -20,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TipDAOTest extends AbstractDAOTest {
 
@@ -38,15 +36,16 @@ class TipDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "tip_init.xml"})
-    void insert() {
+    void create() {
         //given
         Tip tip = TestDataUtil.buildTip();
+        tip.setPkUuid(UUID.randomUUID());
         tip.setUuid(UUID.randomUUID());
         tip.setTitle("new title");
         tip.setCreatedTime(Instant.now());
 
         //when
-        int result = underTest.insert(tip);
+        int result = underTest.create(tip);
 
         //then
         assertEquals(1, result);
@@ -57,23 +56,24 @@ class TipDAOTest extends AbstractDAOTest {
     void shouldThrowDuplicateKeyExceptionWhenInsertExistingUniqueKey() {
         //given
         Tip tip = TestDataUtil.buildTip();
+        tip.setPkUuid(UUID.randomUUID());
         tip.setUuid(UUID.randomUUID());
         tip.setCreatedTime(Instant.now());
 
         //when and then
-        assertThatCode(() -> underTest.insert(tip))
+        assertThatCode(() -> underTest.create(tip))
                 .isExactlyInstanceOf(DuplicateKeyException.class)
                 .hasMessageContaining(TestDataUtil.TIP_TITLE);
     }
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "tip_init.xml"})
-    void selectAll() {
+    void findByRequestQuery() {
         //given
         RequestQuery requestQuery = new RequestQuery();
 
         //when
-        List<Tip> result = underTest.selectAll(requestQuery);
+        List<Tip> result = underTest.findByRequestQuery(requestQuery);
 
         //then
         assertThat(result)
@@ -84,9 +84,9 @@ class TipDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "tip_init.xml"})
-    void selectByUuid() {
+    void findByUuid() {
         //when
-        Tip result = underTest.selectByUuid(TestDataUtil.TIP_UUID);
+        Tip result = underTest.findByUuid(TestDataUtil.TIP_UUID);
 
         //then
         assertThat(result)
@@ -99,20 +99,6 @@ class TipDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "tip_init.xml"})
-    void update() {
-        //given
-        Tip tip = TestDataUtil.buildTip();
-        tip.setUuid(TestDataUtil.TIP_UUID);
-
-        //when
-        int result = underTest.update(tip);
-
-        //then
-        assertEquals(1, result);
-    }
-
-    @Test
-    @DataSet({BASE_PATH_TO_DATA_SET + "tip_init.xml"})
     void delete() {
         //when
         int result = underTest.delete(TestDataUtil.TIP_UUID);
@@ -120,20 +106,4 @@ class TipDAOTest extends AbstractDAOTest {
         //then
         assertEquals(1, result);
     }
-
-    @Test
-    @DataSet({BASE_PATH_TO_DATA_SET + "tip_init.xml"})
-    void publish() {
-        //given
-        Timestamp now = Timestamp.from(Instant.now());
-
-        //when
-        int result = underTest.publish(TestDataUtil.TIP_UNPUBLISHED_UUID, now);
-        Tip publishedTip = underTest.selectByUuid(TestDataUtil.TIP_UNPUBLISHED_UUID);
-
-        //then
-        assertEquals(1, result);
-        assertTrue(publishedTip.getPublished());
-    }
-
 }

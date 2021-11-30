@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -13,8 +12,15 @@ import java.util.UUID;
 @SuppressWarnings("PMD.ShortClassName")
 public class Tip implements Serializable {
 
-    private static final long serialVersionUID = 232382738998179416L;
+    private static final long serialVersionUID = 8847134507429298846L;
 
+    @Schema(description = "Backend field for DB record.")
+    private UUID pkUuid;
+
+    @Schema(description = "Backend field for managing history.")
+    private Integer version = 1;
+
+    @Schema(description = "Key for managing tip with versions.")
     private UUID uuid;
 
     @Schema(description = "Title.", required = true,
@@ -34,9 +40,6 @@ public class Tip implements Serializable {
 
     @Schema(description = "Published checkbox.", example = "false")
     private Boolean published = Boolean.FALSE;
-
-    @Schema(description = "Last 5 records of date and hour when the Tip was published.")
-    private Timestamp[] history;
 
     @Schema(defaultValue = "Now.")
     private Instant createdTime;

@@ -8,8 +8,14 @@
     -->
     <changeSet id="5" author="Stanislav.Eurich">
         <createTable tableName="tip">
-            <column name="uuid" type="${uuid_type}">
+            <column name="pk_uuid" type="${uuid_type}">
                 <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="uuid" type="${uuid_type}" remarks="Grouping tip versions by key.">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="integer" remarks="Version.">
+                <constraints nullable="false"/>
             </column>
             <column name="title" type="varchar(50)" remarks="Title.">
                 <constraints nullable="false"/>
@@ -29,7 +35,6 @@
             <column name="published" type="boolean" remarks="False for unpublished tip.">
                 <constraints nullable="false"/>
             </column>
-            <column name="history" type="timestamptz []" remarks="Last 5 records of date and hour when the Tip was published."/>
             <column name="created_time" type="timestamptz">
                 <constraints nullable="false"/>
             </column>
@@ -38,7 +43,7 @@
             </column>
         </createTable>
         <addUniqueConstraint
-                columnNames="title, description, target_organisation_uuid"
+                columnNames="title, description, target_organisation_uuid, version"
                 constraintName="composite_unique_tip"
                 tableName="tip"
         />
