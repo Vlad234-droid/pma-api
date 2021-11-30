@@ -29,8 +29,8 @@ class PMRuntimeProcessDAOTest extends AbstractDAOTest {
     private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/process/dao/";
     private static final UUID PM_UUID = UUID.fromString("4f2ab073-2c31-11ec-916b-0242391d2e7a");
     private static final UUID NEW_UUID = UUID.fromString("4f2ab073-2c31-11ec-916b-0242391d2e7c");
-    private static final UUID BPM_UUID = UUID.fromString("bf2ab073-2c31-11ec-916b-0242391d2e7c");
-    private static final UUID NEW_BPM_UUID = UUID.fromString("cf2ab073-2c31-11ec-916b-0242391d2e7c");
+    private static final String BPM_UUID = "bf2ab073-2c31-11ec-916b-0242391d2e7c";
+    private static final String NEW_BPM_UUID = "cf2ab073-2c31-11ec-916b-0242391d2e7c";
     private static final UUID CYCLE_UUID = UUID.fromString("10000000-0000-0000-0000-000000000000");
     private static final String BUSINESS_KEY = "PROCESS_NAME";
 
@@ -92,7 +92,7 @@ class PMRuntimeProcessDAOTest extends AbstractDAOTest {
         assertTrue(processes.get(0).getLastUpdateTime().isAfter(processes.get(1).getLastUpdateTime()));
     }
 
-    private void checkProcess(PMRuntimeProcess actual, UUID pmUuid, PMProcessStatus registered, UUID bpmUuid) {
+    private void checkProcess(PMRuntimeProcess actual, UUID pmUuid, PMProcessStatus registered, String bpmUuid) {
         assertNotNull(actual);
         assertEquals(pmUuid, actual.getId());
         assertEquals(registered, actual.getStatus());

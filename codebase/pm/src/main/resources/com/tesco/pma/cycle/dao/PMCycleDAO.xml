@@ -40,7 +40,7 @@
         </if>
     </sql>
 
-    <insert id="createInt" flushCache="true" parameterType="com.tesco.pma.cycle.api.PMCycle">
+    <insert id="insertOrUpdatePMCycle" flushCache="true" parameterType="com.tesco.pma.cycle.api.PMCycle">
         INSERT INTO pm_cycle
         (uuid,
          entry_config_key,
@@ -65,13 +65,25 @@
                 #{cycle.startTime},
                 #{cycle.endTime},
                 #{cycle.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-                #{cycle.metadata, jdbcType=OTHER, typeHandler=com.tesco.pma.cycle.dao.utils.PMCycleJsonbTypeHandler});
+                #{cycle.metadata, jdbcType=OTHER, typeHandler=com.tesco.pma.cycle.dao.utils.PMCycleJsonbTypeHandler})
+        ON CONFLICT ON CONSTRAINT pm_cycle_pk
+            DO UPDATE SET name    = #{cycle.name},
+                          type_id = #{cycle.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleType},
+                          status_id = #{cycle.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus},
+                          created_by = #{cycle.createdBy.uuid},
+                          creation_time = #{now},
+                          start_time = #{cycle.startTime},
+                          end_time = #{cycle.endTime},
+                          properties = #{cycle.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+                          metadata = #{cycle.metadata, jdbcType=OTHER, typeHandler=com.tesco.pma.cycle.dao.utils.PMCycleJsonbTypeHandler}
+        WHERE pm_cycle.uuid = #{cycle.uuid}
     </insert>
 
-    <select id="read" resultMap="cycleResultMap">
+    <select id="getByUUID" resultMap="cycleResultMap">
         SELECT *
         FROM pm_cycle
         WHERE uuid = #{uuid}
+        <include refid="addStatusIdCondition"/>
     </select>
 
     <update id="updateStatus">

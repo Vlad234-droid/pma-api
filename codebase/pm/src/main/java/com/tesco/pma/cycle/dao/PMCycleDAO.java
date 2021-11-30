@@ -18,12 +18,12 @@ public interface PMCycleDAO {
      *
      * @param cycle performance cycle
      */
-    default void create(PMCycle cycle) {
-        createInt(cycle, now());
+    default void createOrUpdate(PMCycle cycle) {
+        insertOrUpdatePMCycle(cycle, now());
     }
 
 
-    void createInt(@Param("cycle") PMCycle cycle,
+    void insertOrUpdatePMCycle(@Param("cycle") PMCycle cycle,
                    @Param("now") Instant now);
 
     /**
@@ -44,7 +44,8 @@ public interface PMCycleDAO {
      * @param uuid performance cycle UUID
      * @return performance cycle
      */
-    PMCycle read(@Param("uuid") UUID uuid);
+    PMCycle getByUUID(@Param("uuid") UUID uuid,
+                      @Param("statusFilter") DictionaryFilter<PMCycleStatus> statusFilter);
 
     /**
      * Getting performance cycle for existing colleague

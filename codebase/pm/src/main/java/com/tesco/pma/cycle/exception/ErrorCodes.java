@@ -21,6 +21,10 @@ public enum ErrorCodes implements ErrorCodeAware {
      */
     PM_CYCLE_NOT_FOUND_FOR_STATUS_UPDATE,
     /**
+     * Cycle not allowed for publishing
+     */
+    PM_CYCLE_PUBLISH_NOT_ALLOWED,
+    /**
      * Cycle already exists
      */
     PM_CYCLE_ALREADY_EXISTS,

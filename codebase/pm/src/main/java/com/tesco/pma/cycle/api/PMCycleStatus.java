@@ -14,7 +14,6 @@ public enum PMCycleStatus implements DictionaryItem<Integer> {
 
     DRAFT(4, "Performance cycle in draft"),
 
-
     FAILED(5,"Performance cycle start failed");
 
     private final Integer id;

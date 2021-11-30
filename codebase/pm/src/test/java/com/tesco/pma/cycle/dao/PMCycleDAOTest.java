@@ -84,7 +84,7 @@ class PMCycleDAOTest extends AbstractDAOTest {
     @ExpectedDataSet(value = "pm_create_cycle_expected_1.xml", compareOperation = CompareOperation.CONTAINS)
     void createPMCycle() throws ParseException {
         Instant testTime = new SimpleDateFormat(SDF_PATTERN, Locale.ENGLISH).parse("2016-12-31").toInstant();
-        dao.createInt(createCycle(CYCLE_CREATE_UUID), testTime);
+        dao.insertOrUpdatePMCycle(createCycle(CYCLE_CREATE_UUID), testTime);
     }
 
     @Test
@@ -101,7 +101,7 @@ class PMCycleDAOTest extends AbstractDAOTest {
         var metadata = IOUtils.toString(Objects.requireNonNull(getClass()
                 .getResourceAsStream("/com/tesco/pma/cycle/dao/type_1_metadata.json")), StandardCharsets.UTF_8);
         assertEquals(1, dao.updateMetadata(CYCLE_UUID, metadata));
-        var actual = dao.read(CYCLE_UUID);
+        var actual = dao.getByUUID(CYCLE_UUID, null);
         var expectedJson = json.from(metadata);
         assertThat(expectedJson).isEqualToJson(actual.getJsonMetadata());
     }
@@ -110,7 +110,7 @@ class PMCycleDAOTest extends AbstractDAOTest {
     @DataSet("pm_cycle_edit_init.xml")
     @ExpectedDataSet(value = "pm_cycle_edit_expected.xml", compareOperation = CompareOperation.CONTAINS)
     void update() {
-        var actualCycle = dao.read(CYCLE_UUID);
+        var actualCycle = dao.getByUUID(CYCLE_UUID, null);
         actualCycle.setName(UPDATED_NAME);
         dao.update(actualCycle, null);
     }
