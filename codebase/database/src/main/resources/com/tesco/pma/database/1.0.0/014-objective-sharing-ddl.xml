@@ -1,0 +1,29 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet author="mdiadia" id="1">
+        <createTable remarks="Objective sharing table"
+                     tableName="shared_objective">
+            <column name="colleague_uuid" type="${uuid_type}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="shared_objective_pk"/>
+            </column>
+            <column name="cycle_uuid" type="${uuid_type}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="shared_objective_pk"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="mdiadia" id="2">
+        <addForeignKeyConstraint baseColumnNames="colleague_uuid" baseTableName="shared_objective"
+                                 constraintName="shared_objective_manager_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="uuid" referencedTableName="colleague" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="cycle_uuid" baseTableName="shared_objective"
+                                 constraintName="shared_objective_cycle_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="uuid" referencedTableName="pm_cycle" validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>
