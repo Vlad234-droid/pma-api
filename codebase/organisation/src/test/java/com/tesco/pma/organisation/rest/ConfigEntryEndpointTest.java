@@ -46,7 +46,7 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
         when(service.getUnpublishedStructure(ENTRY_UUID)).thenReturn(getConfigEntryResponse());
 
         var result = mvc.perform(get("/config-entries/{entryUuid}/unpublished", ENTRY_UUID)
-                        .with(lineManager())
+                        .with(processManager())
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
@@ -62,7 +62,7 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
         when(service.getPublishedChildStructureByCompositeKey(COMPOSITE_KEY)).thenReturn(List.of(getConfigEntryResponse()));
 
         var result = mvc.perform(get("/config-entries").param("compositeKey", COMPOSITE_KEY)
-                        .with(lineManager())
+                        .with(processManager())
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
@@ -78,7 +78,7 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
         when(service.getUnpublishedChildStructureByCompositeKey(COMPOSITE_KEY)).thenReturn(List.of(getConfigEntryResponse()));
 
         var result = mvc.perform(get("/config-entries/unpublished").param("compositeKey", COMPOSITE_KEY)
-                        .with(peopleTeam())
+                        .with(processManager())
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
@@ -94,7 +94,7 @@ class ConfigEntryEndpointTest extends AbstractEndpointTest {
         when(service.getUnpublishedRoots()).thenReturn(List.of(getConfigEntryResponse()));
 
         var result = mvc.perform(get("/config-entries/roots/unpublished")
-                        .with(peopleTeam())
+                        .with(processManager())
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))

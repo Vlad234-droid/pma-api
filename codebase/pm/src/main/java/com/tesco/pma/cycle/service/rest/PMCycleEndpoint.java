@@ -182,7 +182,7 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle not found",
             content = @Content)
     @GetMapping(value = "/colleagues/{colleagueUuid}/metadata", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isProcessManager() or isAdmin()")
+    @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
     public ResponseEntity<Object> getMetadataByColleague(@PathVariable UUID colleagueUuid) {
         var cycle = service.getCurrentByColleague(colleagueUuid);
         var metadata = cycle.getJsonMetadata();
@@ -205,7 +205,7 @@ public class PMCycleEndpoint {
     @PutMapping(path = "/pm-cycles/{uuid}/metadata", produces = MimeTypeUtils.APPLICATION_JSON_VALUE,
             consumes = MimeTypeUtils.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
+    @PreAuthorize("isAdmin()")
     public RestResponse<?> updateJsonMetadata(@PathVariable("uuid") UUID uuid,
                                               @RequestBody String metadata) {
         service.updateJsonMetadata(uuid, metadata);
