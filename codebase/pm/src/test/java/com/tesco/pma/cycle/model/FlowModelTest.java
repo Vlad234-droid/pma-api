@@ -7,8 +7,6 @@ import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.cycle.api.model.PMFormElement;
 import com.tesco.pma.cycle.api.model.PMReviewElement;
 import com.tesco.pma.cycle.exception.ParseException;
-import com.tesco.pma.process.service.ClasspathResourceProvider;
-import org.apache.commons.io.FilenameUtils;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.junit.jupiter.api.Assertions;
@@ -19,7 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,7 +34,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class FlowModelTest {
     private static final String PROCESS_NAME = "GROUPS_HO_S_WL1";
     private static final String PROCESS_NAME_2 = "GROUP_HO_S_WL1";
-    private static final String RESOURCES_PATH = "/com/tesco/pma/flow/";
     private static final String FORM_1 = "forms/pm_o_1.form";
     private static final String FORM_2 = "pm_o_2.form";
     private static final String FILE_NAME_PM_V1 = "pm_v1.bpmn";
@@ -47,27 +43,13 @@ class FlowModelTest {
     private static final String FORM_TYPE_1_OBJECTIVE = "forms/type_1_objective.form";
     private static final String FORM_TYPE_2_OBJECTIVE = "forms/type_2_objective.form";
 
-    private final ResourceProvider resourceProvider = new FormsResourceProvider();
-
     private PMProcessModelParser parser;
 
     @Autowired
     private NamedMessageSourceAccessor messageSourceAccessor;
 
-    private static class FormsResourceProvider implements ResourceProvider {
-
-        private final ResourceProvider resourceProvider = new ClasspathResourceProvider();
-
-        @Override
-        public InputStream read(String resourcePath, String resourceName) throws IOException {
-            return this.resourceProvider.read(FilenameUtils.concat(RESOURCES_PATH, resourcePath), resourceName);
-        }
-
-        @Override
-        public String resourceToString(String resourcePath, String resourceName) throws IOException {
-            return this.resourceProvider.resourceToString(FilenameUtils.concat(RESOURCES_PATH, resourcePath), resourceName);
-        }
-    }
+    @Autowired
+    private ResourceProvider resourceProvider;
 
     @BeforeEach
     void init() {
