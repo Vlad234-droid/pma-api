@@ -47,7 +47,15 @@ public enum ErrorCodes implements ErrorCodeAware {
     /**
      * The passed value cannot be blank
      */
-    PM_PARSE_IS_BLANK;
+    PM_PARSE_IS_BLANK,
+    /**
+     * PM colleague cycle already exists
+     */
+    PM_COLLEAGUE_CYCLE_ALREADY_EXISTS,
+    /**
+     * PM colleague does not cycle exist
+     */
+    PM_COLLEAGUE_CYCLE_NOT_EXIST;
 
     @Override
     public String getCode() {
