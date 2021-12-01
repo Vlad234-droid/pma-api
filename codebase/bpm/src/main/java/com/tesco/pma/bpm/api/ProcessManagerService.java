@@ -20,7 +20,7 @@ public interface ProcessManagerService {
      */
     List<DeploymentInfo> listDeployments();
 
-    List<String> listProcessesByDeploymentAndResource(String deploymentId, String resourceName);
+    List<String> getProcessesIds(String deploymentId, String resourceName);
 
     /**
      * Returns a list of processes

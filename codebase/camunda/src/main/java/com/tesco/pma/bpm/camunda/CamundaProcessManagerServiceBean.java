@@ -156,7 +156,7 @@ public class CamundaProcessManagerServiceBean implements ProcessManagerService {
     }
 
     @Override
-    public List<String> listProcessesByDeploymentAndResource(String deploymentId, String resourceName) {
+    public List<String> getProcessesIds(String deploymentId, String resourceName) {
         ProcessEngine processEngine = getProcessEngine();
         ProcessDefinitionQuery processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
         processDefinitionQuery.deploymentId(deploymentId).processDefinitionResourceName(resourceName);
