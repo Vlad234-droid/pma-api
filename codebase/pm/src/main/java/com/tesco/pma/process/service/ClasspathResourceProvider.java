@@ -1,6 +1,10 @@
 package com.tesco.pma.process.service;
 
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.model.ResourceProvider;
+import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.process.api.PMProcessErrorCodes;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -13,13 +17,17 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ClasspathResourceProvider implements ResourceProvider {
 
-    @Value("${camunda.bpm.default-forms-paths}")
+    @Value("${camunda.bpm.deployment-resource-paths}")
     private String[] basePaths;
+
+    private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Override
     public InputStream read(String resourcePath, String resourceName) throws IOException {
@@ -33,14 +41,20 @@ public class ClasspathResourceProvider implements ResourceProvider {
             var path = FilenameUtils.concat(basePath, purePath);
 
             try {
-                return getClass().getClassLoader().getResourceAsStream(path);
+                var result = getClass().getClassLoader().getResourceAsStream(path);
 
-            } catch (Exception e){
-                log.warn("Error while trying to get resource {}", path, e);
+                if (result != null) {
+                    return result;
+                }
+
+            } catch (Exception e) {
+                log.warn(messageSourceAccessor.getMessage(
+                        PMProcessErrorCodes.RESOURCE_NOT_FOUND, Map.of("path", path)));
             }
         }
 
-        throw new NullPointerException(String.format("Resource not found %s %s", resourceName, resourcePath));
+        throw new NotFoundException(PMProcessErrorCodes.RESOURCE_NOT_FOUND.getCode(),
+                messageSourceAccessor.getMessage(PMProcessErrorCodes.RESOURCE_NOT_FOUND, Map.of("path", purePath)));
     }
 
     @Override
