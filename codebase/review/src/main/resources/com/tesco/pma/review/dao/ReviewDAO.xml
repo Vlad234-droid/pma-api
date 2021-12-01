@@ -149,7 +149,8 @@
                  inner join department d
                             on (d.id = c.department_id)
                  left join pm_colleague_cycle cc
-                           on (c.uuid = cc.colleague_uuid)
+                           on (c.uuid = cc.colleague_uuid
+                               and cc.status_id = 1)
                  left join pm_timeline_point tlp
                            on (cc.uuid = tlp.colleague_cycle_uuid)
                  left join pm_review r
