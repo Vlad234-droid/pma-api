@@ -29,7 +29,12 @@ public enum PMProcessErrorCodes implements ErrorCodeAware {
     /**
      * Process metadata already exists
      */
-    PROCESS_METADATA_ALREADY_EXISTS
+    PROCESS_METADATA_ALREADY_EXISTS,
+
+    /**
+     * Resource not found
+     */
+    RESOURCE_NOT_FOUND
     ;
 
 
