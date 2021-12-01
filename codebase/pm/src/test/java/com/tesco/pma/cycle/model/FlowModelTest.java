@@ -3,6 +3,8 @@ package com.tesco.pma.cycle.model;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.LocalTestConfig;
+import com.tesco.pma.cycle.api.model.PMCycleElement;
+import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.cycle.api.model.PMFormElement;
 import com.tesco.pma.cycle.api.model.PMReviewElement;
@@ -121,24 +123,48 @@ class FlowModelTest {
         Assertions.assertEquals(expected, PMProcessModelParser.defaultValue("Set objectives ", ""));
     }
 
-    private void checkModel(String processName, String processFileName, String formName, int tlSize, int reviewsCount) throws IOException {
+    private void checkModel(String processName, String processFileName, String objectiveFormName, int tlSize, int reviewsCount)
+            throws IOException {
         var model = getModel(processFileName);
         var metadata = parser.parse(model);
         assertNotNull(metadata);
-        var cycle = metadata.getCycle();
-        assertNotNull(cycle);
-        assertEquals(processName, cycle.getId());
-        assertEquals(processName, cycle.getCode());
 
-        assertEquals(tlSize, cycle.getTimelinePoints().size());
+        var cycle = checkCycle(processName, tlSize, metadata);
 
         var reviews = cycle.getTimelinePoints().stream()
                 .filter(t -> PMElementType.REVIEW.name().equalsIgnoreCase(t.getType().name()))
                 .map(t -> (PMReviewElement) t)
                 .collect(Collectors.toList());
-        assertEquals(reviewsCount, reviews.size());
 
-        checkObjective(formName, reviews);
+        checkReviews(reviewsCount, reviews);
+        checkObjective(objectiveFormName, reviews);
+    }
+
+    private void checkReviews(int reviewsCount, List<PMReviewElement> reviews) {
+        assertEquals(reviewsCount, reviews.size());
+        reviews.forEach(
+                review -> {
+                    assertNotNull(review.getId());
+                    assertNotNull(review.getCode());
+                    assertNotNull(review.getDescription());
+                    assertNotNull(review.getReviewType());
+                    //assertNotNull(review.getForm());
+                    assertEquals(PMElementType.REVIEW, review.getType());
+                    //assertTrue(review.getProperties().containsKey(PMReviewElement.PM_REVIEW_TYPE));
+                }
+        );
+    }
+
+    private PMCycleElement checkCycle(String processName, int tlSize, PMCycleMetadata metadata) {
+        var cycle = metadata.getCycle();
+        assertNotNull(cycle);
+        assertEquals(processName, cycle.getId());
+        assertEquals(processName, cycle.getCode());
+        assertNotNull(cycle.getCycleType());
+        //assertTrue(cycle.getProperties().containsKey(PMCycleElement.PM_CYCLE_START_TIME));
+
+        assertEquals(tlSize, cycle.getTimelinePoints().size());
+        return cycle;
     }
 
     private void checkObjective(String formName, List<PMReviewElement> reviews) {

@@ -10,7 +10,7 @@ import com.tesco.pma.cycle.api.model.PMElement;
 import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.cycle.model.PMProcessModelParser;
 import lombok.extern.slf4j.Slf4j;
-import org.camunda.bpm.model.bpmn.instance.BaseElement;
+import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -63,37 +63,32 @@ public class ProcessTimelinePoint extends CamundaAbstractFlowHandler {
         }
         //todo handle cycle statuses
 
-        Map<String, String> props = getParentProperties(context);
-        if (!props.isEmpty()) {
-            var type = PMElementType.getByCode(props.get(PMElement.PM_TYPE));
-            if (PMElementType.TIMELINE_POINT == type) {
-                processTimelinePoint(context, cycle, props);
-            } else if (PMElementType.REVIEW == type) {
-                processReview(context, cycle, props);
-            }
+        var parent = getParent(context);
+        if (PMElementType.TIMELINE_POINT == parent.getType()) {
+            processTimelinePoint(context, cycle, parent);
+        } else if (PMElementType.REVIEW == parent.getType()) {
+            processReview(context, cycle, parent);
         } else {
             //todo replace by required exception
             throw new ProcessExecutionException("Incorrect configuration: none required parameters are specified");
         }
-        log.info("Context variables: \n" + (((CamundaExecutionContext) context).getDelegateExecution()).getVariables());
-        log.info("Local variables: \n" + (((CamundaExecutionContext) context).getDelegateExecution()).getVariablesLocal());
     }
 
-    Map<String, String> getParentProperties(ExecutionContext context) {
+    PMElement getParent(ExecutionContext context) {
         var delegate = ((CamundaExecutionContext) context).getDelegateExecution();
-        var parent = (BaseElement) delegate.getBpmnModelElementInstance().getParentElement();
-        return PMProcessModelParser.getExternalProperties(parent);
+        var activity = (Activity) delegate.getBpmnModelElementInstance().getParentElement();
+        return PMProcessModelParser.fillPMElement(activity, new PMElement());
     }
 
-    void processTimelinePoint(ExecutionContext context, PMCycle cycle, Map<String, String> props) throws ProcessExecutionException {
-        processTimes(context, cycle, props, Map.of(
+    void processTimelinePoint(ExecutionContext context, PMCycle cycle, PMElement element) throws ProcessExecutionException {
+        processTimes(context, cycle, element.getProperties(), Map.of(
                 START, PM_TIMELINE_POINT_START_TIME,
                 START_DELAY, PM_TIMELINE_POINT_START_DELAY
         ));
     }
 
-    void processReview(ExecutionContext context, PMCycle cycle, Map<String, String> props) throws ProcessExecutionException {
-        processTimes(context, cycle, props, Map.of(
+    void processReview(ExecutionContext context, PMCycle cycle, PMElement element) throws ProcessExecutionException {
+        processTimes(context, cycle, element.getProperties(), Map.of(
                 START, PM_REVIEW_START,
                 START_DELAY, PM_REVIEW_START_DELAY,
                 BEFORE_START, PM_REVIEW_BEFORE_START,
