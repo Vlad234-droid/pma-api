@@ -14,7 +14,7 @@
                 javaType="com.tesco.pma.api.MapJson"/>
         <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.cycle.api.PMReviewStatus"/>
+                javaType="com.tesco.pma.cycle.api.PMTimelinePointStatus"/>
     </resultMap>
 
     <insert id="create" flushCache="true">

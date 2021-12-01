@@ -1,6 +1,6 @@
 package com.tesco.pma.review.domain;
 
-import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.model.PMElementType;
 import lombok.AccessLevel;
@@ -29,6 +29,6 @@ public class PMCycleTimelinePoint implements Serializable {
     PMElementType type;
     PMReviewType reviewType;
     LocalDate startDate;
-    PMReviewStatus status;
+    PMTimelinePointStatus status;
     Integer count;
 }

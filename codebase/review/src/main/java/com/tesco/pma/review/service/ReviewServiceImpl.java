@@ -2,7 +2,7 @@ package com.tesco.pma.review.service;
 
 import com.tesco.pma.api.OrgObjectiveStatus;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.error.ErrorCodeAware;
@@ -38,22 +38,16 @@ import java.util.stream.Collectors;
 
 import static com.tesco.pma.api.ActionType.PUBLISH;
 import static com.tesco.pma.api.ActionType.SAVE_AS_DRAFT;
-import static com.tesco.pma.cycle.api.PMReviewStatus.APPROVED;
-import static com.tesco.pma.cycle.api.PMReviewStatus.COMPLETED;
-import static com.tesco.pma.cycle.api.PMReviewStatus.DECLINED;
-import static com.tesco.pma.cycle.api.PMReviewStatus.DRAFT;
-import static com.tesco.pma.cycle.api.PMReviewStatus.WAITING_FOR_APPROVAL;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.COMPLETED;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DECLINED;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.WAITING_FOR_APPROVAL;
 import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
 import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
-import static com.tesco.pma.review.exception.ErrorCodes.ALLOWED_STATUSES_NOT_FOUND;
-import static com.tesco.pma.review.exception.ErrorCodes.CANNOT_DELETE_REVIEW_COUNT_CONSTRAINT;
-import static com.tesco.pma.review.exception.ErrorCodes.MAX_REVIEW_NUMBER_CONSTRAINT_VIOLATION;
-import static com.tesco.pma.review.exception.ErrorCodes.MIN_REVIEW_NUMBER_CONSTRAINT_VIOLATION;
 import static com.tesco.pma.review.exception.ErrorCodes.ORG_OBJECTIVES_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.ORG_OBJECTIVE_ALREADY_EXISTS;
-import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_ALREADY_EXISTS;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND;
-import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_STATUS_NOT_ALLOWED;
 
 /**
  * Implementation of {@link ReviewService}.
@@ -222,13 +216,13 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public PMReviewStatus updateReviewsStatus(UUID performanceCycleUuid,
-                                              UUID colleagueUuid,
-                                              PMReviewType type,
-                                              List<Review> reviews,
-                                              PMReviewStatus status,
-                                              String reason,
-                                              UUID loggedUserUuid) {
+    public PMTimelinePointStatus updateReviewsStatus(UUID performanceCycleUuid,
+                                                     UUID colleagueUuid,
+                                                     PMReviewType type,
+                                                     List<Review> reviews,
+                                                     PMTimelinePointStatus status,
+                                                     String reason,
+                                                     UUID loggedUserUuid) {
 //        reviews.forEach(review -> {
 //            var prevStatuses = getPrevStatusesForChangeStatus(status);
 //            if (0 == prevStatuses.size()) {
@@ -400,7 +394,7 @@ public class ReviewServiceImpl implements ReviewService {
         return true;
     }
 
-    private List<PMReviewStatus> getAllowedStatusesForUpdate(PMReviewType reviewType, PMReviewStatus newStatus) {
+    private List<PMTimelinePointStatus> getAllowedStatusesForUpdate(PMReviewType reviewType, PMTimelinePointStatus newStatus) {
         var allowedStatusesForUpdate = getStatusesForUpdate(reviewType);
         var prevStatusesForChangeStatus = getPrevStatusesForChangeStatus(newStatus);
         return allowedStatusesForUpdate.stream()
@@ -540,11 +534,11 @@ public class ReviewServiceImpl implements ReviewService {
         return getPublishedOrgObjectives();
     }
 
-    private List<PMReviewStatus> getStatusesForCreate() {
+    private List<PMTimelinePointStatus> getStatusesForCreate() {
         return List.of(DRAFT, WAITING_FOR_APPROVAL);
     }
 
-    private List<PMReviewStatus> getStatusesForUpdate(PMReviewType reviewType) {
+    private List<PMTimelinePointStatus> getStatusesForUpdate(PMReviewType reviewType) {
         if (reviewType.equals(OBJECTIVE)) {
             return List.of(DRAFT, DECLINED, APPROVED);
         } else {
@@ -552,7 +546,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    private List<PMReviewStatus> getStatusesForDelete(PMReviewType reviewType) {
+    private List<PMTimelinePointStatus> getStatusesForDelete(PMReviewType reviewType) {
         if (reviewType.equals(OBJECTIVE)) {
             return List.of(DRAFT, DECLINED, APPROVED);
         } else {
@@ -560,7 +554,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    private List<PMReviewStatus> getPrevStatusesForChangeStatus(PMReviewStatus newStatus) {
+    private List<PMTimelinePointStatus> getPrevStatusesForChangeStatus(PMTimelinePointStatus newStatus) {
         switch (newStatus) {
             case DRAFT:
                 return List.of(DRAFT);

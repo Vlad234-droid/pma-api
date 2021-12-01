@@ -19,8 +19,8 @@ import java.util.UUID;
 
 import static com.tesco.pma.api.ActionType.PUBLISH;
 import static com.tesco.pma.api.ActionType.SAVE_AS_DRAFT;
-import static com.tesco.pma.cycle.api.PMReviewStatus.APPROVED;
-import static com.tesco.pma.cycle.api.PMReviewStatus.WAITING_FOR_APPROVAL;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.WAITING_FOR_APPROVAL;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ReviewAuditLogDAOTest extends AbstractDAOTest {

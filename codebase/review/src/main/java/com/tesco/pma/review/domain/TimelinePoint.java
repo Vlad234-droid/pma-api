@@ -1,7 +1,7 @@
 package com.tesco.pma.review.domain;
 
 import com.tesco.pma.api.MapJson;
-import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,5 +27,5 @@ public class TimelinePoint implements Serializable {
     Instant startTime;
     Instant endTime;
     MapJson properties;
-    PMReviewStatus status;
+    PMTimelinePointStatus status;
 }

@@ -3,8 +3,6 @@ package com.tesco.pma.review.service;
 import com.tesco.pma.colleague.profile.exception.ErrorCodes;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.cycle.api.PMReviewStatus;
-import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;

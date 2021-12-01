@@ -1,6 +1,6 @@
 package com.tesco.pma.review.dao;
 
-import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.PMCycleReviewTypeProperties;
@@ -41,7 +41,7 @@ public interface ReviewDAO {
      * @return number of updated reviews
      */
     int update(@Param("review") Review review,
-               @Param("allowedStatuses") Collection<PMReviewStatus> allowedStatuses);
+               @Param("allowedStatuses") Collection<PMTimelinePointStatus> allowedStatuses);
 
     /**
      * Delete a review
@@ -51,7 +51,7 @@ public interface ReviewDAO {
      * @return number of deleted reviews
      */
     int delete(@Param("uuid") UUID uuid,
-               @Param("allowedStatuses") Collection<PMReviewStatus> allowedStatuses);
+               @Param("allowedStatuses") Collection<PMTimelinePointStatus> allowedStatuses);
 
     /**
      * Returns reviews by parameters.
@@ -65,7 +65,7 @@ public interface ReviewDAO {
      */
     List<Review> getByParams(@Param("tlPointUuid") UUID tlPointUuid,
                              @Param("type") PMReviewType type,
-                             @Param("status") PMReviewStatus status,
+                             @Param("status") PMTimelinePointStatus status,
                              @Param("number") Integer number);
 
     /**
@@ -91,8 +91,8 @@ public interface ReviewDAO {
     int updateStatusByParams(@Param("tlPointUuid") UUID tlPointUuid,
                              @Param("type") PMReviewType type,
                              @Param("number") Integer number,
-                             @Param("newStatus") PMReviewStatus newStatus,
-                             @Param("prevStatuses") Collection<PMReviewStatus> prevStatuses);
+                             @Param("newStatus") PMTimelinePointStatus newStatus,
+                             @Param("prevStatuses") Collection<PMTimelinePointStatus> prevStatuses);
 
     /**
      * Delete reviews by parameters
@@ -107,9 +107,9 @@ public interface ReviewDAO {
      */
     int deleteByParams(@Param("tlPointUuid") UUID tlPointUuid,
                        @Param("type") PMReviewType type,
-                       @Param("status") PMReviewStatus status,
+                       @Param("status") PMTimelinePointStatus status,
                        @Param("number") Integer number,
-                       @Param("allowedStatuses") Collection<PMReviewStatus> allowedStatuses);
+                       @Param("allowedStatuses") Collection<PMTimelinePointStatus> allowedStatuses);
 
     /**
      * Re-numerate reviews with number >= startNumber using the following formula:

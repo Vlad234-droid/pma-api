@@ -1,7 +1,7 @@
 package com.tesco.pma.review.domain;
 
 import com.tesco.pma.api.MapJson;
-import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -26,6 +26,6 @@ public class Review implements Serializable {
     PMReviewType type;
     Integer number;
     MapJson properties;
-    PMReviewStatus status;
+    PMTimelinePointStatus status;
     String changeStatusReason;
 }

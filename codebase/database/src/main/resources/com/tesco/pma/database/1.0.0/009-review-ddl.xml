@@ -5,11 +5,11 @@
 
 
     <changeSet author="ypashynskyi" id="1">
-        <createTable tableName="pm_status"
+        <createTable tableName="pm_tl_point_status"
                      remarks="Dictionary of PM statuses">
             <column name="id" type="integer"
                     remarks="A unique identifier for status">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pm_status_pk"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pm_tl_point_status_pk"/>
             </column>
             <column name="code" type="VARCHAR(30)"
                     remarks="Shortname of status">
@@ -24,55 +24,79 @@
 
     <changeSet author="ypashynskyi" id="2">
         <comment>Init table review_status</comment>
-        <insert tableName="pm_status">
+        <insert tableName="pm_tl_point_status">
             <column name="id" value="1"/>
             <column name="code" value="DRAFT"/>
             <column name="description" value="Saved as draft"/>
         </insert>
-        <insert tableName="pm_status">
+        <insert tableName="pm_tl_point_status">
             <column name="id" value="2"/>
             <column name="code" value="WAITING_FOR_APPROVAL"/>
             <column name="description"
                     value="Submitted but not yet approved"/>
         </insert>
-        <insert tableName="pm_status">
+        <insert tableName="pm_tl_point_status">
             <column name="id" value="3"/>
             <column name="code" value="APPROVED"/>
             <column name="description" value="Approved"/>
         </insert>
-        <insert tableName="pm_status">
+        <insert tableName="pm_tl_point_status">
             <column name="id" value="4"/>
             <column name="code" value="DECLINED"/>
             <column name="description" value="Declined"/>
         </insert>
-        <insert tableName="pm_status">
+        <insert tableName="pm_tl_point_status">
             <column name="id" value="5"/>
             <column name="code" value="COMPLETED"/>
             <column name="description" value="Completed"/>
         </insert>
-        <insert tableName="pm_status">
+        <insert tableName="pm_tl_point_status">
             <column name="id" value="6"/>
             <column name="code" value="OVERDUE"/>
             <column name="description" value="Overdue"/>
         </insert>
+        <insert tableName="pm_tl_point_status">
+            <column name="id" value="7"/>
+            <column name="code" value="STARTED"/>
+            <column name="description" value="Started"/>
+        </insert>
+        <insert tableName="pm_tl_point_status">
+            <column name="id" value="8"/>
+            <column name="code" value="NOT_STARTED"/>
+            <column name="description" value="Not started"/>
+        </insert>
+        <insert tableName="pm_tl_point_status">
+            <column name="id" value="9"/>
+            <column name="code" value="NOT_CREATED"/>
+            <column name="description" value="Not created"/>
+        </insert>
         <rollback>
-            <delete tableName="pm_status">
+            <delete tableName="pm_tl_point_status">
                 <where>code = 'DRAFT'</where>
             </delete>
-            <delete tableName="pm_status">
+            <delete tableName="pm_tl_point_status">
                 <where>code = 'WAITING_FOR_APPROVAL'</where>
             </delete>
-            <delete tableName="pm_status">
+            <delete tableName="pm_tl_point_status">
                 <where>code = 'APPROVED'</where>
             </delete>
-            <delete tableName="pm_status">
+            <delete tableName="pm_tl_point_status">
                 <where>code = 'RETURNED'</where>
             </delete>
-            <delete tableName="pm_status">
+            <delete tableName="pm_tl_point_status">
                 <where>code = 'COMPLETED'</where>
             </delete>
-            <delete tableName="pm_status">
+            <delete tableName="pm_tl_point_status">
                 <where>code = 'OVERDUE'</where>
+            </delete>
+            <delete tableName="pm_tl_point_status">
+                <where>code = 'STARTED'</where>
+            </delete>
+            <delete tableName="pm_tl_point_status">
+                <where>code = 'NOT_STARTED'</where>
+            </delete>
+            <delete tableName="pm_tl_point_status">
+                <where>code = 'NOT_CREATED'</where>
             </delete>
         </rollback>
     </changeSet>
@@ -110,7 +134,7 @@
         <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="pm_timeline_point"
                                  constraintName="pm_timeline_point_status_id_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
-                                 referencedColumnNames="id" referencedTableName="pm_status"
+                                 referencedColumnNames="id" referencedTableName="pm_tl_point_status"
                                  validate="true"/>
         <addForeignKeyConstraint baseColumnNames="colleague_cycle_uuid" baseTableName="pm_timeline_point"
                                  constraintName="pm_timeline_point_colleague_cycle_uuid_fk" deferrable="false"
@@ -204,7 +228,7 @@
         <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="pm_review"
                                  constraintName="pm_review_status_id_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
-                                 referencedColumnNames="id" referencedTableName="pm_status"
+                                 referencedColumnNames="id" referencedTableName="pm_tl_point_status"
                                  validate="true"/>
         <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="pm_review"
                                  constraintName="pm_review_type_id_fk" deferrable="false"
@@ -292,7 +316,7 @@
         <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="pm_org_objective"
                                  constraintName="pm_org_objective_status_id_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
-                                 referencedColumnNames="id" referencedTableName="pm_status"
+                                 referencedColumnNames="id" referencedTableName="pm_tl_point_status"
                                  validate="true"/>
         <addUniqueConstraint columnNames="version, number"
                              constraintName="pm_org_objective_unique"
@@ -323,12 +347,12 @@
         <addForeignKeyConstraint baseColumnNames="old_status_id" baseTableName="pm_review_change_status_hi"
                                  constraintName="pm_review_change_status_hi_old_status_id_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
-                                 referencedColumnNames="id" referencedTableName="pm_status"
+                                 referencedColumnNames="id" referencedTableName="pm_tl_point_status"
                                  validate="true"/>
         <addForeignKeyConstraint baseColumnNames="new_status_id" baseTableName="pm_review_change_status_hi"
                                  constraintName="pm_review_change_status_hi_new_status_id_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
-                                 referencedColumnNames="id" referencedTableName="pm_status"
+                                 referencedColumnNames="id" referencedTableName="pm_tl_point_status"
                                  validate="true"/>
     </changeSet>
 

@@ -3,7 +3,7 @@ package com.tesco.pma.review.dao;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.tesco.pma.api.MapJson;
-import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.PMCycleReviewTypeProperties;
@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.tesco.pma.cycle.api.PMReviewStatus.APPROVED;
-import static com.tesco.pma.cycle.api.PMReviewStatus.DECLINED;
-import static com.tesco.pma.cycle.api.PMReviewStatus.DRAFT;
-import static com.tesco.pma.cycle.api.PMReviewStatus.WAITING_FOR_APPROVAL;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DECLINED;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.WAITING_FOR_APPROVAL;
 import static com.tesco.pma.cycle.api.PMReviewType.MYR;
 import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
 import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
@@ -110,7 +110,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .type(OBJECTIVE)
                 .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
-                .status(PMReviewStatus.DRAFT)
+                .status(PMTimelinePointStatus.DRAFT)
                 .build();
 
         final int rowsInserted = instance.create(review);
@@ -132,7 +132,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .type(OBJECTIVE)
                 .number(NUMBER_1)
                 .properties(REVIEW_PROPERTIES_INIT)
-                .status(PMReviewStatus.DRAFT)
+                .status(PMTimelinePointStatus.DRAFT)
                 .build();
 
         Assertions.assertThatThrownBy(() -> instance.create(review))

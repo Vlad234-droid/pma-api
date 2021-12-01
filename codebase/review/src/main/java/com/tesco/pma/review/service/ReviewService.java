@@ -1,6 +1,6 @@
 package com.tesco.pma.review.service;
 
-import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
@@ -122,13 +122,13 @@ public interface ReviewService {
      * @return a ObjectiveStatus
      * @throws NotFoundException if review doesn't exist.
      */
-    PMReviewStatus updateReviewsStatus(@NotNull UUID performanceCycleUuid,
-                                       @NotNull UUID colleagueUuid,
-                                       @NotNull PMReviewType type,
-                                       List<Review> reviews,
-                                       @NotNull PMReviewStatus status,
-                                       @Size(max = 250) String reason,
-                                       @NotNull UUID loggedUserUuid);
+    PMTimelinePointStatus updateReviewsStatus(@NotNull UUID performanceCycleUuid,
+                                              @NotNull UUID colleagueUuid,
+                                              @NotNull PMReviewType type,
+                                              List<Review> reviews,
+                                              @NotNull PMTimelinePointStatus status,
+                                              @Size(max = 250) String reason,
+                                              @NotNull UUID loggedUserUuid);
 
     /**
      * Deletes review by business key.

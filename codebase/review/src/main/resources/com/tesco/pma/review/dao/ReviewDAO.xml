@@ -14,7 +14,7 @@
                 javaType="com.tesco.pma.api.MapJson"/>
         <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.cycle.api.PMReviewStatus"/>
+                javaType="com.tesco.pma.cycle.api.PMTimelinePointStatus"/>
         <result property="changeStatusReason" column="change_reason"/>
     </resultMap>
 
@@ -31,7 +31,7 @@
                     javaType="com.tesco.pma.cycle.api.PMReviewType"/>
             <result property="status" column="review_status_id"
                     typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                    javaType="com.tesco.pma.cycle.api.PMReviewStatus"/>
+                    javaType="com.tesco.pma.cycle.api.PMTimelinePointStatus"/>
             <result property="number" column="review_number"/>
         </collection>
     </resultMap>
@@ -51,7 +51,7 @@
         <collection property="statusStats" ofType="com.tesco.pma.review.domain.ReviewStatusCounter">
             <id property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.cycle.api.PMReviewStatus"/>
+                javaType="com.tesco.pma.cycle.api.PMTimelinePointStatus"/>
             <result property="count" column="cnt"/>
         </collection>
     </resultMap>

@@ -1,6 +1,6 @@
 package com.tesco.pma.review.domain;
 
-import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -22,6 +22,6 @@ public class SimplifiedReview implements Serializable {
 
     UUID uuid;
     PMReviewType type;
-    PMReviewStatus status;
+    PMTimelinePointStatus status;
     Integer number;
 }

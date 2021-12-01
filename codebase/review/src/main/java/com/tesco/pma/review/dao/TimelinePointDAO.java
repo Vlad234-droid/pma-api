@@ -1,6 +1,6 @@
 package com.tesco.pma.review.dao;
 
-import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.review.domain.TimelinePoint;
 import org.apache.ibatis.annotations.Param;
 
@@ -37,7 +37,7 @@ public interface TimelinePointDAO {
      * @return number of updated timeline points
      */
     int update(@Param("tLPoint") TimelinePoint tLPoint,
-               @Param("allowedStatuses") Collection<PMReviewStatus> allowedStatuses);
+               @Param("allowedStatuses") Collection<PMTimelinePointStatus> allowedStatuses);
 
     /**
      * Delete a timeline point
@@ -47,7 +47,7 @@ public interface TimelinePointDAO {
      * @return number of timeline points
      */
     int delete(@Param("uuid") UUID uuid,
-               @Param("allowedStatuses") Collection<PMReviewStatus> allowedStatuses);
+               @Param("allowedStatuses") Collection<PMTimelinePointStatus> allowedStatuses);
 
     /**
      * Returns timeline points by parameters.
@@ -60,7 +60,7 @@ public interface TimelinePointDAO {
      */
     List<TimelinePoint> getByParams(@Param("colleagueCycleUuid") UUID colleagueCycleUuid,
                                     @Param("code") String code,
-                                    @Param("status") PMReviewStatus status);
+                                    @Param("status") PMTimelinePointStatus status);
 
     /**
      * Updates a timeline point status
@@ -74,8 +74,8 @@ public interface TimelinePointDAO {
      */
     int updateStatusByParams(@Param("colleagueCycleUuid") UUID colleagueCycleUuid,
                              @Param("code") String code,
-                             @Param("newStatus") PMReviewStatus newStatus,
-                             @Param("prevStatuses") Collection<PMReviewStatus> prevStatuses);
+                             @Param("newStatus") PMTimelinePointStatus newStatus,
+                             @Param("prevStatuses") Collection<PMTimelinePointStatus> prevStatuses);
 
     /**
      * Delete timeline points by parameters
@@ -89,7 +89,7 @@ public interface TimelinePointDAO {
      */
     int deleteByParams(@Param("colleagueCycleUuid") UUID colleagueCycleUuid,
                        @Param("code") String code,
-                       @Param("status") PMReviewStatus status,
-                       @Param("allowedStatuses") Collection<PMReviewStatus> allowedStatuses);
+                       @Param("status") PMTimelinePointStatus status,
+                       @Param("allowedStatuses") Collection<PMTimelinePointStatus> allowedStatuses);
 
 }

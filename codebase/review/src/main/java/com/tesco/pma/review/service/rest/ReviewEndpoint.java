@@ -1,43 +1,9 @@
 package com.tesco.pma.review.service.rest;
 
-import com.tesco.pma.configuration.CaseInsensitiveEnumEditor;
-import com.tesco.pma.configuration.audit.AuditorAware;
-import com.tesco.pma.cycle.api.PMReviewStatus;
-import com.tesco.pma.cycle.api.PMReviewType;
-import com.tesco.pma.cycle.service.PMCycleService;
-import com.tesco.pma.exception.InvalidParameterException;
-import com.tesco.pma.pagination.RequestQuery;
-import com.tesco.pma.rest.HttpStatusCodes;
-import com.tesco.pma.rest.RestResponse;
-import com.tesco.pma.review.domain.AuditOrgObjectiveReport;
-import com.tesco.pma.review.domain.ColleagueTimeline;
-import com.tesco.pma.review.domain.OrgObjective;
-import com.tesco.pma.review.domain.PMCycleTimelinePoint;
-import com.tesco.pma.review.domain.Review;
-import com.tesco.pma.review.domain.request.UpdateReviewsStatusRequest;
-import com.tesco.pma.review.service.ReviewService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.UUID;
-
 import static com.tesco.pma.rest.RestResponse.success;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequiredArgsConstructor
