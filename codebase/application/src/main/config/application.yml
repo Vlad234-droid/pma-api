@@ -240,6 +240,7 @@ camunda:
                                            com/tesco/pma/flow/forms/type_4_eyr.form,
                                            com/tesco/pma/flow/review_notifications.bpmn,
                                            com/tesco/pma/flow/review_notifications.dmn
+    deployment-resource-paths: com/tesco/pma/flow
 
 ---
 spring:
