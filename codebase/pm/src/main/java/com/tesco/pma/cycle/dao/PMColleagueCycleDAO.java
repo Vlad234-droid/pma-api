@@ -1,6 +1,7 @@
 package com.tesco.pma.cycle.dao;
 
 import com.tesco.pma.cycle.api.PMColleagueCycle;
+import com.tesco.pma.cycle.api.PMCycleStatus;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
@@ -20,10 +21,14 @@ public interface PMColleagueCycleDAO {
     /**
      * Gets list of pm colleague cycles
      *
-     * @param cycleUuid - PM cycle identifier
+     * @param cycleUuid     - PM cycle identifier
+     * @param colleagueUuid - colleague identifier
+     * @param status        - PM colleague cycle status
      * @return - collection of PM colleague cycles
      */
-    List<PMColleagueCycle> getByCycleUuid(@Param("cycleUuid") UUID cycleUuid);
+    List<PMColleagueCycle> getByParams(@Param("cycleUuid") UUID cycleUuid,
+                                       @Param("colleagueUuid") UUID colleagueUuid,
+                                       @Param("status") PMCycleStatus status);
 
     /**
      * Stores collection of PM colleague cycles

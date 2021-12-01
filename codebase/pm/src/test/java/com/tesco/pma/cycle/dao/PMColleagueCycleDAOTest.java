@@ -2,6 +2,7 @@ package com.tesco.pma.cycle.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
+import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.dao.config.PMCycleTypeHandlerConfig;
 import com.tesco.pma.dao.AbstractDAOTest;
 import org.junit.jupiter.api.Test;
@@ -48,10 +49,19 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet("pm_colleague_cycle_init.xml")
-    void getByCycleUuid() {
-        var cc = dao.getByCycleUuid(CYCLE_UUID);
+    void getByParams() {
+        var cc = dao.getByParams(CYCLE_UUID, COLLEAGUE_UUID, null);
         assertThat(cc)
                 .hasSize(2);
+
+        assertThat(dao.getByParams(CYCLE_UUID, COLLEAGUE_UUID, ACTIVE))
+                .singleElement()
+                .returns(UUID.fromString("98c23a14-8a46-41f0-bfcf-312a17c7dae2"), PMColleagueCycle::getUuid);
+
+        assertThat(dao.getByParams(CYCLE_UUID, COLLEAGUE_UUID, PMCycleStatus.INACTIVE))
+                .singleElement()
+                .returns(UUID.fromString("9193e171-49e9-492c-a56f-6a68916722f0"), PMColleagueCycle::getUuid);
+
     }
 
     @Test
@@ -60,14 +70,14 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
         var ccUuid1 = UUID.randomUUID();
         var ccUuid2 = UUID.randomUUID();
 
-        assertThat(dao.getByCycleUuid(CYCLE_UUID))
+        assertThat(dao.getByParams(null, null, null))
                 .hasSize(2);
 
         var saved = dao.saveAll(List.of(createCycle(ccUuid1), createCycle(ccUuid2)));
 
         assertThat(saved).isEqualTo(2);
 
-        assertThat(dao.getByCycleUuid(CYCLE_UUID))
+        assertThat(dao.getByParams(null, null, null))
                 .hasSize(4);
 
         var cc1 = dao.read(ccUuid1);

@@ -1,6 +1,7 @@
 package com.tesco.pma.cycle.service;
 
 import com.tesco.pma.cycle.api.PMColleagueCycle;
+import com.tesco.pma.cycle.api.PMCycleStatus;
 
 import java.util.Collection;
 import java.util.List;
@@ -19,10 +20,12 @@ public interface PMColleagueCycleService {
     /**
      * Gets list of pm colleague cycles
      *
-     * @param cycleUuid - PM cycle identifier
+     * @param cycleUuid     - PM cycle identifier
+     * @param colleagueUuid - colleague identifier
+     * @param status        - PM colleague cycle status
      * @return - collection of PM colleague cycles
      */
-    List<PMColleagueCycle> getByCycleUuid(UUID cycleUuid);
+    List<PMColleagueCycle> getByCycleUuid(UUID cycleUuid, UUID colleagueUuid, PMCycleStatus status);
 
     /**
      * Stores batched collection of PM colleague cycles
