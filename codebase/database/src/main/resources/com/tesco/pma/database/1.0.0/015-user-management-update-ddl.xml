@@ -16,23 +16,12 @@
     <changeSet author="akuzmin" id="2">
         <update tableName="pm_role">
             <column name="is_default" value="true"/>
-            <where>code IN (
-                'GG-UK-TescoGlobal-PMA-Colleague',
-                'GG-UK-TescoGlobal-PMA-LineManager',
-                'GG-UK-TescoGlobal-PMA-PPE-Colleague',
-                'GG-UK-TescoGlobal-PMA-PPE-LineManager')
-            </where>
+            <where>code like '%Colleague' or code like '%LineManager'</where>
         </update>
         <rollback>
             <update tableName="pm_role">
                 <column name="is_default" value="false"/>
-                <where>code IN (
-                    'GG-UK-TescoGlobal-PMA-Colleague',
-                    'GG-UK-TescoGlobal-PMA-LineManager',
-                    'GG-UK-TescoGlobal-PMA-PPE-Colleague',
-                    'GG-UK-TescoGlobal-PMA-PPE-LineManager')
-                </where>
-            </update>
+                <where>code like '%Colleague' or code like '%LineManager'</where>            </update>
         </rollback>
     </changeSet>
 
