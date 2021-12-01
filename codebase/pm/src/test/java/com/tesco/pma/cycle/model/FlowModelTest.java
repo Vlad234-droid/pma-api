@@ -1,13 +1,14 @@
 package com.tesco.pma.cycle.model;
 
-import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.LocalTestConfig;
+import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.cycle.api.model.PMFormElement;
 import com.tesco.pma.cycle.api.model.PMReviewElement;
 import com.tesco.pma.cycle.exception.ParseException;
-import org.apache.commons.io.IOUtils;
+import com.tesco.pma.process.service.ClasspathResourceProvider;
+import org.apache.commons.io.FilenameUtils;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.junit.jupiter.api.Assertions;
@@ -19,7 +20,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,16 +55,17 @@ class FlowModelTest {
     private NamedMessageSourceAccessor messageSourceAccessor;
 
     private static class FormsResourceProvider implements ResourceProvider {
+
+        private final ResourceProvider resourceProvider = new ClasspathResourceProvider();
+
         @Override
-        public InputStream read(String resourceName) throws IOException {
-            return getClass().getResourceAsStream(RESOURCES_PATH + resourceName);
+        public InputStream read(String resourcePath, String resourceName) throws IOException {
+            return this.resourceProvider.read(FilenameUtils.concat(RESOURCES_PATH, resourcePath), resourceName);
         }
 
         @Override
-        public String resourceToString(final String resourceName) throws IOException {
-            try (InputStream is = getClass().getResourceAsStream(RESOURCES_PATH + resourceName)) {
-                return IOUtils.toString(is, StandardCharsets.UTF_8);
-            }
+        public String resourceToString(String resourcePath, String resourceName) throws IOException {
+            return this.resourceProvider.resourceToString(FilenameUtils.concat(RESOURCES_PATH, resourcePath), resourceName);
         }
     }
 
@@ -152,6 +153,6 @@ class FlowModelTest {
     }
 
     private BpmnModelInstance getModel(String processFileName) throws IOException {
-        return Bpmn.readModelFromStream(resourceProvider.read(processFileName));
+        return Bpmn.readModelFromStream(resourceProvider.read("", processFileName));
     }
 }
