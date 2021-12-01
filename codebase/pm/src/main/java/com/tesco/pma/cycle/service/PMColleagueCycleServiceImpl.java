@@ -2,6 +2,7 @@ package com.tesco.pma.cycle.service;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
+import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.dao.PMColleagueCycleDAO;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
@@ -38,8 +39,8 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
     }
 
     @Override
-    public List<PMColleagueCycle> getByCycleUuid(UUID cycleUuid) {
-        return dao.getByCycleUuid(cycleUuid);
+    public List<PMColleagueCycle> getByCycleUuid(UUID cycleUuid, UUID colleagueUuid, PMCycleStatus status) {
+        return dao.getByParams(cycleUuid, colleagueUuid, status);
     }
 
     @Override
