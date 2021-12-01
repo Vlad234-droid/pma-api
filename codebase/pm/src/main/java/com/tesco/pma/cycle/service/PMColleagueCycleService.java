@@ -19,9 +19,10 @@ public interface PMColleagueCycleService {
     /**
      * Gets list of pm colleague cycles
      *
+     * @param cycleUuid - PM cycle identifier
      * @return - collection of PM colleague cycles
      */
-    List<PMColleagueCycle> getAll();
+    List<PMColleagueCycle> getByCycleUuid(UUID cycleUuid);
 
     /**
      * Stores batched collection of PM colleague cycles

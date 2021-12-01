@@ -30,7 +30,7 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
 
     @Override
     public PMColleagueCycle get(UUID uuid) {
-        var pmColleagueCycle = dao.get(uuid);
+        var pmColleagueCycle = dao.read(uuid);
         if (pmColleagueCycle == null) {
             throw notFound(PM_COLLEAGUE_CYCLE_NOT_EXIST, Map.of(COLLEAGUE_CYCLE_UUID, uuid));
         }
@@ -38,8 +38,8 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
     }
 
     @Override
-    public List<PMColleagueCycle> getAll() {
-        return dao.getAll();
+    public List<PMColleagueCycle> getByCycleUuid(UUID cycleUuid) {
+        return dao.getByCycleUuid(cycleUuid);
     }
 
     @Override

@@ -15,14 +15,15 @@ public interface PMColleagueCycleDAO {
      * @param uuid - identifier
      * @return PM colleague cycle or null if nothing found
      */
-    PMColleagueCycle get(@Param("uuid") UUID uuid);
+    PMColleagueCycle read(@Param("uuid") UUID uuid);
 
     /**
      * Gets list of pm colleague cycles
      *
+     * @param cycleUuid - PM cycle identifier
      * @return - collection of PM colleague cycles
      */
-    List<PMColleagueCycle> getAll();
+    List<PMColleagueCycle> getByCycleUuid(@Param("cycleUuid") UUID cycleUuid);
 
     /**
      * Stores collection of PM colleague cycles
