@@ -16,6 +16,7 @@ import com.tesco.pma.review.domain.TimelinePoint;
 import com.tesco.pma.review.service.TimelinePointService;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.model.bpmn.instance.Activity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -52,6 +53,12 @@ import static com.tesco.pma.flow.handlers.ProcessTimelinePointHandler.PropertyNa
 @Component
 public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
 
+    @Autowired
+    private PMColleagueCycleService colleagueCycleService;
+
+    @Autowired
+    private TimelinePointService timelinePointService;
+
     private final DateTimeFormatter dtFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
     enum PropertyNames {
@@ -85,7 +92,7 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
     }
 
     private void createTimelinePoints(ExecutionContext context, PMCycle cycle, String code) {
-        var colleagueCycles = context.getBean(PMColleagueCycleService.class)
+        var colleagueCycles = colleagueCycleService
                 .getByCycleUuid(cycle.getUuid(), null, null);
         if (CollectionUtils.isEmpty(colleagueCycles)) {
             return;
@@ -109,11 +116,11 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
                         .startTime(startDate.atStartOfDay().toInstant(ZoneOffset.UTC))
                         .endTime(endDate.atStartOfDay().toInstant(ZoneOffset.UTC))
                         .properties(props)
-                        .status(PMTimelinePointStatus.NOT_STARTED)
+                        .status(startDate.isAfter(LocalDate.now()) ? PMTimelinePointStatus.NOT_STARTED : PMTimelinePointStatus.STARTED)
                         .build())
                 .collect(Collectors.toList());
 
-        context.getBean(TimelinePointService.class).saveAll(timelinePoints);
+        timelinePointService.saveAll(timelinePoints);
     }
 
     PMElement getParent(ExecutionContext context) {
