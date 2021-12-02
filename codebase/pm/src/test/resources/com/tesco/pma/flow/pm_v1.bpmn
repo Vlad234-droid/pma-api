@@ -4,6 +4,11 @@
     <bpmn:participant id="Participant_1k4kpr9" name="v0.5 GROUPS_HO_S_WL1" processRef="GROUPS_HO_S_WL1" />
   </bpmn:collaboration>
   <bpmn:process id="GROUPS_HO_S_WL1" name="GROUPS_HO_S_WL1" isExecutable="true">
+    <bpmn:extensionElements>
+      <camunda:properties>
+        <camunda:property name="pm_cycle_type" value="fiscal" />
+      </camunda:properties>
+    </bpmn:extensionElements>
     <bpmn:laneSet id="LaneSet_0p1b2k8">
       <bpmn:lane id="Lane_140p9i7" name="Line Manager">
         <bpmn:flowNodeRef>Activity_0mydipm</bpmn:flowNodeRef>
