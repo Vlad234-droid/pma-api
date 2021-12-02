@@ -7,6 +7,7 @@ import com.tesco.pma.bpm.camunda.flow.CamundaExecutionContext;
 import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleType;
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.api.model.PMElement;
 import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.cycle.model.PMProcessModelParser;
@@ -15,7 +16,6 @@ import com.tesco.pma.review.domain.TimelinePoint;
 import com.tesco.pma.review.service.TimelinePointService;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.model.bpmn.instance.Activity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -54,12 +54,6 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
 
     private final DateTimeFormatter dtFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
-    @Autowired
-    private PMColleagueCycleService colleagueCycleService;
-
-    @Autowired
-    private TimelinePointService timelinePointService;
-
     enum PropertyNames {
         START,
         START_DELAY,
@@ -91,7 +85,8 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
     }
 
     private void createTimelinePoints(ExecutionContext context, PMCycle cycle, String code) {
-        var colleagueCycles = colleagueCycleService.getByCycleUuid(cycle.getUuid(), null, null);
+        var colleagueCycles = context.getBean(PMColleagueCycleService.class)
+                .getByCycleUuid(cycle.getUuid(), null, null);
         if (CollectionUtils.isEmpty(colleagueCycles)) {
             return;
         }
@@ -114,11 +109,11 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
                         .startTime(startDate.atStartOfDay().toInstant(ZoneOffset.UTC))
                         .endTime(endDate.atStartOfDay().toInstant(ZoneOffset.UTC))
                         .properties(props)
-                        .status(null)//fixme
+                        .status(PMTimelinePointStatus.NOT_STARTED)
                         .build())
                 .collect(Collectors.toList());
 
-        timelinePointService.saveAll(timelinePoints);
+        context.getBean(TimelinePointService.class).saveAll(timelinePoints);
     }
 
     PMElement getParent(ExecutionContext context) {

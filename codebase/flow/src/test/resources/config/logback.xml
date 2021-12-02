@@ -1,0 +1,10 @@
+<configuration>
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date : [%level] : %method %message%n%exception</pattern>
+        </encoder>
+    </appender>
+    <root level="DEBUG">
+        <appender-ref ref="consoleAppender"/>
+    </root>
+</configuration>

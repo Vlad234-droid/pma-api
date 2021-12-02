@@ -6,7 +6,6 @@ import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.organisation.service.ConfigEntryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -15,21 +14,16 @@ import java.util.stream.Collectors;
 @Component
 public class PMColleagueCycleHandler extends CamundaAbstractFlowHandler {
 
-    @Autowired
-    private ConfigEntryService configEntryService;
-
-    @Autowired
-    private PMColleagueCycleService pmColleagueCycleService;
-
     @Override
     protected void execute(ExecutionContext context) {
         PMCycle cycle = context.getVariable(FlowParameters.PM_CYCLE);
-        var colleagues = configEntryService.findColleaguesByCompositeKey(cycle.getEntryConfigKey());
+        var colleagues = context.getBean(ConfigEntryService.class)
+                .findColleaguesByCompositeKey(cycle.getEntryConfigKey());
         var colleagueCycles = colleagues.stream()
                 .map(c -> mapToColleagueCycle(c.getUuid(), cycle))
                 .collect(Collectors.toList());
 
-        pmColleagueCycleService.saveColleagueCycles(colleagueCycles);
+        context.getBean(PMColleagueCycleService.class).saveColleagueCycles(colleagueCycles);
     }
 
     private PMColleagueCycle mapToColleagueCycle(UUID colleagueUuid, PMCycle cycle) {
