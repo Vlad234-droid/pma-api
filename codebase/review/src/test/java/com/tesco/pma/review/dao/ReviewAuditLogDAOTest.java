@@ -86,7 +86,7 @@ class ReviewAuditLogDAOTest extends AbstractDAOTest {
     void getAuditOrgObjectiveReport() {
         var requestQuery = new RequestQuery();
         requestQuery.setLimit(LIMIT);
-        requestQuery.setOffset(0);
+        requestQuery.setOffset(OFFSET);
         final var colleagueSimple = ColleagueSimple.builder()
                 .uuid(COLLEAGUE_UUID)
                 .firstName(FIRST_NAME)

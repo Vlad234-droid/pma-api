@@ -1,14 +1,14 @@
 package com.tesco.pma.review.dao;
 
-import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.PMCycleReviewTypeProperties;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
+import com.tesco.pma.review.domain.ReviewStats;
 import org.apache.ibatis.annotations.Param;
 
-import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -136,6 +136,16 @@ public interface ReviewDAO {
                           @Param("startNumber") Integer startNumber);
 
     /**
+     * Returns review stats by tlPointUuid and review type
+     *
+     * @param tlPointUuid an identifier of timeline point
+     * @param type        a review type
+     * @return a PMCycleReviewTypeProperties
+     */
+    ReviewStats getReviewStats(@Param("tlPointUuid") UUID tlPointUuid,
+                               @Param("type") PMReviewType type);
+
+    /**
      * Returns properties of review type by PM cycleUuid and review type
      *
      * @param cycleUuid an identifier of performance cycle
@@ -144,18 +154,6 @@ public interface ReviewDAO {
      */
     PMCycleReviewTypeProperties getPMCycleReviewTypeProperties(@Param("cycleUuid") UUID cycleUuid,
                                                                @Param("type") PMReviewType type);
-
-//    /**
-//     * Returns review stats by PM cycleUuid, colleagueUuid and review type
-//     *
-//     * @param cycleUuid     an identifier of performance cycle
-//     * @param colleagueUuid an identifier of colleague
-//     * @param type          a review type
-//     * @return a PMCycleReviewTypeProperties
-//     */
-//    ReviewStats getReviewStats(@Param("cycleUuid") UUID cycleUuid,
-//                               @Param("colleagueUuid") UUID colleagueUuid,
-//                               @Param("type") PMReviewType type);
 
 
     /**

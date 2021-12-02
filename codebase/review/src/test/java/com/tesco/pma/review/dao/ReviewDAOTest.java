@@ -9,6 +9,7 @@ import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.PMCycleReviewTypeProperties;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
+import com.tesco.pma.review.domain.ReviewStats;
 import com.tesco.pma.review.domain.SimplifiedReview;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -310,7 +311,6 @@ class ReviewDAOTest extends AbstractDAOTest {
         );
 
         final var result = instance.getReviewsByColleague(CYCLE_UUID, COLLEAGUE_UUID);
-        System.out.println(result);
 
         assertThat(result).isEqualTo(reviews);
     }
@@ -427,6 +427,24 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml",
+            "pm_review_init.xml"})
+    void getReviewStats() {
+        final var result = instance.getReviewStats(
+                TIMELINE_POINT_UUID,
+                OBJECTIVE);
+
+        assertThat(result)
+                .asInstanceOf(type(ReviewStats.class))
+                .returns(TIMELINE_POINT_UUID, from(ReviewStats::getTlPointUuid))
+                .returns(OBJECTIVE, from(ReviewStats::getType))
+                .returns(Map.of(DRAFT, 1, DECLINED, 1), from(ReviewStats::getMapStatusStats));
+    }
+
+    @Test
     @DataSet({"pm_cycle_init.xml", "cleanup.xml"})
     void getPMCycleReviewProperties() {
         final var result = instance.getPMCycleReviewTypeProperties(CYCLE_UUID, OBJECTIVE);
@@ -438,22 +456,6 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .returns(3, from(PMCycleReviewTypeProperties::getMin))
                 .returns(5, from(PMCycleReviewTypeProperties::getMax));
     }
-
-//    @Test
-//    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
-//    void getReviewStats() {
-//        final var result = instance.getReviewStats(
-//                PERFORMANCE_CYCLE_UUID,
-//                COLLEAGUE_UUID,
-//                OBJECTIVE);
-//
-//        assertThat(result)
-//                .asInstanceOf(type(ReviewStats.class))
-//                .returns(PERFORMANCE_CYCLE_UUID, from(ReviewStats::getCycleUuid))
-//                .returns(COLLEAGUE_UUID, from(ReviewStats::getColleagueUuid))
-//                .returns(OBJECTIVE, from(ReviewStats::getType))
-//                .returns(Map.of(DRAFT, 1, DECLINED, 1), from(ReviewStats::getMapStatusStats));
-//    }
 
     @Test
     @DataSet({"colleague_init.xml",

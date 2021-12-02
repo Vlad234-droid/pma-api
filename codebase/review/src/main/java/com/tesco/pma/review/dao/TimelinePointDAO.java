@@ -16,10 +16,10 @@ public interface TimelinePointDAO {
     /**
      * Creates a timeline point
      *
-     * @param tLPoint a timeline point
+     * @param tlPoint a timeline point
      * @return number of created timeline points
      */
-    int create(@Param("tLPoint") TimelinePoint tLPoint);
+    int create(@Param("tlPoint") TimelinePoint tlPoint);
 
     /**
      * Returns a timeline point by an identifier of timeline point
@@ -32,11 +32,11 @@ public interface TimelinePointDAO {
     /**
      * Update a timeline point
      *
-     * @param tLPoint         a timeline point
+     * @param tlPoint         a timeline point
      * @param allowedStatuses allowed statuses for updating timeline point
      * @return number of updated timeline points
      */
-    int update(@Param("tLPoint") TimelinePoint tLPoint,
+    int update(@Param("tlPoint") TimelinePoint tlPoint,
                @Param("allowedStatuses") Collection<PMTimelinePointStatus> allowedStatuses);
 
     /**

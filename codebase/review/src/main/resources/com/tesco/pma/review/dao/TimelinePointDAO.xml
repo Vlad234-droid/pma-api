@@ -26,13 +26,13 @@
          end_time,
          properties,
          status_id)
-        VALUES (#{tLPoint.uuid},
-                #{tLPoint.colleagueCycleUuid},
-                #{tLPoint.code},
-                #{tLPoint.startTime},
-                #{tLPoint.endTime},
-                #{tLPoint.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-                #{tLPoint.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMTimelinePointStatus});
+        VALUES (#{tlPoint.uuid},
+                #{tlPoint.colleagueCycleUuid},
+                #{tlPoint.code},
+                #{tlPoint.startTime},
+                #{tlPoint.endTime},
+                #{tlPoint.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+                #{tlPoint.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMTimelinePointStatus});
     </insert>
 
     <select id="read" resultMap="tlPointResultMap">
@@ -43,13 +43,13 @@
 
     <update id="update" flushCache="true">
         UPDATE pm_timeline_point
-        SET start_time = #{tLPoint.startTime},
-        end_time = #{tLPoint.endTime},
+        SET start_time = #{tlPoint.startTime},
+        end_time = #{tlPoint.endTime},
         properties =
-        #{tLPoint.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-        status_id = #{tLPoint.status.id}
-        WHERE colleague_cycle_uuid = #{tLPoint.colleagueCycleUuid}
-        and code = #{tLPoint.code}
+        #{tlPoint.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+        status_id = #{tlPoint.status.id}
+        WHERE colleague_cycle_uuid = #{tlPoint.colleagueCycleUuid}
+        and code = #{tlPoint.code}
         <if test="allowedStatuses != null and !allowedStatuses.isEmpty()">
             and status_id in
             <foreach item="allowedStatus" collection="allowedStatuses" separator="," open="(" close=")">

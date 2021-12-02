@@ -22,8 +22,7 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class ReviewStats {
-    UUID cycleUuid;
-    UUID colleagueUuid;
+    UUID tlPointUuid;
     PMReviewType type;
     List<ReviewStatusCounter> statusStats;
 

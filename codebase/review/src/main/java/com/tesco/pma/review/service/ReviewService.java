@@ -58,6 +58,20 @@ public interface ReviewService {
                             @NotNull PMReviewType type);
 
     /**
+     * Finds reviews by performanceCycleUuid, colleagueUuid and review type
+     *
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
+     * @param type                 a review type
+     * @return a list of reviews
+     * @throws NotFoundException if reviews don't exist.
+     */
+    List<Review> getReviews(@NotNull UUID performanceCycleUuid,
+                            @NotNull UUID colleagueUuid,
+                            @NotNull PMReviewType type,
+                            @NotNull PMTimelinePointStatus status);
+
+    /**
      * Finds reviews by performanceCycleUuid, colleagueUuid
      *
      * @param performanceCycleUuid an identifier of performance cycle
@@ -79,20 +93,24 @@ public interface ReviewService {
     /**
      * Creates review.
      *
-     * @param review a review
+     * @param review               a review
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
      * @return created review.
      * @throws DatabaseConstraintViolationException review already exist.
      */
-    Review createReview(Review review);
+    Review createReview(@NotNull Review review, @NotNull UUID performanceCycleUuid, @NotNull UUID colleagueUuid);
 
     /**
      * Updates existing review.
      *
      * @param review a review
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
      * @return updated review.
      * @throws NotFoundException if review doesn't exist.
      */
-    Review updateReview(Review review);
+    Review updateReview(@NotNull Review review, @NotNull UUID performanceCycleUuid, @NotNull UUID colleagueUuid);
 
     /**
      * Create/update reviews.

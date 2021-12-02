@@ -44,8 +44,7 @@
     </resultMap>
 
     <resultMap id="reviewStatsResultMap" type="com.tesco.pma.review.domain.ReviewStats">
-        <id property="cycleUuid" column="cycle_uuid"/>
-        <result property="colleagueUuid" column="colleague_uuid"/>
+        <id property="tlPointUuid" column="tl_point_uuid"/>
         <result property="type" column="review_type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.cycle.api.PMReviewType"/>
         <collection property="statusStats" ofType="com.tesco.pma.review.domain.ReviewStatusCounter">
@@ -231,6 +230,19 @@
           and number >= #{startNumber}
     </update>
 
+    <select id="getReviewStats" resultMap="reviewStatsResultMap">
+        select r.tl_point_uuid,
+               r.type_id as review_type_id,
+               r.status_id,
+               count(*)  as cnt
+        from pm_review r
+        where r.tl_point_uuid = #{tlPointUuid}
+          and r.type_id = #{type.id}
+        group by r.tl_point_uuid,
+                 r.type_id,
+                 r.status_id
+    </select>
+
     <select id="getPMCycleReviewTypeProperties" resultMap="cycleReviewTypePropertiesResultMap">
         select r.cycle_uuid,
                upper(json_extract_path_text(r.timeline_points, 'reviewType')) as review_type_code,
@@ -245,22 +257,6 @@
           and upper (json_extract_path_text(r.timeline_points
             , 'reviewType')) = #{type}
     </select>
-
-    <!--    <select id="getReviewStats" resultMap="reviewStatsResultMap">-->
-    <!--        select r.performance_cycle_uuid as cycle_uuid,-->
-    <!--               r.colleague_uuid,-->
-    <!--               r.type_id                as review_type_id,-->
-    <!--               r.status_id,-->
-    <!--               count(*)                 as cnt-->
-    <!--        from review r-->
-    <!--        where r.performance_cycle_uuid = #{cycleUuid}-->
-    <!--          and r.colleague_uuid = #{colleagueUuid}-->
-    <!--          and r.type_id = #{type.id}-->
-    <!--        group by r.performance_cycle_uuid,-->
-    <!--                 r.colleague_uuid,-->
-    <!--                 r.type_id,-->
-    <!--                 r.status_id-->
-    <!--    </select>-->
 
     <select id="getTimeline" resultMap="cycleTimelinePointResultMap">
         with timeline_point_enriched as (
