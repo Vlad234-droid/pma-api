@@ -45,9 +45,9 @@ class ReviewDAOTest extends AbstractDAOTest {
     private static final UUID TIMELINE_POINT_UUID = UUID.fromString("10000000-0000-0000-1000-000000000000");
     private static final UUID MYR_TIMELINE_POINT_UUID = UUID.fromString("10000000-0000-0000-2000-000000000000");
     private static final UUID MANAGER_UUID = UUID.fromString("10000000-0000-0000-0000-000000000001");
-    private static final UUID COLLEAGUE_UUID = UUID.fromString("ccb9ab0b-f50f-4442-8900-b03777ee00ec");
+    private static final UUID COLLEAGUE_UUID = UUID.fromString("10000000-0000-0000-0000-000000000000");
     private static final UUID TIMELINE_POINT_UUID_NOT_EXIST = UUID.fromString("ccb9ab0b-f50f-4442-8900-000000000000");
-    private static final UUID PERFORMANCE_CYCLE_UUID = UUID.fromString("10000000-1000-0000-0000-000000000000");
+    private static final UUID CYCLE_UUID = UUID.fromString("10000000-1000-0000-0000-000000000000");
     private static final Integer NUMBER_1 = 1;
     private static final Integer NUMBER_2 = 2;
     private static final String TITLE_PROPERTY_NAME = "title";
@@ -279,6 +279,47 @@ class ReviewDAOTest extends AbstractDAOTest {
             "pm_cycle_init.xml",
             "pm_colleague_cycle_init.xml",
             "pm_timeline_point_init.xml",
+            "pm_review_init.xml",
+            "cleanup.xml"})
+    void getReviewsByColleague() {
+        final var reviews = List.of(
+                Review.builder()
+                        .uuid(REVIEW_UUID)
+                        .tlPointUuid(TIMELINE_POINT_UUID)
+                        .type(OBJECTIVE)
+                        .status(DRAFT)
+                        .number(NUMBER_1)
+                        .properties(REVIEW_PROPERTIES_INIT)
+                        .build(),
+                Review.builder()
+                        .uuid(DECLINED_REVIEW_UUID)
+                        .tlPointUuid(TIMELINE_POINT_UUID)
+                        .type(OBJECTIVE)
+                        .status(DECLINED)
+                        .number(NUMBER_2)
+                        .properties(REVIEW_PROPERTIES_INIT)
+                        .build(),
+                Review.builder()
+                        .uuid(MYR_REVIEW_UUID)
+                        .tlPointUuid(MYR_TIMELINE_POINT_UUID)
+                        .type(MYR)
+                        .status(DRAFT)
+                        .number(NUMBER_1)
+                        .properties(REVIEW_PROPERTIES_INIT)
+                        .build()
+        );
+
+        final var result = instance.getReviewsByColleague(CYCLE_UUID, COLLEAGUE_UUID);
+        System.out.println(result);
+
+        assertThat(result).isEqualTo(reviews);
+    }
+
+    @Test
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml",
             "pm_review_init.xml"})
     void getTeamReviews() {
         final var simplifiedReviews = List.of(
@@ -388,11 +429,11 @@ class ReviewDAOTest extends AbstractDAOTest {
     @Test
     @DataSet({"pm_cycle_init.xml", "cleanup.xml"})
     void getPMCycleReviewProperties() {
-        final var result = instance.getPMCycleReviewTypeProperties(PERFORMANCE_CYCLE_UUID, OBJECTIVE);
+        final var result = instance.getPMCycleReviewTypeProperties(CYCLE_UUID, OBJECTIVE);
 
         assertThat(result)
                 .asInstanceOf(type(PMCycleReviewTypeProperties.class))
-                .returns(PERFORMANCE_CYCLE_UUID, from(PMCycleReviewTypeProperties::getCycleUuid))
+                .returns(CYCLE_UUID, from(PMCycleReviewTypeProperties::getCycleUuid))
                 .returns(OBJECTIVE, from(PMCycleReviewTypeProperties::getType))
                 .returns(3, from(PMCycleReviewTypeProperties::getMin))
                 .returns(5, from(PMCycleReviewTypeProperties::getMax));
@@ -421,10 +462,10 @@ class ReviewDAOTest extends AbstractDAOTest {
             "pm_timeline_point_init.xml",
             "pm_review_init.xml"})
     void getTimeline() {
-        final var result = instance.getTimeline(PERFORMANCE_CYCLE_UUID);
+        final var result = instance.getTimeline(CYCLE_UUID);
 
         final var objectives = PMCycleTimelinePoint.builder()
-                .cycleUuid(PERFORMANCE_CYCLE_UUID)
+                .cycleUuid(CYCLE_UUID)
                 .code(OBJECTIVES_CODE_NAME)
                 .description(OBJECTIVES_CODE_NAME)
                 .type(REVIEW)
@@ -433,7 +474,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .build();
 
         final var q3 = PMCycleTimelinePoint.builder()
-                .cycleUuid(PERFORMANCE_CYCLE_UUID)
+                .cycleUuid(CYCLE_UUID)
                 .code(Q3_CODE_NAME)
                 .description(Q3_CODE_NAME)
                 .type(TIMELINE_POINT)

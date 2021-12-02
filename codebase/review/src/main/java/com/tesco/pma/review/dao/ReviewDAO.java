@@ -8,6 +8,7 @@ import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
 import org.apache.ibatis.annotations.Param;
 
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -67,6 +68,16 @@ public interface ReviewDAO {
                              @Param("type") PMReviewType type,
                              @Param("status") PMTimelinePointStatus status,
                              @Param("number") Integer number);
+
+    /**
+     * Get reviews by performanceCycleUuid, colleagueUuid
+     *
+     * @param cycleUuid     an identifier of performance cycle
+     * @param colleagueUuid an identifier of colleague
+     * @return a list of reviews
+     */
+    List<Review> getReviewsByColleague(@Param("cycleUuid") UUID cycleUuid,
+                                       @Param("colleagueUuid") UUID colleagueUuid);
 
     /**
      * Returns list of colleagues reviews by managerUuid

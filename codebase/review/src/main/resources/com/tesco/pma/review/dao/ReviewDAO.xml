@@ -133,6 +133,25 @@
         </if>
     </select>
 
+    <select id="getReviewsByColleague" resultMap="reviewResultMap">
+        with change_status_reason as (<include refid="changeStatusReasonQuery"/>)
+        select r.*,
+        csr.change_reason
+        from pm_colleague_cycle cc
+        inner join pm_timeline_point tlp
+        on (cc.uuid = tlp.colleague_cycle_uuid)
+        inner join pm_review r
+        on (tlp.uuid = r.tl_point_uuid)
+        left join change_status_reason csr
+        on (r.uuid = csr.review_uuid
+        and r.status_id = csr.new_status_id
+        and csr.rn = 1)
+        where cc.colleague_uuid = #{colleagueUuid}
+        and cc.cycle_uuid = #{cycleUuid}
+        order by r.type_id,
+        r.number
+    </select>
+
     <select id="getTeamReviews" resultMap="colleagueReviewsResultMap">
         select c.uuid,
                c.first_name,
