@@ -2,8 +2,10 @@ package com.tesco.pma.review.service;
 
 import com.tesco.pma.api.OrgObjectiveStatus;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
+import com.tesco.pma.cycle.dao.PMColleagueCycleDAO;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
@@ -15,12 +17,14 @@ import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.review.dao.OrgObjectiveDAO;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
 import com.tesco.pma.review.dao.ReviewDAO;
+import com.tesco.pma.review.dao.TimelinePointDAO;
 import com.tesco.pma.review.domain.AuditOrgObjectiveReport;
 import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.OrgObjective;
 import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStatusCounter;
+import com.tesco.pma.review.domain.TimelinePoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -59,6 +63,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewDAO reviewDAO;
     private final OrgObjectiveDAO orgObjectiveDAO;
     private final ReviewAuditLogDAO reviewAuditLogDAO;
+    private final PMColleagueCycleDAO colleagueCycleDAO;
+    private final TimelinePointDAO timelinePointDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final PMCycleService pmCycleService;
 
@@ -86,16 +92,20 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Review getReview(UUID performanceCycleUuid, UUID colleagueUuid, PMReviewType type, Integer number) {
-//        var res = reviewDAO.getReview(performanceCycleUuid, colleagueUuid, type, number);
-//        if (res == null) {
-//            throw notFound(REVIEW_NOT_FOUND,
-//                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
-//                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
-//                            TYPE_PARAMETER_NAME, type,
-//                            NUMBER_PARAMETER_NAME, number));
-//        }
-//        return res;
-        return null;
+        var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, type);
+        var res = reviewDAO.getByParams(
+                timelinePoint.getUuid(),
+                type,
+                null,
+                number);
+        if (res == null || 1 != res.size()) {
+            throw notFound(REVIEW_NOT_FOUND,
+                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
+                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
+                            TYPE_PARAMETER_NAME, type,
+                            NUMBER_PARAMETER_NAME, number));
+        }
+        return res.get(0);
     }
 
     @Override
@@ -110,19 +120,26 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<Review> getReviews(UUID performanceCycleUuid, UUID colleagueUuid, PMReviewType type) {
-//        List<Review> results = reviewDAO.getReviews(performanceCycleUuid, colleagueUuid, type);
-//        if (results == null) {
-//            throw notFound(REVIEW_NOT_FOUND,
-//                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
-//                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
-//                            TYPE_PARAMETER_NAME, type));
-//        }
-//        return results;
-        return null;
+        var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, type);
+
+        List<Review> results = reviewDAO.getByParams(
+                timelinePoint.getUuid(),
+                type,
+                null,
+                null);
+
+        if (results == null) {
+            throw notFound(REVIEW_NOT_FOUND,
+                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
+                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
+                            TYPE_PARAMETER_NAME, type));
+        }
+        return results;
     }
 
     @Override
     public List<Review> getReviewsByColleague(UUID performanceCycleUuid, UUID colleagueUuid) {
+
 //        List<Review> results = reviewDAO.getReviewsByColleague(performanceCycleUuid, colleagueUuid);
 //        if (results == null) {
 //            throw notFound(REVIEW_NOT_FOUND,
@@ -587,6 +604,37 @@ public class ReviewServiceImpl implements ReviewService {
 //                                MIN_PARAMETER_NAME, reviewTypeProperties.getMin()));
 //            }
 //        }
+    }
+
+    private TimelinePoint getTimelinePoint(UUID performanceCycleUuid,
+                                           UUID colleagueUuid,
+                                           PMReviewType type) {
+        final var colleagueCycles = colleagueCycleDAO.getByParams(
+                performanceCycleUuid,
+                colleagueUuid,
+                null);
+        if (colleagueCycles == null || 1 != colleagueCycles.size()) {
+            // TODO: 12/1/2021 should be implemented in colleague cycle service
+            throw notFound(REVIEW_NOT_FOUND,
+                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
+                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
+                            TYPE_PARAMETER_NAME, type));
+        }
+        final var colleagueCycle = colleagueCycles.get(0);
+
+        final var timelinePoints = timelinePointDAO.getByParams(
+                colleagueCycle.getCycleUuid(),
+                type.getCode(),
+                null);
+        if (timelinePoints == null || 1 != timelinePoints.size()) {
+            // TODO: 12/1/2021 should be implemented in colleague cycle service
+            throw notFound(REVIEW_NOT_FOUND,
+                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
+                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
+                            TYPE_PARAMETER_NAME, type));
+        }
+
+        return timelinePoints.get(0);
     }
 
     private NotFoundException notFound(ErrorCodeAware errorCode, Map<String, ?> params) {
