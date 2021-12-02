@@ -18,7 +18,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ColleaguesEventsPropagationHandler extends CamundaAbstractFlowHandler {
 
-    private static final String COMPOSITE_KEY = "composite_key";
+    private static final String COLLEAGUE_UUID_PROP = "colleagueUuid";
 
     private Expression injectedValue;
 
@@ -39,7 +39,7 @@ public class ColleaguesEventsPropagationHandler extends CamundaAbstractFlowHandl
 
     private Event createEvent(UUID colleagueId){
         var event = new EventSupport(injectedValue.getExpressionText());
-        event.putProperty("colleagueUuid", colleagueId);
+        event.putProperty(COLLEAGUE_UUID_PROP, colleagueId);
         return event;
     }
 
