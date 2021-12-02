@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.cycle.dao.PMColleagueCycleDAO">
+    <resultMap id="colleagueCycleResultMap" type="com.tesco.pma.cycle.api.PMColleagueCycle">
+        <id property="uuid" column="uuid"/>
+        <result property="colleagueUuid" column="colleague_uuid"/>
+        <result property="cycleUuid" column="cycle_uuid"/>
+        <result property="status" column="status_id"
+                typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.cycle.api.PMCycleStatus"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="properties" column="properties"
+                typeHandler="com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler"
+                javaType="com.tesco.pma.api.MapJson"/>
+    </resultMap>
+
+    <select id="read" resultMap="colleagueCycleResultMap">
+        SELECT uuid, colleague_uuid, cycle_uuid, status_id, start_time, end_time, properties
+        FROM pm_colleague_cycle
+        WHERE uuid = #{uuid}
+    </select>
+
+    <select id="getByParams" resultMap="colleagueCycleResultMap">
+        SELECT uuid, colleague_uuid, cycle_uuid, status_id, start_time, end_time, properties
+        FROM pm_colleague_cycle
+        WHERE 1=1
+        <if test="cycleUuid != null">
+            AND cycle_uuid = #{cycleUuid}
+        </if>
+        <if test="colleagueUuid != null">
+            AND colleague_uuid = #{colleagueUuid}
+        </if>
+        <if test="status != null">
+            AND status_id = #{status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler}
+        </if>
+    </select>
+
+    <insert id="saveAll" flushCache="true" parameterType="java.util.Collection">
+        INSERT INTO pm_colleague_cycle (uuid, colleague_uuid, cycle_uuid, status_id, start_time, end_time, properties)
+        VALUES
+        <foreach collection="colleagueCycles" item="cc" index="index" separator=",">
+            (
+            #{cc.uuid},
+            #{cc.colleagueUuid},
+            #{cc.cycleUuid},
+            #{cc.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus},
+            #{cc.startTime},
+            #{cc.endTime},
+            #{cc.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="create" flushCache="true">
+        INSERT INTO pm_colleague_cycle (uuid, colleague_uuid, cycle_uuid, status_id, start_time, end_time, properties)
+        VALUES (#{cc.uuid},
+                #{cc.colleagueUuid},
+                #{cc.cycleUuid},
+                #{cc.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus},
+                #{cc.startTime},
+                #{cc.endTime},
+                #{cc.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler})
+    </insert>
+
+    <insert id="update" flushCache="true">
+        UPDATE pm_colleague_cycle
+        SET colleague_uuid =#{cc.colleagueUuid},
+            cycle_uuid=#{cc.cycleUuid},
+            status_id=#{cc.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus},
+            start_time#{cc.startTime},
+            end_time=#{cc.endTime},
+            properties=#{cc.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler}
+        WHERE uuid = #{cc.uuid}
+    </insert>
+
+    <insert id="delete" flushCache="true">
+        DELETE
+        FROM pm_colleague_cycle
+        WHERE uuid = #{uuid}
+    </insert>
+</mapper>

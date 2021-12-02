@@ -11,6 +11,8 @@ dependencies {
     implementation project(':fs')
 
     implementation project(':service')
+    implementation project(':organisation')
+    implementation project(':profile')
 
     implementation("org.springframework.boot:spring-boot-starter-security")
 

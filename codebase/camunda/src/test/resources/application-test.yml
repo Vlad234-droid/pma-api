@@ -24,3 +24,4 @@ camunda:
       enabled: false
     id-generator: strong
     deployment-resource-pattern: classpath:*.bpmn
+    deployment-resource-paths: com/tesco/pma/flow

@@ -3,9 +3,9 @@
     "id": null,
     "code": "type_1",
     "description": null,
-    "type": null,
+    "type": "CYCLE",
     "properties": {},
-    "cycleType": null,
+    "cycleType": "FISCAL",
     "reviews": [
       {
         "id": "Activity_1xk9nhh",
