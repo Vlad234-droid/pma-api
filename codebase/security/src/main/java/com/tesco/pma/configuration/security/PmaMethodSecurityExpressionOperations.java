@@ -10,7 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.UUID;
 
 import static com.tesco.pma.security.UserRoleNames.ADMIN;
