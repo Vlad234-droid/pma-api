@@ -17,14 +17,16 @@ public interface PMCycleDAO {
      * Creates performance cycle
      *
      * @param cycle performance cycle
+     * @return number of updated entities
      */
-    default void create(PMCycle cycle) {
-        createInt(cycle, now());
+    default int createOrUpdate(PMCycle cycle, DictionaryFilter<PMCycleStatus> statusFilter) {
+        return intCreateOrUpdate(cycle, now(), statusFilter);
     }
 
 
-    void createInt(@Param("cycle") PMCycle cycle,
-                   @Param("now") Instant now);
+    int intCreateOrUpdate(@Param("cycle") PMCycle cycle,
+                           @Param("now") Instant now,
+                           @Param("statusFilter") DictionaryFilter<PMCycleStatus> statusFilter);
 
     /**
      * Updates status for existing performance cycle
@@ -44,7 +46,8 @@ public interface PMCycleDAO {
      * @param uuid performance cycle UUID
      * @return performance cycle
      */
-    PMCycle read(@Param("uuid") UUID uuid);
+    PMCycle read(@Param("uuid") UUID uuid,
+                 @Param("statusFilter") DictionaryFilter<PMCycleStatus> statusFilter);
 
     /**
      * Getting performance cycle for existing colleague
