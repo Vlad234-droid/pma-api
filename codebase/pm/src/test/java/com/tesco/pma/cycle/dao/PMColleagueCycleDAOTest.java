@@ -21,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ContextConfiguration(classes = PMCycleTypeHandlerConfig.class)
 class PMColleagueCycleDAOTest extends AbstractDAOTest {
 
+    private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/cycle/dao/";
+
     private static final UUID COLLEAGUE_UUID = UUID.fromString("d1810821-d1a9-48b5-9745-d0841151911f");
     private static final UUID COLLEAGUE_CYCLE_UUID = UUID.fromString("98c23a14-8a46-41f0-bfcf-312a17c7dae2");
     private static final UUID COLLEAGUE_CYCLE_UUID_2 = UUID.fromString("9193e171-49e9-492c-a56f-6a68916722f0");
@@ -37,8 +39,8 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"pm_cycle_init.xml",
-            "pm_colleague_cycle_init.xml"})
+    @DataSet({BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
+            BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml"})
     void read() {
         var cc = dao.read(COLLEAGUE_CYCLE_UUID);
         assertThat(cc)
@@ -49,8 +51,8 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"pm_cycle_init.xml",
-            "pm_colleague_cycle_init.xml"})
+    @DataSet({BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
+            BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml"})
     void getByParams() {
         var cc = dao.getByParams(CYCLE_UUID, COLLEAGUE_UUID, null);
         assertThat(cc)
@@ -67,8 +69,8 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"pm_cycle_init.xml",
-            "pm_colleague_cycle_init.xml"})
+    @DataSet({BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
+            BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml"})
     void saveAll() {
         var ccUuid1 = UUID.randomUUID();
         var ccUuid2 = UUID.randomUUID();
@@ -100,8 +102,8 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"pm_cycle_init.xml",
-            "pm_colleague_cycle_init.xml"})
+    @DataSet({BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
+            BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml"})
     void create() {
         var ccUuid = UUID.randomUUID();
 
@@ -118,8 +120,8 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"pm_cycle_init.xml",
-            "pm_colleague_cycle_init.xml"})
+    @DataSet({BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
+            BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml"})
     void delete() {
 
         var deleted = dao.delete(COLLEAGUE_CYCLE_UUID_2);
