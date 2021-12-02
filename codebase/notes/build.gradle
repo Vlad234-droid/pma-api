@@ -45,6 +45,7 @@ dependencies {
 
     testRuntimeOnly "org.liquibase:liquibase-core:${liquibaseVersion}"
     testRuntimeOnly project(':database')
+    testRuntimeOnly project(':security')
 }
 
 

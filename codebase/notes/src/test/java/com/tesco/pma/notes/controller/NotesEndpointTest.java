@@ -46,7 +46,7 @@ public class NotesEndpointTest extends AbstractEndpointTest {
         when(notesService.createNote(note)).thenReturn(note);
 
         mvc.perform(post("/notes")
-                        .with(lineManager(ownerId.toString()))
+                        .with(colleague(ownerId.toString()))
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(note)))
@@ -65,7 +65,7 @@ public class NotesEndpointTest extends AbstractEndpointTest {
         when(notesService.updateNote(note)).thenReturn(note);
 
         mvc.perform(put("/notes/{id}", note.getId())
-                        .with(lineManager(ownerId.toString()))
+                        .with(colleague(ownerId.toString()))
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(note)))
@@ -84,7 +84,7 @@ public class NotesEndpointTest extends AbstractEndpointTest {
         when(notesService.updateNote(note)).thenThrow(new NotFoundException(HttpStatusCodes.NOT_FOUND, "Not found"));
 
         mvc.perform(put("/notes/{id}", note.getId())
-                        .with(lineManager(ownerId.toString()))
+                        .with(colleague(ownerId.toString()))
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(note)))

@@ -43,7 +43,7 @@ public class FoldersEndpointTest extends AbstractEndpointTest {
         when(notesService.createFolder(folder)).thenReturn(folder);
 
         mvc.perform(post("/notes/folders")
-                        .with(lineManager(ownerId.toString()))
+                        .with(colleague(ownerId.toString()))
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(folder)))
@@ -62,7 +62,7 @@ public class FoldersEndpointTest extends AbstractEndpointTest {
         when(notesService.updateFolder(folder)).thenReturn(folder);
 
         mvc.perform(put("/notes/folders/{id}", folder.getId())
-                        .with(lineManager(ownerId.toString()))
+                        .with(colleague(ownerId.toString()))
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(folder)))
@@ -81,7 +81,7 @@ public class FoldersEndpointTest extends AbstractEndpointTest {
         when(notesService.updateFolder(folder)).thenThrow(new NotFoundException(HttpStatusCodes.NOT_FOUND, "Not found"));
 
         mvc.perform(put("/notes/folders/{id}", folder.getId())
-                        .with(lineManager(ownerId.toString()))
+                        .with(colleague(ownerId.toString()))
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(folder)))
