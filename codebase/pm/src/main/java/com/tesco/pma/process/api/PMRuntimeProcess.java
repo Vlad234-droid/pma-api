@@ -24,7 +24,7 @@ public class PMRuntimeProcess implements Identified<UUID>, StatusAware<PMProcess
     private UUID id;
     private PMProcessStatus status;
     private UUID cycleUuid;
-    private UUID bpmProcessId;
+    private String bpmProcessId;
     private String businessKey;
     private Instant lastUpdateTime;
 }

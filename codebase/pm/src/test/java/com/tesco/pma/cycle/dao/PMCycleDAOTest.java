@@ -1,10 +1,8 @@
 package com.tesco.pma.cycle.dao;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.CompareOperation;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.colleague.api.ColleagueSimple;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
@@ -12,6 +10,7 @@ import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.dao.config.PMCycleTypeHandlerConfig;
 import com.tesco.pma.dao.AbstractDAOTest;
 import org.apache.commons.io.IOUtils;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.json.BasicJsonTester;
@@ -29,7 +28,11 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import static com.tesco.pma.api.DictionaryFilter.includeFilter;
 import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
+import static com.tesco.pma.cycle.api.PMCycleStatus.COMPLETED;
+import static com.tesco.pma.cycle.api.PMCycleStatus.DRAFT;
+import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,9 +55,6 @@ class PMCycleDAOTest extends AbstractDAOTest {
     @Autowired
     private PMCycleDAO dao;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @DynamicPropertySource
     static void postgresqlProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.default.jdbc-url", CONTAINER::getJdbcUrl);
@@ -73,7 +73,7 @@ class PMCycleDAOTest extends AbstractDAOTest {
     @Test
     @DataSet({"pm_cycle_init.xml", "pm_colleague_cycle_init.xml"})
     void getActiveByColleague() {
-        List<PMCycle> byColleague = dao.getByColleague(COLLEAGUE_UUID, DictionaryFilter.includeFilter(Set.of(ACTIVE)));
+        List<PMCycle> byColleague = dao.getByColleague(COLLEAGUE_UUID, includeFilter(Set.of(ACTIVE)));
         assertThat(byColleague).isNotEmpty();
         assertThat(byColleague.size()).isEqualTo(1);
 
@@ -84,33 +84,53 @@ class PMCycleDAOTest extends AbstractDAOTest {
     @ExpectedDataSet(value = "pm_create_cycle_expected_1.xml", compareOperation = CompareOperation.CONTAINS)
     void createPMCycle() throws ParseException {
         Instant testTime = new SimpleDateFormat(SDF_PATTERN, Locale.ENGLISH).parse("2016-12-31").toInstant();
-        dao.createInt(createCycle(CYCLE_CREATE_UUID), testTime);
+        dao.intCreateOrUpdate(createCycle(CYCLE_CREATE_UUID), testTime, null);
     }
 
     @Test
-    @DataSet({"pm_cycle_init.xml", "pm_colleague_cycle_init.xml"})
-    @ExpectedDataSet(value = "pm_update_cycle_status_expected_1.xml", compareOperation = CompareOperation.CONTAINS)
+    @DataSet(BASE_PATH_TO_DATA_SET + "pm_cycle_edit_init.xml")
+    @ExpectedDataSet(value = BASE_PATH_TO_DATA_SET + "pm_cycle_edit_expected_2.xml", compareOperation = CompareOperation.CONTAINS)
+    void updateExistingPMCycle() throws ParseException {
+        Instant testTime = new SimpleDateFormat(SDF_PATTERN, Locale.ENGLISH).parse("2016-12-31").toInstant();
+        var actualCycle = dao.read(CYCLE_UUID, null);
+        actualCycle.setName(UPDATED_NAME);
+        dao.intCreateOrUpdate(actualCycle, testTime, includeFilter(DRAFT));
+    }
+
+    @Test
+    @DataSet(BASE_PATH_TO_DATA_SET + "pm_cycle_edit_init.xml")
+    void updateExistingCycleInUnacceptableStatus() throws ParseException {
+        Instant testTime = new SimpleDateFormat(SDF_PATTERN, Locale.ENGLISH).parse("2016-12-31").toInstant();
+        var actualCycle = dao.read(CYCLE_UUID, null);
+        actualCycle.setName(UPDATED_NAME);
+        int updated = dao.intCreateOrUpdate(actualCycle, testTime, includeFilter(ACTIVE, INACTIVE, COMPLETED));
+        Assert.assertEquals(0, updated);
+    }
+
+    @Test
+    @DataSet(BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml")
+    @ExpectedDataSet(value = BASE_PATH_TO_DATA_SET + "pm_update_cycle_status_expected_1.xml", compareOperation = CompareOperation.CONTAINS)
     void changeCycleStatus() {
         dao.updateStatus(CYCLE_UUID, PMCycleStatus.INACTIVE, null);
     }
 
 
     @Test
-    @DataSet({"pm_cycle_init.xml", "pm_colleague_cycle_init.xml"})
+    @DataSet("pm_colleague_cycle_init.xml")
     void getMetadata() throws Exception {
         var metadata = IOUtils.toString(Objects.requireNonNull(getClass()
                 .getResourceAsStream("/com/tesco/pma/cycle/dao/type_1_metadata.json")), StandardCharsets.UTF_8);
         assertEquals(1, dao.updateMetadata(CYCLE_UUID, metadata));
-        var actual = dao.read(CYCLE_UUID);
+        var actual = dao.read(CYCLE_UUID, null);
         var expectedJson = json.from(metadata);
         assertThat(expectedJson).isEqualToJson(actual.getJsonMetadata());
     }
 
     @Test
-    @DataSet("pm_cycle_init.xml")
+    @DataSet("pm_cycle_edit_init.xml")
     @ExpectedDataSet(value = "pm_cycle_edit_expected.xml", compareOperation = CompareOperation.CONTAINS)
     void update() {
-        var actualCycle = dao.read(CYCLE_UUID);
+        var actualCycle = dao.read(CYCLE_UUID, null);
         actualCycle.setName(UPDATED_NAME);
         dao.update(actualCycle, null);
     }
