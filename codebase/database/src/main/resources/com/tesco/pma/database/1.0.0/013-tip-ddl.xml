@@ -8,10 +8,10 @@
     -->
     <changeSet id="5" author="Stanislav.Eurich">
         <createTable tableName="tip">
-            <column name="pk_uuid" type="${uuid_type}">
+            <column name="uuid" type="${uuid_type}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="uuid" type="${uuid_type}" remarks="Grouping tip versions by key.">
+            <column name="key" type="varchar" remarks="Grouping tip versions by key.">
                 <constraints nullable="false"/>
             </column>
             <column name="version" type="integer" remarks="Version.">
@@ -43,7 +43,7 @@
             </column>
         </createTable>
         <addUniqueConstraint
-                columnNames="title, description, target_organisation_uuid, version"
+                columnNames="key, version"
                 constraintName="composite_unique_tip"
                 tableName="tip"
         />

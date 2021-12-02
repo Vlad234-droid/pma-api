@@ -5,6 +5,7 @@
 
     <resultMap id="tipMap" type="com.tesco.pma.tip.api.Tip">
         <id property="uuid" column="uuid"/>
+        <result property="key" column="key"/>
         <result property="version" column="version"/>
         <result property="title" column="title"/>
         <result property="description" column="description"/>
@@ -14,19 +15,6 @@
         <result property="updatedTime" column="updated_time"/>
         <association property="targetOrganisation" autoMapping="true" columnPrefix="o_"
                      javaType="com.tesco.pma.organisation.api.ConfigEntry"/>
-        <collection property="history" ofType="com.tesco.pma.tip.api.Tip">
-            <id property="pkUuid" column="pk_uuid"/>
-            <result property="uuid" column="h_uuid"/>
-            <result property="version" column="h_version"/>
-            <result property="title" column="h_title"/>
-            <result property="description" column="h_description"/>
-            <result property="imageLink" column="h_imageLink"/>
-            <result property="published" column="h_published"/>
-            <result property="createdTime" column="h_createdTime"/>
-            <result property="updatedTime" column="h_updatedTime"/>
-            <association property="targetOrganisation" autoMapping="true" columnPrefix="ho_"
-                         javaType="com.tesco.pma.organisation.api.ConfigEntry"/>
-        </collection>
     </resultMap>
 
     <sql id="getSortField">
@@ -61,8 +49,8 @@
     <sql id="getFilterField">
         AND
         <choose>
-            <when test="filter.property == 'uuid'">
-                t.uuid
+            <when test="filter.property == 'key'">
+                t.key
             </when>
             <when test="filter.property == 'title'">
                 t.title
@@ -159,8 +147,9 @@
         </choose>
     </sql>
 
-    <sql id="select">
+    <sql id="selectFromTip">
         SELECT t.uuid,
+               t.key,
                t.version,
                t.title,
                t.description,
@@ -168,32 +157,25 @@
                t.published,
                t.created_time,
                t.updated_time,
-               ce.uuid           as o_uuid,
-               ce.name           as o_name,
-               ce.composite_key  as o_compositeKey,
-               h.uuid            as h_uuid,
-               h.version         as h_version,
-               h.title           as h_title,
-               h.description     as h_description,
-               h.image_link      as h_imageLink,
-               h.published       as h_published,
-               h.created_time    as h_createdTime,
-               h.updated_time    as h_updatedTime,
-               hce.uuid          as ho_uuid,
-               hce.name          as ho_name,
-               hce.composite_key as ho_compositeKey
+               ce.uuid          as o_uuid,
+               ce.name          as o_name,
+               ce.composite_key as o_compositeKey
         FROM tip t
                  LEFT JOIN config_entry ce ON ce.uuid = t.target_organisation_uuid
-                 LEFT JOIN tip h ON h.uuid = t.uuid
-                 LEFT JOIN config_entry hce ON hce.uuid = h.target_organisation_uuid
-        WHERE (t.uuid, t.version) IN
-              (SELECT uuid, MAX(version)
-               FROM tip
-               GROUP BY uuid)
     </sql>
 
-    <select id="findByRequestQuery" flushCache="true" resultMap="tipMap">
-        <include refid="select"/>
+    <sql id="whereMaxVersion">
+        WHERE
+            (t.key, t.version)
+            IN
+        (SELECT key, MAX(version)
+         FROM tip
+         GROUP BY key)
+    </sql>
+
+    <select id="findAll" flushCache="true" resultMap="tipMap">
+        <include refid="selectFromTip"/>
+        <include refid="whereMaxVersion"/>
         <if test="!requestQuery.filters.isEmpty()">
             <foreach collection="requestQuery.filters" item="filter" index="index">
                 <include refid="getExpression"/>
@@ -221,14 +203,21 @@
         </if>
     </select>
 
-    <select id="findByUuid" flushCache="true" resultMap="tipMap">
-        <include refid="select"/>
-        AND t.uuid = #{uuid}
+    <select id="findHistory" flushCache="true" resultMap="tipMap">
+        <include refid="selectFromTip"/>
+        WHERE t.key = #{key}
+        ORDER BY version DESC
     </select>
 
-    <insert id="create" useGeneratedKeys="true" keyProperty="uuid" keyColumn="uuid" flushCache="true">
-        INSERT INTO tip (pk_uuid,
-                         uuid,
+    <select id="read" flushCache="true" resultMap="tipMap">
+        <include refid="selectFromTip"/>
+        <include refid="whereMaxVersion"/>
+        AND t.key = #{key}
+    </select>
+
+    <insert id="create" useGeneratedKeys="true" keyProperty="key" keyColumn="key" flushCache="true">
+        INSERT INTO tip (uuid,
+                         key,
                          version,
                          title,
                          description,
@@ -237,8 +226,8 @@
                          published,
                          created_time,
                          updated_time)
-        VALUES (#{tip.pkUuid},
-                #{tip.uuid},
+        VALUES (#{tip.uuid},
+                #{tip.key},
                 #{tip.version},
                 #{tip.title},
                 #{tip.description},
@@ -252,7 +241,7 @@
     <delete id="delete">
         DELETE
         FROM tip
-        WHERE uuid = #{uuid}
+        WHERE key = #{key}
     </delete>
 
 </mapper>

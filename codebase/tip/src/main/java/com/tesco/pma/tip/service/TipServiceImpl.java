@@ -38,7 +38,6 @@ public class TipServiceImpl implements TipService {
     @Transactional
     public Tip create(Tip tip) {
         log.debug("Service create Tip : {}", tip);
-        tip.setPkUuid(UUID.randomUUID());
         tip.setUuid(UUID.randomUUID());
         tip.setVersion(1);
         tip.setCreatedTime(Instant.now());
@@ -55,29 +54,35 @@ public class TipServiceImpl implements TipService {
     @Override
     public List<Tip> findAll(RequestQuery requestQuery) {
         log.debug("Service find all tips");
-        return tipDAO.findByRequestQuery(requestQuery);
+        return tipDAO.findAll(requestQuery);
     }
 
     @Override
-    public Tip findOne(UUID uuid) {
-        log.debug("Service find one tip by uuid : {}", uuid);
-        Tip tip = tipDAO.findByUuid(uuid);
+    public Tip findOne(String key) {
+        log.debug("Service find one tip by key : {}", key);
+        Tip tip = tipDAO.read(key);
         if (tip == null) {
-            return throwNotFound(uuid);
+            return throwNotFound(key);
         }
         return tip;
+    }
+
+    @Override
+    public List<Tip> findHistory(String key) {
+        log.debug("Service find history by key : {}", key);
+        return tipDAO.findHistory(key);
     }
 
     @Override
     @Transactional
     public Tip update(Tip tip) {
         log.debug("Service update the tip : {}", tip);
-        Tip lastVersionTip = tipDAO.findByUuid(tip.getUuid());
+        Tip lastVersionTip = tipDAO.read(tip.getKey());
         if (lastVersionTip == null) {
-            throwNotFound(tip.getUuid());
+            throwNotFound(tip.getKey());
         }
-        tip.setPkUuid(UUID.randomUUID());
-        tip.setUuid(lastVersionTip.getUuid());
+        tip.setUuid(UUID.randomUUID());
+        tip.setKey(lastVersionTip.getKey());
         tip.setVersion(lastVersionTip.getVersion() + 1);
         tip.setCreatedTime(lastVersionTip.getCreatedTime());
         tip.setUpdatedTime(Instant.now());
@@ -92,22 +97,22 @@ public class TipServiceImpl implements TipService {
 
     @Override
     @Transactional
-    public void delete(UUID uuid) {
-        log.debug("Service delete tip by uuid : {}", uuid);
-        if (1 != tipDAO.delete(uuid)) {
-            throwNotFound(uuid);
+    public void delete(String key) {
+        log.debug("Service delete tip by key : {}", key);
+        if (1 != tipDAO.delete(key)) {
+            throwNotFound(key);
         }
     }
 
     @Override
     @Transactional
-    public void publish(UUID uuid) {
-        log.debug("Service publish tip by uuid : {}", uuid);
-        Tip tip = tipDAO.findByUuid(uuid);
+    public void publish(String key) {
+        log.debug("Service publish tip by key : {}", key);
+        Tip tip = tipDAO.read(key);
         if (tip == null) {
-            throwNotFound(uuid);
+            throwNotFound(key);
         }
-        tip.setPkUuid(UUID.randomUUID());
+        tip.setUuid(UUID.randomUUID());
         tip.setVersion(tip.getVersion() + 1);
         tip.setPublished(true);
         tip.setUpdatedTime(Instant.now());
@@ -119,9 +124,9 @@ public class TipServiceImpl implements TipService {
         }
     }
 
-    private Tip throwNotFound(UUID uuid) {
+    private Tip throwNotFound(String key) {
         String message = namedMessageSourceAccessor.getMessage(ErrorCodes.TIP_NOT_FOUND,
-                Map.of(PARAM_NAME, "uuid", PARAM_VALUE, uuid));
+                Map.of(PARAM_NAME, "key", PARAM_VALUE, key));
         throw new NotFoundException(ErrorCodes.TIP_NOT_FOUND.getCode(), message);
     }
 }

@@ -4,7 +4,6 @@ import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.tip.api.Tip;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Service Interface for managing {@link Tip}.
@@ -24,10 +23,16 @@ public interface TipService {
     List<Tip> findAll(RequestQuery requestQuery);
 
     /**
-     * @param uuid of the entity
+     * @param key of the entity
      * @return the tip
      */
-    Tip findOne(UUID uuid);
+    Tip findOne(String key);
+
+    /**
+     * @param key of the entity
+     * @return history
+     */
+    List<Tip> findHistory(String key);
 
     /**
      * @param tip the entity to update
@@ -36,12 +41,12 @@ public interface TipService {
     Tip update(Tip tip);
 
     /**
-     * @param uuid of the entity
+     * @param key of the entity
      */
-    void delete(UUID uuid);
+    void delete(String key);
 
     /**
-     * @param uuid of the entity
+     * @param key of the entity
      */
-    void publish(UUID uuid);
+    void publish(String key);
 }

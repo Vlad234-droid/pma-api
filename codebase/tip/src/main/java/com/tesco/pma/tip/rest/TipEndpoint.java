@@ -1,12 +1,10 @@
 package com.tesco.pma.tip.rest;
 
-import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import com.tesco.pma.tip.api.Tip;
 import com.tesco.pma.tip.service.TipService;
-import com.tesco.pma.validation.ValidationGroup;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,11 +22,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.validation.groups.Default;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 
 /**
  * REST controller for managing {@link Tip}.
@@ -46,12 +41,11 @@ public class TipEndpoint {
      *
      * @param tip the tip to create.
      * @return the {@link RestResponse} with status {@code 201 (Created)} and with body the new tip,
-     * or with status {@code 400 (Bad Request)} if the tip has already an UUID.
+     * or with status {@code 400 (Bad Request)} if the tip has already an key.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/tips")
     @ResponseStatus(HttpStatus.CREATED)
-    @Validated({ValidationGroup.OnCreate.class, Default.class})
     @Operation(summary = "Create a new list of tip with items", tags = {"tip"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "New Tip successfully created.")
     public RestResponse<Tip> create(@Valid @RequestBody Tip tip) throws URISyntaxException {
@@ -73,7 +67,7 @@ public class TipEndpoint {
             + "    \"organization-key_ne\": \"l1/group/l2/ho_c/l3/salaried/l4/wl5/#v1\",\n"
             + "    \"title_contains\": \"A\",\n"
             + "    \"description_ncontains\": \"B\",\n"
-            + "    \"uuid_in\": [\"982b2124-b712-429f-aad1-656cbcadc1b5\",\"80741a5e-c41c-47a0-9181-d202e9d077b7\"],\n"
+            + "    \"key_in\": [\"com.tesco.pma.tip\",\"com.tesco.pma.review\"],\n"
             + "    \"organization-name_nin\": [\"WL1\",\"WL2\"],\n"
             + "    \"created-time_lt\": \"2021-11-26T14:18:42.615Z\",\n"
             + "    \"created-time_lte\": \"2021-11-26T14:18:42.615Z\",\n"
@@ -89,75 +83,82 @@ public class TipEndpoint {
     }
 
     /**
-     * {@code GET  /tips/:uuid} : get the "uuid" tip.
+     * {@code GET  /tips/:key} : get the "key" tip.
      *
-     * @param uuid the uuid of the tip to retrieve.
+     * @param key the key of the tip to retrieve.
      * @return the {@link RestResponse} with status {@code 200 (OK)} and with body the tip, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/tips/{uuid}")
-    @Operation(summary = "Get tip by UUID", tags = {"tip"})
-    public RestResponse<Tip> read(@PathVariable final UUID uuid) {
-        log.debug("REST request to get Tip : {}", uuid);
-        return RestResponse.success(tipService.findOne(uuid));
+    @GetMapping("/tips/{key}")
+    @Operation(summary = "Get tip by key", tags = {"tip"})
+    public RestResponse<Tip> read(@PathVariable final String key) {
+        log.debug("REST request to get Tip : {}", key);
+        return RestResponse.success(tipService.findOne(key));
     }
 
     /**
-     * {@code PUT  /tips/:uuid} : Updates an existing tip.
+     * {@code GET  /tips/:key/history} : get the history by "key" tip.
      *
-     * @param uuid the uuid of the tip to save.
+     * @param key the key of the tip to retrieve.
+     * @return the {@link RestResponse} with status {@code 200 (OK)} and with body the list of tips.
+     */
+    @GetMapping("/tips/{key}/history")
+    @Operation(summary = "Get tip history by key", tags = {"tip"})
+    public RestResponse<List<Tip>> readHistory(@PathVariable final String key) {
+        log.debug("REST request to get Tip history : {}", key);
+        return RestResponse.success(tipService.findHistory(key));
+    }
+
+    /**
+     * {@code PUT  /tips/:key} : Updates an existing tip.
+     *
+     * @param key the key of the tip to save.
      * @param tip  the tip to update.
      * @return the {@link RestResponse} with status {@code 200 (OK)} and with body the updated tip,
      * or with status {@code 400 (Bad Request)} if the tip is not valid.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/tips/{uuid}")
-    @Validated({ValidationGroup.OnUpdate.class, Default.class})
+    @PutMapping("/tips/{key}")
     @Operation(summary = "Updates an existing Tip", tags = {"tip"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Tip updated successfully.")
-    @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Invalid UUID")
-    public RestResponse<Tip> update(@PathVariable final UUID uuid, @Valid @RequestBody Tip tip) throws URISyntaxException {
-        log.debug("REST request to update Tip : {}, {}", uuid, tip);
-        if (tip.getUuid() == null) {
-            tip.setUuid(uuid);
-        }
-        if (!Objects.equals(uuid, tip.getUuid())) {
-            throw new InvalidParameterException(HttpStatusCodes.BAD_REQUEST, "Path uuid does not match body uuid", "tip.uuid");
-        }
+    @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Invalid key")
+    public RestResponse<Tip> update(@PathVariable final String key, @Valid @RequestBody Tip tip) throws URISyntaxException {
+        log.debug("REST request to update Tip : {}, {}", key, tip);
+        tip.setKey(key);
         return RestResponse.success(tipService.update(tip));
     }
 
     /**
-     * {@code DELETE  /tips/:uuid} : Delete an existing tip.
+     * {@code DELETE  /tips/:key} : Delete an existing tip.
      *
-     * @param uuid the uuid of the tip to delete.
+     * @param key the key of the tip to delete.
      * @return the {@link RestResponse} with status {@code 204 (NO_CONTENT)}.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @DeleteMapping("/tips/{uuid}")
+    @DeleteMapping("/tips/{key}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete an existing Tip", tags = {"tip"})
     @ApiResponse(responseCode = HttpStatusCodes.NO_CONTENT, description = "Tip successfully deleted.")
-    public RestResponse<Void> delete(@PathVariable final UUID uuid) {
-        log.debug("REST request to delete Tip with uuid: {}", uuid);
-        tipService.delete(uuid);
+    public RestResponse<Void> delete(@PathVariable final String key) {
+        log.debug("REST request to delete Tip with key: {}", key);
+        tipService.delete(key);
         return RestResponse.success();
     }
 
     /**
-     * {@code PATCH  /tips/:uuid/publish} : Publish tip
+     * {@code PATCH  /tips/:key/publish} : Publish tip
      *
-     * @param uuid the uuid of the tip.
+     * @param key the key of the tip.
      * @return the {@link RestResponse} with status {@code 204 (No content)},
      * or with status {@code 404 (Not Found)} if the tip is not found.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping(value = "/tips/{uuid}/publish")
+    @PutMapping(value = "/tips/{key}/publish")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Publish tip", tags = {"tip"})
     @ApiResponse(responseCode = HttpStatusCodes.NO_CONTENT, description = "Tip published successfully.")
-    public RestResponse<Void> publish(@PathVariable final UUID uuid) throws URISyntaxException {
-        log.debug("REST request to publish Tip with uuid : {}", uuid);
-        tipService.publish(uuid);
+    public RestResponse<Void> publish(@PathVariable final String key) throws URISyntaxException {
+        log.debug("REST request to publish Tip with key : {}", key);
+        tipService.publish(key);
         return RestResponse.success();
     }
 

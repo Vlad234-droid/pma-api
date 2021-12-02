@@ -6,20 +6,8 @@
         version="2.0">
     <default-package>com.tesco.pma.tip.api</default-package>
     <bean class="Tip" ignore-annotations="true">
-        <field name="uuid">
-            <constraint annotation="javax.validation.constraints.Null">
-                <groups>
-                    <value>com.tesco.pma.validation.ValidationGroup$WithoutId</value>
-                </groups>
-            </constraint>
-            <constraint annotation="javax.validation.constraints.NotNull">
-                <groups>
-                    <value>com.tesco.pma.validation.ValidationGroup$WithId</value>
-                </groups>
-            </constraint>
-        </field>
-        <field name="pkUuid">
-            <constraint annotation="javax.validation.constraints.Null"/>
+        <field name="key">
+            <constraint annotation="javax.validation.constraints.NotNull"/>
         </field>
         <field name="title">
             <constraint annotation="javax.validation.constraints.NotNull"/>

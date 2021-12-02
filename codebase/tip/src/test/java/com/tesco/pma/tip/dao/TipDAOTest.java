@@ -39,9 +39,8 @@ class TipDAOTest extends AbstractDAOTest {
     void create() {
         //given
         Tip tip = TestDataUtil.buildTip();
-        tip.setPkUuid(UUID.randomUUID());
         tip.setUuid(UUID.randomUUID());
-        tip.setTitle("new title");
+        tip.setKey("new key");
         tip.setCreatedTime(Instant.now());
 
         //when
@@ -56,8 +55,8 @@ class TipDAOTest extends AbstractDAOTest {
     void shouldThrowDuplicateKeyExceptionWhenInsertExistingUniqueKey() {
         //given
         Tip tip = TestDataUtil.buildTip();
-        tip.setPkUuid(UUID.randomUUID());
         tip.setUuid(UUID.randomUUID());
+        tip.setKey(TestDataUtil.TIP_KEY);
         tip.setCreatedTime(Instant.now());
 
         //when and then
@@ -73,24 +72,24 @@ class TipDAOTest extends AbstractDAOTest {
         RequestQuery requestQuery = new RequestQuery();
 
         //when
-        List<Tip> result = underTest.findByRequestQuery(requestQuery);
+        List<Tip> result = underTest.findAll(requestQuery);
 
         //then
         assertThat(result)
                 .hasSize(2)
                 .element(0)
-                .returns(TestDataUtil.TIP_UUID, Tip::getUuid);
+                .returns(TestDataUtil.TIP_KEY, Tip::getKey);
     }
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "tip_init.xml"})
-    void findByUuid() {
+    void read() {
         //when
-        Tip result = underTest.findByUuid(TestDataUtil.TIP_UUID);
+        Tip result = underTest.read(TestDataUtil.TIP_KEY);
 
         //then
         assertThat(result)
-                .returns(TestDataUtil.TIP_UUID, Tip::getUuid)
+                .returns(TestDataUtil.TIP_KEY, Tip::getKey)
                 .returns(TestDataUtil.TIP_TITLE, Tip::getTitle)
                 .returns(TestDataUtil.TIP_DESCRIPTION, Tip::getDescription)
                 .returns(TestDataUtil.TIP_IMAGE_LINK, Tip::getImageLink);
@@ -101,7 +100,7 @@ class TipDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "tip_init.xml"})
     void delete() {
         //when
-        int result = underTest.delete(TestDataUtil.TIP_UUID);
+        int result = underTest.delete(TestDataUtil.TIP_KEY);
 
         //then
         assertEquals(1, result);
