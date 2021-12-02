@@ -1,5 +1,6 @@
 package com.tesco.pma.flow.handlers;
 
+import com.tesco.pma.api.MapJson;
 import com.tesco.pma.bpm.api.ProcessExecutionException;
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.bpm.camunda.flow.CamundaExecutionContext;
@@ -9,9 +10,14 @@ import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.api.model.PMElement;
 import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.cycle.model.PMProcessModelParser;
+import com.tesco.pma.cycle.service.PMColleagueCycleService;
+import com.tesco.pma.review.domain.TimelinePoint;
+import com.tesco.pma.review.service.TimelinePointService;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.model.bpmn.instance.Activity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -20,6 +26,8 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_BEFORE_END;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_BEFORE_START;
@@ -28,11 +36,11 @@ import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_START;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_START_DELAY;
 import static com.tesco.pma.cycle.api.model.PMTimelinePointElement.PM_TIMELINE_POINT_START_DELAY;
 import static com.tesco.pma.cycle.api.model.PMTimelinePointElement.PM_TIMELINE_POINT_START_TIME;
-import static com.tesco.pma.flow.handlers.ProcessTimelinePoint.PropertyNames.BEFORE_END;
-import static com.tesco.pma.flow.handlers.ProcessTimelinePoint.PropertyNames.BEFORE_START;
-import static com.tesco.pma.flow.handlers.ProcessTimelinePoint.PropertyNames.DURATION;
-import static com.tesco.pma.flow.handlers.ProcessTimelinePoint.PropertyNames.START;
-import static com.tesco.pma.flow.handlers.ProcessTimelinePoint.PropertyNames.START_DELAY;
+import static com.tesco.pma.flow.handlers.ProcessTimelinePointHandler.PropertyNames.BEFORE_END;
+import static com.tesco.pma.flow.handlers.ProcessTimelinePointHandler.PropertyNames.BEFORE_START;
+import static com.tesco.pma.flow.handlers.ProcessTimelinePointHandler.PropertyNames.DURATION;
+import static com.tesco.pma.flow.handlers.ProcessTimelinePointHandler.PropertyNames.START;
+import static com.tesco.pma.flow.handlers.ProcessTimelinePointHandler.PropertyNames.START_DELAY;
 
 /**
  * Calculates all required timeline point's dates for a fiscal year performance cycle
@@ -42,9 +50,15 @@ import static com.tesco.pma.flow.handlers.ProcessTimelinePoint.PropertyNames.STA
  */
 @Slf4j
 @Component
-public class ProcessTimelinePoint extends CamundaAbstractFlowHandler {
+public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
 
     private final DateTimeFormatter dtFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+
+    @Autowired
+    private PMColleagueCycleService colleagueCycleService;
+
+    @Autowired
+    private TimelinePointService timelinePointService;
 
     enum PropertyNames {
         START,
@@ -72,6 +86,39 @@ public class ProcessTimelinePoint extends CamundaAbstractFlowHandler {
             //todo replace by required exception
             throw new ProcessExecutionException("Incorrect configuration: none required parameters are specified");
         }
+
+        createTimelinePoints(context, cycle, parent.getCode());
+    }
+
+    private void createTimelinePoints(ExecutionContext context, PMCycle cycle, String code) {
+        var colleagueCycles = colleagueCycleService.getByCycleUuid(cycle.getUuid(), null, null);
+        if (CollectionUtils.isEmpty(colleagueCycles)) {
+            return;
+        }
+
+        var startDate = getLocalDate(context, FlowParameters.START_DATE);
+        var beforeStartDate = getLocalDate(context, FlowParameters.BEFORE_START_DATE);
+        var endDate = getLocalDate(context, FlowParameters.END_DATE);
+        var beforeEndDate = getLocalDate(context, FlowParameters.BEFORE_END_DATE);
+
+        var props = new MapJson(Map.of(FlowParameters.START_DATE.name(), formatDate(startDate),
+                FlowParameters.BEFORE_START_DATE.name(), formatDate(beforeStartDate),
+                FlowParameters.END_DATE.name(), formatDate(endDate),
+                FlowParameters.BEFORE_END_DATE.name(), formatDate(beforeEndDate)));
+
+        var timelinePoints = colleagueCycles.stream()
+                .map(cc -> TimelinePoint.builder()
+                        .uuid(UUID.randomUUID())
+                        .colleagueCycleUuid(cc.getUuid())
+                        .code(code)
+                        .startTime(startDate.atStartOfDay().toInstant(ZoneOffset.UTC))
+                        .endTime(endDate.atStartOfDay().toInstant(ZoneOffset.UTC))
+                        .properties(props)
+                        .status(null)//fixme
+                        .build())
+                .collect(Collectors.toList());
+
+        timelinePointService.saveAll(timelinePoints);
     }
 
     PMElement getParent(ExecutionContext context) {
@@ -119,7 +166,7 @@ public class ProcessTimelinePoint extends CamundaAbstractFlowHandler {
     }
 
     private LocalDate processEndDate(ExecutionContext context, Map<String, String> props, Map<PropertyNames, String> names,
-                                   LocalDate startDate) throws ProcessExecutionException {
+                                     LocalDate startDate) throws ProcessExecutionException {
         var endDate = startDate;
         if (isPresent(props, names, DURATION)) {
             try {
@@ -147,7 +194,7 @@ public class ProcessTimelinePoint extends CamundaAbstractFlowHandler {
     }
 
     private LocalDate processStartDate(ExecutionContext context, Map<String, String> props, Map<PropertyNames, String> names,
-                                     Instant cycleStartTime) throws ProcessExecutionException {
+                                       Instant cycleStartTime) throws ProcessExecutionException {
         var startTime = LocalDate.ofInstant(cycleStartTime, ZoneOffset.UTC);
         if (isPresent(props, names, START_DELAY)) {
             try {
@@ -192,6 +239,10 @@ public class ProcessTimelinePoint extends CamundaAbstractFlowHandler {
 
     private String formatDate(LocalDate dateTime) {
         return dtFormatter.format(dateTime);
+    }
+
+    private LocalDate getLocalDate(ExecutionContext context, FlowParameters parameter) {
+        return dtFormatter.parse(context.getVariable(parameter), LocalDate::from);
     }
 
     //todo replace by required exception

@@ -6,18 +6,20 @@ import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.organisation.service.ConfigEntryService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
-@RequiredArgsConstructor
 public class PMColleagueCycleHandler extends CamundaAbstractFlowHandler {
 
-    private final ConfigEntryService configEntryService;
-    private final PMColleagueCycleService pmColleagueCycleService;
+    @Autowired
+    private ConfigEntryService configEntryService;
+
+    @Autowired
+    private PMColleagueCycleService pmColleagueCycleService;
 
     @Override
     protected void execute(ExecutionContext context) {

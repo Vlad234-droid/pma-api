@@ -22,6 +22,14 @@ public interface TimelinePointDAO {
     int create(@Param("tLPoint") TimelinePoint tLPoint);
 
     /**
+     * Creates list of timeline points
+     *
+     * @param tLPoints list of timeline points
+     * @return number of created timeline points
+     */
+    int saveAll(@Param("tLPoints") Collection<TimelinePoint> tLPoints);
+
+    /**
      * Returns a timeline point by an identifier of timeline point
      *
      * @param uuid an identifier of timeline point
