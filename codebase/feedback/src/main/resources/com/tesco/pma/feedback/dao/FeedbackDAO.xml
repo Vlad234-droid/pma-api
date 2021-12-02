@@ -63,15 +63,6 @@
 
     <sql id="getSortField">
         <choose>
-            <when test="sort.field == 'uuid'">
-                f.uuid
-            </when>
-            <when test="sort.field == 'colleague-uuid'">
-                f.colleague_uuid
-            </when>
-            <when test="sort.field == 'target-colleague-uuid'">
-                f.target_colleague_uuid
-            </when>
             <when test="sort.field == 'target-type'">
                 f.target_type_id
             </when>
@@ -228,18 +219,18 @@
                  LEFT JOIN department cd on c.department_id = cd.id
                  LEFT JOIN profile_attributes cpa ON f.target_colleague_uuid = cpa.colleague_uuid
                  JOIN colleague tc ON f.target_colleague_uuid = tc.uuid
-                 LEFT JOIN job tcj on c.job_id = tcj.id
-                 LEFT JOIN department tcd on c.department_id = tcd.id
+                 LEFT JOIN job tcj on tc.job_id = tcj.id
+                 LEFT JOIN department tcd on tc.department_id = tcd.id
                  LEFT JOIN profile_attributes tcpa ON f.target_colleague_uuid = tcpa.colleague_uuid
     </sql>
 
     <select id="getByUuid" flushCache="true" resultMap="feedbackMap">
-        <include refid="select"></include>
+        <include refid="select"/>
         WHERE f.uuid = #{uuid}
     </select>
 
     <select id="findAll" flushCache="true" resultMap="feedbackMap">
-        <include refid="select"></include>
+        <include refid="select"/>
         WHERE 1 = 1
         <if test="!requestQuery.filters.isEmpty()">
             <foreach collection="requestQuery.filters" item="filter" index="index" open=" AND " separator=" AND ">
