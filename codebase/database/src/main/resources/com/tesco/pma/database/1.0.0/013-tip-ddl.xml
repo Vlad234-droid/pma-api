@@ -1,0 +1,52 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <!--
+        Added the entity Tip.
+    -->
+    <changeSet id="5" author="Stanislav.Eurich">
+        <createTable tableName="tip">
+            <column name="uuid" type="${uuid_type}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="key" type="varchar" remarks="Grouping tip versions by key.">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="integer" remarks="Version.">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="varchar(50)" remarks="Title.">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(255)" remarks="Description.">
+                <constraints nullable="false"/>
+            </column>
+            <column name="target_organisation_uuid" type="${uuid_type}" remarks="Link to organisation level.">
+                <constraints nullable="false"
+                             foreignKeyName="fk_tip__target_organisation_uuid"
+                             referencedTableName="config_entry"
+                             referencedColumnNames="uuid"/>
+            </column>
+            <column name="image_link" type="text" remarks="Image file URI.">
+                <constraints nullable="false"/>
+            </column>
+            <column name="published" type="boolean" remarks="False for unpublished tip.">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_time" type="timestamptz">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_time" type="timestamptz">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint
+                columnNames="key, version"
+                constraintName="composite_unique_tip"
+                tableName="tip"
+        />
+    </changeSet>
+
+</databaseChangeLog>

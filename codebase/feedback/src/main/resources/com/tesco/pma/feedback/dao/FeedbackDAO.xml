@@ -125,6 +125,9 @@
     <sql id="prepareValues">
         <foreach item="value" collection="filter.value" separator="," open="(" close=")">
             <choose>
+                <when test="filter.property == 'uuid'">
+                    #{value}::uuid
+                </when>
                 <when test="filter.property == 'status' or filter.property == 'target-type'">
                     #{value}::INTEGER
                 </when>
