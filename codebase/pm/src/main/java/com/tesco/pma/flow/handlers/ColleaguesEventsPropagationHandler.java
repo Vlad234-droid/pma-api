@@ -37,7 +37,7 @@ public class ColleaguesEventsPropagationHandler extends CamundaAbstractFlowHandl
 
     }
 
-    private Event createEvent(UUID colleagueId){
+    private Event createEvent(UUID colleagueId) {
         var event = new EventSupport(injectedValue.getExpressionText());
         event.putProperty(COLLEAGUE_UUID_PROP, colleagueId);
         return event;
