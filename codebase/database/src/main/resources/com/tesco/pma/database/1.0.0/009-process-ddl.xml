@@ -84,7 +84,7 @@
             <column name="cycle_uuid" type="${uuid_type}">
                 <constraints nullable="false"/>
             </column>
-            <column name="bpm_process_id" type="${uuid_type}">
+            <column name="bpm_process_id" type="VARCHAR(100)">
                 <constraints nullable="false"/>
             </column>
             <column name="business_key" type="VARCHAR(100)">

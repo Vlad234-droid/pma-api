@@ -156,6 +156,16 @@ public class CamundaProcessManagerServiceBean implements ProcessManagerService {
     }
 
     @Override
+    public List<String> getProcessesIds(String deploymentId, String resourceName) {
+        ProcessEngine processEngine = getProcessEngine();
+        ProcessDefinitionQuery processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
+        processDefinitionQuery.deploymentId(deploymentId).processDefinitionResourceName(resourceName);
+        var list = processDefinitionQuery.orderByProcessDefinitionName().asc().list();
+        return Objects.requireNonNullElse(list.stream().map(ResourceDefinition::getId).collect(Collectors.toList()),
+                Collections.emptyList());
+    }
+
+    @Override
     public String runProcess(String processName, Map<String, ?> varMap) throws ProcessExecutionException {
         return runProcess(processName, null, varMap);
     }
@@ -197,6 +207,38 @@ public class CamundaProcessManagerServiceBean implements ProcessManagerService {
             if (instanceId == null) {
                 String message = "Couldn't start process by key %s, version %s";
                 throw new ProcessExecutionException(String.format(message, processName, version));
+            }
+            return instanceId;
+        } catch (Exception e) {
+            throw new ProcessExecutionException(e);
+        }
+    }
+
+    @Override
+    public String runProcessById(String processId, Map<String, ?> varMap) throws ProcessExecutionException {
+        try {
+            ProcessEngine processEngine = getProcessEngine();
+            ProcessDefinitionQuery processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
+            processDefinitionQuery.processDefinitionId(processId);
+
+            ProcessDefinition processDefinition = processDefinitionQuery.singleResult();
+            if (processDefinition == null) {
+                String message = "Couldn't find process by id %s";
+                throw new ProcessExecutionException(String.format(message, processId));
+            }
+            RuntimeService runtimeService = processEngine.getRuntimeService();
+            String instanceId;
+            if (varMap != null) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> castedMapVariables = (Map<String, Object>) varMap;
+
+                instanceId = runtimeService.startProcessInstanceById(processDefinition.getId(), castedMapVariables).getId();
+            } else {
+                instanceId = runtimeService.startProcessInstanceById(processDefinition.getId()).getId();
+            }
+            if (instanceId == null) {
+                String message = "Couldn't start process by id %s";
+                throw new ProcessExecutionException(String.format(message, processId));
             }
             return instanceId;
         } catch (Exception e) {
