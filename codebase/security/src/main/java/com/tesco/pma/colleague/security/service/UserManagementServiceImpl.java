@@ -53,6 +53,11 @@ public class UserManagementServiceImpl implements UserManagementService {
 
     @Override
     public List<Role> getRoles() {
+        return accountManagementDAO.findRoles();
+    }
+
+    @Override
+    public List<Role> getAllRoles() {
         return accountManagementDAO.findAllRoles();
     }
 
