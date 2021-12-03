@@ -653,7 +653,7 @@ public class ReviewServiceImpl implements ReviewService {
         final var colleagueCycle = colleagueCycles.get(0);
 
         final var timelinePoints = timelinePointDAO.getByParams(
-                colleagueCycle.getCycleUuid(),
+                colleagueCycle.getUuid(),
                 type.getCode(),
                 null);
         if (timelinePoints == null || 1 != timelinePoints.size()) {
