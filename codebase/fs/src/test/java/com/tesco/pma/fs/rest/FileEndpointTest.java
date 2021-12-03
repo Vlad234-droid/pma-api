@@ -48,7 +48,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
     private static final Instant FILE_DATE = Instant.parse("2021-04-22T08:50:08Z");
     private static final String DESCRIPTION = "other file";
     private static final Instant CREATED_TIME = Instant.parse("2021-11-03T22:38:14Z");
-    private static final String DOWNLOAD = "/download/";
+    private static final String DOWNLOAD = "/{fileUuid}/download";
     private static final int FILE_LENGTH = 23;
 
     @MockBean
@@ -58,7 +58,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
     void getByUuid() throws Exception {
         when(service.get(FILE_UUID_1, true)).thenReturn(buildFileData(FILE_UUID_1, 1));
 
-        var result = performGet(status().isOk(), FILES_URL + "/" + FILE_UUID_1);
+        var result = performGet(status().isOk(), FILES_URL + "/" + FILE_UUID_1 + "?includeFileContent=true");
 
         assertResponseContent(result.getResponse(), "file_get_ok_response.json");
     }
@@ -67,7 +67,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
     void getByUuidUnsuccess() throws Exception {
         when(service.get(FILE_UUID_1, true)).thenThrow(NotFoundException.class);
 
-        performGet(status().isNotFound(), FILES_URL + "/" + FILE_UUID_1);
+        performGet(status().isNotFound(), FILES_URL + "/" + FILE_UUID_1 + "?includeFileContent=true");
     }
 
     @Test
@@ -112,7 +112,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
     void downloadSuccess() throws Exception {
         when(service.get(FILE_UUID_1, true)).thenReturn(buildFileData(FILE_UUID_1, 1));
 
-        var result = performGet(status().isOk(), MediaType.APPLICATION_OCTET_STREAM, FILES_URL + DOWNLOAD + FILE_UUID_1);
+        var result = performGet(status().isOk(), MediaType.APPLICATION_OCTET_STREAM, FILES_URL + DOWNLOAD, FILE_UUID_1);
 
         assertThat(result.getResponse().getContentAsByteArray()).isNotSameAs(CONTENT);
     }
@@ -121,7 +121,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
     void downloadUnsuccess() throws Exception {
         when(service.get(FILE_UUID_1, true)).thenThrow(NotFoundException.class);
 
-        performGet(status().isNotFound(), FILES_URL + DOWNLOAD + FILE_UUID_1);
+        performGet(status().isNotFound(), FILES_URL + DOWNLOAD, FILE_UUID_1);
     }
 
     @Test

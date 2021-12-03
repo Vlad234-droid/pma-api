@@ -81,7 +81,7 @@ public class FileEndpoint {
     @GetMapping(path = "/last", produces = MediaType.APPLICATION_JSON_VALUE)
     public RestResponse<File> get(@RequestParam("path") String path,
                                   @RequestParam("fileName") String fileName,
-                                  @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true") boolean includeFileContent) {
+                                  @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false") boolean includeFileContent) {
         return success(fileService.get(path, fileName, includeFileContent));
     }
 
@@ -95,7 +95,7 @@ public class FileEndpoint {
             })
     @GetMapping("{fileUuid}")
     public RestResponse<File> get(@PathVariable UUID fileUuid,
-                                  @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true") boolean includeFileContent) {
+                                  @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false") boolean includeFileContent) {
         return success(fileService.get(fileUuid, includeFileContent));
     }
 
@@ -109,7 +109,7 @@ public class FileEndpoint {
             })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public RestResponse<List<File>> get(RequestQuery requestQuery,
-                                        @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "true") boolean includeFileContent) {
+                                        @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false") boolean includeFileContent) {
         return success(fileService.get(requestQuery, includeFileContent, true));
     }
 
@@ -145,7 +145,7 @@ public class FileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.UNAUTHORIZED, description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = HttpStatusCodes.FORBIDDEN, description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Internal Server Error", content = @Content)
-    @GetMapping("/download/{fileUuid}")
+    @GetMapping("/{fileUuid}/download")
     public ResponseEntity<Resource> download(@PathVariable UUID fileUuid) {
         var file = fileService.get(fileUuid, true);
         byte[] content = file.getFileContent();
