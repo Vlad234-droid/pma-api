@@ -12,6 +12,7 @@ import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.pagination.Sort;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -50,6 +51,9 @@ public class FileServiceImpl implements FileService {
         fileData.setCreatedBy(creatorId);
 
         fileData.setPath(uploadMetadata.getPath());
+        if (StringUtils.isNotBlank(uploadMetadata.getFileName())) {
+            fileData.setFileName(uploadMetadata.getFileName());
+        }
         fileData.setStatus(uploadMetadata.getStatus() == null ? DRAFT : uploadMetadata.getStatus());
         fileData.setType(uploadMetadata.getType());
         fileData.setDescription(uploadMetadata.getDescription());

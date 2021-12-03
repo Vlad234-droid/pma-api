@@ -21,6 +21,8 @@ public class UploadMetadata {
 
     String path;
 
+    String fileName;
+
     FileType type;
 
     FileStatus status;
