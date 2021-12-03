@@ -26,6 +26,13 @@ public interface AccountManagementDAO {
     List<Role> findAllRoles();
 
     /**
+     * Returns an available access levels & metadata except default roles
+     *
+     * @return a list of roles except default roles
+     */
+    List<Role> findRoles();
+
+    /**
      * Create account
      *
      * @param name

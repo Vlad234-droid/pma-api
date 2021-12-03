@@ -1,0 +1,46 @@
+plugins {
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
+}
+
+dependencies {
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    implementation project(':api')
+    implementation project(':service')
+    implementation project(':organisation')
+    implementation project(':fs')
+
+    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:${springBootMybatisVersion}")
+    implementation("org.springframework.boot:spring-boot-starter:${springBootVersion}")
+
+    implementation("org.springdoc:springdoc-openapi-core:${openApiCoreVersion}")
+    implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
+
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
+    implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude group: 'junit' // excluding junit 4
+    }
+
+    testCompile project(':service').sourceSets.test.output
+
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+    testImplementation "com.github.database-rider:rider-junit5:${databaseRiderVersion}"
+    testRuntimeOnly "org.liquibase:liquibase-core:${liquibaseVersion}"
+    testRuntimeOnly project(':database')
+}
+
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+        mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+    }
+}
