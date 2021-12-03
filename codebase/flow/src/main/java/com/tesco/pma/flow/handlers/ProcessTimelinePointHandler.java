@@ -5,13 +5,16 @@ import com.tesco.pma.bpm.api.ProcessExecutionException;
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.bpm.camunda.flow.CamundaExecutionContext;
 import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.api.model.PMElement;
 import com.tesco.pma.cycle.api.model.PMElementType;
+import com.tesco.pma.cycle.api.model.PMReviewElement;
 import com.tesco.pma.cycle.model.PMProcessModelParser;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
+import com.tesco.pma.logging.LogFormatter;
 import com.tesco.pma.review.domain.TimelinePoint;
 import com.tesco.pma.review.service.TimelinePointService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +26,14 @@ import org.springframework.util.CollectionUtils;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -37,6 +44,7 @@ import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_START;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_START_DELAY;
 import static com.tesco.pma.cycle.api.model.PMTimelinePointElement.PM_TIMELINE_POINT_START_DELAY;
 import static com.tesco.pma.cycle.api.model.PMTimelinePointElement.PM_TIMELINE_POINT_START_TIME;
+import static com.tesco.pma.flow.exception.ErrorCodes.BPM_INCORRECT_PARAMETER;
 import static com.tesco.pma.flow.handlers.ProcessTimelinePointHandler.PropertyNames.BEFORE_END;
 import static com.tesco.pma.flow.handlers.ProcessTimelinePointHandler.PropertyNames.BEFORE_START;
 import static com.tesco.pma.flow.handlers.ProcessTimelinePointHandler.PropertyNames.DURATION;
@@ -59,6 +67,9 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
     @Autowired
     private TimelinePointService timelinePointService;
 
+    @Autowired
+    private NamedMessageSourceAccessor messageSourceAccessor;
+
     private final DateTimeFormatter dtFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
     enum PropertyNames {
@@ -71,7 +82,7 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
 
     @Override
     protected void execute(ExecutionContext context) throws Exception {
-        PMCycle cycle = context.getVariable(FlowParameters.PM_CYCLE);
+        var cycle = context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class);
         if (PMCycleType.FISCAL != cycle.getType()) {
             //todo replace by required exception
             throw new ProcessExecutionException("Incorrect cycle type: " + cycle.getType());
@@ -88,39 +99,48 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
             throw new ProcessExecutionException("Incorrect configuration: none required parameters are specified");
         }
 
-        createTimelinePoints(context, cycle, parent.getCode());
+        createTimelinePoints(context, cycle.getUuid(), parent);
     }
 
-    private void createTimelinePoints(ExecutionContext context, PMCycle cycle, String code) {
-        var colleagueCycles = colleagueCycleService
-                .getByCycleUuid(cycle.getUuid(), null, null);
+    private void createTimelinePoints(ExecutionContext context, UUID cycleUuid, PMElement element) {
+        var colleagueCycles = colleagueCycleService.getByCycleUuid(cycleUuid, null, null);
         if (CollectionUtils.isEmpty(colleagueCycles)) {
             return;
         }
 
-        var startDate = getLocalDate(context, FlowParameters.START_DATE);
-        var beforeStartDate = getLocalDate(context, FlowParameters.BEFORE_START_DATE);
-        var endDate = getLocalDate(context, FlowParameters.END_DATE);
-        var beforeEndDate = getLocalDate(context, FlowParameters.BEFORE_END_DATE);
+        var startDate = getInstant(context.getVariable(FlowParameters.START_DATE));
 
-        var props = new MapJson(Map.of(FlowParameters.START_DATE.name(), formatDate(startDate),
-                FlowParameters.BEFORE_START_DATE.name(), formatDate(beforeStartDate),
-                FlowParameters.END_DATE.name(), formatDate(endDate),
-                FlowParameters.BEFORE_END_DATE.name(), formatDate(beforeEndDate)));
+        var props = buildProps(context, startDate, element);
 
         var timelinePoints = colleagueCycles.stream()
                 .map(cc -> TimelinePoint.builder()
                         .uuid(UUID.randomUUID())
                         .colleagueCycleUuid(cc.getUuid())
-                        .code(code)
-                        .startTime(startDate.atStartOfDay().toInstant(ZoneOffset.UTC))
-                        .endTime(endDate.atStartOfDay().toInstant(ZoneOffset.UTC))
+                        .code(element.getCode())
+                        .startTime(startDate)
+                        .endTime(Optional.ofNullable(context.getNullableVariable(FlowParameters.END_DATE, String.class))
+                                .map(this::getInstant)
+                                .orElse(null))
                         .properties(props)
-                        .status(startDate.isAfter(LocalDate.now()) ? PMTimelinePointStatus.NOT_STARTED : PMTimelinePointStatus.STARTED)
+                        .status(startDate.isAfter(Instant.now()) ? PMTimelinePointStatus.NOT_STARTED : PMTimelinePointStatus.STARTED)
                         .build())
                 .collect(Collectors.toList());
 
         timelinePointService.saveAll(timelinePoints);
+    }
+
+    private MapJson buildProps(ExecutionContext context, Instant startDate, PMElement element) {
+        var map = new HashMap<String, String>();
+        map.put(FlowParameters.START_DATE.name(), formatInstant(startDate));
+
+        List.of(FlowParameters.END_DATE, FlowParameters.BEFORE_START_DATE, FlowParameters.BEFORE_END_DATE)
+                .forEach(e -> Optional.ofNullable(context.getNullableVariable(e, String.class))
+                        .ifPresent(v -> map.put(e.name(), v)));
+
+        List.of(PMReviewElement.PM_REVIEW_MIN, PMReviewElement.PM_REVIEW_MAX)
+                .forEach(key -> Optional.ofNullable(element.getProperties().get(key))
+                        .ifPresent(v -> map.put(key, v)));
+        return new MapJson(map);
     }
 
     PMElement getParent(ExecutionContext context) {
@@ -243,15 +263,19 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
         return dtFormatter.format(dateTime);
     }
 
-    private LocalDate getLocalDate(ExecutionContext context, FlowParameters parameter) {
-        return dtFormatter.parse(context.getVariable(parameter), LocalDate::from);
+    private String formatInstant(Instant instant) {
+        return dtFormatter.format(LocalDate.ofInstant(instant, ZoneId.of("UTC")));
+    }
+
+    private Instant getInstant(String date) {
+        return dtFormatter.parse(date, LocalDate::from).atStartOfDay().toInstant(ZoneOffset.UTC);
     }
 
     //todo replace by required exception
     private ProcessExecutionException incorrectParameter(Map<String, String> props, Map<PropertyNames, String> names, PropertyNames name,
                                                          DateTimeParseException exception) {
-        log.error("Incorrect configuration: " + names.get(name) + ":" + props.get(names.get(name)), exception);
-        return new ProcessExecutionException("Incorrect configuration: "
-                + names.get(name) + ":" + props.get(names.get(name)));
+        var params = Map.of("property", names.get(name), "config", props.get(names.get(name)));
+        log.error(LogFormatter.formatMessage(messageSourceAccessor, BPM_INCORRECT_PARAMETER, params));
+        return new ProcessExecutionException(messageSourceAccessor.getMessage(BPM_INCORRECT_PARAMETER, params), exception);
     }
 }
