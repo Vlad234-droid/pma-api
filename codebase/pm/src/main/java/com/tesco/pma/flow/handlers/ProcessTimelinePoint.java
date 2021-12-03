@@ -11,6 +11,8 @@ import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.cycle.model.PMProcessModelParser;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -42,6 +44,7 @@ import static com.tesco.pma.flow.handlers.ProcessTimelinePoint.PropertyNames.STA
  */
 @Slf4j
 @Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ProcessTimelinePoint extends CamundaAbstractFlowHandler {
 
     private final DateTimeFormatter dtFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
