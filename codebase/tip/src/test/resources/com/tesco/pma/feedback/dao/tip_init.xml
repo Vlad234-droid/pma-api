@@ -6,7 +6,7 @@
                   composite_key="BU/CE1/#v1"/>
 
     <tip
-            uuid="5d0198ca-4d67-46ab-bdb5-3e2de2bc1f0b"
+            uuid="982b2124-b712-429f-aad1-656cbcadc1b5"
             key="com.tesco.pma.tip"
             version="1"
             title="title"
@@ -17,7 +17,7 @@
             created_time="2021-11-25 14:30:01.742679"
     />
     <tip
-            uuid="00009438-5433-46a9-835b-8522d9a5f8e8"
+            uuid="80741a5e-c41c-47a0-9181-d202e9d077b7"
             key="com.tesco.pma.review"
             version="1"
             title="title2"

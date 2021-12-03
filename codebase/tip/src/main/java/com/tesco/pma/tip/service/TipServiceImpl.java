@@ -38,9 +38,16 @@ public class TipServiceImpl implements TipService {
     @Transactional
     public Tip create(Tip tip) {
         log.debug("Service create Tip : {}", tip);
+        Tip lastVersionTip = tipDAO.read(tip.getUuid());
+        if (lastVersionTip == null) {
+            tip.setVersion(1);
+            tip.setCreatedTime(Instant.now());
+        } else {
+            tip.setKey(lastVersionTip.getKey());
+            tip.setVersion(lastVersionTip.getVersion() + 1);
+            tip.setCreatedTime(lastVersionTip.getCreatedTime());
+        }
         tip.setUuid(UUID.randomUUID());
-        tip.setVersion(1);
-        tip.setCreatedTime(Instant.now());
         tip.setUpdatedTime(Instant.now());
         try {
             tipDAO.create(tip);
@@ -58,75 +65,55 @@ public class TipServiceImpl implements TipService {
     }
 
     @Override
-    public Tip findOne(String key) {
-        log.debug("Service find one tip by key : {}", key);
-        Tip tip = tipDAO.read(key);
+    public Tip findOne(UUID uuid) {
+        log.debug("Service find one tip : {}", uuid);
+        Tip tip = tipDAO.read(uuid);
         if (tip == null) {
-            return throwNotFound(key);
+            throwNotFound(uuid);
         }
         return tip;
     }
 
     @Override
-    public List<Tip> findHistory(String key) {
-        log.debug("Service find history by key : {}", key);
-        return tipDAO.findHistory(key);
+    public List<Tip> findHistory(UUID uuid) {
+        log.debug("Service find history : {}", uuid);
+        return tipDAO.findHistory(uuid);
     }
 
     @Override
     @Transactional
-    public Tip update(Tip tip) {
-        log.debug("Service update the tip : {}", tip);
-        Tip lastVersionTip = tipDAO.read(tip.getKey());
-        if (lastVersionTip == null) {
-            throwNotFound(tip.getKey());
+    public void delete(UUID uuid, boolean withHistory) {
+        log.debug("Service delete tip : {}", uuid);
+        if (withHistory) {
+            Tip tip = tipDAO.read(uuid);
+            if (tip == null) {
+                throwNotFound(uuid);
+            }
+            tipDAO.deleteByKey(tip.getKey());
+        } else {
+            if (1 != tipDAO.delete(uuid)) {
+                throwNotFound(uuid);
+            }
         }
-        tip.setUuid(UUID.randomUUID());
-        tip.setKey(lastVersionTip.getKey());
-        tip.setVersion(lastVersionTip.getVersion() + 1);
-        tip.setCreatedTime(lastVersionTip.getCreatedTime());
+    }
+
+    @Override
+    @Transactional
+    public Tip publish(UUID uuid) {
+        log.debug("Service publish Tip : {}", uuid);
+        Tip tip = tipDAO.read(uuid);
+        if (tip == null) {
+            throwNotFound(uuid);
+        }
         tip.setUpdatedTime(Instant.now());
-        try {
-            tipDAO.create(tip);
-        } catch (DataIntegrityViolationException ex) {
-            throw new DatabaseConstraintViolationException(
-                    com.tesco.pma.exception.ErrorCodes.CONSTRAINT_VIOLATION.getCode(), ex.getLocalizedMessage(), null, ex);
-        }
-        return tip;
-    }
-
-    @Override
-    @Transactional
-    public void delete(String key) {
-        log.debug("Service delete tip by key : {}", key);
-        if (1 != tipDAO.delete(key)) {
-            throwNotFound(key);
-        }
-    }
-
-    @Override
-    @Transactional
-    public void publish(String key) {
-        log.debug("Service publish tip by key : {}", key);
-        Tip tip = tipDAO.read(key);
-        if (tip == null) {
-            throwNotFound(key);
-        }
-        tip.setUuid(UUID.randomUUID());
-        tip.setVersion(tip.getVersion() + 1);
         tip.setPublished(true);
-        tip.setUpdatedTime(Instant.now());
-        try {
-            tipDAO.create(tip);
-        } catch (DataIntegrityViolationException ex) {
-            throw new DatabaseConstraintViolationException(
-                    com.tesco.pma.exception.ErrorCodes.CONSTRAINT_VIOLATION.getCode(), ex.getLocalizedMessage(), null, ex);
-        }
+        tipDAO.publish(tip);
+        return tip;
     }
 
-    private Tip throwNotFound(String key) {
+    private void throwNotFound(UUID uuid) {
         String message = namedMessageSourceAccessor.getMessage(ErrorCodes.TIP_NOT_FOUND,
-                Map.of(PARAM_NAME, "key", PARAM_VALUE, key));
+                Map.of(PARAM_NAME, "uuid", PARAM_VALUE, uuid));
         throw new NotFoundException(ErrorCodes.TIP_NOT_FOUND.getCode(), message);
     }
 }

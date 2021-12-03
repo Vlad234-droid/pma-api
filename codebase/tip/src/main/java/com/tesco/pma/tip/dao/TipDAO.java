@@ -5,6 +5,7 @@ import com.tesco.pma.tip.api.Tip;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface TipDAO {
 
@@ -12,9 +13,13 @@ public interface TipDAO {
 
     List<Tip> findAll(@Param("requestQuery") RequestQuery requestQuery);
 
-    Tip read(@Param("key") String key);
+    Tip read(@Param("uuid") UUID uuid);
 
-    List<Tip> findHistory(@Param("key") String key);
+    List<Tip> findHistory(@Param("uuid") UUID uuid);
 
-    int delete(@Param("key") String key);
+    int delete(@Param("uuid") UUID uuid);
+
+    void deleteByKey(@Param("key") String key);
+
+    void publish(@Param("tip") Tip tip);
 }

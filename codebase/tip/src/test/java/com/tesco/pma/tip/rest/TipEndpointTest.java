@@ -22,8 +22,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class TipEndpointTest extends AbstractEndpointTest {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final String TIPS_KEY_URL_TEMPLATE = "/tips/{key}";
+    private static final String TIPS_UUID_URL_TEMPLATE = "/tips/{uuid}";
 
     @Autowired
     protected MockMvc mvc;
@@ -63,25 +63,25 @@ class TipEndpointTest extends AbstractEndpointTest {
     void read() throws Exception {
         // given
         Tip tip = TestDataUtil.buildTip();
-        tip.setKey(TestDataUtil.TIP_KEY);
-        when(service.findOne(TestDataUtil.TIP_KEY)).thenReturn(tip);
+        tip.setUuid(TestDataUtil.TIP_UUID);
+        when(service.findOne(TestDataUtil.TIP_UUID)).thenReturn(tip);
 
         //when & then
-        mvc.perform(get(TIPS_KEY_URL_TEMPLATE, TestDataUtil.TIP_KEY))
+        mvc.perform(get(TIPS_UUID_URL_TEMPLATE, TestDataUtil.TIP_UUID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
-                .andExpect(jsonPath("$.data.key").isString());
+                .andExpect(jsonPath("$.data.uuid").isString());
     }
 
     @Test
     void readNotFound() throws Exception {
         // given
         Tip tip = TestDataUtil.buildTip();
-        tip.setKey(TestDataUtil.TIP_KEY);
-        when(service.findOne(TestDataUtil.TIP_KEY)).thenThrow(NotFoundException.class);
+        tip.setUuid(TestDataUtil.TIP_UUID);
+        when(service.findOne(TestDataUtil.TIP_UUID)).thenThrow(NotFoundException.class);
 
         //when & then
-        mvc.perform(get(TIPS_KEY_URL_TEMPLATE, TestDataUtil.TIP_KEY))
+        mvc.perform(get(TIPS_UUID_URL_TEMPLATE, TestDataUtil.TIP_UUID))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.success").value(false));
@@ -91,9 +91,9 @@ class TipEndpointTest extends AbstractEndpointTest {
     void findAll() throws Exception {
         // given
         Tip tip1 = TestDataUtil.buildTip();
-        tip1.setKey(TestDataUtil.TIP_KEY);
+        tip1.setUuid(TestDataUtil.TIP_UUID);
         Tip tip2 = TestDataUtil.buildTip();
-        tip2.setKey(TestDataUtil.TIP_KEY_UNPUBLISHED);
+        tip2.setUuid(TestDataUtil.TIP_UNPUBLISHED_UUID);
         List<Tip> tips = List.of(tip1, tip2);
         when(service.findAll(any(RequestQuery.class))).thenReturn(tips);
 
@@ -102,52 +102,36 @@ class TipEndpointTest extends AbstractEndpointTest {
                 .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
-                .andExpect(jsonPath("$.data[%s].key", 0).isString());
-    }
-
-    @Test
-    void update() throws Exception {
-        //given
-        Tip tip = TestDataUtil.buildTip();
-        tip.setKey(TestDataUtil.TIP_KEY);
-        when(service.update(tip)).thenReturn(tip);
-
-        //when
-        mvc.perform(put(TIPS_KEY_URL_TEMPLATE, TestDataUtil.TIP_KEY)
-                .contentType(APPLICATION_JSON)
-                .content(OBJECT_MAPPER.writeValueAsString(tip)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(APPLICATION_JSON));
-
-        //then
-        verify(service, times(1)).update(tip);
+                .andExpect(jsonPath("$.data[%s].uuid", 0).isString());
     }
 
     @Test
     void deleteTip() throws Exception {
         //given
         Tip tip = TestDataUtil.buildTip();
-        tip.setKey(TestDataUtil.TIP_KEY);
+        tip.setUuid(TestDataUtil.TIP_UUID);
 
         //when
-        mvc.perform(delete(TIPS_KEY_URL_TEMPLATE, TestDataUtil.TIP_KEY))
+        mvc.perform(delete(TIPS_UUID_URL_TEMPLATE, TestDataUtil.TIP_UUID))
                 .andExpect(status().isNoContent());
 
         //then
-        verify(service, times(1)).delete(TestDataUtil.TIP_KEY);
+        verify(service, times(1)).delete(TestDataUtil.TIP_UUID, false);
     }
 
     @Test
     void publish() throws Exception {
         //given
         Tip tip = TestDataUtil.buildTip();
-        tip.setKey(TestDataUtil.TIP_KEY_UNPUBLISHED);
+        tip.setUuid(TestDataUtil.TIP_UNPUBLISHED_UUID);
+        when(service.publish(TestDataUtil.TIP_UNPUBLISHED_UUID)).thenReturn(tip);
 
         //when
-        mvc.perform(put("/tips/{key}/publish", TestDataUtil.TIP_KEY_UNPUBLISHED))
-                .andExpect(status().isNoContent());
+        mvc.perform(patch("/tips/{uuid}/publish", TestDataUtil.TIP_UNPUBLISHED_UUID))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON));
 
         //then
-        verify(service, times(1)).publish(TestDataUtil.TIP_KEY_UNPUBLISHED);
+        verify(service, times(1)).publish(TestDataUtil.TIP_UNPUBLISHED_UUID);
     }
 }

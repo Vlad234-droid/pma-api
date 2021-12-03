@@ -56,7 +56,6 @@ class TipDAOTest extends AbstractDAOTest {
         //given
         Tip tip = TestDataUtil.buildTip();
         tip.setUuid(UUID.randomUUID());
-        tip.setKey(TestDataUtil.TIP_KEY);
         tip.setCreatedTime(Instant.now());
 
         //when and then
@@ -67,7 +66,7 @@ class TipDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "tip_init.xml"})
-    void findByRequestQuery() {
+    void findALL() {
         //given
         RequestQuery requestQuery = new RequestQuery();
 
@@ -78,17 +77,18 @@ class TipDAOTest extends AbstractDAOTest {
         assertThat(result)
                 .hasSize(2)
                 .element(0)
-                .returns(TestDataUtil.TIP_KEY, Tip::getKey);
+                .returns(TestDataUtil.TIP_UUID, Tip::getUuid);
     }
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "tip_init.xml"})
     void read() {
         //when
-        Tip result = underTest.read(TestDataUtil.TIP_KEY);
+        Tip result = underTest.read(TestDataUtil.TIP_UUID);
 
         //then
         assertThat(result)
+                .returns(TestDataUtil.TIP_UUID, Tip::getUuid)
                 .returns(TestDataUtil.TIP_KEY, Tip::getKey)
                 .returns(TestDataUtil.TIP_TITLE, Tip::getTitle)
                 .returns(TestDataUtil.TIP_DESCRIPTION, Tip::getDescription)
@@ -100,7 +100,7 @@ class TipDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "tip_init.xml"})
     void delete() {
         //when
-        int result = underTest.delete(TestDataUtil.TIP_KEY);
+        int result = underTest.delete(TestDataUtil.TIP_UUID);
 
         //then
         assertEquals(1, result);

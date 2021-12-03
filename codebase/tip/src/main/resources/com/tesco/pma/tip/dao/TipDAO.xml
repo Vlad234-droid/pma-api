@@ -205,17 +205,16 @@
 
     <select id="findHistory" flushCache="true" resultMap="tipMap">
         <include refid="selectFromTip"/>
-        WHERE t.key = #{key}
+        WHERE t.key = (SELECT key from tip WHERE uuid = #{uuid})
         ORDER BY version DESC
     </select>
 
     <select id="read" flushCache="true" resultMap="tipMap">
         <include refid="selectFromTip"/>
-        <include refid="whereMaxVersion"/>
-        AND t.key = #{key}
+        WHERE t.uuid = #{uuid}
     </select>
 
-    <insert id="create" useGeneratedKeys="true" keyProperty="key" keyColumn="key" flushCache="true">
+    <insert id="create" useGeneratedKeys="true" keyProperty="uuid" keyColumn="uuid" flushCache="true">
         INSERT INTO tip (uuid,
                          key,
                          version,
@@ -241,7 +240,20 @@
     <delete id="delete">
         DELETE
         FROM tip
+        WHERE uuid = #{uuid}
+    </delete>
+
+    <delete id="deleteByKey">
+        DELETE
+        FROM tip
         WHERE key = #{key}
     </delete>
+
+    <update id="publish">
+        UPDATE tip
+        SET published    = #{tip.published},
+            updated_time = #{tip.updatedTime}
+        WHERE uuid = #{tip.uuid}
+    </update>
 
 </mapper>

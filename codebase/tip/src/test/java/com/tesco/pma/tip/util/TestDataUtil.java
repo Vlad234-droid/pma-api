@@ -7,8 +7,9 @@ import java.util.UUID;
 
 public final class TestDataUtil {
 
+    public static final UUID TIP_UUID = UUID.fromString("982b2124-b712-429f-aad1-656cbcadc1b5");
+    public static final UUID TIP_UNPUBLISHED_UUID = UUID.fromString("80741a5e-c41c-47a0-9181-d202e9d077b7");
     public static final String TIP_KEY = "com.tesco.pma.tip";
-    public static final String TIP_KEY_UNPUBLISHED = "com.tesco.pma.review";
     public static final UUID TARGET_ORGANISATION_UUID = UUID.fromString("56141037-6e2d-45f0-b47f-4875e68dd1d7");
     public static final String TIP_TITLE = "title";
     public static final String TIP_DESCRIPTION = "description";
@@ -19,6 +20,7 @@ public final class TestDataUtil {
 
     public static Tip buildTip() {
         Tip tip = new Tip();
+        tip.setKey(TIP_KEY);
         tip.setTitle(TIP_TITLE);
         tip.setDescription(TIP_DESCRIPTION);
         ConfigEntry targetOrganisation = new ConfigEntry();
