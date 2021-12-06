@@ -13,6 +13,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.tesco.pma.event.Event;
@@ -40,7 +42,7 @@ public class SpringRestEventSender implements EventSender {
     public void sendEvents(@NonNull Collection<Event> events, String target) {
 
         for (Event event : events) {
-            if(isThrow){
+            if (isThrow) {
                 sendOrThrow(event, target);
             } else {
                 send(event, target);
@@ -59,13 +61,17 @@ public class SpringRestEventSender implements EventSender {
                 var message = messageSourceAccessor.getMessage(ErrorCodes.EVENT_SENDING_ERROR,
                         Map.of("event", event, "url", url));
 
-                throw new EventSendingException(ErrorCodes.EVENT_SENDING_ERROR.getCode(), message);
+                if (result.getStatusCode().is5xxServerError()) {
+                    throw new HttpServerErrorException(result.getStatusCode(), message);
+                }
+
+                if (result.getStatusCode().is4xxClientError()) {
+                    throw new HttpClientErrorException(result.getStatusCode(), message);
+                }
             }
 
-            log.info("Event: {} was send to '{}'", event, eventHandleApiConfig);
+            log.info("Event: {} was sent to '{}'", event, eventHandleApiConfig);
 
-        } catch (EventSendingException e) {
-            throw e;
         } catch (Exception e) {
 
             throw new EventSendingException(ErrorCodes.EVENT_SENDING_ERROR.getCode(),
@@ -75,18 +81,18 @@ public class SpringRestEventSender implements EventSender {
     }
 
     @Override
-    public void send(Event event, String target){
+    public void send(Event event, String target) {
         var url = getUrl(target);
         try {
             sendOrThrow(event, url);
-        } catch (Exception e){
+        } catch (Exception e) {
 
             log.warn(messageSourceAccessor.getMessage(ErrorCodes.EVENT_SENDING_ERROR,
                     Map.of("event", event, "url", url)), e);
         }
     }
 
-    private String getUrl(String target){
+    private String getUrl(String target) {
         return target == null ? eventHandleApiConfig : target;
     }
 
