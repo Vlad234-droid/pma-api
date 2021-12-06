@@ -38,6 +38,12 @@ class AccountManagementDAOTest extends AbstractDAOTest {
     }
 
     @Test
+    void findRoles() {
+        final var roles = dao.findRoles();
+        assertThat(roles.size()).isEqualTo(8);
+    }
+
+    @Test
     void shouldGetAccounts() {
 
         RequestQuery requestQuery = new RequestQuery();

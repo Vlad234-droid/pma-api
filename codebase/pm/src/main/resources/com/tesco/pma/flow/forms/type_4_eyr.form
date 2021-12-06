@@ -35,10 +35,6 @@
           "value": "Outstanding"
         },
         {
-          "label": "Outstanding",
-          "value": "Outstanding"
-        },
-        {
           "label": "Great",
           "value": "Great"
         },
@@ -57,10 +53,6 @@
     },
     {
       "values": [
-        {
-          "label": "Outstanding",
-          "value": "Outstanding"
-        },
         {
           "label": "Outstanding",
           "value": "Outstanding"

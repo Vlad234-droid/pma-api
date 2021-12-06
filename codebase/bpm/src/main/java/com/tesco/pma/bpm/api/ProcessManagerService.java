@@ -20,6 +20,8 @@ public interface ProcessManagerService {
      */
     List<DeploymentInfo> listDeployments();
 
+    List<String> getProcessesIds(String deploymentId, String resourceName);
+
     /**
      * Returns a list of processes
      *
@@ -165,4 +167,7 @@ public interface ProcessManagerService {
      * @throws ProcessExecutionException if no such execution exists or if the execution has not subscribed to the signal
      */
     void signalEvent(String code, String instanceId, Map<String, Object> processVariables) throws ProcessExecutionException;
+
+    String runProcessById(String processId, Map<String, ?> varMap) throws ProcessExecutionException;
+
 }

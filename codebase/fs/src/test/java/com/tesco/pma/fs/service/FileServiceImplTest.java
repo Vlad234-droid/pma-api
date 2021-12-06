@@ -49,6 +49,7 @@ public class FileServiceImplTest {
 
     private static final UUID FILE_UUID_1 = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65765");
     private static final String FILE_NAME = "test1.txt";
+    private static final String FILE_NAME_2 = "test2.txt";
     private static final UUID CREATOR_ID = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65767");
     private static final String PATH = "/home/dev";
 
@@ -72,6 +73,20 @@ public class FileServiceImplTest {
 
         assertNotNull(result);
         assertEquals(FILE_NAME, result.getFileName());
+    }
+
+    @Test
+    void uploadWithFileNameInMetadata() {
+        var fileData = buildFileData(FILE_NAME, FILE_UUID_1, 1);
+        var uploadMetadata = new UploadMetadata();
+        uploadMetadata.setFileName(FILE_NAME_2);
+        when(fileDao.create(any())).thenReturn(1);
+        when(fileDao.read(any(), eq(false))).thenReturn(fileData);
+
+        var result = service.upload(fileData, uploadMetadata, CREATOR_ID);
+
+        assertNotNull(result);
+        assertEquals(FILE_NAME_2, result.getFileName());
     }
 
     @Test
