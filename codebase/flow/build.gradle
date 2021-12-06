@@ -11,6 +11,10 @@ dependencies {
     implementation project(':fs')
 
     implementation project(':service')
+    implementation project(':organisation')
+    implementation project(':profile')
+    implementation project(':review')
+    implementation project(':pm')
 
     implementation("org.springdoc:springdoc-openapi-core:${openApiCoreVersion}")
     implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
@@ -35,6 +39,7 @@ dependencies {
     testImplementation("commons-io:commons-io:${commonsIoVersion}")
 
     testImplementation project(':service').sourceSets.test.output
+    testImplementation project(':pm').sourceSets.test.output
 
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"

@@ -104,7 +104,8 @@ spring:
       com/tesco/pma/colleague/profile/import/AppImportMessages,
       com/tesco/pma/colleague/security/exception/AppExceptionMessage,
       com/tesco/pma/notes/exception/AppNotesMessages,
-      com/tesco/pma/fs/exception/AppExceptionMessage
+      com/tesco/pma/fs/exception/AppExceptionMessage,
+      com/tesco/pma/flow/BPMExceptionMessages
     encoding: UTF-8
   async-executor:
     core-pool-size: 2

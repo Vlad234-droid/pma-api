@@ -41,6 +41,11 @@ public class CamundaExecutionContext implements ExecutionContext {
         return (T) getVariable(enu.name());
     }
 
+    @Override
+    public <E extends Enum<E>, T> T getNullableVariable(E enu, Class<T> cls) {
+        return getNullableVariable(enu);
+    }
+
     protected Object getVariable(String name) {
         return execution.getVariable(name);
     }
@@ -52,6 +57,11 @@ public class CamundaExecutionContext implements ExecutionContext {
             throw new IllegalArgumentException(FlowMessages.FLOW_ERROR_RUNTIME.format("Variable %s value shouldn't be null", enu.name()));
         }
         return value;
+    }
+
+    @Override
+    public <E extends Enum<E>, T> T getVariable(E enu, Class<T> cls) {
+        return getVariable(enu);
     }
 
     protected void setVariable(String name, Object value) {
