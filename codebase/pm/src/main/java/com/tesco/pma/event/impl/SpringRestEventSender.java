@@ -43,7 +43,7 @@ public class SpringRestEventSender implements EventSender {
 
                 if (result.getStatusCode() != HttpStatus.OK) {
 
-                    log.error(messageSourceAccessor.getMessage(ErrorCodes.EVENT_SENDING_ERROR,
+                    log.warn(messageSourceAccessor.getMessage(ErrorCodes.EVENT_SENDING_ERROR,
                             Map.of("event", event, "url", url)));
                 }
 
