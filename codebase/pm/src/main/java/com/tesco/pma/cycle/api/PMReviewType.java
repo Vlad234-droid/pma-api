@@ -1,6 +1,7 @@
 package com.tesco.pma.cycle.api;
 
 import com.tesco.pma.api.DictionaryItem;
+import com.tesco.pma.cycle.api.model.PMElementType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,5 +20,14 @@ public enum PMReviewType implements DictionaryItem<Integer> {
     @Override
     public String getCode() {
         return name();
+    }
+
+    public static PMReviewType getByCode(String code) {
+        for (PMReviewType type : values()) {
+            if (type.name().equalsIgnoreCase(code)) {
+                return type;
+            }
+        }
+        return null;
     }
 }

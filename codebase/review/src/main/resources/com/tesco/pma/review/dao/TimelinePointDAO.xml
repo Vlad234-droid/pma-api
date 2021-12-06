@@ -7,6 +7,10 @@
         <id property="uuid" column="uuid"/>
         <result property="colleagueCycleUuid" column="colleague_cycle_uuid"/>
         <result property="code" column="code"/>
+        <result property="description" column="description"/>
+        <result property="type" column="element_type_id"
+                typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.cycle.api.model.PMElementType"/>
         <result property="startTime" column="start_time" typeHandler="org.apache.ibatis.type.InstantTypeHandler"/>
         <result property="endTime" column="end_time" typeHandler="org.apache.ibatis.type.InstantTypeHandler"/>
         <result property="properties" column="properties"
@@ -22,6 +26,8 @@
         (uuid,
          colleague_cycle_uuid,
          code,
+         description,
+         element_type_id,
          start_time,
          end_time,
          properties,
@@ -29,6 +35,8 @@
         VALUES (#{tlPoint.uuid},
                 #{tlPoint.colleagueCycleUuid},
                 #{tlPoint.code},
+                #{tlPoint.description},
+                #{tlPoint.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.model.PMElementType},
                 #{tlPoint.startTime},
                 #{tlPoint.endTime},
                 #{tlPoint.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
@@ -40,6 +48,8 @@
         (uuid,
         colleague_cycle_uuid,
         code,
+        description,
+        element_type_id,
         start_time,
         end_time,
         properties,
@@ -49,6 +59,8 @@
             (#{tLPoint.uuid},
             #{tLPoint.colleagueCycleUuid},
             #{tLPoint.code},
+            #{tlPoint.description},
+            #{tlPoint.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.model.PMElementType},
             #{tLPoint.startTime},
             #{tLPoint.endTime},
             #{tLPoint.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
@@ -68,7 +80,10 @@
         end_time = #{tlPoint.endTime},
         properties =
         #{tlPoint.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-        status_id = #{tlPoint.status.id}
+        status_id = #{tlPoint.status.id},
+        description = #{tlPoint.description},
+        element_type_id =
+        #{tlPoint.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.model.PMElementType}
         WHERE colleague_cycle_uuid = #{tlPoint.colleagueCycleUuid}
         and code = #{tlPoint.code}
         <if test="allowedStatuses != null and !allowedStatuses.isEmpty()">

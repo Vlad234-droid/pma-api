@@ -116,6 +116,14 @@
                     remarks="Code of timeline point">
                 <constraints nullable="false"/>
             </column>
+            <column name="description" type="varchar"
+                    remarks="Description of timeline point">
+                <constraints nullable="true"/>
+            </column>
+            <column name="element_type_id" type="integer"
+                    remarks="Identifier of PM element type">
+                <constraints nullable="false"/>
+            </column>
             <column name="start_time" type="TIMESTAMPTZ"
                     remarks="Start time of timeline point">
                 <constraints nullable="false"/>
@@ -131,6 +139,11 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+        <addForeignKeyConstraint baseColumnNames="element_type_id" baseTableName="pm_timeline_point"
+                                 constraintName="pm_timeline_point_element_type_id_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="pm_element_type"
+                                 validate="true"/>
         <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="pm_timeline_point"
                                  constraintName="pm_timeline_point_status_id_fk" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"

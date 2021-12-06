@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.WAITING_FOR_APPROVAL;
+import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
 import static org.assertj.core.api.InstanceOfAssertFactories.type;
@@ -80,6 +81,8 @@ class TimelinePointDAOTest extends AbstractDAOTest {
                 .uuid(TIMELINE_POINT_UUID)
                 .colleagueCycleUuid(COLLEAGUE_CYCLE_UUID)
                 .code(OBJECTIVE_CODE)
+                .description(DESCRIPTION_INIT)
+                .type(REVIEW)
                 .startTime(START_TIME)
                 .endTime(END_TIME)
                 .properties(TIMELINE_POINT_PROPERTIES_INIT)
@@ -102,6 +105,8 @@ class TimelinePointDAOTest extends AbstractDAOTest {
                 .uuid(TIMELINE_POINT_UUID)
                 .colleagueCycleUuid(COLLEAGUE_CYCLE_UUID)
                 .code(OBJECTIVE_CODE)
+                .description(DESCRIPTION_INIT)
+                .type(REVIEW)
                 .startTime(START_TIME)
                 .endTime(END_TIME)
                 .properties(TIMELINE_POINT_PROPERTIES_INIT)
@@ -125,6 +130,8 @@ class TimelinePointDAOTest extends AbstractDAOTest {
                 .returns(TIMELINE_POINT_UUID, from(TimelinePoint::getUuid))
                 .returns(COLLEAGUE_CYCLE_UUID, from(TimelinePoint::getColleagueCycleUuid))
                 .returns(OBJECTIVE_CODE, from(TimelinePoint::getCode))
+                .returns(DESCRIPTION_INIT, from(TimelinePoint::getDescription))
+                .returns(REVIEW, from(TimelinePoint::getType))
                 .returns(START_TIME, from(TimelinePoint::getStartTime))
                 .returns(END_TIME, from(TimelinePoint::getEndTime))
                 .returns(TIMELINE_POINT_PROPERTIES_INIT, from(TimelinePoint::getProperties))
@@ -143,6 +150,8 @@ class TimelinePointDAOTest extends AbstractDAOTest {
                 .uuid(TIMELINE_POINT_UUID)
                 .colleagueCycleUuid(COLLEAGUE_CYCLE_UUID)
                 .code(OBJECTIVE_CODE)
+                .description(DESCRIPTION_INIT)
+                .type(REVIEW)
                 .startTime(START_TIME_UPDATE)
                 .endTime(END_TIME_UPDATE)
                 .properties(TIMELINE_POINT_PROPERTIES_UPDATE)
@@ -164,6 +173,8 @@ class TimelinePointDAOTest extends AbstractDAOTest {
                 .uuid(TIMELINE_POINT_UUID)
                 .colleagueCycleUuid(COLLEAGUE_CYCLE_UUID_NOT_EXIST)
                 .code(OBJECTIVE_CODE)
+                .description(DESCRIPTION_INIT)
+                .type(REVIEW)
                 .startTime(START_TIME_UPDATE)
                 .endTime(END_TIME_UPDATE)
                 .properties(TIMELINE_POINT_PROPERTIES_UPDATE)
@@ -220,6 +231,8 @@ class TimelinePointDAOTest extends AbstractDAOTest {
                 .returns(TIMELINE_POINT_UUID, from(TimelinePoint::getUuid))
                 .returns(COLLEAGUE_CYCLE_UUID, from(TimelinePoint::getColleagueCycleUuid))
                 .returns(OBJECTIVE_CODE, from(TimelinePoint::getCode))
+                .returns(DESCRIPTION_INIT, from(TimelinePoint::getDescription))
+                .returns(REVIEW, from(TimelinePoint::getType))
                 .returns(START_TIME, from(TimelinePoint::getStartTime))
                 .returns(END_TIME, from(TimelinePoint::getEndTime))
                 .returns(TIMELINE_POINT_PROPERTIES_INIT, from(TimelinePoint::getProperties))
