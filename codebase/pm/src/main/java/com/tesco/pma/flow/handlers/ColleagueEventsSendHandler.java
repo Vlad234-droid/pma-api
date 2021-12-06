@@ -21,7 +21,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ColleagueEventsSendHandler extends CamundaAbstractFlowHandler {
 
-    private Expression injectedValue;
+    private Expression eventNameExpression;
 
     private final ConfigEntryService configEntryService;
     private final EventSender eventSender;
@@ -39,19 +39,19 @@ public class ColleagueEventsSendHandler extends CamundaAbstractFlowHandler {
     }
 
     protected Event createEvent(UUID colleagueId) {
-        var event = new EventSupport(getInjectedValue());
+        var event = new EventSupport(getEventNameExpression());
         event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueId);
         return event;
     }
 
-    public void setInjectedValue(Expression expression) {
-        this.injectedValue = expression;
+    public void setEventNameExpression(Expression expression) {
+        this.eventNameExpression = expression;
     }
 
-    public String getInjectedValue() {
-        Objects.requireNonNull(injectedValue, "injectedValue must be specified");
-        return Optional.ofNullable(injectedValue.getExpressionText())
+    public String getEventNameExpression() {
+        Objects.requireNonNull(eventNameExpression, "injectedValue must be specified");
+        return Optional.ofNullable(eventNameExpression.getExpressionText())
                 .orElseThrow(() -> new IllegalStateException(FlowMessages.FLOW_ERROR_RUNTIME
-                        .format("Wrong injectedValue: %s", injectedValue.getExpressionText())));
+                        .format("Wrong injectedValue: %s", eventNameExpression.getExpressionText())));
     }
 }

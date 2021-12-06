@@ -39,7 +39,7 @@ public class ColleagueEventsSendHandlerTest {
         Expression expression = Mockito.mock(Expression.class);
         Mockito.when(expression.getExpressionText()).thenReturn(EXPRESSION_VALUE);
         handler = new ColleagueEventsSendHandler(configEntryService, eventSender);
-        handler.setInjectedValue(expression);
+        handler.setEventNameExpression(expression);
         executionContext = Mockito.mock(ExecutionContext.class);
         pmCycle = Mockito.mock(PMCycle.class);
 

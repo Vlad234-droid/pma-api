@@ -25,17 +25,22 @@ public interface EventSender {
      * @param event an event
      * @param target destination url
      */
-    default void send(Event event, String target) {
-        sendEvents(Collections.singletonList(event), target);
-    }
+    void send(Event event, String target);
 
     /**
      * Send event to default target destination
      * @param event an event
      */
     default void send(Event event) {
-        sendEvents(Collections.singletonList(event), null);
+        send(event, null);
     }
+
+    /**
+     * Send event to default target destination
+     * @param event an event
+     * @throws com.tesco.pma.event.exception.EventSendingException
+     */
+    void sendOrThrow(Event event, String target);
 
     /**
      * Register events for target destination

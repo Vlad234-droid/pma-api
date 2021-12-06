@@ -32,7 +32,9 @@ IDENTITY_CLIENT_ID=00000000-0000-0000-0000-000000000000
 IDENTITY_CLIENT_SECRET=00000000-0000-0000-0000-000000000000
 
 PMA_PROJECT_VERSION=0.0.1-SNAPSHOT
-PMA_API_URL=http://localhost:8083/v1 # e.g. https://frontend.dev.pma.tescocloud.com/experience/myperformance/api/v1
+
+#e.g. https://frontend.dev.pma.tescocloud.com/experience/myperformance/api/v1
+PMA_API_URL=http://localhost:8083/v1
 
 PMA_DB_URL=jdbc:postgresql://localhost:5432/pma_dev
 PMA_DB_SCHEMA=pma
