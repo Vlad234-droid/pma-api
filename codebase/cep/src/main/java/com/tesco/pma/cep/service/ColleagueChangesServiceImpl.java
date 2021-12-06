@@ -82,7 +82,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     private int processLeaverEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
         // Disable an access a colleague to app
         var account = userManagementService.findAccountByColleagueUuid(colleagueChangeEventPayload.getColleagueUuid());
-        ChangeAccountStatusRequest changeAccountStatusRequest = new ChangeAccountStatusRequest();
+        var changeAccountStatusRequest = new ChangeAccountStatusRequest();
         changeAccountStatusRequest.setName(account.getName());
         changeAccountStatusRequest.setStatus(AccountStatus.DISABLED);
         userManagementService.changeAccountStatus(changeAccountStatusRequest);
