@@ -170,4 +170,65 @@
         <!-- todo        add foreignKey constraints  -->
     </changeSet>
 
+    <changeSet author="ypashynskyi" id="6">
+        <createTable remarks="PM element type dictionary"
+                     tableName="pm_element_type">
+            <column name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pm_element_type_pk"/>
+            </column>
+            <column name="code" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="ypashynskyi" id="7">
+        <comment>Init table pm_cycle_type</comment>
+        <insert tableName="pm_element_type">
+            <column name="id" value="1"/>
+            <column name="code" value="ELEMENT"/>
+            <column name="description" value="Element"/>
+        </insert>
+        <insert tableName="pm_element_type">
+            <column name="id" value="2"/>
+            <column name="code" value="TIMELINE_POINT"/>
+            <column name="description" value="Timeline point"/>
+        </insert>
+        <insert tableName="pm_element_type">
+            <column name="id" value="3"/>
+            <column name="code" value="REVIEW"/>
+            <column name="description" value="Review"/>
+        </insert>
+        <insert tableName="pm_element_type">
+            <column name="id" value="4"/>
+            <column name="code" value="FORM"/>
+            <column name="description" value="Form"/>
+        </insert>
+        <insert tableName="pm_element_type">
+            <column name="id" value="5"/>
+            <column name="code" value="CYCLE"/>
+            <column name="description" value="Cycle"/>
+        </insert>
+        <rollback>
+            <delete tableName="pm_element_type">
+                <where>code = 'ELEMENT'</where>
+            </delete>
+            <delete tableName="pm_element_type">
+                <where>code = 'TIMELINE_POINT'</where>
+            </delete>
+            <delete tableName="pm_element_type">
+                <where>code = 'REVIEW'</where>
+            </delete>
+            <delete tableName="pm_element_type">
+                <where>code = 'FORM'</where>
+            </delete>
+            <delete tableName="pm_element_type">
+                <where>code = 'CYCLE'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
