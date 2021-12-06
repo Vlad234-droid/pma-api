@@ -23,6 +23,7 @@ import java.util.List;
 import static com.tesco.pma.exception.ErrorCodes.DB_CONNECTION_ERROR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
@@ -58,7 +59,7 @@ class DatabaseHealthIndicatorTest {
         assertEquals("testDB", health.getName());
         assertEquals("Test database", health.getDescription());
         Assertions.assertEquals(DependencyType.COMPONENT, health.getType());
-        assertEquals("1.4.200", health.getVersion());
+        assertFalse(org.apache.commons.lang3.StringUtils.isBlank(health.getVersion()));
     }
 
     @Test
