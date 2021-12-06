@@ -209,7 +209,7 @@ tesco:
       colleague-api:
         base-url: ${TESCO_API_BASE_URL}/colleague/v2/colleagues
       events-api:
-        base-url: ${PMA_PROJECT_URL}${server.servlet.context-path}/events
+        base-url: ${PMA_API_URL}/events
     event-mapping:
       # Review notifications events
       PM_REVIEW_BEFORE_START: com.tesco.pma.bpm.action.RunFlowByEventAction
