@@ -36,6 +36,10 @@
         FROM pm_role
     </select>
 
+    <select id="findRoles" resultMap="rolesResultMap">
+        SELECT * FROM pm_role WHERE is_default = false;
+    </select>
+
     <select id="findAccountByName" resultMap="accountResultMap">
         SELECT * FROM pm_account WHERE name = #{name}
     </select>

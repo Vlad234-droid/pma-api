@@ -15,11 +15,18 @@ import java.util.UUID;
 public interface UserManagementService {
 
     /**
+     * Returns an available access levels & metadata except default roles
+     *
+     * @return An available access levels & metadata except default roles
+     */
+    List<Role> getRoles();
+
+    /**
      * Returns an available access levels & metadata
      *
      * @return An available access levels & metadata
      */
-    List<Role> getRoles();
+    List<Role> getAllRoles();
 
     /**
      * Returns users, their status and access levels

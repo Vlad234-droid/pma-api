@@ -256,14 +256,17 @@ public class ProfileDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
     void findColleagueSuggestionsByFullName() {
 
+        var managerUUID = "c409869b-2acf-45cd-8cc6-e13af2e6f935";
+
         assertEquals(9, dao.findColleagueSuggestionsByFullName(
                 createRQ(Map.of("firstName_like", "fiRst"))).size());
 
-        assertEquals(1, dao.findColleagueSuggestionsByFullName(
+        var colleagues = dao.findColleagueSuggestionsByFullName(
                 createRQ(Map.of(
                         "firstName_like", "JohN",
-                        "managerUUID_equals", "c409869b-2acf-45cd-8cc6-e13af2e6f935"))).size());
+                        "managerUUID_equals", managerUUID)));
 
+        assertEquals(1, colleagues.size());
         assertEquals(1, dao.findColleagueSuggestionsByFullName(createRQ(Map.of("firstName_like","ohn"))).size());
 
         var colleague = dao.findColleagueSuggestionsByFullName(createRQ(Map.of(
@@ -277,7 +280,7 @@ public class ProfileDAOTest extends AbstractDAOTest {
         assertEquals("2", colleague.getWorkRelationships().get(0).getJob().getId());
         assertEquals("ANNUAL", colleague.getWorkRelationships().get(0).getSalaryFrequency());
         assertEquals("ET", colleague.getWorkRelationships().get(0).getEmploymentType());
-        //assertEquals("c409869b-2acf-45cd-8cc6-e13af2e6f935", colleague.getWorkRelationships().get(0).getManagerUUID().toString());
+        //assertEquals(managerUUID, colleague.getWorkRelationships().get(0).getManagerUUID().toString());
         assertEquals("4", colleague.getWorkRelationships().get(0).getDepartment().getId());
         assertEquals("John", colleague.getProfile().getFirstName());
         assertEquals("Dow", colleague.getProfile().getLastName());

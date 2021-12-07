@@ -1,6 +1,5 @@
 package com.tesco.pma.colleague.profile.service.rest;
 
-import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.domain.ImportError;
 import com.tesco.pma.colleague.profile.domain.ImportReport;
@@ -167,7 +166,7 @@ public class ProfileEndpoint {
     @Operation(summary = "Autocomplete search among colleagues by full name and manager ID", tags = {"colleagues"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Search among colleagues by full name and manager ID")
     @GetMapping(value = "/suggestions", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    public RestResponse<List<Colleague>> getSuggestions(RequestQuery requestQuery) {
+    public RestResponse<List<ColleagueProfile>> getSuggestions(RequestQuery requestQuery) {
         return RestResponse.success(profileService.getSuggestions(requestQuery));
     }
 
