@@ -1,7 +1,6 @@
 package com.tesco.pma.cycle.api;
 
 import com.tesco.pma.api.DictionaryItem;
-import com.tesco.pma.cycle.api.model.PMElementType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

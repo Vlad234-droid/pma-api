@@ -4,10 +4,7 @@ import com.tesco.pma.bpm.camunda.flow.AbstractCamundaSpringBootTest;
 import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleType;
-import com.tesco.pma.flow.handlers.FlowParameters;
 import com.tesco.pma.flow.handlers.ProcessTimelinePointHandler;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
@@ -15,7 +12,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Map;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:vadim.shatokhin1@tesco.com">vadim.shatokhin1@tesco.com</a>
@@ -35,14 +31,14 @@ public class Type1FlowTest extends AbstractCamundaSpringBootTest {
     @MockBean(name = "processTimelinePointMyr")
     private ProcessTimelinePointHandler processTimelinePointMyr;
 
-    @Test
-    @Disabled
-    void checkTimeLinePoint() {
-        assertThatForProcess(runProcess(PROCESS_ID_TYPE_1,
-                Map.of(FlowParameters.PM_CYCLE.name(), getCycle(CYCLE_START_TIME))))
-                .activity("processTimelinePointEyr").executedOnce()
-                .activity("processTimelinePointMyr").executedOnce();
-    }
+//    @Test
+//    @Disabled
+//    void checkTimeLinePoint() {
+//        assertThatForProcess(runProcess(PROCESS_ID_TYPE_1,
+//                Map.of(FlowParameters.PM_CYCLE.name(), getCycle(CYCLE_START_TIME))))
+//                .activity("processTimelinePointEyr").executedOnce()
+//                .activity("processTimelinePointMyr").executedOnce();
+//    }
 
     private PMCycle getCycle(LocalDateTime cycleStartTime) {
         return PMCycle.builder()
