@@ -89,6 +89,6 @@ public interface ProfileService {
      * @param requestQuery
      * @return colleagues list
      */
-    List<Colleague> getSuggestions(RequestQuery requestQuery);
+    List<ColleagueProfile> getSuggestions(RequestQuery requestQuery);
 
 }
