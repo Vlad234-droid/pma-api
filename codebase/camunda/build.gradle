@@ -10,7 +10,11 @@ dependencies {
     implementation ("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-rest:${camundaVersion}")
     implementation ("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-webapp:${camundaVersion}")
 
-    implementation ("org.codehaus.groovy:groovy-all:${groovyVersion}")
+    implementation ("org.codehaus.groovy:groovy-all:${groovyVersion}") {
+        exclude group: 'junit'
+        exclude group: 'org.junit.jupiter'
+        exclude group: 'org.junit.platform'
+    }
 
     testImplementation ("com.h2database:h2:${h2Version}")
     testImplementation ("com.zaxxer:HikariCP:${hikariVersion}")
