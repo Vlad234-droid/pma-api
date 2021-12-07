@@ -3,8 +3,6 @@ package com.tesco.pma.review.dao;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.review.domain.ColleagueTimeline;
-import com.tesco.pma.review.domain.PMCycleReviewTypeProperties;
-import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStats;
 import org.apache.ibatis.annotations.Param;
@@ -144,24 +142,5 @@ public interface ReviewDAO {
      */
     ReviewStats getReviewStats(@Param("tlPointUuid") UUID tlPointUuid,
                                @Param("type") PMReviewType type);
-
-    /**
-     * Returns properties of review type by PM cycleUuid and review type
-     *
-     * @param cycleUuid an identifier of performance cycle
-     * @param type      a review type
-     * @return a PMCycleReviewTypeProperties
-     */
-    PMCycleReviewTypeProperties getPMCycleReviewTypeProperties(@Param("cycleUuid") UUID cycleUuid,
-                                                               @Param("type") PMReviewType type);
-
-
-    /**
-     * Returns time line by PM cycleUuid
-     *
-     * @param cycleUuid an identifier of performance cycle
-     * @return a PMCycleReviewTypeProperties
-     */
-    List<PMCycleTimelinePoint> getTimeline(@Param("cycleUuid") UUID cycleUuid);
 
 }

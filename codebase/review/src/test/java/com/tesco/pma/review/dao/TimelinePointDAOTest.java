@@ -28,14 +28,20 @@ import static org.assertj.core.api.Assertions.from;
 import static org.assertj.core.api.InstanceOfAssertFactories.type;
 
 class TimelinePointDAOTest extends AbstractDAOTest {
+    private static final UUID CYCLE_UUID = UUID.fromString("10000000-1000-0000-0000-000000000000");
+    private static final UUID COLLEAGUE_UUID = UUID.fromString("10000000-0000-0000-0000-000000000000");
     private static final UUID TIMELINE_POINT_UUID = UUID.fromString("10000000-0000-0000-1000-000000000000");
+    private static final UUID MYR_TIMELINE_POINT_UUID = UUID.fromString("10000000-0000-0000-2000-000000000000");
     private static final UUID TIMELINE_POINT_UUID_NOT_EXIST = UUID.fromString("ccb9ab0b-f50f-4442-8900-000000000000");
     private static final UUID COLLEAGUE_CYCLE_UUID = UUID.fromString("10000000-0000-1000-0000-000000000000");
     private static final UUID COLLEAGUE_CYCLE_UUID_NOT_EXIST = UUID.fromString("10000000-0000-2222-0000-000000000000");
     private static final String OBJECTIVE_CODE = "Objective";
+    private static final String MYR_CODE = "Myr";
     public static final Instant START_TIME = Instant.parse("2021-09-20T10:45:12.00Z");
+    public static final Instant MYR_START_TIME = Instant.parse("2022-03-20T10:45:12.00Z");
     public static final Instant START_TIME_UPDATE = Instant.parse("2021-09-20T11:45:12.00Z");
     public static final Instant END_TIME = Instant.parse("2021-09-21T10:45:12.00Z");
+    public static final Instant MYR_END_TIME = Instant.parse("2022-03-21T10:45:12.00Z");
     public static final Instant END_TIME_UPDATE = Instant.parse("2021-09-21T11:45:12.00Z");
     private static final String TITLE_PROPERTY_NAME = "title";
     private static final String TITLE_UPDATE = "Title update";
@@ -286,4 +292,43 @@ class TimelinePointDAOTest extends AbstractDAOTest {
         assertThat(result).isZero();
     }
 
+
+    @Test
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml"})
+    void getTimeline() {
+        final var result = instance.getTimeline(CYCLE_UUID, COLLEAGUE_UUID);
+
+        final var objectives = TimelinePoint.builder()
+                .uuid(TIMELINE_POINT_UUID)
+                .colleagueCycleUuid(COLLEAGUE_CYCLE_UUID)
+                .code(OBJECTIVE_CODE)
+                .description(DESCRIPTION_INIT)
+                .type(REVIEW)
+                .startTime(START_TIME)
+                .endTime(END_TIME)
+                .properties(TIMELINE_POINT_PROPERTIES_INIT)
+                .status(DRAFT)
+                .build();
+
+        final var myr = TimelinePoint.builder()
+                .uuid(MYR_TIMELINE_POINT_UUID)
+                .colleagueCycleUuid(COLLEAGUE_CYCLE_UUID)
+                .code(MYR_CODE)
+                .description(DESCRIPTION_INIT)
+                .type(REVIEW)
+                .startTime(MYR_START_TIME)
+                .endTime(MYR_END_TIME)
+                .properties(TIMELINE_POINT_PROPERTIES_INIT)
+                .status(DRAFT)
+                .build();
+
+        assertThat(result.get(0))
+                .isEqualTo(objectives);
+
+        assertThat(result.get(1))
+                .isEqualTo(myr);
+    }
 }

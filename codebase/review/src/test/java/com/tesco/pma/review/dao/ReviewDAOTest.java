@@ -6,8 +6,6 @@ import com.tesco.pma.api.MapJson;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.review.domain.ColleagueTimeline;
-import com.tesco.pma.review.domain.PMCycleReviewTypeProperties;
-import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStats;
 import com.tesco.pma.review.domain.SimplifiedReview;
@@ -20,20 +18,17 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.tesco.pma.cycle.api.PMReviewType.MYR;
+import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DECLINED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.WAITING_FOR_APPROVAL;
-import static com.tesco.pma.cycle.api.PMReviewType.MYR;
-import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
-import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
-import static com.tesco.pma.cycle.api.model.PMElementType.TIMELINE_POINT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
 import static org.assertj.core.api.InstanceOfAssertFactories.type;
@@ -442,52 +437,6 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .returns(TIMELINE_POINT_UUID, from(ReviewStats::getTlPointUuid))
                 .returns(OBJECTIVE, from(ReviewStats::getType))
                 .returns(Map.of(DRAFT, 1, DECLINED, 1), from(ReviewStats::getMapStatusStats));
-    }
-
-    @Test
-    @DataSet({"pm_cycle_init.xml", "cleanup.xml"})
-    void getPMCycleReviewProperties() {
-        final var result = instance.getPMCycleReviewTypeProperties(CYCLE_UUID, OBJECTIVE);
-
-        assertThat(result)
-                .asInstanceOf(type(PMCycleReviewTypeProperties.class))
-                .returns(CYCLE_UUID, from(PMCycleReviewTypeProperties::getCycleUuid))
-                .returns(OBJECTIVE, from(PMCycleReviewTypeProperties::getType))
-                .returns(3, from(PMCycleReviewTypeProperties::getMin))
-                .returns(5, from(PMCycleReviewTypeProperties::getMax));
-    }
-
-    @Test
-    @DataSet({"colleague_init.xml",
-            "pm_cycle_init.xml",
-            "pm_colleague_cycle_init.xml",
-            "pm_timeline_point_init.xml",
-            "pm_review_init.xml"})
-    void getTimeline() {
-        final var result = instance.getTimeline(CYCLE_UUID);
-
-        final var objectives = PMCycleTimelinePoint.builder()
-                .cycleUuid(CYCLE_UUID)
-                .code(OBJECTIVES_CODE_NAME)
-                .description(OBJECTIVES_CODE_NAME)
-                .type(REVIEW)
-                .reviewType(OBJECTIVE)
-                .startDate(LocalDate.of(2021, 4, 1))
-                .build();
-
-        final var q3 = PMCycleTimelinePoint.builder()
-                .cycleUuid(CYCLE_UUID)
-                .code(Q3_CODE_NAME)
-                .description(Q3_CODE_NAME)
-                .type(TIMELINE_POINT)
-                .startDate(LocalDate.of(2022, 1, 1))
-                .build();
-
-        assertThat(result.get(0))
-                .isEqualTo(objectives);
-
-        assertThat(result.get(3))
-                .isEqualTo(q3);
     }
 
 }

@@ -130,7 +130,7 @@
             </column>
             <column name="end_time" type="TIMESTAMPTZ"
                     remarks="End time of timeline point">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="properties" type="jsonb"
                     remarks="Properties of review"/>

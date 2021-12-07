@@ -117,6 +117,8 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
                         .uuid(UUID.randomUUID())
                         .colleagueCycleUuid(cc.getUuid())
                         .code(element.getCode())
+                        .description(element.getDescription())
+                        .type(element.getType())
                         .startTime(startDate)
                         .endTime(Optional.ofNullable(context.getNullableVariable(FlowParameters.END_DATE, String.class))
                                 .map(this::getInstant)

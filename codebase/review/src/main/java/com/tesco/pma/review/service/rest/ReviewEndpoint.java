@@ -12,8 +12,8 @@ import com.tesco.pma.rest.RestResponse;
 import com.tesco.pma.review.domain.AuditOrgObjectiveReport;
 import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.OrgObjective;
-import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
+import com.tesco.pma.review.domain.TimelinePoint;
 import com.tesco.pma.review.domain.request.UpdateReviewsStatusRequest;
 import com.tesco.pma.review.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -272,7 +272,7 @@ public class ReviewEndpoint {
     @Operation(summary = "Get cycle timeline for colleague", tags = {"review"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the cycle timeline")
     @GetMapping(value = "/colleagues/{colleagueUuid}/timeline", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<PMCycleTimelinePoint>> getTimelineByColleague(@PathVariable UUID colleagueUuid) {
+    public RestResponse<List<TimelinePoint>> getTimelineByColleague(@PathVariable UUID colleagueUuid) {
         return RestResponse.success(reviewService.getCycleTimelineByColleague(colleagueUuid));
     }
 

@@ -160,4 +160,14 @@
         </if>
     </delete>
 
+    <select id="getTimeline" resultMap="tlPointResultMap">
+        select tlp.*
+        from pm_colleague_cycle cc
+                 inner join pm_timeline_point tlp
+                            on (cc.uuid = tlp.colleague_cycle_uuid)
+        WHERE 1 = 1
+          and cc.colleague_uuid = #{colleagueUuid}
+          and cc.cycle_uuid = #{cycleUuid}
+        order by tlp.start_time
+    </select>
 </mapper>

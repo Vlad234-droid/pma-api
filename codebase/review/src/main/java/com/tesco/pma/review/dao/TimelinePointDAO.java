@@ -100,4 +100,14 @@ public interface TimelinePointDAO {
                        @Param("status") PMTimelinePointStatus status,
                        @Param("allowedStatuses") Collection<PMTimelinePointStatus> allowedStatuses);
 
+    /**
+     * Returns time line by PM cycleUuid
+     *
+     * @param cycleUuid     an identifier of performance cycle
+     * @param colleagueUuid an identifier of colleague
+     * @return a list of TimelinePoint
+     */
+    List<TimelinePoint> getTimeline(@Param("cycleUuid") UUID cycleUuid,
+                                    @Param("colleagueUuid") UUID colleagueUuid);
+
 }

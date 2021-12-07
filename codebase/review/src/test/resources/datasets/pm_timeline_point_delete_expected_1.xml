@@ -5,8 +5,8 @@
             code="Myr"
             description="Description init"
             element_type_id="3"
-            start_time="2022-03-20 10:45:12.448057"
-            end_time="2022-03-21 10:45:12.448057"
+            start_time="2022-03-20 10:45:12.00"
+            end_time="2022-03-21 10:45:12.00"
             properties="{&quot;title&quot;: &quot;Title init&quot;,
                          &quot;description&quot;: &quot;Description init&quot;}"
             status_id="1"

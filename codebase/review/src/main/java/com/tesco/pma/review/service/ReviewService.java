@@ -1,15 +1,15 @@
 package com.tesco.pma.review.service;
 
-import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.review.domain.AuditOrgObjectiveReport;
 import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.OrgObjective;
-import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
+import com.tesco.pma.review.domain.TimelinePoint;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -104,7 +104,7 @@ public interface ReviewService {
     /**
      * Updates existing review.
      *
-     * @param review a review
+     * @param review               a review
      * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
      * @return updated review.
@@ -216,7 +216,7 @@ public interface ReviewService {
      * @return a list of timeline points
      * @throws NotFoundException if timeline doesn't exist.
      */
-    List<PMCycleTimelinePoint> getCycleTimelineByColleague(UUID colleagueUuid);
+    List<TimelinePoint> getCycleTimelineByColleague(UUID colleagueUuid);
 
     /**
      * Get report of organisation objective actions

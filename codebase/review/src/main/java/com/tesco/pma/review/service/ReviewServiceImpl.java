@@ -4,7 +4,7 @@ import com.tesco.pma.api.OrgObjectiveStatus;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
-import com.tesco.pma.cycle.dao.PMColleagueCycleDAO;
+import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
@@ -20,7 +20,6 @@ import com.tesco.pma.review.dao.TimelinePointDAO;
 import com.tesco.pma.review.domain.AuditOrgObjectiveReport;
 import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.OrgObjective;
-import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStatusCounter;
 import com.tesco.pma.review.domain.TimelinePoint;
@@ -48,8 +47,11 @@ import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DECLINED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.WAITING_FOR_APPROVAL;
 import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
+import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MAX;
+import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MIN;
 import static com.tesco.pma.review.exception.ErrorCodes.ALLOWED_STATUSES_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.CANNOT_DELETE_REVIEW_COUNT_CONSTRAINT;
+import static com.tesco.pma.review.exception.ErrorCodes.COLLEAGUE_CYCLE_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.MAX_REVIEW_NUMBER_CONSTRAINT_VIOLATION;
 import static com.tesco.pma.review.exception.ErrorCodes.MIN_REVIEW_NUMBER_CONSTRAINT_VIOLATION;
 import static com.tesco.pma.review.exception.ErrorCodes.ORG_OBJECTIVES_NOT_FOUND;
@@ -57,6 +59,7 @@ import static com.tesco.pma.review.exception.ErrorCodes.ORG_OBJECTIVE_ALREADY_EX
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_ALREADY_EXISTS;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_STATUS_NOT_ALLOWED;
+import static com.tesco.pma.review.exception.ErrorCodes.TIMELINE_POINT_NOT_FOUND;
 
 /**
  * Implementation of {@link ReviewService}.
@@ -68,13 +71,14 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewDAO reviewDAO;
     private final OrgObjectiveDAO orgObjectiveDAO;
     private final ReviewAuditLogDAO reviewAuditLogDAO;
-    private final PMColleagueCycleDAO colleagueCycleDAO;
+    private final PMColleagueCycleService pmColleagueCycleService;
     private final TimelinePointDAO timelinePointDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final PMCycleService pmCycleService;
 
     private static final String REVIEW_UUID_PARAMETER_NAME = "reviewUuid";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
+    private static final String COLLEAGUE_CYCLE_UUID_PARAMETER_NAME = "colleagueCycleUuid";
     private static final String MANAGER_UUID_PARAMETER_NAME = "managerUuid";
     private static final String PERFORMANCE_CYCLE_UUID_PARAMETER_NAME = "performanceCycleUuid";
     private static final String TL_POINT_UUID_PARAMETER_NAME = "tlPointUuid";
@@ -370,13 +374,14 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<PMCycleTimelinePoint> getCycleTimelineByColleague(UUID colleagueUuid) {
+    public List<TimelinePoint> getCycleTimelineByColleague(UUID colleagueUuid) {
         var currentCycleUuid = pmCycleService.getCurrentByColleague(colleagueUuid).getUuid();
-        var cycleTimeline = reviewDAO.getTimeline(currentCycleUuid);
+        var cycleTimeline = timelinePointDAO.getTimeline(currentCycleUuid, colleagueUuid);
 
-        for (PMCycleTimelinePoint timelinePoint :
+        for (TimelinePoint timelinePoint :
                 cycleTimeline) {
             if (REVIEW == timelinePoint.getType()) {
+                timelinePoint.setReviewType(PMReviewType.getByCode(timelinePoint.getCode()));
                 var reviewStatusCounter = getTimelineReviewStatusCounter(
                         currentCycleUuid,
                         colleagueUuid,
@@ -403,7 +408,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
         if (OBJECTIVE == reviewType) {
             var mapStatusStats = reviewStats.getMapStatusStats();
-            var minObjectives = reviewDAO.getPMCycleReviewTypeProperties(cycleUuid, reviewType).getMin();
+            var minObjectives = Integer.valueOf(timelinePoint.getProperties().getMapJson().get(PM_REVIEW_MIN));
             if (mapStatusStats.containsKey(APPROVED) && mapStatusStats.get(APPROVED) >= minObjectives) {
                 return new ReviewStatusCounter(APPROVED, mapStatusStats.get(APPROVED));
             } else if (mapStatusStats.containsKey(WAITING_FOR_APPROVAL) && mapStatusStats.get(WAITING_FOR_APPROVAL) >= minObjectives) {
@@ -454,11 +459,12 @@ public class ReviewServiceImpl implements ReviewService {
 
     public Review intCreateReview(Review review, UUID cycleUuid) {
         review.setUuid(UUID.randomUUID());
-        var reviewTypeProperties = reviewDAO.getPMCycleReviewTypeProperties(cycleUuid, review.getType());
-        if (reviewTypeProperties.getMax() < review.getNumber()) {
+        var timelinePoint = timelinePointDAO.read(review.getTlPointUuid());
+        var maxReviews = Integer.valueOf(timelinePoint.getProperties().getMapJson().get(PM_REVIEW_MAX));
+        if (maxReviews < review.getNumber()) {
             throw createReviewException(
                     MAX_REVIEW_NUMBER_CONSTRAINT_VIOLATION,
-                    Map.of(MAX_PARAMETER_NAME, reviewTypeProperties.getMax(),
+                    Map.of(MAX_PARAMETER_NAME, maxReviews,
                             NUMBER_PARAMETER_NAME, review.getNumber())
             );
         }
@@ -512,15 +518,15 @@ public class ReviewServiceImpl implements ReviewService {
                                  PMReviewType type,
                                  Integer number) {
         var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, type);
-        var reviewTypeProperties = reviewDAO.getPMCycleReviewTypeProperties(performanceCycleUuid, type);
+        var minReviews = Integer.valueOf(timelinePoint.getProperties().getMapJson().get(PM_REVIEW_MIN));
         var reviewCount = reviewDAO.getReviewStats(timelinePoint.getUuid(), type)
                 .getStatusStats()
                 .stream()
                 .mapToInt(ReviewStatusCounter::getCount)
                 .sum();
-        if (reviewCount == reviewTypeProperties.getMin()) {
+        if (reviewCount == minReviews) {
             throw deleteReviewException(CANNOT_DELETE_REVIEW_COUNT_CONSTRAINT,
-                    Map.of(MIN_PARAMETER_NAME, reviewTypeProperties.getMin()));
+                    Map.of(MIN_PARAMETER_NAME, minReviews));
         }
 
         var allowedStatuses = getStatusesForDelete(type);
@@ -623,15 +629,15 @@ public class ReviewServiceImpl implements ReviewService {
                                              PMReviewType type) {
         if (OBJECTIVE == type) {
             var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, type);
-            var reviewTypeProperties = reviewDAO.getPMCycleReviewTypeProperties(performanceCycleUuid, type);
+            var minReviews = Integer.valueOf(timelinePoint.getProperties().getMapJson().get(PM_REVIEW_MIN));
             var mapStatusStats = reviewDAO.getReviewStats(timelinePoint.getUuid(), type).getMapStatusStats();
 
             if (mapStatusStats.containsKey(WAITING_FOR_APPROVAL)
-                    && mapStatusStats.get(WAITING_FOR_APPROVAL) < reviewTypeProperties.getMin()) {
+                    && mapStatusStats.get(WAITING_FOR_APPROVAL) < minReviews) {
                 throw updateReviewException(MIN_REVIEW_NUMBER_CONSTRAINT_VIOLATION,
                         Map.of(COUNT_PARAMETER_NAME, mapStatusStats.get(WAITING_FOR_APPROVAL),
                                 STATUS_PARAMETER_NAME, WAITING_FOR_APPROVAL,
-                                MIN_PARAMETER_NAME, reviewTypeProperties.getMin()));
+                                MIN_PARAMETER_NAME, minReviews));
             }
         }
     }
@@ -639,16 +645,14 @@ public class ReviewServiceImpl implements ReviewService {
     TimelinePoint getTimelinePoint(UUID performanceCycleUuid,
                                    UUID colleagueUuid,
                                    PMReviewType type) {
-        final var colleagueCycles = colleagueCycleDAO.getByParams(
+        final var colleagueCycles = pmColleagueCycleService.getByCycleUuid(
                 performanceCycleUuid,
                 colleagueUuid,
                 null);
         if (colleagueCycles == null || 1 != colleagueCycles.size()) {
-            // TODO: 12/1/2021 should be implemented in colleague cycle service
-            throw notFound(REVIEW_NOT_FOUND,
+            throw notFound(COLLEAGUE_CYCLE_NOT_FOUND,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
-                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
-                            TYPE_PARAMETER_NAME, type));
+                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid));
         }
         final var colleagueCycle = colleagueCycles.get(0);
 
@@ -657,11 +661,9 @@ public class ReviewServiceImpl implements ReviewService {
                 type.getCode(),
                 null);
         if (timelinePoints == null || 1 != timelinePoints.size()) {
-            // TODO: 12/1/2021 should be implemented in colleague cycle service
-            throw notFound(REVIEW_NOT_FOUND,
-                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
-                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
-                            TYPE_PARAMETER_NAME, type));
+            throw notFound(TIMELINE_POINT_NOT_FOUND,
+                    Map.of(COLLEAGUE_CYCLE_UUID_PARAMETER_NAME, colleagueCycle.getUuid(),
+                            TYPE_PARAMETER_NAME, type.getCode()));
         }
 
         return timelinePoints.get(0);
