@@ -20,6 +20,7 @@ import java.util.stream.IntStream;
 public class ColleagueEventsSendHandlerTest {
 
     private static final String EXPRESSION_VALUE = "injectedValue";
+    private static final String IS_ERROR_SENSITIVE_EXPRESSION = "true";
     private static final String COMPOUND_KEY = "CompoundKey";
 
     @Mock
@@ -38,8 +39,11 @@ public class ColleagueEventsSendHandlerTest {
         MockitoAnnotations.openMocks(this);
         Expression expression = Mockito.mock(Expression.class);
         Mockito.when(expression.getExpressionText()).thenReturn(EXPRESSION_VALUE);
+        Expression isErrorSensitiveExpression = Mockito.mock(Expression.class);
+        Mockito.when(isErrorSensitiveExpression.getExpressionText()).thenReturn(IS_ERROR_SENSITIVE_EXPRESSION);
         handler = new ColleagueEventsSendHandler(configEntryService, eventSender);
         handler.setEventNameExpression(expression);
+        handler.setIsErrorSensitiveExpression(isErrorSensitiveExpression);
         executionContext = Mockito.mock(ExecutionContext.class);
         pmCycle = Mockito.mock(PMCycle.class);
 
@@ -55,7 +59,9 @@ public class ColleagueEventsSendHandlerTest {
         handler.execute(executionContext);
 
         Mockito.verify(eventSender, Mockito.times(4))
-                .send(Mockito.argThat(event -> EXPRESSION_VALUE.equals(event.getEventName())));
+                .send(Mockito.argThat(event -> EXPRESSION_VALUE.equals(event.getEventName())),
+                        Mockito.isNull(),
+                        Mockito.booleanThat(v -> v));
     }
 
     private ColleagueEntity createColleague() {

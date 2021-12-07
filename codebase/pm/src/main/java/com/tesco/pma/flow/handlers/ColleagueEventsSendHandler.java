@@ -22,19 +22,22 @@ import java.util.UUID;
 public class ColleagueEventsSendHandler extends CamundaAbstractFlowHandler {
 
     private Expression eventNameExpression;
+    private Expression isErrorSensitiveExpression;
 
     private final ConfigEntryService configEntryService;
     private final EventSender eventSender;
 
     @Override
     protected void execute(ExecutionContext context) throws Exception {
+
         PMCycle cycle = context.getVariable(FlowParameters.PM_CYCLE);
         var colleagues = configEntryService.findColleaguesByCompositeKey(cycle.getEntryConfigKey());
+        var isThrow = isErrorSensitiveExpression();
 
         colleagues.stream()
                 .map(ColleagueEntity::getUuid)
                 .map(this::createEvent)
-                .forEach(eventSender::send);
+                .forEach(e -> eventSender.send(e, null, isThrow));
 
     }
 
@@ -49,9 +52,24 @@ public class ColleagueEventsSendHandler extends CamundaAbstractFlowHandler {
     }
 
     public String getEventNameExpression() {
-        Objects.requireNonNull(eventNameExpression, "injectedValue must be specified");
+        Objects.requireNonNull(eventNameExpression, "eventNameExpression must be specified");
+
         return Optional.ofNullable(eventNameExpression.getExpressionText())
                 .orElseThrow(() -> new IllegalStateException(FlowMessages.FLOW_ERROR_RUNTIME
-                        .format("Wrong injectedValue: %s", eventNameExpression.getExpressionText())));
+                        .format("Wrong eventNameExpression: %s", eventNameExpression.getExpressionText())));
     }
+
+    public boolean isErrorSensitiveExpression() {
+        Objects.requireNonNull(isErrorSensitiveExpression, "isErrorSensitiveExpression must be specified");
+
+        return Boolean.parseBoolean(Optional.ofNullable(isErrorSensitiveExpression.getExpressionText())
+                .orElseThrow(() -> new IllegalStateException(FlowMessages.FLOW_ERROR_RUNTIME
+                        .format("Wrong isErrorSensitiveExpression: %s", isErrorSensitiveExpression.getExpressionText()))));
+    }
+
+    public void setIsErrorSensitiveExpression(Expression isErrorSensitiveExpression) {
+        this.isErrorSensitiveExpression = isErrorSensitiveExpression;
+    }
+
+
 }

@@ -7,42 +7,44 @@ import java.util.Collections;
 
 public interface EventSender {
 
+    boolean DEFAULT_THROW = false;
+
     /**
      * Send events to target destination
      * @param events events
      * @param target destination url
+     * @param isThrow should exception be thrown
+     * @throws com.tesco.pma.event.exception.EventSendingException
      */
-    void sendEvents(Collection<Event> events, String target);
+    default void sendEvents(Collection<Event> events, String target, boolean isThrow) {
+        events.forEach(e -> send(e, target, isThrow));
+    }
 
     /**
      * Send events to default target destination
      * @param events events
+     * @throws com.tesco.pma.event.exception.EventSendingException
      */
     default void sendEvents(Collection<Event> events) {
-        sendEvents(events, null);
+        sendEvents(events, null, DEFAULT_THROW);
     }
 
     /**
      * Send event to target destination
      * @param event an event
      * @param target destination url
+     * @param isThrow should exception be thrown
+     * @throws com.tesco.pma.event.exception.EventSendingException
      */
-    void send(Event event, String target);
+    void send(Event event, String target, boolean isThrow);
 
     /**
      * Send event to default target destination
      * @param event an event
      */
     default void send(Event event) {
-        send(event, null);
+        send(event, null, DEFAULT_THROW);
     }
-
-    /**
-     * Send event to default target destination
-     * @param event an event
-     * @throws com.tesco.pma.event.exception.EventSendingException
-     */
-    void sendOrThrow(Event event, String target);
 
     /**
      * Register events for target destination
