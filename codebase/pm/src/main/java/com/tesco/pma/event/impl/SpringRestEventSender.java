@@ -35,7 +35,7 @@ public class SpringRestEventSender implements EventSender {
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Override
-    public void send(Event event, String target, boolean isThrow) {
+    public void sendEvent(Event event, String target, boolean isThrow) {
         var url = getUrl(target);
         try {
             HttpEntity<Event> requestBody = new HttpEntity<>(event);

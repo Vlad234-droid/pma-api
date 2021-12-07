@@ -17,7 +17,7 @@ public interface EventSender {
      * @throws com.tesco.pma.event.exception.EventSendingException
      */
     default void sendEvents(Collection<Event> events, String target, boolean isThrow) {
-        events.forEach(e -> send(e, target, isThrow));
+        events.forEach(e -> sendEvent(e, target, isThrow));
     }
 
     /**
@@ -36,14 +36,14 @@ public interface EventSender {
      * @param isThrow should exception be thrown
      * @throws com.tesco.pma.event.exception.EventSendingException
      */
-    void send(Event event, String target, boolean isThrow);
+    void sendEvent(Event event, String target, boolean isThrow);
 
     /**
      * Send event to default target destination
      * @param event an event
      */
-    default void send(Event event) {
-        send(event, null, DEFAULT_THROW);
+    default void sendEvent(Event event) {
+        sendEvent(event, null, DEFAULT_THROW);
     }
 
     /**

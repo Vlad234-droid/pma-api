@@ -59,7 +59,7 @@ public class ColleagueEventsSendHandlerTest {
         handler.execute(executionContext);
 
         Mockito.verify(eventSender, Mockito.times(4))
-                .send(Mockito.argThat(event -> EXPRESSION_VALUE.equals(event.getEventName())),
+                .sendEvent(Mockito.argThat(event -> EXPRESSION_VALUE.equals(event.getEventName())),
                         Mockito.isNull(),
                         Mockito.booleanThat(v -> v));
     }

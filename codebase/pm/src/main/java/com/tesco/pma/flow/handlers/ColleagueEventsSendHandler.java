@@ -37,7 +37,7 @@ public class ColleagueEventsSendHandler extends CamundaAbstractFlowHandler {
         colleagues.stream()
                 .map(ColleagueEntity::getUuid)
                 .map(this::createEvent)
-                .forEach(e -> eventSender.send(e, null, isThrow));
+                .forEach(e -> eventSender.sendEvent(e, null, isThrow));
 
     }
 
