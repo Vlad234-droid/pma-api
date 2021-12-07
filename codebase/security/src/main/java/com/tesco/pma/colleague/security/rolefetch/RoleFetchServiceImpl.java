@@ -3,6 +3,7 @@ package com.tesco.pma.colleague.security.rolefetch;
 import com.tesco.pma.colleague.profile.exception.ErrorCodes;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.Account;
+import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.Role;
 import com.tesco.pma.colleague.security.service.UserManagementService;
 import com.tesco.pma.exception.NotFoundException;
@@ -34,7 +35,7 @@ public class RoleFetchServiceImpl implements RoleFetchService {
     @Override
     public Collection<String> findRolesInAccountStorage(UUID colleagueUuid) {
         Account account = userManagementService.findAccountByColleagueUuid(colleagueUuid);
-        if (account != null) {
+        if (account != null && AccountStatus.ENABLED.equals(account.getStatus())) {
             Collection<Role> roles = account.getRoles();
             var roleIds = roles.stream()
                     .map(role -> rolesMapper.findRoleByCode(role.getCode()))

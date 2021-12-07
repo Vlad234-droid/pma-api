@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.tip.dao.TipDAO">
+
+    <resultMap id="tipMap" type="com.tesco.pma.tip.api.Tip">
+        <id property="uuid" column="uuid"/>
+        <result property="key" column="key"/>
+        <result property="version" column="version"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="imageLink" column="image_link"/>
+        <result property="published" column="published"/>
+        <result property="createdTime" column="created_time"/>
+        <result property="updatedTime" column="updated_time"/>
+        <association property="targetOrganisation" autoMapping="true" columnPrefix="o_"
+                     javaType="com.tesco.pma.organisation.api.ConfigEntry"/>
+    </resultMap>
+
+    <sql id="getSortField">
+        <choose>
+            <when test="sort.field == 'title'">
+                t.title
+            </when>
+            <when test="sort.field == 'description'">
+                t.description
+            </when>
+            <when test="sort.field == 'published'">
+                t.published
+            </when>
+            <when test="sort.field == 'organization-name'">
+                ce.name
+            </when>
+            <when test="sort.field == 'organization-key'">
+                ce.composite_key
+            </when>
+            <when test="sort.field == 'created-time'">
+                t.created_time
+            </when>
+            <when test="sort.field == 'updated-time'">
+                t.updated_time
+            </when>
+            <otherwise>
+                t.created_time
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="getFilterField">
+        AND
+        <choose>
+            <when test="filter.property == 'key'">
+                t.key
+            </when>
+            <when test="filter.property == 'title'">
+                t.title
+            </when>
+            <when test="filter.property == 'description'">
+                t.description
+            </when>
+            <when test="filter.property == 'published'">
+                t.published
+            </when>
+            <when test="filter.property == 'organization-name'">
+                ce.name
+            </when>
+            <when test="filter.property == 'organization-key'">
+                ce.composite_key
+            </when>
+            <when test="filter.property == 'created-time'">
+                t.created_time
+            </when>
+            <when test="filter.property == 'updated-time'">
+                t.updated_time
+            </when>
+            <otherwise>
+                t.created_time
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="prepareValues">
+        <foreach item="value" collection="filter.value" separator="," open="(" close=")">
+            <choose>
+                <when test="filter.property == 'uuid'">
+                    #{value}::uuid
+                </when>
+                <otherwise>
+                    #{value}
+                </otherwise>
+            </choose>
+        </foreach>
+    </sql>
+
+    <sql id="getExpression">
+        <choose>
+            <when test="filter.operand.name == 'EQUALS' and filter.property != 'created-time' and filter.property != 'updated-time'">
+                <include refid="getFilterField"/>
+                = '${filter.value}'
+            </when>
+            <when test="filter.operand.name == 'NOT_EQUALS' and filter.property != 'created-time' and filter.property != 'updated-time'">
+                <include refid="getFilterField"/>
+                != '${filter.value}'
+            </when>
+            <when test="filter.operand.name == 'CONTAINS' and (filter.property == 'title' or filter.property == 'description' or
+                                                               filter.property == 'organization-name' or filter.property == 'organization-key')">
+                <include refid="getFilterField"/>
+                LIKE '%'||UPPER('${filter.value}')||'%'
+            </when>
+            <when test="filter.operand.name == 'NOT_CONTAINS' and (filter.property == 'title' or filter.property == 'description' or
+                                                               filter.property == 'organization-name' or filter.property == 'organization-key')">
+                <include refid="getFilterField"/>
+                NOT LIKE '%'||UPPER('${filter.value}')||'%'
+            </when>
+            <when test="filter.operand.name == 'IN' and filter.property != 'created-time' and filter.property != 'updated-time'">
+                <include refid="getFilterField"/>
+                IN
+                <include refid="prepareValues"/>
+            </when>
+            <when test="filter.operand.name == 'NOT_IN' and filter.property != 'created-time' and filter.property != 'updated-time'">
+                <include refid="getFilterField"/>
+                NOT IN
+                <include refid="prepareValues"/>
+            </when>
+            <when test="filter.operand.name == 'NULL'">
+                <if test="filter.value == 'true'">
+                    <include refid="getFilterField"/>
+                    IS NULL
+                </if>
+                <if test="filter.value == 'false'">
+                    <include refid="getFilterField"/>
+                    IS NOT NULL
+                </if>
+            </when>
+            <when test="filter.operand.name == 'LESS_THAN' and (filter.property == 'created-time' or filter.property == 'updated-time')">
+                <include refid="getFilterField"/> &lt; '${filter.value}'
+            </when>
+            <when test="filter.operand.name == 'LESS_THAN_EQUALS' and (filter.property == 'created-time' or filter.property == 'updated-time')">
+                <include refid="getFilterField"/> &lt;= '${filter.value}'
+            </when>
+            <when test="filter.operand.name == 'GREATER_THAN' and (filter.property == 'created-time' or filter.property == 'updated-time')">
+                <include refid="getFilterField"/> &gt; '${filter.value}'
+            </when>
+            <when test="filter.operand.name == 'GREATER_THAN_EQUALS' and (filter.property == 'created-time' or filter.property == 'updated-time')">
+                <include refid="getFilterField"/> &gt;= '${filter.value}'
+            </when>
+        </choose>
+    </sql>
+
+    <sql id="selectFromTip">
+        SELECT t.uuid,
+               t.key,
+               t.version,
+               t.title,
+               t.description,
+               t.image_link,
+               t.published,
+               t.created_time,
+               t.updated_time,
+               ce.uuid          as o_uuid,
+               ce.name          as o_name,
+               ce.composite_key as o_compositeKey
+        FROM tip t
+                 LEFT JOIN config_entry ce ON ce.uuid = t.target_organisation_uuid
+    </sql>
+
+    <sql id="whereMaxVersion">
+        WHERE
+            (t.key, t.version)
+            IN
+        (SELECT key, MAX(version)
+         FROM tip
+         GROUP BY key)
+    </sql>
+
+    <select id="findAll" flushCache="true" resultMap="tipMap">
+        <include refid="selectFromTip"/>
+        <include refid="whereMaxVersion"/>
+        <if test="!requestQuery.filters.isEmpty()">
+            <foreach collection="requestQuery.filters" item="filter" index="index">
+                <include refid="getExpression"/>
+            </foreach>
+        </if>
+        <if test="requestQuery.search != null and requestQuery.search != ''">
+            AND ( UPPER(t.title) LIKE '%'||UPPER(#{requestQuery.search})||'%'
+            OR UPPER(t.description) LIKE '%'||UPPER(#{requestQuery.search})||'%' )
+        </if>
+        <if test="requestQuery.sort.isEmpty()">
+            ORDER BY t.updated_time DESC
+        </if>
+        <if test="!requestQuery.sort.isEmpty()">
+            ORDER BY
+            <foreach collection="requestQuery.sort" item="sort" index="index" separator=",">
+                <include refid="getSortField"/>
+                ${sort.order.name}
+            </foreach>
+        </if>
+        <if test="requestQuery.limit != null">
+            LIMIT #{requestQuery.limit}
+        </if>
+        <if test="requestQuery.offset != null">
+            OFFSET #{requestQuery.offset}
+        </if>
+    </select>
+
+    <select id="findHistory" flushCache="true" resultMap="tipMap">
+        <include refid="selectFromTip"/>
+        WHERE t.key = (SELECT key from tip WHERE uuid = #{uuid})
+        ORDER BY version DESC
+    </select>
+
+    <select id="read" flushCache="true" resultMap="tipMap">
+        <include refid="selectFromTip"/>
+        WHERE t.uuid = #{uuid}
+    </select>
+
+    <insert id="create" useGeneratedKeys="true" keyProperty="uuid" keyColumn="uuid" flushCache="true">
+        INSERT INTO tip (uuid,
+                         key,
+                         version,
+                         title,
+                         description,
+                         target_organisation_uuid,
+                         image_link,
+                         published,
+                         created_time,
+                         updated_time)
+        VALUES (#{tip.uuid},
+                #{tip.key},
+                #{tip.version},
+                #{tip.title},
+                #{tip.description},
+                #{tip.targetOrganisation.uuid},
+                #{tip.imageLink},
+                #{tip.published},
+                #{tip.createdTime},
+                #{tip.updatedTime})
+    </insert>
+
+    <delete id="delete">
+        DELETE
+        FROM tip
+        WHERE uuid = #{uuid}
+    </delete>
+
+    <delete id="deleteByKey">
+        DELETE
+        FROM tip
+        WHERE key = #{key}
+    </delete>
+
+    <update id="publish">
+        UPDATE tip
+        SET published    = #{tip.published},
+            updated_time = #{tip.updatedTime}
+        WHERE uuid = #{tip.uuid}
+    </update>
+
+</mapper>

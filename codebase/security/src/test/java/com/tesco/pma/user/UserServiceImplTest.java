@@ -6,10 +6,8 @@ import com.tesco.pma.colleague.api.Contact;
 import com.tesco.pma.colleague.api.FindColleaguesRequest;
 import com.tesco.pma.colleague.api.Profile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
-import com.tesco.pma.colleague.profile.service.util.ColleagueFactsApiLocalMapper;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.ExternalSystemException;
-import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.security.UserRoleNames;
 import com.tesco.pma.service.colleague.client.ColleagueApiClient;
 import org.jeasy.random.EasyRandom;
@@ -60,13 +58,10 @@ class UserServiceImplTest {
     private ColleagueApiClient mockColleagueApiClient;
     @Mock
     private NamedMessageSourceAccessor mockNamedMessageSourceAccessor;
-    @Mock
-    private ColleagueFactsApiLocalMapper mockColleagueFactsApiLocalMapper;
 
     @BeforeEach
     void setUp() {
-        instance = new UserServiceImpl(mockProfileService, mockColleagueApiClient, mockNamedMessageSourceAccessor,
-                mockColleagueFactsApiLocalMapper);
+        instance = new UserServiceImpl(mockProfileService, mockColleagueApiClient, mockNamedMessageSourceAccessor);
     }
 
     @Test
@@ -95,8 +90,6 @@ class UserServiceImplTest {
         final var restClientException = RANDOM.nextObject(RestClientException.class);
         when(mockColleagueApiClient.findColleagueByColleagueUuid(colleague.getColleagueUUID()))
                 .thenThrow(restClientException);
-        when(mockProfileService.getColleague(colleague.getColleagueUUID()))
-                .thenThrow(RANDOM.nextObject(NotFoundException.class));
 
         assertThatCode(() -> instance.findUserByColleagueUuid(colleague.getColleagueUUID()))
                 .hasCause(restClientException)
@@ -241,14 +234,10 @@ class UserServiceImplTest {
     }
 
     private void findColleagueByColleagueUuidFoundCall(Colleague colleague) {
-        when(mockProfileService.getColleague(colleague.getColleagueUUID()))
-                .thenThrow(RANDOM.nextObject(NotFoundException.class));
         when(mockColleagueApiClient.findColleagueByColleagueUuid(colleague.getColleagueUUID())).thenReturn(colleague);
     }
 
     private void findColleagueByColleagueUuidNotFoundCall(UUID colleagueUuid) {
-        when(mockProfileService.getColleague(colleagueUuid))
-                .thenThrow(RANDOM.nextObject(NotFoundException.class));
         when(mockColleagueApiClient.findColleagueByColleagueUuid(colleagueUuid))
                 .thenThrow(RANDOM.nextObject(HttpClientErrorException.NotFound.class));
     }

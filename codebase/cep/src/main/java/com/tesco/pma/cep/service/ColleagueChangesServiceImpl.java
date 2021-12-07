@@ -4,6 +4,9 @@ import com.tesco.pma.cep.domain.ColleagueChangeEventPayload;
 import com.tesco.pma.cep.domain.DeliveryMode;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
+import com.tesco.pma.colleague.security.domain.AccountStatus;
+import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
+import com.tesco.pma.colleague.security.service.UserManagementService;
 import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.logging.LogFormatter;
@@ -24,6 +27,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
     private final CEPSubscribeProperties cepSubscribeProperties;
     private final ProfileService profileService;
+    private final UserManagementService userManagementService;
 
     @Override
     public void processColleagueChangeEvent(String feedId,
@@ -75,9 +79,14 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
                 colleagueChangeEventPayload.getChangedAttributes());
     }
 
-    // TODO If logic different from main flow
     private int processLeaverEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
-        return processJoinerEventType(colleagueChangeEventPayload);
+        // Disable an access a colleague to app
+        var account = userManagementService.findAccountByColleagueUuid(colleagueChangeEventPayload.getColleagueUuid());
+        var changeAccountStatusRequest = new ChangeAccountStatusRequest();
+        changeAccountStatusRequest.setName(account.getName());
+        changeAccountStatusRequest.setStatus(AccountStatus.DISABLED);
+        userManagementService.changeAccountStatus(changeAccountStatusRequest);
+        return 1;
     }
 
     // TODO If logic different from main flow
