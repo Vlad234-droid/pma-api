@@ -14,6 +14,7 @@ dependencies {
         exclude group: 'junit'
         exclude group: 'org.junit.jupiter'
         exclude group: 'org.junit.platform'
+        exclude group: 'org.testng'
     }
 
     testImplementation ("com.h2database:h2:${h2Version}")
