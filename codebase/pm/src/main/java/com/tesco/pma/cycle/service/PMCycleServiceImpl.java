@@ -1,28 +1,35 @@
 package com.tesco.pma.cycle.service;
 
 import com.tesco.pma.api.DictionaryFilter;
-import com.tesco.pma.bpm.api.ProcessExecutionException;
+import com.tesco.pma.bpm.api.DeploymentInfo;
 import com.tesco.pma.bpm.api.ProcessManagerService;
 import com.tesco.pma.colleague.api.ColleagueSimple;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
+import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import com.tesco.pma.cycle.dao.PMCycleDAO;
 import com.tesco.pma.cycle.exception.ErrorCodes;
 import com.tesco.pma.cycle.exception.PMCycleException;
+import com.tesco.pma.cycle.model.PMProcessModelParser;
+import com.tesco.pma.cycle.model.ResourceProvider;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.process.api.PMProcessStatus;
 import com.tesco.pma.process.api.PMRuntimeProcess;
 import com.tesco.pma.process.service.PMProcessService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.camunda.bpm.model.bpmn.Bpmn;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -51,8 +58,9 @@ public class PMCycleServiceImpl implements PMCycleService {
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final ProcessManagerService processManagerService;
     private final PMProcessService pmProcessService;
+    private final FileService fileService;
+    private final ResourceProvider resourceProvider;
 
-    public static final String NOT_IMPLEMENTED_YET = "Not implemented yet";
     private static final String ORG_KEY_PARAMETER_NAME = "organisationKey";
     private static final String TEMPLATE_UUID_PARAMETER_NAME = "templateUUID";
     private static final String CYCLE_UUID_PARAMETER_NAME = "cycleUuid";
@@ -76,7 +84,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     @Override
     @Transactional
     public PMCycle create(@NotNull PMCycle cycle, String loggedUserName) {
-        return intCreateCycle(cycle, loggedUserName);
+        return intCreateOrUpdateCycle(cycle, loggedUserName);
     }
 
 
@@ -84,8 +92,8 @@ public class PMCycleServiceImpl implements PMCycleService {
     @Transactional
     public PMCycle publish(@NotNull PMCycle cycle, String loggedUserName) {
         log.debug("Request to publish Performance cycle : {}", cycle);
-        UUID cycleUuid = intCreateCycle(cycle, loggedUserName).getUuid();
 
+        UUID cycleUuid = intCreateOrUpdateCycle(cycle, loggedUserName).getUuid();
         String processName = cycle.getMetadata().getCycle().getCode();
 
         if (null == processName || processName.isEmpty()) {
@@ -93,22 +101,26 @@ public class PMCycleServiceImpl implements PMCycleService {
         }
 
         try {
-            var props = cycle.getProperties() != null ? cycle.getProperties().getMapJson() : Collections.EMPTY_MAP;
 
-            var processUUID = processManagerService.runProcess(processName, props);
-            log.info("Started process: {}", processUUID);
+            String processId = intDeployProcess(cycle.getTemplateUUID(), processName);
+            log.debug("Process definition id: {}", processId);
+
+            Map<String, ?> props = cycle.getProperties() != null ? cycle.getProperties().getMapJson() : Collections.emptyMap();
+
+            var processUUID = processManagerService.runProcessById(processId, props);
+            log.debug("Started process: {}", processUUID);
 
             var pmRuntimeProcess = PMRuntimeProcess.builder()
-                    .bpmProcessId(UUID.fromString(processUUID))
+                    .bpmProcessId(processId)
                     .cycleUuid(cycleUuid)
-                    .businessKey(processName)
+                    .businessKey(cycle.getEntryConfigKey())
                     .build();
 
             pmRuntimeProcess = pmProcessService.register(pmRuntimeProcess, PMProcessStatus.STARTED);
             log.debug("Started PM process: {}", pmRuntimeProcess);
 
             intUpdateStatus(cycleUuid, ACTIVE);
-        } catch (ProcessExecutionException e) {
+        } catch (Exception e) {
             log.error("Performance cycle publish error, cause: ", e);
             try {
                 intUpdateStatus(cycleUuid, FAILED);
@@ -122,6 +134,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         return cycle;
     }
 
+
     @Override
     @Transactional
     public PMCycle updateStatus(UUID uuid, PMCycleStatus status) {
@@ -131,7 +144,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     @Override
     @Transactional(readOnly = true)
     public PMCycle get(UUID uuid) {
-        var pmCycle = cycleDAO.read(uuid);
+        var pmCycle = cycleDAO.read(uuid, null);
         if (null == pmCycle) {
             throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID,
                     Map.of(CYCLE_UUID_PARAMETER_NAME, uuid));
@@ -184,6 +197,14 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
     @Override
+    public PMCycleMetadata getMetadata(UUID fileUuid) {
+        var file = fileService.get(fileUuid, true);
+        var model = Bpmn.readModelFromStream(new ByteArrayInputStream(file.getFileContent()));
+        var parser = new PMProcessModelParser(resourceProvider, messageSourceAccessor);
+        return parser.parse(model);
+    }
+
+    @Override
     public void updateJsonMetadata(UUID uuid, String metadata) {
         cycleDAO.updateMetadata(uuid, metadata);
     }
@@ -206,17 +227,23 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
 
-    private PMCycle intCreateCycle(PMCycle cycle, String loggedUserName) {
-        log.debug("Request to create Performance cycle : {}", cycle);
-        cycle.setUuid(UUID.randomUUID());
-        cycle.setStatus(DRAFT);
-        cycle.setCreatedBy(ColleagueSimple
-                .builder()
-                .uuid(UUID.fromString(loggedUserName))
-                .build());
+    private PMCycle intCreateOrUpdateCycle(PMCycle cycle, String loggedUserName) {
+        log.debug("Request to create or update Performance cycle : {}", cycle);
+        if (cycle.getUuid() == null) {
+            cycle.setUuid(UUID.randomUUID());
+            cycle.setStatus(DRAFT);
+            cycle.setCreatedBy(ColleagueSimple
+                    .builder()
+                    .uuid(UUID.fromString(loggedUserName))
+                    .build());
+        }
+
         try {
-            cycleDAO.create(cycle);
-            log.debug("Performance cycle created UUID: {}", cycle.getUuid());
+            if (1 != cycleDAO.createOrUpdate(cycle, DictionaryFilter.includeFilter(DRAFT))) {
+                throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID,
+                        Map.of(CYCLE_UUID_PARAMETER_NAME, cycle.getUuid()));
+            }
+            log.debug("Performance cycle created/updated UUID: {}", cycle.getUuid());
             return cycle;
         } catch (DuplicateKeyException e) {
             throw databaseConstraintViolation(
@@ -227,7 +254,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
     private PMCycle intUpdateStatus(UUID uuid, PMCycleStatus status) {
-        var cycle = cycleDAO.read(uuid);
+        var cycle = cycleDAO.read(uuid, null);
         if (null == cycle) {
             throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID,
                     Map.of(CYCLE_UUID_PARAMETER_NAME, uuid));
@@ -251,4 +278,20 @@ public class PMCycleServiceImpl implements PMCycleService {
         return new PMCycleException(errorCode.getCode(), messageSourceAccessor.getMessage(errorCode.getCode(), params), null, null);
     }
 
+
+    private String intDeployProcess(UUID templateUuid, String processName) throws Exception {
+
+        var file = fileService.get(templateUuid, true);
+        InputStream fileContent = new ByteArrayInputStream(file.getFileContent());
+
+        String resourceName = file.getFileName();
+
+        DeploymentInfo deploymentInfo = processManagerService.deploy(processName,
+                Map.of(resourceName, fileContent));
+        log.debug("Deployment id: {}", deploymentInfo.getId());
+
+        List<String> procdefs = processManagerService.getProcessesIds(deploymentInfo.getId(), resourceName);
+
+        return procdefs.iterator().next();
+    }
 }

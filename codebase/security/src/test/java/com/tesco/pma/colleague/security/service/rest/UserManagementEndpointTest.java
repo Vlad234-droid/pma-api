@@ -50,8 +50,8 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
     @MockBean
     private UserManagementService mockUserManagementService;
 
-    public static final String ACCOUNTS_URL_TEMPLATE = "/user-management/accounts";
-    public static final String ROLES_URL_TEMPLATE = "/user-management/roles";
+    public static final String ACCOUNTS_URL_TEMPLATE = "/internal/user-management/accounts";
+    public static final String ROLES_URL_TEMPLATE = "/internal/user-management/roles";
 
     @BeforeEach
     void setUp() {
@@ -95,7 +95,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
 
         // given
         CreateAccountRequest createAccountRequest = randomObject(CreateAccountRequest.class);
-        createAccountRequest.setRole("1");
+        createAccountRequest.setRoleId(1);
 
         // when
         ResultActions resultActions = mvc.perform(
@@ -113,7 +113,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
 
         // given
         CreateAccountRequest createAccountRequest = randomObject(CreateAccountRequest.class);
-        createAccountRequest.setRole(List.of("1", "2", "3"));
+        createAccountRequest.setRoleId(List.of(1, 2, 3));
 
         // when
         ResultActions resultActions = mvc.perform(
@@ -180,7 +180,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
 
         // given
         RoleRequest roleRequest = randomObject(RoleRequest.class);
-        roleRequest.setRole("1");
+        roleRequest.setRole(1);
 
         // when
         ResultActions resultActions = mvc.perform(
@@ -198,7 +198,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
 
         // given
         RoleRequest roleRequest = randomObject(RoleRequest.class);
-        roleRequest.setRole(List.of("1", "2", "3"));
+        roleRequest.setRole(List.of(1, 2, 3));
 
         // when
         ResultActions resultActions = mvc.perform(
@@ -216,7 +216,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
 
         // given
         RoleRequest roleRequest = randomObject(RoleRequest.class);
-        roleRequest.setRole("1");
+        roleRequest.setRole(1);
 
         // when
         ResultActions resultActions = mvc.perform(
@@ -234,7 +234,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
 
         // given
         RoleRequest roleRequest = randomObject(RoleRequest.class);
-        roleRequest.setRole(List.of("1", "2", "3"));
+        roleRequest.setRole(List.of(1, 2, 3));
 
         // when
         ResultActions resultActions = mvc.perform(

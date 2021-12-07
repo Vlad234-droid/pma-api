@@ -1,9 +1,9 @@
 package com.tesco.pma.review.service.rest;
 
-import com.tesco.pma.cycle.api.PMReviewStatus;
-import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.configuration.CaseInsensitiveEnumEditor;
 import com.tesco.pma.configuration.audit.AuditorAware;
+import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.pagination.RequestQuery;
@@ -153,6 +153,23 @@ public class ReviewEndpoint {
                                                  @PathVariable("cycleUuid") String cycleUuid,
                                                  @PathVariable("type") PMReviewType type) {
         return success(reviewService.getReviews(getPMCycleUuid(colleagueUuid, cycleUuid), colleagueUuid, type));
+    }
+
+    /**
+     * Get call using a Path param and return a list of reviews as JSON.
+     *
+     * @param cycleUuid     an identifier of performance cycle
+     * @param colleagueUuid an identifier of colleague
+     * @return a RestResponse parameterized with list of reviews
+     */
+    @Operation(summary = "Get a list of reviews by its cycleUuid, colleagueUuid", tags = {"review"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found reviews")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Reviews not found", content = @Content)
+    @GetMapping(path = "/colleagues/{colleagueUuid}/pm-cycles/{cycleUuid}/reviews",
+            produces = APPLICATION_JSON_VALUE)
+    public RestResponse<List<Review>> getReviewsByColleague(@PathVariable("colleagueUuid") UUID colleagueUuid,
+                                                            @PathVariable("cycleUuid") String cycleUuid) {
+        return success(reviewService.getReviewsByColleague(getPMCycleUuid(colleagueUuid, cycleUuid), colleagueUuid));
     }
 
     /**

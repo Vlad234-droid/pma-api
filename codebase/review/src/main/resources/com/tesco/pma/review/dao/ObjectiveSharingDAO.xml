@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.review.dao.ObjectiveSharingDAO">
+
+    <insert id="shareObjectives">
+        INSERT INTO shared_objective(colleague_uuid, cycle_uuid)
+        VALUES (#{colleagueUuid}, #{cycleUuid})
+    </insert>
+
+    <delete id="stopSharingObjectives">
+        DELETE
+        FROM shared_objective
+        WHERE colleague_uuid = #{colleagueUuid}
+          AND cycle_uuid = #{cycleUuid}
+    </delete>
+
+    <select id="isColleagueShareObjectives" resultType="boolean">
+        SELECT CASE
+                   WHEN (EXISTS(SELECT true
+                                FROM shared_objective
+                                WHERE colleague_uuid = #{colleagueUuid}
+                                  AND cycle_uuid = #{cycleUuid}))
+                       THEN true
+                   ELSE false
+                   END;
+    </select>
+</mapper>

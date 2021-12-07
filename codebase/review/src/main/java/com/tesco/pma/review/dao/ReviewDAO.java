@@ -53,6 +53,16 @@ public interface ReviewDAO {
                             @Param("type") PMReviewType type);
 
     /**
+     * Returns a review by performance cycle, colleague.
+     *
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
+     * @return a list of reviews
+     */
+    List<Review> getReviewsByColleague(@Param("performanceCycleUuid") UUID performanceCycleUuid,
+                                       @Param("colleagueUuid") UUID colleagueUuid);
+
+    /**
      * Returns list of colleagues reviews by managerUuid
      *
      * @param managerUuid an identifier of colleague
@@ -155,5 +165,17 @@ public interface ReviewDAO {
      * @return a PMCycleReviewTypeProperties
      */
     List<PMCycleTimelinePoint> getTimeline(@Param("cycleUuid") UUID cycleUuid);
+
+    /**
+     * Returns a review by performance cycle, colleague, review type and status.
+     *
+     * @param colleagueUuid an identifier of colleague
+     * @param cycleUuid     an identifier of performance cycle
+     * @param reviewType    a review type
+     * @param reviewStatus  a review status
+     * @return a list of reviews
+     */
+    List<Review> getReviewsByParams(@Param("colleagueUuid") UUID colleagueUuid, @Param("cycleUuid") UUID cycleUuid,
+                                    @Param("type") PMReviewType reviewType, @Param("status") PMReviewStatus reviewStatus);
 
 }

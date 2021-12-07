@@ -1,10 +1,16 @@
 package com.tesco.pma.colleague.security.rolefetch;
 
+import com.tesco.pma.colleague.profile.exception.ErrorCodes;
+import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.Account;
+import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.Role;
 import com.tesco.pma.colleague.security.service.UserManagementService;
+import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.logging.LogFormatter;
 import com.tesco.pma.security.UserRoleNames;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -17,20 +23,39 @@ import java.util.stream.Collectors;
  */
 @Service
 @AllArgsConstructor
+@Slf4j
 public class RoleFetchServiceImpl implements RoleFetchService {
 
     private final UserManagementService userManagementService;
     private final RolesMapper rolesMapper;
+    private final ProfileService profileService;
+
+    private static final String ROLE_PREFIX = "ROLE_";
 
     @Override
     public Collection<String> findRolesInAccountStorage(UUID colleagueUuid) {
         Account account = userManagementService.findAccountByColleagueUuid(colleagueUuid);
-        if (account != null) {
+        if (account != null && AccountStatus.ENABLED.equals(account.getStatus())) {
             Collection<Role> roles = account.getRoles();
-            return roles.stream()
+            var roleIds = roles.stream()
                     .map(role -> rolesMapper.findRoleByCode(role.getCode()))
-                    .filter(role -> UserRoleNames.ALL.contains(role.replaceAll("ROLE_", "")))
-                    .collect(Collectors.toList());
+                    .filter(role -> UserRoleNames.ALL.contains(role.replaceAll(ROLE_PREFIX, "")))
+                    .collect(Collectors.toSet());
+
+            // Add default role ids
+            roleIds.add(ROLE_PREFIX + UserRoleNames.COLLEAGUE);
+
+            try {
+                var colleague = profileService.getColleague(colleagueUuid);
+                if (colleague.isManager()) {
+                    roleIds.add(ROLE_PREFIX + UserRoleNames.LINE_MANAGER);
+                }
+            } catch (NotFoundException exception) {
+                log.error(LogFormatter.formatMessage(ErrorCodes.COLLEAGUE_NOT_FOUND,
+                        String.format("Colleague %s not found", colleagueUuid)));
+            }
+
+            return roleIds;
         }
         return Collections.emptySet();
     }

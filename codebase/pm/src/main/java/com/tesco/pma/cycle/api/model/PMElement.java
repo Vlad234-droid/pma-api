@@ -4,6 +4,7 @@ import com.tesco.pma.api.DictionaryItem;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -16,7 +17,9 @@ import java.util.stream.Collectors;
  */
 @Data
 @NoArgsConstructor
-public class PMElement implements DictionaryItem<String> {
+public class PMElement implements DictionaryItem<String>, Serializable {
+    private static final long serialVersionUID = -4451575369183429990L;
+
     public static final String PM_PREFIX = "pm_";
     public static final String PM_TYPE = PM_PREFIX + "type";
 

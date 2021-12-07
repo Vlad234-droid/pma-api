@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -19,7 +20,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class PMCycleTimelinePoint {
+public class PMCycleTimelinePoint implements Serializable {
+    private static final long serialVersionUID = -5674053418450820379L;
+
     UUID cycleUuid;
     String code;
     String description;

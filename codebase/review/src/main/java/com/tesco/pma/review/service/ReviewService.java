@@ -58,6 +58,17 @@ public interface ReviewService {
                             @NotNull PMReviewType type);
 
     /**
+     * Finds reviews by performanceCycleUuid, colleagueUuid
+     *
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
+     * @return a list of reviews
+     * @throws NotFoundException if reviews don't exist.
+     */
+    List<Review> getReviewsByColleague(@NotNull UUID performanceCycleUuid,
+                                       @NotNull UUID colleagueUuid);
+
+    /**
      * Finds list of colleagues reviews by managerUuid
      *
      * @param managerUuid an identifier of colleague

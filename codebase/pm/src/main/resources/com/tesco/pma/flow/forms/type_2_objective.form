@@ -2,6 +2,41 @@
   "schemaVersion": 2,
   "components": [
     {
+      "values": [
+        {
+          "label": "Magnetic Value",
+          "value": "Magnetic Value"
+        },
+        {
+          "label": "I love my Tesco Clubcard",
+          "value": "I love my Tesco Clubcard"
+        },
+        {
+          "label": "Easily the most convenient",
+          "value": "Easily the most convenient"
+        },
+        {
+          "label": "Save to invest",
+          "value": "Save to invest"
+        },
+        {
+          "label": "Functional strategic priority",
+          "value": "Functional strategic priority"
+        },
+        {
+          "label": "Other",
+          "value": "Other"
+        }
+      ],
+      "key": "strategic_priority",
+      "label": "Strategic priority",
+      "type": "select",
+      "id": "Field_1ribi5m",
+      "validate": {
+        "required": true
+      }
+    },
+    {
       "key": "title",
       "label": "Objective title",
       "type": "textfield",
@@ -43,41 +78,6 @@
         "required": true,
         "minLength": 10,
         "maxLength": 500
-      }
-    },
-    {
-      "values": [
-        {
-          "label": "Magnetic Value",
-          "value": "Magnetic Value"
-        },
-        {
-          "label": "I love my Tesco Clubcard",
-          "value": "I love my Tesco Clubcard"
-        },
-        {
-          "label": "Easily the most convenient",
-          "value": "Easily the most convenient"
-        },
-        {
-          "label": "Save to invest",
-          "value": "Save to invest"
-        },
-        {
-          "label": "Functional strategic priority",
-          "value": "Functional strategic priority"
-        },
-        {
-          "label": "Other",
-          "value": "Other"
-        }
-      ],
-      "key": "strategic_priority",
-      "label": "Strategic priority",
-      "type": "select",
-      "id": "Field_1ribi5m",
-      "validate": {
-        "required": true
       }
     }
   ],

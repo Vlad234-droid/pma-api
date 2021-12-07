@@ -28,6 +28,7 @@ import static com.tesco.pma.cycle.api.PMReviewStatus.APPROVED;
 import static com.tesco.pma.cycle.api.PMReviewStatus.DECLINED;
 import static com.tesco.pma.cycle.api.PMReviewStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMReviewStatus.WAITING_FOR_APPROVAL;
+import static com.tesco.pma.cycle.api.PMReviewType.MYR;
 import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
 import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
 import static com.tesco.pma.cycle.api.model.PMElementType.TIMELINE_POINT;
@@ -36,10 +37,6 @@ import static org.assertj.core.api.Assertions.from;
 import static org.assertj.core.api.InstanceOfAssertFactories.type;
 
 class ReviewDAOTest extends AbstractDAOTest {
-
-    private static final UUID ORG_OBJECTIVE_UUID = UUID.fromString("aab9ab0b-f50f-4442-8900-b03777ee0012");
-    private static final UUID ORG_OBJECTIVE_UUID_2 = UUID.fromString("aab9ab0b-f50f-4442-8900-b03777ee0011");
-    private static final UUID ORG_OBJECTIVE_UUID_NOT_EXIST = UUID.fromString("aab9ab0b-f50f-4442-8900-000000000000");
     private static final UUID REVIEW_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
     private static final UUID COLLEAGUE_UUID = UUID.fromString("ccb9ab0b-f50f-4442-8900-b03777ee00ec");
     private static final UUID COLLEAGUE_UUID_NOT_EXIST = UUID.fromString("ccb9ab0b-f50f-4442-8900-000000000000");
@@ -47,9 +44,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     private static final Integer NUMBER_1 = 1;
     private static final Integer NUMBER_2 = 2;
     private static final String TITLE_PROPERTY_NAME = "title";
-    private static final String TITLE_1 = "Title #1";
     private static final String TITLE_UPDATE = "Title update";
-    private static final String ORG_TITLE_UPDATE = "Title #1 updated";
     private static final String TITLE_INIT = "Title init";
     private static final String DESCRIPTION_PROPERTY_NAME = "description";
     private static final String DESCRIPTION_INIT = "Description init";
@@ -60,12 +55,9 @@ class ReviewDAOTest extends AbstractDAOTest {
     private static final String EXCEEDS_PROPERTY_NAME = "exceeds";
     private static final String EXCEEDS_INIT = "Exceeds init";
     private static final String EXCEEDS_UPDATE = "Exceeds update";
-    private static final Integer VERSION_1 = 1;
-    private static final Integer VERSION_3 = 3;
-    private static final String USER_INIT = "Init user";
-    private static final String TIME_INIT = "2021-09-20 10:45:12.448057";
     private static final String OBJECTIVES_CODE_NAME = "Objectives";
     private static final String Q3_CODE_NAME = "Q3";
+    private static final String CHANGE_STATUS_REASON_DECLINED = "To DECLINED 2";
     private static final MapJson REVIEW_PROPERTIES_INIT = new MapJson(
             Map.of(TITLE_PROPERTY_NAME, TITLE_INIT,
                     DESCRIPTION_PROPERTY_NAME, DESCRIPTION_INIT,
@@ -78,6 +70,8 @@ class ReviewDAOTest extends AbstractDAOTest {
                     MEETS_PROPERTY_NAME, MEETS_UPDATE,
                     EXCEEDS_PROPERTY_NAME, EXCEEDS_UPDATE
             ));
+
+    private static final UUID COLLEAGUE_UUID_2 = UUID.fromString("10000000-0000-0000-0000-000000000002");
 
     @Autowired
     private ReviewDAO instance;
@@ -98,7 +92,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
     void getReview() {
         final var result = instance.getReview(
                 PERFORMANCE_CYCLE_UUID,
@@ -117,7 +111,56 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    @DataSet({"review_change_status_hi_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    void getReviewDeclinedChangeReason() {
+        final var result = instance.getReview(
+                PERFORMANCE_CYCLE_UUID,
+                COLLEAGUE_UUID,
+                OBJECTIVE,
+                NUMBER_2);
+
+        assertThat(result)
+                .asInstanceOf(type(Review.class))
+                .returns(COLLEAGUE_UUID, from(Review::getColleagueUuid))
+                .returns(PERFORMANCE_CYCLE_UUID, from(Review::getPerformanceCycleUuid))
+                .returns(OBJECTIVE, from(Review::getType))
+                .returns(NUMBER_2, from(Review::getNumber))
+                .returns(REVIEW_PROPERTIES_INIT, from(Review::getProperties))
+                .returns(DECLINED, from(Review::getStatus))
+                .returns(CHANGE_STATUS_REASON_DECLINED, from(Review::getChangeStatusReason));
+    }
+
+    @Test
+    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
+    void getReviews() {
+        final var result = instance.getReviews(
+                PERFORMANCE_CYCLE_UUID,
+                COLLEAGUE_UUID,
+                MYR);
+
+        assertThat(result.get(0))
+                .asInstanceOf(type(Review.class))
+                .returns(COLLEAGUE_UUID, from(Review::getColleagueUuid))
+                .returns(PERFORMANCE_CYCLE_UUID, from(Review::getPerformanceCycleUuid))
+                .returns(MYR, from(Review::getType))
+                .returns(NUMBER_1, from(Review::getNumber))
+                .returns(REVIEW_PROPERTIES_INIT, from(Review::getProperties))
+                .returns(DRAFT, from(Review::getStatus));
+    }
+
+    @Test
+    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
+    void getReviewsByColleague() {
+        final var result = instance.getReviewsByColleague(
+                PERFORMANCE_CYCLE_UUID,
+                COLLEAGUE_UUID);
+
+        assertThat(result.size())
+                .isEqualTo(3);
+    }
+
+    @Test
+    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
     void getReviewByUuid() {
         final var result = instance.read(REVIEW_UUID);
 
@@ -132,7 +175,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
     void getReviewNotExist() {
         final var result = instance.getReview(
                 PERFORMANCE_CYCLE_UUID,
@@ -144,7 +187,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "cleanup.xml"})
+    @DataSet({"pm_cycle_init.xml", "cleanup.xml"})
     @ExpectedDataSet("review_create_expected_1.xml")
     void createReviewSucceeded() {
         final var review = Review.builder()
@@ -163,7 +206,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
     void createReviewAlreadyExist() {
 
         final var review = Review.builder()
@@ -181,7 +224,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
     void deleteReviewNotExist() {
         final var result = instance.deleteReview(
                 PERFORMANCE_CYCLE_UUID,
@@ -193,7 +236,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
     void deleteReviewSucceeded() {
         final var result = instance.deleteReview(
                 PERFORMANCE_CYCLE_UUID,
@@ -205,7 +248,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"org_objective_init.xml", "review_init.xml"})
+    @DataSet({"review_init.xml"})
     @ExpectedDataSet("review_delete_renumerate_expected_1.xml")
     void deleteAndRenumerateReviewsSucceeded() {
         instance.deleteReview(
@@ -223,7 +266,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
     @ExpectedDataSet("review_update_expected_1.xml")
     void updateReviewSucceeded() {
         final var review = Review.builder()
@@ -242,7 +285,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
     void updateReviewNotExist() {
         final var review = Review.builder()
                 .colleagueUuid(COLLEAGUE_UUID_NOT_EXIST)
@@ -259,7 +302,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
     @ExpectedDataSet("review_update_status_1.xml")
     void updateReviewStatusSucceeded() {
 
@@ -270,25 +313,6 @@ class ReviewDAOTest extends AbstractDAOTest {
                 NUMBER_1,
                 WAITING_FOR_APPROVAL,
                 Collections.singleton(DRAFT));
-
-        assertThat(result).isOne();
-    }
-
-    @Test
-    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
-    @ExpectedDataSet("review_unlink_org_objective_expected.xml")
-    void updateReviewUnlinkOrgObjective() {
-        final var review = Review.builder()
-                .uuid(REVIEW_UUID)
-                .colleagueUuid(COLLEAGUE_UUID)
-                .performanceCycleUuid(PERFORMANCE_CYCLE_UUID)
-                .type(OBJECTIVE)
-                .number(NUMBER_1)
-                .properties(REVIEW_PROPERTIES_INIT)
-                .status(PMReviewStatus.DRAFT)
-                .build();
-
-        final var result = instance.update(review, List.of(DRAFT, DECLINED, APPROVED));
 
         assertThat(result).isOne();
     }
@@ -307,7 +331,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"org_objective_init.xml", "pm_cycle_init.xml", "review_init.xml"})
+    @DataSet({"pm_cycle_init.xml", "review_init.xml"})
     void getReviewStats() {
         final var result = instance.getReviewStats(
                 PERFORMANCE_CYCLE_UUID,
@@ -319,7 +343,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .returns(PERFORMANCE_CYCLE_UUID, from(ReviewStats::getCycleUuid))
                 .returns(COLLEAGUE_UUID, from(ReviewStats::getColleagueUuid))
                 .returns(OBJECTIVE, from(ReviewStats::getType))
-                .returns(Map.of(DRAFT, 2), from(ReviewStats::getMapStatusStats));
+                .returns(Map.of(DRAFT, 1, DECLINED, 1), from(ReviewStats::getMapStatusStats));
     }
 
     @Test
@@ -349,5 +373,21 @@ class ReviewDAOTest extends AbstractDAOTest {
 
         assertThat(result.get(3))
                 .isEqualTo(q3);
+    }
+
+    @Test
+    @DataSet({"pm_cycle_init.xml", "objective_sharing_init.xml"})
+    void getColleagueSharedObjectives() {
+        var reviews = instance.getReviewsByParams(COLLEAGUE_UUID_2, PERFORMANCE_CYCLE_UUID, OBJECTIVE, APPROVED);
+
+        assertThat(reviews)
+                .singleElement()
+                .asInstanceOf(type(Review.class))
+                .returns(COLLEAGUE_UUID_2, from(Review::getColleagueUuid))
+                .returns(PERFORMANCE_CYCLE_UUID, from(Review::getPerformanceCycleUuid))
+                .returns(OBJECTIVE, from(Review::getType))
+                .returns(NUMBER_1, from(Review::getNumber))
+                .returns(REVIEW_PROPERTIES_INIT, from(Review::getProperties))
+                .returns(APPROVED, from(Review::getStatus));
     }
 }

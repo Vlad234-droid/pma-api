@@ -1,0 +1,30 @@
+<dataset>
+    <config_entry_type id="1" code="BU" description="bu desc"/>
+
+    <config_entry uuid="56141037-6e2d-45f0-b47f-4875e68dd1d7"
+                  name="CE1" version="1" type_id="1" parent_uuid="[null]"
+                  composite_key="BU/CE1/#v1"/>
+
+    <tip
+            uuid="982b2124-b712-429f-aad1-656cbcadc1b5"
+            key="com.tesco.pma.tip"
+            version="1"
+            title="title"
+            description="description"
+            target_organisation_uuid="56141037-6e2d-45f0-b47f-4875e68dd1d7"
+            image_link="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
+            published="false"
+            created_time="2021-11-25 14:30:01.742679"
+    />
+    <tip
+            uuid="80741a5e-c41c-47a0-9181-d202e9d077b7"
+            key="com.tesco.pma.review"
+            version="1"
+            title="title2"
+            description="description2"
+            target_organisation_uuid="56141037-6e2d-45f0-b47f-4875e68dd1d7"
+            image_link="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
+            published="false"
+            created_time="2021-11-25 14:40:01.742679"
+    />
+</dataset>

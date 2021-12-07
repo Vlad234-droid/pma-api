@@ -41,6 +41,11 @@
             <column name="code" value="DRAFT"/>
             <column name="description" value="Performance cycle in draft"/>
         </insert>
+        <insert tableName="pm_cycle_status">
+            <column name="id" value="5"/>
+            <column name="code" value="FAILED"/>
+            <column name="description" value="Performance cycle start failed"/>
+        </insert>
 
         <rollback>
             <delete tableName="pm_cycle_status">
@@ -60,6 +65,11 @@
         <rollback>
             <delete tableName="pm_cycle_status">
                 <where>code = 'DRAFT'</where>
+            </delete>
+        </rollback>
+        <rollback>
+            <delete tableName="pm_cycle_status">
+                <where>code = 'FAILED'</where>
             </delete>
         </rollback>
     </changeSet>

@@ -6,7 +6,6 @@ import com.tesco.pma.colleague.api.Contact;
 import com.tesco.pma.colleague.api.FindColleaguesRequest;
 import com.tesco.pma.colleague.api.Profile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
-import com.tesco.pma.colleague.profile.service.util.ColleagueFactsApiLocalMapper;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.ExternalSystemException;
 import com.tesco.pma.security.UserRoleNames;
@@ -59,13 +58,10 @@ class UserServiceImplTest {
     private ColleagueApiClient mockColleagueApiClient;
     @Mock
     private NamedMessageSourceAccessor mockNamedMessageSourceAccessor;
-    @Mock
-    private ColleagueFactsApiLocalMapper mockColleagueFactsApiLocalMapper;
 
     @BeforeEach
     void setUp() {
-        instance = new UserServiceImpl(mockProfileService, mockColleagueApiClient, mockNamedMessageSourceAccessor,
-                mockColleagueFactsApiLocalMapper);
+        instance = new UserServiceImpl(mockProfileService, mockColleagueApiClient, mockNamedMessageSourceAccessor);
     }
 
     @Test
