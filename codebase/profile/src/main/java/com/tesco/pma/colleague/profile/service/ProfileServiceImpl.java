@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_NOT_FOUND;
 
@@ -144,8 +145,15 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<Colleague> getSuggestions(RequestQuery requestQuery) {
-        return profileDAO.findColleagueSuggestionsByFullName(requestQuery);
+    public List<ColleagueProfile> getSuggestions(RequestQuery requestQuery) {
+
+        return profileDAO.findColleagueSuggestionsByFullName(requestQuery).stream()
+                .map(colleague -> {
+                    var colleagueProfile = new ColleagueProfile();
+                    colleagueProfile.setColleague(colleague);
+                    colleagueProfile.setProfileAttributes(this.findProfileAttributes(colleague.getColleagueUUID()));
+                    return colleagueProfile;
+                }).collect(Collectors.toList());
     }
 
     @Override
