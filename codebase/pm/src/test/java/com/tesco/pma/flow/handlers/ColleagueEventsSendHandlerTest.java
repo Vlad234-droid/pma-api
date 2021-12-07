@@ -3,7 +3,7 @@ package com.tesco.pma.flow.handlers;
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.cycle.api.PMCycle;
-import com.tesco.pma.event.EventSender;
+import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.organisation.service.ConfigEntryService;
 import org.camunda.bpm.engine.delegate.Expression;
 import org.junit.jupiter.api.BeforeEach;

@@ -6,7 +6,7 @@ import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.event.Event;
-import com.tesco.pma.event.EventSender;
+import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.organisation.service.ConfigEntryService;
 import lombok.RequiredArgsConstructor;

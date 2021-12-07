@@ -18,7 +18,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.tesco.pma.event.Event;
-import com.tesco.pma.event.EventSender;
+import com.tesco.pma.event.service.EventSender;
 import lombok.extern.slf4j.Slf4j;
 
 /**

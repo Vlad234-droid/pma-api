@@ -1,4 +1,6 @@
-package com.tesco.pma.event;
+package com.tesco.pma.event.service;
+
+import com.tesco.pma.event.Event;
 
 import java.util.Collection;
 import java.util.Collections;
