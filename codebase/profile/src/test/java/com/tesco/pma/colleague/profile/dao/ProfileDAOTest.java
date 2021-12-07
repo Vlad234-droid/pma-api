@@ -267,10 +267,6 @@ public class ProfileDAOTest extends AbstractDAOTest {
                         "managerUUID_equals", managerUUID)));
 
         assertEquals(1, colleagues.size());
-
-        assertEquals(managerUUID, colleagues.get(0)
-                .getWorkRelationships().get(0).getManagerUUID().toString());
-
         assertEquals(1, dao.findColleagueSuggestionsByFullName(createRQ(Map.of("firstName_like","ohn"))).size());
 
         var colleague = dao.findColleagueSuggestionsByFullName(createRQ(Map.of(
