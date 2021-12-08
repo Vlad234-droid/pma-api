@@ -1,0 +1,14 @@
+<dataset>
+    <pm_timeline_point
+            uuid="10000000-0000-0000-1000-000000000000"
+            colleague_cycle_uuid="10000000-0000-1000-0000-000000000000"
+            code="Objective"
+            description="Description init"
+            element_type_id="3"
+            start_time="2021-09-20 10:45:12.00"
+            end_time="2021-09-21 10:45:12.00"
+            properties="{&quot;title&quot;: &quot;Title init&quot;,
+                         &quot;description&quot;: &quot;Description init&quot;}"
+            status_id="1"
+    />
+</dataset>

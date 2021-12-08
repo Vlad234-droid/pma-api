@@ -1,0 +1,24 @@
+<dataset>
+    <pm_review
+            uuid="ddb9ab0b-f50f-4442-8900-b03777ee0012"
+            tl_point_uuid="10000000-0000-0000-1000-000000000000"
+            type_id="1"
+            number="1"
+            properties="{&quot;title&quot;: &quot;Title init&quot;,
+                         &quot;description&quot;: &quot;Description init&quot;,
+                         &quot;meets&quot;: &quot;Meets init&quot;,
+                         &quot;exceeds&quot;: &quot;Exceeds init&quot;}"
+            status_id="4"
+    />
+    <pm_review
+            uuid="ddb9ab0b-f50f-4442-8900-b03777ee0025"
+            tl_point_uuid="10000000-0000-0000-2000-000000000000"
+            type_id="2"
+            number="1"
+            properties="{&quot;title&quot;: &quot;Title init&quot;,
+                         &quot;description&quot;: &quot;Description init&quot;,
+                         &quot;meets&quot;: &quot;Meets init&quot;,
+                         &quot;exceeds&quot;: &quot;Exceeds init&quot;}"
+            status_id="1"
+    />
+</dataset>

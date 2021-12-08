@@ -108,7 +108,7 @@
         </bpmn:timerEventDefinition>
       </bpmn:intermediateCatchEvent>
       <bpmn:sequenceFlow id="Flow_0xp3vtj" sourceRef="Activity_1vjkqi0" targetRef="Event_1uvmyhg" />
-      <bpmn:serviceTask id="process_timeline_point" name="Process&#10;timeline&#10;point" camunda:class="com.tesco.pma.flow.handlers.ProcessTimelinePoint">
+      <bpmn:serviceTask id="process_timeline_point" name="Process&#10;timeline&#10;point" camunda:class="com.tesco.pma.flow.handlers.ProcessTimelinePointHandler">
         <bpmn:documentation>Calculate all dates according to timeline</bpmn:documentation>
         <bpmn:incoming>Flow_0l0dqnr</bpmn:incoming>
         <bpmn:outgoing>Flow_0bxvbye</bpmn:outgoing>

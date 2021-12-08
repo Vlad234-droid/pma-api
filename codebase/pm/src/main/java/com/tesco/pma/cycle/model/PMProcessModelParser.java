@@ -1,10 +1,12 @@
 package com.tesco.pma.cycle.model;
 
-import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMCycleType;
+import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.model.PMCycleElement;
 import com.tesco.pma.cycle.api.model.PMCycleMetadata;
+import com.tesco.pma.cycle.api.model.PMElement;
+import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.cycle.api.model.PMFormElement;
 import com.tesco.pma.cycle.api.model.PMReviewElement;
 import com.tesco.pma.cycle.api.model.PMTimelinePointElement;
@@ -78,8 +80,35 @@ public class PMProcessModelParser {
      * @return map of properties
      */
     public static Map<String, String> getExternalProperties(BaseElement element) {
-        return getCamundaProperties(element).stream()
-                .collect(Collectors.toMap(CamundaProperty::getCamundaName, CamundaProperty::getCamundaValue));
+        return getExternalProperties(getCamundaProperties(element));
+    }
+
+    /**
+     * Utility method to get external properties
+     *
+     * @param properties collection of Camunda properties
+     * @return map of properties
+     */
+    public static Map<String, String> getExternalProperties(Collection<CamundaProperty> properties) {
+        return properties.stream()
+                .collect(Collectors.toMap(camundaProperty -> camundaProperty.getCamundaName().toLowerCase(),
+                        CamundaProperty::getCamundaValue));
+    }
+
+    public static <T extends PMElement> T fillPMElement(Activity activity, T target) {
+        return fillPMElement(activity, null, target);
+    }
+
+    public static <T extends PMElement> T fillPMElement(Activity activity, Collection<CamundaProperty> props, T target) {
+        var name = defaultValue(unwrap(activity.getName()), activity.getId());
+        target.setId(activity.getId());
+        target.setCode(name);
+        target.setDescription(name);
+        target.setProperties(props == null ? getExternalProperties(activity) : getExternalProperties(props));
+        if (target.getType() == null) {
+            target.setType(PMElementType.getByCode(target.getProperties().get(PMElement.PM_TYPE)));
+        }
+        return target;
     }
 
     /**
@@ -104,21 +133,15 @@ public class PMProcessModelParser {
     private PMCycleElement parseCycle(org.camunda.bpm.model.bpmn.instance.Process process) {
         var cycle = new PMCycleElement();
         cycle.setId(process.getId());
-        cycle.setCode(process.getId());
-        var props = getCamundaProperties(process);
-
-        props.forEach(property -> {
-            var key = property.getCamundaName().toLowerCase();
-            cycle.getProperties().put(key, property.getCamundaValue());
-            if (PM_CYCLE_TYPE.equals(key)) {
-                cycle.setCycleType(getEnum(PMCycleType.class, key, property.getCamundaValue()));
-            }
-        });
+        cycle.setCode(process.getName());
+        var props = getExternalProperties(process);
+        cycle.setProperties(props);
+        cycle.setCycleType(getEnum(PMCycleType.class, PM_CYCLE_TYPE, props.get(PM_CYCLE_TYPE)));
         return cycle;
     }
 
-    private void processTask(PMCycleElement cycle, Activity task) {
-        var props = getCamundaProperties(task);
+    private void processTask(PMCycleElement cycle, Activity activity) {
+        var props = getCamundaProperties(activity);
         if (props.isEmpty()) {
             return;
         }
@@ -128,41 +151,23 @@ public class PMProcessModelParser {
         if (typeOptional.isPresent()) {
             var type = typeOptional.get().getCamundaValue().toLowerCase();
             if (PM_REVIEW.equals(type)) {
-                var review = parseReview(task, props);
+                var review = parseReview(activity, props);
                 cycle.getTimelinePoints().add(review);
             } else if (PM_TIMELINE_POINT.equals(type)) {
-                cycle.getTimelinePoints().add(parseTimelinePoint(task, props));
+                cycle.getTimelinePoints().add(fillPMElement(activity, props, new PMTimelinePointElement()));
             }
         }
     }
 
-    private PMTimelinePointElement parseTimelinePoint(Activity task, Collection<CamundaProperty> props) {
-        var name = defaultValue(unwrap(task.getName()), task.getId());
-        var pmTimelinePoint = new PMTimelinePointElement(task.getId(), name, name);
-        props.forEach(property -> {
-            var key = property.getCamundaName().toLowerCase();
-            pmTimelinePoint.getProperties().put(key, property.getCamundaValue());
-        });
-        return pmTimelinePoint;
-    }
-
-    private PMReviewElement parseReview(Activity task, Collection<CamundaProperty> props) {
-        var name = defaultValue(unwrap(task.getName()), task.getId());
-        var pmReview = new PMReviewElement(task.getId(), name, name);
-
-        props.forEach(property -> {
-            var key = property.getCamundaName().toLowerCase();
-            if (PM_REVIEW_TYPE.equals(key)) {
-                pmReview.setReviewType(getEnum(PMReviewType.class, key, property.getCamundaValue()));
-            }
-            pmReview.getProperties().put(key, property.getCamundaValue());
-        });
+    private PMReviewElement parseReview(Activity activity, Collection<CamundaProperty> props) {
+        var pmReview = fillPMElement(activity, props, new PMReviewElement());
+        pmReview.setReviewType(getEnum(PMReviewType.class, PM_REVIEW_TYPE, pmReview.getProperties().get(PM_REVIEW_TYPE)));
         pmReview.getProperties().putIfAbsent(PM_REVIEW_MIN, DEFAULT_PM_REVIEW_MIN);
         pmReview.getProperties().putIfAbsent(PM_REVIEW_MAX, DEFAULT_PM_REVIEW_MAX);
 
         String formKey;
-        if (task instanceof UserTask) {
-            var userTask = (UserTask) task;
+        if (activity instanceof UserTask) {
+            var userTask = (UserTask) activity;
             formKey = userTask.getCamundaFormKey();
         } else {
             formKey = pmReview.getProperties().get(PM_FORM_KEY);

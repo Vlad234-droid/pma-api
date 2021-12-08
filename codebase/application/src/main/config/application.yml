@@ -107,6 +107,7 @@ spring:
       com/tesco/pma/colleague/security/exception/AppExceptionMessage,
       com/tesco/pma/notes/exception/AppNotesMessages,
       com/tesco/pma/fs/exception/AppExceptionMessage,
+      com/tesco/pma/flow/BPMExceptionMessages,
       com/tesco/pma/tip/exception/AppExceptionMessage,
       com/tesco/pma/event/exception/AppEventMessage
     encoding: UTF-8

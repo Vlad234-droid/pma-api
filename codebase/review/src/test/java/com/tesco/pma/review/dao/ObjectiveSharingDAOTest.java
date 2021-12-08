@@ -15,7 +15,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ObjectiveSharingDAOTest extends AbstractDAOTest {
-    private static final UUID PERFORMANCE_CYCLE_UUID = UUID.fromString("0c5d9cb1-22cf-4fcd-a19a-9e70df6bc941");
+    private static final UUID PERFORMANCE_CYCLE_UUID = UUID.fromString("10000000-1000-0000-0000-000000000000");
     private static final UUID COLLEAGUE_UUID = UUID.fromString("10000000-0000-0000-0000-000000000001");
     private static final UUID COLLEAGUE_UUID_2 = UUID.fromString("10000000-0000-0000-0000-000000000002");
 
@@ -38,7 +38,9 @@ class ObjectiveSharingDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"pm_cycle_init.xml", "objective_sharing_init.xml"})
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "shared_objective_init.xml"})
     void shareObjectives() {
         var managerShareObjectives = instance.isColleagueShareObjectives(COLLEAGUE_UUID, PERFORMANCE_CYCLE_UUID);
         Assertions.assertThat(managerShareObjectives).isFalse();
@@ -51,7 +53,9 @@ class ObjectiveSharingDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"pm_cycle_init.xml", "objective_sharing_init.xml"})
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "shared_objective_init.xml"})
     void stopSharingObjectives() {
         var managerShareObjectives = instance.isColleagueShareObjectives(COLLEAGUE_UUID_2, PERFORMANCE_CYCLE_UUID);
         Assertions.assertThat(managerShareObjectives).isTrue();

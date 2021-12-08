@@ -24,5 +24,6 @@ include 'security'
 include 'notes'
 include 'fs'
 include 'config'
+include 'flow'
 include 'tip'
 

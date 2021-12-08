@@ -1,15 +1,15 @@
 package com.tesco.pma.review.service;
 
-import com.tesco.pma.cycle.api.PMReviewStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.review.domain.AuditOrgObjectiveReport;
 import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.OrgObjective;
-import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
+import com.tesco.pma.review.domain.TimelinePoint;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -58,6 +58,20 @@ public interface ReviewService {
                             @NotNull PMReviewType type);
 
     /**
+     * Finds reviews by performanceCycleUuid, colleagueUuid and review type
+     *
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
+     * @param type                 a review type
+     * @return a list of reviews
+     * @throws NotFoundException if reviews don't exist.
+     */
+    List<Review> getReviews(@NotNull UUID performanceCycleUuid,
+                            @NotNull UUID colleagueUuid,
+                            @NotNull PMReviewType type,
+                            @NotNull PMTimelinePointStatus status);
+
+    /**
      * Finds reviews by performanceCycleUuid, colleagueUuid
      *
      * @param performanceCycleUuid an identifier of performance cycle
@@ -79,20 +93,24 @@ public interface ReviewService {
     /**
      * Creates review.
      *
-     * @param review a review
+     * @param review               a review
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
      * @return created review.
      * @throws DatabaseConstraintViolationException review already exist.
      */
-    Review createReview(Review review);
+    Review createReview(@NotNull Review review, @NotNull UUID performanceCycleUuid, @NotNull UUID colleagueUuid);
 
     /**
      * Updates existing review.
      *
-     * @param review a review
+     * @param review               a review
+     * @param performanceCycleUuid an identifier of performance cycle
+     * @param colleagueUuid        an identifier of colleague
      * @return updated review.
      * @throws NotFoundException if review doesn't exist.
      */
-    Review updateReview(Review review);
+    Review updateReview(@NotNull Review review, @NotNull UUID performanceCycleUuid, @NotNull UUID colleagueUuid);
 
     /**
      * Create/update reviews.
@@ -122,13 +140,13 @@ public interface ReviewService {
      * @return a ObjectiveStatus
      * @throws NotFoundException if review doesn't exist.
      */
-    PMReviewStatus updateReviewsStatus(@NotNull UUID performanceCycleUuid,
-                                       @NotNull UUID colleagueUuid,
-                                       @NotNull PMReviewType type,
-                                       List<Review> reviews,
-                                       @NotNull PMReviewStatus status,
-                                       @Size(max = 250) String reason,
-                                       @NotNull UUID loggedUserUuid);
+    PMTimelinePointStatus updateReviewsStatus(@NotNull UUID performanceCycleUuid,
+                                              @NotNull UUID colleagueUuid,
+                                              @NotNull PMReviewType type,
+                                              List<Review> reviews,
+                                              @NotNull PMTimelinePointStatus status,
+                                              @Size(max = 250) String reason,
+                                              @NotNull UUID loggedUserUuid);
 
     /**
      * Deletes review by business key.
@@ -198,7 +216,7 @@ public interface ReviewService {
      * @return a list of timeline points
      * @throws NotFoundException if timeline doesn't exist.
      */
-    List<PMCycleTimelinePoint> getCycleTimelineByColleague(UUID colleagueUuid);
+    List<TimelinePoint> getCycleTimelineByColleague(UUID colleagueUuid);
 
     /**
      * Get report of organisation objective actions

@@ -196,7 +196,7 @@
           <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${END_DATE}</bpmn:timeDate>
         </bpmn:timerEventDefinition>
       </bpmn:intermediateCatchEvent>
-      <bpmn:serviceTask id="processTimelinePointMyr" name="Process&#10;timeline&#10;point" camunda:class="com.tesco.pma.flow.handlers.ProcessTimelinePoint">
+      <bpmn:serviceTask id="processTimelinePointMyr" name="Process&#10;timeline&#10;point" camunda:class="com.tesco.pma.flow.handlers.ProcessTimelinePointHandler">
         <bpmn:documentation>Calculate all dates according to timeline</bpmn:documentation>
         <bpmn:incoming>Flow_0bs5gx6</bpmn:incoming>
         <bpmn:outgoing>Flow_1x27u4h</bpmn:outgoing>
@@ -307,7 +307,7 @@
           <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${END_DATE}</bpmn:timeDate>
         </bpmn:timerEventDefinition>
       </bpmn:intermediateCatchEvent>
-      <bpmn:serviceTask id="processTimelinePointEyr" name="Process&#10;timeline&#10;point" camunda:class="com.tesco.pma.flow.handlers.ProcessTimelinePoint">
+      <bpmn:serviceTask id="processTimelinePointEyr" name="Process&#10;timeline&#10;point" camunda:class="com.tesco.pma.flow.handlers.ProcessTimelinePointHandler">
         <bpmn:documentation>Calculate all dates according to timeline</bpmn:documentation>
         <bpmn:incoming>Flow_1lt2ong</bpmn:incoming>
         <bpmn:outgoing>Flow_0dch7uy</bpmn:outgoing>
