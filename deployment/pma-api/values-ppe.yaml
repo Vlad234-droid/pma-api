@@ -74,6 +74,7 @@ AD_ROLE_LINE_MANAGER: GG-UK-TescoGlobal-PMA-PPE-LineManager
 IDENTITY_CLIENT_ID: "1234567890"
 PMA_DB_URL: jdbc:postgresql://10.114.147.8:5432/pma-ppe?sslmode=require
 PMA_DB_SCHEMA: pma
+CAMUNDA_DB_SCHEMA: camunda
 PMA_DB_USERNAME: pmadbadmin@euw-ppe-214-pma-postgresql
 SECURITY_ENABLED: true
 env: "ppe/**.dec"
