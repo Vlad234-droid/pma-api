@@ -1,0 +1,67 @@
+plugins {
+    id 'java-library'
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
+    id "org.liquibase.gradle" version "${liquibaseGradlePluginVersion}"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of("${javaCompatibility}")
+    }
+}
+
+dependencies {
+    testImplementation(platform("org.junit:junit-bom:${junitJupiterVersion}"))
+    testImplementation "org.junit.jupiter:junit-jupiter-api"
+    testImplementation "org.junit.jupiter:junit-jupiter-params"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+
+    testImplementation platform("org.testcontainers:testcontainers-bom:${testcontainersBomVersion}")
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+
+    testImplementation "org.liquibase:liquibase-core:${liquibaseVersion}"
+    testRuntimeOnly "org.yaml:snakeyaml:${snakeyamlVersion}"
+    testRuntimeOnly "org.postgresql:postgresql:${postgresVersion}"
+
+    testImplementation "org.assertj:assertj-core:${assertjVersion}"
+    testImplementation "io.rest-assured:xml-path:${xmlPathVersion}"
+
+    liquibaseRuntime "org.liquibase:liquibase-core:${liquibaseVersion}"
+    liquibaseRuntime "org.yaml:snakeyaml:${snakeyamlVersion}"
+    liquibaseRuntime "org.postgresql:postgresql:${postgresVersion}"
+    liquibaseRuntime sourceSets.main.output
+}
+
+liquibase {
+    ext {
+        // overrides default Activity config from properties started with 'db' e.g. dbUrl, dbUsername, etc.
+        applyDbParameters = { activity ->
+            project.properties
+                    .findAll { it.key ==~ /db[A-Z]\w+/ }
+                    .each { activity.arguments[it.key.substring(2).uncapitalize()] = it.value ?: '' }
+        }
+    }
+
+    activities {
+        main
+    }
+
+    activities.each { ext.applyDbParameters(it) }
+    runList = project.properties['runList'] ?: 'main'
+    // mainClassName = default liquibase.integration.commandline.Main
+    // jvmArgs =
+}
+
+test {
+    useJUnitPlatform()
+    systemProperties(
+            CHANGELOG_MASTER_FILE: "${dbChangelogFile}",
+            CHANGELOG_FILENAME_PATTERN: '\\d{3}-[A-Za-z0-9 _-]+-(ddl|dml|test)\\.xml',
+    )
+}
+
+// compile before running any liquibase Task
+tasks
+    .findAll { it.name.startsWith("${liquibaseTaskPrefix}") }
+    .each { it.dependsOn(tasks.classes) }

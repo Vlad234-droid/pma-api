@@ -43,7 +43,7 @@ dependencies {
     testImplementation 'org.testcontainers:postgresql'
 
     testRuntimeOnly "org.liquibase:liquibase-core:${liquibaseVersion}"
-    testRuntimeOnly project(':database')
+    testRuntimeOnly project(':db-pma')
 }
 
 

@@ -46,7 +46,7 @@ dependencies {
     testImplementation 'org.testcontainers:postgresql'
     testImplementation "com.github.database-rider:rider-junit5:${databaseRiderVersion}"
     testRuntimeOnly "org.liquibase:liquibase-core:${liquibaseVersion}"
-    testRuntimeOnly project(':database')
+    testRuntimeOnly project(':db-pma')
 }
 
 dependencyManagement {
