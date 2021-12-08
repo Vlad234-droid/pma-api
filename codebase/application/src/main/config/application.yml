@@ -107,7 +107,8 @@ spring:
       com/tesco/pma/colleague/security/exception/AppExceptionMessage,
       com/tesco/pma/notes/exception/AppNotesMessages,
       com/tesco/pma/fs/exception/AppExceptionMessage,
-      com/tesco/pma/tip/exception/AppExceptionMessage
+      com/tesco/pma/tip/exception/AppExceptionMessage,
+      com/tesco/pma/event/exception/AppEventMessage
     encoding: UTF-8
   async-executor:
     core-pool-size: 2
@@ -212,6 +213,8 @@ tesco:
             immediate: colleagues-immediate-v1
       colleague-api:
         base-url: ${TESCO_API_BASE_URL}/colleague/v2/colleagues
+      events-api:
+        base-url: ${PMA_API_URL}/events
     event-mapping:
       # Review notifications events
       PM_REVIEW_BEFORE_START: com.tesco.pma.bpm.action.RunFlowByEventAction
