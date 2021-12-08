@@ -1,0 +1,14 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <include file="7.15.0/activiti.postgres.create.identity.sql" relativeToChangelogFile="true"/>
+    <include file="7.15.0/activiti.postgres.create.engine.sql" relativeToChangelogFile="true"/>
+    <include file="7.15.0/activiti.postgres.create.history.sql" relativeToChangelogFile="true"/>
+    <include file="7.15.0/activiti.postgres.create.case.engine.sql" relativeToChangelogFile="true"/>
+    <include file="7.15.0/activiti.postgres.create.case.history.sql" relativeToChangelogFile="true"/>
+    <include file="7.15.0/activiti.postgres.create.decision.engine.sql" relativeToChangelogFile="true"/>
+    <include file="7.15.0/activiti.postgres.create.decision.history.sql" relativeToChangelogFile="true"/>
+
+</databaseChangeLog>
