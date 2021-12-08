@@ -1,12 +1,12 @@
 package com.tesco.pma.event.impl;
 
-import java.util.Collection;
-import java.util.Map;
-
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.event.Event;
 import com.tesco.pma.event.exception.ErrorCodes;
 import com.tesco.pma.event.exception.EventSendingException;
+import com.tesco.pma.event.service.EventSender;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -16,9 +16,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import com.tesco.pma.event.Event;
-import com.tesco.pma.event.service.EventSender;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Send event to URL
