@@ -2,6 +2,7 @@ package com.tesco.pma.flow.handlers;
 
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.organisation.service.ConfigEntryService;
@@ -29,6 +30,9 @@ public class ColleagueEventsSendHandlerTest {
     @Mock
     private EventSender eventSender;
 
+    @Mock
+    private NamedMessageSourceAccessor namedMessageSourceAccessor;
+
     private ColleagueEventsSendHandler handler;
     private ExecutionContext executionContext;
     private PMCycle pmCycle;
@@ -41,7 +45,7 @@ public class ColleagueEventsSendHandlerTest {
         Mockito.when(expression.getExpressionText()).thenReturn(EXPRESSION_VALUE);
         Expression isErrorSensitiveExpression = Mockito.mock(Expression.class);
         Mockito.when(isErrorSensitiveExpression.getExpressionText()).thenReturn(IS_ERROR_SENSITIVE_EXPRESSION);
-        handler = new ColleagueEventsSendHandler(configEntryService, eventSender);
+        handler = new ColleagueEventsSendHandler(configEntryService, eventSender, namedMessageSourceAccessor);
         handler.setEventNameExpression(expression);
         handler.setIsErrorSensitiveExpression(isErrorSensitiveExpression);
         executionContext = Mockito.mock(ExecutionContext.class);

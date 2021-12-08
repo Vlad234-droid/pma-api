@@ -7,6 +7,5 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:${fasterxmlJacksonAnnotationVersion}")
 
     implementation("org.springframework.boot:spring-boot-starter:${springBootVersion}")
-    implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-logging:${springBootVersion}")
 }
