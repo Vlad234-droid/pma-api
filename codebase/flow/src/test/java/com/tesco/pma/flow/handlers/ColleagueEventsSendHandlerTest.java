@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-public class ColleagueEventsSendHandlerTest {
+class ColleagueEventsSendHandlerTest {
 
     private static final String EXPRESSION_VALUE = "injectedValue";
     private static final String IS_ERROR_SENSITIVE_EXPRESSION = "true";
@@ -54,7 +54,7 @@ public class ColleagueEventsSendHandlerTest {
     }
 
     @Test
-    public void executeTest() throws Exception {
+    void executeTest() throws Exception {
         IntStream.range(1, 5).forEach(i -> colleagueEntities.add(createColleague()));
         Mockito.when(executionContext.getVariable(Mockito.eq(FlowParameters.PM_CYCLE))).thenReturn(pmCycle);
         Mockito.when(pmCycle.getEntryConfigKey()).thenReturn(COMPOUND_KEY);
