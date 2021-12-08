@@ -68,6 +68,7 @@ tolerations: []
 affinity: {}
 TESCO_API_BASE_URL: https://api-ppe.tesco.com
 ONE_LOGIN_BASE_URL: https://loginppe.ourtesco.com
+PMA_API_URL: http://pma-api-service:8083/v1
 AD_ROLE_ADMIN: GG-UK-TescoGlobal-PMA-PPE-Admin
 AD_ROLE_LINE_MANAGER: GG-UK-TescoGlobal-PMA-PPE-LineManager
 IDENTITY_CLIENT_ID: "1234567890"
