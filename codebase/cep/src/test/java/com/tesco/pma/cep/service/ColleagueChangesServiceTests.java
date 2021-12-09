@@ -3,11 +3,13 @@ package com.tesco.pma.cep.service;
 import com.tesco.pma.cep.domain.ColleagueChangeEventPayload;
 import com.tesco.pma.cep.domain.EventType;
 import com.tesco.pma.colleague.api.Colleague;
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.Account;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
+import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
 import com.tesco.pma.colleague.security.service.UserManagementService;
 import com.tesco.pma.event.service.EventSender;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,16 +62,17 @@ class ColleagueChangesServiceTests {
 
         when(mockCepSubscribeProperties.getFeeds())
                 .thenReturn(Map.of(feedCode, feedId));
-        when(mockProfileService.findProfileByColleagueUuid(COLLEAGUE_UUID))
-                .thenReturn(colleagueProfile(COLLEAGUE_UUID));
+        when(mockProfileService.getColleague(COLLEAGUE_UUID))
+                .thenReturn(colleague(COLLEAGUE_UUID));
         when(mockProfileService.saveColleague(COLLEAGUE_UUID))
                 .thenReturn(1);
 
         colleagueChangesService.processColleagueChangeEvent(feedId, colleagueChangeEventPayload);
 
         verify(mockCepSubscribeProperties, times(1)).getFeeds();
-        verify(mockProfileService, times(1)).findProfileByColleagueUuid(COLLEAGUE_UUID);
+        verify(mockProfileService, times(1)).getColleague(COLLEAGUE_UUID);
         verify(mockProfileService, times(1)).saveColleague(COLLEAGUE_UUID);
+        verify(mockUserManagementService, times(1)).createAccount(any(CreateAccountRequest.class));
     }
 
     @ParameterizedTest
@@ -151,6 +154,12 @@ class ColleagueChangesServiceTests {
         colleagueProfile.setProfileAttributes(List.of());
 
         return Optional.of(colleagueProfile);
+    }
+
+    private ColleagueEntity colleague(UUID colleagueUuid) {
+        var colleague = new ColleagueEntity();
+        colleague.setUuid(colleagueUuid);
+        return colleague;
     }
 
     private Account account(UUID colleagueUuid) {

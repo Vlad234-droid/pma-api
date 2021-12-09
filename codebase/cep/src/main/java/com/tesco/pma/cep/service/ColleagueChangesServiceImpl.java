@@ -2,10 +2,13 @@ package com.tesco.pma.cep.service;
 
 import com.tesco.pma.cep.domain.ColleagueChangeEventPayload;
 import com.tesco.pma.cep.domain.DeliveryMode;
+import com.tesco.pma.cep.domain.EventType;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
+import com.tesco.pma.colleague.security.domain.AccountType;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
+import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
 import com.tesco.pma.colleague.security.service.UserManagementService;
 import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.event.service.EventSender;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.tesco.pma.cep.exception.ErrorCodes.COLLEAGUE_NOT_FOUND;
 
@@ -42,12 +46,15 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         log.info(String.format("Processing colleague change event %s for feed delivery mode %s",
                 colleagueChangeEventPayload, feedDeliveryMode));
 
-        Optional<ColleagueProfile> optionalColleagueProfile = profileService.findProfileByColleagueUuid(
-                colleagueChangeEventPayload.getColleagueUuid());
-        if (optionalColleagueProfile.isEmpty()) {
-            log.error(LogFormatter.formatMessage(COLLEAGUE_NOT_FOUND, "Colleague '{}' not found"),
+        // For all event types except for Joiner profile must be existing
+        if (!EventType.JOINER.equals(colleagueChangeEventPayload.getEventType())) {
+            Optional<ColleagueProfile> optionalColleagueProfile = profileService.findProfileByColleagueUuid(
                     colleagueChangeEventPayload.getColleagueUuid());
-            return;
+            if (optionalColleagueProfile.isEmpty()) {
+                log.error(LogFormatter.formatMessage(COLLEAGUE_NOT_FOUND, "Colleague '{}' not found"),
+                        colleagueChangeEventPayload.getColleagueUuid());
+                return;
+            }
         }
 
         var updated = 0;
@@ -80,6 +87,12 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     private int processJoinerEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
         int updated = profileService.saveColleague(colleagueChangeEventPayload.getColleagueUuid());
 
+        // Add new account
+        if (updated > 0) {
+            createAccount(colleagueChangeEventPayload.getColleagueUuid());
+        }
+
+        // Send event to Camunda
         if (updated > 0) {
             var event = new EventSupport("PM_CEP_JOINER");
             eventSender.sendEvent(event);
@@ -124,6 +137,21 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         } else {
             return DeliveryMode.valueOf(key.toUpperCase());
         }
+    }
+
+    private void createAccount(UUID colleagueUuid) {
+        var colleague = profileService.getColleague(colleagueUuid);
+        if (colleague == null) {
+            return;
+        }
+
+        CreateAccountRequest request = new CreateAccountRequest();
+        request.setName(colleague.getIamId());
+        request.setIamId(colleague.getIamId());
+        request.setType(AccountType.USER);
+        request.setStatus(AccountStatus.ENABLED);
+
+        userManagementService.createAccount(request);
     }
 
 }
