@@ -59,6 +59,14 @@ public interface ProfileService {
     int updateColleague(@NotNull UUID colleagueUuid, Collection<String> changedAttributes);
 
     /**
+     * Save a joiner colleague
+     *
+     * @param colleagueUuid
+     * @return Number of updated records
+     */
+    int saveColleague(@NotNull UUID colleagueUuid);
+
+    /**
      * Find colleague by uuid
      *
      * @param colleagueUuid - colleague identifier

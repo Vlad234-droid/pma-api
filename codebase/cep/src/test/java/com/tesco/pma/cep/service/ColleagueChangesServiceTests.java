@@ -9,6 +9,7 @@ import com.tesco.pma.colleague.security.domain.Account;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
 import com.tesco.pma.colleague.security.service.UserManagementService;
+import com.tesco.pma.event.service.EventSender;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -41,6 +42,8 @@ class ColleagueChangesServiceTests {
     private ProfileService mockProfileService;
     @MockBean
     private UserManagementService mockUserManagementService;
+    @MockBean
+    private EventSender eventSender;
 
     @SpyBean
     private ColleagueChangesServiceImpl colleagueChangesService;
@@ -53,7 +56,20 @@ class ColleagueChangesServiceTests {
             "immediate, colleagues-immediate-v1"
     })
     void processColleagueChangeEventWithJoinerEventType(String feedCode, String feedId) {
-        processColleagueChangeEvent(feedCode, feedId, EventType.JOINER);
+        var colleagueChangeEventPayload = colleagueChangeEventPayload(EventType.JOINER);
+
+        when(mockCepSubscribeProperties.getFeeds())
+                .thenReturn(Map.of(feedCode, feedId));
+        when(mockProfileService.findProfileByColleagueUuid(COLLEAGUE_UUID))
+                .thenReturn(colleagueProfile(COLLEAGUE_UUID));
+        when(mockProfileService.saveColleague(COLLEAGUE_UUID))
+                .thenReturn(1);
+
+        colleagueChangesService.processColleagueChangeEvent(feedId, colleagueChangeEventPayload);
+
+        verify(mockCepSubscribeProperties, times(1)).getFeeds();
+        verify(mockProfileService, times(1)).findProfileByColleagueUuid(COLLEAGUE_UUID);
+        verify(mockProfileService, times(1)).saveColleague(COLLEAGUE_UUID);
     }
 
     @ParameterizedTest

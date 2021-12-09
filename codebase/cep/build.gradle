@@ -5,6 +5,7 @@ plugins {
 dependencies {
 
     implementation project(':api')
+    implementation project(':event')
     implementation project(':service')
     implementation project(':profile')
     implementation project(':security')

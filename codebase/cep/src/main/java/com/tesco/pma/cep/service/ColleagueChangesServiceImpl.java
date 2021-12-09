@@ -7,6 +7,8 @@ import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
 import com.tesco.pma.colleague.security.service.UserManagementService;
+import com.tesco.pma.event.EventSupport;
+import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.logging.LogFormatter;
@@ -28,6 +30,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     private final CEPSubscribeProperties cepSubscribeProperties;
     private final ProfileService profileService;
     private final UserManagementService userManagementService;
+    private final EventSender eventSender;
 
     @Override
     public void processColleagueChangeEvent(String feedId,
@@ -75,8 +78,14 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     }
 
     private int processJoinerEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
-        return profileService.updateColleague(colleagueChangeEventPayload.getColleagueUuid(),
-                colleagueChangeEventPayload.getChangedAttributes());
+        int updated = profileService.saveColleague(colleagueChangeEventPayload.getColleagueUuid());
+
+        if (updated > 0) {
+            var event = new EventSupport("PM_CEP_JOINER");
+            eventSender.sendEvent(event);
+        }
+
+        return updated;
     }
 
     private int processLeaverEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
@@ -91,12 +100,14 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
     // TODO If logic different from main flow
     private int processMoverEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
-        return processJoinerEventType(colleagueChangeEventPayload);
+        return profileService.updateColleague(colleagueChangeEventPayload.getColleagueUuid(),
+                colleagueChangeEventPayload.getChangedAttributes());
     }
 
     // TODO If logic different from main flow
     private int processReinstatementEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
-        return processJoinerEventType(colleagueChangeEventPayload);
+        return profileService.updateColleague(colleagueChangeEventPayload.getColleagueUuid(),
+                colleagueChangeEventPayload.getChangedAttributes());
     }
 
     private DeliveryMode resolveDeliveryModeByFeedId(String feedId) {
