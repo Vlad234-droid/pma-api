@@ -15,6 +15,9 @@ dependencies {
         exclude group: 'org.junit.jupiter'
         exclude group: 'org.junit.platform'
         exclude group: 'org.testng'
+        exclude group: 'org.codehaus.groovy', module: 'groovy-test'
+        exclude group: 'org.codehaus.groovy', module: 'groovy-test-junit5'
+        exclude group: 'org.codehaus.groovy', module: 'groovy-testng'
     }
 
     testImplementation ("com.h2database:h2:${h2Version}")
