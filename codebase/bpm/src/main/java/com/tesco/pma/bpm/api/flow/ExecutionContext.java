@@ -25,11 +25,32 @@ public interface ExecutionContext extends Serializable {
 
     /**
      * Returns variable from context.<br/>
+     * <br/>
+     * <b>Note:</b> Method checks variable for not null value. Use <code>getNullableVariable(E e)</code> if null value is possible.
+     *
+     * @param enu Enum with variable name
+     * @param cls return type
+     * @return variable value
+     * @throws IllegalArgumentException is variable isn't set or its value is null.
+     */
+    <E extends Enum<E>, T> T getVariable(E enu, Class<T> cls);
+
+    /**
+     * Returns variable from context.<br/>
      *
      * @param enu Enum with variable name
      * @return variable value
      */
     <E extends Enum<E>, T> T getNullableVariable(E enu);
+
+    /**
+     * Returns variable from context.<br/>
+     *
+     * @param enu Enum with variable name
+     * @param cls return type
+     * @return variable value
+     */
+    <E extends Enum<E>, T> T getNullableVariable(E enu, Class<T> cls);
 
     /**
      * Set variable to context.<br/>

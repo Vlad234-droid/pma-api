@@ -14,7 +14,7 @@
     </resultMap>
 
     <insert id="create" flushCache="true">
-        INSERT INTO org_objective
+        INSERT INTO pm_org_objective
         (uuid,
          number,
          status_id,
@@ -33,7 +33,7 @@
                go.status_id,
                go.title,
                go.version
-        FROM org_objective go
+        FROM pm_org_objective go
         WHERE go.uuid = #{uuid}
     </select>
 
@@ -46,7 +46,7 @@
         go.status_id,
         go.title,
         go.version
-        from org_objective go
+        from pm_org_objective go
         inner join max_version mv
         on (go.version = mv.version)
         order by go.number
@@ -58,14 +58,14 @@
                go.status_id,
                go.title,
                go.version
-        from org_objective go
+        from pm_org_objective go
         WHERE go.status_id = 2
         order by go.number
     </select>
 
     <delete id="delete">
         DELETE
-        FROM org_objective
+        FROM pm_org_objective
         WHERE uuid = #{uuid}
     </delete>
 
@@ -77,20 +77,20 @@
         with max_version as (
         <include refid="getMaxVersion"/>
         )
-        update org_objective go
+        update pm_org_objective go
         set status_id = 2
         from max_version mv
         where go.version = mv.version;
     </update>
 
     <update id="unpublish" flushCache="true">
-        update org_objective go
+        update pm_org_objective go
         set status_id = 3
         where go.status_id = 2;
     </update>
 
     <sql id="getMaxVersion">
         select coalesce(max(version), 0) as version
-        from org_objective go
+        from pm_org_objective go
     </sql>
 </mapper>

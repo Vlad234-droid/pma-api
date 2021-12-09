@@ -10,7 +10,7 @@ import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMReviewType;
-import com.tesco.pma.review.domain.PMCycleTimelinePoint;
+import com.tesco.pma.review.domain.TimelinePoint;
 import com.tesco.pma.review.service.ReviewService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -48,10 +48,10 @@ public class DefaultAttributesServiceTest {
         defaultAttrs.add(createDefaultAttr("Test2", DefaultAttributeCriteria.LINE_MANAGER));
         defaultAttrs.add(createDefaultAttr("Test3", DefaultAttributeCriteria.MYR));
 
-        var cycle = new PMCycleTimelinePoint();
+        var cycle = new TimelinePoint();
         cycle.setReviewType(PMReviewType.MYR);
 
-        var cycle2 = new PMCycleTimelinePoint();
+        var cycle2 = new TimelinePoint();
         cycle2.setReviewType(PMReviewType.MYR);
 
         var colleagueProfile = new ColleagueProfile();

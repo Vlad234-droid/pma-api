@@ -2,8 +2,9 @@ package com.tesco.pma.review.service;
 
 import com.tesco.pma.api.OrgObjectiveStatus;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.cycle.api.PMReviewStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
+import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
@@ -15,12 +16,13 @@ import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.review.dao.OrgObjectiveDAO;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
 import com.tesco.pma.review.dao.ReviewDAO;
+import com.tesco.pma.review.dao.TimelinePointDAO;
 import com.tesco.pma.review.domain.AuditOrgObjectiveReport;
 import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.OrgObjective;
-import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStatusCounter;
+import com.tesco.pma.review.domain.TimelinePoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -38,15 +40,18 @@ import java.util.stream.Collectors;
 
 import static com.tesco.pma.api.ActionType.PUBLISH;
 import static com.tesco.pma.api.ActionType.SAVE_AS_DRAFT;
-import static com.tesco.pma.cycle.api.PMReviewStatus.APPROVED;
-import static com.tesco.pma.cycle.api.PMReviewStatus.COMPLETED;
-import static com.tesco.pma.cycle.api.PMReviewStatus.DECLINED;
-import static com.tesco.pma.cycle.api.PMReviewStatus.DRAFT;
-import static com.tesco.pma.cycle.api.PMReviewStatus.WAITING_FOR_APPROVAL;
 import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.COMPLETED;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DECLINED;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.WAITING_FOR_APPROVAL;
 import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
+import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MAX;
+import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MIN;
 import static com.tesco.pma.review.exception.ErrorCodes.ALLOWED_STATUSES_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.CANNOT_DELETE_REVIEW_COUNT_CONSTRAINT;
+import static com.tesco.pma.review.exception.ErrorCodes.COLLEAGUE_CYCLE_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.MAX_REVIEW_NUMBER_CONSTRAINT_VIOLATION;
 import static com.tesco.pma.review.exception.ErrorCodes.MIN_REVIEW_NUMBER_CONSTRAINT_VIOLATION;
 import static com.tesco.pma.review.exception.ErrorCodes.ORG_OBJECTIVES_NOT_FOUND;
@@ -54,6 +59,7 @@ import static com.tesco.pma.review.exception.ErrorCodes.ORG_OBJECTIVE_ALREADY_EX
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_ALREADY_EXISTS;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_STATUS_NOT_ALLOWED;
+import static com.tesco.pma.review.exception.ErrorCodes.TIMELINE_POINT_NOT_FOUND;
 
 /**
  * Implementation of {@link ReviewService}.
@@ -65,13 +71,17 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewDAO reviewDAO;
     private final OrgObjectiveDAO orgObjectiveDAO;
     private final ReviewAuditLogDAO reviewAuditLogDAO;
+    private final PMColleagueCycleService pmColleagueCycleService;
+    private final TimelinePointDAO timelinePointDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final PMCycleService pmCycleService;
 
     private static final String REVIEW_UUID_PARAMETER_NAME = "reviewUuid";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
+    private static final String COLLEAGUE_CYCLE_UUID_PARAMETER_NAME = "colleagueCycleUuid";
     private static final String MANAGER_UUID_PARAMETER_NAME = "managerUuid";
     private static final String PERFORMANCE_CYCLE_UUID_PARAMETER_NAME = "performanceCycleUuid";
+    private static final String TL_POINT_UUID_PARAMETER_NAME = "tlPointUuid";
     private static final String TYPE_PARAMETER_NAME = "type";
     private static final String NUMBER_PARAMETER_NAME = "number";
     private static final String VERSION_PARAMETER_NAME = "version";
@@ -92,15 +102,20 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Review getReview(UUID performanceCycleUuid, UUID colleagueUuid, PMReviewType type, Integer number) {
-        var res = reviewDAO.getReview(performanceCycleUuid, colleagueUuid, type, number);
-        if (res == null) {
+        var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, type);
+        var res = reviewDAO.getByParams(
+                timelinePoint.getUuid(),
+                type,
+                null,
+                number);
+        if (res == null || 1 != res.size()) {
             throw notFound(REVIEW_NOT_FOUND,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
                             PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
                             TYPE_PARAMETER_NAME, type,
                             NUMBER_PARAMETER_NAME, number));
         }
-        return res;
+        return res.get(0);
     }
 
     @Override
@@ -115,7 +130,14 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<Review> getReviews(UUID performanceCycleUuid, UUID colleagueUuid, PMReviewType type) {
-        List<Review> results = reviewDAO.getReviews(performanceCycleUuid, colleagueUuid, type);
+        var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, type);
+
+        List<Review> results = reviewDAO.getByParams(
+                timelinePoint.getUuid(),
+                type,
+                null,
+                null);
+
         if (results == null) {
             throw notFound(REVIEW_NOT_FOUND,
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
@@ -126,7 +148,28 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public List<Review> getReviews(UUID performanceCycleUuid, UUID colleagueUuid, PMReviewType type, PMTimelinePointStatus status) {
+        var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, type);
+
+        List<Review> results = reviewDAO.getByParams(
+                timelinePoint.getUuid(),
+                type,
+                status,
+                null);
+
+        if (results == null) {
+            throw notFound(REVIEW_NOT_FOUND,
+                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
+                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid,
+                            TYPE_PARAMETER_NAME, type,
+                            STATUS_PARAMETER_NAME, status));
+        }
+        return results;
+    }
+
+    @Override
     public List<Review> getReviewsByColleague(UUID performanceCycleUuid, UUID colleagueUuid) {
+
         List<Review> results = reviewDAO.getReviewsByColleague(performanceCycleUuid, colleagueUuid);
         if (results == null) {
             throw notFound(REVIEW_NOT_FOUND,
@@ -152,25 +195,30 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public Review createReview(Review review) {
-        return intCreateReview(review);
+    public Review createReview(Review review, UUID performanceCycleUuid, UUID colleagueUuid) {
+        var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, review.getType());
+        review.setTlPointUuid(timelinePoint.getUuid());
+        return intCreateReview(review, performanceCycleUuid);
     }
 
     @Override
     @Transactional
-    public Review updateReview(Review review) {
-        var reviewBefore = reviewDAO.getReview(
-                review.getPerformanceCycleUuid(),
-                review.getColleagueUuid(),
+    public Review updateReview(Review review, UUID performanceCycleUuid, UUID colleagueUuid) {
+        var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, review.getType());
+        review.setTlPointUuid(timelinePoint.getUuid());
+        var reviews = reviewDAO.getByParams(
+                review.getTlPointUuid(),
                 review.getType(),
+                null,
                 review.getNumber());
-        if (null == reviewBefore) {
+
+        if (reviews == null || 0 == reviews.size()) {
             throw notFound(REVIEW_NOT_FOUND,
-                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, review.getColleagueUuid(),
-                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, review.getPerformanceCycleUuid(),
+                    Map.of(TL_POINT_UUID_PARAMETER_NAME, review.getTlPointUuid(),
                             TYPE_PARAMETER_NAME, review.getType(),
                             NUMBER_PARAMETER_NAME, review.getNumber()));
         }
+        var reviewBefore = reviews.get(0);
         review.setUuid(reviewBefore.getUuid());
         review.setNumber(reviewBefore.getNumber());
         return intUpdateReview(review);
@@ -182,28 +230,34 @@ public class ReviewServiceImpl implements ReviewService {
                                       UUID colleagueUuid,
                                       PMReviewType type,
                                       List<Review> reviews) {
+        var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, type);
         List<Review> results = new ArrayList<>();
+
         for (int idx = 0; idx < reviews.size(); idx++) {
             var review = reviews.get(idx);
-            review.setPerformanceCycleUuid(performanceCycleUuid);
-            review.setColleagueUuid(colleagueUuid);
+            review.setTlPointUuid(timelinePoint.getUuid());
             review.setType(type);
-            var reviewBefore = reviewDAO.getReview(
-                    review.getPerformanceCycleUuid(),
-                    review.getColleagueUuid(),
+            var rvs = reviewDAO.getByParams(
+                    review.getTlPointUuid(),
                     review.getType(),
+                    null,
                     idx + 1);
-            if (null == reviewBefore) {
+            if (rvs == null || 1 != rvs.size()) {
                 review.setNumber(idx + 1);
-                intCreateReview(review);
+                intCreateReview(review, performanceCycleUuid);
             } else {
+                var reviewBefore = rvs.get(0);
                 review.setUuid(reviewBefore.getUuid());
                 review.setNumber(reviewBefore.getNumber());
                 intUpdateReview(review);
             }
             results.add(review);
         }
-        List<Review> prevReviews = reviewDAO.getReviews(performanceCycleUuid, colleagueUuid, type);
+        List<Review> prevReviews = reviewDAO.getByParams(
+                timelinePoint.getUuid(),
+                type,
+                null,
+                null);
         if (prevReviews.size() > reviews.size()) {
             for (int i = reviews.size() + 1; i <= prevReviews.size(); i++) {
                 intDeleteReview(performanceCycleUuid, colleagueUuid, type, i);
@@ -217,32 +271,32 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public PMReviewStatus updateReviewsStatus(UUID performanceCycleUuid,
-                                              UUID colleagueUuid,
-                                              PMReviewType type,
-                                              List<Review> reviews,
-                                              PMReviewStatus status,
-                                              String reason,
-                                              UUID loggedUserUuid) {
+    public PMTimelinePointStatus updateReviewsStatus(UUID performanceCycleUuid,
+                                                     UUID colleagueUuid,
+                                                     PMReviewType type,
+                                                     List<Review> reviews,
+                                                     PMTimelinePointStatus status,
+                                                     String reason,
+                                                     UUID loggedUserUuid) {
+        var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, type);
         reviews.forEach(review -> {
             var prevStatuses = getPrevStatusesForChangeStatus(status);
             if (0 == prevStatuses.size()) {
                 throw notFound(ALLOWED_STATUSES_NOT_FOUND,
                         Map.of(OPERATION_PARAMETER_NAME, CHANGE_STATUS_OPERATION_NAME));
             }
-            if (1 == reviewDAO.updateReviewStatus(
-                    performanceCycleUuid,
-                    colleagueUuid,
+            if (1 == reviewDAO.updateStatusByParams(
+                    timelinePoint.getUuid(),
                     type,
                     review.getNumber(),
                     status,
                     prevStatuses)) {
-                var actualReview = reviewDAO.getReview(
-                        performanceCycleUuid,
-                        colleagueUuid,
+                var actualReviews = reviewDAO.getByParams(
+                        timelinePoint.getUuid(),
                         type,
+                        null,
                         review.getNumber());
-                reviewAuditLogDAO.logReviewUpdating(actualReview, status, reason, loggedUserUuid);
+                reviewAuditLogDAO.logReviewUpdating(actualReviews.get(0), status, reason, loggedUserUuid);
             } else {
                 throw notFound(REVIEW_NOT_FOUND,
                         Map.of(STATUS_PARAMETER_NAME, status,
@@ -263,14 +317,14 @@ public class ReviewServiceImpl implements ReviewService {
                              UUID colleagueUuid,
                              PMReviewType type,
                              Integer number) {
+        var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, type);
         intDeleteReview(
                 performanceCycleUuid,
                 colleagueUuid,
                 type,
                 number);
         reviewDAO.renumerateReviews(
-                performanceCycleUuid,
-                colleagueUuid,
+                timelinePoint.getUuid(),
                 type,
                 number + 1);
     }
@@ -320,13 +374,14 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<PMCycleTimelinePoint> getCycleTimelineByColleague(UUID colleagueUuid) {
+    public List<TimelinePoint> getCycleTimelineByColleague(UUID colleagueUuid) {
         var currentCycleUuid = pmCycleService.getCurrentByColleague(colleagueUuid).getUuid();
-        var cycleTimeline = reviewDAO.getTimeline(currentCycleUuid);
+        var cycleTimeline = timelinePointDAO.getTimeline(currentCycleUuid, colleagueUuid);
 
-        for (PMCycleTimelinePoint timelinePoint :
+        for (TimelinePoint timelinePoint :
                 cycleTimeline) {
             if (REVIEW == timelinePoint.getType()) {
+                timelinePoint.setReviewType(PMReviewType.getByCode(timelinePoint.getCode()));
                 var reviewStatusCounter = getTimelineReviewStatusCounter(
                         currentCycleUuid,
                         colleagueUuid,
@@ -346,13 +401,14 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private ReviewStatusCounter getTimelineReviewStatusCounter(UUID cycleUuid, UUID colleagueUuid, PMReviewType reviewType) {
-        var reviewStats = reviewDAO.getReviewStats(cycleUuid, colleagueUuid, reviewType);
+        var timelinePoint = getTimelinePoint(cycleUuid, colleagueUuid, reviewType);
+        var reviewStats = reviewDAO.getReviewStats(timelinePoint.getUuid(), reviewType);
         if (null == reviewStats || 0 == reviewStats.getStatusStats().size()) {
             return null;
         }
         if (OBJECTIVE == reviewType) {
             var mapStatusStats = reviewStats.getMapStatusStats();
-            var minObjectives = reviewDAO.getPMCycleReviewTypeProperties(cycleUuid, reviewType).getMin();
+            var minObjectives = Integer.valueOf(timelinePoint.getProperties().getMapJson().get(PM_REVIEW_MIN));
             if (mapStatusStats.containsKey(APPROVED) && mapStatusStats.get(APPROVED) >= minObjectives) {
                 return new ReviewStatusCounter(APPROVED, mapStatusStats.get(APPROVED));
             } else if (mapStatusStats.containsKey(WAITING_FOR_APPROVAL) && mapStatusStats.get(WAITING_FOR_APPROVAL) >= minObjectives) {
@@ -393,7 +449,7 @@ public class ReviewServiceImpl implements ReviewService {
         return true;
     }
 
-    private List<PMReviewStatus> getAllowedStatusesForUpdate(PMReviewType reviewType, PMReviewStatus newStatus) {
+    private List<PMTimelinePointStatus> getAllowedStatusesForUpdate(PMReviewType reviewType, PMTimelinePointStatus newStatus) {
         var allowedStatusesForUpdate = getStatusesForUpdate(reviewType);
         var prevStatusesForChangeStatus = getPrevStatusesForChangeStatus(newStatus);
         return allowedStatusesForUpdate.stream()
@@ -401,13 +457,14 @@ public class ReviewServiceImpl implements ReviewService {
                 .collect(Collectors.toList());
     }
 
-    public Review intCreateReview(Review review) {
+    public Review intCreateReview(Review review, UUID cycleUuid) {
         review.setUuid(UUID.randomUUID());
-        var reviewTypeProperties = reviewDAO.getPMCycleReviewTypeProperties(review.getPerformanceCycleUuid(), review.getType());
-        if (reviewTypeProperties.getMax() < review.getNumber()) {
+        var timelinePoint = timelinePointDAO.read(review.getTlPointUuid());
+        var maxReviews = Integer.valueOf(timelinePoint.getProperties().getMapJson().get(PM_REVIEW_MAX));
+        if (maxReviews < review.getNumber()) {
             throw createReviewException(
                     MAX_REVIEW_NUMBER_CONSTRAINT_VIOLATION,
-                    Map.of(MAX_PARAMETER_NAME, reviewTypeProperties.getMax(),
+                    Map.of(MAX_PARAMETER_NAME, maxReviews,
                             NUMBER_PARAMETER_NAME, review.getNumber())
             );
         }
@@ -430,8 +487,7 @@ public class ReviewServiceImpl implements ReviewService {
         } catch (DuplicateKeyException e) {
             throw databaseConstraintViolation(
                     REVIEW_ALREADY_EXISTS,
-                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, review.getColleagueUuid(),
-                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, review.getPerformanceCycleUuid(),
+                    Map.of(TL_POINT_UUID_PARAMETER_NAME, review.getTlPointUuid(),
                             TYPE_PARAMETER_NAME, review.getType(),
                             NUMBER_PARAMETER_NAME, review.getNumber()),
                     e);
@@ -450,8 +506,7 @@ public class ReviewServiceImpl implements ReviewService {
         } else {
             throw notFound(REVIEW_NOT_FOUND,
                     Map.of(OPERATION_PARAMETER_NAME, UPDATE_OPERATION_NAME,
-                            COLLEAGUE_UUID_PARAMETER_NAME, review.getColleagueUuid(),
-                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, review.getPerformanceCycleUuid(),
+                            TL_POINT_UUID_PARAMETER_NAME, review.getTlPointUuid(),
                             TYPE_PARAMETER_NAME, review.getType(),
                             NUMBER_PARAMETER_NAME, review.getNumber(),
                             ALLOWED_STATUSES_PARAMETER_NAME, allowedStatuses));
@@ -462,15 +517,16 @@ public class ReviewServiceImpl implements ReviewService {
                                  UUID colleagueUuid,
                                  PMReviewType type,
                                  Integer number) {
-        var reviewTypeProperties = reviewDAO.getPMCycleReviewTypeProperties(performanceCycleUuid, type);
-        var reviewCount = reviewDAO.getReviewStats(performanceCycleUuid, colleagueUuid, type)
+        var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, type);
+        var minReviews = Integer.valueOf(timelinePoint.getProperties().getMapJson().get(PM_REVIEW_MIN));
+        var reviewCount = reviewDAO.getReviewStats(timelinePoint.getUuid(), type)
                 .getStatusStats()
                 .stream()
                 .mapToInt(ReviewStatusCounter::getCount)
                 .sum();
-        if (reviewCount == reviewTypeProperties.getMin()) {
+        if (reviewCount == minReviews) {
             throw deleteReviewException(CANNOT_DELETE_REVIEW_COUNT_CONSTRAINT,
-                    Map.of(MIN_PARAMETER_NAME, reviewTypeProperties.getMin()));
+                    Map.of(MIN_PARAMETER_NAME, minReviews));
         }
 
         var allowedStatuses = getStatusesForDelete(type);
@@ -478,10 +534,10 @@ public class ReviewServiceImpl implements ReviewService {
             throw notFound(ALLOWED_STATUSES_NOT_FOUND,
                     Map.of(OPERATION_PARAMETER_NAME, DELETE_OPERATION_NAME));
         }
-        if (1 != reviewDAO.deleteReview(
-                performanceCycleUuid,
-                colleagueUuid,
+        if (1 != reviewDAO.deleteByParams(
+                timelinePoint.getUuid(),
                 type,
+                null,
                 number,
                 allowedStatuses)) {
             throw notFound(REVIEW_NOT_FOUND,
@@ -531,11 +587,11 @@ public class ReviewServiceImpl implements ReviewService {
         return getPublishedOrgObjectives();
     }
 
-    private List<PMReviewStatus> getStatusesForCreate() {
+    private List<PMTimelinePointStatus> getStatusesForCreate() {
         return List.of(DRAFT, WAITING_FOR_APPROVAL);
     }
 
-    private List<PMReviewStatus> getStatusesForUpdate(PMReviewType reviewType) {
+    private List<PMTimelinePointStatus> getStatusesForUpdate(PMReviewType reviewType) {
         if (reviewType.equals(OBJECTIVE)) {
             return List.of(DRAFT, DECLINED, APPROVED);
         } else {
@@ -543,7 +599,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    private List<PMReviewStatus> getStatusesForDelete(PMReviewType reviewType) {
+    private List<PMTimelinePointStatus> getStatusesForDelete(PMReviewType reviewType) {
         if (reviewType.equals(OBJECTIVE)) {
             return List.of(DRAFT, DECLINED, APPROVED);
         } else {
@@ -551,7 +607,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    private List<PMReviewStatus> getPrevStatusesForChangeStatus(PMReviewStatus newStatus) {
+    private List<PMTimelinePointStatus> getPrevStatusesForChangeStatus(PMTimelinePointStatus newStatus) {
         switch (newStatus) {
             case DRAFT:
                 return List.of(DRAFT);
@@ -572,18 +628,45 @@ public class ReviewServiceImpl implements ReviewService {
                                              UUID colleagueUuid,
                                              PMReviewType type) {
         if (OBJECTIVE == type) {
-
-            var reviewTypeProperties = reviewDAO.getPMCycleReviewTypeProperties(performanceCycleUuid, type);
-            var mapStatusStats = reviewDAO.getReviewStats(performanceCycleUuid, colleagueUuid, type).getMapStatusStats();
+            var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, type);
+            var minReviews = Integer.valueOf(timelinePoint.getProperties().getMapJson().get(PM_REVIEW_MIN));
+            var mapStatusStats = reviewDAO.getReviewStats(timelinePoint.getUuid(), type).getMapStatusStats();
 
             if (mapStatusStats.containsKey(WAITING_FOR_APPROVAL)
-                    && mapStatusStats.get(WAITING_FOR_APPROVAL) < reviewTypeProperties.getMin()) {
+                    && mapStatusStats.get(WAITING_FOR_APPROVAL) < minReviews) {
                 throw updateReviewException(MIN_REVIEW_NUMBER_CONSTRAINT_VIOLATION,
                         Map.of(COUNT_PARAMETER_NAME, mapStatusStats.get(WAITING_FOR_APPROVAL),
                                 STATUS_PARAMETER_NAME, WAITING_FOR_APPROVAL,
-                                MIN_PARAMETER_NAME, reviewTypeProperties.getMin()));
+                                MIN_PARAMETER_NAME, minReviews));
             }
         }
+    }
+
+    TimelinePoint getTimelinePoint(UUID performanceCycleUuid,
+                                   UUID colleagueUuid,
+                                   PMReviewType type) {
+        final var colleagueCycles = pmColleagueCycleService.getByCycleUuid(
+                performanceCycleUuid,
+                colleagueUuid,
+                null);
+        if (colleagueCycles == null || 1 != colleagueCycles.size()) {
+            throw notFound(COLLEAGUE_CYCLE_NOT_FOUND,
+                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
+                            PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, performanceCycleUuid));
+        }
+        final var colleagueCycle = colleagueCycles.get(0);
+
+        final var timelinePoints = timelinePointDAO.getByParams(
+                colleagueCycle.getUuid(),
+                type.getCode(),
+                null);
+        if (timelinePoints == null || 1 != timelinePoints.size()) {
+            throw notFound(TIMELINE_POINT_NOT_FOUND,
+                    Map.of(COLLEAGUE_CYCLE_UUID_PARAMETER_NAME, colleagueCycle.getUuid(),
+                            TYPE_PARAMETER_NAME, type.getCode()));
+        }
+
+        return timelinePoints.get(0);
     }
 
     private NotFoundException notFound(ErrorCodeAware errorCode, Map<String, ?> params) {

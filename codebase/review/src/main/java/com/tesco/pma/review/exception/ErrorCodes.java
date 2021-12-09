@@ -9,6 +9,14 @@ public enum ErrorCodes implements ErrorCodeAware {
      */
     REVIEW_NOT_FOUND,
     /**
+     * Colleague cycle not found
+     */
+    COLLEAGUE_CYCLE_NOT_FOUND,
+    /**
+     * Timeline point cycle not found
+     */
+    TIMELINE_POINT_NOT_FOUND,
+    /**
      * Review already exists
      */
     REVIEW_ALREADY_EXISTS,
