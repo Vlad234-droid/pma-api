@@ -11,6 +11,10 @@ import com.tesco.pma.colleague.profile.exception.ErrorCodes;
 import com.tesco.pma.colleague.profile.parser.XlsxParser;
 import com.tesco.pma.colleague.profile.parser.model.ParsingError;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.event.EventNames;
+import com.tesco.pma.event.EventParams;
+import com.tesco.pma.event.EventSupport;
+import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,6 +40,7 @@ public class ImportColleagueServiceImpl implements ImportColleagueService {
     private final ProfileDAO profileDAO;
     private final ImportColleaguesDAO importColleaguesDAO;
     private final NamedMessageSourceAccessor messages;
+    private final EventSender eventSender;
 
     @Override
     @Transactional
@@ -74,8 +79,18 @@ public class ImportColleagueServiceImpl implements ImportColleagueService {
 
         updateRequestStatus(request, ImportRequestStatus.PROCESSED);
         saveErrors(importReport.getSkipped());
+        sendEvents(importReport);
 
         return importReport;
+    }
+
+    private void sendEvents(ImportReport importReport) {
+        var events = importReport.getImported().stream().map(uuid -> {
+            var event = new EventSupport(EventNames.NEW_COLLEAGUE);
+            event.setEventProperties(Map.of(EventParams.COLLEAGUE_UUID.name(), uuid));
+            return event;
+        }).collect(Collectors.toList());
+        eventSender.sendEvents(events);
     }
 
     @Override

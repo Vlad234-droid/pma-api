@@ -37,6 +37,15 @@
         </if>
     </select>
 
+    <select id="getByCycleUuidWithoutTimelinePoint" resultMap="colleagueCycleResultMap">
+        SELECT cc.uuid, cc.colleague_uuid, cc.cycle_uuid, cc.status_id, cc.start_time, cc.end_time, cc.properties
+        FROM pm_colleague_cycle cc
+        WHERE cc.cycle_uuid = #{cycleUuid}
+          AND NOT EXISTS(SELECT uuid
+                         FROM pm_timeline_point tp
+                         WHERE tp.colleague_cycle_uuid = cc.uuid)
+    </select>
+
     <insert id="saveAll" flushCache="true" parameterType="java.util.Collection">
         INSERT INTO pm_colleague_cycle (uuid, colleague_uuid, cycle_uuid, status_id, start_time, end_time, properties)
         VALUES
