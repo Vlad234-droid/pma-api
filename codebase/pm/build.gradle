@@ -21,16 +21,6 @@ dependencies {
     implementation ("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter:${camundaVersion}")
     implementation ("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-webapp:${camundaVersion}")
 
-    implementation ("org.codehaus.groovy:groovy-all:${groovyVersion}") {
-        exclude group: 'junit'
-        exclude group: 'org.junit.jupiter'
-        exclude group: 'org.junit.platform'
-        exclude group: 'org.testng'
-        exclude group: 'org.codehaus.groovy', module: 'groovy-test'
-        exclude group: 'org.codehaus.groovy', module: 'groovy-test-junit5'
-        exclude group: 'org.codehaus.groovy', module: 'groovy-testng'
-    }
-
     testImplementation ("com.h2database:h2:${h2Version}")
     testImplementation ("com.zaxxer:HikariCP:${hikariVersion}")
 
