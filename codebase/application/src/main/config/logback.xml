@@ -59,11 +59,15 @@
         </encoder>
     </appender>
 
+
+    <logger name="com.tesco.pma.feedback.dao.FeedbackDAO" level="DEBUG"/>
+
     <logger name="com.tesco.pma.logging.filter.RequestLoggingFilter" additivity="false" level="debug">
         <appender-ref ref="REQUEST_LOG" />
     </logger>
 
-    <root level="INFO">
+
+    <root level="DEBUG">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="SERVICE_LOG"/>
     </root>
