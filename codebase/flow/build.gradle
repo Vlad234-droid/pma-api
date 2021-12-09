@@ -1,0 +1,59 @@
+plugins {
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
+}
+
+dependencies {
+    implementation project(':api')
+    implementation project(':event')
+    implementation project(':spring')
+    implementation project(':bpm')
+    implementation project(':camunda')
+    implementation project(':fs')
+
+    implementation project(':service')
+    implementation project(':organisation')
+    implementation project(':profile')
+    implementation project(':review')
+    implementation project(':pm')
+
+    implementation("org.springdoc:springdoc-openapi-core:${openApiCoreVersion}")
+    implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
+
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    implementation ("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter:${camundaVersion}")
+    implementation ("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-webapp:${camundaVersion}")
+
+    implementation ("org.codehaus.groovy:groovy-all:${groovyVersion}")
+
+    testImplementation ("com.h2database:h2:${h2Version}")
+    testImplementation ("com.zaxxer:HikariCP:${hikariVersion}")
+
+    // to specify parent test dependencies
+    testImplementation project(':camunda').sourceSets.test.output
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}") {
+        exclude group: 'junit' // excluding junit 4
+    }
+    testImplementation("commons-io:commons-io:${commonsIoVersion}")
+
+    testImplementation project(':service').sourceSets.test.output
+    testImplementation project(':pm').sourceSets.test.output
+
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+    testImplementation "com.github.database-rider:rider-junit5:${databaseRiderVersion}"
+    testRuntimeOnly "org.liquibase:liquibase-core:${liquibaseVersion}"
+    testRuntimeOnly project(':db-pma')
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+        mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+    }
+}

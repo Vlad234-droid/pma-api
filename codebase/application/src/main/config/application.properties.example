@@ -38,5 +38,6 @@ PMA_API_URL=http://localhost:8083/v1
 
 PMA_DB_URL=jdbc:postgresql://localhost:5432/pma_dev
 PMA_DB_SCHEMA=pma
+CAMUNDA_DB_SCHEMA=camunda
 PMA_DB_USERNAME=luxoft
 PMA_DB_PASSWORD=lux04t

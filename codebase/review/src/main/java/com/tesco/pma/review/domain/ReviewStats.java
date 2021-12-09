@@ -1,7 +1,7 @@
 package com.tesco.pma.review.domain;
 
 
-import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -22,12 +22,11 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class ReviewStats {
-    UUID cycleUuid;
-    UUID colleagueUuid;
+    UUID tlPointUuid;
     PMReviewType type;
     List<ReviewStatusCounter> statusStats;
 
-    public Map<PMReviewStatus, Integer> getMapStatusStats() {
+    public Map<PMTimelinePointStatus, Integer> getMapStatusStats() {
         if (statusStats == null) {
             return Collections.emptyMap();
         }

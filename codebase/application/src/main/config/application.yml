@@ -79,7 +79,7 @@ spring:
       # Camunda database config
       driver-class-name: org.postgresql.Driver
       jdbc-url: ${PMA_DB_URL}
-      schema: ${PMA_DB_SCHEMA}
+      schema: ${CAMUNDA_DB_SCHEMA}
       username: ${PMA_DB_USERNAME}
       password: ${PMA_DB_PASSWORD}
       type: com.zaxxer.hikari.HikariDataSource
@@ -107,6 +107,7 @@ spring:
       com/tesco/pma/colleague/security/exception/AppExceptionMessage,
       com/tesco/pma/notes/exception/AppNotesMessages,
       com/tesco/pma/fs/exception/AppExceptionMessage,
+      com/tesco/pma/flow/BPMExceptionMessages,
       com/tesco/pma/tip/exception/AppExceptionMessage,
       com/tesco/pma/event/exception/AppEventMessage
     encoding: UTF-8

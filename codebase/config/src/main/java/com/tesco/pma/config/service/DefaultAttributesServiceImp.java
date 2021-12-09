@@ -14,7 +14,7 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.review.domain.PMCycleTimelinePoint;
+import com.tesco.pma.review.domain.TimelinePoint;
 import com.tesco.pma.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -71,7 +71,7 @@ public class DefaultAttributesServiceImp implements DefaultAttributesService {
 
         var timelinePoints = reviewService.getCycleTimelineByColleague(colleague.getColleagueUUID());
 
-        for (PMCycleTimelinePoint timelinePoint : timelinePoints) {
+        for (TimelinePoint timelinePoint : timelinePoints) {
 
             if (timelinePoint.getReviewType() == PMReviewType.MYR) {
                 result.add(DefaultAttributeCriteria.MYR);

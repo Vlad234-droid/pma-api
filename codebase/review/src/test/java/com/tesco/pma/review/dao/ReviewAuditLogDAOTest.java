@@ -19,13 +19,13 @@ import java.util.UUID;
 
 import static com.tesco.pma.api.ActionType.PUBLISH;
 import static com.tesco.pma.api.ActionType.SAVE_AS_DRAFT;
-import static com.tesco.pma.cycle.api.PMReviewStatus.APPROVED;
-import static com.tesco.pma.cycle.api.PMReviewStatus.WAITING_FOR_APPROVAL;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.WAITING_FOR_APPROVAL;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ReviewAuditLogDAOTest extends AbstractDAOTest {
 
-    private static final UUID COLLEAGUE_UUID = UUID.fromString("ccb9ab0b-f50f-4442-8900-b03777ee00ec");
+    private static final UUID COLLEAGUE_UUID = UUID.fromString("10000000-0000-0000-0000-000000000000");
     private static final Instant UPDATE_TIME = Instant.parse("2021-11-18T18:35:24.00Z");
     private static final Instant UPDATE_TIME_2 = Instant.parse("2021-11-18T19:45:24.00Z");
     private static final UUID REVIEW_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
@@ -56,7 +56,7 @@ class ReviewAuditLogDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet("cleanup.xml")
-    @ExpectedDataSet("org_objective_action_hi_expected_1.xml")
+    @ExpectedDataSet("pm_org_objective_action_hi_expected_1.xml")
     void intLogOrgObjectiveAction() {
         final var result = instance.intLogOrgObjectiveAction(SAVE_AS_DRAFT, COLLEAGUE_UUID, UPDATE_TIME);
         assertThat(result).isOne();
@@ -64,7 +64,7 @@ class ReviewAuditLogDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet("cleanup.xml")
-    @ExpectedDataSet("review_change_status_hi_expected_1.xml")
+    @ExpectedDataSet("pm_review_change_status_hi_expected_1.xml")
     void intLogReviewUpdating() {
         final var review = Review.builder()
                 .uuid(REVIEW_UUID)
@@ -82,11 +82,11 @@ class ReviewAuditLogDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({"org_objective_action_hi_init.xml", "colleague_init.xml", "cleanup.xml"})
+    @DataSet({"pm_org_objective_action_hi_init.xml", "colleague_init.xml", "cleanup.xml"})
     void getAuditOrgObjectiveReport() {
         var requestQuery = new RequestQuery();
         requestQuery.setLimit(LIMIT);
-        requestQuery.setOffset(0);
+        requestQuery.setOffset(OFFSET);
         final var colleagueSimple = ColleagueSimple.builder()
                 .uuid(COLLEAGUE_UUID)
                 .firstName(FIRST_NAME)
