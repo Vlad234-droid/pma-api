@@ -57,16 +57,35 @@ public class ProfileServiceImpl implements ProfileService {
 
         var colleague = findColleagueByColleagueUuid(colleagueUuid);
         if (colleague != null) {
-            var colleagueProfile = new ColleagueProfile();
-            colleagueProfile.setColleague(colleague);
-
-            var profileAttributes = findProfileAttributes(colleagueUuid);
-            if (!profileAttributes.isEmpty()) {
-                colleagueProfile.setProfileAttributes(profileAttributes);
-            }
-            return Optional.of(colleagueProfile);
+            return Optional.of(prepareColleagueProfile(colleague));
         }
         return Optional.empty();
+    }
+
+    @Override
+    public Optional<ColleagueProfile> findProfileByColleagueIamId(String iamId) {
+        var colleagueEntity = profileDAO.getColleagueByIamId(iamId);
+        if (colleagueEntity == null) {
+            return Optional.empty();
+        }
+
+        var colleague = colleagueFactsApiLocalMapper.localToColleagueFactsApi(colleagueEntity, colleagueEntity.getUuid(), false);
+        if (colleague != null) {
+            return Optional.of(prepareColleagueProfile(colleague));
+        }
+
+        return Optional.empty();
+    }
+
+    private ColleagueProfile prepareColleagueProfile(Colleague colleague) {
+        var colleagueProfile = new ColleagueProfile();
+        colleagueProfile.setColleague(colleague);
+
+        var profileAttributes = findProfileAttributes(colleague.getColleagueUUID());
+        if (!profileAttributes.isEmpty()) {
+            colleagueProfile.setProfileAttributes(profileAttributes);
+        }
+        return colleagueProfile;
     }
 
     @Override
