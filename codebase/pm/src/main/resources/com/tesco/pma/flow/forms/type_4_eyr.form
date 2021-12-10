@@ -102,7 +102,7 @@
       }
     },
     {
-      "text": "{auth:isLineManager}Line Manager",
+      "text": "{auth:role:LineManager}Line Manager",
       "type": "text",
       "id": "Field_0s73vfz"
     },
@@ -115,7 +115,8 @@
         "required": true,
         "minLength": 10,
         "maxLength": 500
-      }
+      },
+      "description": "{auth:role:LineManager}"
     }
   ],
   "exporter": {
