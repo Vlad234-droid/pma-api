@@ -162,7 +162,7 @@
       }
     },
     {
-      "text": "{auth:role:LineManager}Line Manager",
+      "text": "{auth:role:LineManager}**Line Manager**",
       "type": "text",
       "id": "Field_0s73vfz"
     },
