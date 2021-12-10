@@ -15,7 +15,6 @@ import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.exception.InvalidPayloadException;
-import com.tesco.pma.flow.handlers.FlowParameters;
 import com.tesco.pma.logging.LogFormatter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +38,8 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     private final ProfileService profileService;
     private final UserManagementService userManagementService;
     private final EventSender eventSender;
+
+    private static final String FLOW_PARAMETERS_COLLEAGUE_UUID = "COLLEAGUE_UUID";
 
     @Override
     public void processColleagueChangeEvent(String feedId,
@@ -160,7 +161,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     private void sendEvent(UUID colleagueUuid) {
         var event = new EventSupport(ColleagueChangesFlowEvents.PM_CEP_EVENT_TYPE_JOINER);
         Map<String, Serializable> properties = new HashMap<>();
-        properties.put(FlowParameters.COLLEAGUE_UUID.name(), colleagueUuid);
+        properties.put(FLOW_PARAMETERS_COLLEAGUE_UUID, colleagueUuid);
         event.setEventProperties(properties);
         eventSender.sendEvent(event);
     }
