@@ -2,7 +2,16 @@
   "schemaVersion": 2,
   "components": [
     {
-      "label": "Look back",
+      "text": "**Look back**",
+      "type": "text",
+      "id": "Field_0wbgg9g"
+    },
+    {
+      "text": "What have you contributed so far? Capture your thoughts about both  **what** you’ve achieved and **how** you’ve gone about it. What could you have done better?",
+      "type": "text",
+      "id": "Field_1rdgj6f"
+    },
+    {
       "type": "textfield",
       "id": "Field_0geokc1",
       "key": "look_back",
@@ -13,7 +22,16 @@
       }
     },
     {
-      "label": "Look forward",
+      "text": "**Look forward**",
+      "type": "text",
+      "id": "Field_0yrih7e"
+    },
+    {
+      "text": "**What** priorities do you need to focus on to make the biggest difference in your role? **How** will you develop yourself to be at your best?",
+      "type": "text",
+      "id": "Field_0a99w1m"
+    },
+    {
       "type": "textfield",
       "id": "Field_07pc4bt",
       "key": "look_forward",
@@ -24,31 +42,9 @@
       }
     },
     {
-      "values": [
-        {
-          "label": "Outstanding",
-          "value": "Outstanding"
-        },
-        {
-          "label": "Satisfactory",
-          "value": "Satisfactory"
-        },
-        {
-          "label": "Great",
-          "value": "Great"
-        },
-        {
-          "label": "Below expected",
-          "value": "Below expected"
-        }
-      ],
-      "label": "What",
-      "type": "select",
-      "id": "Field_1lasfcg",
-      "key": "what",
-      "validate": {
-        "required": true
-      }
+      "text": "**Based on the conversation with my line manager, I am on track to achieve**",
+      "type": "text",
+      "id": "Field_1ptpxt6"
     },
     {
       "values": [
@@ -69,13 +65,50 @@
           "value": "Below expected"
         }
       ],
-      "label": "How",
+      "label": "(what)",
+      "type": "select",
+      "id": "Field_1lasfcg",
+      "key": "what",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "text": "**and**",
+      "type": "text",
+      "id": "Field_0yc8jn1"
+    },
+    {
+      "values": [
+        {
+          "label": "Outstanding",
+          "value": "Outstanding"
+        },
+        {
+          "label": "Satisfactory",
+          "value": "Satisfactory"
+        },
+        {
+          "label": "Great",
+          "value": "Great"
+        },
+        {
+          "label": "Below expected",
+          "value": "Below expected"
+        }
+      ],
+      "label": "(how)",
       "type": "select",
       "id": "Field_0s32np0",
       "key": "how",
       "validate": {
         "required": true
       }
+    },
+    {
+      "text": "**Overall:**",
+      "type": "text",
+      "id": "Field_1h6olzi"
     }
   ],
   "type": "default",
