@@ -57,18 +57,13 @@
           "value": "Below expected"
         }
       ],
+      "label": "what",
       "type": "select",
       "id": "Field_1lasfcg",
       "key": "what",
       "validate": {
         "required": true
-      },
-      "description": "(what)"
-    },
-    {
-      "text": "**and**",
-      "type": "text",
-      "id": "Field_0yc8jn1"
+      }
     },
     {
       "values": [
@@ -89,18 +84,13 @@
           "value": "Below expected"
         }
       ],
+      "label": "how",
       "type": "select",
       "id": "Field_0s32np0",
       "key": "how",
       "validate": {
         "required": true
-      },
-      "description": "(how)"
-    },
-    {
-      "text": "**Overall:**",
-      "type": "text",
-      "id": "Field_1h6olzi"
+      }
     }
   ],
   "type": "default",
