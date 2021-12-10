@@ -9,6 +9,7 @@ dependencies {
     implementation project(':service')
     implementation project(':profile')
     implementation project(':security')
+    implementation project(':flow')
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")

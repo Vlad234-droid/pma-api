@@ -3,6 +3,7 @@ package com.tesco.pma.cep.service;
 import com.tesco.pma.cep.domain.ColleagueChangeEventPayload;
 import com.tesco.pma.cep.domain.DeliveryMode;
 import com.tesco.pma.cep.domain.EventType;
+import com.tesco.pma.cep.flow.ColleagueChangesFlowEvents;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
@@ -14,11 +15,14 @@ import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.exception.InvalidPayloadException;
+import com.tesco.pma.flow.handlers.FlowParameters;
 import com.tesco.pma.logging.LogFormatter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -94,8 +98,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
         // Send event to Camunda
         if (updated > 0) {
-            var event = new EventSupport("PM_CEP_JOINER");
-            eventSender.sendEvent(event);
+            sendEvent(colleagueChangeEventPayload.getColleagueUuid());
         }
 
         return updated;
@@ -152,6 +155,14 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         request.setStatus(AccountStatus.ENABLED);
 
         userManagementService.createAccount(request);
+    }
+
+    private void sendEvent(UUID colleagueUuid) {
+        var event = new EventSupport(ColleagueChangesFlowEvents.PM_CEP_EVENT_TYPE_JOINER);
+        Map<String, Serializable> properties = new HashMap<>();
+        properties.put(FlowParameters.COLLEAGUE_UUID.name(), colleagueUuid);
+        event.setEventProperties(properties);
+        eventSender.sendEvent(event);
     }
 
 }
