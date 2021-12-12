@@ -7,7 +7,7 @@
       "id": "Field_0hu83pj"
     },
     {
-      "text": "Have you achieved your objectives?",
+      "text": "Have you achieved your objectives?\n\n**Strategic objectives**",
       "type": "text",
       "id": "Field_1s4fms4"
     },
@@ -26,10 +26,10 @@
           "value": "Over-achieved"
         }
       ],
-      "label": "**Strategic objectives**",
+      "label": "**Objective**",
       "type": "select",
       "id": "Field_05cjh0f",
-      "key": "strategic_objectives",
+      "key": "objective",
       "validate": {
         "required": true
       }
