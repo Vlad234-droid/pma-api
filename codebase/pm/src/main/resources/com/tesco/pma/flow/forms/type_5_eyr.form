@@ -7,7 +7,7 @@
       "id": "Field_0hu83pj"
     },
     {
-      "key": "day_job",
+      "key": "look_back_what_and_how",
       "label": "What have you contributed this year? Capture your thoughts about both **what** you’ve achieved and **how** you’ve gone about it. What could you have done better?",
       "type": "textfield",
       "id": "Field_17nyw6d",
@@ -41,7 +41,7 @@
           "value": "Below expected"
         }
       ],
-      "key": "what",
+      "key": "performance_what",
       "label": "what",
       "type": "select",
       "id": "Field_1ribi5m",
@@ -68,7 +68,7 @@
           "value": "Below expected"
         }
       ],
-      "key": "how",
+      "key": "performance_how",
       "label": "how",
       "type": "select",
       "id": "Field_1ribi4m",
@@ -77,9 +77,28 @@
       }
     },
     {
-      "text": "**Overall:**",
-      "type": "text",
-      "id": "Field_1ll1iuk"
+      "values": [
+        {
+          "label": "Outstanding",
+          "value": "Outstanding"
+        },
+        {
+          "label": "Satisfactory",
+          "value": "Satisfactory"
+        },
+        {
+          "label": "Great",
+          "value": "Great"
+        },
+        {
+          "label": "Below expected",
+          "value": "Below expected"
+        }
+      ],
+      "label": "Overall",
+      "type": "select",
+      "id": "Field_12cr9li",
+      "key": "overall"
     },
     {
       "text": "#Look forward",
@@ -87,7 +106,7 @@
       "id": "Field_148wy3b"
     },
     {
-      "key": "yourself",
+      "key": "look_foeward_what_and_how",
       "label": "Over the next year, **what** do you need to focus on to make the biggest difference in your job? **How** will you develop yourself to be at your best?",
       "type": "textfield",
       "id": "Field_15z0fpz",

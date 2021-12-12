@@ -7,7 +7,7 @@
       "id": "Field_0hu83pj"
     },
     {
-      "key": "day_job",
+      "key": "look_back_what",
       "label": "**What**",
       "type": "textfield",
       "id": "Field_17nyw6d",
@@ -19,7 +19,7 @@
       "description": "What have you contributed in your job, for example towards your team’s priorities or KPIs?"
     },
     {
-      "key": "yourself",
+      "key": "look_back_how",
       "label": "**How**",
       "type": "textfield",
       "id": "Field_1ug5wco",
@@ -54,7 +54,7 @@
           "value": "Below expected"
         }
       ],
-      "key": "what",
+      "key": "performance_what",
       "label": "what",
       "type": "select",
       "id": "Field_1ribi5m",
@@ -81,7 +81,7 @@
           "value": "Below expected"
         }
       ],
-      "key": "how",
+      "key": "performance_how",
       "label": "how",
       "type": "select",
       "id": "Field_1ribi4m",
@@ -90,9 +90,28 @@
       }
     },
     {
-      "text": "**Overall:**",
-      "type": "text",
-      "id": "Field_1ll1iuk"
+      "values": [
+        {
+          "label": "Outstanding",
+          "value": "Outstanding"
+        },
+        {
+          "label": "Satisfactory",
+          "value": "Satisfactory"
+        },
+        {
+          "label": "Great",
+          "value": "Great"
+        },
+        {
+          "label": "Below expected",
+          "value": "Below expected"
+        }
+      ],
+      "label": "**Overall**",
+      "type": "select",
+      "id": "Field_1at8te9",
+      "key": "overall"
     },
     {
       "text": "#Look forward",
