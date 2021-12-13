@@ -8,6 +8,6 @@ import com.tesco.pma.contact.api.Message;
 
 public interface ContactApiClient {
 
-    void sendNotification(Message message);
+    void sendNotification(Message message, String templat);
 
 }

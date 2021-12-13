@@ -12,23 +12,19 @@ public class RestTemplateBasedContactApiClient implements ContactApiClient {
 
     private final RestTemplate restTemplate;
     private final UriBuilderFactory uriBuilderFactory;
-    private final String notificationsTemplateId;
 
     public RestTemplateBasedContactApiClient(RestTemplate restTemplate,
                       @Value("${tesco.application.external-endpoints.contact-api.messaging-url}")
-                      String contactMessagingUrl,
-                      @Value("${tesco.application.external-endpoints.contact-api.notifications-template-id}")
-                      String notificationsTemplateId) {
+                      String contactMessagingUrl) {
 
         this.restTemplate = restTemplate;
         this.uriBuilderFactory = new DefaultUriBuilderFactory(contactMessagingUrl);
-        this.notificationsTemplateId = notificationsTemplateId;
     }
 
     @Override
-    public void sendNotification(Message message) {
+    public void sendNotification(Message message, String templateId) {
         final var uriBuilder = uriBuilderFactory.builder().path("/{notificationsTemplateId}");
-        restTemplate.postForLocation(uriBuilder.build(notificationsTemplateId), message);
+        restTemplate.postForLocation(uriBuilder.build(templateId), message);
     }
 
 }

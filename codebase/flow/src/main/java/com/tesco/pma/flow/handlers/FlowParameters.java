@@ -21,5 +21,9 @@ public enum FlowParameters {
     BEFORE_END_DATE,
     END_DATE,
 
-    COLLEAGUE_UUID
+    COLLEAGUE_UUID,
+
+    //notifications
+    IS_NOTIFICATION_ALLOWED,
+    NOTIFICATION_TEMPLATE_ID
 }

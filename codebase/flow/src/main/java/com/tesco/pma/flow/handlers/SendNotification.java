@@ -28,7 +28,8 @@ public class SendNotification extends CamundaAbstractFlowHandler {
     @Override
     protected void execute(ExecutionContext context) throws Exception {
         var colleagueUUID = (UUID) context.getEvent().getEventProperty(FlowParameters.COLLEAGUE_UUID.name());
-        contactApiClient.sendNotification(getMessage(colleagueUUID));
+        var templateId = (String) context.getEvent().getEventProperty(FlowParameters.NOTIFICATION_TEMPLATE_ID.name());
+        contactApiClient.sendNotification(getMessage(colleagueUUID), templateId);
     }
 
     private Message getMessage(UUID colleagueId) {

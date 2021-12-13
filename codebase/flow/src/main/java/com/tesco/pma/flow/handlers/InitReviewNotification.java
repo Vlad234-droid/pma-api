@@ -2,8 +2,12 @@ package com.tesco.pma.flow.handlers;
 
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
+import com.tesco.pma.colleague.profile.dao.ProfileAttributeDAO;
+import com.tesco.pma.colleague.profile.domain.TypedAttribute;
+import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.cycle.api.PMReviewType;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -17,6 +21,9 @@ import java.util.UUID;
 //@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class InitReviewNotification extends CamundaAbstractFlowHandler {
 
+    @Autowired
+    private ProfileService profileService;
+
     @Override
     protected void execute(ExecutionContext context) throws Exception {
         var event = context.getEvent();
@@ -26,6 +33,12 @@ public class InitReviewNotification extends CamundaAbstractFlowHandler {
         context.setVariable(FlowParameters.REVIEW_TYPE, getReviewType());
         context.setVariable(FlowParameters.REVIEW_UUID, getReviewUUID());
         context.setVariable(FlowParameters.IS_MANAGER, isManager());
+
+        context.setVariable(FlowParameters.IS_NOTIFICATION_ALLOWED,
+                isNotificationTurnedOn(getColleagueUUID(), eventName));
+
+
+
     }
 
     public boolean isManager() {
@@ -42,5 +55,11 @@ public class InitReviewNotification extends CamundaAbstractFlowHandler {
 
     public UUID getColleagueUUID() {
         return null;
+    }
+
+    public boolean isNotificationTurnedOn(UUID colleagueId, String eventName){
+        var profileAttributes = profileService.findProfileByColleagueUuid(getColleagueUUID());
+        //TODO mapping
+        return true;
     }
 }

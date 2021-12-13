@@ -18,7 +18,6 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_02qns4q" sourceRef="PM_REVIEW_SUBMITTED_ID" targetRef="initReviewNotification" />
     <bpmn:sequenceFlow id="Flow_1jioosz" sourceRef="PM_REVIEW_APPROVED_ID" targetRef="initReviewNotification" />
-    <bpmn:sequenceFlow id="Flow_1xwlxkj" sourceRef="initReviewNotification" targetRef="decision_table" />
     <bpmn:sequenceFlow id="Flow_0zhg48d" sourceRef="PM_REVIEW_DECLINED_ID" targetRef="initReviewNotification" />
     <bpmn:startEvent id="PM_REVIEW_BEFORE_START_ID" name="Before&#10;review&#10;start">
       <bpmn:outgoing>Flow_1lt4oso</bpmn:outgoing>
@@ -33,7 +32,7 @@
     <bpmn:sequenceFlow id="Flow_1puqte5" sourceRef="sendNotification" targetRef="Event_1w1bwr2" />
     <bpmn:sequenceFlow id="Flow_0m3bp7r" sourceRef="decision_table" targetRef="Gateway_0zbnz1v" />
     <bpmn:businessRuleTask id="decision_table" name="Send&#10;review&#10;notifications&#10;or not?" camunda:resultVariable="SEND" camunda:decisionRef="review_notifications" camunda:mapDecisionResult="singleEntry">
-      <bpmn:incoming>Flow_1xwlxkj</bpmn:incoming>
+      <bpmn:incoming>Flow_0eqiwvv</bpmn:incoming>
       <bpmn:outgoing>Flow_0m3bp7r</bpmn:outgoing>
     </bpmn:businessRuleTask>
     <bpmn:exclusiveGateway id="Gateway_0zbnz1v" default="Flow_1138rfv">
@@ -41,7 +40,7 @@
       <bpmn:outgoing>Flow_1qqnjvq</bpmn:outgoing>
       <bpmn:outgoing>Flow_1138rfv</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_1qqnjvq" name="send" sourceRef="Gateway_0zbnz1v" targetRef="sendNotification">
+    <bpmn:sequenceFlow id="Flow_1qqnjvq" name="send" sourceRef="Gateway_0zbnz1v" targetRef="Activity_0t1e50m">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${SEND}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:endEvent id="Event_0un0gh8">
@@ -54,12 +53,28 @@
       <bpmn:incoming>Flow_0zhg48d</bpmn:incoming>
       <bpmn:incoming>Flow_1lt4oso</bpmn:incoming>
       <bpmn:incoming>Flow_075mgyh</bpmn:incoming>
-      <bpmn:outgoing>Flow_1xwlxkj</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0cnq1pi</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="sendNotification" name="Send&#10;review&#10;notification" camunda:class="com.tesco.pma.flow.handlers.SendNotification">
-      <bpmn:incoming>Flow_1qqnjvq</bpmn:incoming>
+      <bpmn:incoming>Flow_0pz9ybj</bpmn:incoming>
       <bpmn:outgoing>Flow_1puqte5</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0cnq1pi" sourceRef="initReviewNotification" targetRef="Activity_0tqpitg" />
+    <bpmn:businessRuleTask id="Activity_0tqpitg" name="Map event to notification attribute name" camunda:decisionRef="event_to_profile_attribute">
+      <bpmn:incoming>Flow_0cnq1pi</bpmn:incoming>
+      <bpmn:outgoing>Flow_1si1zyn</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:sequenceFlow id="Flow_1si1zyn" sourceRef="Activity_0tqpitg" targetRef="Activity_0jbe248" />
+    <bpmn:sequenceFlow id="Flow_0eqiwvv" sourceRef="Activity_0jbe248" targetRef="decision_table" />
+    <bpmn:serviceTask id="Activity_0jbe248" name="Extract attribute value" camunda:class="">
+      <bpmn:incoming>Flow_1si1zyn</bpmn:incoming>
+      <bpmn:outgoing>Flow_0eqiwvv</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0pz9ybj" sourceRef="Activity_0t1e50m" targetRef="sendNotification" />
+    <bpmn:businessRuleTask id="Activity_0t1e50m" name="Map event to template id">
+      <bpmn:incoming>Flow_1qqnjvq</bpmn:incoming>
+      <bpmn:outgoing>Flow_0pz9ybj</bpmn:outgoing>
+    </bpmn:businessRuleTask>
     <bpmn:textAnnotation id="TextAnnotation_097i6gf">
       <bpmn:text>eventName: PM_REVIEW_SUBMITTED
 colleagueUuid
@@ -98,29 +113,6 @@ reviewUuid</bpmn:text>
   <bpmn:message id="Message_1wv5ub0" name="PM_REVIEW_SUBMITTED" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="review_notifications">
-      <bpmndi:BPMNEdge id="Flow_1138rfv_di" bpmnElement="Flow_1138rfv">
-        <di:waypoint x="870" y="315" />
-        <di:waypoint x="870" y="400" />
-        <di:waypoint x="932" y="400" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="881" y="356" width="37" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1qqnjvq_di" bpmnElement="Flow_1qqnjvq">
-        <di:waypoint x="895" y="290" />
-        <di:waypoint x="940" y="290" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="906" y="272" width="24" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0m3bp7r_di" bpmnElement="Flow_0m3bp7r">
-        <di:waypoint x="800" y="290" />
-        <di:waypoint x="845" y="290" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1puqte5_di" bpmnElement="Flow_1puqte5">
-        <di:waypoint x="1040" y="290" />
-        <di:waypoint x="1082" y="290" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_075mgyh_di" bpmnElement="Flow_075mgyh">
         <di:waypoint x="457" y="450" />
         <di:waypoint x="510" y="450" />
@@ -139,10 +131,6 @@ reviewUuid</bpmn:text>
         <di:waypoint x="510" y="290" />
         <di:waypoint x="550" y="290" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1xwlxkj_di" bpmnElement="Flow_1xwlxkj">
-        <di:waypoint x="650" y="290" />
-        <di:waypoint x="700" y="290" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1jioosz_di" bpmnElement="Flow_1jioosz">
         <di:waypoint x="457" y="290" />
         <di:waypoint x="550" y="290" />
@@ -152,6 +140,45 @@ reviewUuid</bpmn:text>
         <di:waypoint x="510" y="200" />
         <di:waypoint x="510" y="290" />
         <di:waypoint x="550" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cnq1pi_di" bpmnElement="Flow_0cnq1pi">
+        <di:waypoint x="650" y="290" />
+        <di:waypoint x="680" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1si1zyn_di" bpmnElement="Flow_1si1zyn">
+        <di:waypoint x="780" y="290" />
+        <di:waypoint x="830" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0eqiwvv_di" bpmnElement="Flow_0eqiwvv">
+        <di:waypoint x="930" y="290" />
+        <di:waypoint x="990" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0m3bp7r_di" bpmnElement="Flow_0m3bp7r">
+        <di:waypoint x="1090" y="290" />
+        <di:waypoint x="1135" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qqnjvq_di" bpmnElement="Flow_1qqnjvq">
+        <di:waypoint x="1185" y="290" />
+        <di:waypoint x="1230" y="290" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1378" y="270" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1138rfv_di" bpmnElement="Flow_1138rfv">
+        <di:waypoint x="1160" y="315" />
+        <di:waypoint x="1160" y="400" />
+        <di:waypoint x="1222" y="400" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1172" y="356" width="36" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1puqte5_di" bpmnElement="Flow_1puqte5">
+        <di:waypoint x="1510" y="290" />
+        <di:waypoint x="1552" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pz9ybj_di" bpmnElement="Flow_0pz9ybj">
+        <di:waypoint x="1330" y="290" />
+        <di:waypoint x="1410" y="290" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0uo16li_di" bpmnElement="PM_REVIEW_SUBMITTED_ID">
         <dc:Bounds x="422" y="182" width="36" height="36" />
@@ -171,9 +198,6 @@ reviewUuid</bpmn:text>
           <dc:Bounds x="419" y="395" width="42" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1w1bwr2_di" bpmnElement="Event_1w1bwr2">
-        <dc:Bounds x="1082" y="272" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0dl3vik_di" bpmnElement="PM_REVIEW_BEFORE_START_ID">
         <dc:Bounds x="421" y="92" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -186,20 +210,8 @@ reviewUuid</bpmn:text>
           <dc:Bounds x="425" y="475" width="33" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_15c4cjm_di" bpmnElement="decision_table">
-        <dc:Bounds x="700" y="250" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0zbnz1v_di" bpmnElement="Gateway_0zbnz1v" isMarkerVisible="true">
-        <dc:Bounds x="845" y="265" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0un0gh8_di" bpmnElement="Event_0un0gh8">
-        <dc:Bounds x="932" y="382" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1vpo4fj_di" bpmnElement="initReviewNotification">
         <dc:Bounds x="550" y="250" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0wywfoe_di" bpmnElement="sendNotification">
-        <dc:Bounds x="940" y="250" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_097i6gf_di" bpmnElement="TextAnnotation_097i6gf">
         <dc:Bounds x="150" y="165" width="240" height="54" />
@@ -215,6 +227,30 @@ reviewUuid</bpmn:text>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0tbxjln_di" bpmnElement="TextAnnotation_0tbxjln">
         <dc:Bounds x="150" y="415" width="240" height="53" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0z8x1t1_di" bpmnElement="Activity_0tqpitg">
+        <dc:Bounds x="680" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15c4cjm_di" bpmnElement="decision_table">
+        <dc:Bounds x="990" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0zbnz1v_di" bpmnElement="Gateway_0zbnz1v" isMarkerVisible="true">
+        <dc:Bounds x="1135" y="265" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0un0gh8_di" bpmnElement="Event_0un0gh8">
+        <dc:Bounds x="1222" y="382" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ulp7jx_di" bpmnElement="Activity_0jbe248">
+        <dc:Bounds x="830" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1w1bwr2_di" bpmnElement="Event_1w1bwr2">
+        <dc:Bounds x="1552" y="272" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0wywfoe_di" bpmnElement="sendNotification">
+        <dc:Bounds x="1410" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ctdso9_di" bpmnElement="Activity_0t1e50m">
+        <dc:Bounds x="1230" y="250" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_1da0a5n_di" bpmnElement="Association_1da0a5n">
         <di:waypoint x="422" y="200" />
