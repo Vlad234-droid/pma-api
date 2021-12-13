@@ -20,8 +20,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
-import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 
@@ -36,7 +34,6 @@ import java.util.stream.Stream;
 
 import static com.tesco.pma.exception.ErrorCodes.COLLEAGUE_API_UNEXPECTED_RESULT;
 import static com.tesco.pma.exception.ErrorCodes.EXTERNAL_API_CONNECTION_ERROR;
-import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -169,50 +166,6 @@ class UserServiceImplTest {
         final var res = instance.findUserByAuthentication(auth);
 
         assertThat(res).hasValueSatisfying(colleagueProperlyMapped(colleague));
-    }
-
-    @Test
-    void findUserByAuthenticationNotFoundInColleagueApiThenFallbackToOidcTokenThatPresent() {
-        final var colleagueUuid = randomUUID();
-        final var expectedUser = new User();
-        var profile = new Profile();
-        profile.setFirstName(RANDOM.nextObject(String.class));
-        profile.setMiddleName(RANDOM.nextObject(String.class));
-        profile.setGender(RANDOM.nextObject(String.class));
-        profile.setLastName(RANDOM.nextObject(String.class));
-        var contact = new Contact();
-        contact.setEmail(RANDOM.nextObject(String.class));
-        var colleague = new Colleague();
-        colleague.setColleagueUUID(colleagueUuid);
-        colleague.setProfile(profile);
-        colleague.setContact(contact);
-        expectedUser.setColleague(colleague);
-
-        final var oAuth2UserAuthority = new OAuth2UserAuthority(Map.of(
-                StandardClaimNames.GIVEN_NAME, expectedUser.getColleague().getProfile().getFirstName(),
-                StandardClaimNames.FAMILY_NAME, expectedUser.getColleague().getProfile().getLastName(),
-                StandardClaimNames.MIDDLE_NAME, expectedUser.getColleague().getProfile().getMiddleName(),
-                StandardClaimNames.GENDER, expectedUser.getColleague().getProfile().getGender(),
-                StandardClaimNames.EMAIL, expectedUser.getColleague().getContact().getEmail()
-        ));
-        final var auth = new TestingAuthenticationToken(colleagueUuid.toString(), CREDENTIALS, List.of(oAuth2UserAuthority));
-        findColleagueByColleagueUuidNotFoundCall(colleagueUuid);
-
-        final var res = instance.findUserByAuthentication(auth);
-
-        assertThat(res).get().usingRecursiveComparison().isEqualTo(expectedUser);
-    }
-
-    @Test
-    void findUserByAuthenticationNotFoundInColleagueApiAndNoOidcTokenThenReturnsEmpty() {
-        final var colleagueUuid = randomUUID();
-
-        final var auth = new TestingAuthenticationToken(colleagueUuid.toString(), CREDENTIALS);
-        findColleagueByColleagueUuidNotFoundCall(colleagueUuid);
-
-        final var res = instance.findUserByAuthentication(auth);
-
-        assertThat(res).isEmpty();
     }
 
     @ParameterizedTest
