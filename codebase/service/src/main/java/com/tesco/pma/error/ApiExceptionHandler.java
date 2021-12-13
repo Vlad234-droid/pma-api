@@ -1,6 +1,7 @@
 package com.tesco.pma.error;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tesco.pma.api.CodeAware;
 import com.tesco.pma.api.TargetAware;
@@ -33,6 +34,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -154,7 +156,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         if (ex.getRootCause() != null) {
             error.addDetails(ApiValidationError.builder()
                     .code(ex.getRootCause().getClass().getName())
-                    .message(ex.getRootCause().getMessage()).build());
+                    .message(ex.getRootCause().getMessage())
+                    .field(getFieldName(ex))
+                    .build());
         }
 
         return createResponse(RestResponse.fail(error), null, HttpStatus.BAD_REQUEST);
@@ -421,5 +425,19 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .message(ex.getMessage())
                 .target(ex.getTarget())
                 .build());
+    }
+
+    private String getFieldName(HttpMessageNotReadableException e) {
+        var fieldName = "";
+        var cause = e.getCause();
+
+        if (cause instanceof JsonMappingException) {
+            var jme = (JsonMappingException) cause;
+            if (!CollectionUtils.isEmpty(jme.getPath())) {
+                fieldName = jme.getPath().get(jme.getPath().size() - 1).getFieldName();
+            }
+        }
+
+        return fieldName;
     }
 }
