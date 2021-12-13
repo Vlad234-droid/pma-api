@@ -23,6 +23,9 @@ public enum FlowParameters {
 
     COLLEAGUE_UUID,
 
+    PROFILE_ATTRIBUTE_NAME,
+    PROFILE_ATTRIBUTE_VALUE,
+
     //notifications
     IS_NOTIFICATION_ALLOWED,
     NOTIFICATION_TEMPLATE_ID
