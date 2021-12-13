@@ -151,9 +151,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .message(messageSourceAccessor.getMessage(MESSAGE_NOT_READABLE_EXCEPTION))
                 .build();
 
-        error.addDetails(ApiValidationError.builder()
-                .code(ex.getRootCause().getClass().getName())
-                .message(ex.getRootCause().getMessage()).build());
+        if (ex.getRootCause() != null) {
+            error.addDetails(ApiValidationError.builder()
+                    .code(ex.getRootCause().getClass().getName())
+                    .message(ex.getRootCause().getMessage()).build());
+        }
 
         return createResponse(RestResponse.fail(error), null, HttpStatus.BAD_REQUEST);
     }
