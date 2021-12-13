@@ -82,6 +82,6 @@ public class ObjectiveSharingServiceImpl implements ObjectiveSharingService {
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, managerUuid, PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, cycle.getUuid())));
             return Collections.emptyList();
         }
-        return reviewService.getReviews(managerUuid, cycle.getUuid(), PMReviewType.OBJECTIVE, PMTimelinePointStatus.APPROVED);
+        return reviewService.getReviews(cycle.getUuid(), managerUuid, PMReviewType.OBJECTIVE, PMTimelinePointStatus.APPROVED);
     }
 }
