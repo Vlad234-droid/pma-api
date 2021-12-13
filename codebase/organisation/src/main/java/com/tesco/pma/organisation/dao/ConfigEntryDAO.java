@@ -122,6 +122,15 @@ public interface ConfigEntryDAO {
     List<ColleagueEntity> findColleaguesByCompositeKey(@Param("key") String key);
 
     /**
+     * Check if colleague exist by composite key
+     *
+     * @param colleagueUuid - colleague identifier
+     * @param key           - composite key
+     * @return true/false
+     */
+    boolean isColleagueExistsForCompositeKey(@Param("colleagueUuid") UUID colleagueUuid, @Param("key") String key);
+
+    /**
      * Gets all structure for config entry
      *
      * @param configEntryUuid - config entry identifier
