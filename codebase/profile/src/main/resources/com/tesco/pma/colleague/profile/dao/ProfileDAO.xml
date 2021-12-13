@@ -215,7 +215,7 @@
         WHERE
         <if test="!requestQuery.filters.isEmpty()">
             <foreach collection="requestQuery.filters" item="filter" index="index" open="(" separator=" OR " close=")">
-                <if test="filter.property == 'firstName' or filter.property == 'middleName' or filter.property == 'lastName'">
+                <if test="filter.property == 'first-name' or filter.property == 'middle-name' or filter.property == 'last-name'">
                     <choose>
                         <when test="filter.operand.name == 'LIKE'">
                             UPPER(<include refid="getFilterField"/>) like UPPER('%${filter.value}%')
@@ -227,10 +227,10 @@
                 </if>
             </foreach>
 
-            <if test="requestQuery.getFiltersProperties().contains('managerUUID')">
+            <if test="requestQuery.getFiltersProperties().contains('manager-uuid')">
                 AND
                 <foreach collection="requestQuery.filters" item="filter" index="index" open="(" separator=" AND " close=")">
-                    <if test="filter.operand.name == 'EQUALS' AND filter.property == 'managerUUID'">
+                    <if test="filter.operand.name == 'EQUALS' AND filter.property == 'manager-uuid'">
                         <include refid="getFilterField"/> = #{filter.value}
                     </if>
                 </foreach>
@@ -246,16 +246,16 @@
 
     <sql id="getFilterField">
         <choose>
-            <when test="filter.property == 'firstName'">
+            <when test="filter.property == 'first-name'">
                 c.first_name
             </when>
-            <when test="filter.property == 'middleName'">
+            <when test="filter.property == 'middle-name'">
                 c.middle_name
             </when>
-            <when test="filter.property == 'lastName'">
+            <when test="filter.property == 'last-name'">
                 c.last_name
             </when>
-            <when test="filter.property == 'managerUUID'">
+            <when test="filter.property == 'manager-uuid'">
                 c.manager_uuid
             </when>
         </choose>
