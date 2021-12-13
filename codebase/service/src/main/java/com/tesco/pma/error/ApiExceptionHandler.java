@@ -143,7 +143,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             HttpMessageNotReadableException ex,
             @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
 
-        String message = "Request parse error: " + ex.getMessage();
+        var message = "Request parse error: " + ex.getMessage();
         logger.error(LogFormatter.formatMessage(messageSourceAccessor, MESSAGE_NOT_READABLE_EXCEPTION, message), ex);
 
         var error = ApiError.builder()
