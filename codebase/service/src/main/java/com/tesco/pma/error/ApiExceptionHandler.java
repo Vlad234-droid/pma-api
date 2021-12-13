@@ -145,9 +145,17 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         String message = "Request parse error: " + ex.getMessage();
         logger.error(LogFormatter.formatMessage(messageSourceAccessor, MESSAGE_NOT_READABLE_EXCEPTION, message), ex);
-        return createResponse(new InvalidPayloadException(MESSAGE_NOT_READABLE_EXCEPTION.name(),
-                        messageSourceAccessor.getMessage(MESSAGE_NOT_READABLE_EXCEPTION), BODY),
-                null, HttpStatus.BAD_REQUEST);
+
+        var error = ApiError.builder()
+                .code(MESSAGE_NOT_READABLE_EXCEPTION.getCode())
+                .message(messageSourceAccessor.getMessage(MESSAGE_NOT_READABLE_EXCEPTION))
+                .build();
+
+        error.addDetails(ApiValidationError.builder()
+                .code(ex.getRootCause().getClass().getName())
+                .message(ex.getRootCause().getMessage()).build());
+
+        return createResponse(RestResponse.fail(error), null, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = Exception.class)
