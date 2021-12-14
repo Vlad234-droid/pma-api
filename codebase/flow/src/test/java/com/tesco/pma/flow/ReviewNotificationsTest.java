@@ -38,12 +38,27 @@ public class ReviewNotificationsTest {
     @Test
     public void sendTest() throws IOException {
 
-        var attr = new TypedAttribute();
-        attr.setName("Attr name");
-        attr.setValue("true");
+        String attrName = "Attr name";
+        ColleagueProfile colleagueProfile = new ColleagueProfile();
+        colleagueProfile.setProfileAttributes(List.of(createAttr(attrName, "true")));
+
+        VariableMap variables = new VariableMapImpl();
+        variables.putValue(FlowParameters.EVENT_NAME.name(), "PM_REVIEW_SUBMITTED");
+        variables.putValue(FlowParameters.REVIEW_TYPE.name(), "MYR");
+        variables.putValue(FlowParameters.IS_MANAGER.name(), true);
+        variables.putValue(FlowParameters.PROFILE_ATTRIBUTE_NAME.name(), attrName);
+        variables.putValue(FlowParameters.COLLEAGUE_PROFILE.name(), colleagueProfile);
+
+        var result = dmnEngine.evaluateDecisionTable(decision, variables);
+
+        assertTrue((Boolean) result.getFirstResult().getEntry("SEND"));
+    }
+
+    @Test
+    public void sendTest_whenAttrNotExist() throws IOException {
 
         ColleagueProfile colleagueProfile = new ColleagueProfile();
-        colleagueProfile.setProfileAttributes(List.of(attr));
+        colleagueProfile.setProfileAttributes(List.of(createAttr("Some attr name", "false")));
 
 
         VariableMap variables = new VariableMapImpl();
@@ -56,6 +71,13 @@ public class ReviewNotificationsTest {
         var result = dmnEngine.evaluateDecisionTable(decision, variables);
 
         assertTrue((Boolean) result.getFirstResult().getEntry("SEND"));
+    }
+
+    private TypedAttribute createAttr(String name, String value){
+        var attr = new TypedAttribute();
+        attr.setName(name);
+        attr.setValue(value);
+        return attr;
     }
 
 }

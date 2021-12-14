@@ -28,8 +28,15 @@
       </input>
       <input id="InputClause_0u1chj8" label="Notification attribute value">
         <inputExpression id="LiteralExpression_0jiwba7" typeRef="boolean">
-          <text>some attr in COLLEAGUE_PROFILE.getProfileAttributes() satisfies attr.getName() = PROFILE_ATTRIBUTE_NAME 
-and attr.getValue() = "true"</text>
+          <text>{
+    attr_exist: some attr in COLLEAGUE_PROFILE.getProfileAttributes() satisfies attr.getName() = PROFILE_ATTRIBUTE_NAME,
+
+    attr_value: some attr in COLLEAGUE_PROFILE.getProfileAttributes() satisfies attr.getName() = PROFILE_ATTRIBUTE_NAME 
+and attr.getValue() = "true",
+
+   result: if attr_exist then attr_value else true
+
+}.result</text>
         </inputExpression>
       </input>
       <output id="Output_1" label="Send" name="SEND" typeRef="boolean" biodi:width="150" />
