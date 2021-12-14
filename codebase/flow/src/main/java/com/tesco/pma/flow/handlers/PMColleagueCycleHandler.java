@@ -5,6 +5,7 @@ import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycle;
+import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.event.EventParams;
@@ -43,6 +44,7 @@ public class PMColleagueCycleHandler extends CamundaAbstractFlowHandler {
                 var colleagueUuid = UUID.fromString(eventProperties.get(EventParams.COLLEAGUE_UUID.name()).toString());
                 var cycle = pmCycleService.getAll(true)
                         .stream()
+                        .filter(pmCycle -> PMCycleStatus.ACTIVE == pmCycle.getStatus())
                         .filter(c -> configEntryService.isColleagueExistsForCompositeKey(colleagueUuid, c.getEntryConfigKey()))
                         .findFirst()
                         .orElseThrow(() -> new NotFoundException(PM_CYCLE_NOT_FOUND_FOR_COLLEAGUE.getCode(),
