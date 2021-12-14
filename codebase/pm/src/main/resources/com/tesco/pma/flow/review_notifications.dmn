@@ -26,6 +26,12 @@
           <text>IS_MANAGER</text>
         </inputExpression>
       </input>
+      <input id="InputClause_0u1chj8" label="Notification attribute value">
+        <inputExpression id="LiteralExpression_0jiwba7" typeRef="boolean">
+          <text>some attr in COLLEAGUE_PROFILE.getProfileAttributes() satisfies attr.getName() = PROFILE_ATTRIBUTE_NAME 
+and attr.getValue() = "true"</text>
+        </inputExpression>
+      </input>
       <output id="Output_1" label="Send" name="SEND" typeRef="boolean" biodi:width="150" />
       <rule id="DecisionRule_0elotx5">
         <inputEntry id="UnaryTests_0puabg3">
@@ -36,6 +42,9 @@
         </inputEntry>
         <inputEntry id="UnaryTests_1pa49aq">
           <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1up8hg0">
+          <text>true</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0exew74">
           <text>true</text>
@@ -49,6 +58,9 @@
           <text>"MYR"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1pao4ot">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0z5x8ed">
           <text>true</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0t1y2vo">
@@ -65,6 +77,9 @@
         <inputEntry id="UnaryTests_159zctw">
           <text>true</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1ogftnk">
+          <text>true</text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_0jj9zf9">
           <text>true</text>
         </outputEntry>
@@ -78,6 +93,9 @@
         </inputEntry>
         <inputEntry id="UnaryTests_1lhshp7">
           <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0mqb0r7">
+          <text>true</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_01p0tho">
           <text>true</text>
@@ -93,6 +111,9 @@
         <inputEntry id="UnaryTests_1a8t90x">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1xbq61l">
+          <text>true</text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_1ogco7w">
           <text>true</text>
         </outputEntry>
@@ -107,6 +128,9 @@
         <inputEntry id="UnaryTests_1qncg8f">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1tsions">
+          <text>true</text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_0eziy99">
           <text>true</text>
         </outputEntry>
@@ -119,6 +143,9 @@
           <text>"EYR"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_153d3hy">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0o7s6b4">
           <text>true</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1sh4rp8">
@@ -135,6 +162,9 @@
         <inputEntry id="UnaryTests_1qhctv6">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1vj5y2z">
+          <text>true</text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_1mx1hxi">
           <text>true</text>
         </outputEntry>
@@ -148,6 +178,9 @@
         </inputEntry>
         <inputEntry id="UnaryTests_0m4shc9">
           <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_03yoj9i">
+          <text>true</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1bqyzn8">
           <text>true</text>
@@ -163,6 +196,9 @@
         <inputEntry id="UnaryTests_1onb8dp">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1s9gh7p">
+          <text>true</text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_0agwr1g">
           <text>true</text>
         </outputEntry>
@@ -175,6 +211,9 @@
           <text>"OBJECTIVE"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_17z1um1">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_16c22es">
           <text>true</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_110qg59">
@@ -191,6 +230,9 @@
         <inputEntry id="UnaryTests_1lj9is7">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_040bt43">
+          <text>true</text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_0srrk3g">
           <text>true</text>
         </outputEntry>
@@ -205,6 +247,9 @@
         <inputEntry id="UnaryTests_0brreqr">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1eiasgr">
+          <text>true</text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_164d8zp">
           <text>true</text>
         </outputEntry>
@@ -218,6 +263,9 @@
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_0gwfijc">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_11188id">
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1vayiaq">

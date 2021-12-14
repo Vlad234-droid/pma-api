@@ -2,6 +2,7 @@ package com.tesco.pma.flow.handlers;
 
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
+import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.contact.api.DestinationType;
 import com.tesco.pma.contact.api.Message;
 import com.tesco.pma.contact.api.Recipient;
@@ -27,9 +28,9 @@ public class SendNotification extends CamundaAbstractFlowHandler {
 
     @Override
     protected void execute(ExecutionContext context) throws Exception {
-        var colleagueUUID = (UUID) context.getEvent().getEventProperty(FlowParameters.COLLEAGUE_UUID.name());
-        var templateId = (String) context.getEvent().getEventProperty(FlowParameters.NOTIFICATION_TEMPLATE_ID.name());
-        contactApiClient.sendNotification(getMessage(colleagueUUID), templateId);
+        var colleagueProfile = (ColleagueProfile) context.getEvent().getEventProperty(FlowParameters.COLLEAGUE_PROFILE.name());
+        var templateId = (String) context.getEvent().getEventProperty(FlowParameters.CONTACT_TEMPLATE_ID.name());
+        contactApiClient.sendNotification(getMessage(colleagueProfile.getColleague().getColleagueUUID()), templateId);
     }
 
     private Message getMessage(UUID colleagueId) {
