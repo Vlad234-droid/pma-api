@@ -214,6 +214,44 @@ public class PMCycleEndpoint {
         return success(service.getMetadata(uuid));
     }
 
+    /**
+     * PUT call to deploy Performance Cycle.
+     *
+     * @param cycle a PMCycle
+     * @return id of deployed process definition
+     */
+    @Operation(summary = "Deploy performance cycle",
+            description = "Performance cycle deployed",
+            tags = {"performance-cycle"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle deployed")
+    @PutMapping(value = "/pm-cycles/{uuid}/deploy", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public RestResponse<String> deploy(@PathVariable("uuid") UUID uuid,
+                                       @RequestBody PMCycle cycle) {
+
+        return success(service.deploy(cycle));
+    }
+
+    /**
+     * PUT call to start Performance Cycle.
+     *
+     * @param cycleUUID a PMCycle uuid
+     * @param processId process id
+     * @return sucess
+     */
+    @Operation(summary = "Start performance cycle",
+            description = "Performance cycle started",
+            tags = {"performance-cycle"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle started")
+    @PutMapping(value = "/pm-cycles/{uuid}/start", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public RestResponse<?> start(@PathVariable("uuid") UUID cycleUUID,
+                                 @RequestBody String processId) {
+
+        service.start(cycleUUID, processId);
+        return RestResponse.success();
+    }
+
     private String jsonMetadataToRestResponse(String jsonMetadata) {
         return "{\"success\": true, \"data\": " + jsonMetadata + "}";
     }

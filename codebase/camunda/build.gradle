@@ -3,6 +3,7 @@ dependencies {
     implementation project(':event')
     implementation project(':spring')
     implementation project(':bpm')
+    implementation project(':service')
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"

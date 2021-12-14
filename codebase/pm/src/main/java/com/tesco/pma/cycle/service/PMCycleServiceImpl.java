@@ -2,6 +2,7 @@ package com.tesco.pma.cycle.service;
 
 import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.bpm.api.DeploymentInfo;
+import com.tesco.pma.bpm.api.ProcessExecutionException;
 import com.tesco.pma.bpm.api.ProcessManagerService;
 import com.tesco.pma.colleague.api.ColleagueSimple;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
@@ -17,6 +18,7 @@ import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.fs.service.FileService;
+import com.tesco.pma.logging.TraceUtils;
 import com.tesco.pma.process.api.PMProcessStatus;
 import com.tesco.pma.process.api.PMRuntimeProcess;
 import com.tesco.pma.process.service.PMProcessService;
@@ -47,6 +49,7 @@ import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_BY_UUID;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_COLLEAGUE;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_FOR_STATUS_UPDATE;
+import static com.tesco.pma.logging.TraceId.TRACE_ID_HEADER;
 import static java.util.Set.of;
 
 @Slf4j
@@ -105,7 +108,9 @@ public class PMCycleServiceImpl implements PMCycleService {
             String processId = intDeployProcess(cycle.getTemplateUUID(), processName);
             log.debug("Process definition id: {}", processId);
 
-            Map<String, ?> props = cycle.getProperties() != null ? cycle.getProperties().getMapJson() : Collections.emptyMap();
+            Map<String, String> props = cycle.getProperties() != null ? cycle.getProperties().getMapJson() : Collections.emptyMap();
+
+            props.put(TRACE_ID_HEADER, TraceUtils.getTraceId().getValue());
 
             var processUUID = processManagerService.runProcessById(processId, props);
             log.debug("Started process: {}", processUUID);
@@ -121,14 +126,7 @@ public class PMCycleServiceImpl implements PMCycleService {
 
             intUpdateStatus(cycleUuid, ACTIVE);
         } catch (Exception e) {
-            log.error("Performance cycle publish error, cause: ", e);
-            try {
-                intUpdateStatus(cycleUuid, FAILED);
-            } catch (NotFoundException ex) {
-                log.error("Performance cycle change status error, cause: ", ex);
-            }
-            throw pmCycleException(ErrorCodes.PROCESS_EXECUTION_EXCEPTION, Map.of(CYCLE_UUID_PARAMETER_NAME, cycleUuid,//NOPMD
-                    PROCESS_NAME_PARAMETER_NAME, processName));
+            cycleFailed(processName, cycleUuid, e);
         }
 
         return cycle;
@@ -205,8 +203,69 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
     @Override
+    public String deploy(PMCycle cycle) {
+        String processName = cycle.getMetadata().getCycle().getCode();
+        UUID uuid = cycle.getUuid();
+
+        if (null == processName || processName.isEmpty()) {
+            throw pmCycleException(ErrorCodes.PROCESS_NAME_IS_EMPTY, Map.of(CYCLE_UUID_PARAMETER_NAME, uuid));
+        }
+
+        try {
+            var processId = intDeployProcess(cycle.getTemplateUUID(), processName);
+            log.debug("Process definition id: {}", processId);
+            return processId;
+        } catch (Exception e) {
+            return cycleFailed(processName, uuid, e);
+        }
+    }
+
+
+    @Override
+    public void start(UUID cycleUUID, String processId) {
+        var cycle = cycleDAO.read(cycleUUID, DictionaryFilter.includeFilter(DRAFT));
+        if (null == cycle) {
+            throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID,
+                    Map.of(CYCLE_UUID_PARAMETER_NAME, cycleUUID));
+        }
+
+        try {
+            Map<String, String> props = cycle.getProperties() != null ? cycle.getProperties().getMapJson() : Collections.emptyMap();
+
+            props.put(TRACE_ID_HEADER, TraceUtils.getTraceId().getValue());
+            var processUUID = processManagerService.runProcessById(processId, props);
+            log.debug("Started process: {}", processUUID);
+
+            var pmRuntimeProcess = PMRuntimeProcess.builder()
+                    .bpmProcessId(processId)
+                    .cycleUuid(cycleUUID)
+                    .businessKey(cycle.getEntryConfigKey())
+                    .build();
+
+            pmRuntimeProcess = pmProcessService.register(pmRuntimeProcess, PMProcessStatus.STARTED);
+            log.debug("Started PM process: {}", pmRuntimeProcess);
+
+            intUpdateStatus(cycleUUID, ACTIVE);
+        } catch (ProcessExecutionException e) {
+            cycleFailed(processId, cycleUUID, e);
+        }
+
+    }
+
+    @Override
     public void updateJsonMetadata(UUID uuid, String metadata) {
         cycleDAO.updateMetadata(uuid, metadata);
+    }
+
+    private String cycleFailed(String processName, UUID uuid, Exception ex) {
+        log.error("Performance cycle publish error, cause: ", ex);
+        try {
+            intUpdateStatus(uuid, FAILED);
+        } catch (NotFoundException exc) {
+            log.error("Performance cycle change status error, cause: ", exc);
+        }
+        throw pmCycleException(ErrorCodes.PROCESS_EXECUTION_EXCEPTION, Map.of(CYCLE_UUID_PARAMETER_NAME, uuid,//NOPMD
+                PROCESS_NAME_PARAMETER_NAME, processName));
     }
 
     //TODO refactor to common solution (include @com.tesco.pma.review.service.ReviewServiceImpl)
