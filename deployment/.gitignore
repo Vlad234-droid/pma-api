@@ -1,0 +1,7 @@
+# docker build
+temp
+
+# ignore all decrypted configuration files
+**/*.dec.yaml
+**/*.dec.json
+**/*.dec.properties
