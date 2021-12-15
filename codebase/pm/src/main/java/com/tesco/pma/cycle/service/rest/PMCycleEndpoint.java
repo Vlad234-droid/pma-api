@@ -1,6 +1,7 @@
 package com.tesco.pma.cycle.service.rest;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.model.PMCycleMetadata;
@@ -47,9 +48,9 @@ public class PMCycleEndpoint {
     private static final String CYCLE_UUID_PARAMETER_NAME = "cycleUuid";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     public static final String INCLUDE_METADATA = "includeMetadata";
-    public static final String DEFAULT_USER_UUID = "10000000-0000-0000-0000-000000000002";
 
     private final PMCycleService service;
+    private final AuditorAware<UUID> auditorAware;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
 
@@ -66,7 +67,7 @@ public class PMCycleEndpoint {
     @PostMapping(value = "/pm-cycles", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse<PMCycle> create(@RequestBody PMCycle cycle) {
-        return success(service.create(cycle, resolveUser()));
+        return success(service.create(cycle, resolveUserUuid()));
     }
 
     /**
@@ -83,7 +84,7 @@ public class PMCycleEndpoint {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public RestResponse<PMCycle> publish(@RequestBody PMCycle cycle) {
 
-        return success(service.publish(cycle, resolveUser()));
+        return success(service.publish(cycle, resolveUserUuid()));
     }
 
     /**
@@ -256,8 +257,7 @@ public class PMCycleEndpoint {
         return "{\"success\": true, \"data\": " + jsonMetadata + "}";
     }
 
-    private String resolveUser() {
-        //TODO change after security integration
-        return DEFAULT_USER_UUID;
+    private UUID resolveUserUuid() {
+        return auditorAware.getCurrentAuditor();
     }
 }
