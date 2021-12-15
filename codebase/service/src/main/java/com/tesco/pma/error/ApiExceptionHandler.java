@@ -427,9 +427,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .build());
     }
 
-    private String getFieldName(HttpMessageNotReadableException e) {
+    private String getFieldName(HttpMessageNotReadableException ex) {
         var fieldName = "";
-        var cause = e.getCause();
+        var cause = ex.getCause();
 
         if (cause instanceof JsonMappingException) {
             var jme = (JsonMappingException) cause;

@@ -22,15 +22,21 @@ podAnnotations: {}
 podSecurityContext: {}
 # fsGroup: 2000
 securityContext: {}
+
 # capabilities:
 #   drop:
 #   - ALL
 # readOnlyRootFilesystem: true
 # runAsNonRoot: true
 # runAsUser: 1000
+
 service:
     type: ClusterIP
     port: 8083
+
+serviceIdentity:
+    port: 8084
+
 ingress:
     enabled: false
     className: ""
@@ -46,7 +52,9 @@ ingress:
     #  - secretName: chart-example-tls
     #    hosts:
     #      - chart-example.local
+
 resources: {}
+
 # We usually recommend not to specify default resources and to leave this as a conscious
 # choice for the user. This also increases chances charts run on environments with little
 # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -57,15 +65,18 @@ resources: {}
 # requests:
 #   cpu: 100m
 #   memory: 128Mi
+
 autoscaling:
     enabled: false
     minReplicas: 1
     maxReplicas: 100
     targetCPUUtilizationPercentage: 80
     # targetMemoryUtilizationPercentage: 80
+
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
 TESCO_API_BASE_URL: https://api-ppe.tesco.com
 ONE_LOGIN_BASE_URL: https://loginppe.ourtesco.com
 PMA_API_URL: http://pma-api-service:8083/v1
