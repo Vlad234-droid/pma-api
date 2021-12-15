@@ -267,6 +267,9 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
         var e22 = UUID.fromString("1e0f2f8a-5d8f-428b-a7c1-9bc0fe214a85");
         var e13 = UUID.fromString("3ca4807c-b08b-4d53-b3a4-0c3d26868720");
         var e23 = UUID.fromString("2c8ba89a-2756-42cc-9504-e136cdb94782");
+        var tmWl1 = UUID.fromString("9927a7bc-5362-45fd-8730-2ff4321e74b6");
+        var tmWl2 = UUID.fromString("70c047ab-3b5a-4113-863e-20f29c824455");
+        var tmWl3 = UUID.fromString("c86d10ab-fd26-4f9b-b4ff-87e4f5afea53");
         return Stream.of(
                 Arguments.of(
                         "group",
@@ -360,7 +363,16 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
                         Set.of(e13)),
                 Arguments.of(
                         "uk_m/salaried/wl2",
-                        Set.of(e23))
+                        Set.of(e23)),
+                Arguments.of(
+                        "tm/ho/salaried/wl1",
+                        Set.of(tmWl1)),
+                Arguments.of(
+                        "tm/ho/salaried/wl2",
+                        Set.of(tmWl2)),
+                Arguments.of(
+                        "tm/ho/salaried/wl3",
+                        Set.of(tmWl3))
         );
     }
 }

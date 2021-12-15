@@ -396,6 +396,36 @@
                     AND c.salary_frequency = 'ANNUAL'
                     AND wl.code = 'WL5'
                 </when>
+                <when test="key == 'tm'">
+                    c.primary_entity = 'Tesco Mobile'
+                </when>
+                <when test="key == 'tm/ho'">
+                    c.primary_entity = 'Tesco Mobile'
+                    AND d.business_type IN ('Office', 'office')
+                </when>
+                <when test="key == 'tm/ho/salaried'">
+                    c.primary_entity = 'Tesco Mobile'
+                    AND d.business_type IN ('Office', 'office')
+                    AND c.salary_frequency = 'ANNUAL'
+                </when>
+                <when test="key == 'tm/ho/salaried/wl1'">
+                    c.primary_entity = 'Tesco Mobile'
+                    AND d.business_type IN ('Office', 'office')
+                    AND c.salary_frequency = 'ANNUAL'
+                    AND wl.code = 'WL1'
+                </when>
+                <when test="key == 'tm/ho/salaried/wl2'">
+                    c.primary_entity = 'Tesco Mobile'
+                    AND d.business_type IN ('Office', 'office')
+                    AND c.salary_frequency = 'ANNUAL'
+                    AND wl.code = 'WL2'
+                </when>
+                <when test="key == 'tm/ho/salaried/wl3'">
+                    c.primary_entity = 'Tesco Mobile'
+                    AND d.business_type IN ('Office', 'office')
+                    AND c.salary_frequency = 'ANNUAL'
+                    AND wl.code = 'WL3'
+                </when>
 
                 <otherwise>1!=1</otherwise>
             </choose>
