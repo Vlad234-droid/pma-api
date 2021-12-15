@@ -16,7 +16,7 @@ public interface EventSender {
      * @param isThrow should exception be thrown
      * @throws com.tesco.pma.event.exception.EventSendingException
      */
-    default void sendEvents(Collection<Event> events, String target, boolean isThrow) {
+    default void sendEvents(Collection<? extends Event> events, String target, boolean isThrow) {
         events.forEach(e -> sendEvent(e, target, isThrow));
     }
 
@@ -25,7 +25,7 @@ public interface EventSender {
      * @param events events
      * @throws com.tesco.pma.event.exception.EventSendingException
      */
-    default void sendEvents(Collection<Event> events) {
+    default void sendEvents(Collection<? extends Event> events) {
         sendEvents(events, null, DEFAULT_THROW);
     }
 

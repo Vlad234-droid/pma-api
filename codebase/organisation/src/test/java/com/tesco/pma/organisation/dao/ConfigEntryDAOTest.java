@@ -238,6 +238,18 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
 
     }
 
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues-config.xml"})
+    void isColleagueExistsForCompositeKey() {
+        var colleagueUuid = UUID.fromString("1efbf78b-d413-4dbb-990d-b05affb4d11e");
+        var key = "group/ho_c/salaried/wl5";
+
+        var exists = dao.isColleagueExistsForCompositeKey(colleagueUuid, key);
+
+        assertTrue(exists);
+
+    }
+
     @ParameterizedTest
     @MethodSource("provideArgsForGettingColleagues")
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues-config.xml"})

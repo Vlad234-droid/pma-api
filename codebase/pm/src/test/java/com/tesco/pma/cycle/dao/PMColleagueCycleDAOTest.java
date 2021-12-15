@@ -71,6 +71,24 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
             BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml"})
+    void getByCycleUuidWithoutTimelinePoint() {
+        var cc = dao.getByCycleUuidWithoutTimelinePoint(CYCLE_UUID);
+        assertThat(cc)
+                .hasSize(2);
+
+        assertThat(dao.getByParams(CYCLE_UUID, COLLEAGUE_UUID, ACTIVE))
+                .singleElement()
+                .returns(UUID.fromString("98c23a14-8a46-41f0-bfcf-312a17c7dae2"), PMColleagueCycle::getUuid);
+
+        assertThat(dao.getByParams(CYCLE_UUID, COLLEAGUE_UUID, PMCycleStatus.INACTIVE))
+                .singleElement()
+                .returns(UUID.fromString("9193e171-49e9-492c-a56f-6a68916722f0"), PMColleagueCycle::getUuid);
+
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
+            BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml"})
     void saveAll() {
         var ccUuid1 = UUID.randomUUID();
         var ccUuid2 = UUID.randomUUID();
