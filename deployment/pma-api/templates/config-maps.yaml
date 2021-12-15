@@ -9,9 +9,12 @@ data:
   AD_ROLE_PEOPLE_TEAM: {{ .Values.AD_ROLE_PEOPLE_TEAM }}
   AD_ROLE_TALENT_ADMIN: {{ .Values.AD_ROLE_TALENT_ADMIN }}
   AD_ROLE_PROCESS_MANAGER: {{ .Values.AD_ROLE_PROCESS_MANAGER }}
-  SECURITY_ENABLED: {{ .Values.SECURITY_ENABLED | quote }}
+  IDENTITY_CLIENT_ID: {{ .Values.IDENTITY_CLIENT_ID | quote }}
+  PMA_DB_URL: {{ .Values.PMA_DB_URL }}
   PMA_DB_SCHEMA: {{ .Values.PMA_DB_SCHEMA }}
   CAMUNDA_DB_SCHEMA: {{ .Values.CAMUNDA_DB_SCHEMA }}
+  PMA_DB_USERNAME: {{ .Values.PMA_DB_USERNAME }}
+  SECURITY_ENABLED: {{ .Values.SECURITY_ENABLED | quote }}
 kind: ConfigMap
 metadata:
   name: pma-api-config
