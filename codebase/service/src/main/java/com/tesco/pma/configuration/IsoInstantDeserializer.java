@@ -15,8 +15,8 @@ import static com.tesco.pma.configuration.DateTimeFormatters.ISO_INSTANT_WITH_TH
  */
 public class IsoInstantDeserializer extends InstantDeserializer<Instant> {
 
-    public IsoInstantDeserializer(InstantDeserializer<Instant> base, DateTimeFormatter f) {
-        super(base, f);
+    public IsoInstantDeserializer(InstantDeserializer<Instant> base, DateTimeFormatter formatter) {
+        super(base, formatter);
     }
 
     @Override
