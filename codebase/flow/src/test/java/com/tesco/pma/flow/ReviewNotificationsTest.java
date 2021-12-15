@@ -76,6 +76,23 @@ public class ReviewNotificationsTest {
         assertTrue((Boolean) result.getFirstResult().getEntry(FlowParameters.SEND.name()));
     }
 
+    @Test
+    public void sendTestWhenAttrsNull() {
+
+        ColleagueProfile colleagueProfile = new ColleagueProfile();
+
+        VariableMap variables = new VariableMapImpl();
+        variables.putValue(FlowParameters.EVENT_NAME.name(), PM_REVIEW_SUBMITTED);
+        variables.putValue(FlowParameters.REVIEW_TYPE.name(), PMReviewType.MYR.getCode());
+        variables.putValue(FlowParameters.IS_MANAGER.name(), true);
+        variables.putValue(FlowParameters.PROFILE_ATTRIBUTE_NAME.name(), "Attr name");
+        variables.putValue(FlowParameters.COLLEAGUE_PROFILE.name(), colleagueProfile);
+
+        var result = dmnEngine.evaluateDecisionTable(decision, variables);
+
+        assertTrue((Boolean) result.getFirstResult().getEntry(FlowParameters.SEND.name()));
+    }
+
     private TypedAttribute createAttr(String name, String value) {
         var attr = new TypedAttribute();
         attr.setName(name);

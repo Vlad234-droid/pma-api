@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="event_to_attribute_decisions" name="Review Notifications" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
-  <decision id="review_notifications" name="Map event to profile attribute name">
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="event_to_attribute" name="Event to Profile attribute" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
+  <decision id="event_to_profile_attribute" name="Map event to profile attribute name">
     <informationRequirement id="InformationRequirement_0w0zust">
       <requiredInput href="#InputData_1g0u5hf" />
     </informationRequirement>
@@ -16,7 +16,6 @@
         </inputExpression>
       </input>
       <output id="Output_1" label="Attribute name" name="PROFILE_ATTRIBUTE_NAME" typeRef="string" biodi:width="367" />
-      <output id="OutputClause_1vfs0ge" typeRef="string" />
       <rule id="DecisionRule_0elotx5">
         <inputEntry id="UnaryTests_0puabg3">
           <text>"PM_REVIEW_BEFORE_START"</text>
@@ -26,9 +25,6 @@
         </inputEntry>
         <outputEntry id="LiteralExpression_0exew74">
           <text>"Mid-year before review start"</text>
-        </outputEntry>
-        <outputEntry id="LiteralExpression_05xqige">
-          <text></text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_122xnsy">
@@ -41,9 +37,6 @@
         <outputEntry id="LiteralExpression_0t1y2vo">
           <text>"Mid-year submission"</text>
         </outputEntry>
-        <outputEntry id="LiteralExpression_1ktszg9">
-          <text></text>
-        </outputEntry>
       </rule>
       <rule id="DecisionRule_117lcnh">
         <inputEntry id="UnaryTests_15zqaq3">
@@ -54,9 +47,6 @@
         </inputEntry>
         <outputEntry id="LiteralExpression_0jj9zf9">
           <text>"Mid-year approval"</text>
-        </outputEntry>
-        <outputEntry id="LiteralExpression_02uvuns">
-          <text></text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0eawc4x">
@@ -69,9 +59,6 @@
         <outputEntry id="LiteralExpression_01p0tho">
           <text>"Mid-year declined"</text>
         </outputEntry>
-        <outputEntry id="LiteralExpression_1cfi1sx">
-          <text></text>
-        </outputEntry>
       </rule>
       <rule id="DecisionRule_0d9dsnr">
         <inputEntry id="UnaryTests_1aejvad">
@@ -82,9 +69,6 @@
         </inputEntry>
         <outputEntry id="LiteralExpression_1ogco7w">
           <text>"Mid-year before review end"</text>
-        </outputEntry>
-        <outputEntry id="LiteralExpression_0k0cs46">
-          <text></text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1ulk2bx">
@@ -97,9 +81,6 @@
         <outputEntry id="LiteralExpression_0eziy99">
           <text>"Year-End before year-end start"</text>
         </outputEntry>
-        <outputEntry id="LiteralExpression_16k1bu1">
-          <text></text>
-        </outputEntry>
       </rule>
       <rule id="DecisionRule_0htd5ki">
         <inputEntry id="UnaryTests_0jhgh9x">
@@ -110,9 +91,6 @@
         </inputEntry>
         <outputEntry id="LiteralExpression_1sh4rp8">
           <text>"Year-End submission"</text>
-        </outputEntry>
-        <outputEntry id="LiteralExpression_1carqbn">
-          <text></text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0v5108s">
@@ -125,9 +103,6 @@
         <outputEntry id="LiteralExpression_1mx1hxi">
           <text>"Year-End approval"</text>
         </outputEntry>
-        <outputEntry id="LiteralExpression_0fn4u15">
-          <text></text>
-        </outputEntry>
       </rule>
       <rule id="DecisionRule_01ol67b">
         <inputEntry id="UnaryTests_19frjxy">
@@ -138,9 +113,6 @@
         </inputEntry>
         <outputEntry id="LiteralExpression_1bqyzn8">
           <text>"Year-End declined"</text>
-        </outputEntry>
-        <outputEntry id="LiteralExpression_04oer67">
-          <text></text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1xbw130">
@@ -153,9 +125,6 @@
         <outputEntry id="LiteralExpression_0agwr1g">
           <text>"Year-End before review end"</text>
         </outputEntry>
-        <outputEntry id="LiteralExpression_1re8kvw">
-          <text></text>
-        </outputEntry>
       </rule>
       <rule id="DecisionRule_1n9rprq">
         <inputEntry id="UnaryTests_0h6z98a">
@@ -166,9 +135,6 @@
         </inputEntry>
         <outputEntry id="LiteralExpression_110qg59">
           <text>"Objective submitted"</text>
-        </outputEntry>
-        <outputEntry id="LiteralExpression_0cgsw73">
-          <text></text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_15x3tsr">
@@ -181,9 +147,6 @@
         <outputEntry id="LiteralExpression_0srrk3g">
           <text>"Objective approved"</text>
         </outputEntry>
-        <outputEntry id="LiteralExpression_1usaleu">
-          <text></text>
-        </outputEntry>
       </rule>
       <rule id="DecisionRule_169ja8y">
         <inputEntry id="UnaryTests_04xdait">
@@ -194,9 +157,6 @@
         </inputEntry>
         <outputEntry id="LiteralExpression_164d8zp">
           <text>"Objective declined"</text>
-        </outputEntry>
-        <outputEntry id="LiteralExpression_16yl35d">
-          <text></text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0k5q2rg">
@@ -210,16 +170,13 @@
         <outputEntry id="LiteralExpression_1vayiaq">
           <text>""</text>
         </outputEntry>
-        <outputEntry id="LiteralExpression_0onmt5e">
-          <text></text>
-        </outputEntry>
       </rule>
     </decisionTable>
   </decision>
   <inputData id="InputData_1g0u5hf" name="Event Name" />
   <dmndi:DMNDI>
     <dmndi:DMNDiagram>
-      <dmndi:DMNShape dmnElementRef="review_notifications">
+      <dmndi:DMNShape dmnElementRef="event_to_profile_attribute">
         <dc:Bounds height="80" width="180" x="160" y="100" />
       </dmndi:DMNShape>
       <dmndi:DMNShape id="DMNShape_0jl626x" dmnElementRef="InputData_1g0u5hf">

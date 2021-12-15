@@ -2,17 +2,30 @@ package com.tesco.pma.flow;
 
 import com.tesco.pma.bpm.camunda.flow.AbstractCamundaSpringBootTest;
 import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
+import com.tesco.pma.colleague.api.Colleague;
+import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
+import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
+import com.tesco.pma.colleague.profile.service.ProfileService;
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.event.EventSupport;
+import com.tesco.pma.flow.handlers.FlowParameters;
 import com.tesco.pma.flow.handlers.InitReviewNotification;
 import com.tesco.pma.flow.handlers.SendNotification;
+import com.tesco.pma.service.contact.client.ContactApiClient;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:vadim.shatokhin1@tesco.com">vadim.shatokhin1@tesco.com</a>
@@ -36,6 +49,33 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
 
     @MockBean(name = "sendNotification")
     private SendNotification sendNotification;
+
+    @MockBean
+    private ContactApiClient contactApiClient;
+
+    @MockBean
+    private ProfileService profileService;
+
+    @MockBean
+    private NamedMessageSourceAccessor messageSourceAccessor;
+
+    private UUID colleagueUUID = UUID.randomUUID();
+    private ColleagueProfile colleagueProfile;
+
+    @BeforeEach
+    public void init(){
+        var wr = new WorkRelationship();
+
+        var colleague = new Colleague();
+        colleague.setColleagueUUID(colleagueUUID);
+        colleague.setWorkRelationships(List.of(wr));
+
+        colleagueProfile = new ColleagueProfile();
+        colleagueProfile.setColleague(colleague);
+
+        Mockito.when(profileService.findProfileByColleagueUuid(Mockito.any()))
+                .thenReturn(Optional.of(colleagueProfile));
+    }
 
     @Test
     void checkObjectives() throws Exception {
@@ -76,10 +116,14 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
     }
 
     void check(String evenName, PMReviewType reviewType, Boolean isManager, boolean send) throws Exception {
-        Mockito.when(initTask.getReviewType(Mockito.any())).thenReturn(reviewType);
-        Mockito.when(initTask.isManager(Mockito.any())).thenReturn(isManager);
 
-        assertThatForProcess(runProcessByEvent(new EventSupport(evenName)))
+        var event = new EventSupport(evenName);
+        event.putProperty(FlowParameters.REVIEW_TYPE.name(), reviewType);
+        event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueUUID);
+
+        colleagueProfile.getColleague().getWorkRelationships().get(0).setIsManager(isManager);
+
+        assertThatForProcess(runProcessByEvent(event))
                 .activity("initReviewNotification").executedOnce()
                 .activity(DECISION_TABLE_TASK).executedOnce()
                 .activity("sendNotification").executedTimes(send ? 1 : 0);
