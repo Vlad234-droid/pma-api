@@ -3,7 +3,6 @@ package com.tesco.pma.cep.service;
 import com.tesco.pma.cep.domain.ColleagueChangeEventPayload;
 import com.tesco.pma.cep.domain.DeliveryMode;
 import com.tesco.pma.cep.domain.EventType;
-import com.tesco.pma.cep.flow.ColleagueChangesFlowEvents;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
@@ -11,6 +10,8 @@ import com.tesco.pma.colleague.security.domain.AccountType;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
 import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
 import com.tesco.pma.colleague.security.service.UserManagementService;
+import com.tesco.pma.event.EventNames;
+import com.tesco.pma.event.EventParams;
 import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.ErrorCodes;
@@ -38,8 +39,6 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     private final ProfileService profileService;
     private final UserManagementService userManagementService;
     private final EventSender eventSender;
-
-    private static final String FLOW_PARAMETERS_COLLEAGUE_UUID = "COLLEAGUE_UUID";
 
     @Override
     public void processColleagueChangeEvent(String feedId,
@@ -159,9 +158,9 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     }
 
     private void sendEvent(UUID colleagueUuid) {
-        var event = new EventSupport(ColleagueChangesFlowEvents.CEP_COLLEAGUE_ADDED);
+        var event = new EventSupport(EventNames.CEP_COLLEAGUE_ADDED);
         Map<String, Serializable> properties = new HashMap<>();
-        properties.put(FLOW_PARAMETERS_COLLEAGUE_UUID, colleagueUuid);
+        properties.put(EventParams.COLLEAGUE_UUID.name(), colleagueUuid);
         event.setEventProperties(properties);
         eventSender.sendEvent(event);
     }
