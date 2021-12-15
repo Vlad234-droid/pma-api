@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -32,21 +31,23 @@ public class SendNotification extends CamundaAbstractFlowHandler {
     protected void execute(ExecutionContext context) throws Exception {
         var colleagueProfile = (ColleagueProfile) context.getEvent().getEventProperty(FlowParameters.COLLEAGUE_PROFILE.name());
         var templateId = (String) context.getEvent().getEventProperty(FlowParameters.CONTACT_TEMPLATE_ID.name());
-        contactApiClient.sendNotification(getMessage(colleagueProfile.getColleague().getColleagueUUID()), templateId);
+
+        contactApiClient.sendNotification(
+                getMessage(colleagueProfile.getColleague().getColleagueUUID(),
+                        getPlaceholders(colleagueProfile)), templateId);
     }
 
-    protected Message getMessage(UUID colleagueId) {
+    protected Message getMessage(UUID colleagueId, Map<String, String> placeholders) {
         var message = new Message();
         var recipient = new Recipient();
         recipient.setUuid(colleagueId);
         recipient.setDestination(DestinationType.EMAIL_CC);
         message.setRecipients(List.of(recipient));
-        message.setData(getPlaceholders());
+        message.setData(placeholders);
         return message;
     }
 
-    protected Map<String, String> getPlaceholders() {
-        //TODO
-        return new HashMap<>();
+    protected Map<String, String> getPlaceholders(ColleagueProfile colleagueProfile) {
+        return Map.of("colleagueUUID", colleagueProfile.getColleague().getColleagueUUID().toString());
     }
 }

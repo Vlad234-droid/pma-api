@@ -10,14 +10,22 @@
           <text>EVENT_NAME</text>
         </inputExpression>
       </input>
+      <input id="InputClause_1mylr30" label="Review type">
+        <inputExpression id="LiteralExpression_00tcpqy" typeRef="string">
+          <text>REVIEW_TYPE</text>
+        </inputExpression>
+      </input>
       <output id="Output_1" label="Attribute name" name="PROFILE_ATTRIBUTE_NAME" typeRef="string" biodi:width="367" />
       <output id="OutputClause_1vfs0ge" typeRef="string" />
       <rule id="DecisionRule_0elotx5">
         <inputEntry id="UnaryTests_0puabg3">
           <text>"PM_REVIEW_BEFORE_START"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_0di5ygg">
+          <text>"MYR"</text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_0exew74">
-          <text>""</text>
+          <text>"Mid-year before review start"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_05xqige">
           <text></text>
@@ -27,8 +35,11 @@
         <inputEntry id="UnaryTests_08p0h32">
           <text>"PM_REVIEW_SUBMITTED"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1x2qcks">
+          <text>"MYR"</text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_0t1y2vo">
-          <text>""</text>
+          <text>"Mid-year submission"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1ktszg9">
           <text></text>
@@ -38,8 +49,11 @@
         <inputEntry id="UnaryTests_15zqaq3">
           <text>"PM_REVIEW_APPROVED"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1lyiov8">
+          <text>"MYR"</text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_0jj9zf9">
-          <text>""</text>
+          <text>"Mid-year approval"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_02uvuns">
           <text></text>
@@ -49,8 +63,11 @@
         <inputEntry id="UnaryTests_0tammby">
           <text>"PM_REVIEW_DECLINED"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_0nf8x8t">
+          <text>"MYR"</text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_01p0tho">
-          <text>""</text>
+          <text>"Mid-year declined"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1cfi1sx">
           <text></text>
@@ -60,8 +77,11 @@
         <inputEntry id="UnaryTests_1aejvad">
           <text>"PM_REVIEW_BEFORE_END"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1nc64f0">
+          <text>"MYR"</text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_1ogco7w">
-          <text>""</text>
+          <text>"Mid-year before review end"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_0k0cs46">
           <text></text>
@@ -71,8 +91,11 @@
         <inputEntry id="UnaryTests_0nno71t">
           <text>"PM_REVIEW_BEFORE_START"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1aq5xqt">
+          <text>"EYR"</text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_0eziy99">
-          <text>""</text>
+          <text>"Year-End before year-end start"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_16k1bu1">
           <text></text>
@@ -82,8 +105,11 @@
         <inputEntry id="UnaryTests_0jhgh9x">
           <text>"PM_REVIEW_SUBMITTED"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_0gptr1k">
+          <text>"EYR"</text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_1sh4rp8">
-          <text>""</text>
+          <text>"Year-End submission"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1carqbn">
           <text></text>
@@ -93,8 +119,11 @@
         <inputEntry id="UnaryTests_1cilzkb">
           <text>"PM_REVIEW_APPROVED"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1fxgjqm">
+          <text>"EYR"</text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_1mx1hxi">
-          <text>""</text>
+          <text>"Year-End approval"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_0fn4u15">
           <text></text>
@@ -104,8 +133,11 @@
         <inputEntry id="UnaryTests_19frjxy">
           <text>"PM_REVIEW_DECLINED"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_0tn6b3e">
+          <text>"EYR"</text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_1bqyzn8">
-          <text>""</text>
+          <text>"Year-End declined"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_04oer67">
           <text></text>
@@ -115,8 +147,11 @@
         <inputEntry id="UnaryTests_0aaf1by">
           <text>"PM_REVIEW_BEFORE_END"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1wolpt8">
+          <text>"EYR"</text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_0agwr1g">
-          <text>""</text>
+          <text>"Year-End before review end"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1re8kvw">
           <text></text>
@@ -126,8 +161,11 @@
         <inputEntry id="UnaryTests_0h6z98a">
           <text>"PM_REVIEW_SUBMITTED"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_042yklw">
+          <text>"OBJECTIVE"</text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_110qg59">
-          <text>""</text>
+          <text>"Objective submitted"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_0cgsw73">
           <text></text>
@@ -137,8 +175,11 @@
         <inputEntry id="UnaryTests_0h260de">
           <text>"PM_REVIEW_APPROVED"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1vkrljm">
+          <text>"OBJECTIVE"</text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_0srrk3g">
-          <text>""</text>
+          <text>"Objective approved"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1usaleu">
           <text></text>
@@ -148,8 +189,11 @@
         <inputEntry id="UnaryTests_04xdait">
           <text>"PM_REVIEW_DECLINED"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_0yhveny">
+          <text>"OBJECTIVE"</text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_164d8zp">
-          <text>""</text>
+          <text>"Objective declined"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_16yl35d">
           <text></text>
@@ -158,6 +202,9 @@
       <rule id="DecisionRule_0k5q2rg">
         <description>Default</description>
         <inputEntry id="UnaryTests_11aaqfm">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1moqbc8">
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1vayiaq">
