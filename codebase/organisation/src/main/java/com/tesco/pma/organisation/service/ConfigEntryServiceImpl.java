@@ -183,6 +183,15 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
     }
 
     @Override
+    public boolean isColleagueExistsForCompositeKey(UUID colleagueUuid, String compositeKey) {
+        var parts = compositeKey.split("/");
+        var searchKey = IntStream.range(0, parts.length)
+                .filter(i -> i % 2 == 1).mapToObj(i -> parts[i]).collect(Collectors.joining("/"));
+
+        return dao.isColleagueExistsForCompositeKey(colleagueUuid, searchKey);
+    }
+
+    @Override
     public List<ConfigEntryResponse> getUnpublishedChildStructureByCompositeKey(String compositeKey) {
         String searchTerm = buildCompositeKeySearchTerm(compositeKey);
         var entries = dao.findConfigEntriesByKey(searchTerm);

@@ -71,7 +71,7 @@ public class ProcessTimelinePointHandlerTest {
 
         Mockito.doReturn(pmElement).when(handler).getParent(ec);
         Mockito.doReturn(Collections.emptyList()).when(colleagueCycleService)
-                .getByCycleUuid(pmCycle.getUuid(), null, null);
+                .getByCycleUuidWithoutTimelinePoint(pmCycle.getUuid());
 
         handler.execute(ec);
 
@@ -97,7 +97,7 @@ public class ProcessTimelinePointHandlerTest {
 
         Mockito.doReturn(parentElement).when(handler).getParent(ec);
         Mockito.doReturn(Collections.singletonList(colleagueCycle))
-                .when(colleagueCycleService).getByCycleUuid(pmCycle.getUuid(), null, null);
+                .when(colleagueCycleService).getByCycleUuidWithoutTimelinePoint(pmCycle.getUuid());
 
         handler.execute(ec);
 

@@ -62,5 +62,11 @@ public interface PMColleagueCycleDAO {
      */
     int delete(@Param("uuid") UUID uuid);
 
-
+    /**
+     * Gets list of pm colleague cycles without timeline points
+     *
+     * @param cycleUuid     - PM cycle identifier
+     * @return - collection of PM colleague cycles
+     */
+    List<PMColleagueCycle> getByCycleUuidWithoutTimelinePoint(UUID cycleUuid);
 }
