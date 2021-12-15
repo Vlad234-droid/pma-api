@@ -120,7 +120,7 @@ server:
   servlet:
     context-path: /v1
   trusted-port: 8084
-  trusted-path-prefix: /v1/internal/
+  trusted-path-prefix: /v1/user-management
 management:
   server:
     port: 8090

@@ -12,7 +12,7 @@ spec:
       protocol: TCP
       name: http
     - port: {{ .Values.serviceIdentity.port }}
-      targetPort: http
+      targetPort: http-identity
       protocol: TCP
       name: http-identity
   selector:
