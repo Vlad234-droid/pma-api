@@ -103,7 +103,7 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
     }
 
     private void createTimelinePoints(ExecutionContext context, UUID cycleUuid, PMElement element) {
-        var colleagueCycles = colleagueCycleService.getByCycleUuid(cycleUuid, null, null);
+        var colleagueCycles = colleagueCycleService.getByCycleUuidWithoutTimelinePoint(cycleUuid);
         if (CollectionUtils.isEmpty(colleagueCycles)) {
             return;
         }

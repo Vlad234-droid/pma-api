@@ -223,6 +223,7 @@ tesco:
       PM_REVIEW_APPROVED: com.tesco.pma.bpm.action.RunFlowByEventAction
       PM_REVIEW_DECLINED: com.tesco.pma.bpm.action.RunFlowByEventAction
       PM_REVIEW_BEFORE_END: com.tesco.pma.bpm.action.RunFlowByEventAction
+      IMPORT_NEW_COLLEAGUE: com.tesco.pma.bpm.action.RunFlowByEventAction
     user-management:
         page:
           size: 100
