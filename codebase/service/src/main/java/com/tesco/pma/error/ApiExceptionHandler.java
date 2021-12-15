@@ -1,6 +1,7 @@
 package com.tesco.pma.error;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tesco.pma.api.CodeAware;
 import com.tesco.pma.api.TargetAware;
@@ -33,6 +34,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -143,11 +145,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             HttpMessageNotReadableException ex,
             @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
 
-        String message = "Request parse error: " + ex.getMessage();
+        var message = "Request parse error: " + ex.getMessage();
         logger.error(LogFormatter.formatMessage(messageSourceAccessor, MESSAGE_NOT_READABLE_EXCEPTION, message), ex);
-        return createResponse(new InvalidPayloadException(MESSAGE_NOT_READABLE_EXCEPTION.name(),
-                        messageSourceAccessor.getMessage(MESSAGE_NOT_READABLE_EXCEPTION), BODY),
-                null, HttpStatus.BAD_REQUEST);
+
+        var error = ApiError.builder()
+                .code(MESSAGE_NOT_READABLE_EXCEPTION.getCode())
+                .message(messageSourceAccessor.getMessage(MESSAGE_NOT_READABLE_EXCEPTION))
+                .build();
+
+        if (ex.getRootCause() != null) {
+            error.addDetails(ApiValidationError.builder()
+                    .code(ex.getRootCause().getClass().getName())
+                    .message(ex.getRootCause().getMessage())
+                    .field(getFieldName(ex))
+                    .build());
+        }
+
+        return createResponse(RestResponse.fail(error), null, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = Exception.class)
@@ -411,5 +425,19 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .message(ex.getMessage())
                 .target(ex.getTarget())
                 .build());
+    }
+
+    private String getFieldName(HttpMessageNotReadableException ex) {
+        var fieldName = "";
+        var cause = ex.getCause();
+
+        if (cause instanceof JsonMappingException) {
+            var jme = (JsonMappingException) cause;
+            if (!CollectionUtils.isEmpty(jme.getPath())) {
+                fieldName = jme.getPath().get(jme.getPath().size() - 1).getFieldName();
+            }
+        }
+
+        return fieldName;
     }
 }

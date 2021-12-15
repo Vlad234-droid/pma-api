@@ -343,16 +343,16 @@
     </bpmn:parallelGateway>
     <bpmn:serviceTask id="processColleagueCycles" name="Process Colleagues" camunda:class="com.tesco.pma.flow.handlers.PMColleagueCycleHandler">
       <bpmn:incoming>Flow_0nbbfyl</bpmn:incoming>
-      <bpmn:incoming>Flow_0tce03t</bpmn:incoming>
+      <bpmn:incoming>Flow_1q25lda</bpmn:incoming>
       <bpmn:outgoing>Flow_1qhm8xl</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:startEvent id="Event_1ui8qni" name="CEP_COLLEAGUE_ADDED">
-      <bpmn:outgoing>Flow_0tce03t</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_01cgou1" messageRef="Message_1xkb27q" />
+    <bpmn:startEvent id="Event_03cxyfj">
+      <bpmn:outgoing>Flow_1q25lda</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1an17t6" messageRef="Message_1l9x4m5" />
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_0tce03t" sourceRef="Event_1ui8qni" targetRef="processColleagueCycles" />
+    <bpmn:sequenceFlow id="Flow_1q25lda" sourceRef="Event_03cxyfj" targetRef="processColleagueCycles" />
   </bpmn:process>
-  <bpmn:message id="Message_1xkb27q" name="CEP_COLLEAGUE_ADDED" />
+  <bpmn:message id="Message_1l9x4m5" name="IMPORT_NEW_COLLEAGUE" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="type_1_test">
       <bpmndi:BPMNEdge id="Flow_063syv1_di" bpmnElement="Flow_063syv1">
@@ -426,17 +426,14 @@
         <di:waypoint x="340" y="710" />
         <di:waypoint x="375" y="710" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0tce03t_di" bpmnElement="Flow_0tce03t">
-        <di:waypoint x="196" y="490" />
-        <di:waypoint x="218" y="490" />
-        <di:waypoint x="218" y="680" />
-        <di:waypoint x="240" y="680" />
+      <bpmndi:BPMNEdge id="Flow_1q25lda_di" bpmnElement="Flow_1q25lda">
+        <di:waypoint x="196" y="620" />
+        <di:waypoint x="218" y="620" />
+        <di:waypoint x="218" y="690" />
+        <di:waypoint x="240" y="690" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_0ekocot_di" bpmnElement="Event_1ui8qni">
-        <dc:Bounds x="160" y="472" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="138" y="515" width="81" height="27" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="Event_1klcdc9_di" bpmnElement="Event_03cxyfj">
+        <dc:Bounds x="160" y="602" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1bu82ro_di" bpmnElement="objectives" isExpanded="true">
         <dc:Bounds x="480" y="810" width="570" height="160" />
