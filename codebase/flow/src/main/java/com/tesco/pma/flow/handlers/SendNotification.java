@@ -11,7 +11,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -33,12 +35,18 @@ public class SendNotification extends CamundaAbstractFlowHandler {
         contactApiClient.sendNotification(getMessage(colleagueProfile.getColleague().getColleagueUUID()), templateId);
     }
 
-    private Message getMessage(UUID colleagueId) {
+    protected Message getMessage(UUID colleagueId) {
         var message = new Message();
         var recipient = new Recipient();
         recipient.setUuid(colleagueId);
         recipient.setDestination(DestinationType.EMAIL_CC);
         message.setRecipients(List.of(recipient));
+        message.setData(getPlaceholders());
         return message;
+    }
+
+    protected Map<String, String> getPlaceholders() {
+        //TODO
+        return new HashMap<>();
     }
 }

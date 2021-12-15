@@ -76,7 +76,7 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
     }
 
     void check(String evenName, PMReviewType reviewType, Boolean isManager, boolean send) throws Exception {
-        Mockito.when(initTask.getReviewType()).thenReturn(reviewType);
+        Mockito.when(initTask.getReviewType(Mockito.any())).thenReturn(reviewType);
         Mockito.when(initTask.isManager(Mockito.any())).thenReturn(isManager);
 
         assertThatForProcess(runProcessByEvent(new EventSupport(evenName)))
