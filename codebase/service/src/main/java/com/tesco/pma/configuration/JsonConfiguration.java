@@ -1,6 +1,7 @@
 package com.tesco.pma.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.deser.InstantDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
+import static com.tesco.pma.configuration.DateTimeFormatters.ISO_INSTANT_WITH_THREE_DIGIT_MILLISECOND;
 import static com.tesco.pma.configuration.DateTimeFormatters.ISO_LOCAL_DATE_TIME_WITH_THREE_DIGIT_MILLISECOND;
 import static com.tesco.pma.configuration.DateTimeFormatters.ISO_LOCAL_TIME_WITH_THREE_DIGIT_MILLISECOND;
 import static com.tesco.pma.configuration.DateTimeFormatters.ISO_OFFSET_DATE_TIME_WITH_THREE_DIGIT_MILLISECOND;
@@ -39,6 +41,7 @@ public class JsonConfiguration {
                                 ISO_OFFSET_TIME_WITH_THREE_DIGIT_MILLISECOND),
                         new IsoInstantSerializer()
                 )
+                .deserializers(new IsoInstantDeserializer(InstantDeserializer.INSTANT, ISO_INSTANT_WITH_THREE_DIGIT_MILLISECOND))
                 .failOnUnknownProperties(false);
     }
 
