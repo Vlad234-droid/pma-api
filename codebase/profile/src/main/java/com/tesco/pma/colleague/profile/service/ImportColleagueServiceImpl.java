@@ -86,7 +86,7 @@ public class ImportColleagueServiceImpl implements ImportColleagueService {
 
     private void sendEvents(ImportReport importReport) {
         var events = importReport.getImported().stream().map(uuid -> {
-            var event = new EventSupport(EventNames.NEW_COLLEAGUE);
+            var event = new EventSupport(EventNames.IMPORT_NEW_COLLEAGUE);
             event.setEventProperties(Map.of(EventParams.COLLEAGUE_UUID.name(), uuid));
             return event;
         }).collect(Collectors.toList());

@@ -352,7 +352,7 @@
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_1q25lda" sourceRef="Event_03cxyfj" targetRef="processColleagueCycles" />
   </bpmn:process>
-  <bpmn:message id="Message_1l9x4m5" name="NEW_COLLEAGUE" />
+  <bpmn:message id="Message_1l9x4m5" name="IMPORT_NEW_COLLEAGUE" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="type_1_test">
       <bpmndi:BPMNEdge id="Flow_063syv1_di" bpmnElement="Flow_063syv1">
