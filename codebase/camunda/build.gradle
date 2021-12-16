@@ -1,8 +1,13 @@
+plugins {
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
+}
+
 dependencies {
     implementation project(':api')
     implementation project(':event')
     implementation project(':spring')
     implementation project(':bpm')
+    implementation project(':service')
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
@@ -20,6 +25,7 @@ dependencies {
         exclude group: 'org.codehaus.groovy', module: 'groovy-testng'
     }
 
+    testImplementation project(':service').sourceSets.test.output
     testImplementation ("com.h2database:h2:${h2Version}")
     testImplementation ("com.zaxxer:HikariCP:${hikariVersion}")
 
@@ -27,4 +33,10 @@ dependencies {
         exclude group: 'junit' // excluding junit 4
     }
     testImplementation("commons-io:commons-io:${commonsIoVersion}")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+    }
 }

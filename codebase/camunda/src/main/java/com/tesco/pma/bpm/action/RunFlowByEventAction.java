@@ -3,6 +3,7 @@ package com.tesco.pma.bpm.action;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.tesco.pma.logging.TraceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,8 @@ import com.tesco.spring.tx.ThreadTransactionHolder;
 
 import lombok.extern.slf4j.Slf4j;
 
+import static com.tesco.pma.logging.TraceId.TRACE_ID_HEADER;
+
 @Slf4j
 @Component
 public class RunFlowByEventAction implements Action {
@@ -30,6 +33,7 @@ public class RunFlowByEventAction implements Action {
         try {
             Map<String, Object> ctx = new HashMap<>();
             ctx.put(ExecutionContext.Params.EC_EVENT.name(), event);
+            ctx.put(TRACE_ID_HEADER, TraceUtils.getTraceId().getValue());
 
             Map<String, Object> holder = new HashMap<>();
             ctx.put(ExecutionContext.Params.EC_OUTPUT.name(), holder);
