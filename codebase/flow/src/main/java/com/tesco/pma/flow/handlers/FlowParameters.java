@@ -22,6 +22,7 @@ public enum FlowParameters {
 
     COLLEAGUE_UUID,
     COLLEAGUE_PROFILE,
+    COLLEAGUE_WORK_LEVEL,
 
     PROFILE_ATTRIBUTE_NAME,
 

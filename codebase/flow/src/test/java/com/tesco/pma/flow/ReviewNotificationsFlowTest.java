@@ -3,8 +3,10 @@ package com.tesco.pma.flow;
 import com.tesco.pma.bpm.camunda.flow.AbstractCamundaSpringBootTest;
 import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
 import com.tesco.pma.colleague.api.Colleague;
+import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
 import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
+import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMReviewType;
@@ -23,9 +25,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:vadim.shatokhin1@tesco.com">vadim.shatokhin1@tesco.com</a>
@@ -43,6 +43,7 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
     private static final String PM_REVIEW_DECLINED = "PM_REVIEW_DECLINED";
     private static final String PM_REVIEW_BEFORE_START = "PM_REVIEW_BEFORE_START";
     private static final String PM_REVIEW_BEFORE_END = "PM_REVIEW_BEFORE_END";
+    private static final String ORGANISATION_OBJECTIVES = "ORGANISATION_OBJECTIVES";
 
     @SpyBean(name = "initReviewNotification")
     private InitReviewNotification initTask;
@@ -64,14 +65,7 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
 
     @BeforeEach
     public void init(){
-        var wr = new WorkRelationship();
-
-        var colleague = new Colleague();
-        colleague.setColleagueUUID(colleagueUUID);
-        colleague.setWorkRelationships(List.of(wr));
-
-        colleagueProfile = new ColleagueProfile();
-        colleagueProfile.setColleague(colleague);
+        colleagueProfile = createColleagueProfile(colleagueUUID, WorkLevel.WL1, Map.of());
 
         Mockito.when(profileService.findProfileByColleagueUuid(Mockito.any()))
                 .thenReturn(Optional.of(colleagueProfile));
@@ -115,17 +109,57 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
         check(PM_REVIEW_BEFORE_END, PMReviewType.EYR, false, true);
     }
 
+    @Test
+    void checkOrganisationObjectives() throws Exception {
+        check(ORGANISATION_OBJECTIVES, null, true, WorkLevel.WL1, false);
+        check(ORGANISATION_OBJECTIVES, null, true, WorkLevel.WL4, true);
+    }
+
     void check(String evenName, PMReviewType reviewType, Boolean isManager, boolean send) throws Exception {
+        check(evenName, reviewType, isManager, null, send);
+    }
+
+    void check(String evenName, PMReviewType reviewType, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
 
         var event = new EventSupport(evenName);
-        event.putProperty(FlowParameters.REVIEW_TYPE.name(), reviewType);
+
+        if(reviewType != null) {
+            event.putProperty(FlowParameters.REVIEW_TYPE.name(), reviewType);
+        }
+
         event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueUUID);
 
         colleagueProfile.getColleague().getWorkRelationships().get(0).setIsManager(isManager);
+
+        if(workLevel!=null) {
+            colleagueProfile.getColleague().getWorkRelationships().get(0).setWorkLevel(workLevel);
+        }
 
         assertThatForProcess(runProcessByEvent(event))
                 .activity("initReviewNotification").executedOnce()
                 .activity(DECISION_TABLE_TASK).executedOnce()
                 .activity("sendNotification").executedTimes(send ? 1 : 0);
+    }
+
+    private ColleagueProfile createColleagueProfile(UUID colleagueUUID, WorkLevel wl, Map<String, String> attrs){
+        var wr = new WorkRelationship();
+        wr.setWorkLevel(wl);
+
+        var colleague = new Colleague();
+        colleague.setColleagueUUID(colleagueUUID);
+        colleague.setWorkRelationships(List.of(wr));
+
+        ColleagueProfile colleagueProfile = new ColleagueProfile();
+        colleagueProfile.setColleague(colleague);
+        colleagueProfile.setProfileAttributes(new ArrayList<>());
+        attrs.forEach((k, v) -> colleagueProfile.getProfileAttributes().add(createAttr(k, v)));
+        return colleagueProfile;
+    }
+
+    private TypedAttribute createAttr(String name, String value) {
+        var attr = new TypedAttribute();
+        attr.setName(name);
+        attr.setValue(value);
+        return attr;
     }
 }

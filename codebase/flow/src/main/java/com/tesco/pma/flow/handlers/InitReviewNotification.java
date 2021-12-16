@@ -42,6 +42,7 @@ public class InitReviewNotification extends CamundaAbstractFlowHandler {
         context.setVariable(FlowParameters.COLLEAGUE_PROFILE, colleagueProfile);
         context.setVariable(FlowParameters.REVIEW_TYPE, getReviewType(event));
         context.setVariable(FlowParameters.IS_MANAGER, isManager(colleagueProfile));
+        context.setVariable(FlowParameters.COLLEAGUE_WORK_LEVEL, getWorkLevel(colleagueProfile));
     }
 
     public boolean isManager(ColleagueProfile colleagueProfile) {
@@ -59,6 +60,10 @@ public class InitReviewNotification extends CamundaAbstractFlowHandler {
     public ColleagueProfile getColleagueProfile(UUID colleagueUUID) {
         return profileService.findProfileByColleagueUuid(colleagueUUID)
                 .orElseThrow(() -> notFound(ErrorCodes.PROFILE_NOT_FOUND, "UUID", colleagueUUID.toString()));
+    }
+
+    private String getWorkLevel(ColleagueProfile colleagueProfile){
+        return colleagueProfile.getColleague().getWorkRelationships().get(0).getWorkLevel().name();
     }
 
     private AbstractApiRuntimeException notFound(ErrorCodes errorCode, String paramName, String paramValue) {
