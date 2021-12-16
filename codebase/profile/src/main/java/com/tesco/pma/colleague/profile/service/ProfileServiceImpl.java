@@ -190,7 +190,7 @@ public class ProfileServiceImpl implements ProfileService {
             return updated;
         }
 
-        return saveColleague(colleague, existingLocalColleague);
+        return persistColleague(colleague, existingLocalColleague);
     }
 
     @Override
@@ -205,17 +205,21 @@ public class ProfileServiceImpl implements ProfileService {
             return 0;
         }
 
-        return saveColleague(colleague, null);
+        return persistColleague(colleague, null);
 
     }
 
-    private int saveColleague(Colleague colleague, ColleagueEntity existingLocalColleague) {
+    private int persistColleague(Colleague colleague, ColleagueEntity existingLocalColleague) {
         int updated = 0;
 
         try {
             ColleagueEntity changedLocalColleague = colleagueFactsApiLocalMapper.colleagueFactsApiToLocal(colleague);
+            if (existingLocalColleague == null) {
+                updated = profileDAO.saveColleague(changedLocalColleague);
+            } else {
+                updated = profileDAO.updateColleague(changedLocalColleague);
+            }
             updateDictionaries(existingLocalColleague, changedLocalColleague);
-            updated = profileDAO.saveColleague(changedLocalColleague);
         } catch (DataIntegrityViolationException exception) {
             String message = String.format("Data integrity violation exception = %s", exception.getMessage());
             log.error(LogFormatter.formatMessage(ErrorCodes.DATA_INTEGRITY_VIOLATION_EXCEPTION, message));
