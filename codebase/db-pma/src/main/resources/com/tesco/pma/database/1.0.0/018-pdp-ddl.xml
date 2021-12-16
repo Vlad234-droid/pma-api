@@ -1,0 +1,96 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+
+    <changeSet author="ypashynskyi" id="1">
+        <createTable tableName="pdp_goal_status"
+                     remarks="Dictionary of PDP goal statuses">
+            <column name="id" type="integer"
+                    remarks="A unique identifier for status">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pdp_goal_status_pk"/>
+            </column>
+            <column name="code" type="VARCHAR(30)"
+                    remarks="Shortname of status">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(100)"
+                    remarks="Description of status">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="ypashynskyi" id="2">
+        <comment>Init table org_objective_status</comment>
+        <insert tableName="pdp_goal_status">
+            <column name="id" value="1"/>
+            <column name="code" value="DRAFT"/>
+            <column name="description" value="PDP goal is saved as draft"/>
+        </insert>
+        <insert tableName="pdp_goal_status">
+            <column name="id" value="2"/>
+            <column name="code" value="PUBLISHED"/>
+            <column name="description" value="PDP goal was published"/>
+        </insert>
+        <insert tableName="pdp_goal_status">
+            <column name="id" value="3"/>
+            <column name="code" value="UNPUBLISHED"/>
+            <column name="description" value="PDP goal was unpublished"/>
+        </insert>
+        <rollback>
+            <delete tableName="pdp_goal_status">
+                <where>code = 'DRAFT'</where>
+            </delete>
+            <delete tableName="pdp_goal_status">
+                <where>code = 'PUBLISHED'</where>
+            </delete>
+            <delete tableName="pdp_goal_status">
+                <where>code = 'UNPUBLISHED'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="ypashynskyi" id="3">
+        <createTable tableName="pdp_goal"
+                     remarks="Table of PDP goals">
+            <column name="uuid" type="${uuid_type}"
+                    remarks="A unique identifier for goal">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pdp_goal_pk"/>
+            </column>
+            <column name="colleague_uuid" type="${uuid_type}"
+                    remarks="A unique identifier of colleague">
+                <constraints nullable="false"/>
+            </column>
+            <column name="number" type="integer"
+                    remarks="A sequence number for PDP goal">
+                <constraints nullable="false"/>
+            </column>
+            <column name="properties" type="jsonb"
+                    remarks="Properties of goal"/>
+            <column name="achievement_date" type="date"
+                    remarks="Planned goal achievement date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status_id" type="integer"
+                    remarks="Status of goal">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="colleague_uuid" baseTableName="pdp_goal"
+                                 constraintName="pdp_goal_colleague_uuid_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="uuid" referencedTableName="colleague"
+                                 validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="pdp_goal"
+                                 constraintName="pdp_goal_status_id_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="pdp_goal_status"
+                                 validate="true"/>
+        <addUniqueConstraint columnNames="colleague_uuid, number"
+                             constraintName="pdp_goal_unique"
+                             tableName="pdp_goal"/>
+    </changeSet>
+
+</databaseChangeLog>
