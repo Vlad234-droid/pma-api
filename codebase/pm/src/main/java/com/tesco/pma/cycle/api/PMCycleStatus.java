@@ -7,14 +7,14 @@ import lombok.Getter;
 public enum PMCycleStatus implements DictionaryItem<Integer> {
 
     ACTIVE(1, "Performance cycle is active"),
-
     INACTIVE(2, "Performance cycle is inactive"),
-
     COMPLETED(3, "Performance cycle is completed"),
-
     DRAFT(4, "Performance cycle in draft"),
-
-    FAILED(5,"Performance cycle start failed");
+    FAILED(5,"Performance cycle start failed"),
+    REGISTERED(6,"Performance cycle registered"),
+    STARTED(7,"Performance cycle started"),
+    SUSPENDED(8,"Performance cycle suspended"),
+    TERMINATED(9,"Performance cycle terminated");
 
     private final Integer id;
     private final String description;
