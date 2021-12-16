@@ -89,7 +89,7 @@ class PMCycleDAOTest extends AbstractDAOTest {
     @ExpectedDataSet(value = BASE_PATH_TO_DATA_SET + "pm_create_cycle_expected_1.xml", compareOperation = CompareOperation.CONTAINS)
     void createPMCycle() throws ParseException {
         Instant testTime = new SimpleDateFormat(SDF_PATTERN, Locale.ENGLISH).parse("2016-12-31").toInstant();
-        dao.intCreateOrUpdate(createCycle(CYCLE_CREATE_UUID), testTime, null);
+        dao.intCreate(createCycle(CYCLE_CREATE_UUID), testTime);
     }
 
     @Test
@@ -97,19 +97,17 @@ class PMCycleDAOTest extends AbstractDAOTest {
             BASE_PATH_TO_DATA_SET + "pm_cycle_edit_init.xml"})
     @ExpectedDataSet(value = BASE_PATH_TO_DATA_SET + "pm_cycle_edit_expected_2.xml", compareOperation = CompareOperation.CONTAINS)
     void updateExistingPMCycle() throws ParseException {
-        Instant testTime = new SimpleDateFormat(SDF_PATTERN, Locale.ENGLISH).parse("2016-12-31").toInstant();
         var actualCycle = dao.read(CYCLE_EDIT_UUID, null);
         actualCycle.setName(UPDATED_NAME);
-        dao.intCreateOrUpdate(actualCycle, testTime, includeFilter(DRAFT));
+        dao.update(actualCycle, includeFilter(DRAFT));
     }
 
     @Test
     @DataSet(BASE_PATH_TO_DATA_SET + "pm_cycle_edit_init.xml")
     void updateExistingCycleInUnacceptableStatus() throws ParseException {
-        Instant testTime = new SimpleDateFormat(SDF_PATTERN, Locale.ENGLISH).parse("2016-12-31").toInstant();
         var actualCycle = dao.read(CYCLE_EDIT_UUID, null);
         actualCycle.setName(UPDATED_NAME);
-        int updated = dao.intCreateOrUpdate(actualCycle, testTime, includeFilter(ACTIVE, INACTIVE, COMPLETED));
+        int updated = dao.update(actualCycle, includeFilter(ACTIVE, INACTIVE, COMPLETED));
         Assert.assertEquals(0, updated);
     }
 

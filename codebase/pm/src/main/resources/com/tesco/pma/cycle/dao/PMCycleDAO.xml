@@ -40,7 +40,102 @@
         </if>
     </sql>
 
-    <insert id="intCreateOrUpdate" flushCache="true" parameterType="com.tesco.pma.cycle.api.PMCycle">
+    <sql id="getFilterField">
+        <choose>
+            <when test="filter.property == 'uuid'">
+                uuid
+            </when>
+            <when test="filter.property == 'entry-config-key'">
+                entry_config_key
+            </when>
+            <when test="filter.property == 'template-uuid'">
+                template_uuid
+            </when>
+            <when test="filter.property == 'name'">
+                name
+            </when>
+            <when test="filter.property == 'status'">
+                status_id
+            </when>
+            <when test="filter.property == 'type'">
+                type_id
+            </when>
+            <when test="filter.property == 'created-by'">
+                created_by
+            </when>
+            <when test="filter.property == 'start-time'">
+                start_time
+            </when>
+            <when test="filter.property == 'end-time'">
+                end_time
+            </when>
+            <otherwise>
+                creation_time
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="prepareValues">
+        <foreach item="value" collection="filter.value" separator="," open="(" close=")">
+            <choose>
+                <when test="filter.property == 'uuid' or filter.property == 'template-uuid' or filter.property == 'created-by'">
+                    #{value}::uuid
+                </when>
+                <otherwise>
+                    #{value}
+                </otherwise>
+            </choose>
+        </foreach>
+    </sql>
+
+    <sql id="getExpression">
+        <choose>
+            <when test="filter.operand.name == 'EQUALS' and filter.property != 'start-time' and filter.property != 'end-time'">
+                <include refid="getFilterField"/>
+                = '${filter.value}'
+            </when>
+
+            <when test="filter.operand.name == 'NOT_EQUALS' and filter.property != 'start-time' and filter.property != 'end-time'">
+                <include refid="getFilterField"/>
+                != '${filter.value}'
+            </when>
+
+            <when test="filter.operand.name == 'IN' and filter.property != 'start-time' and filter.property != 'end-time'">
+                <include refid="getFilterField"/>
+                IN
+                <include refid="prepareValues"/>
+            </when>
+            <when test="filter.operand.name == 'NOT_IN' and filter.property != 'start-time' and filter.property != 'end-time'">
+                <include refid="getFilterField"/>
+                NOT IN
+                <include refid="prepareValues"/>
+            </when>
+            <when test="filter.operand.name == 'NULL'">
+                <if test="filter.value == 'true'">
+                    <include refid="getFilterField"/>
+                    IS NULL
+                </if>
+                <if test="filter.value == 'false'">
+                    <include refid="getFilterField"/>
+                    IS NOT NULL
+                </if>
+            </when>
+            <when test="filter.operand.name == 'LESS_THAN' and (filter.property == 'start-time' or filter.property == 'end-time')">
+                <include refid="getFilterField"/> &lt; '${filter.value}'
+            </when>
+            <when test="filter.operand.name == 'LESS_THAN_EQUALS' and (filter.property == 'start-time' or filter.property == 'end-time')">
+                <include refid="getFilterField"/> &lt;= '${filter.value}'
+            </when>
+            <when test="filter.operand.name == 'GREATER_THAN' and (filter.property == 'start-time' or filter.property == 'end-time')">
+                <include refid="getFilterField"/> &gt; '${filter.value}'
+            </when>
+            <when test="filter.operand.name == 'GREATER_THAN_EQUALS' and (filter.property == 'start-time' or filter.property == 'end-time')">
+                <include refid="getFilterField"/> &gt;= '${filter.value}'
+            </when>
+        </choose>
+    </sql>
+
+    <insert id="intCreate" flushCache="true" parameterType="com.tesco.pma.cycle.api.PMCycle">
         INSERT INTO pm_cycle
         (uuid,
          entry_config_key,
@@ -66,14 +161,17 @@
                 #{cycle.endTime},
                 #{cycle.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
                 #{cycle.metadata, jdbcType=OTHER, typeHandler=com.tesco.pma.cycle.dao.utils.PMCycleJsonbTypeHandler})
-        ON CONFLICT ON CONSTRAINT pm_cycle_pk
-            DO UPDATE SET name    = #{cycle.name},
-                          type_id = #{cycle.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleType},
-                          status_id = #{cycle.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus},
-                          start_time = #{cycle.startTime},
-                          end_time = #{cycle.endTime},
-                          properties = #{cycle.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-                          metadata = #{cycle.metadata, jdbcType=OTHER, typeHandler=com.tesco.pma.cycle.dao.utils.PMCycleJsonbTypeHandler}
+    </insert>
+
+    <update id="update">
+        UPDATE pm_cycle
+        SET name = #{cycle.name},
+        type_id = #{cycle.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleType},
+        status_id = #{cycle.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus},
+        start_time = #{cycle.startTime},
+        end_time = #{cycle.endTime},
+        properties = #{cycle.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+        metadata = #{cycle.metadata, jdbcType=OTHER, typeHandler=com.tesco.pma.cycle.dao.utils.PMCycleJsonbTypeHandler}
         WHERE pm_cycle.uuid = #{cycle.uuid}
         <if test="statusFilter != null and !statusFilter.isEmpty()">
             AND pm_cycle.status_id <if test="!statusFilter.isInclude()">NOT</if> IN
@@ -81,7 +179,7 @@
                 #{s.id}
             </foreach>
         </if>
-    </insert>
+    </update>
 
     <select id="read" resultMap="cycleResultMap">
         SELECT *
@@ -96,16 +194,6 @@
         WHERE uuid = #{uuid}
         <include refid="addStatusIdCondition"/>
     </update>
-
-    <update id="update">
-        UPDATE pm_cycle
-        SET name = #{cycle.name},
-            start_time = #{cycle.startTime},
-            properties = #{cycle.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-            metadata   = #{cycle.metadata, jdbcType=OTHER, typeHandler=com.tesco.pma.cycle.dao.utils.PMCycleJsonbTypeHandler}
-        WHERE uuid = #{cycle.uuid}
-    </update>
-
 
     <select id="getAll" resultMap="cycleResultMap">
         SELECT uuid,
@@ -122,6 +210,12 @@
             ,metadata
         </if>
         FROM pm_cycle
+        WHERE 1 = 1
+        <if test="!requestQuery.filters.isEmpty()">
+            <foreach collection="requestQuery.filters" item="filter" index="index" open=" AND " separator=" AND ">
+                <include refid="getExpression"/>
+            </foreach>
+        </if>
     </select>
 
     <select id="getByColleague" resultMap="cycleResultMap">

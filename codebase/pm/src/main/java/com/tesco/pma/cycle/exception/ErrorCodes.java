@@ -9,6 +9,14 @@ public enum ErrorCodes implements ErrorCodeAware {
      */
     PM_CYCLE_NOT_FOUND_BY_UUID,
     /**
+     * Cycle not found by uuid and available statuses
+     */
+    PM_CYCLE_NOT_FOUND_BY_UUID_AND_STATUS,
+    /**
+     * Cycle not allowed to start
+     */
+    PM_CYCLE_NOT_ALLOWED_TO_START,
+    /**
      * Cycle not found
      */
     PM_CYCLE_NOT_FOUND,

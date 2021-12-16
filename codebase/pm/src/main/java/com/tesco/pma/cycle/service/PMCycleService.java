@@ -23,7 +23,7 @@ public interface PMCycleService {
      * @throws DatabaseConstraintViolationException PMCycle already exist.
      */
     PMCycle create(@NotNull PMCycle cycle,
-                   UUID loggedUserName);
+                   UUID loggedUserUUID);
 
     /**
      * Publish performance cycle
@@ -32,7 +32,7 @@ public interface PMCycleService {
      * @return published PMCycle
      */
     PMCycle publish(@NotNull PMCycle cycle,
-                    UUID loggedUserName);
+                    UUID loggedUserUUID);
 
     /**
      * Update PMCycle status

@@ -143,7 +143,7 @@ public class PMCycleEndpoint {
      * @param includeMetadata includeMetadata (true/false)
      * @return a RestResponse parameterized with list of PMCycle
      */
-    @Operation(summary = "Get all performance cycles for status",
+    @Operation(summary = "Get all performance cycles",
             tags = {"performance-cycle"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found all performance cycles with status")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycles for the status not found",
