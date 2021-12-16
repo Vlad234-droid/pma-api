@@ -158,7 +158,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     }
 
     private void sendEvent(UUID colleagueUuid) {
-        var event = new EventSupport(EventNames.CEP_NEW_COLLEAGUE);
+        var event = new EventSupport(EventNames.CEP_COLLEAGUE_ADDED);
         Map<String, Serializable> properties = new HashMap<>();
         properties.put(EventParams.COLLEAGUE_UUID.name(), colleagueUuid);
         event.setEventProperties(properties);
