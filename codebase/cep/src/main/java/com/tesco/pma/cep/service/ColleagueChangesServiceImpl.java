@@ -113,7 +113,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         userManagementService.changeAccountStatus(changeAccountStatusRequest);
 
         // Send event to Camunda
-        sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.CEP_COLLEAGUE_LEAVED);
+        sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.CEP_COLLEAGUE_LEFT);
 
         return 1;
     }

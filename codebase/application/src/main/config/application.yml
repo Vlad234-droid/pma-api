@@ -227,7 +227,7 @@ tesco:
       # CEP events
       CEP_COLLEAGUE_ADDED: com.tesco.pma.bpm.action.RunFlowByEventAction
       CEP_COLLEAGUE_UPDATED: com.tesco.pma.bpm.action.RunFlowByEventAction
-      CEP_COLLEAGUE_LEAVED: com.tesco.pma.bpm.action.RunFlowByEventAction
+      CEP_COLLEAGUE_LEFT: com.tesco.pma.bpm.action.RunFlowByEventAction
     user-management:
         page:
           size: 100

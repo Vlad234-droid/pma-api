@@ -373,7 +373,7 @@
   <bpmn:message id="Message_1l9x4m5" name="IMPORT_NEW_COLLEAGUE" />
   <bpmn:message id="Message_0floo8z" name="CEP_COLLEAGUE_ADDED" />
   <bpmn:message id="Message_0vrpev4" name="CEP_COLLEAGUE_UPDATED" />
-  <bpmn:message id="Message_1rwxjun" name="CEP_COLLEAGUE_LEAVED" />
+  <bpmn:message id="Message_1rwxjun" name="CEP_COLLEAGUE_LEFT" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="type_1_test">
       <bpmndi:BPMNEdge id="Flow_1q25lda_di" bpmnElement="Flow_1q25lda">
