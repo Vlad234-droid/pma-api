@@ -26,6 +26,14 @@ public interface ProfileService {
     Optional<ColleagueProfile> findProfileByColleagueUuid(@NotNull UUID colleagueUuid);
 
     /**
+     * Finds profile by colleague IAM Id.
+     *
+     * @param iamId colleague iamId, not null.
+     * @return Optional with user, {@link Optional#empty()} if not found.
+     */
+    Optional<ColleagueProfile> findProfileByColleagueIamId(@NotNull String iamId);
+
+    /**
      * Update profile attributes
      *
      * @param profileAttributes

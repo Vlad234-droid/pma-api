@@ -2,6 +2,7 @@ package com.tesco.pma.configuration;
 
 import lombok.experimental.UtilityClass;
 
+import java.time.ZoneOffset;
 import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -20,6 +21,7 @@ import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 public class DateTimeFormatters { //NOPMD
 
     private static final int DIGITS_MILLISECOND_COUNT = 3;
+    private static final String ISO_INSTANT_PATTERN_WITH_OPTIONAL_LAST_PART = "yyyy-MM-dd'T'HH:mm:ss[.SSS]['Z']";
 
     /**
      * The ISO-8601 compatible formatter for LocalTime that formats or parses a LocalTime.
@@ -61,8 +63,9 @@ public class DateTimeFormatters { //NOPMD
      */
     static final DateTimeFormatter ISO_INSTANT_WITH_THREE_DIGIT_MILLISECOND = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
-            .appendInstant(DIGITS_MILLISECOND_COUNT).toFormatter()
-            .withResolverStyle(ResolverStyle.STRICT)
+            .appendPattern(ISO_INSTANT_PATTERN_WITH_OPTIONAL_LAST_PART).toFormatter()
+            .withResolverStyle(ResolverStyle.SMART)
+            .withZone(ZoneOffset.UTC)
             .withChronology(null);
 
     /**

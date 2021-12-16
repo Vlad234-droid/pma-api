@@ -2,21 +2,16 @@ package com.tesco.pma.user;
 
 import com.tesco.pma.api.User;
 import com.tesco.pma.colleague.api.Colleague;
-import com.tesco.pma.colleague.api.Contact;
 import com.tesco.pma.colleague.api.FindColleaguesRequest;
-import com.tesco.pma.colleague.api.Profile;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.configuration.security.AppendGrantedAuthoritiesBearerTokenAuthenticationMerger;
 import com.tesco.pma.exception.ExternalSystemException;
 import com.tesco.pma.security.UserRoleNames;
 import com.tesco.pma.service.colleague.client.ColleagueApiClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
-import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.HttpClientErrorException;
@@ -55,32 +50,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> findUserByIamId(final String iamId) {
-        final List<Colleague> colleagues;
-        try {
-            colleagues = colleagueApiClient.findColleagues(FindColleaguesRequest.builder().iamId(iamId).build());
-        } catch (RestClientException e) {
-            throw colleagueApiException(e);
-        }
-
-        if (colleagues.isEmpty()) {
+        ColleagueProfile colleagueProfile = tryFindColleagueProfileByIamId(iamId);
+        if (colleagueProfile != null) {
+            return Optional.of(mapColleagueProfileToUser(colleagueProfile));
+        } else {
             return Optional.empty();
-        } else if (colleagues.size() > 1) {
-            throw new ExternalSystemException(COLLEAGUE_API_UNEXPECTED_RESULT.getCode(),
-                    messages.getMessage(COLLEAGUE_API_UNEXPECTED_RESULT,
-                            Map.of("reason", "more then one colleague found for iamId: " + iamId)));
         }
-        var user = mapColleagueToUser(colleagues.iterator().next());
-        return Optional.of(user);
     }
 
     /**
      * {@inheritDoc}
      *
      * <p>Tries to obtain User info from Colleague Api.
-     * If a colleague not found fallback to OneLogin token User info.
      * Also extracts user roles from {@link Authentication#getAuthorities()}
      *
-     * @see AppendGrantedAuthoritiesBearerTokenAuthenticationMerger
      * @see UserRoleNames
      */
     @Override
@@ -95,22 +78,6 @@ public class UserServiceImpl implements UserService {
         }
 
         var user = findUserByColleagueUuidInternal(colleagueUuid).orElse(null);
-        if (user == null) {
-            //fallback to onelogin token if provided
-            final var auth2UserAuthority = authentication.getAuthorities().stream()
-                    .filter(OAuth2UserAuthority.class::isInstance)
-                    .map(OAuth2UserAuthority.class::cast)
-                    .findAny();
-
-            if (auth2UserAuthority.isPresent()) {
-                var colleague = new Colleague();
-                colleague.setColleagueUUID(colleagueUuid);
-                user = new User();
-                user.setColleague(colleague);
-                mapOidcUserInfoToUser(new OidcUserInfo(auth2UserAuthority.get().getAttributes()), user);
-            }
-        }
-
         if (user != null) {
             final var roles = authentication.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
@@ -121,6 +88,35 @@ public class UserServiceImpl implements UserService {
         }
 
         return Optional.ofNullable(user);
+    }
+
+    private ColleagueProfile tryFindColleagueProfileByIamId(String iamId) {
+        // First attempt - try to find in local storage
+        var optionalColleagueProfile = profileService.findProfileByColleagueIamId(iamId);
+        if (optionalColleagueProfile.isPresent()) {
+            return optionalColleagueProfile.get();
+        }
+
+        // Second attempt - try to find with using external Colleague Facts API
+        final List<Colleague> colleagues;
+        try {
+            colleagues = colleagueApiClient.findColleagues(FindColleaguesRequest.builder().iamId(iamId).build());
+        } catch (RestClientException e) {
+            throw colleagueApiException(e);
+        }
+
+        if (colleagues.isEmpty()) {
+            return null;
+        } else if (colleagues.size() > 1) {
+            throw new ExternalSystemException(COLLEAGUE_API_UNEXPECTED_RESULT.getCode(),
+                    messages.getMessage(COLLEAGUE_API_UNEXPECTED_RESULT,
+                            Map.of("reason", "more then one colleague found for iamId: " + iamId)));
+        }
+
+        var colleagueProfile = new ColleagueProfile();
+        colleagueProfile.setColleague(colleagues.iterator().next());
+
+        return colleagueProfile;
     }
 
     private Optional<User> findUserByColleagueUuidInternal(final UUID colleagueUuid) {
@@ -161,34 +157,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private User mapColleagueToUser(final Colleague source) {
-        final var user = new User();
-        user.setColleague(source);
-        return user;
-    }
-
     private User mapColleagueProfileToUser(final ColleagueProfile source) {
         final var user = new User();
         user.setColleague(source.getColleague());
         user.setProfileAttributes(source.getProfileAttributes());
         return user;
-    }
-
-    private User mapOidcUserInfoToUser(OidcUserInfo source, User target) {
-        var profile = new Profile();
-        profile.setFirstName(source.getGivenName());
-        profile.setMiddleName(source.getMiddleName());
-        profile.setGender(source.getGender());
-        profile.setLastName(source.getFamilyName());
-
-        var contact = new Contact();
-        contact.setEmail(source.getEmail());
-
-        var colleague = target.getColleague();
-        colleague.setProfile(profile);
-        colleague.setContact(contact);
-
-        return target;
     }
 
     private ExternalSystemException colleagueApiException(RestClientException restClientException) {

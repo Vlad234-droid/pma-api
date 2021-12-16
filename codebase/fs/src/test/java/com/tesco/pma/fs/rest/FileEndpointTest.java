@@ -155,6 +155,21 @@ public class FileEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
+    void uploadFilesUnsuccessWithIncorrectFileDateBadRequest() throws Exception {
+        var multipartUploadMetadataMock = getUploadMetadataMultipartFile("test_metadata_invalid_date.json");
+        var multipartFileMock = getMultipartFileToUpload(CONTENT);
+
+        var dataFile = buildFileData(FILE_UUID_1, 1);
+
+        when(this.service.upload(any(), any(), any())).thenReturn(dataFile);
+
+        final var result = performMultipartWithMetadata(multipartUploadMetadataMock, multipartFileMock,
+                status().isBadRequest(), FILES_URL);
+
+        assertResponseContent(result.getResponse(), "files_upload_failed_invalid_date_response.json");
+    }
+
+    @Test
     void uploadFilesUnsuccessWithInternalServerError() throws Exception {
         var multipartUploadMetadataMock = getUploadMetadataMultipartFile("test_metadata.json");
         var multipartFileMock = getMultipartFileToUpload(CONTENT);

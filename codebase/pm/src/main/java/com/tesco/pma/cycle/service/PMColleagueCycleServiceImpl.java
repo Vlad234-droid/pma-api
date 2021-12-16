@@ -44,6 +44,11 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
     }
 
     @Override
+    public List<PMColleagueCycle> getByCycleUuidWithoutTimelinePoint(UUID cycleUuid) {
+        return dao.getByCycleUuidWithoutTimelinePoint(cycleUuid);
+    }
+
+    @Override
     public void saveColleagueCycles(Collection<PMColleagueCycle> colleagueCycles) {
         batchService.executeDBOperationInBatch(colleagueCycles, dao::saveAll);
     }
