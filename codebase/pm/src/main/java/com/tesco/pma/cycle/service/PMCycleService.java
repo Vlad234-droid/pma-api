@@ -23,7 +23,7 @@ public interface PMCycleService {
      * @throws DatabaseConstraintViolationException PMCycle already exist.
      */
     PMCycle create(@NotNull PMCycle cycle,
-                   String loggedUserName);
+                   UUID loggedUserName);
 
     /**
      * Publish performance cycle
@@ -32,7 +32,7 @@ public interface PMCycleService {
      * @return published PMCycle
      */
     PMCycle publish(@NotNull PMCycle cycle,
-                    String loggedUserName);
+                    UUID loggedUserName);
 
     /**
      * Update PMCycle status
@@ -92,5 +92,9 @@ public interface PMCycleService {
      * @return PMCycleMetadata
      */
     PMCycleMetadata getMetadata(@NotNull UUID fileUuid);
+
+    String  deploy(PMCycle cycle);
+
+    void start(UUID cycleUUID, String processId);
 }
 

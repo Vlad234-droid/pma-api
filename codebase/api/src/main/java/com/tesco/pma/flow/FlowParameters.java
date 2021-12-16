@@ -1,4 +1,4 @@
-package com.tesco.pma.flow.handlers;
+package com.tesco.pma.flow;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:vadim.shatokhin1@tesco.com">vadim.shatokhin1@tesco.com</a>

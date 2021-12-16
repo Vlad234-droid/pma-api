@@ -1,0 +1,54 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+
+    <changeSet author="imatviichuk" id="1">
+        <comment>Update table pm_cycle_status</comment>
+        <insert tableName="pm_cycle_status">
+            <column name="id" value="6"/>
+            <column name="code" value="REGISTERED"/>
+            <column name="description" value="Performance cycle is registered"/>
+        </insert>
+        <insert tableName="pm_cycle_status">
+            <column name="id" value="7"/>
+            <column name="code" value="STARTED"/>
+            <column name="description" value="Performance cycle is started"/>
+        </insert>
+        <insert tableName="pm_cycle_status">
+            <column name="id" value="8"/>
+            <column name="code" value="SUSPENDED"/>
+            <column name="description" value="Performance cycle is suspended"/>
+        </insert>
+        <insert tableName="pm_cycle_status">
+            <column name="id" value="9"/>
+            <column name="code" value="TERMINATED"/>
+            <column name="description" value="Performance cycle is terminated"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="pm_cycle_status">
+                <where>code = 'REGISTERED'</where>
+            </delete>
+        </rollback>
+        <rollback>
+            <delete tableName="pm_cycle_status">
+                <where>code = 'STARTED'</where>
+            </delete>
+        </rollback>
+        <rollback>
+            <delete tableName="pm_cycle_status">
+                <where>code = 'SUSPENDED'</where>
+            </delete>
+        </rollback>
+        <rollback>
+            <delete tableName="pm_cycle_status">
+                <where>code = 'TERMINATED'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+
+
+</databaseChangeLog>
