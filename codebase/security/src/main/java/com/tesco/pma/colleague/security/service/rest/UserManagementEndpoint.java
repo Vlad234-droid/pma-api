@@ -35,7 +35,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  *
  */
 @RestController
-@RequestMapping(path = "/internal/user-management", produces = APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/user-management", produces = APPLICATION_JSON_VALUE)
 @Validated
 @RequiredArgsConstructor
 public class UserManagementEndpoint {
