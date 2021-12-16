@@ -345,6 +345,8 @@
       <bpmn:incoming>Flow_0nbbfyl</bpmn:incoming>
       <bpmn:incoming>Flow_1q25lda</bpmn:incoming>
       <bpmn:incoming>Flow_028ibfq</bpmn:incoming>
+      <bpmn:incoming>Flow_1pvj2nt</bpmn:incoming>
+      <bpmn:incoming>Flow_1k3ms4q</bpmn:incoming>
       <bpmn:outgoing>Flow_1qhm8xl</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:startEvent id="Event_03cxyfj">
@@ -357,9 +359,21 @@
       <bpmn:messageEventDefinition id="MessageEventDefinition_1gkga0u" messageRef="Message_0floo8z" />
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_028ibfq" sourceRef="Event_05mcckn" targetRef="processColleagueCycles" />
+    <bpmn:startEvent id="Event_0kyklc6">
+      <bpmn:outgoing>Flow_1pvj2nt</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_08anhzz" messageRef="Message_0vrpev4" />
+    </bpmn:startEvent>
+    <bpmn:startEvent id="Event_17g4ocj">
+      <bpmn:outgoing>Flow_1k3ms4q</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1q63z0q" messageRef="Message_1rwxjun" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1pvj2nt" sourceRef="Event_0kyklc6" targetRef="processColleagueCycles" />
+    <bpmn:sequenceFlow id="Flow_1k3ms4q" sourceRef="Event_17g4ocj" targetRef="processColleagueCycles" />
   </bpmn:process>
   <bpmn:message id="Message_1l9x4m5" name="IMPORT_NEW_COLLEAGUE" />
   <bpmn:message id="Message_0floo8z" name="CEP_COLLEAGUE_ADDED" />
+  <bpmn:message id="Message_0vrpev4" name="CEP_COLLEAGUE_UPDATED" />
+  <bpmn:message id="Message_1rwxjun" name="CEP_COLLEAGUE_LEAVED" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="type_1_test">
       <bpmndi:BPMNEdge id="Flow_1q25lda_di" bpmnElement="Flow_1q25lda">
@@ -445,11 +459,29 @@
         <di:waypoint x="218" y="740" />
         <di:waypoint x="240" y="740" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1pvj2nt_di" bpmnElement="Flow_1pvj2nt">
+        <di:waypoint x="196" y="890" />
+        <di:waypoint x="218" y="890" />
+        <di:waypoint x="218" y="740" />
+        <di:waypoint x="240" y="740" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1k3ms4q_di" bpmnElement="Flow_1k3ms4q">
+        <di:waypoint x="196" y="952" />
+        <di:waypoint x="218" y="952" />
+        <di:waypoint x="218" y="740" />
+        <di:waypoint x="240" y="740" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_00rumxw_di" bpmnElement="Event_05mcckn">
         <dc:Bounds x="160" y="802" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="137" y="845" width="82" height="27" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1pmu2u4_di" bpmnElement="Event_17g4ocj">
+        <dc:Bounds x="160" y="934" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ikxbep_di" bpmnElement="Event_0kyklc6">
+        <dc:Bounds x="160" y="872" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1bu82ro_di" bpmnElement="objectives" isExpanded="true">
         <dc:Bounds x="480" y="810" width="570" height="160" />

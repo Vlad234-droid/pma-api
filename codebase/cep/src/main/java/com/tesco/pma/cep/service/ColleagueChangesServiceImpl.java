@@ -98,7 +98,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
         // Send event to Camunda
         if (updated > 0) {
-            sendEvent(colleagueChangeEventPayload.getColleagueUuid());
+            sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.CEP_COLLEAGUE_ADDED);
         }
 
         return updated;
@@ -111,13 +111,24 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         changeAccountStatusRequest.setName(account.getName());
         changeAccountStatusRequest.setStatus(AccountStatus.DISABLED);
         userManagementService.changeAccountStatus(changeAccountStatusRequest);
+
+        // Send event to Camunda
+        sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.CEP_COLLEAGUE_LEAVED);
+
         return 1;
     }
 
     // TODO If logic different from main flow
     private int processMoverEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
-        return profileService.updateColleague(colleagueChangeEventPayload.getColleagueUuid(),
+        var updated = profileService.updateColleague(colleagueChangeEventPayload.getColleagueUuid(),
                 colleagueChangeEventPayload.getChangedAttributes());
+
+        // Send event to Camunda
+        if (updated > 0) {
+            sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.CEP_COLLEAGUE_UPDATED);
+        }
+
+        return updated;
     }
 
     // TODO If logic different from main flow
@@ -157,8 +168,8 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         userManagementService.createAccount(request);
     }
 
-    private void sendEvent(UUID colleagueUuid) {
-        var event = new EventSupport(EventNames.CEP_COLLEAGUE_ADDED);
+    private void sendEvent(UUID colleagueUuid, EventNames eventName) {
+        var event = new EventSupport(eventName);
         Map<String, Serializable> properties = new HashMap<>();
         properties.put(EventParams.COLLEAGUE_UUID.name(), colleagueUuid);
         event.setEventProperties(properties);
