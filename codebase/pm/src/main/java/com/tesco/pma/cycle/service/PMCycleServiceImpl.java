@@ -182,7 +182,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
     @Override
-    public PMCycleMetadata getMetadata(UUID fileUuid) {
+    public PMCycleMetadata getFileMetadata(UUID fileUuid) {
         var file = fileService.get(fileUuid, true);
         var model = Bpmn.readModelFromStream(new ByteArrayInputStream(file.getFileContent()));
         var parser = new PMProcessModelParser(resourceProvider, messageSourceAccessor);
