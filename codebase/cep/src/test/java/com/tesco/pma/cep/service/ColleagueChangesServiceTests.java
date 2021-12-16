@@ -64,14 +64,14 @@ class ColleagueChangesServiceTests {
                 .thenReturn(Map.of(feedCode, feedId));
         when(mockProfileService.getColleague(COLLEAGUE_UUID))
                 .thenReturn(colleague(COLLEAGUE_UUID));
-        when(mockProfileService.saveColleague(COLLEAGUE_UUID))
+        when(mockProfileService.create(COLLEAGUE_UUID))
                 .thenReturn(1);
 
         colleagueChangesService.processColleagueChangeEvent(feedId, colleagueChangeEventPayload);
 
         verify(mockCepSubscribeProperties, times(1)).getFeeds();
         verify(mockProfileService, times(1)).getColleague(COLLEAGUE_UUID);
-        verify(mockProfileService, times(1)).saveColleague(COLLEAGUE_UUID);
+        verify(mockProfileService, times(1)).create(COLLEAGUE_UUID);
         verify(mockUserManagementService, times(1)).createAccount(any(CreateAccountRequest.class));
     }
 

@@ -72,7 +72,7 @@ public interface ProfileService {
      * @param colleagueUuid
      * @return Number of updated records
      */
-    int saveColleague(@NotNull UUID colleagueUuid);
+    int create(@NotNull UUID colleagueUuid);
 
     /**
      * Find colleague by uuid

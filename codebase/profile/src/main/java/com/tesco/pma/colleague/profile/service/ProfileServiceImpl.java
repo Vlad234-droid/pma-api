@@ -194,7 +194,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public int saveColleague(UUID colleagueUuid) {
+    public int create(UUID colleagueUuid) {
         var existingLocalColleague = profileDAO.getColleague(colleagueUuid);
         if (existingLocalColleague != null) {
             return updateColleague(colleagueUuid, List.of());

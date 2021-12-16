@@ -89,7 +89,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     }
 
     private int processJoinerEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
-        int updated = profileService.saveColleague(colleagueChangeEventPayload.getColleagueUuid());
+        int updated = profileService.create(colleagueChangeEventPayload.getColleagueUuid());
 
         // Add new account
         if (updated > 0) {
