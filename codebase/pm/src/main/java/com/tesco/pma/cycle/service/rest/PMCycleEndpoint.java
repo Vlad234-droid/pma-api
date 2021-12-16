@@ -211,7 +211,7 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Exception while parsing a form")
     @GetMapping(value = "/pm-cycles/files/{uuid}/metadata", produces = APPLICATION_JSON_VALUE)
     public RestResponse<PMCycleMetadata> getPmCycleMetadata(@PathVariable("uuid") UUID uuid) {
-        return success(service.getMetadata(uuid));
+        return success(service.getFileMetadata(uuid));
     }
 
     private String jsonMetadataToRestResponse(String jsonMetadata) {
