@@ -26,9 +26,9 @@ dependencies {
     implementation ("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-webapp:${camundaVersion}")
 
     //makes camunda serialize/deserialize in json/xml
-    implementation ("org.camunda.spin:camunda-spin-core:1.13.0")
-    implementation ("org.camunda.spin:camunda-spin-dataformat-json-jackson:1.13.0")
-    implementation 'org.camunda.bpm:camunda-engine-plugin-spin:7.16.0'
+    implementation ("org.camunda.spin:camunda-spin-core:${camundaSpinVersion}")
+    implementation ("org.camunda.spin:camunda-spin-dataformat-json-jackson:${camundaSpinVersion}")
+    implementation ("org.camunda.bpm:camunda-engine-plugin-spin:${camundaVersion}")
 
     testImplementation ("com.h2database:h2:${h2Version}")
     testImplementation ("com.zaxxer:HikariCP:${hikariVersion}")
@@ -53,9 +53,9 @@ dependencies {
     testRuntimeOnly "org.liquibase:liquibase-core:${liquibaseVersion}"
     testRuntimeOnly project(':db-pma')
 
-    testRuntimeOnly("de.odysseus.juel:juel-api:2.2.7")
-    testRuntimeOnly("de.odysseus.juel:juel-impl:2.2.7")
-    testRuntimeOnly("de.odysseus.juel:juel-spi:2.2.7")
+    testRuntimeOnly("de.odysseus.juel:juel-api:${juelVersion}")
+    testRuntimeOnly("de.odysseus.juel:juel-impl:${juelVersion}")
+    testRuntimeOnly("de.odysseus.juel:juel-spi:${juelVersion}")
 }
 
 dependencyManagement {
