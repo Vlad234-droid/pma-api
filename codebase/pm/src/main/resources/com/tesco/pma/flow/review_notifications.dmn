@@ -31,6 +31,11 @@
           <text>IS_MANAGER</text>
         </inputExpression>
       </input>
+      <input id="InputClause_1t103wm" label="Reminder">
+        <inputExpression id="LiteralExpression_10j38y5" typeRef="string">
+          <text>COLLEAGUE_REMINDERS</text>
+        </inputExpression>
+      </input>
       <input id="InputClause_0u1chj8" label="Notification attribute value">
         <inputExpression id="LiteralExpression_0jiwba7" typeRef="boolean">
           <text>{
@@ -62,6 +67,9 @@ and attr.getValue() = "true",
         <inputEntry id="UnaryTests_1pa49aq">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_0g500zo">
+          <text></text>
+        </inputEntry>
         <inputEntry id="UnaryTests_1up8hg0">
           <text>true</text>
         </inputEntry>
@@ -81,6 +89,9 @@ and attr.getValue() = "true",
         </inputEntry>
         <inputEntry id="UnaryTests_1pao4ot">
           <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_00gbbvz">
+          <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_0z5x8ed">
           <text>true</text>
@@ -102,6 +113,9 @@ and attr.getValue() = "true",
         <inputEntry id="UnaryTests_159zctw">
           <text>true</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_01tq7kn">
+          <text></text>
+        </inputEntry>
         <inputEntry id="UnaryTests_1ogftnk">
           <text>true</text>
         </inputEntry>
@@ -120,6 +134,9 @@ and attr.getValue() = "true",
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_1lhshp7">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1vxn23u">
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_0mqb0r7">
@@ -142,6 +159,9 @@ and attr.getValue() = "true",
         <inputEntry id="UnaryTests_1a8t90x">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_0147tey">
+          <text></text>
+        </inputEntry>
         <inputEntry id="UnaryTests_1xbq61l">
           <text>true</text>
         </inputEntry>
@@ -160,6 +180,9 @@ and attr.getValue() = "true",
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_1qncg8f">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0gyid44">
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_1tsions">
@@ -182,6 +205,9 @@ and attr.getValue() = "true",
         <inputEntry id="UnaryTests_153d3hy">
           <text>true</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_02gmwb7">
+          <text></text>
+        </inputEntry>
         <inputEntry id="UnaryTests_0o7s6b4">
           <text>true</text>
         </inputEntry>
@@ -200,6 +226,9 @@ and attr.getValue() = "true",
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_1qhctv6">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_04kmq8t">
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_1vj5y2z">
@@ -222,6 +251,9 @@ and attr.getValue() = "true",
         <inputEntry id="UnaryTests_0m4shc9">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1n5ss4i">
+          <text></text>
+        </inputEntry>
         <inputEntry id="UnaryTests_03yoj9i">
           <text>true</text>
         </inputEntry>
@@ -240,6 +272,9 @@ and attr.getValue() = "true",
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_1onb8dp">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1lh4kj5">
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_1s9gh7p">
@@ -262,6 +297,9 @@ and attr.getValue() = "true",
         <inputEntry id="UnaryTests_17z1um1">
           <text>true</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_0xn1mvm">
+          <text></text>
+        </inputEntry>
         <inputEntry id="UnaryTests_16c22es">
           <text>true</text>
         </inputEntry>
@@ -280,6 +318,9 @@ and attr.getValue() = "true",
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_1lj9is7">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1713gyx">
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_040bt43">
@@ -302,6 +343,9 @@ and attr.getValue() = "true",
         <inputEntry id="UnaryTests_0brreqr">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_11788bc">
+          <text></text>
+        </inputEntry>
         <inputEntry id="UnaryTests_1eiasgr">
           <text>true</text>
         </inputEntry>
@@ -312,7 +356,7 @@ and attr.getValue() = "true",
       <rule id="DecisionRule_0k5q2rg">
         <description></description>
         <inputEntry id="UnaryTests_11aaqfm">
-          <text>"TIP_RECEIVED"</text>
+          <text>"RECEIVE_TIPS"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1bhj09l">
           <text></text>
@@ -321,6 +365,9 @@ and attr.getValue() = "true",
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_0gwfijc">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0va88sv">
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_11188id">
@@ -343,6 +390,9 @@ and attr.getValue() = "true",
         <inputEntry id="UnaryTests_0za3gcx">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1i910a9">
+          <text></text>
+        </inputEntry>
         <inputEntry id="UnaryTests_1sgth8d">
           <text>true</text>
         </inputEntry>
@@ -363,6 +413,9 @@ and attr.getValue() = "true",
         <inputEntry id="UnaryTests_0xa0ulu">
           <text>true</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1grkm4c">
+          <text></text>
+        </inputEntry>
         <inputEntry id="UnaryTests_0jmqy56">
           <text>true</text>
         </inputEntry>
@@ -381,6 +434,9 @@ and attr.getValue() = "true",
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_16t91id">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_134e8rh">
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_03cufzx">
@@ -403,6 +459,9 @@ and attr.getValue() = "true",
         <inputEntry id="UnaryTests_0qn428k">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_06z9u3e">
+          <text></text>
+        </inputEntry>
         <inputEntry id="UnaryTests_0ltl835">
           <text>true</text>
         </inputEntry>
@@ -421,6 +480,9 @@ and attr.getValue() = "true",
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_1shzc80">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0gtsri9">
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_1r43vup">
@@ -443,8 +505,11 @@ and attr.getValue() = "true",
         <inputEntry id="UnaryTests_0ylzogv">
           <text></text>
         </inputEntry>
-        <inputEntry id="UnaryTests_1yf1vtp">
+        <inputEntry id="UnaryTests_0xftsg1">
           <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1yf1vtp">
+          <text>true</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_01hhb8l">
           <text>true</text>
@@ -463,8 +528,11 @@ and attr.getValue() = "true",
         <inputEntry id="UnaryTests_0u7nn71">
           <text></text>
         </inputEntry>
-        <inputEntry id="UnaryTests_10qishv">
+        <inputEntry id="UnaryTests_0vp41qe">
           <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_10qishv">
+          <text>true</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0ho27dg">
           <text>true</text>
@@ -472,7 +540,7 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_1q1zehi">
         <inputEntry id="UnaryTests_06ij7o2">
-          <text></text>
+          <text>"Q1_REMINDER"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0nrxqvk">
           <text></text>
@@ -483,16 +551,19 @@ and attr.getValue() = "true",
         <inputEntry id="UnaryTests_1i8un7t">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_0pjgv55">
+          <text>contains(?, "Q1")</text>
+        </inputEntry>
         <inputEntry id="UnaryTests_00l5o73">
-          <text></text>
+          <text>true</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_126gzus">
-          <text>false</text>
+          <text>true</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0nisuw6">
         <inputEntry id="UnaryTests_0yim3nf">
-          <text></text>
+          <text>"Q3_REMINDER"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1sz1d5n">
           <text></text>
@@ -503,11 +574,129 @@ and attr.getValue() = "true",
         <inputEntry id="UnaryTests_0soew40">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_0p2rps8">
+          <text>contains(?, "Q3")</text>
+        </inputEntry>
         <inputEntry id="UnaryTests_170jexr">
-          <text></text>
+          <text>true</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_17q30jt">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0pmi0k1">
+        <inputEntry id="UnaryTests_00p21k5">
+          <text>"BEFORE_CYCLE_START_COLLEAGUE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_18rrf3n">
           <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0cm47w0">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1rclif5">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1bz3lq0">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ntv95x">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0v8elqc">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1gbb0fy">
+        <inputEntry id="UnaryTests_1fqomif">
+          <text>"BEFORE_CYCLE_END_COLLEAGUE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_17mmdjr">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0qgjsqs">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1d6psgh">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_06eiq45">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_057h98u">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0qd6f47">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0uz1ot7">
+        <inputEntry id="UnaryTests_0xaux4o">
+          <text>"BEFORE_CYCLE_START_LM"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_05p527r">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1rfhk1x">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_02tkh7c">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_16tce4j">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_00uyl85">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0ibk7tc">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_00jf3n6">
+        <inputEntry id="UnaryTests_0lqrq3i">
+          <text>"BEFORE_CYCLE_END_LM"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1tk8b4j">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1619ygk">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_14ozz1r">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1hrvb8m">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_02opk6n">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1b63fz3">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_052arhu">
+        <inputEntry id="UnaryTests_1evw3jv">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1gwf7oy">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0st6a85">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0kigd8e">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1f2ak0x">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0n10894">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_14bd62q">
+          <text>false</text>
         </outputEntry>
       </rule>
     </decisionTable>

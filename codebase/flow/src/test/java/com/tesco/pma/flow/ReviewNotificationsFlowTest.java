@@ -10,9 +10,12 @@ import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMReviewType;
+import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.flow.handlers.InitReviewNotification;
 import com.tesco.pma.flow.handlers.SendNotification;
+import com.tesco.pma.review.domain.TimelinePoint;
+import com.tesco.pma.review.service.ReviewService;
 import com.tesco.pma.service.contact.client.ContactApiClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,6 +44,7 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
     private static final String PM_REVIEW_DECLINED = "PM_REVIEW_DECLINED";
     private static final String PM_REVIEW_BEFORE_START = "PM_REVIEW_BEFORE_START";
     private static final String PM_REVIEW_BEFORE_END = "PM_REVIEW_BEFORE_END";
+    private static final String RECEIVE_TIPS = "RECEIVE_TIPS";
     private static final String ORGANISATION_OBJECTIVES = "ORGANISATION_OBJECTIVES";
     private static final String LM_OBJECTIVES_APPROVED_FOR_SHARING = "LM_OBJECTIVES_APPROVED_FOR_SHARING";
     private static final String LM_SHARING_START = "LM_SHARING_START";
@@ -48,6 +52,12 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
     private static final String FEEDBACK_GIVEN = "FEEDBACK_GIVEN";
     private static final String RESPOND_TO_FEEDBACK_REQUESTS = "RESPOND_TO_FEEDBACK_REQUESTS";
     private static final String REQUEST_FEEDBACK = "REQUEST_FEEDBACK";
+    private static final String Q1_REMINDER = "Q1_REMINDER";
+    private static final String Q3_REMINDER = "Q3_REMINDER";
+    private static final String BEFORE_CYCLE_START_COLLEAGUE = "BEFORE_CYCLE_START_COLLEAGUE";
+    private static final String BEFORE_CYCLE_END_COLLEAGUE = "BEFORE_CYCLE_END_COLLEAGUE";
+    private static final String BEFORE_CYCLE_START_LM = "BEFORE_CYCLE_START_LM";
+    private static final String BEFORE_CYCLE_END_LM = "BEFORE_CYCLE_END_LM";
 
     @SpyBean(name = "initReviewNotification")
     private InitReviewNotification initTask;
@@ -62,6 +72,9 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
     private ProfileService profileService;
 
     @MockBean
+    private ReviewService reviewService;
+
+    @MockBean
     private NamedMessageSourceAccessor messageSourceAccessor;
 
     private UUID colleagueUUID = UUID.randomUUID();
@@ -73,6 +86,9 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
 
         Mockito.when(profileService.findProfileByColleagueUuid(Mockito.any()))
                 .thenReturn(Optional.of(colleagueProfile));
+
+        Mockito.when(reviewService.getCycleTimelineByColleague(Mockito.any()))
+                .thenReturn(new ArrayList<>());
     }
 
     @Test
@@ -134,6 +150,51 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
         check(REQUEST_FEEDBACK, null, false, WorkLevel.WL1, true);
     }
 
+    @Test
+    void checkRemindersQ1() throws Exception {
+        Mockito.when(reviewService.getCycleTimelineByColleague(Mockito.any()))
+                .thenReturn(List.of(createTimelinePoint("Q1")));
+
+        check(Q1_REMINDER, null, false, WorkLevel.WL1, true);
+        check(Q3_REMINDER, null, false, WorkLevel.WL1, false);
+    }
+
+    @Test
+    void checkRemindersQ3() throws Exception {
+        Mockito.when(reviewService.getCycleTimelineByColleague(Mockito.any()))
+                .thenReturn(List.of(createTimelinePoint("Q3")));
+
+        check(Q3_REMINDER, null, false, WorkLevel.WL1, true);
+        check(Q1_REMINDER, null, false, WorkLevel.WL1, false);
+    }
+
+    @Test
+    void checkRemindersBoth() throws Exception {
+        Mockito.when(reviewService.getCycleTimelineByColleague(Mockito.any()))
+                .thenReturn(List.of(createTimelinePoint( "Q1"), createTimelinePoint( "Q3")));
+
+        check(Q1_REMINDER, null, false, WorkLevel.WL1, true);
+        check(Q3_REMINDER, null, false, WorkLevel.WL1, true);
+    }
+
+    @Test
+    void beforeCycleTest() throws Exception {
+        check(BEFORE_CYCLE_START_COLLEAGUE, null, false, WorkLevel.WL1, true);
+        check(BEFORE_CYCLE_END_COLLEAGUE, null, false, WorkLevel.WL1, true);
+
+        check(BEFORE_CYCLE_START_LM, null, true, WorkLevel.WL1, true);
+        check(BEFORE_CYCLE_END_LM, null, true, WorkLevel.WL1, true);
+
+        check(BEFORE_CYCLE_START_LM, null, false, WorkLevel.WL1, false);
+        check(BEFORE_CYCLE_END_LM, null, false, WorkLevel.WL1, false);
+
+    }
+
+    @Test
+    void checkReceiveTips() throws Exception {
+        check(RECEIVE_TIPS, null, false, WorkLevel.WL1, true);
+    }
+
     void check(String evenName, PMReviewType reviewType, Boolean isManager, boolean send) throws Exception {
         check(evenName, reviewType, isManager, null, send);
     }
@@ -180,5 +241,12 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
         attr.setName(name);
         attr.setValue(value);
         return attr;
+    }
+
+    private TimelinePoint createTimelinePoint(String code){
+        TimelinePoint tp = new TimelinePoint();
+        tp.setType(PMElementType.TIMELINE_POINT);
+        tp.setCode(code);
+        return tp;
     }
 }

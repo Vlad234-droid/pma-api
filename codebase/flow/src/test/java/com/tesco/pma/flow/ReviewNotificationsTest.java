@@ -57,6 +57,7 @@ public class ReviewNotificationsTest {
         variables.putValue(FlowParameters.PROFILE_ATTRIBUTE_NAME.name(), attrName);
         variables.putValue(FlowParameters.COLLEAGUE_PROFILE.name(), colleagueProfile);
         variables.putValue(FlowParameters.COLLEAGUE_WORK_LEVEL.name(), WorkLevel.WL1.name());
+        variables.putValue(FlowParameters.COLLEAGUE_REMINDERS.name(), new ArrayList<>());
 
         var result = dmnEngine.evaluateDecisionTable(decision, variables);
 
@@ -74,6 +75,7 @@ public class ReviewNotificationsTest {
         variables.putValue(FlowParameters.PROFILE_ATTRIBUTE_NAME.name(), "Attr name");
         variables.putValue(FlowParameters.COLLEAGUE_PROFILE.name(), colleagueProfile);
         variables.putValue(FlowParameters.COLLEAGUE_WORK_LEVEL.name(), WorkLevel.WL1.name());
+        variables.putValue(FlowParameters.COLLEAGUE_REMINDERS.name(), new ArrayList<>());
 
         var result = dmnEngine.evaluateDecisionTable(decision, variables);
 
@@ -92,6 +94,7 @@ public class ReviewNotificationsTest {
         variables.putValue(FlowParameters.PROFILE_ATTRIBUTE_NAME.name(), "Attr name");
         variables.putValue(FlowParameters.COLLEAGUE_PROFILE.name(), colleagueProfile);
         variables.putValue(FlowParameters.COLLEAGUE_WORK_LEVEL.name(), WorkLevel.WL1.name());
+        variables.putValue(FlowParameters.COLLEAGUE_REMINDERS.name(), new ArrayList<>());
 
         var result = dmnEngine.evaluateDecisionTable(decision, variables);
 
