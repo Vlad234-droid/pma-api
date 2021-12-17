@@ -352,7 +352,7 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_0xxk9l2">
         <inputEntry id="UnaryTests_0mgtr7y">
-          <text></text>
+          <text>"LM_OBJECTIVES_APPROVED_FOR_SHARING"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1rlspya">
           <text></text>
@@ -361,13 +361,153 @@ and attr.getValue() = "true",
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_0xa0ulu">
-          <text></text>
+          <text>true</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0jmqy56">
-          <text></text>
+          <text>true</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0xr1cqg">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_18i9omd">
+        <inputEntry id="UnaryTests_1jt7uwg">
+          <text>"LM_SHARING_START"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_13ol3sa">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1rn3s0t">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_16t91id">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_03cufzx">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0uwuh19">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0m4hbq7">
+        <inputEntry id="UnaryTests_0pnl4rs">
+          <text>"LM_SHARING_END"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0m71puj">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ah75xl">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0qn428k">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ltl835">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0rjcx5y">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_10cnzfo">
+        <inputEntry id="UnaryTests_1uhx4w3">
+          <text>"FEEDBACK_GIVEN"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0s02qv5">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0a5tqt2">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1shzc80">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1r43vup">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1xle50u">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0dar7ec">
+        <inputEntry id="UnaryTests_05tlgjt">
+          <text>"RESPOND_TO_FEEDBACK_REQUESTS"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0lv1jy3">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0beml1p">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ylzogv">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1yf1vtp">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_01hhb8l">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0eitxod">
+        <inputEntry id="UnaryTests_1978hrv">
+          <text>"REQUEST_FEEDBACK"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1krw8zk">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0shdrdc">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0u7nn71">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_10qishv">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0ho27dg">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1q1zehi">
+        <inputEntry id="UnaryTests_06ij7o2">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0nrxqvk">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_18mw5ur">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1i8un7t">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_00l5o73">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_126gzus">
           <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0nisuw6">
+        <inputEntry id="UnaryTests_0yim3nf">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1sz1d5n">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_15a5ulm">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0soew40">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_170jexr">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_17q30jt">
+          <text></text>
         </outputEntry>
       </rule>
     </decisionTable>

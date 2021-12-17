@@ -2,6 +2,7 @@ package com.tesco.pma.flow.handlers;
 
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
+import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.exception.ErrorCodes;
 import com.tesco.pma.colleague.profile.service.ProfileService;
@@ -62,8 +63,8 @@ public class InitReviewNotification extends CamundaAbstractFlowHandler {
                 .orElseThrow(() -> notFound(ErrorCodes.PROFILE_NOT_FOUND, "UUID", colleagueUUID.toString()));
     }
 
-    private String getWorkLevel(ColleagueProfile colleagueProfile){
-        return colleagueProfile.getColleague().getWorkRelationships().get(0).getWorkLevel().name();
+    private WorkLevel getWorkLevel(ColleagueProfile colleagueProfile){
+        return colleagueProfile.getColleague().getWorkRelationships().get(0).getWorkLevel();
     }
 
     private AbstractApiRuntimeException notFound(ErrorCodes errorCode, String paramName, String paramValue) {

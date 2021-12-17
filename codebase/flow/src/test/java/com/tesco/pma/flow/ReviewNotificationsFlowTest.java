@@ -44,6 +44,12 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
     private static final String PM_REVIEW_BEFORE_START = "PM_REVIEW_BEFORE_START";
     private static final String PM_REVIEW_BEFORE_END = "PM_REVIEW_BEFORE_END";
     private static final String ORGANISATION_OBJECTIVES = "ORGANISATION_OBJECTIVES";
+    private static final String LM_OBJECTIVES_APPROVED_FOR_SHARING = "LM_OBJECTIVES_APPROVED_FOR_SHARING";
+    private static final String LM_SHARING_START = "LM_SHARING_START";
+    private static final String LM_SHARING_END = "LM_SHARING_START";
+    private static final String FEEDBACK_GIVEN = "FEEDBACK_GIVEN";
+    private static final String RESPOND_TO_FEEDBACK_REQUESTS = "RESPOND_TO_FEEDBACK_REQUESTS";
+    private static final String REQUEST_FEEDBACK = "REQUEST_FEEDBACK";
 
     @SpyBean(name = "initReviewNotification")
     private InitReviewNotification initTask;
@@ -113,6 +119,21 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
     void checkOrganisationObjectives() throws Exception {
         check(ORGANISATION_OBJECTIVES, null, true, WorkLevel.WL1, false);
         check(ORGANISATION_OBJECTIVES, null, true, WorkLevel.WL4, true);
+    }
+
+    @Test
+    void checkLM() throws Exception {
+        check(LM_OBJECTIVES_APPROVED_FOR_SHARING, null, true, WorkLevel.WL1, true);
+        check(LM_OBJECTIVES_APPROVED_FOR_SHARING, null, false, WorkLevel.WL1, false);
+        check(LM_SHARING_START, null, false, WorkLevel.WL1, true);
+        check(LM_SHARING_END, null, false, WorkLevel.WL1, true);
+    }
+
+    @Test
+    void checkFeedbacks() throws Exception {
+        check(FEEDBACK_GIVEN, null, false, WorkLevel.WL1, true);
+        check(RESPOND_TO_FEEDBACK_REQUESTS, null, false, WorkLevel.WL1, true);
+        check(REQUEST_FEEDBACK, null, false, WorkLevel.WL1, true);
     }
 
     void check(String evenName, PMReviewType reviewType, Boolean isManager, boolean send) throws Exception {
