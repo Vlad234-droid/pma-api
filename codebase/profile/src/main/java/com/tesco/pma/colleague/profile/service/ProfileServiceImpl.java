@@ -176,8 +176,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    // TODO To optimize logic for update only changed attributes
-    public int updateColleague(UUID colleagueUuid, Collection<String> changedAttributes) {
+    // TODO To optimize logic for update only changed fields
+    public int updateColleague(UUID colleagueUuid, Collection<String> changedFields) {
         int updated = 0;
 
         var existingLocalColleague = profileDAO.getColleague(colleagueUuid);

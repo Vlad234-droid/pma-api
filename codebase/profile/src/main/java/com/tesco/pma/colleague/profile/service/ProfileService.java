@@ -58,13 +58,13 @@ public interface ProfileService {
     List<TypedAttribute> deleteProfileAttributes(@NotNull UUID colleagueUuid, List<TypedAttribute> profileAttributes);
 
     /**
-     * Update colleague changed attributes
+     * Update colleague changed fields
      *
      * @param colleagueUuid
-     * @param changedAttributes
+     * @param changedFields
      * @return Number of updated records
      */
-    int updateColleague(@NotNull UUID colleagueUuid, Collection<String> changedAttributes);
+    int updateColleague(@NotNull UUID colleagueUuid, Collection<String> changedFields);
 
     /**
      * Save a joiner colleague

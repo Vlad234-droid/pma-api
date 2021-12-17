@@ -90,17 +90,13 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
     private int processJoinerEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
         int updated = profileService.create(colleagueChangeEventPayload.getColleagueUuid());
-
-        // Add new account
         if (updated > 0) {
+            // Add a new account
             createAccount(colleagueChangeEventPayload.getColleagueUuid());
-        }
 
-        // Send event to Camunda
-        if (updated > 0) {
+            // Send an event to Camunda
             sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.CEP_COLLEAGUE_ADDED);
         }
-
         return updated;
     }
 
@@ -159,7 +155,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
             return;
         }
 
-        CreateAccountRequest request = new CreateAccountRequest();
+        var request = new CreateAccountRequest();
         request.setName(colleague.getIamId());
         request.setIamId(colleague.getIamId());
         request.setType(AccountType.USER);
