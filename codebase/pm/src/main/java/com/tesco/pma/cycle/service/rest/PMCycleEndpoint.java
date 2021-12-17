@@ -1,6 +1,7 @@
 package com.tesco.pma.cycle.service.rest;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.model.PMCycleMetadata;
@@ -47,9 +48,9 @@ public class PMCycleEndpoint {
     private static final String CYCLE_UUID_PARAMETER_NAME = "cycleUuid";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     public static final String INCLUDE_METADATA = "includeMetadata";
-    public static final String DEFAULT_USER_UUID = "10000000-0000-0000-0000-000000000002";
 
     private final PMCycleService service;
+    private final AuditorAware<UUID> auditorAware;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
 
@@ -66,7 +67,7 @@ public class PMCycleEndpoint {
     @PostMapping(value = "/pm-cycles", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse<PMCycle> create(@RequestBody PMCycle cycle) {
-        return success(service.create(cycle, resolveUser()));
+        return success(service.create(cycle, resolveUserUuid()));
     }
 
     /**
@@ -83,7 +84,7 @@ public class PMCycleEndpoint {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public RestResponse<PMCycle> publish(@RequestBody PMCycle cycle) {
 
-        return success(service.publish(cycle, resolveUser()));
+        return success(service.publish(cycle, resolveUserUuid()));
     }
 
     /**
@@ -211,15 +212,52 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Exception while parsing a form")
     @GetMapping(value = "/pm-cycles/files/{uuid}/metadata", produces = APPLICATION_JSON_VALUE)
     public RestResponse<PMCycleMetadata> getPmCycleMetadata(@PathVariable("uuid") UUID uuid) {
-        return success(service.getMetadata(uuid));
+        return success(service.getFileMetadata(uuid));
+    }
+
+    /**
+     * PUT call to deploy Performance Cycle.
+     *
+     * @param cycle a PMCycle
+     * @return id of deployed process definition
+     */
+    @Operation(summary = "Deploy performance cycle",
+            description = "Performance cycle deployed",
+            tags = {"performance-cycle"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle deployed")
+    @PutMapping(value = "/pm-cycles/{uuid}/deploy", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public RestResponse<String> deploy(@PathVariable("uuid") UUID uuid,
+                                       @RequestBody PMCycle cycle) {
+
+        return success(service.deploy(cycle));
+    }
+
+    /**
+     * PUT call to start Performance Cycle.
+     *
+     * @param cycleUUID a PMCycle uuid
+     * @param processId process id
+     * @return sucess
+     */
+    @Operation(summary = "Start performance cycle",
+            description = "Performance cycle started",
+            tags = {"performance-cycle"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle started")
+    @PutMapping(value = "/pm-cycles/{uuid}/start", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public RestResponse<?> start(@PathVariable("uuid") UUID cycleUUID,
+                                 @RequestBody String processId) {
+
+        service.start(cycleUUID, processId);
+        return RestResponse.success();
     }
 
     private String jsonMetadataToRestResponse(String jsonMetadata) {
         return "{\"success\": true, \"data\": " + jsonMetadata + "}";
     }
 
-    private String resolveUser() {
-        //TODO change after security integration
-        return DEFAULT_USER_UUID;
+    private UUID resolveUserUuid() {
+        return auditorAware.getCurrentAuditor();
     }
 }

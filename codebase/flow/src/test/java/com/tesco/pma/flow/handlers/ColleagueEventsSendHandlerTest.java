@@ -5,6 +5,7 @@ import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.event.service.EventSender;
+import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.organisation.service.ConfigEntryService;
 import org.camunda.bpm.engine.delegate.Expression;
 import org.junit.jupiter.api.BeforeEach;
