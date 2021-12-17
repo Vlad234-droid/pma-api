@@ -6,6 +6,7 @@ import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.contact.api.DestinationType;
 import com.tesco.pma.contact.api.Message;
 import com.tesco.pma.contact.api.Recipient;
+import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.service.contact.client.ContactApiClient;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
