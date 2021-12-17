@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "components": [
     {
-      "text": "# Look back",
+      "text": "## Look back",
       "type": "text",
       "id": "Field_0hu83pj"
     },
@@ -77,31 +77,12 @@
       }
     },
     {
-      "values": [
-        {
-          "label": "Outstanding",
-          "value": "Outstanding"
-        },
-        {
-          "label": "Satisfactory",
-          "value": "Satisfactory"
-        },
-        {
-          "label": "Great",
-          "value": "Great"
-        },
-        {
-          "label": "Below expected",
-          "value": "Below expected"
-        }
-      ],
-      "label": "**Overall**",
-      "type": "select",
-      "id": "Field_12cr9li",
-      "key": "overall"
+      "text": "**Overall:**",
+      "type": "text",
+      "id": "Field_1iezgvn"
     },
     {
-      "text": "# Look forward",
+      "text": "## Look forward",
       "type": "text",
       "id": "Field_148wy3b"
     },
