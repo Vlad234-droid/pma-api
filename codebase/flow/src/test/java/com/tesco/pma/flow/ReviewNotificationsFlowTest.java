@@ -48,7 +48,7 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
     private static final String ORGANISATION_OBJECTIVES = "ORGANISATION_OBJECTIVES";
     private static final String LM_OBJECTIVES_APPROVED_FOR_SHARING = "LM_OBJECTIVES_APPROVED_FOR_SHARING";
     private static final String LM_SHARING_START = "LM_SHARING_START";
-    private static final String LM_SHARING_END = "LM_SHARING_START";
+    private static final String LM_SHARING_END = "LM_SHARING_END";
     private static final String FEEDBACK_GIVEN = "FEEDBACK_GIVEN";
     private static final String RESPOND_TO_FEEDBACK_REQUESTS = "RESPOND_TO_FEEDBACK_REQUESTS";
     private static final String REQUEST_FEEDBACK = "REQUEST_FEEDBACK";

@@ -116,12 +116,125 @@
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0k5q2rg">
-        <description>Default</description>
+        <description></description>
         <inputEntry id="UnaryTests_11aaqfm">
-          <text></text>
+          <text>"RECEIVE_TIPS"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1vayiaq">
           <text>"00000000-0000-0000-0000-000000000000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0bi5wkq">
+        <inputEntry id="UnaryTests_0k3hu72">
+          <text>"ORGANISATION_OBJECTIVES"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ouiawh">
+          <text>"00000000-0000-0000-0000-000000000000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0p1xqy1">
+        <inputEntry id="UnaryTests_1g2j5bi">
+          <text>"LM_OBJECTIVES_APPROVED_FOR_SHARING"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1t2pk1d">
+          <text>"00000000-0000-0000-0000-000000000000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1ski34y">
+        <inputEntry id="UnaryTests_1078fht">
+          <text>"LM_SHARING_START"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1i2rk6i">
+          <text>"00000000-0000-0000-0000-000000000000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_05v936u">
+        <inputEntry id="UnaryTests_0mda4jy">
+          <text>"LM_SHARING_END"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0g4jlcb">
+          <text>"00000000-0000-0000-0000-000000000000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0sdxyif">
+        <inputEntry id="UnaryTests_0edx4us">
+          <text>"FEEDBACK_GIVEN"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0g7kgmp">
+          <text>"00000000-0000-0000-0000-000000000000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_07cu6sa">
+        <inputEntry id="UnaryTests_04f3m25">
+          <text>"RESPOND_TO_FEEDBACK_REQUESTS"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0y2555a">
+          <text>"00000000-0000-0000-0000-000000000000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1b97dnw">
+        <inputEntry id="UnaryTests_1wssqqc">
+          <text>"REQUEST_FEEDBACK"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0y973tf">
+          <text>"00000000-0000-0000-0000-000000000000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1nfoirk">
+        <inputEntry id="UnaryTests_0lst1os">
+          <text>"Q1_REMINDER"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1gy3suv">
+          <text>"00000000-0000-0000-0000-000000000000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1utkqah">
+        <inputEntry id="UnaryTests_1f5trqw">
+          <text>"Q3_REMINDER"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0qa48sn">
+          <text>"00000000-0000-0000-0000-000000000000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0nzib8g">
+        <inputEntry id="UnaryTests_0e8whni">
+          <text>"BEFORE_CYCLE_START_COLLEAGUE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_158d1an">
+          <text>"00000000-0000-0000-0000-000000000000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0uvrr49">
+        <inputEntry id="UnaryTests_0db0uww">
+          <text>"BEFORE_CYCLE_END_COLLEAGUE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1c07k1c">
+          <text>"00000000-0000-0000-0000-000000000000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_06won2y">
+        <inputEntry id="UnaryTests_1ikgrwu">
+          <text>"BEFORE_CYCLE_START_LM"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0lurd8x">
+          <text>"00000000-0000-0000-0000-000000000000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1w06om2">
+        <inputEntry id="UnaryTests_176hqdx">
+          <text>"BEFORE_CYCLE_END_LM"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_00o27fc">
+          <text>"00000000-0000-0000-0000-000000000000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1m3o2bb">
+        <description>Default</description>
+        <inputEntry id="UnaryTests_0v605vb">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1c2gnu1">
+          <text>""</text>
         </outputEntry>
       </rule>
     </decisionTable>

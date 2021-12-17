@@ -160,14 +160,169 @@
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0k5q2rg">
-        <description>Default</description>
+        <description></description>
         <inputEntry id="UnaryTests_11aaqfm">
-          <text></text>
+          <text>"RECEIVE_TIPS"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1moqbc8">
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1vayiaq">
+          <text>"Receive tips"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_10spoti">
+        <inputEntry id="UnaryTests_1ipawjd">
+          <text>"ORGANISATION_OBJECTIVES"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1p4n6x0">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1eb34u5">
+          <text>"Organisation objectives"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0s19pf1">
+        <inputEntry id="UnaryTests_1hsaabi">
+          <text>"LM_OBJECTIVES_APPROVED_FOR_SHARING"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1103ti3">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0rx733p">
+          <text>"LM Objectives approved for sharing"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1nt6mei">
+        <inputEntry id="UnaryTests_021r8tk">
+          <text>"LM_SHARING_START"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1l185d8">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1xleuih">
+          <text>"LM sharing start"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1xyurwn">
+        <inputEntry id="UnaryTests_06w2buu">
+          <text>"LM_SHARING_END"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_030i9fw">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0ihl4oq">
+          <text>"LM sharing end"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1uy0sh8">
+        <inputEntry id="UnaryTests_1qwu62n">
+          <text>"FEEDBACK_GIVEN"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0cleic0">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1jkyxzn">
+          <text>"Feedback given"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_19hp08h">
+        <inputEntry id="UnaryTests_12ofmtu">
+          <text>"RESPOND_TO_FEEDBACK_REQUESTS"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0o8o186">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0qdm4ha">
+          <text>"Respond to feedback requests"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1svgltz">
+        <inputEntry id="UnaryTests_0a3b3tn">
+          <text>"REQUEST_FEEDBACK"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0mo1ond">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_15xr2rd">
+          <text>"Request feedback"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1belqto">
+        <inputEntry id="UnaryTests_1jf97v6">
+          <text>"Q1_REMINDER"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_019b0gw">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0qmnwwf">
+          <text>"Q1 reminder"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1m5x2o5">
+        <inputEntry id="UnaryTests_1fdceoz">
+          <text>"Q3_REMINDER"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_17uwbip">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_16bybi4">
+          <text>"Q3 reminder"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0k3bxnp">
+        <inputEntry id="UnaryTests_1b9u06b">
+          <text>"BEFORE_CYCLE_START_COLLEAGUE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ma1ofm">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_06u4cfw">
+          <text>"Before cycle start - Colleague"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0xn39n6">
+        <inputEntry id="UnaryTests_1wdtsez">
+          <text>"BEFORE_CYCLE_END_COLLEAGUE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ku3968">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1tdkqcg">
+          <text>"Before cycle end - Colleague"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0ympxyw">
+        <inputEntry id="UnaryTests_0bxvw41">
+          <text>"BEFORE_CYCLE_START_LM"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0255jzx">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1s6qds0">
+          <text>"Before cycle start - LM"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1phlqvc">
+        <inputEntry id="UnaryTests_1h0pdhx">
+          <text>"BEFORE_CYCLE_END_LM"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0m34tfz">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_08lhcde">
+          <text>"Before cycle end - LM"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1e9posm">
+        <description>Default</description>
+        <inputEntry id="UnaryTests_1q6ujv6">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1gflpod">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_07v6ff6">
           <text>""</text>
         </outputEntry>
       </rule>
