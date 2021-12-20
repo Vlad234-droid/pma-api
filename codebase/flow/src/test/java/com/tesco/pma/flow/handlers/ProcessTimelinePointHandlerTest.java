@@ -65,6 +65,7 @@ public class ProcessTimelinePointHandlerTest {
 
         var ec = FlowTestUtil.executionBuilder()
                 .withVariable(FlowParameters.PM_CYCLE, pmCycle)
+                .withVariable(FlowParameters.START_DATE, startDate)
                 .build();
 
         var pmElement = new PMElement();
@@ -72,7 +73,7 @@ public class ProcessTimelinePointHandlerTest {
 
         Mockito.doReturn(pmElement).when(handler).getParent(ec);
         Mockito.doReturn(Collections.emptyList()).when(colleagueCycleService)
-                .getByCycleUuidWithoutTimelinePoint(pmCycle.getUuid());
+                .getByCycleUuidWithoutTimelinePoint(pmCycle.getUuid(), null);
 
         handler.execute(ec);
 
@@ -86,6 +87,7 @@ public class ProcessTimelinePointHandlerTest {
 
         var ec = FlowTestUtil.executionBuilder()
                 .withVariable(FlowParameters.PM_CYCLE, pmCycle)
+                .withVariable(FlowParameters.START_DATE, startDate)
                 .build();
 
         var parentElement = new PMElement();
@@ -98,7 +100,7 @@ public class ProcessTimelinePointHandlerTest {
 
         Mockito.doReturn(parentElement).when(handler).getParent(ec);
         Mockito.doReturn(Collections.singletonList(colleagueCycle))
-                .when(colleagueCycleService).getByCycleUuidWithoutTimelinePoint(pmCycle.getUuid());
+                .when(colleagueCycleService).getByCycleUuidWithoutTimelinePoint(pmCycle.getUuid(), null);
 
         handler.execute(ec);
 

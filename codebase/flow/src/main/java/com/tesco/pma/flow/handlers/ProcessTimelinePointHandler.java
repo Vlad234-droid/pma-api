@@ -6,6 +6,7 @@ import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.bpm.camunda.flow.CamundaExecutionContext;
 import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
@@ -24,10 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -71,8 +70,6 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
     @Autowired
     private NamedMessageSourceAccessor messageSourceAccessor;
 
-    private final DateTimeFormatter dtFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
-
     enum PropertyNames {
         START,
         START_DELAY,
@@ -84,35 +81,43 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
     @Override
     protected void execute(ExecutionContext context) throws Exception {
         var cycle = context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class);
-        if (PMCycleType.FISCAL != cycle.getType()) {
+        if (PMCycleType.FISCAL != cycle.getType() && PMCycleType.HIRING != cycle.getType()) {
             //todo replace by required exception
             throw new ProcessExecutionException("Incorrect cycle type: " + cycle.getType());
         }
         //todo handle cycle statuses
 
+        var startDate = context.getVariable(FlowParameters.START_DATE, LocalDate.class);
         var parent = getParent(context);
         if (PMElementType.TIMELINE_POINT == parent.getType()) {
-            processTimelinePoint(context, cycle, parent);
+            processTimelinePoint(context, startDate, parent);
         } else if (PMElementType.REVIEW == parent.getType()) {
-            processReview(context, cycle, parent);
+            processReview(context, startDate, parent);
         } else {
             //todo replace by required exception
             throw new ProcessExecutionException("Incorrect configuration: none required parameters are specified");
         }
-
-        createTimelinePoints(context, cycle.getUuid(), parent);
+        var calculatedStartDate = context.getVariable(FlowParameters.START_DATE, LocalDate.class);
+        createTimelinePoints(context, cycle, calculatedStartDate, parent);
     }
 
-    private void createTimelinePoints(ExecutionContext context, UUID cycleUuid, PMElement element) {
-        var colleagueCycles = colleagueCycleService.getByCycleUuidWithoutTimelinePoint(cycleUuid);
+    private void createTimelinePoints(ExecutionContext context, PMCycle cycle, LocalDate startDate, PMElement element) {
+        var startTime = startDate.atStartOfDay().toInstant(ZoneOffset.UTC);
+        List<PMColleagueCycle> colleagueCycles;
+        if (PMCycleType.HIRING == cycle.getType()) {
+            colleagueCycles = colleagueCycleService.getByCycleUuidWithoutTimelinePoint(cycle.getUuid(), startTime);
+        } else {
+            colleagueCycles = colleagueCycleService.getByCycleUuidWithoutTimelinePoint(cycle.getUuid(), null);
+        }
         if (CollectionUtils.isEmpty(colleagueCycles)) {
             return;
         }
 
-        var startDate = getInstant(context.getVariable(FlowParameters.START_DATE));
-
         var props = buildProps(context, startDate, element);
 
+        var endTime = Optional.ofNullable(context.getNullableVariable(FlowParameters.END_DATE, LocalDate.class))
+                .map(date -> date.atStartOfDay().toInstant(ZoneOffset.UTC))
+                .orElse(null);
         var timelinePoints = colleagueCycles.stream()
                 .map(cc -> TimelinePoint.builder()
                         .uuid(UUID.randomUUID())
@@ -120,25 +125,23 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
                         .code(element.getCode())
                         .description(element.getDescription())
                         .type(element.getType())
-                        .startTime(startDate)
-                        .endTime(Optional.ofNullable(context.getNullableVariable(FlowParameters.END_DATE, String.class))
-                                .map(this::getInstant)
-                                .orElse(null))
+                        .startTime(startTime)
+                        .endTime(endTime)
                         .properties(props)
-                        .status(startDate.isAfter(Instant.now()) ? PMTimelinePointStatus.NOT_STARTED : PMTimelinePointStatus.STARTED)
+                        .status(startDate.isAfter(LocalDate.now()) ? PMTimelinePointStatus.NOT_STARTED : PMTimelinePointStatus.STARTED)
                         .build())
                 .collect(Collectors.toList());
 
         timelinePointService.saveAll(timelinePoints);
     }
 
-    private MapJson buildProps(ExecutionContext context, Instant startDate, PMElement element) {
+    private MapJson buildProps(ExecutionContext context, LocalDate startDate, PMElement element) {
         var map = new HashMap<String, String>();
-        map.put(FlowParameters.START_DATE.name(), formatInstant(startDate));
+        map.put(FlowParameters.START_DATE.name(), formatDate(startDate));
 
         List.of(FlowParameters.END_DATE, FlowParameters.BEFORE_START_DATE, FlowParameters.BEFORE_END_DATE)
-                .forEach(e -> Optional.ofNullable(context.getNullableVariable(e, String.class))
-                        .ifPresent(v -> map.put(e.name(), v)));
+                .forEach(e -> Optional.ofNullable(context.getNullableVariable(e, LocalDate.class))
+                        .ifPresent(v -> map.put(e.name(), formatDate(v))));
 
         List.of(PMReviewElement.PM_REVIEW_MIN, PMReviewElement.PM_REVIEW_MAX)
                 .forEach(key -> Optional.ofNullable(element.getProperties().get(key))
@@ -152,15 +155,15 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
         return PMProcessModelParser.fillPMElement(activity, new PMElement());
     }
 
-    void processTimelinePoint(ExecutionContext context, PMCycle cycle, PMElement element) throws ProcessExecutionException {
-        processTimes(context, cycle, element.getProperties(), Map.of(
+    void processTimelinePoint(ExecutionContext context, LocalDate startDate, PMElement element) throws ProcessExecutionException {
+        processTimes(context, startDate, element.getProperties(), Map.of(
                 START, PM_TIMELINE_POINT_START_TIME,
                 START_DELAY, PM_TIMELINE_POINT_START_DELAY
         ));
     }
 
-    void processReview(ExecutionContext context, PMCycle cycle, PMElement element) throws ProcessExecutionException {
-        processTimes(context, cycle, element.getProperties(), Map.of(
+    void processReview(ExecutionContext context, LocalDate startDate, PMElement element) throws ProcessExecutionException {
+        processTimes(context, startDate, element.getProperties(), Map.of(
                 START, PM_REVIEW_START,
                 START_DELAY, PM_REVIEW_START_DELAY,
                 BEFORE_START, PM_REVIEW_BEFORE_START,
@@ -169,12 +172,12 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
         ));
     }
 
-    private void processTimes(ExecutionContext context, PMCycle cycle, Map<String, String> props, Map<PropertyNames, String> names)
+    private void processTimes(ExecutionContext context, LocalDate startDate, Map<String, String> props, Map<PropertyNames, String> names)
             throws ProcessExecutionException {
-        var startDate = processStartDate(context, props, names, cycle.getStartTime());
-        var endDate = processEndDate(context, props, names, startDate);
-        processBeforeStart(context, props, names, startDate);
-        processBeforeEnd(context, props, names, startDate, endDate);
+        var calculatedStartDate = processStartDate(context, props, names, startDate);
+        var endDate = processEndDate(context, props, names, calculatedStartDate);
+        processBeforeStart(context, props, names, calculatedStartDate);
+        processBeforeEnd(context, props, names, calculatedStartDate, endDate);
     }
 
     private void processBeforeEnd(ExecutionContext context, Map<String, String> props, Map<PropertyNames, String> names,
@@ -183,7 +186,7 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
             try {
                 var period = parsePeriod(props, names, BEFORE_END);
                 var before = endDate.minus(period);
-                setDateVariable(context, FlowParameters.BEFORE_END_DATE, before.isBefore(startDate) ? startDate : before);
+                context.setVariable(FlowParameters.BEFORE_END_DATE, before.isBefore(startDate) ? startDate : before);
             } catch (DateTimeParseException e) {
                 throw incorrectParameter(props, names, BEFORE_END, e);
             }
@@ -197,7 +200,7 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
             try {
                 var period = parsePeriod(props, names, DURATION);
                 endDate = startDate.plus(period);
-                setDateVariable(context, FlowParameters.END_DATE, endDate);
+                context.setVariable(FlowParameters.END_DATE, endDate);
             } catch (DateTimeParseException e) {
                 throw incorrectParameter(props, names, DURATION, e);
             }
@@ -211,7 +214,7 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
             try {
                 var period = parsePeriod(props, names, BEFORE_START);
                 var before = startTime.minus(period);
-                setDateVariable(context, FlowParameters.BEFORE_START_DATE, before);
+                context.setVariable(FlowParameters.BEFORE_START_DATE, before);
             } catch (DateTimeParseException e) {
                 throw incorrectParameter(props, names, BEFORE_START, e);
             }
@@ -219,31 +222,27 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
     }
 
     private LocalDate processStartDate(ExecutionContext context, Map<String, String> props, Map<PropertyNames, String> names,
-                                       Instant cycleStartTime) throws ProcessExecutionException {
-        var startTime = LocalDate.ofInstant(cycleStartTime, ZoneOffset.UTC);
+                                       LocalDate startDate) throws ProcessExecutionException {
+        LocalDate calculatedStartDate = startDate;
         if (isPresent(props, names, START_DELAY)) {
             try {
                 var period = parsePeriod(props, names, START_DELAY);
-                startTime = startTime.plus(period);
+                calculatedStartDate = startDate.plus(period);
             } catch (DateTimeParseException e) {
                 throw incorrectParameter(props, names, START_DELAY, e);
             }
         } else if (isPresent(props, names, START)) {
             try {
-                startTime = parseLocalDate(props, names, START);
+                calculatedStartDate = parseLocalDate(props, names, START);
             } catch (DateTimeParseException e) {
                 throw incorrectParameter(props, names, START, e);
             }
         } else {
             log.debug("No parameter specified: " + names.get(START_DELAY) + ", " + names.get(START)
-                    + "\nCycle start date is used: " + formatDate(startTime));
+                    + "\nCycle start date is used: " + calculatedStartDate);
         }
-        setDateVariable(context, FlowParameters.START_DATE, startTime);
-        return startTime;
-    }
-
-    private void setDateVariable(ExecutionContext context, FlowParameters variable, LocalDate date) {
-        context.setVariable(variable, formatDate(date));
+        context.setVariable(FlowParameters.START_DATE, calculatedStartDate);
+        return calculatedStartDate;
     }
 
     private String get(Map<String, String> props, Map<PropertyNames, String> names, PropertyNames name) {
@@ -259,19 +258,11 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
     }
 
     private LocalDate parseLocalDate(Map<String, String> props, Map<PropertyNames, String> names, PropertyNames name) {
-        return dtFormatter.parse(get(props, names, name), LocalDate::from);
+        return DateTimeFormatter.ISO_LOCAL_DATE.parse(get(props, names, name), LocalDate::from);
     }
 
     private String formatDate(LocalDate dateTime) {
-        return dtFormatter.format(dateTime);
-    }
-
-    private String formatInstant(Instant instant) {
-        return dtFormatter.format(LocalDate.ofInstant(instant, ZoneId.of("UTC")));
-    }
-
-    private Instant getInstant(String date) {
-        return dtFormatter.parse(date, LocalDate::from).atStartOfDay().toInstant(ZoneOffset.UTC);
+        return DateTimeFormatter.ISO_LOCAL_DATE.format(dateTime);
     }
 
     //todo replace by required exception

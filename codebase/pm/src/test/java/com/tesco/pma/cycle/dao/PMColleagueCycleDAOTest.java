@@ -72,7 +72,7 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
             BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml"})
     void getByCycleUuidWithoutTimelinePoint() {
-        var cc = dao.getByCycleUuidWithoutTimelinePoint(CYCLE_UUID);
+        var cc = dao.getByCycleUuidWithoutTimelinePoint(CYCLE_UUID, null);
         assertThat(cc)
                 .hasSize(2);
 
