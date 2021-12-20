@@ -176,20 +176,50 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    // TODO To optimize logic for update only changed attributes
-    public int updateColleague(UUID colleagueUuid, Collection<String> changedAttributes) {
+    // TODO To optimize logic for update only changed fields
+    public int updateColleague(UUID colleagueUuid, Collection<String> changedFields) {
         int updated = 0;
 
         var existingLocalColleague = profileDAO.getColleague(colleagueUuid);
-        Colleague colleague = colleagueApiService.findColleagueByUuid(colleagueUuid);
-        if (existingLocalColleague == null || colleague == null) {
+        if (existingLocalColleague == null) {
             return updated;
         }
 
+        Colleague colleague = colleagueApiService.findColleagueByUuid(colleagueUuid);
+        if (colleague == null) {
+            return updated;
+        }
+
+        return persistColleague(colleague, existingLocalColleague);
+    }
+
+    @Override
+    public int create(UUID colleagueUuid) {
+        var existingLocalColleague = profileDAO.getColleague(colleagueUuid);
+        if (existingLocalColleague != null) {
+            return updateColleague(colleagueUuid, List.of());
+        }
+
+        Colleague colleague = colleagueApiService.findColleagueByUuid(colleagueUuid);
+        if (colleague == null) {
+            return 0;
+        }
+
+        return persistColleague(colleague, null);
+
+    }
+
+    private int persistColleague(Colleague colleague, ColleagueEntity existingLocalColleague) {
+        int updated = 0;
+
         try {
             ColleagueEntity changedLocalColleague = colleagueFactsApiLocalMapper.colleagueFactsApiToLocal(colleague);
+            if (existingLocalColleague == null) {
+                updated = profileDAO.saveColleague(changedLocalColleague);
+            } else {
+                updated = profileDAO.updateColleague(changedLocalColleague);
+            }
             updateDictionaries(existingLocalColleague, changedLocalColleague);
-            updated = profileDAO.saveColleague(changedLocalColleague);
         } catch (DataIntegrityViolationException exception) {
             String message = String.format("Data integrity violation exception = %s", exception.getMessage());
             log.error(LogFormatter.formatMessage(ErrorCodes.DATA_INTEGRITY_VIOLATION_EXCEPTION, message));
@@ -205,26 +235,46 @@ public class ProfileServiceImpl implements ProfileService {
     private void updateDictionaries(ColleagueEntity existingLocalColleague,
                                     ColleagueEntity changedLocalColleague) {
         // Country
-        ColleagueEntity.Country changedCountry = changedLocalColleague.getCountry();
-        if (changedCountry != null && !existingLocalColleague.getCountry().getCode().equals(changedCountry.getCode())) {
-            profileDAO.updateCountry(changedCountry);
-        }
+        updateCountryDictionary(existingLocalColleague, changedLocalColleague);
 
         // Department
-        ColleagueEntity.Department changedDepartment = changedLocalColleague.getDepartment();
-        if (changedDepartment != null && !existingLocalColleague.getDepartment().getId().equals(changedDepartment.getId())) {
-            profileDAO.updateDepartment(changedDepartment);
-        }
+        updateDepartmentDictionary(existingLocalColleague, changedLocalColleague);
 
         // Job
-        ColleagueEntity.Job changedJob = changedLocalColleague.getJob();
-        if (changedJob != null && !existingLocalColleague.getJob().getCode().equals(changedJob.getId())) {
-            profileDAO.updateJob(changedJob);
-        }
+        updateJobDictionary(existingLocalColleague, changedLocalColleague);
 
         // Work level
+        updateWorkLevelDictionary(existingLocalColleague, changedLocalColleague);
+    }
+
+    private void updateCountryDictionary(ColleagueEntity existingLocalColleague, ColleagueEntity changedLocalColleague) {
+        ColleagueEntity.Country changedCountry = changedLocalColleague.getCountry();
+        if (changedCountry != null && (existingLocalColleague == null
+                || !existingLocalColleague.getCountry().getCode().equals(changedCountry.getCode()))) {
+            profileDAO.updateCountry(changedCountry);
+        }
+    }
+
+    private void updateDepartmentDictionary(ColleagueEntity existingLocalColleague, ColleagueEntity changedLocalColleague) {
+        ColleagueEntity.Department changedDepartment = changedLocalColleague.getDepartment();
+        if (changedDepartment != null && (existingLocalColleague == null
+                || !existingLocalColleague.getDepartment().getId().equals(changedDepartment.getId()))) {
+            profileDAO.updateDepartment(changedDepartment);
+        }
+    }
+
+    private void updateJobDictionary(ColleagueEntity existingLocalColleague, ColleagueEntity changedLocalColleague) {
+        ColleagueEntity.Job changedJob = changedLocalColleague.getJob();
+        if (changedJob != null && (existingLocalColleague == null
+                || !existingLocalColleague.getJob().getCode().equals(changedJob.getId()))) {
+            profileDAO.updateJob(changedJob);
+        }
+    }
+
+    private void updateWorkLevelDictionary(ColleagueEntity existingLocalColleague, ColleagueEntity changedLocalColleague) {
         ColleagueEntity.WorkLevel changedWorkLevel = changedLocalColleague.getWorkLevel();
-        if (changedWorkLevel != null && !existingLocalColleague.getWorkLevel().getCode().equals(changedWorkLevel.getCode())) {
+        if (changedWorkLevel != null && (existingLocalColleague == null
+                || !existingLocalColleague.getWorkLevel().getCode().equals(changedWorkLevel.getCode()))) {
             profileDAO.updateWorkLevel(changedWorkLevel);
         }
     }

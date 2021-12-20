@@ -1,0 +1,358 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet id="1" author="mdiadia">
+        <insert tableName="organisation_dictionary">
+            <column name="code">cfcs</column>
+            <column name="name">CFCs</column>
+            <column name="level">1</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">cecs</column>
+            <column name="name">CECs</column>
+            <column name="level">1</column>
+        </insert>
+        <insert tableName="organisation_dictionary">
+            <column name="code">tm</column>
+            <column name="name">Tesco Mobile</column>
+            <column name="level">1</column>
+        </insert>
+        <rollback>
+            <delete tableName="organisation_dictionary">
+                <where>code in ('cfcs','cecs','tm')</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2" author="mdiadia">
+        <insert tableName="config_entry">
+            <column name="uuid">10000000-0000-0000-0001-000000000009</column>
+            <column name="name">CFCs</column>
+            <column name="type_id">1</column>
+            <column name="version">1</column>
+            <column name="parent_uuid">null</column>
+            <column name="composite_key">l1/cfcs/#v1</column>
+        </insert>
+        <insert tableName="config_entry">
+            <column name="uuid">10000000-0000-0000-0003-000000000014</column>
+            <column name="name">Salaried</column>
+            <column name="type_id">3</column>
+            <column name="version">1</column>
+            <column name="parent_uuid">10000000-0000-0000-0001-000000000009</column>
+            <column name="composite_key">l1/cfcs/l3/salaried/#v1</column>
+        </insert>
+        <insert tableName="config_entry">
+            <column name="uuid">10000000-0000-0000-0003-000000000015</column>
+            <column name="name">Hourly Paid</column>
+            <column name="type_id">3</column>
+            <column name="version">1</column>
+            <column name="parent_uuid">10000000-0000-0000-0001-000000000009</column>
+            <column name="composite_key">l1/cfcs/l3/hp/#v1</column>
+        </insert>
+
+        <insert tableName="config_entry">
+            <column name="uuid">10000000-0000-0000-0004-000000000027</column>
+            <column name="name">WL1</column>
+            <column name="type_id">4</column>
+            <column name="version">1</column>
+            <column name="parent_uuid">10000000-0000-0000-0003-000000000014</column>
+            <column name="composite_key">l1/cfcs/l3/salaried/l4/wl1/#v1</column>
+        </insert>
+        <insert tableName="config_entry">
+            <column name="uuid">10000000-0000-0000-0004-000000000028</column>
+            <column name="name">WL2</column>
+            <column name="type_id">4</column>
+            <column name="version">1</column>
+            <column name="parent_uuid">10000000-0000-0000-0003-000000000014</column>
+            <column name="composite_key">l1/cfcs/l3/salaried/l4/wl2/#v1</column>
+        </insert>
+        <insert tableName="config_entry">
+            <column name="uuid">10000000-0000-0000-0004-000000000029</column>
+            <column name="name">Colleague</column>
+            <column name="type_id">4</column>
+            <column name="version">1</column>
+            <column name="parent_uuid">10000000-0000-0000-0003-000000000015</column>
+            <column name="composite_key">l1/cfcs/l3/salaried/l4/colleague/#v1</column>
+        </insert>
+
+        <insert tableName="config_entry">
+            <column name="uuid">10000000-0000-0000-0001-000000000010</column>
+            <column name="name">CECs</column>
+            <column name="type_id">1</column>
+            <column name="version">1</column>
+            <column name="parent_uuid">null</column>
+            <column name="composite_key">l1/cecs/#v1</column>
+        </insert>
+        <insert tableName="config_entry">
+            <column name="uuid">10000000-0000-0000-0002-000000000008</column>
+            <column name="name">Head Office</column>
+            <column name="type_id">2</column>
+            <column name="version">1</column>
+            <column name="parent_uuid">10000000-0000-0000-0001-000000000010</column>
+            <column name="composite_key">l1/cecs/l2/ho/#v1</column>
+        </insert>
+        <insert tableName="config_entry">
+            <column name="uuid">10000000-0000-0000-0003-000000000016</column>
+            <column name="name">Salaried</column>
+            <column name="type_id">3</column>
+            <column name="version">1</column>
+            <column name="parent_uuid">10000000-0000-0000-0002-000000000008</column>
+            <column name="composite_key">l1/cecs/l2/ho/l3/salaried/#v1</column>
+        </insert>
+        <insert tableName="config_entry">
+            <column name="uuid">10000000-0000-0000-0003-000000000017</column>
+            <column name="name">Hourly Paid</column>
+            <column name="type_id">3</column>
+            <column name="version">1</column>
+            <column name="parent_uuid">10000000-0000-0000-0002-000000000008</column>
+            <column name="composite_key">l1/cecs/l2/ho/l3/hp/#v1</column>
+        </insert>
+        <insert tableName="config_entry">
+            <column name="uuid">10000000-0000-0000-0004-000000000030</column>
+            <column name="name">WL1</column>
+            <column name="type_id">4</column>
+            <column name="version">1</column>
+            <column name="parent_uuid">10000000-0000-0000-0003-000000000016</column>
+            <column name="composite_key">l1/cecs/l2/ho/l3/salaried/l4/wl1/#v1</column>
+        </insert>
+        <insert tableName="config_entry">
+            <column name="uuid">10000000-0000-0000-0004-000000000031</column>
+            <column name="name">WL2</column>
+            <column name="type_id">4</column>
+            <column name="version">1</column>
+            <column name="parent_uuid">10000000-0000-0000-0003-000000000016</column>
+            <column name="composite_key">l1/cecs/l2/ho/l3/salaried/l4/wl2/#v1</column>
+        </insert>
+        <insert tableName="config_entry">
+            <column name="uuid">10000000-0000-0000-0004-000000000032</column>
+            <column name="name">WL1</column>
+            <column name="type_id">4</column>
+            <column name="version">1</column>
+            <column name="parent_uuid">10000000-0000-0000-0003-000000000017</column>
+            <column name="composite_key">l1/cecs/l2/ho/l3/hp/l4/wl1/#v1</column>
+        </insert>
+
+        <insert tableName="config_entry">
+            <column name="uuid">10000000-0000-0000-0001-000000000011</column>
+            <column name="name">Tesco Mobile</column>
+            <column name="type_id">1</column>
+            <column name="version">1</column>
+            <column name="parent_uuid">null</column>
+            <column name="composite_key">l1/tm/#v1</column>
+        </insert>
+        <insert tableName="config_entry">
+            <column name="uuid">10000000-0000-0000-0002-000000000009</column>
+            <column name="name">Head Office</column>
+            <column name="type_id">2</column>
+            <column name="version">1</column>
+            <column name="parent_uuid">10000000-0000-0000-0001-000000000011</column>
+            <column name="composite_key">l1/tm/l2/ho/#v1</column>
+        </insert>
+        <insert tableName="config_entry">
+            <column name="uuid">10000000-0000-0000-0003-000000000018</column>
+            <column name="name">Salaried</column>
+            <column name="type_id">3</column>
+            <column name="version">1</column>
+            <column name="parent_uuid">10000000-0000-0000-0002-000000000009</column>
+            <column name="composite_key">l1/tm/l2/ho/l3/salaried/#v1</column>
+        </insert>
+        <insert tableName="config_entry">
+            <column name="uuid">10000000-0000-0000-0004-000000000033</column>
+            <column name="name">WL1</column>
+            <column name="type_id">4</column>
+            <column name="version">1</column>
+            <column name="parent_uuid">10000000-0000-0000-0003-000000000018</column>
+            <column name="composite_key">l1/tm/l2/ho/l3/salaried/l4/wl1/#v1</column>
+        </insert>
+        <insert tableName="config_entry">
+            <column name="uuid">10000000-0000-0000-0004-000000000034</column>
+            <column name="name">WL2</column>
+            <column name="type_id">4</column>
+            <column name="version">1</column>
+            <column name="parent_uuid">10000000-0000-0000-0003-000000000018</column>
+            <column name="composite_key">l1/tm/l2/ho/l3/salaried/l4/wl2/#v1</column>
+        </insert>
+        <insert tableName="config_entry">
+            <column name="uuid">10000000-0000-0000-0004-000000000035</column>
+            <column name="name">WL3</column>
+            <column name="type_id">4</column>
+            <column name="version">1</column>
+            <column name="parent_uuid">10000000-0000-0000-0003-000000000018</column>
+            <column name="composite_key">l1/tm/l2/ho/l3/salaried/l4/wl3/#v1</column>
+        </insert>
+
+        <rollback>
+            <delete tableName="config_entry">
+                <where>uuid IN ('10000000-0000-0000-0001-000000000009','10000000-0000-0000-0003-000000000014',
+                    '10000000-0000-0000-0003-000000000015', '10000000-0000-0000-0004-000000000027',
+                    '10000000-0000-0000-0004-000000000028','10000000-0000-0000-0004-000000000029',
+                    '10000000-0000-0000-0001-000000000010','10000000-0000-0000-0002-000000000008',
+                    '10000000-0000-0000-0003-000000000016','10000000-0000-0000-0003-000000000017',
+                    '10000000-0000-0000-0004-000000000030','10000000-0000-0000-0004-000000000031',
+                    '10000000-0000-0000-0004-000000000032','10000000-0000-0000-0001-000000000011',
+                    '10000000-0000-0000-0002-000000000009','10000000-0000-0000-0003-000000000018',
+                    '10000000-0000-0000-0004-000000000033','10000000-0000-0000-0004-000000000034',
+                    '10000000-0000-0000-0004-000000000035')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="3" author="mdiadia">
+        <insert tableName="working_config_entry">
+            <column name="config_entry_uuid">10000000-0000-0000-0001-000000000009</column>
+            <column name="name">CFCs</column>
+            <column name="type_id">1</column>
+            <column name="version">1</column>
+            <column name="composite_key">l1/cfcs/#v1</column>
+        </insert>
+        <insert tableName="working_config_entry">
+            <column name="config_entry_uuid">10000000-0000-0000-0003-000000000014</column>
+            <column name="name">Salaried</column>
+            <column name="type_id">3</column>
+            <column name="version">1</column>
+            <column name="composite_key">l1/cfcs/l3/salaried/#v1</column>
+        </insert>
+        <insert tableName="working_config_entry">
+            <column name="config_entry_uuid">10000000-0000-0000-0003-000000000015</column>
+            <column name="name">Hourly Paid</column>
+            <column name="type_id">3</column>
+            <column name="version">1</column>
+            <column name="composite_key">l1/cfcs/l3/hp/#v1</column>
+        </insert>
+
+        <insert tableName="working_config_entry">
+            <column name="config_entry_uuid">10000000-0000-0000-0004-000000000027</column>
+            <column name="name">WL1</column>
+            <column name="type_id">4</column>
+            <column name="version">1</column>
+            <column name="composite_key">l1/cfcs/l3/salaried/l4/wl1/#v1</column>
+        </insert>
+        <insert tableName="working_config_entry">
+            <column name="config_entry_uuid">10000000-0000-0000-0004-000000000028</column>
+            <column name="name">WL2</column>
+            <column name="type_id">4</column>
+            <column name="version">1</column>
+            <column name="composite_key">l1/cfcs/l3/salaried/l4/wl2/#v1</column>
+        </insert>
+        <insert tableName="working_config_entry">
+            <column name="config_entry_uuid">10000000-0000-0000-0004-000000000029</column>
+            <column name="name">Colleague</column>
+            <column name="type_id">4</column>
+            <column name="version">1</column>
+            <column name="composite_key">l1/cfcs/l3/salaried/l4/colleague/#v1</column>
+        </insert>
+
+        <insert tableName="working_config_entry">
+            <column name="config_entry_uuid">10000000-0000-0000-0001-000000000010</column>
+            <column name="name">CECs</column>
+            <column name="type_id">1</column>
+            <column name="version">1</column>
+            <column name="composite_key">l1/cecs/#v1</column>
+        </insert>
+        <insert tableName="working_config_entry">
+            <column name="config_entry_uuid">10000000-0000-0000-0002-000000000008</column>
+            <column name="name">Head Office</column>
+            <column name="type_id">2</column>
+            <column name="version">1</column>
+            <column name="composite_key">l1/cecs/l2/ho/#v1</column>
+        </insert>
+        <insert tableName="working_config_entry">
+            <column name="config_entry_uuid">10000000-0000-0000-0003-000000000016</column>
+            <column name="name">Salaried</column>
+            <column name="type_id">3</column>
+            <column name="version">1</column>
+            <column name="composite_key">l1/cecs/l2/ho/l3/salaried/#v1</column>
+        </insert>
+        <insert tableName="working_config_entry">
+            <column name="config_entry_uuid">10000000-0000-0000-0003-000000000017</column>
+            <column name="name">Hourly Paid</column>
+            <column name="type_id">3</column>
+            <column name="version">1</column>
+            <column name="composite_key">l1/cecs/l2/ho/l3/hp/#v1</column>
+        </insert>
+        <insert tableName="working_config_entry">
+            <column name="config_entry_uuid">10000000-0000-0000-0004-000000000030</column>
+            <column name="name">WL1</column>
+            <column name="type_id">4</column>
+            <column name="version">1</column>
+            <column name="composite_key">l1/cecs/l2/ho/l3/salaried/l4/wl1/#v1</column>
+        </insert>
+        <insert tableName="working_config_entry">
+            <column name="config_entry_uuid">10000000-0000-0000-0004-000000000031</column>
+            <column name="name">WL2</column>
+            <column name="type_id">4</column>
+            <column name="version">1</column>
+            <column name="composite_key">l1/cecs/l2/ho/l3/salaried/l4/wl2/#v1</column>
+        </insert>
+        <insert tableName="working_config_entry">
+            <column name="config_entry_uuid">10000000-0000-0000-0004-000000000032</column>
+            <column name="name">WL1</column>
+            <column name="type_id">4</column>
+            <column name="version">1</column>
+            <column name="composite_key">l1/cecs/l2/ho/l3/hp/l4/wl1/#v1</column>
+        </insert>
+
+        <insert tableName="working_config_entry">
+            <column name="config_entry_uuid">10000000-0000-0000-0001-000000000011</column>
+            <column name="name">Tesco Mobile</column>
+            <column name="type_id">1</column>
+            <column name="version">1</column>
+            <column name="composite_key">l1/tm/#v1</column>
+        </insert>
+        <insert tableName="working_config_entry">
+            <column name="config_entry_uuid">10000000-0000-0000-0002-000000000009</column>
+            <column name="name">Head Office</column>
+            <column name="type_id">2</column>
+            <column name="version">1</column>
+            <column name="composite_key">l1/tm/l2/ho/#v1</column>
+        </insert>
+        <insert tableName="working_config_entry">
+            <column name="config_entry_uuid">10000000-0000-0000-0003-000000000018</column>
+            <column name="name">Salaried</column>
+            <column name="type_id">3</column>
+            <column name="version">1</column>
+            <column name="composite_key">l1/tm/l2/ho/l3/salaried/#v1</column>
+        </insert>
+        <insert tableName="working_config_entry">
+            <column name="config_entry_uuid">10000000-0000-0000-0004-000000000033</column>
+            <column name="name">WL1</column>
+            <column name="type_id">4</column>
+            <column name="version">1</column>
+            <column name="composite_key">l1/tm/l2/ho/l3/salaried/l4/wl1/#v1</column>
+        </insert>
+        <insert tableName="working_config_entry">
+            <column name="config_entry_uuid">10000000-0000-0000-0004-000000000034</column>
+            <column name="name">WL2</column>
+            <column name="type_id">4</column>
+            <column name="version">1</column>
+            <column name="composite_key">l1/tm/l2/ho/l3/salaried/l4/wl2/#v1</column>
+        </insert>
+        <insert tableName="working_config_entry">
+            <column name="config_entry_uuid">10000000-0000-0000-0004-000000000035</column>
+            <column name="name">WL3</column>
+            <column name="type_id">4</column>
+            <column name="version">1</column>
+            <column name="composite_key">l1/tm/l2/ho/l3/salaried/l4/wl3/#v1</column>
+        </insert>
+
+        <rollback>
+            <delete tableName="working_config_entry">
+                <where>config_entry_uuid IN ('10000000-0000-0000-0001-000000000009','10000000-0000-0000-0003-000000000014',
+                    '10000000-0000-0000-0003-000000000015', '10000000-0000-0000-0004-000000000027',
+                    '10000000-0000-0000-0004-000000000028','10000000-0000-0000-0004-000000000029',
+                    '10000000-0000-0000-0001-000000000010','10000000-0000-0000-0002-000000000008',
+                    '10000000-0000-0000-0003-000000000016','10000000-0000-0000-0003-000000000017',
+                    '10000000-0000-0000-0004-000000000030','10000000-0000-0000-0004-000000000031',
+                    '10000000-0000-0000-0004-000000000032','10000000-0000-0000-0001-000000000011',
+                    '10000000-0000-0000-0002-000000000009','10000000-0000-0000-0003-000000000018',
+                    '10000000-0000-0000-0004-000000000033','10000000-0000-0000-0004-000000000034',
+                    '10000000-0000-0000-0004-000000000035')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

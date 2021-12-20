@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_14hkk3c" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="group_a" name="group_a" isExecutable="true">
+    <bpmn:extensionElements>
+      <camunda:properties>
+        <camunda:property name="pm_type" value="cycle" />
+        <camunda:property name="pm_cycle_type" value="fiscal" />
+        <camunda:property name="pm_cycle_start_time" value="2021-04-01" />
+        <camunda:property name="pm_cycle_before_start" value="P2W" />
+        <camunda:property name="pm_cycle_before_end" value="P2W" />
+        <camunda:property name="pm_cycle_max" value="5" />
+      </camunda:properties>
+    </bpmn:extensionElements>
+    <bpmn:subProcess id="objectives" name="My Objectives">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="pm_review_min" value="3" />
+          <camunda:property name="pm_review_max" value="3" />
+          <camunda:property name="pm_review_type" value="objective" />
+          <camunda:property name="pm_type" value="review" />
+          <camunda:property name="pm_form_key" value="forms/standard_objective.form" />
+          <camunda:property name="pm_review_start_time" value="2021-04-01" />
+          <camunda:property name="pm_review_before_start" value="P2W" />
+          <camunda:property name="pm_review_before_end" value="P1W" />
+          <camunda:property name="pm_review_duration" value="P2W" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1c2mhm6</bpmn:incoming>
+      <bpmn:outgoing>Flow_0f4zlnq</bpmn:outgoing>
+      <bpmn:endEvent id="Event_0nya2ac">
+        <bpmn:incoming>Flow_0rjmdw7</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:startEvent id="Event_0uh28rv">
+        <bpmn:outgoing>Flow_1tq8mvc</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_1tq8mvc" sourceRef="Event_0uh28rv" targetRef="Activity_03jrw4r" />
+      <bpmn:sequenceFlow id="Flow_0rjmdw7" sourceRef="Activity_0sqf3dq" targetRef="Event_0nya2ac" />
+      <bpmn:sequenceFlow id="Flow_1jzbke3" sourceRef="Activity_03jrw4r" targetRef="Activity_0sqf3dq" />
+      <bpmn:scriptTask id="Activity_03jrw4r" name="Calculate&#10;parameters" scriptFormat="groovy">
+        <bpmn:incoming>Flow_1tq8mvc</bpmn:incoming>
+        <bpmn:outgoing>Flow_1jzbke3</bpmn:outgoing>
+        <bpmn:script>println "\nObjective:" +
+"${execution.getCurrentActivityName()}" +
+" ${java.time.LocalDateTime.now()}"</bpmn:script>
+      </bpmn:scriptTask>
+      <bpmn:scriptTask id="Activity_0sqf3dq" name="Send start&#10;review&#10;event" scriptFormat="groovy">
+        <bpmn:incoming>Flow_1jzbke3</bpmn:incoming>
+        <bpmn:outgoing>Flow_0rjmdw7</bpmn:outgoing>
+        <bpmn:script>println "\nSend event: " + "${execution.getCurrentActivityName()}" +
+" ${java.time.LocalDateTime.now()}"</bpmn:script>
+      </bpmn:scriptTask>
+    </bpmn:subProcess>
+    <bpmn:task id="Activity_1vkxs1y" name="Read configuration">
+      <bpmn:incoming>Flow_0nbbfyl</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qhm8xl</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1qhm8xl" sourceRef="Activity_1vkxs1y" targetRef="Activity_1qjbqn5" />
+    <bpmn:sequenceFlow id="Flow_1c2mhm6" sourceRef="Gateway_1msj1uv" targetRef="objectives" />
+    <bpmn:sequenceFlow id="Flow_10o56ax" sourceRef="Gateway_1msj1uv" targetRef="endOfYearReview" />
+    <bpmn:endEvent id="Event_0v9jvii">
+      <bpmn:incoming>Flow_0y1flzn</bpmn:incoming>
+      <bpmn:incoming>Flow_1yhukqj</bpmn:incoming>
+      <bpmn:incoming>Flow_0f4zlnq</bpmn:incoming>
+      <bpmn:incoming>Flow_1wxy8ol</bpmn:incoming>
+      <bpmn:incoming>Flow_1rfkre9</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0y1flzn" sourceRef="endOfYearReview" targetRef="Event_0v9jvii" />
+    <bpmn:sequenceFlow id="Flow_10nqhon" sourceRef="Gateway_1msj1uv" targetRef="midYearReview" />
+    <bpmn:sequenceFlow id="Flow_1yhukqj" sourceRef="midYearReview" targetRef="Event_0v9jvii" />
+    <bpmn:scriptTask id="endOfYearReview" name="Year-end review" scriptFormat="groovy">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="pm_type" value="review" />
+          <camunda:property name="pm_review_type" value="eyr" />
+          <camunda:property name="pm_review_start_time" value="2022-03-15" />
+          <camunda:property name="pm_review_start_delay" value="P1Y" />
+          <camunda:property name="pm_review_before_start" value="P2W" />
+          <camunda:property name="pm_review_before_end" value="P1W" />
+          <camunda:property name="pm_review_duration" value="P2W" />
+          <camunda:property name="pm_form_key" value="forms/group_a_eyr.form" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_10o56ax</bpmn:incoming>
+      <bpmn:outgoing>Flow_0y1flzn</bpmn:outgoing>
+      <bpmn:script>println "\nEYR: " +
+"${execution.getCurrentActivityName()}" +
+" ${java.time.LocalDateTime.now()}"</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:scriptTask id="midYearReview" name="Mid-year review" scriptFormat="groovy">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="pm_type" value="review" />
+          <camunda:property name="pm_review_type" value="myr" />
+          <camunda:property name="pm_review_start_time" value="2021-10-01" />
+          <camunda:property name="pm_review_start_delay" value="P6M" />
+          <camunda:property name="pm_review_before_start" value="P2W" />
+          <camunda:property name="pm_review_before_end" value="P1W" />
+          <camunda:property name="pm_review_duration" value="P2W" />
+          <camunda:property name="pm_form_key" value="forms/standard_myr.form" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_10nqhon</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yhukqj</bpmn:outgoing>
+      <bpmn:script>println "\nMYR: " +
+"${execution.getCurrentActivityName()}" +
+" ${java.time.LocalDateTime.now()}"</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_0f4zlnq" sourceRef="objectives" targetRef="Event_0v9jvii" />
+    <bpmn:parallelGateway id="Gateway_1msj1uv">
+      <bpmn:incoming>Flow_01fl3ng</bpmn:incoming>
+      <bpmn:outgoing>Flow_1c2mhm6</bpmn:outgoing>
+      <bpmn:outgoing>Flow_10o56ax</bpmn:outgoing>
+      <bpmn:outgoing>Flow_10nqhon</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1i8797i</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1r6dvjh</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:scriptTask id="q3" name="Q3" scriptFormat="groovy">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="pm_type" value="timeline_point" />
+          <camunda:property name="pm_timeline_point_start_time" value="2022-01-01" />
+          <camunda:property name="pm_timeline_point_start_delay" value="P9M" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1i8797i</bpmn:incoming>
+      <bpmn:outgoing>Flow_1wxy8ol</bpmn:outgoing>
+      <bpmn:script>println "\nQ3: " +
+"${execution.getCurrentActivityName()}" +
+" ${java.time.LocalDateTime.now()}"</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_1wxy8ol" sourceRef="q3" targetRef="Event_0v9jvii" />
+    <bpmn:sequenceFlow id="Flow_1i8797i" sourceRef="Gateway_1msj1uv" targetRef="q3" />
+    <bpmn:scriptTask id="q1" name="Q1" scriptFormat="groovy">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="pm_type" value="timeline_point" />
+          <camunda:property name="pm_timeline_point_start_time" value="2021-07-01" />
+          <camunda:property name="pm_timeline_point_start_delay" value="P3M" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1r6dvjh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1rfkre9</bpmn:outgoing>
+      <bpmn:script>println "\nQ1: " +
+"${execution.getCurrentActivityName()}" +
+" ${java.time.LocalDateTime.now()}"</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_1r6dvjh" sourceRef="Gateway_1msj1uv" targetRef="q1" />
+    <bpmn:sequenceFlow id="Flow_1rfkre9" sourceRef="q1" targetRef="Event_0v9jvii" />
+    <bpmn:startEvent id="Event_0e0xeep" name="Cycle start">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="groovy">println "\nStart process: " +
+"${java.time.LocalDateTime.now()}"</camunda:script>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_0nbbfyl</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0nbbfyl" sourceRef="Event_0e0xeep" targetRef="Activity_1vkxs1y" />
+    <bpmn:task id="Activity_1qjbqn5" name="Process&#10;timeline">
+      <bpmn:documentation>Calculate all dates according to timeline</bpmn:documentation>
+      <bpmn:incoming>Flow_1qhm8xl</bpmn:incoming>
+      <bpmn:outgoing>Flow_01fl3ng</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_01fl3ng" sourceRef="Activity_1qjbqn5" targetRef="Gateway_1msj1uv" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="group_a">
+      <bpmndi:BPMNEdge id="Flow_01fl3ng_di" bpmnElement="Flow_01fl3ng">
+        <di:waypoint x="500" y="210" />
+        <di:waypoint x="555" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nbbfyl_di" bpmnElement="Flow_0nbbfyl">
+        <di:waypoint x="196" y="210" />
+        <di:waypoint x="240" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rfkre9_di" bpmnElement="Flow_1rfkre9">
+        <di:waypoint x="730" y="260" />
+        <di:waypoint x="1190" y="260" />
+        <di:waypoint x="1190" y="210" />
+        <di:waypoint x="1222" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1r6dvjh_di" bpmnElement="Flow_1r6dvjh">
+        <di:waypoint x="580" y="235" />
+        <di:waypoint x="580" y="260" />
+        <di:waypoint x="630" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1i8797i_di" bpmnElement="Flow_1i8797i">
+        <di:waypoint x="580" y="185" />
+        <di:waypoint x="580" y="160" />
+        <di:waypoint x="910" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wxy8ol_di" bpmnElement="Flow_1wxy8ol">
+        <di:waypoint x="1010" y="160" />
+        <di:waypoint x="1190" y="160" />
+        <di:waypoint x="1190" y="210" />
+        <di:waypoint x="1222" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0f4zlnq_di" bpmnElement="Flow_0f4zlnq">
+        <di:waypoint x="910" y="390" />
+        <di:waypoint x="1190" y="390" />
+        <di:waypoint x="1190" y="210" />
+        <di:waypoint x="1222" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yhukqj_di" bpmnElement="Flow_1yhukqj">
+        <di:waypoint x="870" y="210" />
+        <di:waypoint x="1222" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10nqhon_di" bpmnElement="Flow_10nqhon">
+        <di:waypoint x="605" y="210" />
+        <di:waypoint x="770" y="210" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="479" y="176" width="83" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0y1flzn_di" bpmnElement="Flow_0y1flzn">
+        <di:waypoint x="1150" y="110" />
+        <di:waypoint x="1240" y="110" />
+        <di:waypoint x="1240" y="192" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10o56ax_di" bpmnElement="Flow_10o56ax">
+        <di:waypoint x="580" y="185" />
+        <di:waypoint x="580" y="110" />
+        <di:waypoint x="1050" y="110" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="491" y="73" width="59" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1c2mhm6_di" bpmnElement="Flow_1c2mhm6">
+        <di:waypoint x="580" y="235" />
+        <di:waypoint x="580" y="310" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="404" y="256" width="52" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qhm8xl_di" bpmnElement="Flow_1qhm8xl">
+        <di:waypoint x="340" y="210" />
+        <di:waypoint x="400" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_1bu82ro_di" bpmnElement="objectives" isExpanded="true">
+        <dc:Bounds x="340" y="310" width="570" height="160" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1jzbke3_di" bpmnElement="Flow_1jzbke3">
+        <di:waypoint x="570" y="390" />
+        <di:waypoint x="660" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rjmdw7_di" bpmnElement="Flow_0rjmdw7">
+        <di:waypoint x="760" y="390" />
+        <di:waypoint x="842" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tq8mvc_di" bpmnElement="Flow_1tq8mvc">
+        <di:waypoint x="408" y="390" />
+        <di:waypoint x="470" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0nya2ac_di" bpmnElement="Event_0nya2ac">
+        <dc:Bounds x="842" y="372" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0uh28rv_di" bpmnElement="Event_0uh28rv">
+        <dc:Bounds x="372" y="372" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0r6yqhw_di" bpmnElement="Activity_03jrw4r">
+        <dc:Bounds x="470" y="350" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0da2brm_di" bpmnElement="Activity_0sqf3dq">
+        <dc:Bounds x="660" y="350" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1vkxs1y_di" bpmnElement="Activity_1vkxs1y">
+        <dc:Bounds x="240" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0v9jvii_di" bpmnElement="Event_0v9jvii">
+        <dc:Bounds x="1222" y="192" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0pi7zaw_di" bpmnElement="endOfYearReview">
+        <dc:Bounds x="1050" y="70" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0av6cmn_di" bpmnElement="midYearReview">
+        <dc:Bounds x="770" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1mwce77_di" bpmnElement="Gateway_1msj1uv">
+        <dc:Bounds x="555" y="185" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_017n9fs_di" bpmnElement="q3">
+        <dc:Bounds x="910" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0i2qhx0_di" bpmnElement="q1">
+        <dc:Bounds x="630" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0yqaexd_di" bpmnElement="Event_0e0xeep">
+        <dc:Bounds x="160" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="152" y="235" width="53" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qjbqn5_di" bpmnElement="Activity_1qjbqn5">
+        <dc:Bounds x="400" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

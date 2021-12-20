@@ -91,7 +91,7 @@ public interface PMCycleService {
      * @param fileUuid File UUID
      * @return PMCycleMetadata
      */
-    PMCycleMetadata getMetadata(@NotNull UUID fileUuid);
+    PMCycleMetadata getFileMetadata(@NotNull UUID fileUuid);
 
     String  deploy(PMCycle cycle);
 
