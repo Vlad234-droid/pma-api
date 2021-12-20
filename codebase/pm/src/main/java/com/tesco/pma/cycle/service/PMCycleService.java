@@ -5,6 +5,7 @@ import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.pagination.RequestQuery;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -83,7 +84,7 @@ public interface PMCycleService {
      */
     void updateJsonMetadata(@NotNull UUID uuid, @NotNull String metadata);
 
-    List<PMCycle> getAll(boolean includeMetadata);
+    List<PMCycle> getAll(RequestQuery requestQuery, boolean includeMetadata);
 
     /**
      * Get PMCycleMetadata by file UUID
@@ -93,8 +94,21 @@ public interface PMCycleService {
      */
     PMCycleMetadata getFileMetadata(@NotNull UUID fileUuid);
 
-    String  deploy(PMCycle cycle);
+    /**
+     * Deploy pm cycle
+     *
+     * @param cycle performance cycle
+     * @return deployed runtime process UUID
+     */
+    UUID deploy(PMCycle cycle);
 
-    void start(UUID cycleUUID, String processId);
+    /**
+     * Start performance cycle by process UUID
+     *
+     * @param rtProcessUuid runtime process UUID
+     */
+    void start(UUID rtProcessUuid);
+
+    void completeCycle(UUID cycleUUID);
 }
 

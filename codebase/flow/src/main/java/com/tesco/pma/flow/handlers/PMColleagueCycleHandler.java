@@ -12,6 +12,7 @@ import com.tesco.pma.event.EventParams;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.organisation.service.ConfigEntryService;
+import com.tesco.pma.pagination.RequestQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -43,7 +44,9 @@ public class PMColleagueCycleHandler extends CamundaAbstractFlowHandler {
             var eventProperties = event.getEventProperties();
             if (eventProperties.containsKey(EventParams.COLLEAGUE_UUID.name())) {
                 var colleagueUuid = UUID.fromString(eventProperties.get(EventParams.COLLEAGUE_UUID.name()).toString());
-                var cycle = pmCycleService.getAll(true)
+                var requestQuery = new RequestQuery();
+                requestQuery.setFilters(Collections.emptyList());
+                var cycle = pmCycleService.getAll(requestQuery, true)
                         .stream()
                         .filter(pmCycle -> PMCycleStatus.ACTIVE == pmCycle.getStatus())
                         .filter(c -> configEntryService.isColleagueExistsForCompositeKey(colleagueUuid, c.getEntryConfigKey()))

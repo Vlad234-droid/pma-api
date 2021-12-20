@@ -9,6 +9,7 @@ import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -149,9 +150,10 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycles for the status not found",
             content = @Content)
     @GetMapping(value = "/pm-cycles/", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<List<PMCycle>> getAll(@RequestParam(value = INCLUDE_METADATA, defaultValue = "false")
+    public RestResponse<List<PMCycle>> getAll(RequestQuery requestQuery,
+                                              @RequestParam(value = INCLUDE_METADATA, defaultValue = "false")
                                                       boolean includeMetadata) {
-        return success(service.getAll(includeMetadata));
+        return success(service.getAll(requestQuery, includeMetadata));
     }
 
     /**
@@ -227,8 +229,8 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle deployed")
     @PutMapping(value = "/pm-cycles/{uuid}/deploy", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public RestResponse<String> deploy(@PathVariable("uuid") UUID uuid,
-                                       @RequestBody PMCycle cycle) {
+    public RestResponse<UUID> deploy(@PathVariable("uuid") UUID uuid,
+                                     @RequestBody PMCycle cycle) {
 
         return success(service.deploy(cycle));
     }
@@ -236,20 +238,18 @@ public class PMCycleEndpoint {
     /**
      * PUT call to start Performance Cycle.
      *
-     * @param cycleUUID a PMCycle uuid
-     * @param processId process id
+     * @param uuid process id
      * @return sucess
      */
     @Operation(summary = "Start performance cycle",
             description = "Performance cycle started",
             tags = {"performance-cycle"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle started")
-    @PutMapping(value = "/pm-cycles/{uuid}/start", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/pm-cycles/processes/{uuid}/start")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public RestResponse<?> start(@PathVariable("uuid") UUID cycleUUID,
-                                 @RequestBody String processId) {
-
-        service.start(cycleUUID, processId);
+    public RestResponse<?> start(@PathVariable final UUID uuid) {
+        log.debug("REST request to start Process : {}", uuid);
+        service.start(uuid);
         return RestResponse.success();
     }
 
