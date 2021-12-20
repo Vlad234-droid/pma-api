@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -55,6 +56,51 @@ public class ProfileDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
+    void getColleagueByIamIdWithNullWorkLevel() {
+        var colleagueUuid = UUID.fromString("10000000-0000-0000-0000-000000000001");
+
+        var colleague = dao.getColleagueByIamId("TPX13");
+
+        assertNotNull(colleague);
+        assertEquals(colleagueUuid, colleague.getUuid());
+        assertNotNull(colleague.getCountry());
+        assertNotNull(colleague.getDepartment());
+        assertNotNull(colleague.getJob());
+        assertNull(colleague.getWorkLevel());
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
+    void getColleagueByIamIdWithNullDepartment() {
+        var colleagueUuid = UUID.fromString("10000000-0000-0000-0000-000000000002");
+
+        var colleague = dao.getColleagueByIamId("TPX14");
+
+        assertNotNull(colleague);
+        assertEquals(colleagueUuid, colleague.getUuid());
+        assertNotNull(colleague.getCountry());
+        assertNull(colleague.getDepartment());
+        assertNotNull(colleague.getJob());
+        assertNotNull(colleague.getWorkLevel());
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
+    void getColleagueByIamIdWithNullJob() {
+        var colleagueUuid = UUID.fromString("10000000-0000-0000-0000-000000000003");
+
+        var colleague = dao.getColleagueByIamId("TPX15");
+
+        assertNotNull(colleague);
+        assertEquals(colleagueUuid, colleague.getUuid());
+        assertNotNull(colleague.getCountry());
+        assertNotNull(colleague.getDepartment());
+        assertNull(colleague.getJob());
+        assertNotNull(colleague.getWorkLevel());
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
     void getColleague() {
         var colleague = dao.getColleague(COLLEAGUE_UUID);
 
@@ -63,6 +109,51 @@ public class ProfileDAOTest extends AbstractDAOTest {
         assertNotNull(colleague.getCountry());
         assertNotNull(colleague.getDepartment());
         assertNotNull(colleague.getJob());
+        assertNotNull(colleague.getWorkLevel());
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
+    void getColleagueWithNullWorkLevel() {
+        var colleagueUuid = UUID.fromString("10000000-0000-0000-0000-000000000001");
+
+        var colleague = dao.getColleague(colleagueUuid);
+
+        assertNotNull(colleague);
+        assertEquals(colleagueUuid, colleague.getUuid());
+        assertNotNull(colleague.getCountry());
+        assertNotNull(colleague.getDepartment());
+        assertNotNull(colleague.getJob());
+        assertNull(colleague.getWorkLevel());
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
+    void getColleagueWithNullDepartment() {
+        var colleagueUuid = UUID.fromString("10000000-0000-0000-0000-000000000002");
+
+        var colleague = dao.getColleague(colleagueUuid);
+
+        assertNotNull(colleague);
+        assertEquals(colleagueUuid, colleague.getUuid());
+        assertNotNull(colleague.getCountry());
+        assertNull(colleague.getDepartment());
+        assertNotNull(colleague.getJob());
+        assertNotNull(colleague.getWorkLevel());
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
+    void getColleagueWithNullJob() {
+        var colleagueUuid = UUID.fromString("10000000-0000-0000-0000-000000000003");
+
+        var colleague = dao.getColleague(colleagueUuid);
+
+        assertNotNull(colleague);
+        assertEquals(colleagueUuid, colleague.getUuid());
+        assertNotNull(colleague.getCountry());
+        assertNotNull(colleague.getDepartment());
+        assertNull(colleague.getJob());
         assertNotNull(colleague.getWorkLevel());
     }
 
