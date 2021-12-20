@@ -18,9 +18,6 @@ import com.tesco.pma.review.service.ReviewService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -75,7 +72,7 @@ public class InitReviewNotification extends CamundaAbstractFlowHandler {
                 .orElseThrow(() -> notFound(ErrorCodes.PROFILE_NOT_FOUND, "UUID", colleagueUUID.toString()));
     }
 
-    protected WorkLevel getWorkLevel(ColleagueProfile colleagueProfile){
+    protected WorkLevel getWorkLevel(ColleagueProfile colleagueProfile) {
         return colleagueProfile.getColleague().getWorkRelationships().get(0).getWorkLevel();
     }
 

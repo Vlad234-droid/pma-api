@@ -77,7 +77,7 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
     @MockBean
     private NamedMessageSourceAccessor messageSourceAccessor;
 
-    private UUID colleagueUUID = UUID.randomUUID();
+    private final UUID colleagueUUID = UUID.randomUUID();
     private ColleagueProfile colleagueProfile;
 
     @BeforeEach
