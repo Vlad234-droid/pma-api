@@ -20,5 +20,5 @@ import java.util.List;
 public class ColleagueTimeline extends ColleagueSimple {
 
     List<SimplifiedReview> reviews;
-    List<PMCycleTimelinePoint> timeline;
+    List<TimelinePoint> timeline;
 }

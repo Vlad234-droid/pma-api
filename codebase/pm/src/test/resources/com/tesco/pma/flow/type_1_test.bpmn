@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_14hkk3c" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_14hkk3c" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:process id="type_1_test" name="type_1_test" isExecutable="true">
     <bpmn:extensionElements>
       <camunda:properties>
@@ -50,15 +50,11 @@
 " ${java.time.LocalDateTime.now()}"</bpmn:script>
       </bpmn:scriptTask>
     </bpmn:subProcess>
-    <bpmn:task id="Activity_1vkxs1y" name="Read configuration">
-      <bpmn:incoming>Flow_0nbbfyl</bpmn:incoming>
-      <bpmn:outgoing>Flow_1qhm8xl</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:sequenceFlow id="Flow_1qhm8xl" sourceRef="Activity_1vkxs1y" targetRef="Gateway_1msj1uv" />
+    <bpmn:sequenceFlow id="Flow_1qhm8xl" sourceRef="processColleagueCycles" targetRef="Gateway_1msj1uv" />
     <bpmn:sequenceFlow id="Flow_1c2mhm6" sourceRef="Gateway_1msj1uv" targetRef="objectives" />
     <bpmn:sequenceFlow id="Flow_10o56ax" sourceRef="Gateway_1msj1uv" targetRef="mid_year_review" />
     <bpmn:endEvent id="Event_0v9jvii">
-      <bpmn:incoming>Flow_063syv1</bpmn:incoming>
+      <bpmn:incoming>Flow_1xexb8c</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0y1flzn" sourceRef="mid_year_review" targetRef="Gateway_1jg5slo" />
     <bpmn:sequenceFlow id="Flow_10nqhon" sourceRef="Gateway_1msj1uv" targetRef="end_of_year_review" />
@@ -113,7 +109,7 @@
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_0nbbfyl</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_0nbbfyl" sourceRef="Event_0e0xeep" targetRef="Activity_1vkxs1y" />
+    <bpmn:sequenceFlow id="Flow_0nbbfyl" sourceRef="Event_0e0xeep" targetRef="processColleagueCycles" />
     <bpmn:subProcess id="mid_year_review" name="Mid year review">
       <bpmn:extensionElements>
         <camunda:properties>
@@ -200,7 +196,7 @@
           <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${END_DATE}</bpmn:timeDate>
         </bpmn:timerEventDefinition>
       </bpmn:intermediateCatchEvent>
-      <bpmn:serviceTask id="processTimelinePointMyr" name="Process&#10;timeline&#10;point" camunda:class="com.tesco.pma.flow.handlers.ProcessTimelinePoint">
+      <bpmn:serviceTask id="processTimelinePointMyr" name="Process&#10;timeline&#10;point" camunda:class="com.tesco.pma.flow.handlers.ProcessTimelinePointHandler">
         <bpmn:documentation>Calculate all dates according to timeline</bpmn:documentation>
         <bpmn:incoming>Flow_0bs5gx6</bpmn:incoming>
         <bpmn:outgoing>Flow_1x27u4h</bpmn:outgoing>
@@ -311,7 +307,7 @@
           <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${END_DATE}</bpmn:timeDate>
         </bpmn:timerEventDefinition>
       </bpmn:intermediateCatchEvent>
-      <bpmn:serviceTask id="processTimelinePointEyr" name="Process&#10;timeline&#10;point" camunda:class="com.tesco.pma.flow.handlers.ProcessTimelinePoint">
+      <bpmn:serviceTask id="processTimelinePointEyr" name="Process&#10;timeline&#10;point" camunda:class="com.tesco.pma.flow.handlers.ProcessTimelinePointHandler">
         <bpmn:documentation>Calculate all dates according to timeline</bpmn:documentation>
         <bpmn:incoming>Flow_1lt2ong</bpmn:incoming>
         <bpmn:outgoing>Flow_0dch7uy</bpmn:outgoing>
@@ -336,7 +332,7 @@
       </bpmn:scriptTask>
       <bpmn:sequenceFlow id="Flow_0n9ym42" sourceRef="Activity_1arxp9t" targetRef="Event_1fwl5fm" />
     </bpmn:subProcess>
-    <bpmn:sequenceFlow id="Flow_063syv1" sourceRef="Gateway_1jg5slo" targetRef="Event_0v9jvii" />
+    <bpmn:sequenceFlow id="Flow_063syv1" sourceRef="Gateway_1jg5slo" targetRef="finalizeFlow" />
     <bpmn:parallelGateway id="Gateway_1jg5slo">
       <bpmn:incoming>Flow_0f4zlnq</bpmn:incoming>
       <bpmn:incoming>Flow_0y1flzn</bpmn:incoming>
@@ -345,12 +341,59 @@
       <bpmn:incoming>Flow_1rfkre9</bpmn:incoming>
       <bpmn:outgoing>Flow_063syv1</bpmn:outgoing>
     </bpmn:parallelGateway>
+    <bpmn:serviceTask id="processColleagueCycles" name="Process Colleagues" camunda:class="com.tesco.pma.flow.handlers.PMColleagueCycleHandler">
+      <bpmn:incoming>Flow_0nbbfyl</bpmn:incoming>
+      <bpmn:incoming>Flow_1q25lda</bpmn:incoming>
+      <bpmn:incoming>Flow_16dj1pj</bpmn:incoming>
+      <bpmn:incoming>Flow_0ug62r1</bpmn:incoming>
+      <bpmn:incoming>Flow_1pb6l1e</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qhm8xl</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:startEvent id="Event_03cxyfj">
+      <bpmn:outgoing>Flow_1q25lda</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1an17t6" messageRef="Message_1l9x4m5" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1q25lda" sourceRef="Event_03cxyfj" targetRef="processColleagueCycles" />
+    <bpmn:sequenceFlow id="Flow_1xexb8c" sourceRef="finalizeFlow" targetRef="Event_0v9jvii" />
+    <bpmn:serviceTask id="finalizeFlow" name="Finalize flow" camunda:class="com.tesco.pma.flow.handlers.FinalizeFlowHandler">
+      <bpmn:incoming>Flow_063syv1</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xexb8c</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:startEvent id="Event_1jq7j62">
+      <bpmn:outgoing>Flow_16dj1pj</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_18h1btm" messageRef="Message_13qq9wf" />
+    </bpmn:startEvent>
+    <bpmn:startEvent id="Event_0lhrdq2">
+      <bpmn:outgoing>Flow_0ug62r1</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0s1t3vx" messageRef="Message_15jak7p" />
+    </bpmn:startEvent>
+    <bpmn:startEvent id="Event_1gk314f">
+      <bpmn:outgoing>Flow_1pb6l1e</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1ncwws9" messageRef="Message_0p5u9hh" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_16dj1pj" sourceRef="Event_1jq7j62" targetRef="processColleagueCycles" />
+    <bpmn:sequenceFlow id="Flow_0ug62r1" sourceRef="Event_0lhrdq2" targetRef="processColleagueCycles" />
+    <bpmn:sequenceFlow id="Flow_1pb6l1e" sourceRef="Event_1gk314f" targetRef="processColleagueCycles" />
   </bpmn:process>
+  <bpmn:message id="Message_1l9x4m5" name="IMPORT_NEW_COLLEAGUE" />
+  <bpmn:message id="Message_13qq9wf" name="CEP_COLLEAGUE_ADDED" />
+  <bpmn:message id="Message_15jak7p" name="CEP_COLLEAGUE_UPDATED" />
+  <bpmn:message id="Message_0p5u9hh" name="CEP_COLLEAGUE_LEFT" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="type_1_test">
+      <bpmndi:BPMNEdge id="Flow_1xexb8c_di" bpmnElement="Flow_1xexb8c">
+        <di:waypoint x="1560" y="710" />
+        <di:waypoint x="1602" y="710" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1q25lda_di" bpmnElement="Flow_1q25lda">
+        <di:waypoint x="196" y="620" />
+        <di:waypoint x="218" y="620" />
+        <di:waypoint x="218" y="690" />
+        <di:waypoint x="240" y="690" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_063syv1_di" bpmnElement="Flow_063syv1">
         <di:waypoint x="1435" y="710" />
-        <di:waypoint x="1472" y="710" />
+        <di:waypoint x="1460" y="710" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0nbbfyl_di" bpmnElement="Flow_0nbbfyl">
         <di:waypoint x="196" y="710" />
@@ -419,6 +462,33 @@
         <di:waypoint x="340" y="710" />
         <di:waypoint x="375" y="710" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16dj1pj_di" bpmnElement="Flow_16dj1pj">
+        <di:waypoint x="196" y="828" />
+        <di:waypoint x="218" y="828" />
+        <di:waypoint x="218" y="740" />
+        <di:waypoint x="240" y="740" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ug62r1_di" bpmnElement="Flow_0ug62r1">
+        <di:waypoint x="196" y="890" />
+        <di:waypoint x="218" y="890" />
+        <di:waypoint x="218" y="740" />
+        <di:waypoint x="240" y="740" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1pb6l1e_di" bpmnElement="Flow_1pb6l1e">
+        <di:waypoint x="196" y="952" />
+        <di:waypoint x="218" y="952" />
+        <di:waypoint x="218" y="740" />
+        <di:waypoint x="240" y="740" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1mtxdkt_di" bpmnElement="Event_1jq7j62">
+        <dc:Bounds x="160" y="810" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0psmlx1_di" bpmnElement="Event_0lhrdq2">
+        <dc:Bounds x="160" y="872" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_10gekpj_di" bpmnElement="Event_1gk314f">
+        <dc:Bounds x="160" y="934" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1bu82ro_di" bpmnElement="objectives" isExpanded="true">
         <dc:Bounds x="480" y="810" width="570" height="160" />
       </bpmndi:BPMNShape>
@@ -446,11 +516,8 @@
       <bpmndi:BPMNShape id="Activity_0da2brm_di" bpmnElement="Activity_0sqf3dq">
         <dc:Bounds x="800" y="850" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1vkxs1y_di" bpmnElement="Activity_1vkxs1y">
-        <dc:Bounds x="240" y="670" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0v9jvii_di" bpmnElement="Event_0v9jvii">
-        <dc:Bounds x="1472" y="692" width="36" height="36" />
+        <dc:Bounds x="1602" y="692" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1mwce77_di" bpmnElement="Gateway_1msj1uv">
         <dc:Bounds x="375" y="685" width="50" height="50" />
@@ -669,6 +736,15 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1ozoclg_di" bpmnElement="Gateway_1jg5slo">
         <dc:Bounds x="1385" y="685" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_102snha_di" bpmnElement="processColleagueCycles">
+        <dc:Bounds x="240" y="670" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1klcdc9_di" bpmnElement="Event_03cxyfj">
+        <dc:Bounds x="160" y="602" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0cjuuq6_di" bpmnElement="finalizeFlow">
+        <dc:Bounds x="1460" y="670" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

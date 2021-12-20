@@ -158,7 +158,7 @@ public class ProfileDAOTest extends AbstractDAOTest {
         colleague.setSalaryFrequency("SF_1");
         colleague.setPrimaryEntity("PE_1");
         colleague.setManager(false);
-        dao.saveColleague(colleague);
+        dao.updateColleague(colleague);
 
         var updated = dao.getColleague(colleagueUuid);
 
@@ -183,15 +183,15 @@ public class ProfileDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
     void updateColleagueSucceeded() {
         var colleague = getCorrectColleague();
-        final int inserted = dao.saveColleague(colleague);
-        assertThat(inserted).isEqualTo(1);
+        final int updated = dao.updateColleague(colleague);
+        assertThat(updated).isEqualTo(1);
     }
 
     @Test
     void updateColleagueThrowDataIntegrityViolationException() {
         var colleague = getIncorrectColleague();
 
-        assertThatCode(() -> dao.saveColleague(colleague))
+        assertThatCode(() -> dao.updateColleague(colleague))
                 .isExactlyInstanceOf(DataIntegrityViolationException.class)
                 .hasMessageContaining("ERROR: insert or update on table \"colleague\" violates foreign key constraint");
     }
@@ -256,19 +256,22 @@ public class ProfileDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
     void findColleagueSuggestionsByFullName() {
 
+        var managerUUID = "c409869b-2acf-45cd-8cc6-e13af2e6f935";
+
         assertEquals(9, dao.findColleagueSuggestionsByFullName(
-                createRQ(Map.of("firstName_like", "fiRst"))).size());
+                createRQ(Map.of("first-name_like", "fiRst"))).size());
 
-        assertEquals(1, dao.findColleagueSuggestionsByFullName(
+        var colleagues = dao.findColleagueSuggestionsByFullName(
                 createRQ(Map.of(
-                        "firstName_like", "JohN",
-                        "managerUUID_equals", "c409869b-2acf-45cd-8cc6-e13af2e6f935"))).size());
+                        "first-name_like", "JohN",
+                        "manager-uuid_equals", managerUUID)));
 
-        assertEquals(1, dao.findColleagueSuggestionsByFullName(createRQ(Map.of("firstName_like","ohn"))).size());
+        assertEquals(1, colleagues.size());
+        assertEquals(1, dao.findColleagueSuggestionsByFullName(createRQ(Map.of("first-name_like","ohn"))).size());
 
         var colleague = dao.findColleagueSuggestionsByFullName(createRQ(Map.of(
-                "firstName_eq", "John",
-                "lastName_eq", "Dow"
+                "first-name_eq", "John",
+                "last-name_eq", "Dow"
         ))).get(0);
 
         assertEquals("119e0d2b-1dc2-409f-8198-ecd66e59d47a", colleague.getColleagueUUID().toString());
@@ -277,7 +280,7 @@ public class ProfileDAOTest extends AbstractDAOTest {
         assertEquals("2", colleague.getWorkRelationships().get(0).getJob().getId());
         assertEquals("ANNUAL", colleague.getWorkRelationships().get(0).getSalaryFrequency());
         assertEquals("ET", colleague.getWorkRelationships().get(0).getEmploymentType());
-        //assertEquals("c409869b-2acf-45cd-8cc6-e13af2e6f935", colleague.getWorkRelationships().get(0).getManagerUUID().toString());
+        //assertEquals(managerUUID, colleague.getWorkRelationships().get(0).getManagerUUID().toString());
         assertEquals("4", colleague.getWorkRelationships().get(0).getDepartment().getId());
         assertEquals("John", colleague.getProfile().getFirstName());
         assertEquals("Dow", colleague.getProfile().getLastName());

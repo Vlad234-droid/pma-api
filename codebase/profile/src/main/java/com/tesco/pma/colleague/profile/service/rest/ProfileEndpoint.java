@@ -1,6 +1,5 @@
 package com.tesco.pma.colleague.profile.service.rest;
 
-import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.domain.ImportError;
 import com.tesco.pma.colleague.profile.domain.ImportReport;
@@ -23,6 +22,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -176,7 +176,7 @@ public class ProfileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Search among colleagues by full name and manager ID")
     @GetMapping(value = "/suggestions", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     @PreAuthorize("isColleague()")
-    public RestResponse<List<Colleague>> getSuggestions(RequestQuery requestQuery) {
+    public RestResponse<List<ColleagueProfile>> getSuggestions(RequestQuery requestQuery) {
         return RestResponse.success(profileService.getSuggestions(requestQuery));
     }
 

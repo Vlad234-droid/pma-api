@@ -1,0 +1,188 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "text": "## Look back",
+      "type": "text",
+      "id": "Field_0hu83pj"
+    },
+    {
+      "text": "Have you achieved your objectives?\n\n**Strategic objectives**",
+      "type": "text",
+      "id": "Field_1s4fms4"
+    },
+    {
+      "values": [
+        {
+          "label": "Not achieved",
+          "value": "Not achieved"
+        },
+        {
+          "label": "Achieved",
+          "value": "Achieved"
+        },
+        {
+          "label": "Over-achieved",
+          "value": "Over-achieved"
+        }
+      ],
+      "label": "**Objective**",
+      "type": "select",
+      "id": "Field_05cjh0f",
+      "key": "objective",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "key": "day_job",
+      "label": "**Day Job**",
+      "type": "textfield",
+      "id": "Field_17nyw6d",
+      "validate": {
+        "required": true,
+        "maxLength": 500,
+        "minLength": 10
+      },
+      "description": "What have you contributed to your team's priorities or KPIs?"
+    },
+    {
+      "label": "**Yourself**",
+      "type": "textfield",
+      "id": "Field_12p2glw",
+      "key": "yourself",
+      "validate": {
+        "required": true,
+        "minLength": 10,
+        "maxLength": 500
+      },
+      "description": "How have you gone about your work and what have you done to develop yourself? How have you lived the Win Together behaviours, purpose and values?"
+    },
+    {
+      "key": "impact_on_others",
+      "label": "**Your impact on others**",
+      "type": "textfield",
+      "id": "Field_1ug5wco",
+      "validate": {
+        "required": true,
+        "minLength": 10,
+        "maxLength": 500
+      },
+      "description": "How have you contributed to creating a great place to work for all so everyone feels welcome?"
+    },
+    {
+      "text": "**Based on the conversation with my line manager, my overall performance rating for this is year is**",
+      "type": "text",
+      "id": "Field_0vxxcsy"
+    },
+    {
+      "values": [
+        {
+          "label": "Outstanding",
+          "value": "Outstanding"
+        },
+        {
+          "label": "Satisfactory",
+          "value": "Satisfactory"
+        },
+        {
+          "label": "Great",
+          "value": "Great"
+        },
+        {
+          "label": "Below expected",
+          "value": "Below expected"
+        }
+      ],
+      "key": "what",
+      "label": "what",
+      "type": "select",
+      "id": "Field_1ribi5m",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Outstanding",
+          "value": "Outstanding"
+        },
+        {
+          "label": "Satisfactory",
+          "value": "Satisfactory"
+        },
+        {
+          "label": "Great",
+          "value": "Great"
+        },
+        {
+          "label": "Below expected",
+          "value": "Below expected"
+        }
+      ],
+      "key": "how",
+      "label": "how",
+      "type": "select",
+      "id": "Field_1ribi4m",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "text": "**Overall:**",
+      "type": "text",
+      "id": "Field_01qd85o"
+    },
+    {
+      "text": "## Look forward",
+      "type": "text",
+      "id": "Field_148wy3b"
+    },
+    {
+      "key": "based_on_my_feedback",
+      "label": "**Based on my feedback, next year I am going to focus my development on:**",
+      "type": "textfield",
+      "id": "Field_15z0fpz",
+      "validate": {
+        "required": true,
+        "minLength": 10,
+        "maxLength": 500
+      }
+    },
+    {
+      "key": "in_the_year_ahead",
+      "label": "**Next year, my priorities are going to be:**",
+      "type": "textfield",
+      "id": "Field_0hww046",
+      "validate": {
+        "required": true,
+        "maxLength": 500,
+        "minLength": 10
+      }
+    },
+    {
+      "text": "{auth.role:LineManager}**Line Manager**",
+      "type": "text",
+      "id": "Field_0s73vfz"
+    },
+    {
+      "key": "lm_my_feedback",
+      "label": "**My feedback and coaching for you is:**",
+      "type": "textfield",
+      "id": "Field_07w2uk5",
+      "validate": {
+        "required": true,
+        "minLength": 10,
+        "maxLength": 500
+      },
+      "description": "{auth.role:LineManager}"
+    }
+  ],
+  "exporter": {
+    "name": "form-js (https://demo.bpmn.io)",
+    "version": "0.4.1"
+  },
+  "type": "default",
+  "id": "group_a_eyr_form"
+}

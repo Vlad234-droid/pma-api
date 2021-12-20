@@ -22,15 +22,21 @@ podAnnotations: {}
 podSecurityContext: {}
 # fsGroup: 2000
 securityContext: {}
+
 # capabilities:
 #   drop:
 #   - ALL
 # readOnlyRootFilesystem: true
 # runAsNonRoot: true
 # runAsUser: 1000
+
 service:
     type: ClusterIP
     port: 8083
+
+serviceIdentity:
+    port: 8084
+
 ingress:
     enabled: false
     className: ""
@@ -46,7 +52,9 @@ ingress:
     #  - secretName: chart-example-tls
     #    hosts:
     #      - chart-example.local
+
 resources: {}
+
 # We usually recommend not to specify default resources and to leave this as a conscious
 # choice for the user. This also increases chances charts run on environments with little
 # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -57,22 +65,31 @@ resources: {}
 # requests:
 #   cpu: 100m
 #   memory: 128Mi
+
 autoscaling:
     enabled: false
     minReplicas: 1
     maxReplicas: 100
     targetCPUUtilizationPercentage: 80
     # targetMemoryUtilizationPercentage: 80
+
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
 TESCO_API_BASE_URL: https://api-ppe.tesco.com
 ONE_LOGIN_BASE_URL: https://loginppe.ourtesco.com
+PMA_API_URL: http://pma-api-service:8083/v1
 AD_ROLE_ADMIN: GG-UK-TescoGlobal-PMA-PPE-Admin
+AD_ROLE_COLLEAGUE: GG-UK-TescoGlobal-PMA-PPE-Colleague
 AD_ROLE_LINE_MANAGER: GG-UK-TescoGlobal-PMA-PPE-LineManager
-IDENTITY_CLIENT_ID: "1234567890"
+AD_ROLE_PEOPLE_TEAM: GG-UK-TescoGlobal-PMA-PPE-PeopleTeam
+AD_ROLE_TALENT_ADMIN: GG-UK-TescoGlobal-PMA-PPE-TalentAdmin
+AD_ROLE_PROCESS_MANAGER: GG-UK-TescoGlobal-PMA-PPE-ProcessManager
+IDENTITY_CLIENT_ID: 69b3ca74-cba0-4efb-a537-7499410de9cc
 PMA_DB_URL: jdbc:postgresql://10.114.147.8:5432/pma-ppe?sslmode=require
 PMA_DB_SCHEMA: pma
+CAMUNDA_DB_SCHEMA: camunda
 PMA_DB_USERNAME: pmadbadmin@euw-ppe-214-pma-postgresql
-SECURITY_ENABLED: false
+SECURITY_ENABLED: true
 env: "ppe/**.dec"

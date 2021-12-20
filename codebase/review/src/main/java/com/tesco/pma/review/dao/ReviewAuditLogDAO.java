@@ -4,7 +4,7 @@ import com.tesco.pma.api.ActionType;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.review.domain.AuditOrgObjectiveReport;
 import com.tesco.pma.review.domain.Review;
-import com.tesco.pma.cycle.api.PMReviewStatus;
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.Instant;
@@ -24,7 +24,7 @@ public interface ReviewAuditLogDAO {
      * @param updatedBy    an identifier of user who made changes
      * @return number of inserted rows
      */
-    default int logReviewUpdating(Review review, PMReviewStatus newStatus, String changeReason, UUID updatedBy) {
+    default int logReviewUpdating(Review review, PMTimelinePointStatus newStatus, String changeReason, UUID updatedBy) {
         return intLogReviewUpdating(review, newStatus, changeReason, updatedBy, now());
     }
 
@@ -40,7 +40,7 @@ public interface ReviewAuditLogDAO {
     }
 
     int intLogReviewUpdating(@Param("review") Review review,
-                             @Param("newStatus") PMReviewStatus newStatus,
+                             @Param("newStatus") PMTimelinePointStatus newStatus,
                              @Param("changeReason") String changeReason,
                              @Param("updatedBy") UUID updatedBy,
                              @Param("updatedTime") Instant updatedTime);

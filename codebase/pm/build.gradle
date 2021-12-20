@@ -11,8 +11,6 @@ dependencies {
     implementation project(':fs')
 
     implementation project(':service')
-    implementation project(':organisation')
-    implementation project(':profile')
 
     implementation("org.springframework.boot:spring-boot-starter-security")
 
@@ -24,8 +22,6 @@ dependencies {
 
     implementation ("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter:${camundaVersion}")
     implementation ("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-webapp:${camundaVersion}")
-
-    implementation ("org.codehaus.groovy:groovy-all:${groovyVersion}")
 
     testImplementation ("com.h2database:h2:${h2Version}")
     testImplementation ("com.zaxxer:HikariCP:${hikariVersion}")
@@ -48,7 +44,7 @@ dependencies {
     testImplementation 'org.testcontainers:postgresql'
     testImplementation "com.github.database-rider:rider-junit5:${databaseRiderVersion}"
     testRuntimeOnly "org.liquibase:liquibase-core:${liquibaseVersion}"
-    testRuntimeOnly project(':database')
+    testRuntimeOnly project(':db-pma')
     testRuntimeOnly project(':security')
 }
 

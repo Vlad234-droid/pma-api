@@ -106,4 +106,13 @@ public interface ConfigEntryService {
      */
     ConfigEntryResponse getPublishedStructure(UUID entryUuid);
 
+    /**
+     * Check if colleague exist by composite key
+     *
+     * @param colleagueUuid - colleague identifier
+     * @param key           - composite key
+     * @return true/false
+     */
+    boolean isColleagueExistsForCompositeKey(UUID colleagueUuid, String key);
+
 }

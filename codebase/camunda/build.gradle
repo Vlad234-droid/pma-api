@@ -1,8 +1,13 @@
+plugins {
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
+}
+
 dependencies {
     implementation project(':api')
     implementation project(':event')
     implementation project(':spring')
     implementation project(':bpm')
+    implementation project(':service')
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
@@ -10,13 +15,28 @@ dependencies {
     implementation ("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-rest:${camundaVersion}")
     implementation ("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-webapp:${camundaVersion}")
 
-    implementation ("org.codehaus.groovy:groovy-all:${groovyVersion}")
+    implementation ("org.codehaus.groovy:groovy-all:${groovyVersion}") {
+        exclude group: 'junit'
+        exclude group: 'org.junit.jupiter'
+        exclude group: 'org.junit.platform'
+        exclude group: 'org.testng'
+        exclude group: 'org.codehaus.groovy', module: 'groovy-test'
+        exclude group: 'org.codehaus.groovy', module: 'groovy-test-junit5'
+        exclude group: 'org.codehaus.groovy', module: 'groovy-testng'
+    }
 
-    implementation ("com.h2database:h2:${h2Version}")
+    testImplementation project(':service').sourceSets.test.output
+    testImplementation ("com.h2database:h2:${h2Version}")
     testImplementation ("com.zaxxer:HikariCP:${hikariVersion}")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}") {
         exclude group: 'junit' // excluding junit 4
     }
     testImplementation("commons-io:commons-io:${commonsIoVersion}")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+    }
 }

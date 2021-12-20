@@ -48,8 +48,8 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
     @MockBean
     private UserManagementService mockUserManagementService;
 
-    public static final String ACCOUNTS_URL_TEMPLATE = "/internal/user-management/accounts";
-    public static final String ROLES_URL_TEMPLATE = "/internal/user-management/roles";
+    public static final String ACCOUNTS_URL_TEMPLATE = "/user-management/accounts";
+    public static final String ROLES_URL_TEMPLATE = "/user-management/roles";
 
     @BeforeEach
     void setUp() {

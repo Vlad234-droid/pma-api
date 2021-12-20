@@ -20,4 +20,13 @@ public enum PMReviewType implements DictionaryItem<Integer> {
     public String getCode() {
         return name();
     }
+
+    public static PMReviewType getByCode(String code) {
+        for (PMReviewType type : values()) {
+            if (type.name().equalsIgnoreCase(code)) {
+                return type;
+            }
+        }
+        return null;
+    }
 }

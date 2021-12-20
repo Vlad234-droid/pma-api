@@ -26,6 +26,14 @@ public interface ProfileService {
     Optional<ColleagueProfile> findProfileByColleagueUuid(@NotNull UUID colleagueUuid);
 
     /**
+     * Finds profile by colleague IAM Id.
+     *
+     * @param iamId colleague iamId, not null.
+     * @return Optional with user, {@link Optional#empty()} if not found.
+     */
+    Optional<ColleagueProfile> findProfileByColleagueIamId(@NotNull String iamId);
+
+    /**
      * Update profile attributes
      *
      * @param profileAttributes
@@ -50,13 +58,21 @@ public interface ProfileService {
     List<TypedAttribute> deleteProfileAttributes(@NotNull UUID colleagueUuid, List<TypedAttribute> profileAttributes);
 
     /**
-     * Update colleague changed attributes
+     * Update colleague changed fields
      *
      * @param colleagueUuid
-     * @param changedAttributes
+     * @param changedFields
      * @return Number of updated records
      */
-    int updateColleague(@NotNull UUID colleagueUuid, Collection<String> changedAttributes);
+    int updateColleague(@NotNull UUID colleagueUuid, Collection<String> changedFields);
+
+    /**
+     * Save a joiner colleague
+     *
+     * @param colleagueUuid
+     * @return Number of updated records
+     */
+    int create(@NotNull UUID colleagueUuid);
 
     /**
      * Find colleague by uuid
@@ -89,6 +105,6 @@ public interface ProfileService {
      * @param requestQuery
      * @return colleagues list
      */
-    List<Colleague> getSuggestions(RequestQuery requestQuery);
+    List<ColleagueProfile> getSuggestions(RequestQuery requestQuery);
 
 }

@@ -1,0 +1,16 @@
+{
+  "success": false,
+  "errors": [
+    {
+      "code": "MESSAGE_NOT_READABLE_EXCEPTION",
+      "message": "Required request body is not readable or missing",
+      "details": [
+        {
+          "code": "java.time.format.DateTimeParseException",
+          "message": "Text '2021-12-13T12:00' could not be parsed at index 16",
+          "field": "fileDate"
+        }
+      ]
+    }
+  ]
+}

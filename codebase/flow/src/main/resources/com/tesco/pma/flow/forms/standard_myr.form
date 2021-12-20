@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "text": "## Look back",
+      "type": "text",
+      "id": "Field_0wbgg9g"
+    },
+    {
+      "label": "What have you contributed so far? Capture your thoughts about both  **what** you’ve achieved and **how** you’ve gone about it. What could you have done better?",
+      "type": "textfield",
+      "id": "Field_0geokc1",
+      "key": "look_back",
+      "validate": {
+        "required": true,
+        "maxLength": 500,
+        "minLength": 10
+      }
+    },
+    {
+      "text": "## Look forward",
+      "type": "text",
+      "id": "Field_0yrih7e"
+    },
+    {
+      "label": "**What** priorities do you need to focus on to make the biggest difference in your role? **How** will you develop yourself to be at your best?",
+      "type": "textfield",
+      "id": "Field_07pc4bt",
+      "key": "look_forward",
+      "validate": {
+        "required": true,
+        "minLength": 10,
+        "maxLength": 500
+      }
+    },
+    {
+      "text": "**Based on the conversation with my line manager, I am on track to achieve**",
+      "type": "text",
+      "id": "Field_1ptpxt6"
+    },
+    {
+      "values": [
+        {
+          "label": "Outstanding",
+          "value": "Outstanding"
+        },
+        {
+          "label": "Satisfactory",
+          "value": "Satisfactory"
+        },
+        {
+          "label": "Great",
+          "value": "Great"
+        },
+        {
+          "label": "Below expected",
+          "value": "Below expected"
+        }
+      ],
+      "label": "what",
+      "type": "select",
+      "id": "Field_1lasfcg",
+      "key": "what",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Outstanding",
+          "value": "Outstanding"
+        },
+        {
+          "label": "Satisfactory",
+          "value": "Satisfactory"
+        },
+        {
+          "label": "Great",
+          "value": "Great"
+        },
+        {
+          "label": "Below expected",
+          "value": "Below expected"
+        }
+      ],
+      "label": "how",
+      "type": "select",
+      "id": "Field_0s32np0",
+      "key": "how",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "standard_myr_form"
+}

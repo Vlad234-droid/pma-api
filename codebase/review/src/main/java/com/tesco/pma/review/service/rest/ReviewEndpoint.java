@@ -2,8 +2,8 @@ package com.tesco.pma.review.service.rest;
 
 import com.tesco.pma.configuration.CaseInsensitiveEnumEditor;
 import com.tesco.pma.configuration.audit.AuditorAware;
-import com.tesco.pma.cycle.api.PMReviewStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.pagination.RequestQuery;
@@ -12,8 +12,8 @@ import com.tesco.pma.rest.RestResponse;
 import com.tesco.pma.review.domain.AuditOrgObjectiveReport;
 import com.tesco.pma.review.domain.ColleagueTimeline;
 import com.tesco.pma.review.domain.OrgObjective;
-import com.tesco.pma.review.domain.PMCycleTimelinePoint;
 import com.tesco.pma.review.domain.Review;
+import com.tesco.pma.review.domain.TimelinePoint;
 import com.tesco.pma.review.domain.request.UpdateReviewsStatusRequest;
 import com.tesco.pma.review.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -71,11 +71,9 @@ public class ReviewEndpoint {
                                              @PathVariable("type") PMReviewType type,
                                              @PathVariable("number") Integer number,
                                              @RequestBody Review review) {
-        review.setPerformanceCycleUuid(getPMCycleUuid(colleagueUuid, cycleUuid));
-        review.setColleagueUuid(colleagueUuid);
         review.setType(type);
         review.setNumber(number);
-        return success(reviewService.createReview(review));
+        return success(reviewService.createReview(review, getPMCycleUuid(colleagueUuid, cycleUuid), colleagueUuid));
     }
 
     /**
@@ -216,11 +214,9 @@ public class ReviewEndpoint {
                                              @PathVariable("type") PMReviewType type,
                                              @PathVariable("number") Integer number,
                                              @RequestBody Review review) {
-        review.setPerformanceCycleUuid(getPMCycleUuid(colleagueUuid, cycleUuid));
-        review.setColleagueUuid(colleagueUuid);
         review.setType(type);
         review.setNumber(number);
-        return success(reviewService.updateReview(review));
+        return success(reviewService.updateReview(review, getPMCycleUuid(colleagueUuid, cycleUuid), colleagueUuid));
     }
 
     /**
@@ -241,11 +237,11 @@ public class ReviewEndpoint {
             path = "/colleagues/{colleagueUuid}/pm-cycles/{cycleUuid}/review-types/{type}/statuses/{status}",
             produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isColleague()")
-    public RestResponse<PMReviewStatus> updateReviewsStatus(@PathVariable("colleagueUuid") UUID colleagueUuid,
-                                                            @PathVariable("cycleUuid") String cycleUuid,
-                                                            @PathVariable("type") PMReviewType type,
-                                                            @PathVariable("status") PMReviewStatus status,
-                                                            @RequestBody UpdateReviewsStatusRequest request) {
+    public RestResponse<PMTimelinePointStatus> updateReviewsStatus(@PathVariable("colleagueUuid") UUID colleagueUuid,
+                                                                   @PathVariable("cycleUuid") String cycleUuid,
+                                                                   @PathVariable("type") PMReviewType type,
+                                                                   @PathVariable("status") PMTimelinePointStatus status,
+                                                                   @RequestBody UpdateReviewsStatusRequest request) {
         return success(reviewService.updateReviewsStatus(
                 getPMCycleUuid(colleagueUuid, cycleUuid),
                 colleagueUuid,
@@ -288,7 +284,7 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the cycle timeline")
     @GetMapping(value = "/colleagues/{colleagueUuid}/timeline", produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isColleague()")
-    public RestResponse<List<PMCycleTimelinePoint>> getTimelineByColleague(@PathVariable UUID colleagueUuid) {
+    public RestResponse<List<TimelinePoint>> getTimelineByColleague(@PathVariable UUID colleagueUuid) {
         return RestResponse.success(reviewService.getCycleTimelineByColleague(colleagueUuid));
     }
 
@@ -385,6 +381,6 @@ public class ReviewEndpoint {
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(PMReviewType.class, new CaseInsensitiveEnumEditor(PMReviewType.class));
-        binder.registerCustomEditor(PMReviewStatus.class, new CaseInsensitiveEnumEditor(PMReviewStatus.class));
+        binder.registerCustomEditor(PMTimelinePointStatus.class, new CaseInsensitiveEnumEditor(PMTimelinePointStatus.class));
     }
 }

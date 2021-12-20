@@ -3,14 +3,13 @@ package com.tesco.pma.review.service;
 import com.tesco.pma.colleague.profile.exception.ErrorCodes;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.cycle.api.PMReviewStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.logging.LogFormatter;
 import com.tesco.pma.review.dao.ObjectiveSharingDAO;
-import com.tesco.pma.review.dao.ReviewDAO;
 import com.tesco.pma.review.domain.Review;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,8 +34,8 @@ public class ObjectiveSharingServiceImpl implements ObjectiveSharingService {
 
     private final ProfileService profileService;
     private final PMCycleService pmCycleService;
+    private final ReviewService reviewService;
     private final ObjectiveSharingDAO dao;
-    private final ReviewDAO reviewDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Override
@@ -83,6 +82,6 @@ public class ObjectiveSharingServiceImpl implements ObjectiveSharingService {
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, managerUuid, PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, cycle.getUuid())));
             return Collections.emptyList();
         }
-        return reviewDAO.getReviewsByParams(managerUuid, cycle.getUuid(), PMReviewType.OBJECTIVE, PMReviewStatus.APPROVED);
+        return reviewService.getReviews(cycle.getUuid(), managerUuid, PMReviewType.OBJECTIVE, PMTimelinePointStatus.APPROVED);
     }
 }

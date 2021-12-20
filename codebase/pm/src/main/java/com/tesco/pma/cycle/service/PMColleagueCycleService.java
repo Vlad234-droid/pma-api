@@ -28,6 +28,14 @@ public interface PMColleagueCycleService {
     List<PMColleagueCycle> getByCycleUuid(UUID cycleUuid, UUID colleagueUuid, PMCycleStatus status);
 
     /**
+     * Gets list of pm colleague cycles without timeline points
+     *
+     * @param cycleUuid     - PM cycle identifier
+     * @return - collection of PM colleague cycles
+     */
+    List<PMColleagueCycle> getByCycleUuidWithoutTimelinePoint(UUID cycleUuid);
+
+    /**
      * Stores batched collection of PM colleague cycles
      *
      * @param colleagueCycles - objects to be stored

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.review.dao.TimelinePointDAO">
+
+    <resultMap id="tlPointResultMap" type="com.tesco.pma.review.domain.TimelinePoint">
+        <id property="uuid" column="uuid"/>
+        <result property="colleagueCycleUuid" column="colleague_cycle_uuid"/>
+        <result property="code" column="code"/>
+        <result property="description" column="description"/>
+        <result property="type" column="element_type_id"
+                typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.cycle.api.model.PMElementType"/>
+        <result property="startTime" column="start_time" typeHandler="org.apache.ibatis.type.InstantTypeHandler"/>
+        <result property="endTime" column="end_time" typeHandler="org.apache.ibatis.type.InstantTypeHandler"/>
+        <result property="properties" column="properties"
+                typeHandler="com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler"
+                javaType="com.tesco.pma.api.MapJson"/>
+        <result property="status" column="status_id"
+                typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.cycle.api.PMTimelinePointStatus"/>
+    </resultMap>
+
+    <insert id="create" flushCache="true">
+        INSERT INTO pm_timeline_point
+        (uuid,
+         colleague_cycle_uuid,
+         code,
+         description,
+         element_type_id,
+         start_time,
+         end_time,
+         properties,
+         status_id)
+        VALUES (#{tlPoint.uuid},
+                #{tlPoint.colleagueCycleUuid},
+                #{tlPoint.code},
+                #{tlPoint.description},
+                #{tlPoint.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.model.PMElementType},
+                #{tlPoint.startTime},
+                #{tlPoint.endTime},
+                #{tlPoint.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+                #{tlPoint.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMTimelinePointStatus});
+    </insert>
+
+    <insert id="saveAll" flushCache="true" parameterType="java.util.Collection">
+        INSERT INTO pm_timeline_point
+        (uuid,
+        colleague_cycle_uuid,
+        code,
+        description,
+        element_type_id,
+        start_time,
+        end_time,
+        properties,
+        status_id)
+        VALUES
+        <foreach collection="tLPoints" item="tLPoint" index="index" separator=",">
+            (#{tLPoint.uuid},
+            #{tLPoint.colleagueCycleUuid},
+            #{tLPoint.code},
+            #{tlPoint.description},
+            #{tlPoint.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.model.PMElementType},
+            #{tLPoint.startTime},
+            #{tLPoint.endTime},
+            #{tLPoint.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+            #{tLPoint.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMReviewStatus})
+        </foreach>
+    </insert>
+
+    <select id="read" resultMap="tlPointResultMap">
+        select *
+        from pm_timeline_point tlp
+        WHERE tlp.uuid = #{uuid}
+    </select>
+
+    <update id="update" flushCache="true">
+        UPDATE pm_timeline_point
+        SET start_time = #{tlPoint.startTime},
+        end_time = #{tlPoint.endTime},
+        properties =
+        #{tlPoint.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+        status_id = #{tlPoint.status.id},
+        description = #{tlPoint.description},
+        element_type_id =
+        #{tlPoint.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.model.PMElementType}
+        WHERE colleague_cycle_uuid = #{tlPoint.colleagueCycleUuid}
+        and code = #{tlPoint.code}
+        <if test="allowedStatuses != null and !allowedStatuses.isEmpty()">
+            and status_id in
+            <foreach item="allowedStatus" collection="allowedStatuses" separator="," open="(" close=")">
+                #{allowedStatus.id}
+            </foreach>
+        </if>
+    </update>
+
+    <delete id="delete">
+        DELETE
+        FROM pm_timeline_point tlp
+        WHERE tlp.uuid = #{uuid}
+        <if test="allowedStatuses != null and !allowedStatuses.isEmpty()">
+            and tlp.status_id in
+            <foreach item="allowedStatus" collection="allowedStatuses" separator="," open="(" close=")">
+                #{allowedStatus.id}
+            </foreach>
+        </if>
+    </delete>
+
+    <select id="getByParams" resultMap="tlPointResultMap">
+        select *
+        from pm_timeline_point tlp
+        WHERE 1=1
+        <if test="colleagueCycleUuid != null">
+            AND tlp.colleague_cycle_uuid = #{colleagueCycleUuid}
+        </if>
+        <if test="code != null">
+            AND upper(tlp.code) = upper(#{code})
+        </if>
+        <if test="status != null">
+            AND tlp.status_id = #{status.id}
+        </if>
+    </select>
+
+    <update id="updateStatusByParams" flushCache="true">
+        update pm_timeline_point tlp
+        SET status_id=#{newStatus.id}
+        WHERE 1=1
+        <if test="colleagueCycleUuid != null">
+            AND tlp.colleague_cycle_uuid = #{colleagueCycleUuid}
+        </if>
+        <if test="code != null">
+            AND upper(tlp.code) = upper(#{code})
+        </if>
+        <if test="prevStatuses != null and !prevStatuses.isEmpty()">
+            and tlp.status_id in
+            <foreach item="prevStatus" collection="prevStatuses" separator="," open="(" close=")">
+                #{prevStatus.id}
+            </foreach>
+        </if>
+    </update>
+
+    <delete id="deleteByParams">
+        DELETE
+        FROM pm_timeline_point tlp
+        WHERE 1=1
+        <if test="colleagueCycleUuid != null">
+            AND tlp.colleague_cycle_uuid = #{colleagueCycleUuid}
+        </if>
+        <if test="code != null">
+            AND upper(tlp.code) = upper(#{code})
+        </if>
+        <if test="status != null">
+            AND tlp.status_id = #{status.id}
+        </if>
+        <if test="allowedStatuses != null and !allowedStatuses.isEmpty()">
+            and tlp.status_id in
+            <foreach item="allowedStatus" collection="allowedStatuses" separator="," open="(" close=")">
+                #{allowedStatus.id}
+            </foreach>
+        </if>
+    </delete>
+
+    <select id="getTimeline" resultMap="tlPointResultMap">
+        select tlp.*
+        from pm_colleague_cycle cc
+                 inner join pm_timeline_point tlp
+                            on (cc.uuid = tlp.colleague_cycle_uuid)
+        WHERE 1 = 1
+          and cc.colleague_uuid = #{colleagueUuid}
+          and cc.cycle_uuid = #{cycleUuid}
+        order by tlp.start_time
+    </select>
+</mapper>
