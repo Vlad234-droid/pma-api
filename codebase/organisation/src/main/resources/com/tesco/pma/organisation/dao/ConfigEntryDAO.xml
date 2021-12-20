@@ -122,6 +122,9 @@
         JOIN work_level wl ON wl.code = c.work_level
         JOIN department d ON d.id = c.department_id
         <include refid="whereClauseFindColleagueByKey"/>
+        <if test="hireDate != null">
+            AND c.hire_date = #{hireDate}
+        </if>
     </select>
 
     <select id="isColleagueExistsForCompositeKey" resultType="boolean">
