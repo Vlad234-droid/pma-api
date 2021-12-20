@@ -3,6 +3,11 @@ package com.tesco.pma.contact.api;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * Contact API
+ * /messaging
+ */
+
 @Getter
 @AllArgsConstructor
 public enum DestinationType {

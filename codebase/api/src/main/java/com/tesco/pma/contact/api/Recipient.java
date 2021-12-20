@@ -5,6 +5,12 @@ import lombok.Data;
 
 import java.util.UUID;
 
+/**
+ * Contact API
+ * /messaging
+ * Description of a recipient for the message
+ */
+
 @Data
 public class Recipient {
 

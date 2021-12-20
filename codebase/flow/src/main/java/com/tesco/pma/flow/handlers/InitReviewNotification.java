@@ -58,28 +58,28 @@ public class InitReviewNotification extends CamundaAbstractFlowHandler {
         context.setVariable(FlowParameters.COLLEAGUE_REMINDERS, getReminders(colleagueUUID));
     }
 
-    public boolean isManager(ColleagueProfile colleagueProfile) {
+    protected boolean isManager(ColleagueProfile colleagueProfile) {
         return colleagueProfile.getColleague().getWorkRelationships().get(0).getIsManager();
     }
 
-    public PMReviewType getReviewType(Event event) {
+    protected PMReviewType getReviewType(Event event) {
         return (PMReviewType) event.getEventProperty(FlowParameters.REVIEW_TYPE.name());
     }
 
-    public UUID getColleagueUUID(Event event) {
+    protected UUID getColleagueUUID(Event event) {
         return (UUID) event.getEventProperty(FlowParameters.COLLEAGUE_UUID.name());
     }
 
-    public ColleagueProfile getColleagueProfile(UUID colleagueUUID) {
+    protected ColleagueProfile getColleagueProfile(UUID colleagueUUID) {
         return profileService.findProfileByColleagueUuid(colleagueUUID)
                 .orElseThrow(() -> notFound(ErrorCodes.PROFILE_NOT_FOUND, "UUID", colleagueUUID.toString()));
     }
 
-    public WorkLevel getWorkLevel(ColleagueProfile colleagueProfile){
+    protected WorkLevel getWorkLevel(ColleagueProfile colleagueProfile){
         return colleagueProfile.getColleague().getWorkRelationships().get(0).getWorkLevel();
     }
 
-    public String getReminders(UUID colleagueUUID) {
+    protected String getReminders(UUID colleagueUUID) {
         var timelinePoints = reviewService.getCycleTimelineByColleague(colleagueUUID);
 
         return timelinePoints.stream()
