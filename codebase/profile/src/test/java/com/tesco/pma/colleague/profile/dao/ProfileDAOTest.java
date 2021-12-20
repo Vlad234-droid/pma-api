@@ -158,7 +158,7 @@ public class ProfileDAOTest extends AbstractDAOTest {
         colleague.setSalaryFrequency("SF_1");
         colleague.setPrimaryEntity("PE_1");
         colleague.setManager(false);
-        dao.saveColleague(colleague);
+        dao.updateColleague(colleague);
 
         var updated = dao.getColleague(colleagueUuid);
 
@@ -183,15 +183,15 @@ public class ProfileDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
     void updateColleagueSucceeded() {
         var colleague = getCorrectColleague();
-        final int inserted = dao.saveColleague(colleague);
-        assertThat(inserted).isEqualTo(1);
+        final int updated = dao.updateColleague(colleague);
+        assertThat(updated).isEqualTo(1);
     }
 
     @Test
     void updateColleagueThrowDataIntegrityViolationException() {
         var colleague = getIncorrectColleague();
 
-        assertThatCode(() -> dao.saveColleague(colleague))
+        assertThatCode(() -> dao.updateColleague(colleague))
                 .isExactlyInstanceOf(DataIntegrityViolationException.class)
                 .hasMessageContaining("ERROR: insert or update on table \"colleague\" violates foreign key constraint");
     }

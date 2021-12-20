@@ -3,12 +3,15 @@ package com.tesco.pma.cep.service;
 import com.tesco.pma.cep.domain.ColleagueChangeEventPayload;
 import com.tesco.pma.cep.domain.EventType;
 import com.tesco.pma.colleague.api.Colleague;
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.Account;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
+import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
 import com.tesco.pma.colleague.security.service.UserManagementService;
+import com.tesco.pma.event.service.EventSender;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -41,6 +44,8 @@ class ColleagueChangesServiceTests {
     private ProfileService mockProfileService;
     @MockBean
     private UserManagementService mockUserManagementService;
+    @MockBean
+    private EventSender eventSender;
 
     @SpyBean
     private ColleagueChangesServiceImpl colleagueChangesService;
@@ -53,7 +58,21 @@ class ColleagueChangesServiceTests {
             "immediate, colleagues-immediate-v1"
     })
     void processColleagueChangeEventWithJoinerEventType(String feedCode, String feedId) {
-        processColleagueChangeEvent(feedCode, feedId, EventType.JOINER);
+        var colleagueChangeEventPayload = colleagueChangeEventPayload(EventType.JOINER);
+
+        when(mockCepSubscribeProperties.getFeeds())
+                .thenReturn(Map.of(feedCode, feedId));
+        when(mockProfileService.getColleague(COLLEAGUE_UUID))
+                .thenReturn(colleague(COLLEAGUE_UUID));
+        when(mockProfileService.create(COLLEAGUE_UUID))
+                .thenReturn(1);
+
+        colleagueChangesService.processColleagueChangeEvent(feedId, colleagueChangeEventPayload);
+
+        verify(mockCepSubscribeProperties, times(1)).getFeeds();
+        verify(mockProfileService, times(1)).getColleague(COLLEAGUE_UUID);
+        verify(mockProfileService, times(1)).create(COLLEAGUE_UUID);
+        verify(mockUserManagementService, times(1)).createAccount(any(CreateAccountRequest.class));
     }
 
     @ParameterizedTest
@@ -135,6 +154,12 @@ class ColleagueChangesServiceTests {
         colleagueProfile.setProfileAttributes(List.of());
 
         return Optional.of(colleagueProfile);
+    }
+
+    private ColleagueEntity colleague(UUID colleagueUuid) {
+        var colleague = new ColleagueEntity();
+        colleague.setUuid(colleagueUuid);
+        return colleague;
     }
 
     private Account account(UUID colleagueUuid) {

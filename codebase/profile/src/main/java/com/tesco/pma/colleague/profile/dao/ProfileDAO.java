@@ -62,12 +62,20 @@ public interface ProfileDAO {
     int updateJob(@Param("job") ColleagueEntity.Job job);
 
     /**
-     * Save colleague into DB, if object already exists update it
+     * Save colleague into DB
      *
      * @param colleague - object to be saved
-     * @return number of inserted / updated records
+     * @return number of inserted records
      */
     int saveColleague(@Param("colleague") ColleagueEntity colleague);
+
+    /**
+     * Update colleague in DB
+     *
+     * @param colleague - object to be updated
+     * @return number of updated records
+     */
+    int updateColleague(@Param("colleague") ColleagueEntity colleague);
 
     /**
      * Update manager by colleague uuid

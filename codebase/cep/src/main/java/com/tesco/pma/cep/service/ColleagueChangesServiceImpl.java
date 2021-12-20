@@ -2,11 +2,18 @@ package com.tesco.pma.cep.service;
 
 import com.tesco.pma.cep.domain.ColleagueChangeEventPayload;
 import com.tesco.pma.cep.domain.DeliveryMode;
+import com.tesco.pma.cep.domain.EventType;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
+import com.tesco.pma.colleague.security.domain.AccountType;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
+import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
 import com.tesco.pma.colleague.security.service.UserManagementService;
+import com.tesco.pma.event.EventNames;
+import com.tesco.pma.event.EventParams;
+import com.tesco.pma.event.EventSupport;
+import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.logging.LogFormatter;
@@ -14,9 +21,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.tesco.pma.cep.exception.ErrorCodes.COLLEAGUE_NOT_FOUND;
 
@@ -28,6 +38,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     private final CEPSubscribeProperties cepSubscribeProperties;
     private final ProfileService profileService;
     private final UserManagementService userManagementService;
+    private final EventSender eventSender;
 
     @Override
     public void processColleagueChangeEvent(String feedId,
@@ -39,12 +50,15 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         log.info(String.format("Processing colleague change event %s for feed delivery mode %s",
                 colleagueChangeEventPayload, feedDeliveryMode));
 
-        Optional<ColleagueProfile> optionalColleagueProfile = profileService.findProfileByColleagueUuid(
-                colleagueChangeEventPayload.getColleagueUuid());
-        if (optionalColleagueProfile.isEmpty()) {
-            log.error(LogFormatter.formatMessage(COLLEAGUE_NOT_FOUND, "Colleague '{}' not found"),
+        // For all event types except for Joiner profile must be existing
+        if (!EventType.JOINER.equals(colleagueChangeEventPayload.getEventType())) {
+            Optional<ColleagueProfile> optionalColleagueProfile = profileService.findProfileByColleagueUuid(
                     colleagueChangeEventPayload.getColleagueUuid());
-            return;
+            if (optionalColleagueProfile.isEmpty()) {
+                log.error(LogFormatter.formatMessage(COLLEAGUE_NOT_FOUND, "Colleague '{}' not found"),
+                        colleagueChangeEventPayload.getColleagueUuid());
+                return;
+            }
         }
 
         var updated = 0;
@@ -75,8 +89,15 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     }
 
     private int processJoinerEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
-        return profileService.updateColleague(colleagueChangeEventPayload.getColleagueUuid(),
-                colleagueChangeEventPayload.getChangedAttributes());
+        int updated = profileService.create(colleagueChangeEventPayload.getColleagueUuid());
+        if (updated > 0) {
+            // Add a new account
+            createAccount(colleagueChangeEventPayload.getColleagueUuid());
+
+            // Send an event to Camunda
+            sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.CEP_COLLEAGUE_ADDED);
+        }
+        return updated;
     }
 
     private int processLeaverEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
@@ -86,17 +107,30 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         changeAccountStatusRequest.setName(account.getName());
         changeAccountStatusRequest.setStatus(AccountStatus.DISABLED);
         userManagementService.changeAccountStatus(changeAccountStatusRequest);
+
+        // Send event to Camunda
+        sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.CEP_COLLEAGUE_LEFT);
+
         return 1;
     }
 
     // TODO If logic different from main flow
     private int processMoverEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
-        return processJoinerEventType(colleagueChangeEventPayload);
+        var updated = profileService.updateColleague(colleagueChangeEventPayload.getColleagueUuid(),
+                colleagueChangeEventPayload.getChangedAttributes());
+
+        // Send event to Camunda
+        if (updated > 0) {
+            sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.CEP_COLLEAGUE_UPDATED);
+        }
+
+        return updated;
     }
 
     // TODO If logic different from main flow
     private int processReinstatementEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
-        return processJoinerEventType(colleagueChangeEventPayload);
+        return profileService.updateColleague(colleagueChangeEventPayload.getColleagueUuid(),
+                colleagueChangeEventPayload.getChangedAttributes());
     }
 
     private DeliveryMode resolveDeliveryModeByFeedId(String feedId) {
@@ -113,6 +147,29 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         } else {
             return DeliveryMode.valueOf(key.toUpperCase());
         }
+    }
+
+    private void createAccount(UUID colleagueUuid) {
+        var colleague = profileService.getColleague(colleagueUuid);
+        if (colleague == null) {
+            return;
+        }
+
+        var request = new CreateAccountRequest();
+        request.setName(colleague.getIamId());
+        request.setIamId(colleague.getIamId());
+        request.setType(AccountType.USER);
+        request.setStatus(AccountStatus.ENABLED);
+
+        userManagementService.createAccount(request);
+    }
+
+    private void sendEvent(UUID colleagueUuid, EventNames eventName) {
+        var event = new EventSupport(eventName);
+        Map<String, Serializable> properties = new HashMap<>();
+        properties.put(EventParams.COLLEAGUE_UUID.name(), colleagueUuid);
+        event.setEventProperties(properties);
+        eventSender.sendEvent(event);
     }
 
 }
