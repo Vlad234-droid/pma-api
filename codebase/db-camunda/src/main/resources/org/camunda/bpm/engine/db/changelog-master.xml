@@ -11,4 +11,6 @@
     <include file="7.15.0/activiti.postgres.create.decision.engine.sql" relativeToChangelogFile="true"/>
     <include file="7.15.0/activiti.postgres.create.decision.history.sql" relativeToChangelogFile="true"/>
 
+    <include file="7.15.0/pma.users.sql" relativeToChangelogFile="true"/>
+
 </databaseChangeLog>
