@@ -74,7 +74,7 @@ public interface PMColleagueCycleDAO {
      */
     List<PMColleagueCycle> getByCycleUuidWithoutTimelinePoint(@Param("cycleUuid") UUID cycleUuid,
                                                               @Nullable @Param("status") PMCycleStatus status,
-                                                              Instant startTime);
+                                                              @Param("startTime") Instant startTime);
 
     /**
      * Changes status for colleague cycle handler
