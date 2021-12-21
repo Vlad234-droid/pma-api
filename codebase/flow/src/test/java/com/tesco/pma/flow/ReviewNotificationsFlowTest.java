@@ -37,27 +37,30 @@ import java.util.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
 
-    private static final String DECISION_TABLE_TASK = "decision_table";
-
     private static final String PM_REVIEW_SUBMITTED = "PM_REVIEW_SUBMITTED";
     private static final String PM_REVIEW_APPROVED = "PM_REVIEW_APPROVED";
     private static final String PM_REVIEW_DECLINED = "PM_REVIEW_DECLINED";
     private static final String PM_REVIEW_BEFORE_START = "PM_REVIEW_BEFORE_START";
     private static final String PM_REVIEW_BEFORE_END = "PM_REVIEW_BEFORE_END";
-    private static final String RECEIVE_TIPS = "RECEIVE_TIPS";
+
     private static final String ORGANISATION_OBJECTIVES = "ORGANISATION_OBJECTIVES";
     private static final String LM_OBJECTIVES_APPROVED_FOR_SHARING = "LM_OBJECTIVES_APPROVED_FOR_SHARING";
     private static final String LM_SHARING_START = "LM_SHARING_START";
     private static final String LM_SHARING_END = "LM_SHARING_END";
+
     private static final String FEEDBACK_GIVEN = "FEEDBACK_GIVEN";
     private static final String RESPOND_TO_FEEDBACK_REQUESTS = "RESPOND_TO_FEEDBACK_REQUESTS";
     private static final String REQUEST_FEEDBACK = "REQUEST_FEEDBACK";
+
     private static final String Q1_REMINDER = "Q1_REMINDER";
     private static final String Q3_REMINDER = "Q3_REMINDER";
+
     private static final String BEFORE_CYCLE_START_COLLEAGUE = "BEFORE_CYCLE_START_COLLEAGUE";
     private static final String BEFORE_CYCLE_END_COLLEAGUE = "BEFORE_CYCLE_END_COLLEAGUE";
     private static final String BEFORE_CYCLE_START_LM = "BEFORE_CYCLE_START_LM";
     private static final String BEFORE_CYCLE_END_LM = "BEFORE_CYCLE_END_LM";
+
+    private static final String RECEIVE_TIPS = "RECEIVE_TIPS";
 
     @SpyBean(name = "initReviewNotification")
     private InitReviewNotification initTask;
@@ -92,62 +95,60 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
     }
 
     @Test
+    void checkReviewObjectives() throws Exception {
+        checkReviewGroup(PM_REVIEW_SUBMITTED, PMReviewType.OBJECTIVE, true, true);
+        checkReviewGroup(PM_REVIEW_SUBMITTED, PMReviewType.OBJECTIVE, false, false);
+        checkReviewGroup(PM_REVIEW_APPROVED, PMReviewType.OBJECTIVE, true, true);
+        checkReviewGroup(PM_REVIEW_APPROVED, PMReviewType.OBJECTIVE, false, true);
+        checkReviewGroup(PM_REVIEW_DECLINED, PMReviewType.OBJECTIVE, true, true);
+        checkReviewGroup(PM_REVIEW_DECLINED, PMReviewType.OBJECTIVE, false, true);
+    }
+
+    @Test
+    void checReviewMYR() throws Exception {
+        checkReviewGroup(PM_REVIEW_BEFORE_START, PMReviewType.MYR, true, true);
+        checkReviewGroup(PM_REVIEW_BEFORE_START, PMReviewType.MYR, false, true);
+        checkReviewGroup(PM_REVIEW_SUBMITTED, PMReviewType.MYR, true, true);
+        checkReviewGroup(PM_REVIEW_SUBMITTED, PMReviewType.MYR, false, false);
+        checkReviewGroup(PM_REVIEW_APPROVED, PMReviewType.MYR, true, true);
+        checkReviewGroup(PM_REVIEW_APPROVED, PMReviewType.MYR, false, false);
+        checkReviewGroup(PM_REVIEW_DECLINED, PMReviewType.MYR, true, true);
+        checkReviewGroup(PM_REVIEW_DECLINED, PMReviewType.MYR, false, true);
+        checkReviewGroup(PM_REVIEW_BEFORE_END, PMReviewType.MYR, true, true);
+        checkReviewGroup(PM_REVIEW_BEFORE_END, PMReviewType.MYR, false, true);
+    }
+
+    @Test
+    void checkReviewEYR() throws Exception {
+        checkReviewGroup(PM_REVIEW_BEFORE_START, PMReviewType.EYR, true, true);
+        checkReviewGroup(PM_REVIEW_BEFORE_START, PMReviewType.EYR, false, true);
+        checkReviewGroup(PM_REVIEW_SUBMITTED, PMReviewType.EYR, true, true);
+        checkReviewGroup(PM_REVIEW_SUBMITTED, PMReviewType.EYR, false, false);
+        checkReviewGroup(PM_REVIEW_APPROVED, PMReviewType.EYR, true, true);
+        checkReviewGroup(PM_REVIEW_APPROVED, PMReviewType.EYR, false, true);
+        checkReviewGroup(PM_REVIEW_DECLINED, PMReviewType.EYR, true, true);
+        checkReviewGroup(PM_REVIEW_DECLINED, PMReviewType.EYR, false, true);
+        checkReviewGroup(PM_REVIEW_BEFORE_END, PMReviewType.EYR, true, true);
+        checkReviewGroup(PM_REVIEW_BEFORE_END, PMReviewType.EYR, false, true);
+    }
+
+    @Test
     void checkObjectives() throws Exception {
-        check(PM_REVIEW_SUBMITTED, PMReviewType.OBJECTIVE, true, true);
-        check(PM_REVIEW_SUBMITTED, PMReviewType.OBJECTIVE, false, false);
-        check(PM_REVIEW_APPROVED, PMReviewType.OBJECTIVE, true, true);
-        check(PM_REVIEW_APPROVED, PMReviewType.OBJECTIVE, false, true);
-        check(PM_REVIEW_DECLINED, PMReviewType.OBJECTIVE, true, true);
-        check(PM_REVIEW_DECLINED, PMReviewType.OBJECTIVE, false, true);
-    }
+        checkObjectivesGroup(ORGANISATION_OBJECTIVES, null, true, WorkLevel.WL1, false);
+        checkObjectivesGroup(ORGANISATION_OBJECTIVES, null, true, WorkLevel.WL4, true);
 
-    @Test
-    void checkMYR() throws Exception {
-        check(PM_REVIEW_BEFORE_START, PMReviewType.MYR, true, true);
-        check(PM_REVIEW_BEFORE_START, PMReviewType.MYR, false, true);
-        check(PM_REVIEW_SUBMITTED, PMReviewType.MYR, true, true);
-        check(PM_REVIEW_SUBMITTED, PMReviewType.MYR, false, false);
-        check(PM_REVIEW_APPROVED, PMReviewType.MYR, true, true);
-        check(PM_REVIEW_APPROVED, PMReviewType.MYR, false, false);
-        check(PM_REVIEW_DECLINED, PMReviewType.MYR, true, true);
-        check(PM_REVIEW_DECLINED, PMReviewType.MYR, false, true);
-        check(PM_REVIEW_BEFORE_END, PMReviewType.MYR, true, true);
-        check(PM_REVIEW_BEFORE_END, PMReviewType.MYR, false, true);
-    }
+        checkObjectivesGroup(LM_OBJECTIVES_APPROVED_FOR_SHARING, null, true, WorkLevel.WL1, true);
+        checkObjectivesGroup(LM_OBJECTIVES_APPROVED_FOR_SHARING, null, false, WorkLevel.WL1, false);
+        checkObjectivesGroup(LM_SHARING_START, null, false, WorkLevel.WL1, true);
+        checkObjectivesGroup(LM_SHARING_END, null, false, WorkLevel.WL1, true);
 
-    @Test
-    void checkEYR() throws Exception {
-        check(PM_REVIEW_BEFORE_START, PMReviewType.EYR, true, true);
-        check(PM_REVIEW_BEFORE_START, PMReviewType.EYR, false, true);
-        check(PM_REVIEW_SUBMITTED, PMReviewType.EYR, true, true);
-        check(PM_REVIEW_SUBMITTED, PMReviewType.EYR, false, false);
-        check(PM_REVIEW_APPROVED, PMReviewType.EYR, true, true);
-        check(PM_REVIEW_APPROVED, PMReviewType.EYR, false, true);
-        check(PM_REVIEW_DECLINED, PMReviewType.EYR, true, true);
-        check(PM_REVIEW_DECLINED, PMReviewType.EYR, false, true);
-        check(PM_REVIEW_BEFORE_END, PMReviewType.EYR, true, true);
-        check(PM_REVIEW_BEFORE_END, PMReviewType.EYR, false, true);
-    }
-
-    @Test
-    void checkOrganisationObjectives() throws Exception {
-        check(ORGANISATION_OBJECTIVES, null, true, WorkLevel.WL1, false);
-        check(ORGANISATION_OBJECTIVES, null, true, WorkLevel.WL4, true);
-    }
-
-    @Test
-    void checkLM() throws Exception {
-        check(LM_OBJECTIVES_APPROVED_FOR_SHARING, null, true, WorkLevel.WL1, true);
-        check(LM_OBJECTIVES_APPROVED_FOR_SHARING, null, false, WorkLevel.WL1, false);
-        check(LM_SHARING_START, null, false, WorkLevel.WL1, true);
-        check(LM_SHARING_END, null, false, WorkLevel.WL1, true);
     }
 
     @Test
     void checkFeedbacks() throws Exception {
-        check(FEEDBACK_GIVEN, null, false, WorkLevel.WL1, true);
-        check(RESPOND_TO_FEEDBACK_REQUESTS, null, false, WorkLevel.WL1, true);
-        check(REQUEST_FEEDBACK, null, false, WorkLevel.WL1, true);
+        checkFeedbackGroup(FEEDBACK_GIVEN, null, false, WorkLevel.WL1, true);
+        checkFeedbackGroup(RESPOND_TO_FEEDBACK_REQUESTS, null, false, WorkLevel.WL1, true);
+        checkFeedbackGroup(REQUEST_FEEDBACK, null, false, WorkLevel.WL1, true);
     }
 
     @Test
@@ -155,8 +156,8 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
         Mockito.when(reviewService.getCycleTimelineByColleague(Mockito.any()))
                 .thenReturn(List.of(createTimelinePoint("Q1")));
 
-        check(Q1_REMINDER, null, false, WorkLevel.WL1, true);
-        check(Q3_REMINDER, null, false, WorkLevel.WL1, false);
+        checkRemindersGroup(Q1_REMINDER, null, false, WorkLevel.WL1, true);
+        checkRemindersGroup(Q3_REMINDER, null, false, WorkLevel.WL1, false);
     }
 
     @Test
@@ -164,8 +165,8 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
         Mockito.when(reviewService.getCycleTimelineByColleague(Mockito.any()))
                 .thenReturn(List.of(createTimelinePoint("Q3")));
 
-        check(Q3_REMINDER, null, false, WorkLevel.WL1, true);
-        check(Q1_REMINDER, null, false, WorkLevel.WL1, false);
+        checkRemindersGroup(Q3_REMINDER, null, false, WorkLevel.WL1, true);
+        checkRemindersGroup(Q1_REMINDER, null, false, WorkLevel.WL1, false);
     }
 
     @Test
@@ -173,33 +174,53 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
         Mockito.when(reviewService.getCycleTimelineByColleague(Mockito.any()))
                 .thenReturn(List.of(createTimelinePoint( "Q1"), createTimelinePoint( "Q3")));
 
-        check(Q1_REMINDER, null, false, WorkLevel.WL1, true);
-        check(Q3_REMINDER, null, false, WorkLevel.WL1, true);
+        checkRemindersGroup(Q1_REMINDER, null, false, WorkLevel.WL1, true);
+        checkRemindersGroup(Q3_REMINDER, null, false, WorkLevel.WL1, true);
     }
 
     @Test
     void beforeCycleTest() throws Exception {
-        check(BEFORE_CYCLE_START_COLLEAGUE, null, false, WorkLevel.WL1, true);
-        check(BEFORE_CYCLE_END_COLLEAGUE, null, false, WorkLevel.WL1, true);
+        checkCycleGroup(BEFORE_CYCLE_START_COLLEAGUE, null, false, WorkLevel.WL1, true);
+        checkCycleGroup(BEFORE_CYCLE_END_COLLEAGUE, null, false, WorkLevel.WL1, true);
 
-        check(BEFORE_CYCLE_START_LM, null, true, WorkLevel.WL1, true);
-        check(BEFORE_CYCLE_END_LM, null, true, WorkLevel.WL1, true);
+        checkCycleGroup(BEFORE_CYCLE_START_LM, null, true, WorkLevel.WL1, true);
+        checkCycleGroup(BEFORE_CYCLE_END_LM, null, true, WorkLevel.WL1, true);
 
-        check(BEFORE_CYCLE_START_LM, null, false, WorkLevel.WL1, false);
-        check(BEFORE_CYCLE_END_LM, null, false, WorkLevel.WL1, false);
+        checkCycleGroup(BEFORE_CYCLE_START_LM, null, false, WorkLevel.WL1, false);
+        checkCycleGroup(BEFORE_CYCLE_END_LM, null, false, WorkLevel.WL1, false);
 
     }
 
     @Test
     void checkReceiveTips() throws Exception {
-        check(RECEIVE_TIPS, null, false, WorkLevel.WL1, true);
+        checkTipsGroup(RECEIVE_TIPS, null, false, WorkLevel.WL1, true);
     }
 
-    void check(String evenName, PMReviewType reviewType, Boolean isManager, boolean send) throws Exception {
-        check(evenName, reviewType, isManager, null, send);
+    void checkReviewGroup(String evenName, PMReviewType reviewType, Boolean isManager, boolean send) throws Exception {
+        check("initReviewNotification", "review_decision_table", evenName, reviewType, isManager, null, send);
     }
 
-    void check(String evenName, PMReviewType reviewType, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
+    void checkObjectivesGroup(String evenName, PMReviewType reviewType, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
+        check("InitObjectivesNotifications", "objectives_decision_table", evenName, reviewType, isManager, workLevel, send);
+    }
+
+    void checkFeedbackGroup(String evenName, PMReviewType reviewType, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
+        check("InitFeedbacksNotifications", "feedbacks_decision_table", evenName, reviewType, isManager, workLevel, send);
+    }
+
+    void checkRemindersGroup(String evenName, PMReviewType reviewType, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
+        check("InitRemindersNotifications", "reminders_decision_table", evenName, reviewType, isManager, workLevel, send);
+    }
+
+    void checkCycleGroup(String evenName, PMReviewType reviewType, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
+        check("InitCycleNotifications", "cycle_decision_table", evenName, reviewType, isManager, workLevel, send);
+    }
+
+    void checkTipsGroup(String evenName, PMReviewType reviewType, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
+        check("InitTipsNotifications", "tips_decision_table", evenName, reviewType, isManager, workLevel, send);
+    }
+
+    void check(String initHandlerName, String decisionTable, String evenName, PMReviewType reviewType, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
 
         var event = new EventSupport(evenName);
 
@@ -216,8 +237,8 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
         }
 
         assertThatForProcess(runProcessByEvent(event))
-                .activity("initReviewNotification").executedOnce()
-                .activity(DECISION_TABLE_TASK).executedOnce()
+                .activity(initHandlerName).executedOnce()
+                .activity(decisionTable).executedOnce()
                 .activity("sendNotification").executedTimes(send ? 1 : 0);
     }
 
