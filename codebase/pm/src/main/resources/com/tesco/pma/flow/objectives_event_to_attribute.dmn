@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="objective_event_to_attribute" name="Event to Profile attribute" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
+  <decision id="objective_event_to_profile_attribute" name="Map event to profile attribute name">
+    <informationRequirement id="InformationRequirement_0w0zust">
+      <requiredInput href="#InputData_1g0u5hf" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_1dpms3v" hitPolicy="FIRST">
+      <input id="InputClause_0anirp2" label="Event Name" biodi:width="254">
+        <inputExpression id="LiteralExpression_0jpa5sp" typeRef="string">
+          <text>EVENT_NAME</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="Attribute name" name="PROFILE_ATTRIBUTE_NAME" typeRef="string" biodi:width="367" />
+      <rule id="DecisionRule_10spoti">
+        <inputEntry id="UnaryTests_1ipawjd">
+          <text>"ORGANISATION_OBJECTIVES"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1eb34u5">
+          <text>"Organisation objectives"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0s19pf1">
+        <inputEntry id="UnaryTests_1hsaabi">
+          <text>"LM_OBJECTIVES_APPROVED_FOR_SHARING"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0rx733p">
+          <text>"LM Objectives approved for sharing"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1nt6mei">
+        <inputEntry id="UnaryTests_021r8tk">
+          <text>"LM_SHARING_START"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1xleuih">
+          <text>"LM sharing start"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1xyurwn">
+        <inputEntry id="UnaryTests_06w2buu">
+          <text>"LM_SHARING_END"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0ihl4oq">
+          <text>"LM sharing end"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1e9posm">
+        <description>Default</description>
+        <inputEntry id="UnaryTests_1q6ujv6">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_07v6ff6">
+          <text>""</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <inputData id="InputData_1g0u5hf" name="Event Name" />
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="objective_event_to_profile_attribute">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_0jl626x" dmnElementRef="InputData_1g0u5hf">
+        <dc:Bounds height="45" width="125" x="187" y="247" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_0domkdg" dmnElementRef="InformationRequirement_0w0zust">
+        <di:waypoint x="250" y="247" />
+        <di:waypoint x="250" y="200" />
+        <di:waypoint x="250" y="180" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

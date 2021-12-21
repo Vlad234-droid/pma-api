@@ -12,8 +12,7 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.event.EventSupport;
-import com.tesco.pma.flow.handlers.InitReviewNotification;
-import com.tesco.pma.flow.handlers.SendNotification;
+import com.tesco.pma.flow.handlers.*;
 import com.tesco.pma.review.domain.TimelinePoint;
 import com.tesco.pma.review.service.ReviewService;
 import com.tesco.pma.service.contact.client.ContactApiClient;
@@ -64,6 +63,15 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
 
     @SpyBean(name = "initReviewNotification")
     private InitReviewNotification initTask;
+
+    @SpyBean
+    private DefaultInitNotificationHandler initNotificationHandler;
+
+    @SpyBean
+    private InitReviewNotificationHandler reviewInitHandler;
+
+    @SpyBean
+    private InitObjectiveNotificationHandler objectiveInitHandler;
 
     @MockBean(name = "sendNotification")
     private SendNotification sendNotification;
