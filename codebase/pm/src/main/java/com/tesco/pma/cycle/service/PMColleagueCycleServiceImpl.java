@@ -44,8 +44,8 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
     }
 
     @Override
-    public List<PMColleagueCycle> getByCycleUuidWithoutTimelinePoint(UUID cycleUuid) {
-        return dao.getByCycleUuidWithoutTimelinePoint(cycleUuid);
+    public List<PMColleagueCycle> getActiveByCycleUuidWithoutTimelinePoint(UUID cycleUuid) {
+        return dao.getByCycleUuidWithoutTimelinePoint(cycleUuid, PMCycleStatus.ACTIVE);
     }
 
     @Override
@@ -80,6 +80,15 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
         var deleted = dao.delete(uuid);
         if (1 != deleted) {
             throw notFound(PM_COLLEAGUE_CYCLE_NOT_EXIST, Map.of(COLLEAGUE_CYCLE_UUID, uuid));
+        }
+    }
+
+    @Override
+    public void changeStatusForColleague(UUID colleagueUuid, PMCycleStatus oldStatus, PMCycleStatus newStatus) {
+        var changed = dao.changeStatusForColleague(colleagueUuid, oldStatus, newStatus);
+
+        if (0 == changed) {
+            throw notFound(PM_COLLEAGUE_CYCLE_NOT_EXIST, Map.of(COLLEAGUE_CYCLE_UUID, colleagueUuid));
         }
     }
 
