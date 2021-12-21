@@ -5,6 +5,7 @@ import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.WorkingConfigEntry;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -119,7 +120,18 @@ public interface ConfigEntryDAO {
      * @param key - types
      * @return list of colleagues
      */
-    List<ColleagueEntity> findColleaguesByCompositeKey(@Param("key") String key);
+    default List<ColleagueEntity> findColleaguesByCompositeKey(@Param("key") String key) {
+        return findColleaguesByCompositeKey(key, null);
+    }
+
+    /**
+     * Gets list of colleagues by types key and hire date
+     *
+     * @param key - types
+     * @param hireDate - colleague hire date
+     * @return list of colleagues
+     */
+    List<ColleagueEntity> findColleaguesByCompositeKey(@Param("key") String key, @Param("hireDate") LocalDate hireDate);
 
     /**
      * Check if colleague exist by composite key
