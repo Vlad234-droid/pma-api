@@ -2,10 +2,12 @@ package com.tesco.pma.flow.handlers;
 
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
+import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.event.EventParams;
@@ -17,10 +19,14 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.tesco.pma.flow.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_FOR_COLLEAGUE;
 
@@ -38,12 +44,13 @@ public class PMColleagueCycleHandler extends CamundaAbstractFlowHandler {
 
     @Override
     protected void execute(ExecutionContext context) {
+        var cycle = context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class);
         var event = context.getEvent();
         if (event != null) {
             var eventProperties = event.getEventProperties();
             if (eventProperties.containsKey(EventParams.COLLEAGUE_UUID.name())) {
                 var colleagueUuid = UUID.fromString(eventProperties.get(EventParams.COLLEAGUE_UUID.name()).toString());
-                var cycle = pmCycleService.getAll(true)
+                cycle = pmCycleService.getAll(true)
                         .stream()
                         .filter(pmCycle -> PMCycleStatus.ACTIVE == pmCycle.getStatus())
                         .filter(c -> configEntryService.isColleagueExistsForCompositeKey(colleagueUuid, c.getEntryConfigKey()))
@@ -57,15 +64,27 @@ public class PMColleagueCycleHandler extends CamundaAbstractFlowHandler {
 
             }
         } else {
-            var cycle = context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class);
-            var colleagues = configEntryService.findColleaguesByCompositeKey(cycle.getEntryConfigKey());
-            var colleagueCycles = colleagues.stream()
-                    .map(c -> mapToColleagueCycle(c.getUuid(), cycle))
-                    .collect(Collectors.toList());
-
+            List<ColleagueEntity> colleagues;
+            if (PMCycleType.HIRING == cycle.getType()) {
+                colleagues = configEntryService.findColleaguesByCompositeKeyAndHireDate(cycle.getEntryConfigKey(), LocalDate.now());
+            } else {
+                colleagues = configEntryService.findColleaguesByCompositeKey(cycle.getEntryConfigKey());
+            }
+            ArrayList<PMColleagueCycle> colleagueCycles = new ArrayList<>();
+            for (ColleagueEntity colleague : colleagues) {
+                colleagueCycles.add(mapToColleagueCycle(colleague.getUuid(), cycle));
+            }
             pmColleagueCycleService.saveColleagueCycles(colleagueCycles);
         }
+        context.setVariable(FlowParameters.START_DATE, defineStartDate(cycle));
+    }
 
+    private LocalDate defineStartDate(PMCycle cycle) {
+        LocalDate startDate = LocalDate.ofInstant(cycle.getStartTime(), ZoneId.systemDefault());
+        if (PMCycleType.HIRING == cycle.getType()) {
+            startDate = LocalDate.now();
+        }
+        return startDate;
     }
 
     private PMColleagueCycle mapToColleagueCycle(UUID colleagueUuid, PMCycle cycle) {
@@ -75,8 +94,14 @@ public class PMColleagueCycleHandler extends CamundaAbstractFlowHandler {
         cc.setColleagueUuid(colleagueUuid);
         cc.setCycleUuid(cycle.getUuid());
         cc.setStatus(cycle.getStatus());
-        cc.setStartTime(cycle.getStartTime());
-        cc.setEndTime(cycle.getEndTime());
+        var startTime = cycle.getStartTime();
+        var endTime = cycle.getEndTime();
+        if (PMCycleType.HIRING == cycle.getType()) {
+            startTime = LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC);
+            endTime = LocalDate.now().plusYears(1).atStartOfDay().toInstant(ZoneOffset.UTC);
+        }
+        cc.setStartTime(startTime);
+        cc.setEndTime(endTime);
         cc.setProperties(cycle.getProperties());
 
         return cc;

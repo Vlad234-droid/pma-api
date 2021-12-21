@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -184,10 +185,7 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
 
     @Override
     public boolean isColleagueExistsForCompositeKey(UUID colleagueUuid, String compositeKey) {
-        var parts = compositeKey.split("/");
-        var searchKey = IntStream.range(0, parts.length)
-                .filter(i -> i % 2 == 1).mapToObj(i -> parts[i]).collect(Collectors.joining("/"));
-
+        String searchKey = getSearchKey(compositeKey);
         return dao.isColleagueExistsForCompositeKey(colleagueUuid, searchKey);
     }
 
@@ -200,10 +198,20 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
 
     @Override
     public List<ColleagueEntity> findColleaguesByCompositeKey(String compositeKey) {
-        var parts = compositeKey.split("/");
-        var searchKey = IntStream.range(0, parts.length)
-                .filter(i -> i % 2 == 1).mapToObj(i -> parts[i]).collect(Collectors.joining("/"));
+        String searchKey = getSearchKey(compositeKey);
         return dao.findColleaguesByCompositeKey(searchKey);
+    }
+
+    @Override
+    public List<ColleagueEntity> findColleaguesByCompositeKeyAndHireDate(String compositeKey, LocalDate hireDate) {
+        String searchKey = getSearchKey(compositeKey);
+        return dao.findColleaguesByCompositeKey(searchKey, hireDate);
+    }
+
+    private String getSearchKey(String compositeKey) {
+        var parts = compositeKey.split("/");
+        return IntStream.range(0, parts.length)
+                .filter(i -> i % 2 == 1).mapToObj(i -> parts[i]).collect(Collectors.joining("/"));
     }
 
     private String buildCompositeKeySearchTerm(String key) {

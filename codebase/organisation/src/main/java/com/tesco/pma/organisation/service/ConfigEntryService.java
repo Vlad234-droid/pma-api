@@ -4,6 +4,7 @@ import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.ConfigEntryResponse;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -90,6 +91,15 @@ public interface ConfigEntryService {
      * @return list of colleagues
      */
     List<ColleagueEntity> findColleaguesByCompositeKey(String compositeKey);
+
+    /**
+     * Gets list of colleagues by types key and hire date
+     *
+     * @param key - types
+     * @param hireDate - colleague hire date
+     * @return list of colleagues
+     */
+    List<ColleagueEntity> findColleaguesByCompositeKeyAndHireDate(String key, LocalDate hireDate);
 
     /**
      * Get all published roots
