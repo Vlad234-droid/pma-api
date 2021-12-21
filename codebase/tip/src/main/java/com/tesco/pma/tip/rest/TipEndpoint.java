@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,6 +51,7 @@ public class TipEndpoint {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new tip or create a new version of an existing tip", tags = {"tip"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "New Tip successfully created.")
+    @PreAuthorize("isColleague()")
     public RestResponse<Tip> create(@Valid @RequestBody Tip tip) throws URISyntaxException {
         log.debug("REST request to save Tip : {}", tip);
         return RestResponse.success(tipService.create(tip));
@@ -63,6 +65,7 @@ public class TipEndpoint {
      */
     @GetMapping("/tips")
     @Operation(summary = "Get tips", tags = {"tip"})
+    @PreAuthorize("isColleague()")
     public RestResponse<List<Tip>> read(@Parameter(example = "{\n"
             + "    \"_sort\": \"title:DESC,updated-time:ASC\",\n"
             + "    \"published\": \"true\",\n"
@@ -92,6 +95,7 @@ public class TipEndpoint {
      */
     @GetMapping("/tips/{uuid}")
     @Operation(summary = "Get tip by uuid", tags = {"tip"})
+    @PreAuthorize("isColleague()")
     public RestResponse<Tip> read(@PathVariable final UUID uuid) {
         log.debug("REST request to get Tip : {}", uuid);
         return RestResponse.success(tipService.findOne(uuid));
@@ -105,6 +109,7 @@ public class TipEndpoint {
      */
     @GetMapping("/tips/{uuid}/history")
     @Operation(summary = "Get tip history", tags = {"tip"})
+    @PreAuthorize("isColleague()")
     public RestResponse<List<Tip>> readHistory(@PathVariable final UUID uuid) {
         log.debug("REST request to get Tip history : {}", uuid);
         return RestResponse.success(tipService.findHistory(uuid));
@@ -121,6 +126,7 @@ public class TipEndpoint {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete an existing Tip", tags = {"tip"})
     @ApiResponse(responseCode = HttpStatusCodes.NO_CONTENT, description = "Tip successfully deleted.")
+    @PreAuthorize("isColleague()")
     public RestResponse<Void> delete(@PathVariable final UUID uuid, @RequestParam(required = false) boolean withHistory)
             throws URISyntaxException {
         log.debug("REST request to delete Tip: {}", uuid);
@@ -139,6 +145,7 @@ public class TipEndpoint {
     @PatchMapping(value = "/tips/{uuid}/publish")
     @Operation(summary = "Publish tip", tags = {"tip"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Tip published successfully.")
+    @PreAuthorize("isColleague()")
     public RestResponse<Tip> publish(@PathVariable final UUID uuid) throws URISyntaxException {
         log.debug("REST request to publish Tip : {}", uuid);
         return RestResponse.success(tipService.publish(uuid));
