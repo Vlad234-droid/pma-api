@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(path = "/developmentPlans")
+@RequestMapping(path = "/pdp")
 @RequiredArgsConstructor
 public class PDPEndpoint {
 
