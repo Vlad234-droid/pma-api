@@ -94,7 +94,7 @@ public class ProfileEndpoint {
     @ApiResponse(responseCode = CREATED, description = "Successful operation")
     @PostMapping(path = "{colleagueUuid}/attributes", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("isAdmin() and isCurrentUser(#colleagueUuid)")
+    @PreAuthorize("isAdmin()")
     public RestResponse<List<TypedAttribute>> createProfileAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                                                       @RequestBody @Valid List<TypedAttribute> profileAttributes) {
         return RestResponse.success(profileService.createProfileAttributes(colleagueUuid, profileAttributes));
@@ -112,7 +112,7 @@ public class ProfileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Profile attributes deleted")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Profile not found", content = @Content)
     @DeleteMapping(path = "{colleagueUuid}/attributes", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAdmin() and isCurrentUser(#colleagueUuid)")
+    @PreAuthorize("isAdmin()")
     public RestResponse<List<TypedAttribute>> deleteProfileAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                                                       @RequestBody @Valid List<TypedAttribute> profileAttributes) {
         return RestResponse.success(profileService.deleteProfileAttributes(colleagueUuid, profileAttributes));
