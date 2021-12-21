@@ -45,9 +45,12 @@
             AND status_id =
             #{status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus}
         </if>
-            AND NOT EXISTS(SELECT uuid
-                FROM pm_timeline_point tp
-                WHERE tp.colleague_cycle_uuid = cc.uuid)
+        <if test="startTime != null">
+            AND start_time = #{startTime}
+        </if>
+        AND NOT EXISTS(SELECT uuid
+        FROM pm_timeline_point tp
+        WHERE tp.colleague_cycle_uuid = cc.uuid)
     </select>
 
     <insert id="saveAll" flushCache="true" parameterType="java.util.Collection">

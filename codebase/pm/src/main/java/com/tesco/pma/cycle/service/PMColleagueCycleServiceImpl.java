@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +45,8 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
     }
 
     @Override
-    public List<PMColleagueCycle> getActiveByCycleUuidWithoutTimelinePoint(UUID cycleUuid) {
-        return dao.getByCycleUuidWithoutTimelinePoint(cycleUuid, PMCycleStatus.ACTIVE);
+    public List<PMColleagueCycle> getActiveByCycleUuidWithoutTimelinePoint(UUID cycleUuid, Instant startTime) {
+        return dao.getByCycleUuidWithoutTimelinePoint(cycleUuid, PMCycleStatus.ACTIVE, startTime);
     }
 
     @Override

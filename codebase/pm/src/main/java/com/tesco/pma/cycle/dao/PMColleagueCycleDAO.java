@@ -5,6 +5,7 @@ import com.tesco.pma.cycle.api.PMCycleStatus;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.lang.Nullable;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -68,10 +69,12 @@ public interface PMColleagueCycleDAO {
      *
      * @param cycleUuid - PM cycle identifier
      * @param status    - filter by status, optional param.
+     * @param startTime - start time filter
      * @return - collection of PM colleague cycles
      */
     List<PMColleagueCycle> getByCycleUuidWithoutTimelinePoint(@Param("cycleUuid") UUID cycleUuid,
-                                                              @Nullable @Param("status") PMCycleStatus status);
+                                                              @Nullable @Param("status") PMCycleStatus status,
+                                                              Instant startTime);
 
     /**
      * Changes status for colleague cycle handler
