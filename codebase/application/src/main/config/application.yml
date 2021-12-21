@@ -153,8 +153,9 @@ validation:
   mapping-locations:
     - classpath:com/tesco/pma/feedback/validation/constraints-feedback.xml
     - classpath:com/tesco/pma/tip/validation/constraints-tip.xml
-    - classpath:com/tesco/pma/validation/constraints-files-upload-metadata.xml
-    - classpath:com/tesco/pma/validation/constraints-upload-metadata.xml
+    - classpath:com/tesco/pma/service/validation/constraints-files-upload-metadata.xml
+    - classpath:com/tesco/pma/service/validation/constraints-upload-metadata.xml
+    - classpath:com/tesco/pma/service/validation/constraints-pdp-goal.xml
   messages:
     basename: com/tesco/pma/validation/AppValidationMessages
     encoding: UTF-8
