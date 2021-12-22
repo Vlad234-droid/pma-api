@@ -258,13 +258,16 @@ public class ProfileDAOTest extends AbstractDAOTest {
 
         var managerUUID = "c409869b-2acf-45cd-8cc6-e13af2e6f935";
 
+        dao.updateColleagueManager(UUID.fromString("119e0d2b-1dc2-409f-8198-ecd66e59d47a"),
+                UUID.fromString(managerUUID));
+
         assertEquals(9, dao.findColleagueSuggestionsByFullName(
                 createRQ(Map.of("first-name_like", "fiRst"))).size());
 
         var colleagues = dao.findColleagueSuggestionsByFullName(
                 createRQ(Map.of(
-                        "first-name_like", "JohN",
-                        "manager-uuid_equals", managerUUID)));
+                        "last-name_like", "Dow",
+                        "manager-uuid_eq", managerUUID)));
 
         assertEquals(1, colleagues.size());
         assertEquals(1, dao.findColleagueSuggestionsByFullName(createRQ(Map.of("first-name_like","ohn"))).size());
@@ -272,15 +275,15 @@ public class ProfileDAOTest extends AbstractDAOTest {
         var colleague = dao.findColleagueSuggestionsByFullName(createRQ(Map.of(
                 "first-name_eq", "John",
                 "last-name_eq", "Dow"
-        ))).get(0);
+        ))).stream().filter(col -> "119e0d2b-1dc2-409f-8198-ecd66e59d47a".equals(col.getColleagueUUID().toString())).findFirst().get();
 
-        assertEquals("119e0d2b-1dc2-409f-8198-ecd66e59d47a", colleague.getColleagueUUID().toString());
+        assertNotNull(colleague);
         assertEquals("Tesco Bank", colleague.getWorkRelationships().get(0).getPrimaryEntity());
         assertEquals(WorkLevel.WL1, colleague.getWorkRelationships().get(0).getWorkLevel());
         assertEquals("2", colleague.getWorkRelationships().get(0).getJob().getId());
         assertEquals("ANNUAL", colleague.getWorkRelationships().get(0).getSalaryFrequency());
         assertEquals("ET", colleague.getWorkRelationships().get(0).getEmploymentType());
-        //assertEquals(managerUUID, colleague.getWorkRelationships().get(0).getManagerUUID().toString());
+        assertEquals(managerUUID, colleague.getWorkRelationships().get(0).getManagerUUID().toString());
         assertEquals("4", colleague.getWorkRelationships().get(0).getDepartment().getId());
         assertEquals("John", colleague.getProfile().getFirstName());
         assertEquals("Dow", colleague.getProfile().getLastName());
