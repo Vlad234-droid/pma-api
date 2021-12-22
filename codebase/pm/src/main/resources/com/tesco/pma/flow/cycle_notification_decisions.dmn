@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="cycle_notifications_decisions" name="Review Notifications" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
+  <decision id="cycle_notifications_decision_table" name="Send review&#10;notification or not">
+    <informationRequirement id="InformationRequirement_01u2w81">
+      <requiredInput href="#InputData_1r3ahyr" />
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_12ixx6t">
+      <requiredInput href="#InputData_17p8c9j" />
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_0w0zust">
+      <requiredInput href="#InputData_1g0u5hf" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_1dpms3v" hitPolicy="FIRST">
+      <input id="InputClause_0anirp2" label="Event Name" biodi:width="254">
+        <inputExpression id="LiteralExpression_0jpa5sp" typeRef="string">
+          <text>EVENT_NAME</text>
+        </inputExpression>
+      </input>
+      <input id="Input_1" label="is Manager" biodi:width="150">
+        <inputExpression id="InputExpression_1" typeRef="boolean">
+          <text>IS_MANAGER</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0u1chj8" label="Notification attribute value">
+        <inputExpression id="LiteralExpression_0jiwba7" typeRef="boolean">
+          <text>{
+    attrs: if COLLEAGUE_PROFILE.getProfileAttributes() = null then [] else COLLEAGUE_PROFILE.getProfileAttributes(),
+
+    attr_exist: some attr in attrs satisfies
+ attr.getName() = PROFILE_ATTRIBUTE_NAME,
+
+    attr_value: some attr in attrs satisfies 
+attr.getName() = PROFILE_ATTRIBUTE_NAME 
+and attr.getValue() = "true",
+
+   result: if attr_exist then attr_value else true
+
+}.result</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="Send" name="SEND" typeRef="boolean" biodi:width="150" />
+      <rule id="DecisionRule_0pmi0k1">
+        <inputEntry id="UnaryTests_00p21k5">
+          <text>"BEFORE_CYCLE_START_COLLEAGUE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1rclif5">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ntv95x">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0v8elqc">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1gbb0fy">
+        <inputEntry id="UnaryTests_1fqomif">
+          <text>"BEFORE_CYCLE_END_COLLEAGUE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1d6psgh">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_057h98u">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0qd6f47">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0uz1ot7">
+        <inputEntry id="UnaryTests_0xaux4o">
+          <text>"BEFORE_CYCLE_START_LM"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_02tkh7c">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_00uyl85">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0ibk7tc">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_00jf3n6">
+        <inputEntry id="UnaryTests_0lqrq3i">
+          <text>"BEFORE_CYCLE_END_LM"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_14ozz1r">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_02opk6n">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1b63fz3">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_052arhu">
+        <inputEntry id="UnaryTests_1evw3jv">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0kigd8e">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0n10894">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_14bd62q">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <inputData id="InputData_1r3ahyr" name="Review Type" />
+  <inputData id="InputData_17p8c9j" name="is Manager" />
+  <inputData id="InputData_1g0u5hf" name="Event Name" />
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="cycle_notifications_decision_table">
+        <dc:Bounds height="80" width="180" x="270" y="100" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_0mmc55j" dmnElementRef="InputData_1r3ahyr">
+        <dc:Bounds height="45" width="125" x="297" y="227" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_0af514x" dmnElementRef="InformationRequirement_01u2w81">
+        <di:waypoint x="360" y="227" />
+        <di:waypoint x="360" y="200" />
+        <di:waypoint x="360" y="180" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DMNShape_00jg8de" dmnElementRef="InputData_17p8c9j">
+        <dc:Bounds height="45" width="125" x="437" y="227" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_14yza5o" dmnElementRef="InformationRequirement_12ixx6t">
+        <di:waypoint x="500" y="227" />
+        <di:waypoint x="405" y="200" />
+        <di:waypoint x="405" y="180" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DMNShape_0jl626x" dmnElementRef="InputData_1g0u5hf">
+        <dc:Bounds height="45" width="125" x="157" y="227" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_0domkdg" dmnElementRef="InformationRequirement_0w0zust">
+        <di:waypoint x="220" y="227" />
+        <di:waypoint x="315" y="200" />
+        <di:waypoint x="315" y="180" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
