@@ -36,15 +36,16 @@ public class FoldersEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Create a new Folder")
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("isCurrentUser(#folder.ownerColleagueUuid)")
+    @PreAuthorize("isColleague() and isCurrentUser(#folder.ownerColleagueUuid)")
     public RestResponse<?> createFolder(@RequestBody Folder folder) {
         return RestResponse.success(notesService.createFolder(folder));
     }
 
-    @Operation(summary = "Find a folder", tags = {"Notes"})
+    @Operation(summary = "Find a Folder by Owner", tags = {"Notes"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Find a folder")
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isColleague()")
     public RestResponse<List<Folder>> get(@RequestParam UUID ownerId) {
         return RestResponse.success(notesService.findFolderByOwner(ownerId));
     }
@@ -53,15 +54,16 @@ public class FoldersEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Update a Folder")
     @PutMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isCurrentUser(#folder.ownerColleagueUuid)")
+    @PreAuthorize("isColleague() and isCurrentUser(#folder.ownerColleagueUuid)")
     public RestResponse<?> update(@PathVariable("id") UUID uuid, @RequestBody Folder folder) {
         return RestResponse.success(notesService.updateFolder(folder));
     }
 
-    @Operation(summary = "Delete a Note", tags = {"Notes"})
+    @Operation(summary = "Delete a Folder", tags = {"Notes"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Delete a Folder")
     @DeleteMapping(value = "/{id}",produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isColleague()")
     public RestResponse<?> delete(@PathVariable("id") UUID uuid) {
         notesService.deleteFolder(uuid);
         return RestResponse.success();

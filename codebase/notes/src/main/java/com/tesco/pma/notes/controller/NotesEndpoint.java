@@ -36,7 +36,7 @@ public class NotesEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Create a new Note")
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("isCurrentUser(#note.ownerColleagueUuid)")
+    @PreAuthorize("isColleague() and isCurrentUser(#note.ownerColleagueUuid)")
     public RestResponse<Note> createNote(@RequestBody Note note) {
         return RestResponse.success(notesService.createNote(note));
     }
@@ -45,15 +45,16 @@ public class NotesEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Update a Note")
     @PutMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isCurrentUser(#note.ownerColleagueUuid)")
+    @PreAuthorize("isColleague() and isCurrentUser(#note.ownerColleagueUuid)")
     public RestResponse<Note> update(@PathVariable("id") UUID uuid, @RequestBody Note note) {
         return RestResponse.success(notesService.updateNote(note));
     }
 
-    @Operation(summary = "Find Notes", tags = {"Notes"})
+    @Operation(summary = "Find Notes by Owner", tags = {"Notes"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Find Note")
     @GetMapping(produces = APPLICATION_JSON_VALUE, params = "ownerId")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isColleague()")
     public RestResponse<List<Note>> findByOwner(@RequestParam UUID ownerId) {
         return RestResponse.success(notesService.findNoteByOwner(ownerId));
     }
@@ -62,6 +63,7 @@ public class NotesEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Find Note")
     @GetMapping(produces = APPLICATION_JSON_VALUE, params = "folderId")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isColleague()")
     public RestResponse<List<Note>> findByFolder(@RequestParam UUID folderId) {
         return RestResponse.success(notesService.findNoteByFolder(folderId));
     }
@@ -70,6 +72,7 @@ public class NotesEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Delete a Note")
     @DeleteMapping(value = "/{id}",produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isColleague()")
     public RestResponse<?> delete(@PathVariable("id") UUID uuid) {
         notesService.deleteNote(uuid);
         return RestResponse.success();
