@@ -55,7 +55,7 @@ public class FeedbackEndpoint {
     @Validated({ValidationGroup.OnCreate.class, Default.class})
     @Operation(summary = "Create a new list of feedbacks with items", tags = {"feedback"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "List of feedbacks created")
-    @PreAuthorize("isColleague() and isCurrentUser(#feedbacks[0].colleagueUuid)")
+    @PreAuthorize("isColleague()")
     public RestResponse<List<Feedback>> createFeedbacks(@Valid @RequestBody List<Feedback> feedbacks) throws URISyntaxException {
         log.debug("REST request to save Feedbacks : {}", feedbacks);
         List<Feedback> result = feedbacks.stream().map(feedbackService::create).collect(Collectors.toList());
@@ -77,7 +77,7 @@ public class FeedbackEndpoint {
     @Operation(summary = "Updates an existing feedback", tags = {"feedback"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Feedback updated")
     @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Invalid UUID")
-    @PreAuthorize("isColleague() and isCurrentUser(#feedback.colleagueUuid)")
+    @PreAuthorize("isColleague()")
     public RestResponse<Feedback> updateFeedback(
             @PathVariable(value = "uuid", required = false) final UUID uuid,
             @Valid @RequestBody Feedback feedback
