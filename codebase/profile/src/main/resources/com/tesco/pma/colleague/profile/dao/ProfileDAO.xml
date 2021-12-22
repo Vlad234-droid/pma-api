@@ -52,7 +52,7 @@
         </collection>
     </resultMap>
 
-    <select id="getColleague" resultMap="colleagueMap">
+    <sql id="select">
         SELECT c.uuid,
                c.first_name,
                c.middle_name,
@@ -79,44 +79,19 @@
                d.name          as d_name,
                d.business_type as d_businessType
         FROM colleague c
-                 JOIN job j ON j.id = c.job_id
+                 LEFT OUTER JOIN job j ON j.id = c.job_id
                  JOIN country co ON co.code = c.country_code
-                 JOIN work_level wl ON wl.code = c.work_level
-                 JOIN department d ON d.id = c.department_id
+                 LEFT OUTER JOIN work_level wl ON wl.code = c.work_level
+                 LEFT OUTER JOIN department d ON d.id = c.department_id
+    </sql>
+
+    <select id="getColleague" resultMap="colleagueMap">
+        <include refid="select"/>
         WHERE c.uuid = #{colleagueUuid}
     </select>
 
     <select id="getColleagueByIamId" resultMap="colleagueMap">
-        SELECT c.uuid,
-               c.first_name,
-               c.middle_name,
-               c.last_name,
-               c.email,
-               c.primary_entity,
-               c.salary_frequency,
-               c.iam_source,
-               c.iam_id,
-               c.manager_uuid,
-               c.employment_type,
-               c.hire_date,
-               c.leaving_date,
-               c.is_manager,
-               j.id            as j_id,
-               j.code          as j_code,
-               j.name          as j_name,
-               j.cost_category as j_costCategory,
-               co.code         as co_code,
-               co.name         as co_name,
-               wl.code         as wl_code,
-               wl.name         as wl_name,
-               d.id            as d_id,
-               d.name          as d_name,
-               d.business_type as d_businessType
-        FROM colleague c
-                 JOIN job j ON j.id = c.job_id
-                 JOIN country co ON co.code = c.country_code
-                 JOIN work_level wl ON wl.code = c.work_level
-                 JOIN department d ON d.id = c.department_id
+        <include refid="select"/>
         WHERE c.iam_id = #{iamId}
     </select>
 

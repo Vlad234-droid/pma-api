@@ -4,6 +4,7 @@ import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -65,8 +66,9 @@ public interface PMColleagueCycleDAO {
     /**
      * Gets list of pm colleague cycles without timeline points
      *
-     * @param cycleUuid     - PM cycle identifier
+     * @param cycleUuid - PM cycle identifier
+     * @param startTime - start time filter
      * @return - collection of PM colleague cycles
      */
-    List<PMColleagueCycle> getByCycleUuidWithoutTimelinePoint(UUID cycleUuid);
+    List<PMColleagueCycle> getByCycleUuidWithoutTimelinePoint(UUID cycleUuid, Instant startTime);
 }
