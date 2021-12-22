@@ -10,10 +10,18 @@
           <text>EVENT_NAME</text>
         </inputExpression>
       </input>
+      <input id="InputClause_09t43wo" label="Is Manager">
+        <inputExpression id="LiteralExpression_064e5ge" typeRef="boolean">
+          <text>IS_MANAGER</text>
+        </inputExpression>
+      </input>
       <output id="Output_1" label="Attribute name" name="PROFILE_ATTRIBUTE_NAME" typeRef="string" biodi:width="367" />
       <rule id="DecisionRule_0k3bxnp">
         <inputEntry id="UnaryTests_1b9u06b">
-          <text>"BEFORE_CYCLE_START_COLLEAGUE"</text>
+          <text>"BEFORE_CYCLE_START"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1fcvejv">
+          <text>false</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_06u4cfw">
           <text>"Before cycle start - Colleague"</text>
@@ -21,7 +29,10 @@
       </rule>
       <rule id="DecisionRule_0xn39n6">
         <inputEntry id="UnaryTests_1wdtsez">
-          <text>"BEFORE_CYCLE_END_COLLEAGUE"</text>
+          <text>"BEFORE_CYCLE_END"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1kqgpii">
+          <text>false</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1tdkqcg">
           <text>"Before cycle end - Colleague"</text>
@@ -29,7 +40,10 @@
       </rule>
       <rule id="DecisionRule_0ympxyw">
         <inputEntry id="UnaryTests_0bxvw41">
-          <text>"BEFORE_CYCLE_START_LM"</text>
+          <text>"BEFORE_CYCLE_START"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1g5yxcx">
+          <text>true</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1s6qds0">
           <text>"Before cycle start - LM"</text>
@@ -37,7 +51,10 @@
       </rule>
       <rule id="DecisionRule_1phlqvc">
         <inputEntry id="UnaryTests_1h0pdhx">
-          <text>"BEFORE_CYCLE_END_LM"</text>
+          <text>"BEFORE_CYCLE_END"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_03fzr4k">
+          <text>true</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_08lhcde">
           <text>"Before cycle end - LM"</text>

@@ -10,10 +10,18 @@
           <text>EVENT_NAME</text>
         </inputExpression>
       </input>
+      <input id="InputClause_0bi7u0d" label="Is Manager">
+        <inputExpression id="LiteralExpression_0u7j2yz" typeRef="boolean">
+          <text>IS_MANAGER</text>
+        </inputExpression>
+      </input>
       <output id="Output_1" label="Template ID" name="CONTACT_TEMPLATE_ID" typeRef="string" biodi:width="367" />
       <rule id="DecisionRule_0nzib8g">
         <inputEntry id="UnaryTests_0e8whni">
-          <text>"BEFORE_CYCLE_START_COLLEAGUE"</text>
+          <text>"BEFORE_CYCLE_START"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1w3439g">
+          <text>false</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_158d1an">
           <text>"00000000-0000-0000-0000-000000000000"</text>
@@ -21,7 +29,10 @@
       </rule>
       <rule id="DecisionRule_0uvrr49">
         <inputEntry id="UnaryTests_0db0uww">
-          <text>"BEFORE_CYCLE_END_COLLEAGUE"</text>
+          <text>"BEFORE_CYCLE_END"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0m7osxx">
+          <text>false</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1c07k1c">
           <text>"00000000-0000-0000-0000-000000000000"</text>
@@ -29,7 +40,10 @@
       </rule>
       <rule id="DecisionRule_06won2y">
         <inputEntry id="UnaryTests_1ikgrwu">
-          <text>"BEFORE_CYCLE_START_LM"</text>
+          <text>"BEFORE_CYCLE_START"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_167mce0">
+          <text>true</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0lurd8x">
           <text>"00000000-0000-0000-0000-000000000000"</text>
@@ -37,7 +51,10 @@
       </rule>
       <rule id="DecisionRule_1w06om2">
         <inputEntry id="UnaryTests_176hqdx">
-          <text>"BEFORE_CYCLE_END_LM"</text>
+          <text>"BEFORE_CYCLE_END"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0grsw4k">
+          <text>true</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_00o27fc">
           <text>"00000000-0000-0000-0000-000000000000"</text>
@@ -46,6 +63,9 @@
       <rule id="DecisionRule_1m3o2bb">
         <description>Default</description>
         <inputEntry id="UnaryTests_0v605vb">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0vbi6gm">
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1c2gnu1">

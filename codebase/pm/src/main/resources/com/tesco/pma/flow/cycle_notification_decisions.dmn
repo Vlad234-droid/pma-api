@@ -41,10 +41,10 @@ and attr.getValue() = "true",
       <output id="Output_1" label="Send" name="SEND" typeRef="boolean" biodi:width="150" />
       <rule id="DecisionRule_0pmi0k1">
         <inputEntry id="UnaryTests_00p21k5">
-          <text>"BEFORE_CYCLE_START_COLLEAGUE"</text>
+          <text>"BEFORE_CYCLE_START"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1rclif5">
-          <text></text>
+          <text>false</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0ntv95x">
           <text>true</text>
@@ -55,10 +55,10 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_1gbb0fy">
         <inputEntry id="UnaryTests_1fqomif">
-          <text>"BEFORE_CYCLE_END_COLLEAGUE"</text>
+          <text>"BEFORE_CYCLE_END"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1d6psgh">
-          <text></text>
+          <text>false</text>
         </inputEntry>
         <inputEntry id="UnaryTests_057h98u">
           <text>true</text>
@@ -69,7 +69,7 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_0uz1ot7">
         <inputEntry id="UnaryTests_0xaux4o">
-          <text>"BEFORE_CYCLE_START_LM"</text>
+          <text>"BEFORE_CYCLE_START"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_02tkh7c">
           <text>true</text>
@@ -83,7 +83,7 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_00jf3n6">
         <inputEntry id="UnaryTests_0lqrq3i">
-          <text>"BEFORE_CYCLE_END_LM"</text>
+          <text>"BEFORE_CYCLE_END"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_14ozz1r">
           <text>true</text>

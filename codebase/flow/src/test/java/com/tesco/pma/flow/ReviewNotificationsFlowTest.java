@@ -53,10 +53,8 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
 
     private static final String REMINDER = "REMINDER";
 
-    private static final String BEFORE_CYCLE_START_COLLEAGUE = "BEFORE_CYCLE_START_COLLEAGUE";
-    private static final String BEFORE_CYCLE_END_COLLEAGUE = "BEFORE_CYCLE_END_COLLEAGUE";
-    private static final String BEFORE_CYCLE_START_LM = "BEFORE_CYCLE_START_LM";
-    private static final String BEFORE_CYCLE_END_LM = "BEFORE_CYCLE_END_LM";
+    private static final String BEFORE_CYCLE_START = "BEFORE_CYCLE_START";
+    private static final String BEFORE_CYCLE_END = "BEFORE_CYCLE_END";
 
     private static final String RECEIVE_TIPS = "RECEIVE_TIPS";
 
@@ -195,15 +193,11 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
 
     @Test
     void beforeCycleTest() throws Exception {
-        checkCycleGroup(BEFORE_CYCLE_START_COLLEAGUE, null, false, WorkLevel.WL1, true);
-        checkCycleGroup(BEFORE_CYCLE_END_COLLEAGUE, null, false, WorkLevel.WL1, true);
+        checkCycleGroup(BEFORE_CYCLE_START, null, false, WorkLevel.WL1, true);
+        checkCycleGroup(BEFORE_CYCLE_END, null, false, WorkLevel.WL1, true);
 
-        checkCycleGroup(BEFORE_CYCLE_START_LM, null, true, WorkLevel.WL1, true);
-        checkCycleGroup(BEFORE_CYCLE_END_LM, null, true, WorkLevel.WL1, true);
-
-        checkCycleGroup(BEFORE_CYCLE_START_LM, null, false, WorkLevel.WL1, false);
-        checkCycleGroup(BEFORE_CYCLE_END_LM, null, false, WorkLevel.WL1, false);
-
+        checkCycleGroup(BEFORE_CYCLE_START, null, true, WorkLevel.WL1, true);
+        checkCycleGroup(BEFORE_CYCLE_END, null, true, WorkLevel.WL1, true);
     }
 
     @Test
