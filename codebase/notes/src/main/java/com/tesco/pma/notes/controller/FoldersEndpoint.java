@@ -36,7 +36,7 @@ public class FoldersEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Create a new Folder")
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("isColleague() and isCurrentUser(#folder.ownerColleagueUuid)")
+    @PreAuthorize("isColleague()")
     public RestResponse<?> createFolder(@RequestBody Folder folder) {
         return RestResponse.success(notesService.createFolder(folder));
     }
@@ -54,7 +54,7 @@ public class FoldersEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Update a Folder")
     @PutMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isColleague() and isCurrentUser(#folder.ownerColleagueUuid)")
+    @PreAuthorize("isColleague()")
     public RestResponse<?> update(@PathVariable("id") UUID uuid, @RequestBody Folder folder) {
         return RestResponse.success(notesService.updateFolder(folder));
     }
