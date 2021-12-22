@@ -121,16 +121,7 @@
         JOIN country co ON co.code = c.country_code
         JOIN work_level wl ON wl.code = c.work_level
         JOIN department d ON d.id = c.department_id
-        <if test="withoutColleagueCycle == true">
-            LEFT JOIN pm_colleague_cycle pcc on c.uuid = pcc.colleague_uuid
-        </if>
         <include refid="whereClauseFindColleagueByKey"/>
-        <if test="withoutColleagueCycle == true">
-            AND pcc.colleague_uuid IS NULL
-        </if>
-        <if test="hireDate != null">
-            AND c.hire_date = #{hireDate}
-        </if>
     </select>
 
     <select id="isColleagueExistsForCompositeKey" resultType="boolean">

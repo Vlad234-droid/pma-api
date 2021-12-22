@@ -66,7 +66,7 @@ public class PMColleagueCycleHandler extends CamundaAbstractFlowHandler {
         } else {
             List<ColleagueEntity> colleagues;
             var hireDate = PMCycleType.HIRING == cycle.getType() ? LocalDate.now() : null;
-            colleagues = configEntryService.findColleagues(cycle.getEntryConfigKey(), hireDate, true);
+            colleagues = pmColleagueCycleService.findColleagues(cycle.getEntryConfigKey(), hireDate, true);
             ArrayList<PMColleagueCycle> colleagueCycles = new ArrayList<>();
             for (ColleagueEntity colleague : colleagues) {
                 colleagueCycles.add(mapToColleagueCycle(colleague.getUuid(), cycle));

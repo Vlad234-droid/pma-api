@@ -53,7 +53,7 @@ class PMColleagueCycleHandlerTest {
                 .build();
         List<ColleagueEntity> colleagues = new ArrayList<>();
         colleagues.add(new ColleagueEntity());
-        Mockito.when(configEntryService.findColleagues(KEY, null, true)).thenReturn(colleagues);
+        Mockito.when(pmColleagueCycleService.findColleagues(KEY, null, true)).thenReturn(colleagues);
 
         //when
         handler.execute(ec);
