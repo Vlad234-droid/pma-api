@@ -227,13 +227,11 @@
                 </if>
             </foreach>
 
-            <if test="requestQuery.getFiltersProperties().contains('manager-uuid')">
-                <foreach collection="requestQuery.filters" item="filter" index="index">
-                    <if test="filter.operand.name() == 'EQUALS' and filter.property == 'manager-uuid'">
-                        AND <include refid="getFilterField"/> = uuid(#{filter.value})
-                    </if>
-                </foreach>
-            </if>
+            <foreach collection="requestQuery.filters" item="filter" index="index">
+                <if test="filter.operand.name == 'EQUALS' and filter.property == 'manager-uuid'">
+                    AND <include refid="getFilterField"/> = uuid(#{filter.value})
+                </if>
+            </foreach>
         </if>
 
         LIMIT #{requestQuery.limit}
