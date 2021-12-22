@@ -95,11 +95,12 @@ public interface ConfigEntryService {
     /**
      * Gets list of colleagues by types key and hire date
      *
-     * @param key - types
-     * @param hireDate - colleague hire date
+     * @param compositeKey          - key
+     * @param hireDate              - colleague hire date
+     * @param withoutColleagueCycle - find without created colleague cycle
      * @return list of colleagues
      */
-    List<ColleagueEntity> findColleaguesByCompositeKeyAndHireDate(String key, LocalDate hireDate);
+    List<ColleagueEntity> findColleagues(String compositeKey, LocalDate hireDate, boolean withoutColleagueCycle);
 
     /**
      * Get all published roots

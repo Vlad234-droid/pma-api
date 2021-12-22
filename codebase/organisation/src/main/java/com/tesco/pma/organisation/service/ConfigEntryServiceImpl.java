@@ -203,9 +203,9 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
     }
 
     @Override
-    public List<ColleagueEntity> findColleaguesByCompositeKeyAndHireDate(String compositeKey, LocalDate hireDate) {
+    public List<ColleagueEntity> findColleagues(String compositeKey, LocalDate hireDate, boolean withoutColleagueCycle) {
         String searchKey = getSearchKey(compositeKey);
-        return dao.findColleaguesByCompositeKey(searchKey, hireDate);
+        return dao.findColleagues(searchKey, hireDate, withoutColleagueCycle);
     }
 
     private String getSearchKey(String compositeKey) {
