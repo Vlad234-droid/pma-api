@@ -38,7 +38,7 @@ and attr.getValue() = "true",
       <output id="Output_1" label="Send" name="SEND" typeRef="boolean" biodi:width="150" />
       <rule id="DecisionRule_1q1zehi">
         <inputEntry id="UnaryTests_06ij7o2">
-          <text>"Q1_REMINDER"</text>
+          <text>"REMINDER"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0pjgv55">
           <text>contains(?, "Q1")</text>
@@ -52,7 +52,7 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_0nisuw6">
         <inputEntry id="UnaryTests_0yim3nf">
-          <text>"Q3_REMINDER"</text>
+          <text>"REMINDER"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0p2rps8">
           <text>contains(?, "Q3")</text>

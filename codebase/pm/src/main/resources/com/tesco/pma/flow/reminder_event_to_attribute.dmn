@@ -10,10 +10,18 @@
           <text>EVENT_NAME</text>
         </inputExpression>
       </input>
+      <input id="InputClause_011oa9g" label="Reminder">
+        <inputExpression id="LiteralExpression_0m1ksom" typeRef="string">
+          <text>COLLEAGUE_REMINDERS</text>
+        </inputExpression>
+      </input>
       <output id="Output_1" label="Attribute name" name="PROFILE_ATTRIBUTE_NAME" typeRef="string" biodi:width="367" />
       <rule id="DecisionRule_1belqto">
         <inputEntry id="UnaryTests_1jf97v6">
-          <text>"Q1_REMINDER"</text>
+          <text>"REMINDER"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0tw6odr">
+          <text>contains(?, "Q1")</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0qmnwwf">
           <text>"Q1 reminder"</text>
@@ -21,7 +29,10 @@
       </rule>
       <rule id="DecisionRule_1m5x2o5">
         <inputEntry id="UnaryTests_1fdceoz">
-          <text>"Q3_REMINDER"</text>
+          <text>"REMINDER"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1smleih">
+          <text>contains(?, "Q3")</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_16bybi4">
           <text>"Q3 reminder"</text>

@@ -51,8 +51,7 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
     private static final String RESPOND_TO_FEEDBACK_REQUESTS = "RESPOND_TO_FEEDBACK_REQUESTS";
     private static final String REQUEST_FEEDBACK = "REQUEST_FEEDBACK";
 
-    private static final String Q1_REMINDER = "Q1_REMINDER";
-    private static final String Q3_REMINDER = "Q3_REMINDER";
+    private static final String REMINDER = "REMINDER";
 
     private static final String BEFORE_CYCLE_START_COLLEAGUE = "BEFORE_CYCLE_START_COLLEAGUE";
     private static final String BEFORE_CYCLE_END_COLLEAGUE = "BEFORE_CYCLE_END_COLLEAGUE";
@@ -167,8 +166,7 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
         Mockito.when(reviewService.getCycleTimelineByColleague(Mockito.any()))
                 .thenReturn(List.of(createTimelinePoint("Q1")));
 
-        checkRemindersGroup(Q1_REMINDER, null, false, WorkLevel.WL1, true);
-        checkRemindersGroup(Q3_REMINDER, null, false, WorkLevel.WL1, false);
+        checkRemindersGroup(REMINDER, null, false, WorkLevel.WL1, true);
     }
 
     @Test
@@ -176,8 +174,7 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
         Mockito.when(reviewService.getCycleTimelineByColleague(Mockito.any()))
                 .thenReturn(List.of(createTimelinePoint("Q3")));
 
-        checkRemindersGroup(Q3_REMINDER, null, false, WorkLevel.WL1, true);
-        checkRemindersGroup(Q1_REMINDER, null, false, WorkLevel.WL1, false);
+        checkRemindersGroup(REMINDER, null, false, WorkLevel.WL1, true);
     }
 
     @Test
@@ -185,8 +182,15 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
         Mockito.when(reviewService.getCycleTimelineByColleague(Mockito.any()))
                 .thenReturn(List.of(createTimelinePoint( "Q1"), createTimelinePoint( "Q3")));
 
-        checkRemindersGroup(Q1_REMINDER, null, false, WorkLevel.WL1, true);
-        checkRemindersGroup(Q3_REMINDER, null, false, WorkLevel.WL1, true);
+        checkRemindersGroup(REMINDER, null, false, WorkLevel.WL1, true);
+    }
+
+    @Test
+    void checkRemindersQ2() throws Exception {
+        Mockito.when(reviewService.getCycleTimelineByColleague(Mockito.any()))
+                .thenReturn(List.of(createTimelinePoint( "Q2")));
+
+        checkRemindersGroup(REMINDER, null, false, WorkLevel.WL1, false);
     }
 
     @Test

@@ -53,10 +53,6 @@
       <bpmn:outgoing>Flow_04rmhha</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1ec3ia9" messageRef="Message_1fh9jei" />
     </bpmn:startEvent>
-    <bpmn:startEvent id="Event_0miucol">
-      <bpmn:outgoing>Flow_0igoban</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_1trzzyw" messageRef="Message_0dj3j0a" />
-    </bpmn:startEvent>
     <bpmn:startEvent id="Event_03ruc7m">
       <bpmn:outgoing>Flow_0hdn8jq</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0ypak5c" messageRef="Message_1lilc4k" />
@@ -220,7 +216,6 @@
     <bpmn:sequenceFlow id="Flow_14ydfor" sourceRef="Event_0xrosui" targetRef="Activity_18poszw" />
     <bpmn:subProcess id="Activity_1tfq89z" name="Reminders">
       <bpmn:incoming>Flow_04rmhha</bpmn:incoming>
-      <bpmn:incoming>Flow_0igoban</bpmn:incoming>
       <bpmn:outgoing>Flow_0h0m7ki</bpmn:outgoing>
       <bpmn:serviceTask id="InitRemindersNotifications" name="Init flow variables" camunda:class="com.tesco.pma.flow.handlers.InitReminderNotificationHandler">
         <bpmn:incoming>Flow_1ypfmhu</bpmn:incoming>
@@ -251,7 +246,6 @@
       <bpmn:sequenceFlow id="Flow_0fwhubi" sourceRef="reminders_decision_table" targetRef="Activity_0jljt3q" />
     </bpmn:subProcess>
     <bpmn:sequenceFlow id="Flow_04rmhha" sourceRef="Event_1szidtd" targetRef="Activity_1tfq89z" />
-    <bpmn:sequenceFlow id="Flow_0igoban" sourceRef="Event_0miucol" targetRef="Activity_1tfq89z" />
     <bpmn:sequenceFlow id="Flow_1f685v4" sourceRef="Activity_18poszw" targetRef="Gateway_13i9lt5" />
     <bpmn:sequenceFlow id="Flow_0h0m7ki" sourceRef="Activity_1tfq89z" targetRef="Gateway_13i9lt5" />
     <bpmn:subProcess id="Activity_0swpd9v" name="Cycle">
@@ -399,17 +393,10 @@ colleagueUuid
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0tavyc9" sourceRef="TextAnnotation_1t5nxk9" targetRef="Event_0xrosui" />
     <bpmn:textAnnotation id="TextAnnotation_13k7s53">
-      <bpmn:text>eventName: Q1_REMINDER
-colleagueUuid
-</bpmn:text>
+      <bpmn:text>eventName: REMINDER
+colleagueUuid</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_00qn5w3" sourceRef="TextAnnotation_13k7s53" targetRef="Event_1szidtd" />
-    <bpmn:textAnnotation id="TextAnnotation_065m1vn">
-      <bpmn:text>eventName: Q3_REMINDER
-colleagueUuid
-</bpmn:text>
-    </bpmn:textAnnotation>
-    <bpmn:association id="Association_0npzyy7" sourceRef="TextAnnotation_065m1vn" targetRef="Event_0miucol" />
     <bpmn:textAnnotation id="TextAnnotation_1ejr498">
       <bpmn:text>eventName: BEFORE_CYCLE_START_COLLEAGUE
 colleagueUuid
@@ -453,7 +440,7 @@ colleagueUuid
   <bpmn:message id="Message_1q91eml" name="FEEDBACK_GIVEN" />
   <bpmn:message id="Message_0m7hbj4" name="RESPOND_TO_FEEDBACK_REQUESTS" />
   <bpmn:message id="Message_0d37snm" name="REQUEST_FEEDBACK" />
-  <bpmn:message id="Message_1fh9jei" name="Q1_REMINDER" />
+  <bpmn:message id="Message_1fh9jei" name="REMINDER" />
   <bpmn:message id="Message_0dj3j0a" name="Q3_REMINDER" />
   <bpmn:message id="Message_1lilc4k" name="BEFORE_CYCLE_START_COLLEAGUE" />
   <bpmn:message id="Message_0n1gxdy" name="BEFORE_CYCLE_END_COLLEAGUE" />
@@ -505,10 +492,6 @@ colleagueUuid
         <di:waypoint x="1413" y="914" />
         <di:waypoint x="1413" y="590" />
         <di:waypoint x="1495" y="590" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0igoban_di" bpmnElement="Flow_0igoban">
-        <di:waypoint x="458" y="1190" />
-        <di:waypoint x="560" y="1190" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_04rmhha_di" bpmnElement="Flow_04rmhha">
         <di:waypoint x="458" y="1130" />
@@ -646,9 +629,6 @@ colleagueUuid
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1szidtd_di" bpmnElement="Event_1szidtd">
         <dc:Bounds x="422" y="1112" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0miucol_di" bpmnElement="Event_0miucol">
-        <dc:Bounds x="422" y="1172" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_03ruc7m_di" bpmnElement="Event_03ruc7m">
         <dc:Bounds x="422" y="1282" width="36" height="36" />
@@ -960,10 +940,7 @@ colleagueUuid
         <dc:Bounds x="150" y="970" width="240" height="53" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_13k7s53_di" bpmnElement="TextAnnotation_13k7s53">
-        <dc:Bounds x="150" y="1103" width="240" height="53" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_065m1vn_di" bpmnElement="TextAnnotation_065m1vn">
-        <dc:Bounds x="149" y="1164" width="240" height="53" />
+        <dc:Bounds x="150" y="1103" width="240" height="40" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1ejr498_di" bpmnElement="TextAnnotation_1ejr498">
         <dc:Bounds x="150" y="1274" width="240" height="68" />
@@ -1031,10 +1008,6 @@ colleagueUuid
       <bpmndi:BPMNEdge id="Association_00qn5w3_di" bpmnElement="Association_00qn5w3">
         <di:waypoint x="390" y="1130" />
         <di:waypoint x="422" y="1130" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_0npzyy7_di" bpmnElement="Association_0npzyy7">
-        <di:waypoint x="389" y="1190" />
-        <di:waypoint x="422" y="1190" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_1xbw1hb_di" bpmnElement="Association_1xbw1hb">
         <di:waypoint x="390" y="1630" />

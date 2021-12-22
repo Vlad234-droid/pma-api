@@ -10,10 +10,18 @@
           <text>EVENT_NAME</text>
         </inputExpression>
       </input>
+      <input id="InputClause_1xzx2dt" label="Reminder">
+        <inputExpression id="LiteralExpression_10i0rgl" typeRef="string">
+          <text>COLLEAGUE_REMINDERS</text>
+        </inputExpression>
+      </input>
       <output id="Output_1" label="Template ID" name="CONTACT_TEMPLATE_ID" typeRef="string" biodi:width="367" />
       <rule id="DecisionRule_1nfoirk">
         <inputEntry id="UnaryTests_0lst1os">
-          <text>"Q1_REMINDER"</text>
+          <text>"REMINDER"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1pmea36">
+          <text>contains(?, "Q1")</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1gy3suv">
           <text>"00000000-0000-0000-0000-000000000000"</text>
@@ -21,7 +29,10 @@
       </rule>
       <rule id="DecisionRule_1utkqah">
         <inputEntry id="UnaryTests_1f5trqw">
-          <text>"Q3_REMINDER"</text>
+          <text>"REMINDER"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0wgdx61">
+          <text>contains(?, "Q3")</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0qa48sn">
           <text>"00000000-0000-0000-0000-000000000000"</text>
