@@ -2,7 +2,6 @@ package com.tesco.pma.flow.handlers;
 
 import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
 import com.tesco.pma.bpm.camunda.flow.FlowTestUtil;
-import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleType;
@@ -30,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_DURATION;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MAX;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MIN;
 
@@ -51,9 +49,6 @@ public class ProcessTimelinePointHandlerTest {
 
     @MockBean
     private TimelinePointService timelinePointService;
-
-    @MockBean
-    private NamedMessageSourceAccessor messageSourceAccessor;
 
     @SpyBean
     private ProcessTimelinePointHandler handler;
@@ -88,12 +83,13 @@ public class ProcessTimelinePointHandlerTest {
         var ec = FlowTestUtil.executionBuilder()
                 .withVariable(FlowParameters.PM_CYCLE, pmCycle)
                 .withVariable(FlowParameters.START_DATE, startDate)
+                .withVariable(FlowParameters.END_DATE, endDate)
                 .build();
 
         var parentElement = new PMElement();
         parentElement.setType(PMElementType.REVIEW);
         parentElement.setCode(CODE);
-        parentElement.setProperties(Map.of(PM_REVIEW_DURATION, "P1Y", PM_REVIEW_MIN, "1", PM_REVIEW_MAX, "5"));
+        parentElement.setProperties(Map.of(PM_REVIEW_MIN, "1", PM_REVIEW_MAX, "5"));
 
         var ccUuid = UUID.randomUUID();
         var colleagueCycle = PMColleagueCycle.builder().uuid(ccUuid).build();
