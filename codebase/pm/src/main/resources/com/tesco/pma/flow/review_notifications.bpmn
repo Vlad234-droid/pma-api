@@ -296,22 +296,22 @@
     <bpmn:subProcess id="Activity_0phj6e5" name="Tips">
       <bpmn:incoming>Flow_0g5p7nw</bpmn:incoming>
       <bpmn:outgoing>Flow_1ka0tky</bpmn:outgoing>
-      <bpmn:serviceTask id="InitTipsNotifications" name="Init flow variables" camunda:class="com.tesco.pma.flow.handlers.InitReviewNotification">
+      <bpmn:serviceTask id="InitTipsNotifications" name="Init flow variables" camunda:class="com.tesco.pma.flow.handlers.DefaultInitNotificationHandler">
         <bpmn:incoming>Flow_06efnyg</bpmn:incoming>
         <bpmn:outgoing>Flow_0w643ea</bpmn:outgoing>
       </bpmn:serviceTask>
-      <bpmn:businessRuleTask id="Activity_03vdvy2" name="Map event to notification attribute name" camunda:resultVariable="PROFILE_ATTRIBUTE_NAME" camunda:decisionRef="event_to_profile_attribute" camunda:mapDecisionResult="singleEntry">
+      <bpmn:businessRuleTask id="Activity_03vdvy2" name="Map event to notification attribute name" camunda:resultVariable="PROFILE_ATTRIBUTE_NAME" camunda:decisionRef="tips_event_to_profile_attribute" camunda:mapDecisionResult="singleEntry">
         <bpmn:incoming>Flow_0w643ea</bpmn:incoming>
         <bpmn:outgoing>Flow_1buunxz</bpmn:outgoing>
       </bpmn:businessRuleTask>
-      <bpmn:businessRuleTask id="tips_decision_table" name="Send&#10;notifications&#10;or not?" camunda:resultVariable="SEND" camunda:decisionRef="review_notifications" camunda:mapDecisionResult="singleEntry">
+      <bpmn:businessRuleTask id="tips_decision_table" name="Send&#10;notifications&#10;or not?" camunda:resultVariable="SEND" camunda:decisionRef="tips_notifications_decision_table" camunda:mapDecisionResult="singleEntry">
         <bpmn:incoming>Flow_1buunxz</bpmn:incoming>
         <bpmn:outgoing>Flow_03agohq</bpmn:outgoing>
       </bpmn:businessRuleTask>
       <bpmn:startEvent id="Event_0y2lm4q">
         <bpmn:outgoing>Flow_06efnyg</bpmn:outgoing>
       </bpmn:startEvent>
-      <bpmn:businessRuleTask id="Activity_1u9u2hv" name="Map event to template id" camunda:resultVariable="CONTACT_TEMPLATE_ID" camunda:decisionRef="event_to_template_id" camunda:mapDecisionResult="singleEntry">
+      <bpmn:businessRuleTask id="Activity_1u9u2hv" name="Map event to template id" camunda:resultVariable="CONTACT_TEMPLATE_ID" camunda:decisionRef="tips_event_to_template_id" camunda:mapDecisionResult="singleEntry">
         <bpmn:incoming>Flow_03agohq</bpmn:incoming>
         <bpmn:outgoing>Flow_01nncy9</bpmn:outgoing>
       </bpmn:businessRuleTask>
