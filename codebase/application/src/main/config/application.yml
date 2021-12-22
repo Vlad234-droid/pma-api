@@ -259,6 +259,9 @@ camunda:
                                            com/tesco/pma/flow/feedback_event_to_attribute.dmn,
                                            com/tesco/pma/flow/feedback_notification_decisions.dmn,
                                            com/tesco/pma/flow/feedback_event_to_template_id.dmn,
+                                           com/tesco/pma/flow/reminder_event_to_attribute.dmn,
+                                           com/tesco/pma/flow/reminder_notification_decisions.dmn,
+                                           com/tesco/pma/flow/reminder_event_to_template_id.dmn,
                                            com/tesco/pma/flow/review_notifications.dmn,
                                            com/tesco/pma/flow/event_to_attribute.dmn,
                                            com/tesco/pma/flow/event_to_templateid.dmn

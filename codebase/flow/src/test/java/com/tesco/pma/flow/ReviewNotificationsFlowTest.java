@@ -73,6 +73,9 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
     @SpyBean
     private InitObjectiveNotificationHandler objectiveInitHandler;
 
+    @SpyBean
+    private InitReminderNotificationHandler reminderNotificationHandler;
+
     @MockBean(name = "sendNotification")
     private SendNotification sendNotification;
 
