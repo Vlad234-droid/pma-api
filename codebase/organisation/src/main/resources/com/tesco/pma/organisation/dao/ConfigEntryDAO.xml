@@ -90,7 +90,7 @@
         ORDER BY depth ASC;
     </select>
 
-    <select id="findColleagues" resultMap="colleagueMap">
+    <select id="findColleaguesByCompositeKey" resultMap="colleagueMap">
         SELECT c.uuid,
         c.first_name,
         c.middle_name,
