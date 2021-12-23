@@ -166,10 +166,8 @@ public interface ReviewDAO {
      * Returns review stats by tlPointUuid and review type
      *
      * @param tlPointUuid an identifier of timeline point
-     * @param type        a review type
      * @return a PMCycleReviewTypeProperties
      */
-    ReviewStats getReviewStats(@Param("tlPointUuid") UUID tlPointUuid,
-                               @Param("type") PMReviewType type);
+    ReviewStats getReviewStats(@Param("tlPointUuid") UUID tlPointUuid);
 
 }

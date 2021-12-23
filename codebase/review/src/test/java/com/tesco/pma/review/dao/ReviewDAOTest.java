@@ -436,8 +436,7 @@ class ReviewDAOTest extends AbstractDAOTest {
             "pm_review_init.xml"})
     void getReviewStats() {
         final var result = instance.getReviewStats(
-                TIMELINE_POINT_UUID,
-                OBJECTIVE);
+                TIMELINE_POINT_UUID);
 
         assertThat(result)
                 .asInstanceOf(type(ReviewStats.class))

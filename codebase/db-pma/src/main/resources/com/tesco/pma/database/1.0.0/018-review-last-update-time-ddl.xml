@@ -46,5 +46,15 @@
         </rollback>
     </changeSet>
 
+    <changeSet author="ypashynskyi" id="4">
+        <addColumn tableName="pm_timeline_point">
+            <column name="review_count" type="integer"
+                    remarks="Count of reviews with status equal to value in column status_id"/>
+        </addColumn>
+
+        <rollback>
+            <dropColumn tableName="pm_timeline_point" columnName="review_count"/>
+        </rollback>
+    </changeSet>
 
 </databaseChangeLog>

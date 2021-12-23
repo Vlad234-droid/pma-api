@@ -46,6 +46,7 @@
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.cycle.api.PMTimelinePointStatus"/>
             <result property="count" column="cnt"/>
+            <result property="lastUpdatedTime" column="last_updated_time"/>
         </collection>
     </resultMap>
 
@@ -221,12 +222,12 @@
 
     <select id="getReviewStats" resultMap="reviewStatsResultMap">
         select r.tl_point_uuid,
-               r.type_id as review_type_id,
+               r.type_id                as review_type_id,
                r.status_id,
-               count(*)  as cnt
+               count(*)                 as cnt,
+               max(r.last_updated_time) as last_updated_time
         from pm_review r
         where r.tl_point_uuid = #{tlPointUuid}
-          and r.type_id = #{type.id}
         group by r.tl_point_uuid,
                  r.type_id,
                  r.status_id
