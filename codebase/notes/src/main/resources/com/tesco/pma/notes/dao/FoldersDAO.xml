@@ -7,22 +7,23 @@
         <id column="id" property="id"/>
         <result column="title" property="title"/>
         <result column="owner_uuid" property="ownerColleagueUuid"/>
+        <result column="parent_uuid" property="parentFolderUuid"/>
     </resultMap>
 
     <insert id="create" flushCache="true" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
-        INSERT INTO note_folders (id, title, owner_uuid)
-        VALUES (#{folder.id}, #{folder.title}, #{folder.ownerColleagueUuid})
+        INSERT INTO note_folders (id, title, owner_uuid, parent_uuid)
+        VALUES (#{folder.id}, #{folder.title}, #{folder.ownerColleagueUuid}, #{folder.parentFolderUuid})
     </insert>
 
     <select id="findByOwner" resultMap="noteFolderStructure">
-        SELECT id, title, owner_uuid
+        SELECT id, title, owner_uuid, parent_uuid
         FROM note_folders nf
         WHERE nf.owner_uuid = #{colleagueUuid}
     </select>
 
     <update id="update" flushCache="true">
         UPDATE note_folders
-        SET title = (#{folder.title}), owner_uuid = (#{folder.ownerColleagueUuid})
+        SET title = (#{folder.title}), owner_uuid = (#{folder.ownerColleagueUuid}), parent_uuid = (#{folder.parentFolderUuid})
         WHERE id = #{folder.id}
     </update>
 
