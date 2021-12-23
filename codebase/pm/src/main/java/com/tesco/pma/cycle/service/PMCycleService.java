@@ -1,5 +1,6 @@
 package com.tesco.pma.cycle.service;
 
+import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.model.PMCycleMetadata;
@@ -44,6 +45,19 @@ public interface PMCycleService {
      */
     PMCycle updateStatus(@NotNull UUID uuid,
                          @NotNull PMCycleStatus status);
+
+    /**
+     * Update PMCycle status
+     *
+     * @param uuid   PMCycle uuid
+     * @param status new status
+     * @param statusFilter required status filter
+     * @return updated PMCycle
+     * @throws NotFoundException if PMCycle doesn't exist
+     */
+    PMCycle updateStatus(@NotNull UUID uuid,
+                         @NotNull PMCycleStatus status,
+                         DictionaryFilter<PMCycleStatus> statusFilter);
 
     /**
      * Get PMCycle by uuid
