@@ -58,9 +58,6 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
 
     private static final String RECEIVE_TIPS = "RECEIVE_TIPS";
 
-    @SpyBean(name = "initReviewNotification")
-    private InitReviewNotification initTask;
-
     @SpyBean
     private DefaultInitNotificationHandler initNotificationHandler;
 
