@@ -19,6 +19,8 @@
         <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.cycle.api.PMTimelinePointStatus"/>
+        <result property="reviewType" column="review_type_code" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="count" column="review_count"/>
     </resultMap>
 
     <insert id="create" flushCache="true">
@@ -31,7 +33,8 @@
          start_time,
          end_time,
          properties,
-         status_id)
+         status_id,
+         review_count)
         VALUES (#{tlPoint.uuid},
                 #{tlPoint.colleagueCycleUuid},
                 #{tlPoint.code},
@@ -40,7 +43,8 @@
                 #{tlPoint.startTime},
                 #{tlPoint.endTime},
                 #{tlPoint.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-                #{tlPoint.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMTimelinePointStatus});
+                #{tlPoint.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMTimelinePointStatus},
+                #{tlPoint.count});
     </insert>
 
     <insert id="saveAll" flushCache="true" parameterType="java.util.Collection">
@@ -53,7 +57,8 @@
         start_time,
         end_time,
         properties,
-        status_id)
+        status_id,
+        review_count)
         VALUES
         <foreach collection="tLPoints" item="tLPoint" index="index" separator=",">
             (#{tLPoint.uuid},
@@ -64,13 +69,17 @@
             #{tLPoint.startTime},
             #{tLPoint.endTime},
             #{tLPoint.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-            #{tLPoint.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMTimelinePointStatus})
+            #{tLPoint.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMTimelinePointStatus}),
+            #{tlPoint.count})
         </foreach>
     </insert>
 
     <select id="read" resultMap="tlPointResultMap">
-        select *
+        select tlp.*,
+               prt.code as review_type_code
         from pm_timeline_point tlp
+                 left join pm_review_type prt
+                           on (prt.code = upper(tlp.code))
         WHERE tlp.uuid = #{uuid}
     </select>
 
@@ -83,7 +92,8 @@
         status_id = #{tlPoint.status.id},
         description = #{tlPoint.description},
         element_type_id =
-        #{tlPoint.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.model.PMElementType}
+        #{tlPoint.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.model.PMElementType},
+        review_count = #{tlPoint.count}
         WHERE colleague_cycle_uuid = #{tlPoint.colleagueCycleUuid}
         and code = #{tlPoint.code}
         <if test="allowedStatuses != null and !allowedStatuses.isEmpty()">
@@ -107,8 +117,11 @@
     </delete>
 
     <select id="getByParams" resultMap="tlPointResultMap">
-        select *
+        select tlp.*,
+        prt.code as review_type_code
         from pm_timeline_point tlp
+        left join pm_review_type prt
+        on (prt.code = upper(tlp.code))
         WHERE 1=1
         <if test="colleagueCycleUuid != null">
             AND tlp.colleague_cycle_uuid = #{colleagueCycleUuid}
@@ -161,10 +174,13 @@
     </delete>
 
     <select id="getTimeline" resultMap="tlPointResultMap">
-        select tlp.*
+        select tlp.*,
+               prt.code as review_type_code
         from pm_colleague_cycle cc
                  inner join pm_timeline_point tlp
                             on (cc.uuid = tlp.colleague_cycle_uuid)
+                 left join pm_review_type prt
+                           on (prt.code = upper(tlp.code))
         WHERE 1 = 1
           and cc.colleague_uuid = #{colleagueUuid}
           and cc.cycle_uuid = #{cycleUuid}

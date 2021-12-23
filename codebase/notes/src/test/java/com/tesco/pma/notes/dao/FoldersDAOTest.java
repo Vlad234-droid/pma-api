@@ -39,10 +39,18 @@ public class FoldersDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml"})
     void create() {
 
-        var folder = createFolder(UUID.randomUUID(), OWNER_UUID);
+        var parent = createFolder(UUID.randomUUID(), OWNER_UUID, null);
+        foldersDao.create(parent);
+
+        var folder = createFolder(UUID.randomUUID(), OWNER_UUID, parent.getId());
         var folderCreatedCount = foldersDao.create(folder);
 
         assertEquals(1, folderCreatedCount);
+
+        assertEquals(parent.getId(),
+                foldersDao.findByOwner(OWNER_UUID).stream()
+                        .filter(f -> folder.getId().equals(f.getId()))
+                        .findAny().get().getParentFolderUuid());
 
     }
 
@@ -52,7 +60,7 @@ public class FoldersDAOTest extends AbstractDAOTest {
     void createDuplicate() {
 
         Assertions.assertThrows(DuplicateKeyException.class, () -> {
-            var folder = createFolder(FOLDER_UUID, OWNER_UUID);
+            var folder = createFolder(FOLDER_UUID, OWNER_UUID, null);
             foldersDao.create(folder);
         });
 
@@ -62,7 +70,7 @@ public class FoldersDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml"})
     void update() {
 
-        var folder = createFolder(FOLDER_UUID, OWNER_UUID);
+        var folder = createFolder(FOLDER_UUID, OWNER_UUID, null);
         folder.setTitle("New Title");
         var folderCreatedCount = foldersDao.update(folder);
 
@@ -98,11 +106,12 @@ public class FoldersDAOTest extends AbstractDAOTest {
 
     }
 
-    private Folder createFolder(UUID id, UUID ownerId){
+    private Folder createFolder(UUID id, UUID ownerId, UUID parentId){
         var folder = new Folder();
         folder.setId(id);
         folder.setOwnerColleagueUuid(ownerId);
         folder.setTitle("Title");
+        folder.setParentFolderUuid(parentId);
         return folder;
     }
 

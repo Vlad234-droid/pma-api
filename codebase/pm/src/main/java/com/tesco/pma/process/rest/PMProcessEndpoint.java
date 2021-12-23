@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,6 +43,7 @@ public class PMProcessEndpoint {
             tags = {"processes"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the process metadata")
     @GetMapping(value = "metadata", produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isProcessManager() or isAdmin()")
     public RestResponse<PMCycleMetadata> getMetadata(@RequestParam(name = "process-key") String processKey) {
         return RestResponse.success(processService.getProcessMetadataByKey(processKey));
     }
@@ -50,6 +52,7 @@ public class PMProcessEndpoint {
             tags = {"processes"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Started process identifier")
     @PostMapping(value = "/keys/{process-key}", produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isProcessManager() or isAdmin()")
     public RestResponse<String> runProcessByKey(@PathVariable("process-key") String processKey,
                                                 @RequestParam
                                                 @Parameter(in = ParameterIn.QUERY, name = "params",

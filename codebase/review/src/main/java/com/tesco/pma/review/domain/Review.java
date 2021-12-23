@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.UUID;
 
 @Data
@@ -23,5 +24,6 @@ public class Review extends SimplifiedReview implements Serializable {
 
     UUID tlPointUuid;
     MapJson properties;
+    Instant lastUpdatedTime;
     String changeStatusReason;
 }
