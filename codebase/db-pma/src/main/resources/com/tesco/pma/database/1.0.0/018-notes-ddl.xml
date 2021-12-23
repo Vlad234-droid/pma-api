@@ -1,0 +1,20 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+
+    <changeSet author="adublyanin" id="1">
+        <addColumn tableName="note_folders">
+            <column name="parent_uuid" type="${uuid_type}">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <addForeignKeyConstraint baseColumnNames="parent_uuid" baseTableName="note_folders"
+                                 constraintName="folder_folder_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="note_folders" validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>
