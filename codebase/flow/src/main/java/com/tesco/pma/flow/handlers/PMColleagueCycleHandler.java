@@ -14,6 +14,7 @@ import com.tesco.pma.event.EventParams;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.organisation.service.ConfigEntryService;
+import com.tesco.pma.pagination.RequestQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -49,8 +51,10 @@ public class PMColleagueCycleHandler extends CamundaAbstractFlowHandler {
         if (event != null) {
             var eventProperties = event.getEventProperties();
             if (eventProperties.containsKey(EventParams.COLLEAGUE_UUID.name())) {
+                var requestQuery = new RequestQuery();
+                requestQuery.setFilters(Collections.emptyList());
                 var colleagueUuid = UUID.fromString(eventProperties.get(EventParams.COLLEAGUE_UUID.name()).toString());
-                cycle = pmCycleService.getAll(true)
+                cycle = pmCycleService.getAll(requestQuery, true)
                         .stream()
                         .filter(pmCycle -> PMCycleStatus.ACTIVE == pmCycle.getStatus())
                         .filter(c -> configEntryService.isColleagueExistsForCompositeKey(colleagueUuid, c.getEntryConfigKey()))
@@ -65,11 +69,8 @@ public class PMColleagueCycleHandler extends CamundaAbstractFlowHandler {
             }
         } else {
             List<ColleagueEntity> colleagues;
-            if (PMCycleType.HIRING == cycle.getType()) {
-                colleagues = configEntryService.findColleaguesByCompositeKeyAndHireDate(cycle.getEntryConfigKey(), LocalDate.now());
-            } else {
-                colleagues = configEntryService.findColleaguesByCompositeKey(cycle.getEntryConfigKey());
-            }
+            var hireDate = PMCycleType.HIRING == cycle.getType() ? LocalDate.now() : null;
+            colleagues = pmColleagueCycleService.findColleagues(cycle.getEntryConfigKey(), hireDate, true);
             ArrayList<PMColleagueCycle> colleagueCycles = new ArrayList<>();
             for (ColleagueEntity colleague : colleagues) {
                 colleagueCycles.add(mapToColleagueCycle(colleague.getUuid(), cycle));
@@ -77,14 +78,15 @@ public class PMColleagueCycleHandler extends CamundaAbstractFlowHandler {
             pmColleagueCycleService.saveColleagueCycles(colleagueCycles);
         }
         context.setVariable(FlowParameters.START_DATE, defineStartDate(cycle));
+        context.setVariable(FlowParameters.PM_CYCLE, cycle);
     }
 
-    private LocalDate defineStartDate(PMCycle cycle) {
+    private String defineStartDate(PMCycle cycle) {
         LocalDate startDate = LocalDate.ofInstant(cycle.getStartTime(), ZoneId.systemDefault());
         if (PMCycleType.HIRING == cycle.getType()) {
             startDate = LocalDate.now();
         }
-        return startDate;
+        return DateTimeFormatter.ISO_LOCAL_DATE.format(startDate);
     }
 
     private PMColleagueCycle mapToColleagueCycle(UUID colleagueUuid, PMCycle cycle) {

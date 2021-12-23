@@ -18,6 +18,8 @@ import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -88,6 +90,11 @@ public class PMProcessServiceImpl implements PMProcessService {
         var model = getModel(processDefinition);
         var parser = new PMProcessModelParser(resourceProvider, messageSourceAccessor);
         return parser.parse(model);
+    }
+
+    @Override
+    public List<PMRuntimeProcess> findByCycleUuidAndStatus(UUID cycleUUID, DictionaryFilter<PMProcessStatus> statusFilter) {
+        return dao.findByCycleUuidAndStatus(cycleUUID, statusFilter);
     }
 
     private BpmnModelInstance getModel(ProcessDefinition processDefinition) {

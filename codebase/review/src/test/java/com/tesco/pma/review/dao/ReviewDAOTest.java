@@ -18,6 +18,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,9 @@ class ReviewDAOTest extends AbstractDAOTest {
     private static final UUID REVIEW_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
     private static final UUID DECLINED_REVIEW_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0012");
     private static final UUID MYR_REVIEW_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0025");
+    private static final Instant LAST_UPDATE_TIME = Instant.parse("2021-12-16T18:16:24.00Z");
+    private static final Instant LAST_UPDATE_TIME_2 = Instant.parse("2021-12-16T19:16:24.00Z");
+    private static final Instant LAST_UPDATE_TIME_3 = Instant.parse("2021-12-16T20:16:24.00Z");
     private static final UUID REVIEW_UUID_NOT_EXIST = UUID.fromString("ddb9ab0b-f50f-4442-8900-000000000000");
     private static final UUID TIMELINE_POINT_UUID = UUID.fromString("10000000-0000-0000-1000-000000000000");
     private static final UUID MYR_TIMELINE_POINT_UUID = UUID.fromString("10000000-0000-0000-2000-000000000000");
@@ -286,6 +290,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                         .status(DRAFT)
                         .number(NUMBER_1)
                         .properties(REVIEW_PROPERTIES_INIT)
+                        .lastUpdatedTime(LAST_UPDATE_TIME)
                         .build(),
                 Review.builder()
                         .uuid(DECLINED_REVIEW_UUID)
@@ -294,6 +299,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                         .status(DECLINED)
                         .number(NUMBER_2)
                         .properties(REVIEW_PROPERTIES_INIT)
+                        .lastUpdatedTime(LAST_UPDATE_TIME_2)
                         .build(),
                 Review.builder()
                         .uuid(MYR_REVIEW_UUID)
@@ -302,6 +308,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                         .status(DRAFT)
                         .number(NUMBER_1)
                         .properties(REVIEW_PROPERTIES_INIT)
+                        .lastUpdatedTime(LAST_UPDATE_TIME_3)
                         .build()
         );
 
@@ -429,8 +436,7 @@ class ReviewDAOTest extends AbstractDAOTest {
             "pm_review_init.xml"})
     void getReviewStats() {
         final var result = instance.getReviewStats(
-                TIMELINE_POINT_UUID,
-                OBJECTIVE);
+                TIMELINE_POINT_UUID);
 
         assertThat(result)
                 .asInstanceOf(type(ReviewStats.class))
