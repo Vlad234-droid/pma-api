@@ -9,6 +9,14 @@ public enum ErrorCodes implements ErrorCodeAware {
      */
     PM_CYCLE_NOT_FOUND_BY_UUID,
     /**
+     * Cycle not found by uuid and available statuses
+     */
+    PM_CYCLE_NOT_FOUND_BY_UUID_AND_STATUS,
+    /**
+     * Cycle not allowed to start
+     */
+    PM_CYCLE_NOT_ALLOWED_TO_START,
+    /**
      * Cycle not found
      */
     PM_CYCLE_NOT_FOUND,
@@ -51,7 +59,11 @@ public enum ErrorCodes implements ErrorCodeAware {
     /**
      * PM colleague does not cycle exist
      */
-    PM_COLLEAGUE_CYCLE_NOT_EXIST;
+    PM_COLLEAGUE_CYCLE_NOT_EXIST,
+    /**
+     * Pm runtime process not found by uuid
+     */
+    PM_RT_PROCESS_NOT_FOUND_BY_UUID;
 
     @Override
     public String getCode() {
