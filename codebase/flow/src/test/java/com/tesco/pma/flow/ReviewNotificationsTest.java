@@ -26,8 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ReviewNotificationsTest {
 
-    private static final String PATH = "com/tesco/pma/flow/review_notifications.dmn";
-    private static final String DMN_ID = "review_notifications";
+    private static final String PATH = "com/tesco/pma/flow/review_notifications_decisions.dmn";
+    private static final String DMN_ID = "review_notifications_decisions_table";
     private static final String PM_REVIEW_SUBMITTED = "PM_REVIEW_SUBMITTED";
 
     private DmnEngine dmnEngine;

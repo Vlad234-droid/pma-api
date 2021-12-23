@@ -89,9 +89,10 @@ camunda:
                                            com/tesco/pma/flow/forms/type_1_eyr.form,
                                            com/tesco/pma/flow/forms/type_1_myr.form,
                                            com/tesco/pma/flow/forms/type_1_objective.form,
-                                           com/tesco/pma/flow/review_notifications.bpmn,
+                                           com/tesco/pma/flow/notifications_flow.bpmn,
                                            com/tesco/pma/flow/review_event_to_attribute.dmn,
                                            com/tesco/pma/flow/review_notifications_decisions.dmn,
+                                           com/tesco/pma/flow/review_event_to_template_id.dmn,
                                            com/tesco/pma/flow/objectives_event_to_attribute.dmn,
                                            com/tesco/pma/flow/objectives_notification_decisions.dmn,
                                            com/tesco/pma/flow/objectives_event_to_template_id.dmn,
@@ -106,8 +107,5 @@ camunda:
                                            com/tesco/pma/flow/cycle_event_to_template_id.dmn,
                                            com/tesco/pma/flow/tips_event_to_attribute.dmn,
                                            com/tesco/pma/flow/tips_notification_decisions.dmn,
-                                           com/tesco/pma/flow/tips_event_to_template_id.dmn,
-                                           com/tesco/pma/flow/review_notifications.dmn,
-                                           com/tesco/pma/flow/event_to_attribute.dmn,
-                                           com/tesco/pma/flow/event_to_templateid.dmn
+                                           com/tesco/pma/flow/tips_event_to_template_id.dmn
 

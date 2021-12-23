@@ -84,7 +84,7 @@
         <bpmn:incoming>Flow_11dn94y</bpmn:incoming>
         <bpmn:outgoing>Flow_0wutloo</bpmn:outgoing>
       </bpmn:businessRuleTask>
-      <bpmn:businessRuleTask id="Activity_0t1e50m" name="Map event to template id" camunda:resultVariable="CONTACT_TEMPLATE_ID" camunda:decisionRef="event_to_template_id" camunda:mapDecisionResult="singleEntry">
+      <bpmn:businessRuleTask id="Activity_0t1e50m" name="Map event to template id" camunda:resultVariable="CONTACT_TEMPLATE_ID" camunda:decisionRef="review_event_to_template_id" camunda:mapDecisionResult="singleEntry">
         <bpmn:incoming>Flow_0wutloo</bpmn:incoming>
         <bpmn:outgoing>Flow_0pz9ybj</bpmn:outgoing>
       </bpmn:businessRuleTask>
@@ -124,7 +124,7 @@
       <bpmn:endEvent id="Event_0618ilz">
         <bpmn:incoming>Flow_18msi12</bpmn:incoming>
       </bpmn:endEvent>
-      <bpmn:businessRuleTask id="Activity_1r3725n" name="Map event to template id" camunda:resultVariable="CONTACT_TEMPLATE_ID" camunda:decisionRef="event_to_template_id" camunda:mapDecisionResult="singleEntry">
+      <bpmn:businessRuleTask id="Activity_1r3725n" name="Map event to template id" camunda:resultVariable="CONTACT_TEMPLATE_ID" camunda:decisionRef="objective_event_to_template_id" camunda:mapDecisionResult="singleEntry">
         <bpmn:incoming>Flow_1ejb09o</bpmn:incoming>
         <bpmn:outgoing>Flow_18msi12</bpmn:outgoing>
       </bpmn:businessRuleTask>
@@ -423,12 +423,6 @@ colleagueUuid
   <bpmn:message id="Message_1kt741c" name="RECEIVE_TIPS" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="review_notifications">
-      <bpmndi:BPMNShape id="TextAnnotation_0uxubxa_di" bpmnElement="TextAnnotation_0uxubxa">
-        <dc:Bounds x="150" y="1380" width="240" height="40" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1ejr498_di" bpmnElement="TextAnnotation_1ejr498">
-        <dc:Bounds x="150" y="1286" width="240" height="40" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1ka0tky_di" bpmnElement="Flow_1ka0tky">
         <di:waypoint x="1330" y="1644" />
         <di:waypoint x="1413" y="1644" />
@@ -602,14 +596,14 @@ colleagueUuid
       <bpmndi:BPMNShape id="Event_1szidtd_di" bpmnElement="Event_1szidtd">
         <dc:Bounds x="422" y="1112" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0jiddfy_di" bpmnElement="Event_0jiddfy">
-        <dc:Bounds x="422" y="1612" width="36" height="36" />
+      <bpmndi:BPMNShape id="Event_03ruc7m_di" bpmnElement="Event_03ruc7m">
+        <dc:Bounds x="422" y="1300" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1dlk9x3_di" bpmnElement="Event_1dlk9x3">
         <dc:Bounds x="422" y="1398" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_03ruc7m_di" bpmnElement="Event_03ruc7m">
-        <dc:Bounds x="422" y="1300" width="36" height="36" />
+      <bpmndi:BPMNShape id="Event_0jiddfy_di" bpmnElement="Event_0jiddfy">
+        <dc:Bounds x="422" y="1612" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1nqp74f_di" bpmnElement="Activity_1nqp74f" isExpanded="true">
         <dc:Bounds x="570" y="140" width="760" height="195" />
@@ -907,6 +901,12 @@ colleagueUuid
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_13k7s53_di" bpmnElement="TextAnnotation_13k7s53">
         <dc:Bounds x="150" y="1103" width="240" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1ejr498_di" bpmnElement="TextAnnotation_1ejr498">
+        <dc:Bounds x="150" y="1286" width="240" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0uxubxa_di" bpmnElement="TextAnnotation_0uxubxa">
+        <dc:Bounds x="150" y="1380" width="240" height="40" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0a5ferg_di" bpmnElement="TextAnnotation_0a5ferg">
         <dc:Bounds x="150" y="1604" width="240" height="53" />
