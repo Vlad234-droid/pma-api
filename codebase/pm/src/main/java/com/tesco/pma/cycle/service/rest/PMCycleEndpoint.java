@@ -156,7 +156,6 @@ public class PMCycleEndpoint {
             content = @Content)
     @GetMapping(value = "/pm-cycles/", produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isProcessManager() or isAdmin()")
-    public RestResponse<List<PMCycle>> getAll(@RequestParam(value = INCLUDE_METADATA, defaultValue = "false")
     public RestResponse<List<PMCycle>> getAll(RequestQuery requestQuery,
                                               @RequestParam(value = INCLUDE_METADATA, defaultValue = "false")
                                                       boolean includeMetadata) {
