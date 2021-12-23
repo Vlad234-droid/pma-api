@@ -1,9 +1,9 @@
 package com.tesco.pma.organisation.service;
 
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.ConfigEntryErrorCodes;
 import com.tesco.pma.organisation.api.ConfigEntryResponse;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -200,12 +199,6 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
     public List<ColleagueEntity> findColleaguesByCompositeKey(String compositeKey) {
         String searchKey = getSearchKey(compositeKey);
         return dao.findColleaguesByCompositeKey(searchKey);
-    }
-
-    @Override
-    public List<ColleagueEntity> findColleaguesByCompositeKeyAndHireDate(String compositeKey, LocalDate hireDate) {
-        String searchKey = getSearchKey(compositeKey);
-        return dao.findColleaguesByCompositeKey(searchKey, hireDate);
     }
 
     private String getSearchKey(String compositeKey) {

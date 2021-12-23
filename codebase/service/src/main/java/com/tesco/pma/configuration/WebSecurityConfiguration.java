@@ -86,6 +86,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String[] CAMUNDA_AUTH_WHITELIST = {
             "/camunda/app/**",
             "/camunda/api/**",
+            "/camunda/lib/**",
             "/engine-rest/**"
     };
 

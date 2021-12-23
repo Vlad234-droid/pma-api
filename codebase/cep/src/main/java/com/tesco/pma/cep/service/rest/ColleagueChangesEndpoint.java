@@ -49,7 +49,7 @@ public class ColleagueChangesEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.TOO_MANY_REQUESTS, description = "Too Many Requests", content = @Content)
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping("/events")
-    @PreAuthorize("authentication.name == @cepProperties.subject")
+    @PreAuthorize("isAdmin() or authentication.name == @cepProperties.subject")
     public void processColleagueChangeEvent(@RequestBody EventRequest<ColleagueChangeEventPayload> eventRequest) {
         if (Objects.isNull(eventRequest.getPayload()) || Objects.isNull(eventRequest.getPayload().getEventType())) {
             log.warn(LogFormatter.formatMessage(ErrorCodes.EVENT_PAYLOAD_ERROR, "Invalid payload was received from CEP"));

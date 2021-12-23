@@ -7,11 +7,14 @@ import com.tesco.pma.rest.AbstractEndpointTest;
 import com.tesco.pma.user.UserService;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.Authentication;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,7 +26,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -37,16 +39,25 @@ class UserEndpointTest extends AbstractEndpointTest {
     @MockBean
     protected UserService mockUserService;
 
-    @Test
-    void getUserByColleagueUuidSucceeded() throws Exception {
+    @ParameterizedTest
+    @CsvSource({
+            "200,Admin",
+            "200,Colleague",
+            "200,LineManager",
+            "200,PeopleTeam",
+            "200,TalentAdmin",
+            "200,ProcessManager"
+    })
+    void getUserByColleagueUuidSucceeded(int status, String role) throws Exception {
         final var user = randomUser();
         final var colleagueUuid = user.getColleague().getColleagueUUID();
         when(mockUserService.findUserByColleagueUuid(eq(colleagueUuid)))
                 .thenReturn(Optional.of(user));
 
         mvc.perform(get("/users/{colleagueUuid}", colleagueUuid)
-                .accept(APPLICATION_JSON))
-                .andExpect(status().isOk())
+                        .with(roles(List.of(role)))
+                        .accept(APPLICATION_JSON))
+                .andExpect(status().is(status))
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.data.colleague.colleagueUUID", equalTo(colleagueUuid.toString())));
     }
@@ -59,7 +70,8 @@ class UserEndpointTest extends AbstractEndpointTest {
                 .thenReturn(Optional.empty());
 
         mvc.perform(get("/users/{colleagueUuid}", colleagueUuid)
-                .accept(APPLICATION_JSON))
+                        .with(colleague())
+                        .accept(APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath(ERRORS_0_CODE_JSON_PATH, equalTo(ErrorCodes.USER_NOT_FOUND.getCode())));
@@ -74,7 +86,8 @@ class UserEndpointTest extends AbstractEndpointTest {
                 .thenReturn(Optional.of(user));
 
         mvc.perform(get("/users/iam-ids/{iamId}", iamId)
-                .accept(APPLICATION_JSON))
+                        .with(colleague())
+                        .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.data.colleague.colleagueUUID", equalTo(user.getColleague().getColleagueUUID().toString())));
@@ -88,7 +101,8 @@ class UserEndpointTest extends AbstractEndpointTest {
                 .thenReturn(Optional.empty());
 
         mvc.perform(get("/users/iam-ids/{iamId}", iamId)
-                .accept(APPLICATION_JSON))
+                        .with(colleague())
+                        .accept(APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath(ERRORS_0_CODE_JSON_PATH, equalTo(ErrorCodes.USER_NOT_FOUND.getCode())));
@@ -101,8 +115,8 @@ class UserEndpointTest extends AbstractEndpointTest {
                 .thenReturn(Optional.of(user));
 
         mvc.perform(get("/users/me")
-                .with(user(user.getColleague().getColleagueUUID().toString()))
-                .accept(APPLICATION_JSON))
+                        .with(colleague(user.getColleague().getColleagueUUID().toString()))
+                        .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.data.colleague.colleagueUUID", equalTo(user.getColleague().getColleagueUUID().toString())));
@@ -114,22 +128,22 @@ class UserEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getMeNotFound() throws Exception {
-        final var userName = "test-user";
+        final var subject = randomUuid().toString();
         when(mockUserService.findUserByAuthentication(any()))
                 .thenReturn(Optional.empty());
 
         mvc.perform(get("/users/me")
-                .with(user(userName))
-                .accept(APPLICATION_JSON))
+                        .with(colleague(subject))
+                        .accept(APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath(ERRORS_0_CODE_JSON_PATH, equalTo(ErrorCodes.USER_NOT_FOUND.getCode())))
                 .andExpect(jsonPath("$.errors[0].message", containsString("authentication.name")))
-                .andExpect(jsonPath("$.errors[0].message", containsString(userName)));
+                .andExpect(jsonPath("$.errors[0].message", containsString(subject)));
 
         final var authenticationCaptor = ArgumentCaptor.forClass(Authentication.class);
         verify(mockUserService).findUserByAuthentication(authenticationCaptor.capture());
-        assertThat(authenticationCaptor.getValue().getName()).isEqualTo(userName);
+        assertThat(authenticationCaptor.getValue().getName()).isEqualTo(subject);
     }
 
     private UUID randomUuid() {

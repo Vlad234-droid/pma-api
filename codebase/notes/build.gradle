@@ -33,6 +33,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude group: 'junit' // excluding junit 4
     }
+    testImplementation("org.springframework.security:spring-security-test")
 
     testImplementation "com.github.database-rider:rider-junit5:${databaseRiderVersion}"
 //
@@ -44,6 +45,7 @@ dependencies {
 
     testRuntimeOnly "org.liquibase:liquibase-core:${liquibaseVersion}"
     testRuntimeOnly project(':db-pma')
+    testRuntimeOnly project(':security')
 }
 
 

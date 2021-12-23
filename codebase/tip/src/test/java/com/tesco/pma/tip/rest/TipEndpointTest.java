@@ -28,9 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = TipEndpoint.class, properties = {
-        "tesco.application.security.enabled=false",
-})
+@WebMvcTest(controllers = TipEndpoint.class)
 class TipEndpointTest extends AbstractEndpointTest {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -51,7 +49,7 @@ class TipEndpointTest extends AbstractEndpointTest {
         //when
         mvc.perform(post("/tips")
                 .contentType(APPLICATION_JSON)
-                .content(OBJECT_MAPPER.writeValueAsString(tip)))
+                .content(OBJECT_MAPPER.writeValueAsString(tip)).with(colleague()))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(APPLICATION_JSON));
 
@@ -67,7 +65,7 @@ class TipEndpointTest extends AbstractEndpointTest {
         when(service.findOne(TestDataUtil.TIP_UUID)).thenReturn(tip);
 
         //when & then
-        mvc.perform(get(TIPS_UUID_URL_TEMPLATE, TestDataUtil.TIP_UUID))
+        mvc.perform(get(TIPS_UUID_URL_TEMPLATE, TestDataUtil.TIP_UUID).with(colleague()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.data.uuid").isString());
@@ -81,7 +79,7 @@ class TipEndpointTest extends AbstractEndpointTest {
         when(service.findOne(TestDataUtil.TIP_UUID)).thenThrow(NotFoundException.class);
 
         //when & then
-        mvc.perform(get(TIPS_UUID_URL_TEMPLATE, TestDataUtil.TIP_UUID))
+        mvc.perform(get(TIPS_UUID_URL_TEMPLATE, TestDataUtil.TIP_UUID).with(colleague()))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.success").value(false));
@@ -99,7 +97,7 @@ class TipEndpointTest extends AbstractEndpointTest {
 
         //when & then
         mvc.perform(get("/tips")
-                .contentType(APPLICATION_JSON))
+                .contentType(APPLICATION_JSON).with(colleague()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.data[%s].uuid", 0).isString());
@@ -112,7 +110,7 @@ class TipEndpointTest extends AbstractEndpointTest {
         tip.setUuid(TestDataUtil.TIP_UUID);
 
         //when
-        mvc.perform(delete(TIPS_UUID_URL_TEMPLATE, TestDataUtil.TIP_UUID))
+        mvc.perform(delete(TIPS_UUID_URL_TEMPLATE, TestDataUtil.TIP_UUID).with(colleague()))
                 .andExpect(status().isNoContent());
 
         //then
@@ -127,7 +125,7 @@ class TipEndpointTest extends AbstractEndpointTest {
         when(service.publish(TestDataUtil.TIP_UNPUBLISHED_UUID)).thenReturn(tip);
 
         //when
-        mvc.perform(patch("/tips/{uuid}/publish", TestDataUtil.TIP_UNPUBLISHED_UUID))
+        mvc.perform(patch("/tips/{uuid}/publish", TestDataUtil.TIP_UNPUBLISHED_UUID).with(colleague()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON));
 

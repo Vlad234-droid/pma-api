@@ -25,9 +25,9 @@ public class PMColleagueCycleHandler extends AbstractColleagueCycleHandler {
     @Override
     protected void execute(ExecutionContext context) {
         var cycle = context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class);
-        var colleagues = PMCycleType.HIRING == cycle.getType()
-                ? configEntryService.findColleaguesByCompositeKeyAndHireDate(cycle.getEntryConfigKey(), LocalDate.now())
-                : configEntryService.findColleaguesByCompositeKey(cycle.getEntryConfigKey());
+        var hireDate = PMCycleType.HIRING == cycle.getType() ? LocalDate.now() : null;
+        var colleagues = pmColleagueCycleService.findColleagues(cycle.getEntryConfigKey(), hireDate, true);
+
         var colleagueCycles = colleagues.stream()
                 .map(c -> mapToColleagueCycle(c.getUuid(), cycle))
                 .collect(Collectors.toList());

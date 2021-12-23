@@ -1,11 +1,13 @@
 package com.tesco.pma.cycle.dao;
 
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.lang.Nullable;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -87,4 +89,15 @@ public interface PMColleagueCycleDAO {
     int changeStatusForColleague(@Param("colleagueUuid") UUID colleagueUuid,
                                  @Param("oldStatus") PMCycleStatus oldStatus,
                                  @Param("newStatus") PMCycleStatus newStatus);
+
+    /**
+     * Gets list of colleagues by key
+     *
+     * @param key                   - key
+     * @param hireDate              - colleague hire date
+     * @param withoutColleagueCycle - find without created colleague cycle
+     * @return list of colleagues
+     */
+    List<ColleagueEntity> findColleagues(@Param("key") String key, @Param("hireDate") LocalDate hireDate,
+                                         @Param("withoutColleagueCycle") boolean withoutColleagueCycle);
 }
