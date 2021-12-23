@@ -65,11 +65,8 @@ public class PMColleagueCycleHandler extends CamundaAbstractFlowHandler {
             }
         } else {
             List<ColleagueEntity> colleagues;
-            if (PMCycleType.HIRING == cycle.getType()) {
-                colleagues = configEntryService.findColleaguesByCompositeKeyAndHireDate(cycle.getEntryConfigKey(), LocalDate.now());
-            } else {
-                colleagues = configEntryService.findColleaguesByCompositeKey(cycle.getEntryConfigKey());
-            }
+            var hireDate = PMCycleType.HIRING == cycle.getType() ? LocalDate.now() : null;
+            colleagues = pmColleagueCycleService.findColleagues(cycle.getEntryConfigKey(), hireDate, true);
             ArrayList<PMColleagueCycle> colleagueCycles = new ArrayList<>();
             for (ColleagueEntity colleague : colleagues) {
                 colleagueCycles.add(mapToColleagueCycle(colleague.getUuid(), cycle));

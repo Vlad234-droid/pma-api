@@ -1,5 +1,6 @@
 package com.tesco.pma.cycle.service;
 
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
@@ -13,10 +14,13 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_COLLEAGUE_CYCLE_ALREADY_EXISTS;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_COLLEAGUE_CYCLE_NOT_EXIST;
@@ -86,5 +90,17 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
 
     private NotFoundException notFound(ErrorCodeAware codeAware, Map<String, ?> params) {
         throw new NotFoundException(codeAware.getCode(), messageSourceAccessor.getMessage(codeAware.getCode(), params));
+    }
+
+    @Override
+    public List<ColleagueEntity> findColleagues(String compositeKey, LocalDate hireDate, boolean withoutColleagueCycle) {
+        String searchKey = getSearchKey(compositeKey);
+        return dao.findColleagues(searchKey, hireDate, withoutColleagueCycle);
+    }
+
+    private String getSearchKey(String compositeKey) {
+        var parts = compositeKey.split("/");
+        return IntStream.range(0, parts.length)
+                .filter(i -> i % 2 == 1).mapToObj(i -> parts[i]).collect(Collectors.joining("/"));
     }
 }
