@@ -64,7 +64,7 @@
             #{tLPoint.startTime},
             #{tLPoint.endTime},
             #{tLPoint.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-            #{tLPoint.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMReviewStatus})
+            #{tLPoint.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMTimelinePointStatus})
         </foreach>
     </insert>
 
