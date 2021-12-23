@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -67,6 +68,7 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Performance cycle created")
     @PostMapping(value = "/pm-cycles", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
     public RestResponse<PMCycle> create(@RequestBody PMCycle cycle) {
         return success(service.create(cycle, resolveUserUuid()));
     }
@@ -83,6 +85,7 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "SPerformance cycle published")
     @PutMapping(value = "/pm-cycles/publish", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.ACCEPTED)
+    @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
     public RestResponse<PMCycle> publish(@RequestBody PMCycle cycle) {
 
         return success(service.publish(cycle, resolveUserUuid()));
@@ -106,6 +109,7 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Invalid UUID")
     @PutMapping(value = "/pm-cycles/{uuid}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.ACCEPTED)
+    @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
     public RestResponse<PMCycle> update(@PathVariable(value = "uuid", required = false) final UUID uuid,
                                         @RequestBody PMCycle cycle) {
         if (cycle.getUuid() == null) {
@@ -132,6 +136,7 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle not found",
             content = @Content)
     @PatchMapping(value = "/pm-cycles/{uuid}/statuses/{status}", produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
     public RestResponse<PMCycle> updateStatus(@PathVariable("uuid") UUID uuid,
                                               @PathVariable("status") PMCycleStatus status) {
 
@@ -150,6 +155,8 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycles for the status not found",
             content = @Content)
     @GetMapping(value = "/pm-cycles/", produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isProcessManager() or isAdmin()")
+    public RestResponse<List<PMCycle>> getAll(@RequestParam(value = INCLUDE_METADATA, defaultValue = "false")
     public RestResponse<List<PMCycle>> getAll(RequestQuery requestQuery,
                                               @RequestParam(value = INCLUDE_METADATA, defaultValue = "false")
                                                       boolean includeMetadata) {
@@ -168,6 +175,7 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle not found",
             content = @Content)
     @GetMapping(value = "/pm-cycles/{uuid}", produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isProcessManager() or isAdmin()")
     public RestResponse<PMCycle> get(@PathVariable("uuid") UUID uuid) {
         return success(service.get(uuid));
     }
@@ -178,6 +186,7 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle not found",
             content = @Content)
     @GetMapping(value = "/colleagues/{colleagueUuid}/metadata", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
     public ResponseEntity<Object> getMetadataByColleague(@PathVariable UUID colleagueUuid) {
         var cycle = service.getCurrentByColleague(colleagueUuid);
         var metadata = cycle.getJsonMetadata();
@@ -200,6 +209,7 @@ public class PMCycleEndpoint {
     @PutMapping(path = "/pm-cycles/{uuid}/metadata", produces = MimeTypeUtils.APPLICATION_JSON_VALUE,
             consumes = MimeTypeUtils.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isAdmin()")
     public RestResponse<?> updateJsonMetadata(@PathVariable("uuid") UUID uuid,
                                               @RequestBody String metadata) {
         service.updateJsonMetadata(uuid, metadata);
@@ -213,6 +223,7 @@ public class PMCycleEndpoint {
             content = @Content)
     @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Exception while parsing a form")
     @GetMapping(value = "/pm-cycles/files/{uuid}/metadata", produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isProcessManager() or isAdmin()")
     public RestResponse<PMCycleMetadata> getPmCycleMetadata(@PathVariable("uuid") UUID uuid) {
         return success(service.getFileMetadata(uuid));
     }

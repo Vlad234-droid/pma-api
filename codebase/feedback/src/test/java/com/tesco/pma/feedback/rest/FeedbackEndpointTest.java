@@ -21,9 +21,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = FeedbackEndpoint.class, properties = {
-        "tesco.application.security.enabled=false",
-})
+@WebMvcTest(controllers = FeedbackEndpoint.class)
 class FeedbackEndpointTest extends AbstractEndpointTest {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -42,8 +40,9 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
 
         //when
         mvc.perform(post("/feedbacks")
-                .contentType(APPLICATION_JSON)
-                .content(OBJECT_MAPPER.writeValueAsString(Collections.singletonList(feedback))))
+                        .with(colleague(TestDataUtil.COLLEAGUE_UUID.toString()))
+                        .contentType(APPLICATION_JSON)
+                        .content(OBJECT_MAPPER.writeValueAsString(Collections.singletonList(feedback))))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(APPLICATION_JSON));
 
@@ -60,8 +59,9 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
 
         //when
         mvc.perform(put("/feedbacks/{uuid}", TestDataUtil.FEEDBACK_UUID_LAST)
-                .contentType(APPLICATION_JSON)
-                .content(OBJECT_MAPPER.writeValueAsString(feedback)))
+                        .with(colleague(TestDataUtil.COLLEAGUE_UUID.toString()))
+                        .contentType(APPLICATION_JSON)
+                        .content(OBJECT_MAPPER.writeValueAsString(feedback)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON));
 
@@ -77,8 +77,9 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
 
         //when
         mvc.perform(put("/feedbacks/{uuid}/read", TestDataUtil.FEEDBACK_UUID_UNREAD)
-                .contentType(APPLICATION_JSON)
-                .content(OBJECT_MAPPER.writeValueAsString(feedback)))
+                        .with(colleague(TestDataUtil.COLLEAGUE_UUID.toString()))
+                        .contentType(APPLICATION_JSON)
+                        .content(OBJECT_MAPPER.writeValueAsString(feedback)))
                 .andExpect(status().isNoContent());
 
         //then
@@ -97,7 +98,8 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
 
         //when & then
         mvc.perform(get("/feedbacks")
-                .contentType(APPLICATION_JSON))
+                        .with(colleague(TestDataUtil.COLLEAGUE_UUID.toString()))
+                        .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.data[%s].uuid", 0).isString());
@@ -112,7 +114,8 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
 
         //when & then
         mvc.perform(get("/feedbacks/{uuid}", TestDataUtil.FEEDBACK_UUID_LAST)
-                .contentType(APPLICATION_JSON))
+                        .with(colleague())
+                        .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.data.uuid").isString());
@@ -127,7 +130,8 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
 
         //when & then
         mvc.perform(get("/feedbacks/{uuid}", TestDataUtil.FEEDBACK_UUID_LAST)
-                .contentType(APPLICATION_JSON))
+                        .with(allRoles(TestDataUtil.COLLEAGUE_UUID.toString()))
+                        .contentType(APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.success").value(false));

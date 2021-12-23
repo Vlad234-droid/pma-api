@@ -1,7 +1,9 @@
 package com.tesco.pma.configuration;
 
+import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.security.PmaMethodSecurityExpressionOperations;
 import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +25,8 @@ import org.springframework.security.core.Authentication;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class MethodSecurityConfiguration extends GlobalMethodSecurityConfiguration {
 
+    private ObjectProvider<ProfileService> profileServiceObjectProvider;
+
     @Override
     protected MethodSecurityExpressionHandler createExpressionHandler() {
         return new DefaultMethodSecurityExpressionHandler() {
@@ -30,7 +34,8 @@ public class MethodSecurityConfiguration extends GlobalMethodSecurityConfigurati
             protected MethodSecurityExpressionOperations createSecurityExpressionRoot(Authentication authentication,
                                                                                       MethodInvocation invocation) {
                 return new PmaMethodSecurityExpressionOperations(
-                        super.createSecurityExpressionRoot(authentication, invocation));
+                        super.createSecurityExpressionRoot(authentication, invocation),
+                        profileServiceObjectProvider.getObject());
             }
         };
     }
@@ -46,6 +51,11 @@ public class MethodSecurityConfiguration extends GlobalMethodSecurityConfigurati
     public void setObjectPostProcessor(ObjectPostProcessor<Object> objectPostProcessor) {
         super.setObjectPostProcessor(objectPostProcessor);
         objectPostProcessor.postProcess(getExpressionHandler());
+    }
+
+    @Autowired
+    public void setProfileServiceObjectProvider(ObjectProvider<ProfileService> profileServiceObjectProvider) {
+        this.profileServiceObjectProvider = profileServiceObjectProvider;
     }
 
 }

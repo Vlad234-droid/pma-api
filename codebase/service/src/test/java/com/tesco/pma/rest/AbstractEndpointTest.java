@@ -21,7 +21,9 @@ import java.io.UnsupportedEncodingException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -37,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @ContextConfiguration(classes = TestConfig.class)
 @WithMockUser(username = AbstractEndpointTest.MOCK_CREATOR_ID)
+@SuppressWarnings("PMD.TooManyMethods")
 public abstract class AbstractEndpointTest {
 
     protected static final UUID RP_UUID = UUID.fromString("7f8218ac-2537-4091-9baf-84b37df450e6");
@@ -88,21 +91,14 @@ public abstract class AbstractEndpointTest {
                 .andReturn();
     }
 
-    protected MvcResult performMultipartWith(RequestPostProcessor postProcessor, MockMultipartFile fileToUpload,
-                                             ResultMatcher status,
-                                             String urlTemplate, Object... uriVars) throws Exception {
-        return mvc.perform(multipart(urlTemplate, uriVars)
-                .file(fileToUpload).with(postProcessor))
-                .andExpect(status)
-                .andReturn();
-    }
-
-    protected MvcResult performMultipartWithMetadata(MockMultipartFile uploadMetadata, MockMultipartFile fileToUpload,
+    protected MvcResult performMultipartWithMetadata(RequestPostProcessor postProcessor,
+                                                     MockMultipartFile uploadMetadata, MockMultipartFile fileToUpload,
                                                      ResultMatcher status,
                                                      String urlTemplate, Object... uriVars) throws Exception {
         return mvc.perform(multipart(urlTemplate, uriVars)
-                .file(fileToUpload)
-                .file(uploadMetadata))
+                        .file(fileToUpload)
+                        .file(uploadMetadata)
+                        .with(postProcessor))
                 .andExpect(status)
                 .andReturn();
     }
@@ -123,9 +119,15 @@ public abstract class AbstractEndpointTest {
 
     protected MvcResult performGetWith(RequestPostProcessor postProcessor, ResultMatcher status,
                                        String urlTemplate, Object... uriVars) throws Exception {
+        return performGetWith(postProcessor, status, MediaType.APPLICATION_JSON, urlTemplate, uriVars);
+    }
+
+    protected MvcResult performGetWith(RequestPostProcessor postProcessor, ResultMatcher status, MediaType contentType,
+                                       String urlTemplate, Object... uriVars) throws Exception {
         return mvc.perform(get(urlTemplate, uriVars).with(postProcessor))
                 .andDo(print())
                 .andExpect(status)
+                .andExpect(content().contentTypeCompatibleWith(contentType))
                 .andReturn();
     }
 
@@ -181,18 +183,80 @@ public abstract class AbstractEndpointTest {
     }
 
     protected RequestPostProcessor colleague() {
-        return SecurityMockMvcRequestPostProcessors.jwt()
-                .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.COLLEAGUE));
+        return initRequestPostProcessor(UserRoleNames.COLLEAGUE);
+    }
+
+    protected RequestPostProcessor colleague(String subject) {
+        return initRequestPostProcessor(UserRoleNames.COLLEAGUE, subject);
     }
 
     protected RequestPostProcessor admin() {
-        return SecurityMockMvcRequestPostProcessors.jwt()
-                .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.ADMIN));
+        return initRequestPostProcessor(UserRoleNames.ADMIN);
+    }
+
+    protected RequestPostProcessor admin(String subject) {
+        return initRequestPostProcessor(UserRoleNames.ADMIN, subject);
     }
 
     protected RequestPostProcessor lineManager() {
+        return initRequestPostProcessor(UserRoleNames.LINE_MANAGER);
+    }
+
+    protected RequestPostProcessor lineManager(String subject) {
+        return initRequestPostProcessor(UserRoleNames.LINE_MANAGER, subject);
+    }
+
+    protected RequestPostProcessor peopleTeam() {
+        return initRequestPostProcessor(UserRoleNames.PEOPLE_TEAM);
+    }
+
+    protected RequestPostProcessor peopleTeam(String subject) {
+        return initRequestPostProcessor(UserRoleNames.PEOPLE_TEAM, subject);
+    }
+
+    protected RequestPostProcessor talentAdmin() {
+        return initRequestPostProcessor(UserRoleNames.TALENT_ADMIN);
+    }
+
+    protected RequestPostProcessor talentAdmin(String subject) {
+        return initRequestPostProcessor(UserRoleNames.TALENT_ADMIN, subject);
+    }
+
+    protected RequestPostProcessor processManager() {
+        return initRequestPostProcessor(UserRoleNames.PROCESS_MANAGER);
+    }
+
+    protected RequestPostProcessor processManager(String subject) {
+        return initRequestPostProcessor(UserRoleNames.PROCESS_MANAGER, subject);
+    }
+
+    protected RequestPostProcessor allRoles() {
+        return allRoles("user");
+    }
+
+    protected RequestPostProcessor allRoles(String subject) {
+        return roles(UserRoleNames.ALL, subject);
+    }
+
+    protected RequestPostProcessor roles(List<String> roles) {
+        return roles(roles, "user");
+    }
+
+    protected RequestPostProcessor roles(List<String> roles, String subject) {
+        var authorities = roles.stream().map(role -> "ROLE_" + role).collect(Collectors.toList());
         return SecurityMockMvcRequestPostProcessors.jwt()
-                .authorities(AuthorityUtils.createAuthorityList("ROLE_" + UserRoleNames.LINE_MANAGER));
+                .jwt(builder -> builder.subject(subject))
+                .authorities(AuthorityUtils.createAuthorityList(authorities.toArray(new String[0])));
+    }
+
+    private RequestPostProcessor initRequestPostProcessor(String role) {
+        return initRequestPostProcessor(role, "user");
+    }
+
+    private RequestPostProcessor initRequestPostProcessor(String role, String subject) {
+        return SecurityMockMvcRequestPostProcessors.jwt()
+                .jwt(builder -> builder.subject(subject))
+                .authorities(AuthorityUtils.createAuthorityList("ROLE_" + role));
     }
 
     protected RequestPostProcessor security(String role) {
@@ -207,6 +271,15 @@ public abstract class AbstractEndpointTest {
             case UserRoleNames.LINE_MANAGER:
                 requestPostProcessor = lineManager();
                 break;
+            case UserRoleNames.PEOPLE_TEAM:
+                requestPostProcessor = peopleTeam();
+                break;
+            case UserRoleNames.TALENT_ADMIN:
+                requestPostProcessor = talentAdmin();
+                break;
+            case UserRoleNames.PROCESS_MANAGER:
+                requestPostProcessor = processManager();
+                break;
             case "Anonymous":
                 requestPostProcessor = SecurityMockMvcRequestPostProcessors.anonymous();
                 break;
@@ -215,4 +288,10 @@ public abstract class AbstractEndpointTest {
         }
         return requestPostProcessor;
     }
+
+    protected SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor jwtWithSubject(String s) {
+        return SecurityMockMvcRequestPostProcessors.jwt().jwt(builder -> builder.subject(s));
+    }
+
+
 }
