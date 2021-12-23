@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -74,14 +75,15 @@ public class PMColleagueCycleHandler extends CamundaAbstractFlowHandler {
             pmColleagueCycleService.saveColleagueCycles(colleagueCycles);
         }
         context.setVariable(FlowParameters.START_DATE, defineStartDate(cycle));
+        context.setVariable(FlowParameters.PM_CYCLE, cycle);
     }
 
-    private LocalDate defineStartDate(PMCycle cycle) {
+    private String defineStartDate(PMCycle cycle) {
         LocalDate startDate = LocalDate.ofInstant(cycle.getStartTime(), ZoneId.systemDefault());
         if (PMCycleType.HIRING == cycle.getType()) {
             startDate = LocalDate.now();
         }
-        return startDate;
+        return DateTimeFormatter.ISO_LOCAL_DATE.format(startDate);
     }
 
     private PMColleagueCycle mapToColleagueCycle(UUID colleagueUuid, PMCycle cycle) {

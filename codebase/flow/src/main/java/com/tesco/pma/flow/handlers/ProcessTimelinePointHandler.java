@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneOffset;
@@ -87,7 +88,7 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
         }
         //todo handle cycle statuses
 
-        var startDate = context.getVariable(FlowParameters.START_DATE, LocalDate.class);
+        var startDate = parseLocalDate(context.getVariable(FlowParameters.START_DATE));
         var parent = getParent(context);
         if (PMElementType.TIMELINE_POINT == parent.getType()) {
             processTimelinePoint(context, startDate, parent);
@@ -97,12 +98,12 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
             //todo replace by required exception
             throw new ProcessExecutionException("Incorrect configuration: none required parameters are specified");
         }
-        var calculatedStartDate = context.getVariable(FlowParameters.START_DATE, LocalDate.class);
+        var calculatedStartDate = parseLocalDate(context.getVariable(FlowParameters.START_DATE));
         createTimelinePoints(context, cycle, calculatedStartDate, parent);
     }
 
     private void createTimelinePoints(ExecutionContext context, PMCycle cycle, LocalDate startDate, PMElement element) {
-        var startTime = startDate.atStartOfDay().toInstant(ZoneOffset.UTC);
+        var startTime = toInstant(startDate);
         List<PMColleagueCycle> colleagueCycles;
         if (PMCycleType.HIRING == cycle.getType()) {
             colleagueCycles = colleagueCycleService.getByCycleUuidWithoutTimelinePoint(cycle.getUuid(), startTime);
@@ -115,8 +116,9 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
 
         var props = buildProps(context, startDate, element);
 
-        var endTime = Optional.ofNullable(context.getNullableVariable(FlowParameters.END_DATE, LocalDate.class))
-                .map(date -> date.atStartOfDay().toInstant(ZoneOffset.UTC))
+        var endTime = Optional.ofNullable(context.getNullableVariable(FlowParameters.END_DATE, String.class))
+                .map(this::parseLocalDate)
+                .map(this::toInstant)
                 .orElse(null);
         var timelinePoints = colleagueCycles.stream()
                 .map(cc -> TimelinePoint.builder()
@@ -140,8 +142,8 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
         map.put(FlowParameters.START_DATE.name(), formatDate(startDate));
 
         List.of(FlowParameters.END_DATE, FlowParameters.BEFORE_START_DATE, FlowParameters.BEFORE_END_DATE)
-                .forEach(e -> Optional.ofNullable(context.getNullableVariable(e, LocalDate.class))
-                        .ifPresent(v -> map.put(e.name(), formatDate(v))));
+                .forEach(e -> Optional.ofNullable(context.getNullableVariable(e, String.class))
+                        .ifPresent(v -> map.put(e.name(), v)));
 
         List.of(PMReviewElement.PM_REVIEW_MIN, PMReviewElement.PM_REVIEW_MAX)
                 .forEach(key -> Optional.ofNullable(element.getProperties().get(key))
@@ -186,7 +188,7 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
             try {
                 var period = parsePeriod(props, names, BEFORE_END);
                 var before = endDate.minus(period);
-                context.setVariable(FlowParameters.BEFORE_END_DATE, before.isBefore(startDate) ? startDate : before);
+                setDateVariable(context, FlowParameters.BEFORE_END_DATE, before.isBefore(startDate) ? startDate : before);
             } catch (DateTimeParseException e) {
                 throw incorrectParameter(props, names, BEFORE_END, e);
             }
@@ -200,7 +202,7 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
             try {
                 var period = parsePeriod(props, names, DURATION);
                 endDate = startDate.plus(period);
-                context.setVariable(FlowParameters.END_DATE, endDate);
+                setDateVariable(context, FlowParameters.END_DATE, endDate);
             } catch (DateTimeParseException e) {
                 throw incorrectParameter(props, names, DURATION, e);
             }
@@ -214,7 +216,7 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
             try {
                 var period = parsePeriod(props, names, BEFORE_START);
                 var before = startTime.minus(period);
-                context.setVariable(FlowParameters.BEFORE_START_DATE, before);
+                setDateVariable(context, FlowParameters.BEFORE_START_DATE, before);
             } catch (DateTimeParseException e) {
                 throw incorrectParameter(props, names, BEFORE_START, e);
             }
@@ -241,8 +243,12 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
             log.debug("No parameter specified: " + names.get(START_DELAY) + ", " + names.get(START)
                     + "\nCycle start date is used: " + calculatedStartDate);
         }
-        context.setVariable(FlowParameters.START_DATE, calculatedStartDate);
+        setDateVariable(context, FlowParameters.START_DATE, calculatedStartDate);
         return calculatedStartDate;
+    }
+
+    private void setDateVariable(ExecutionContext context, FlowParameters variable, LocalDate date) {
+        context.setVariable(variable, formatDate(date));
     }
 
     private String get(Map<String, String> props, Map<PropertyNames, String> names, PropertyNames name) {
@@ -258,7 +264,15 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
     }
 
     private LocalDate parseLocalDate(Map<String, String> props, Map<PropertyNames, String> names, PropertyNames name) {
-        return DateTimeFormatter.ISO_LOCAL_DATE.parse(get(props, names, name), LocalDate::from);
+        return parseLocalDate(get(props, names, name));
+    }
+
+    private LocalDate parseLocalDate(String date) {
+        return DateTimeFormatter.ISO_LOCAL_DATE.parse(date, LocalDate::from);
+    }
+
+    private Instant toInstant(LocalDate date) {
+        return date.atStartOfDay().toInstant(ZoneOffset.UTC);
     }
 
     private String formatDate(LocalDate dateTime) {
