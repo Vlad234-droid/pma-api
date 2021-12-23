@@ -5,6 +5,7 @@ import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import com.tesco.pma.process.api.PMProcessStatus;
 import com.tesco.pma.process.api.PMRuntimeProcess;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -48,4 +49,6 @@ public interface PMProcessService {
     void updateStatus(UUID uuid, PMProcessStatus status, DictionaryFilter<PMProcessStatus> statusFilter);
 
     PMCycleMetadata getProcessMetadataByKey(String processKey);
+
+    List<PMRuntimeProcess> findByCycleUuidAndStatus(UUID cycleUUID, DictionaryFilter<PMProcessStatus> processStatusFilter);
 }

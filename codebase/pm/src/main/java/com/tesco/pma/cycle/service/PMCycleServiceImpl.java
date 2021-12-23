@@ -22,6 +22,7 @@ import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.logging.TraceUtils;
 import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
+import com.tesco.pma.process.api.PMProcessErrorCodes;
 import com.tesco.pma.process.api.PMProcessStatus;
 import com.tesco.pma.process.api.PMRuntimeProcess;
 import com.tesco.pma.process.service.PMProcessService;
@@ -68,6 +69,8 @@ public class PMCycleServiceImpl implements PMCycleService {
     public static final String ENTRY_CONFIG_KEY_CONDITION = "entry-config-key";
     public static final String STATUS_CONDITION = "status";
     public static final String TEMPLATE_UUID_CONDITION = "template-uuid";
+    private static final String CYCLE_UUID = "cycleUUID";
+    private static final String STATUS_FILTER = "status_filter";
     private final PMCycleDAO cycleDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final ProcessManagerService processManagerService;
@@ -117,10 +120,8 @@ public class PMCycleServiceImpl implements PMCycleService {
         }
 
         UUID rtProcessUuid = intDeploy(cycle);
-        if (null != rtProcessUuid) {
-            log.debug("Runtime process uuid: {}", rtProcessUuid);
-            intStartProcess(rtProcessUuid);
-        }
+        log.debug("Runtime process uuid: {}", rtProcessUuid);
+        intStartCycle(cycle.getUuid());
 
         return cycle;
     }
@@ -199,7 +200,8 @@ public class PMCycleServiceImpl implements PMCycleService {
     @Override
     @Transactional
     public void start(UUID rtProcessUuid) {
-        intStartProcess(rtProcessUuid);
+        //TODO get rt
+        intStartCycle(rtProcessUuid);
     }
 
     @Override
@@ -349,26 +351,32 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
 
-    private void intStartProcess(UUID rtProcessUuid) {
-
-        var process = pmProcessService.getProcess(rtProcessUuid);
-        var cycleUUID = process.getCycleUuid();
+    private void intStartCycle(UUID cycleUUID) {
 
         DictionaryFilter<PMCycleStatus> statusFilter = includeFilter(PMCycleStatus.REGISTERED);
         var cycle = cycleDAO.read(cycleUUID, statusFilter);
         if (null == cycle) {
             throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID_AND_STATUS,
-                    Map.of(CYCLE_UUID_PARAMETER_NAME, process.getCycleUuid(),
+                    Map.of(CYCLE_UUID_PARAMETER_NAME, cycleUUID,
                             CYCLE_STATUSES_PARAMETER_NAME, statusFilter.getItems()));
         }
 
         validateCycleForStart(cycle);
 
+        DictionaryFilter<PMProcessStatus> processStatusFilter = includeFilter(PMProcessStatus.REGISTERED);
+        var processes = pmProcessService.findByCycleUuidAndStatus(cycleUUID, processStatusFilter);
+        if (isEmpty(processes) || processes.size() > 1) {
+            throw new NotFoundException(PMProcessErrorCodes.PROCESS_NOT_FOUND_BY_CYCLE.getCode(),
+                    messageSourceAccessor.getMessage(PMProcessErrorCodes.PROCESS_NOT_FOUND_BY_CYCLE,
+                            Map.of(CYCLE_UUID, cycleUUID, STATUS_FILTER, statusFilter)));
+        }
+
+        var process = processes.iterator().next();
         try {
             var processUUID = processManagerService.runProcessById(process.getBpmProcessId(), prepareFlowProperties(cycle));
             log.debug("Started process: {}", processUUID);
 
-            pmProcessService.updateStatus(rtProcessUuid, STARTED, includeFilter(PMProcessStatus.REGISTERED));
+            pmProcessService.updateStatus(process.getId(), STARTED, processStatusFilter);
             intUpdateStatus(cycleUUID, ACTIVE);
         } catch (ProcessExecutionException e) {
             cycleFailed(process.getBpmProcessId(), cycleUUID, e);
@@ -379,6 +387,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         Map<String, Object> props = new HashMap<>();
         props.put(TRACE_ID_HEADER, TraceUtils.getTraceId().getValue());
         props.put(FlowParameters.PM_CYCLE.name(), cycle);
+        props.put(FlowParameters.START_DATE.name(), cycle.getStartTime());
         return props;
     }
 

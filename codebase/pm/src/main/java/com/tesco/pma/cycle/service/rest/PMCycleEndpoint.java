@@ -238,14 +238,14 @@ public class PMCycleEndpoint {
     /**
      * PUT call to start Performance Cycle.
      *
-     * @param uuid process id
+     * @param uuid cycle uuid
      * @return sucess
      */
     @Operation(summary = "Start performance cycle",
             description = "Performance cycle started",
             tags = {"performance-cycle"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle started")
-    @PutMapping(value = "/pm-cycles/processes/{uuid}/start")
+    @PutMapping(value = "/pm-cycles/{uuid}/start")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public RestResponse<?> start(@PathVariable final UUID uuid) {
         log.debug("REST request to start Process : {}", uuid);

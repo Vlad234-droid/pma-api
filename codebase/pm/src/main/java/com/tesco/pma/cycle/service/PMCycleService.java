@@ -105,9 +105,9 @@ public interface PMCycleService {
     /**
      * Start performance cycle by process UUID
      *
-     * @param rtProcessUuid runtime process UUID
+     * @param uuid performance cycle UUID
      */
-    void start(UUID rtProcessUuid);
+    void start(UUID uuid);
 
     void completeCycle(UUID cycleUUID);
 }
