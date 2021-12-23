@@ -81,7 +81,6 @@ public class PMCycleServiceImpl implements PMCycleService {
     private static final String ORG_KEY_PARAMETER_NAME = "organisationKey";
     private static final String TEMPLATE_UUID_PARAMETER_NAME = "templateUUID";
     private static final String CYCLE_UUID_PARAMETER_NAME = "cycleUuid";
-    private static final String PROCESS_UUID_PARAMETER_NAME = "rtProcessUuid";
     private static final String CYCLE_STATUSES_PARAMETER_NAME = "statuses";
     private static final String STATUS_PARAMETER_NAME = "status";
     private static final String INCLUDE_METADATA_PARAMETER_NAME = "includeMetadata";
@@ -305,7 +304,7 @@ public class PMCycleServiceImpl implements PMCycleService {
             throw databaseConstraintViolation(
                     PM_CYCLE_ALREADY_EXISTS,
                     Map.of(ORG_KEY_PARAMETER_NAME, cycle.getEntryConfigKey(),
-                            TEMPLATE_UUID_PARAMETER_NAME, cycle.getTemplateUUID()), e);
+                            TEMPLATE_UUID_PARAMETER_NAME, cycle.getTemplate().getUuid()), e);
         }
     }
 
@@ -330,7 +329,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         }
 
         try {
-            var processId = intDeployProcess(cycle.getTemplateUUID(), processKey);
+            var processId = intDeployProcess(cycle.getTemplate().getUuid(), processKey);
             log.debug("Process definition id: {}", processId);
             intUpdateStatus(uuid, PMCycleStatus.REGISTERED);
 
@@ -387,7 +386,6 @@ public class PMCycleServiceImpl implements PMCycleService {
         Map<String, Object> props = new HashMap<>();
         props.put(TRACE_ID_HEADER, TraceUtils.getTraceId().getValue());
         props.put(FlowParameters.PM_CYCLE.name(), cycle);
-        props.put(FlowParameters.START_DATE.name(), cycle.getStartTime());
         return props;
     }
 
@@ -397,7 +395,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         query.setFilters(List.of(
                 new Condition(ENTRY_CONFIG_KEY_CONDITION, EQUALS, cycle.getEntryConfigKey()),
                 new Condition(STATUS_CONDITION, EQUALS, ACTIVE.getId()),
-                new Condition(TEMPLATE_UUID_CONDITION, EQUALS, cycle.getTemplateUUID())
+                new Condition(TEMPLATE_UUID_CONDITION, EQUALS, cycle.getTemplate().getUuid())
         ));
 
         List<PMCycle> cycleList = cycleDAO.getAll(query, false);

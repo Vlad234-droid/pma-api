@@ -5,7 +5,6 @@
     <resultMap id="cycleResultMap" type="com.tesco.pma.cycle.api.PMCycle">
         <id property="uuid" column="uuid"/>
         <result property="entryConfigKey" column="entry_config_key"/>
-        <result property="templateUUID" column="template_uuid"/>
         <result property="name" column="name"/>
         <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
@@ -22,6 +21,7 @@
                 typeHandler="com.tesco.pma.cycle.dao.utils.PMCycleJsonbTypeHandler"
                 javaType="com.tesco.pma.cycle.api.model.PMCycleMetadata"/>
         <association property="createdBy" column="{uuid=created_by}" select="getColleagueByUuid"/>
+        <association property="template" column="{uuid=template_uuid}" select="getTemplateByUuid"/>
     </resultMap>
 
     <resultMap id="colleagueMap" type="com.tesco.pma.colleague.api.ColleagueSimple">
@@ -29,6 +29,12 @@
         <result property="firstName" column="first_name"/>
         <result property="middleName" column="middle_name"/>
         <result property="lastName" column="last_name"/>
+    </resultMap>
+
+    <resultMap id="templateMap" type="com.tesco.pma.fs.domain.File">
+        <result property="uuid" column="uuid"/>
+        <result property="fileName" column="file_name"/>
+        <result property="createdBy" column="created_by"/>
     </resultMap>
 
     <sql id="addStatusIdCondition">
@@ -151,7 +157,7 @@
          metadata)
         VALUES (#{cycle.uuid},
                 #{cycle.entryConfigKey},
-                #{cycle.templateUUID},
+                #{cycle.template.uuid},
                 #{cycle.name},
                 #{cycle.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleType},
                 #{cycle.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus},
@@ -251,6 +257,14 @@
                middle_name,
                last_name
         from colleague
+        where uuid = #{uuid}
+    </select>
+
+    <select id="getTemplateByUuid" resultMap="templateMap">
+        select uuid,
+               created_by,
+               file_name
+        from file
         where uuid = #{uuid}
     </select>
 </mapper>

@@ -9,6 +9,7 @@ import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.dao.config.PMCycleTypeHandlerConfig;
 import com.tesco.pma.dao.AbstractDAOTest;
+import com.tesco.pma.fs.domain.File;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
@@ -143,6 +144,9 @@ class PMCycleDAOTest extends AbstractDAOTest {
 
     private PMCycle createCycle(UUID uuid) {
 
+        File template = new File();
+        template.setUuid(TEMPLATE_UUID);
+
         return PMCycle.builder()
                 .name(TEST_CYCLE_NAME)
                 .status(ACTIVE)
@@ -154,7 +158,7 @@ class PMCycleDAOTest extends AbstractDAOTest {
                         .build())
                 .uuid(uuid)
                 .entryConfigKey(TEST_KEY)
-                .templateUUID(TEMPLATE_UUID)
+                .template(template)
                 .build();
     }
 }
