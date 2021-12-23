@@ -24,6 +24,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -53,7 +54,7 @@ class ReviewServiceImplTest {
             ));
 
     final static String REVIEW_NOT_FOUND_MESSAGE =
-            "Review not found for: {allowedStatuses=[DRAFT, DECLINED, APPROVED], colleagueUuid=ddb9ab0b-f50f-4442-8900-b03777ee0011, number=1, operation=DELETE, performanceCycleUuid=ddb9ab0b-f50f-4442-8900-b03777ee0012, type=OBJECTIVE}";
+            "Review not found for: {allowedStatuses=[DRAFT, DECLINED, APPROVED], number=1, operation=DELETE, tlPointUuid=ddb9ab0b-f50f-4442-8900-b03777ee0010}";
 
     @Autowired
     private NamedMessageSourceAccessor messages;
@@ -118,12 +119,18 @@ class ReviewServiceImplTest {
         final var expectedTimelinePoint = TimelinePoint.builder()
                 .properties(TIMELINE_POINT_PROPERTIES_INIT)
                 .build();
+        final var expectedReviewStats = ReviewStats.builder()
+                .statusStats(Collections.emptyList())
+                .build();
 
         when(mockColleagueCycleService.getByCycleUuid(any(), any(), any()))
                 .thenReturn(List.of(expectedColleagueCycle));
 
         when(mockTimelinePointDAO.getByParams(any(), any(), any()))
                 .thenReturn(List.of(expectedTimelinePoint));
+
+        when(mockReviewDAO.getReviewStats(any()))
+                .thenReturn(expectedReviewStats);
 
         when(mockReviewDAO.update(any(), any()))
                 .thenReturn(1);
@@ -144,10 +151,12 @@ class ReviewServiceImplTest {
                 .number(NUMBER_1)
                 .status(DRAFT)
                 .build();
-
         final var expectedColleagueCycle = PMColleagueCycle.builder().build();
         final var expectedTimelinePoint = TimelinePoint.builder()
                 .properties(TIMELINE_POINT_PROPERTIES_INIT)
+                .build();
+        final var expectedReviewStats = ReviewStats.builder()
+                .statusStats(Collections.emptyList())
                 .build();
 
         when(mockColleagueCycleService.getByCycleUuid(any(), any(), any()))
@@ -159,6 +168,9 @@ class ReviewServiceImplTest {
         when(mockTimelinePointDAO.read(any()))
                 .thenReturn(expectedTimelinePoint);
 
+        when(mockReviewDAO.getReviewStats(any()))
+                .thenReturn(expectedReviewStats);
+
         when(mockReviewDAO.create(any(Review.class)))
                 .thenReturn(1);
 
@@ -169,12 +181,15 @@ class ReviewServiceImplTest {
 
     @Test
     void deleteReviewNotExists() {
+        final var tlPointUUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0010");
         final var colleagueUuid = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
         final var performanceCycleUuid = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0012");
 
         final var expectedColleagueCycle = PMColleagueCycle.builder().build();
         final var expectedTimelinePoint = TimelinePoint.builder()
+                .uuid(tlPointUUID)
                 .properties(TIMELINE_POINT_PROPERTIES_INIT)
+                .reviewType(OBJECTIVE)
                 .build();
 
         when(mockColleagueCycleService.getByCycleUuid(any(), any(), any()))
@@ -184,10 +199,10 @@ class ReviewServiceImplTest {
                 .thenReturn(List.of(expectedTimelinePoint));
 
         final var reviewStats = ReviewStats.builder()
-                .statusStats(List.of(new ReviewStatusCounter(DRAFT, 2)))
+                .statusStats(List.of(new ReviewStatusCounter(DRAFT, 2, null)))
                 .build();
 
-        when(mockReviewDAO.getReviewStats(any(), any()))
+        when(mockReviewDAO.getReviewStats(any()))
                 .thenReturn(reviewStats);
 
         when(mockReviewDAO.deleteByParams(any(), any(), any(), any(), any()))
