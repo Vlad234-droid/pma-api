@@ -3,6 +3,7 @@ package com.tesco.pma.cycle.api;
 import com.tesco.pma.api.MapJson;
 import com.tesco.pma.colleague.api.ColleagueSimple;
 import com.tesco.pma.cycle.api.model.PMCycleMetadata;
+import com.tesco.pma.fs.domain.File;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +25,7 @@ public class PMCycle implements Serializable {
 
     UUID uuid;
     String entryConfigKey;
-    UUID templateUUID;
+    File template;
 
     String name;
     ColleagueSimple createdBy;

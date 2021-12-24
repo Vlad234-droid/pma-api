@@ -62,4 +62,7 @@ public interface PMRuntimeProcessDAO {
                         @Param("statusFilter") DictionaryFilter<PMProcessStatus> statusFilter);
 
     int createHistoryRecord(@Param("uuid") UUID uuid, @Param("status") PMProcessStatus status, @Param("updateTime") Instant updateTime);
+
+    List<PMRuntimeProcess> findByCycleUuidAndStatus(@Param("cycleUUID") UUID cycleUUID,
+                                  @Param("statusFilter") DictionaryFilter<PMProcessStatus> statusFilter);
 }

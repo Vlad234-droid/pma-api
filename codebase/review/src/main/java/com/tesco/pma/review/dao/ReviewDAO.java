@@ -7,9 +7,12 @@ import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStats;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+
+import static java.time.Instant.now;
 
 /**
  * Interface to perform database operation on reviews
@@ -22,7 +25,12 @@ public interface ReviewDAO {
      * @param review a Review
      * @return number of created reviews
      */
-    int create(@Param("review") Review review);
+    default int create(Review review) {
+        return intCreate(review, now());
+    }
+
+    int intCreate(@Param("review") Review review,
+                  @Param("lastUpdatedTime") Instant lastUpdatedTime);
 
     /**
      * Returns a review by an identifier of review
@@ -39,8 +47,14 @@ public interface ReviewDAO {
      * @param allowedStatuses allowed statuses for updating review
      * @return number of updated reviews
      */
-    int update(@Param("review") Review review,
-               @Param("allowedStatuses") Collection<PMTimelinePointStatus> allowedStatuses);
+    default int update(Review review,
+                       Collection<PMTimelinePointStatus> allowedStatuses) {
+        return intUpdate(review, allowedStatuses, now());
+    }
+
+    int intUpdate(@Param("review") Review review,
+                  @Param("allowedStatuses") Collection<PMTimelinePointStatus> allowedStatuses,
+                  @Param("lastUpdatedTime") Instant lastUpdatedTime);
 
     /**
      * Delete a review
@@ -97,11 +111,26 @@ public interface ReviewDAO {
      * @param prevStatuses previous review statuses
      * @return number of updated review statuses
      */
-    int updateStatusByParams(@Param("tlPointUuid") UUID tlPointUuid,
-                             @Param("type") PMReviewType type,
-                             @Param("number") Integer number,
-                             @Param("newStatus") PMTimelinePointStatus newStatus,
-                             @Param("prevStatuses") Collection<PMTimelinePointStatus> prevStatuses);
+    default int updateStatusByParams(UUID tlPointUuid,
+                                     PMReviewType type,
+                                     Integer number,
+                                     PMTimelinePointStatus newStatus,
+                                     Collection<PMTimelinePointStatus> prevStatuses) {
+        return intUpdateStatusByParams(
+                tlPointUuid,
+                type,
+                number,
+                newStatus,
+                prevStatuses,
+                now());
+    }
+
+    int intUpdateStatusByParams(@Param("tlPointUuid") UUID tlPointUuid,
+                                @Param("type") PMReviewType type,
+                                @Param("number") Integer number,
+                                @Param("newStatus") PMTimelinePointStatus newStatus,
+                                @Param("prevStatuses") Collection<PMTimelinePointStatus> prevStatuses,
+                                @Param("lastUpdatedTime") Instant lastUpdatedTime);
 
     /**
      * Delete reviews by parameters
@@ -137,10 +166,8 @@ public interface ReviewDAO {
      * Returns review stats by tlPointUuid and review type
      *
      * @param tlPointUuid an identifier of timeline point
-     * @param type        a review type
      * @return a PMCycleReviewTypeProperties
      */
-    ReviewStats getReviewStats(@Param("tlPointUuid") UUID tlPointUuid,
-                               @Param("type") PMReviewType type);
+    ReviewStats getReviewStats(@Param("tlPointUuid") UUID tlPointUuid);
 
 }

@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.tesco.pma.cycle.api.PMReviewType.MYR;
+import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.WAITING_FOR_APPROVAL;
 import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
@@ -311,6 +313,7 @@ class TimelinePointDAOTest extends AbstractDAOTest {
                 .endTime(END_TIME)
                 .properties(TIMELINE_POINT_PROPERTIES_INIT)
                 .status(DRAFT)
+                .reviewType(OBJECTIVE)
                 .build();
 
         final var myr = TimelinePoint.builder()
@@ -323,6 +326,7 @@ class TimelinePointDAOTest extends AbstractDAOTest {
                 .endTime(MYR_END_TIME)
                 .properties(TIMELINE_POINT_PROPERTIES_INIT)
                 .status(DRAFT)
+                .reviewType(MYR)
                 .build();
 
         assertThat(result.get(0))

@@ -1,7 +1,6 @@
 package com.tesco.pma.process.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
-import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.cycle.dao.config.PMCycleTypeHandlerConfig;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.process.api.PMProcessStatus;
@@ -15,6 +14,9 @@ import org.springframework.test.context.DynamicPropertySource;
 import java.util.List;
 import java.util.UUID;
 
+import static com.tesco.pma.api.DictionaryFilter.includeFilter;
+import static com.tesco.pma.process.api.PMProcessStatus.COMPLETED;
+import static com.tesco.pma.process.api.PMProcessStatus.REGISTERED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -60,7 +62,7 @@ class PMRuntimeProcessDAOTest extends AbstractDAOTest {
             BASE_PATH_TO_DATA_SET + "pm_rt_process_init.xml"})
     void read() {
         var actual = dao.read(PM_UUID);
-        checkProcess(actual, PM_UUID, PMProcessStatus.REGISTERED, BPM_UUID);
+        checkProcess(actual, PM_UUID, REGISTERED, BPM_UUID);
         checkHistory(actual, 1, 0);
     }
 
@@ -68,11 +70,11 @@ class PMRuntimeProcessDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
             BASE_PATH_TO_DATA_SET + "pm_rt_process_init.xml"})
     void updateStatusFailed() {
-        assertEquals(0, dao.updateStatus(PM_UUID, PMProcessStatus.COMPLETED,
-                DictionaryFilter.includeFilter(PMProcessStatus.STARTED)));
+        assertEquals(0, dao.updateStatus(PM_UUID, COMPLETED,
+                includeFilter(PMProcessStatus.STARTED)));
 
         var actual = dao.read(PM_UUID);
-        checkProcess(actual, PM_UUID, PMProcessStatus.REGISTERED, BPM_UUID);
+        checkProcess(actual, PM_UUID, REGISTERED, BPM_UUID);
         checkHistory(actual, 1, 0);
     }
 
@@ -81,7 +83,7 @@ class PMRuntimeProcessDAOTest extends AbstractDAOTest {
             BASE_PATH_TO_DATA_SET + "pm_rt_process_init.xml"})
     void updateStatus() {
         assertEquals(1, dao.updateStatus(PM_UUID, PMProcessStatus.STARTED,
-                DictionaryFilter.includeFilter(PMProcessStatus.REGISTERED)));
+                includeFilter(REGISTERED)));
 
         var actual = dao.read(PM_UUID);
         checkProcess(actual, PM_UUID, PMProcessStatus.STARTED, BPM_UUID);
@@ -95,6 +97,14 @@ class PMRuntimeProcessDAOTest extends AbstractDAOTest {
         List<PMRuntimeProcess> processes = dao.findByBusinessKey(BUSINESS_KEY);
         assertEquals(3, processes.size());
         assertTrue(processes.get(0).getLastUpdateTime().isAfter(processes.get(1).getLastUpdateTime()));
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
+            BASE_PATH_TO_DATA_SET + "pm_rt_process_init.xml"})
+    void findByCycleUuidAndStatus() {
+        List<PMRuntimeProcess> processes = dao.findByCycleUuidAndStatus(CYCLE_UUID, includeFilter(COMPLETED));
+        assertEquals(1, processes.size());
     }
 
     private void checkProcess(PMRuntimeProcess actual, UUID pmUuid, PMProcessStatus status, String bpmUuid) {

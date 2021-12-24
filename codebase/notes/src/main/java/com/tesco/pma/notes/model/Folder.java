@@ -9,6 +9,7 @@ public class Folder {
 
     private UUID id;
     private UUID ownerColleagueUuid;
+    private UUID parentFolderUuid;
     private String title;
 
 }

@@ -3,6 +3,7 @@ package com.tesco.pma.cycle.dao;
 import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
+import com.tesco.pma.pagination.RequestQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.Instant;
@@ -12,21 +13,6 @@ import java.util.UUID;
 import static java.time.Instant.now;
 
 public interface PMCycleDAO {
-
-    /**
-     * Creates performance cycle
-     *
-     * @param cycle performance cycle
-     * @return number of updated entities
-     */
-    default int createOrUpdate(PMCycle cycle, DictionaryFilter<PMCycleStatus> statusFilter) {
-        return intCreateOrUpdate(cycle, now(), statusFilter);
-    }
-
-
-    int intCreateOrUpdate(@Param("cycle") PMCycle cycle,
-                           @Param("now") Instant now,
-                           @Param("statusFilter") DictionaryFilter<PMCycleStatus> statusFilter);
 
     /**
      * Updates status for existing performance cycle
@@ -77,7 +63,8 @@ public interface PMCycleDAO {
      * @param includeMetadata include metadata in response or not
      * @return list of number of performance cycles
      */
-    List<PMCycle> getAll(boolean includeMetadata);
+    List<PMCycle> getAll(@Param("requestQuery") RequestQuery requestQuery,
+                         @Param("includeMetadata") boolean includeMetadata);
 
     /**
      * Updates existing performance cycle
@@ -88,4 +75,18 @@ public interface PMCycleDAO {
      */
     int update(@Param("cycle") PMCycle cycle,
                @Param("statusFilter") DictionaryFilter<PMCycleStatus> statusFilter);
+
+
+    /**
+     * Creates performance cycle
+     *
+     * @param cycle performance cycle
+     * @return number of updated entities
+     */
+    default int create(PMCycle cycle) {
+        return intCreate(cycle, now());
+    }
+
+    int intCreate(@Param("cycle") PMCycle cycle,
+                  @Param("now") Instant now);
 }
