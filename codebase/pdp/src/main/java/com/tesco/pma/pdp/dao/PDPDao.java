@@ -9,7 +9,7 @@ import java.util.UUID;
 /**
  * Interface to perform database operation on Personal Development Plan
  */
-public interface PDPDao { // NOPMD
+public interface PDPDao {
 
     /**
      * Create a PDP Goal
@@ -55,7 +55,7 @@ public interface PDPDao { // NOPMD
      * @param number        is goal's number
      * @return PDP Goal by its colleagueUuid and number
      */
-    PDPGoal readGoal(@Param("colleagueUuid") UUID colleagueUuid, @Param("number") Integer number);
+    PDPGoal readGoalByColleagueAndNumber(@Param("colleagueUuid") UUID colleagueUuid, @Param("number") Integer number);
 
     /**
      * Get a PDP Goal by its uuid
@@ -64,7 +64,7 @@ public interface PDPDao { // NOPMD
      * @param goalUuid is goal identifier
      * @return PDP Goal by its uuid
      */
-    PDPGoal readGoal(@Param("colleagueUuid") UUID colleagueUuid, @Param("goalUuid") UUID goalUuid);
+    PDPGoal readGoalByUuid(@Param("colleagueUuid") UUID colleagueUuid, @Param("goalUuid") UUID goalUuid);
 
     /**
      * Get a list of PDP Goals by its colleague ordered by its number

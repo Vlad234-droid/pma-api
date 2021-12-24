@@ -75,30 +75,33 @@ public class PDPServiceImpl implements PDPService {
 
     @Override
     @Transactional
-    public void deleteGoal(UUID colleagueUuid, Integer number) {
-        var deleted = pdpDao.deleteGoal(colleagueUuid, number);
-        if (1 != deleted) {
-            throw new NotFoundException(PDP_GOAL_NOT_FOUND_BY_COLLEAGUE_AND_NUMBER.getCode(),
-                    messageSourceAccessor.getMessage(PDP_GOAL_NOT_FOUND_BY_COLLEAGUE_AND_NUMBER,
-                            Map.of(COLLEAGUE_UUID, colleagueUuid, NUMBER, number)));
-        }
-
+    public void deleteGoals(List<Integer> numbers, UUID colleagueUuid) {
+        numbers.forEach(number -> {
+            var deleted = pdpDao.deleteGoal(colleagueUuid, number);
+            if (1 != deleted) {
+                throw new NotFoundException(PDP_GOAL_NOT_FOUND_BY_COLLEAGUE_AND_NUMBER.getCode(),
+                        messageSourceAccessor.getMessage(PDP_GOAL_NOT_FOUND_BY_COLLEAGUE_AND_NUMBER,
+                                Map.of(COLLEAGUE_UUID, colleagueUuid, NUMBER, number)));
+            }
+        });
     }
 
     @Override
     @Transactional
-    public void deleteGoal(UUID colleagueUuid, UUID goalUuid) {
-        var deleted = pdpDao.deleteGoal(colleagueUuid, goalUuid);
-        if (1 != deleted) {
-            throw new NotFoundException(PDP_GOAL_NOT_FOUND_BY_ID.getCode(),
-                    messageSourceAccessor.getMessage(PDP_GOAL_NOT_FOUND_BY_ID,
-                            Map.of(GOAL_UUID, goalUuid)));
-        }
+    public void deleteGoals(UUID colleagueUuid, List<UUID> goalUuids) {
+        goalUuids.forEach(goalUuid -> {
+            var deleted = pdpDao.deleteGoal(colleagueUuid, goalUuid);
+            if (1 != deleted) {
+                throw new NotFoundException(PDP_GOAL_NOT_FOUND_BY_ID.getCode(),
+                        messageSourceAccessor.getMessage(PDP_GOAL_NOT_FOUND_BY_ID,
+                                Map.of(GOAL_UUID, goalUuid)));
+            }
+        });
     }
 
     @Override
     public PDPGoal getGoal(UUID colleagueUuid, Integer number) {
-        return Optional.ofNullable(pdpDao.readGoal(colleagueUuid, number))
+        return Optional.ofNullable(pdpDao.readGoalByColleagueAndNumber(colleagueUuid, number))
                 .orElseThrow(() -> new NotFoundException(PDP_GOAL_NOT_FOUND_BY_COLLEAGUE_AND_NUMBER.getCode(),
                         messageSourceAccessor.getMessage(PDP_GOAL_NOT_FOUND_BY_COLLEAGUE_AND_NUMBER,
                                 Map.of(COLLEAGUE_UUID, colleagueUuid, NUMBER, number))));
@@ -106,7 +109,7 @@ public class PDPServiceImpl implements PDPService {
 
     @Override
     public PDPGoal getGoal(UUID colleagueUuid, UUID goalUuid) {
-        return Optional.ofNullable(pdpDao.readGoal(colleagueUuid, goalUuid))
+        return Optional.ofNullable(pdpDao.readGoalByUuid(colleagueUuid, goalUuid))
                 .orElseThrow(() -> new NotFoundException(PDP_GOAL_NOT_FOUND_BY_ID.getCode(),
                         messageSourceAccessor.getMessage(PDP_GOAL_NOT_FOUND_BY_ID,
                                 Map.of(GOAL_UUID, goalUuid))));
