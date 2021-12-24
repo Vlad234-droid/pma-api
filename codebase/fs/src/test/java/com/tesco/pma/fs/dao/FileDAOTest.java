@@ -3,6 +3,7 @@ package com.tesco.pma.fs.dao;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.tesco.pma.api.DictionaryFilter;
+import com.tesco.pma.api.GeneralDictionaryItem;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.fs.domain.File;
 import com.tesco.pma.pagination.Condition;
@@ -14,10 +15,10 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.UUID;
 
 import static com.tesco.pma.fs.api.FileStatus.ACTIVE;
-import static com.tesco.pma.fs.api.FileType.FORM;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Condition.Operand.GREATER_THAN;
 import static com.tesco.pma.pagination.Condition.Operand.IN;
@@ -61,7 +62,7 @@ public class FileDAOTest extends AbstractDAOTest {
         requestQuery.setSearch("test2");
 
         final var result = instance.findByRequestQuery(requestQuery,
-                emptyList(), emptyList(), true, true);
+                emptyList(), true, true);
 
         assertThat(result).isNotEmpty();
         assertThat(result).hasSize(1);
@@ -72,15 +73,15 @@ public class FileDAOTest extends AbstractDAOTest {
     @DataSet(BASE_PATH_TO_DATA_SET + "file_init.xml")
     void findByRequestQueryWithDictionaryFilter() {
         final var requestQuery = new RequestQuery();
+        requestQuery.setFilters(Collections.singletonList(Condition.build("type", 2)));
 
         var statusFilter = DictionaryFilter.includeFilter(ACTIVE);
-        var typeFilter = DictionaryFilter.excludeFilter(FORM);
 
-        final var result = instance.findByRequestQuery(requestQuery, asList(statusFilter), asList(typeFilter), true, true);
+        final var result = instance.findByRequestQuery(requestQuery, asList(statusFilter), true, true);
 
         assertThat(result).isNotEmpty();
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getUuid()).isEqualTo(FILE_UUID_2);
+        assertThat(result.get(0).getUuid()).isEqualTo(FILE_UUID_3);
     }
 
     @Test
@@ -89,7 +90,7 @@ public class FileDAOTest extends AbstractDAOTest {
         final var requestQuery = new RequestQuery();
         requestQuery.setFilters(asList(new Condition("description", IN, asList("another files"))));
 
-        final var result = instance.findByRequestQuery(requestQuery, emptyList(), emptyList(), true, true);
+        final var result = instance.findByRequestQuery(requestQuery, emptyList(), true, true);
 
         assertThat(result).isNotEmpty();
         assertThat(result).hasSize(1);
@@ -102,7 +103,7 @@ public class FileDAOTest extends AbstractDAOTest {
         final var requestQuery = new RequestQuery();
         requestQuery.setFilters(asList(new Condition("uuid", EQUALS, FILE_UUID_2)));
 
-        final var result = instance.findByRequestQuery(requestQuery, emptyList(), emptyList(), true, true);
+        final var result = instance.findByRequestQuery(requestQuery, emptyList(), true, true);
 
         assertThat(result).isNotEmpty();
         assertThat(result).hasSize(1);
@@ -115,7 +116,7 @@ public class FileDAOTest extends AbstractDAOTest {
         final var requestQuery = new RequestQuery();
         requestQuery.setFilters(asList(new Condition("file-length", GREATER_THAN, 15)));
 
-        final var result = instance.findByRequestQuery(requestQuery, emptyList(), emptyList(), true, true);
+        final var result = instance.findByRequestQuery(requestQuery, emptyList(), true, true);
 
         assertThat(result).isEmpty();
     }
@@ -126,7 +127,7 @@ public class FileDAOTest extends AbstractDAOTest {
         final var requestQuery = new RequestQuery();
         requestQuery.setSort(asList(Sort.build("file-length:ASC")));
 
-        final var result = instance.findByRequestQuery(requestQuery, emptyList(), emptyList(), true, true);
+        final var result = instance.findByRequestQuery(requestQuery, emptyList(), true, true);
 
         assertThat(result).isNotEmpty();
         assertThat(result).hasSize(2);
@@ -141,7 +142,7 @@ public class FileDAOTest extends AbstractDAOTest {
         requestQuery.setFilters(asList(new Condition("path", EQUALS, PATH)));
         requestQuery.setFilters(asList(new Condition("file-name", EQUALS, "test1.txt")));
 
-        final var result = instance.findByRequestQuery(requestQuery, emptyList(), emptyList(), true, false);
+        final var result = instance.findByRequestQuery(requestQuery, emptyList(), true, false);
 
         assertThat(result).isNotEmpty();
         assertThat(result).hasSize(2);
@@ -154,7 +155,7 @@ public class FileDAOTest extends AbstractDAOTest {
         requestQuery.setFilters(asList(new Condition("path", EQUALS, PATH)));
         requestQuery.setFilters(asList(new Condition("file-name", EQUALS, "not_existed_file.txt")));
 
-        final var result = instance.findByRequestQuery(requestQuery, emptyList(), emptyList(), true, false);
+        final var result = instance.findByRequestQuery(requestQuery, emptyList(), true, false);
 
         assertThat(result).isEmpty();
     }
@@ -175,7 +176,10 @@ public class FileDAOTest extends AbstractDAOTest {
         fileData.setUuid(FILE_UUID);
         fileData.setPath(PATH);
         fileData.setVersion(1);
-        fileData.setType(FORM);
+        GeneralDictionaryItem type = new GeneralDictionaryItem();
+        type.setCode("FORM");
+        type.setId(2);
+        fileData.setType(type);
         fileData.setStatus(ACTIVE);
         fileData.setDescription("other file");
         fileData.setCreatedBy(UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65765"));

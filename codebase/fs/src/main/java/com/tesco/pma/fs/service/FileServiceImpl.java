@@ -4,7 +4,6 @@ import com.tesco.pma.api.RequestQueryToDictionaryFilterConverter;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.RegistrationException;
 import com.tesco.pma.fs.api.FileStatus;
-import com.tesco.pma.fs.api.FileType;
 import com.tesco.pma.fs.dao.FileDAO;
 import com.tesco.pma.fs.domain.File;
 import com.tesco.pma.fs.domain.UploadMetadata;
@@ -82,13 +81,7 @@ public class FileServiceImpl implements FileService {
                 toDictionaryFilterConverter.convert(requestQuery, true, "status", FileStatus.class),
                 toDictionaryFilterConverter.convert(requestQuery, false, "status", FileStatus.class)
         );
-
-        var typeFilters = Arrays.asList(
-                toDictionaryFilterConverter.convert(requestQuery, true, "type", FileType.class),
-                toDictionaryFilterConverter.convert(requestQuery, false, "type", FileType.class)
-        );
-
-        return fileDao.findByRequestQuery(requestQuery, statusFilters, typeFilters, includeFileContent, latest);
+        return fileDao.findByRequestQuery(requestQuery, statusFilters, includeFileContent, latest);
     }
 
     @Override

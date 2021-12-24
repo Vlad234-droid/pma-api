@@ -1,6 +1,7 @@
 package com.tesco.pma.fs.service;
 
 import com.tesco.pma.api.DictionaryFilter;
+import com.tesco.pma.api.GeneralDictionaryItem;
 import com.tesco.pma.api.RequestQueryToDictionaryFilterConverter;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.RegistrationException;
@@ -133,7 +134,7 @@ public class FileServiceImplTest {
         when(toDictionaryFilterConverter.convert(requestQuery, false, "type", FileType.class))
                 .thenReturn(excludeTypeFilter);
         when(fileDao.findByRequestQuery(requestQuery, asList(includeStatusFilter, excludeStatusFilter),
-                asList(includeTypeFilter, excludeTypeFilter), includeFileContent, true)).thenReturn(filesData);
+                includeFileContent, true)).thenReturn(filesData);
 
         var result = service.get(requestQuery, includeFileContent, true);
 
@@ -144,7 +145,7 @@ public class FileServiceImplTest {
     void getByRequestQueryReturnsNothingWhenDaoFindsNothing() {
         var includeFileContent = true;
         var requestQuery = new RequestQuery();
-        when(fileDao.findByRequestQuery(any(RequestQuery.class), anyList(), anyList(), eq(includeFileContent), eq(true)))
+        when(fileDao.findByRequestQuery(any(RequestQuery.class), anyList(), eq(includeFileContent), eq(true)))
                 .thenReturn(emptyList());
 
         var result = service.get(requestQuery, includeFileContent, true);
@@ -158,7 +159,7 @@ public class FileServiceImplTest {
         var includeFileContent = false;
         var requestQuery = new RequestQuery();
         requestQuery.setFilters(asList(new Condition("path", EQUALS, PATH), new Condition("file-name", EQUALS, FILE_NAME)));
-        when(fileDao.findByRequestQuery(eq(requestQuery), any(), any(), eq(includeFileContent), eq(true))).thenReturn(asList(fileData));
+        when(fileDao.findByRequestQuery(eq(requestQuery), any(), eq(includeFileContent), eq(true))).thenReturn(asList(fileData));
 
         var result = service.get(PATH, FILE_NAME, includeFileContent);
 
@@ -168,7 +169,7 @@ public class FileServiceImplTest {
     @Test
     void getByFileNameAndPathThrowsExceptionWhenDaoReturnsNull() {
         var includeFileContent = true;
-        when(fileDao.findByRequestQuery(any(), any(), any(), eq(includeFileContent), eq(true))).thenReturn(emptyList());
+        when(fileDao.findByRequestQuery(any(), any(), eq(includeFileContent), eq(true))).thenReturn(emptyList());
 
         assertThrows(NotFoundException.class, () -> service.get("/not/existed", "not_existed_file.txt", includeFileContent));
     }
@@ -181,7 +182,7 @@ public class FileServiceImplTest {
         requestQuery.setFilters(asList(new Condition("path", EQUALS, PATH), new Condition("file-name", EQUALS, FILE_NAME)));
         requestQuery.setLimit(null);
         requestQuery.setSort(Arrays.asList(new Sort("version", DESC)));
-        when(fileDao.findByRequestQuery(eq(requestQuery), any(), any(), eq(includeFileContent), eq(false))).thenReturn(filesData);
+        when(fileDao.findByRequestQuery(eq(requestQuery), any(), eq(includeFileContent), eq(false))).thenReturn(filesData);
 
         var result = service.getAllVersions(PATH, FILE_NAME, includeFileContent);
 
@@ -195,7 +196,7 @@ public class FileServiceImplTest {
         requestQuery.setFilters(asList(new Condition("path", EQUALS, PATH), new Condition("file-name", EQUALS, FILE_NAME)));
         requestQuery.setLimit(null);
         requestQuery.setSort(Arrays.asList(new Sort("version", DESC)));
-        when(fileDao.findByRequestQuery(eq(requestQuery), any(), any(), eq(includeFileContent), eq(false))).thenReturn(emptyList());
+        when(fileDao.findByRequestQuery(eq(requestQuery), any(), eq(includeFileContent), eq(false))).thenReturn(emptyList());
 
         var result = service.getAllVersions(PATH, FILE_NAME, includeFileContent);
 
@@ -207,7 +208,10 @@ public class FileServiceImplTest {
         fileData.setUuid(uuid);
         fileData.setPath(PATH);
         fileData.setVersion(version);
-        fileData.setType(FORM);
+        GeneralDictionaryItem type = new GeneralDictionaryItem();
+        type.setCode("FORM");
+        type.setId(2);
+        fileData.setType(type);
         fileData.setStatus(ACTIVE);
         fileData.setDescription("other file");
         fileData.setCreatedBy(CREATOR_ID);
