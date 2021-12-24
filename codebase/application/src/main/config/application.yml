@@ -225,10 +225,10 @@ tesco:
       PM_REVIEW_BEFORE_END: com.tesco.pma.bpm.action.RunFlowByEventAction
       # Import events
       IMPORT_NEW_COLLEAGUE: com.tesco.pma.bpm.action.RunFlowByEventAction
-      IMPORT_NEW_COLLEAGUE_2: com.tesco.pma.colleague.security.action.CreateAccountByEventAction
+      POST_IMPORT_NEW_COLLEAGUE: com.tesco.pma.colleague.security.action.CreateAccountByEventAction
       # CEP events
       CEP_COLLEAGUE_ADDED: com.tesco.pma.bpm.action.RunFlowByEventAction
-      CEP_COLLEAGUE_ADDED_2: com.tesco.pma.colleague.security.action.CreateAccountByEventAction
+      POST_CEP_COLLEAGUE_ADDED: com.tesco.pma.colleague.security.action.CreateAccountByEventAction
       CEP_COLLEAGUE_UPDATED: com.tesco.pma.bpm.action.RunFlowByEventAction
       CEP_COLLEAGUE_LEFT: com.tesco.pma.bpm.action.RunFlowByEventAction
     user-management:
