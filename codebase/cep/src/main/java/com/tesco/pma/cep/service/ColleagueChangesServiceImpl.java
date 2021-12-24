@@ -90,7 +90,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         int updated = profileService.create(colleagueChangeEventPayload.getColleagueUuid());
         if (updated > 0) {
             // Send an event to User Management Service on creation a new account
-            sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.ACCOUNT_NEW_COLLEAGUE_ADDED);
+            sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.NEW_COLLEAGUE_ADDED);
 
             // Send an event to Camunda
             sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.CEP_COLLEAGUE_ADDED);
