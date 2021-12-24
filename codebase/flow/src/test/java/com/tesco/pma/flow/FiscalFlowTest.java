@@ -9,7 +9,6 @@ import com.tesco.pma.flow.handlers.ProcessTimelinePointHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import static com.tesco.pma.bpm.camunda.flow.FlowTestUtil.mockExecutionInHandler;
@@ -24,7 +23,7 @@ import static com.tesco.pma.flow.FlowParameters.START_DATE;
  */
 @ActiveProfiles("test")
 @SpringBootTest(classes = {CamundaSpringBootTestConfig.class})
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class FiscalFlowTest extends AbstractCamundaSpringBootTest {
 
     @MockBean
@@ -51,5 +50,4 @@ public class FiscalFlowTest extends AbstractCamundaSpringBootTest {
         assertThatForProcess(runProcess("fiscal_test"))
                 .activity("call_review_schedule_eyr").executedOnce();
     }
-
 }

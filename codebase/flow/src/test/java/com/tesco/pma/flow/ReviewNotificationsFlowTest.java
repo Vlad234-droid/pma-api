@@ -11,7 +11,6 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 /**
@@ -20,7 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
  */
 @ActiveProfiles("test")
 @SpringBootTest(classes = {CamundaSpringBootTestConfig.class})
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
 
     private static final String DECISION_TABLE_TASK = "decision_table";

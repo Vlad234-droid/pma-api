@@ -1,6 +1,6 @@
 package com.tesco.pma.flow.handlers;
 
-import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
+import com.tesco.pma.bpm.camunda.flow.CamundaHandlerTestConfig;
 import com.tesco.pma.bpm.camunda.flow.FlowTestUtil;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
@@ -36,7 +36,7 @@ import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MAX;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MIN;
 
 @ActiveProfiles("test")
-@SpringBootTest(classes = CamundaSpringBootTestConfig.class)
+@SpringBootTest(classes = CamundaHandlerTestConfig.class)
 @ExtendWith(MockitoExtension.class)
 public class ProcessTimelinePointHandlerTest {
 
