@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,27 +46,13 @@ public class PDPEndpoint {
      */
     @Operation(summary = "Create a PDP", description = "PDP created", tags = {"pdp"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
-    @PostMapping(path = "/{colleagueUuid}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/colleagues/{colleagueUuid}/goals", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<List<PDPGoal>> createPDP(@PathVariable("colleagueUuid") UUID colleagueUuid,
-                                                 @RequestBody List<@Valid PDPGoal> goals) {
-        return success(pdpService.createPDP(colleagueUuid, goals));
-    }
-
-    /**
-     * POST call to add a PDP Goal to a Plan.
-     *
-     * @param colleagueUuid an identifier of colleague
-     * @param goal          a PDP goal
-     * @return a RestResponse parameterized with Goal of PDP
-     */
-    @Operation(summary = "Add a PDP Goal to a Plan", description = "PDP Goal created", tags = {"pdp"})
-    @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
-    @PostMapping(path = "/{colleagueUuid}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<PDPGoal> addPDPGoal(@PathVariable("colleagueUuid") UUID colleagueUuid,
-                                            @RequestBody @Valid PDPGoal goal) {
-        return success(pdpService.addPDPGoal(colleagueUuid, goal));
+    @PreAuthorize("isCurrentUser(#colleagueUuid)")
+    public RestResponse<List<PDPGoal>> create(@PathVariable("colleagueUuid") UUID colleagueUuid,
+                                              @RequestBody List<@Valid PDPGoal> goals) {
+        return success(pdpService.create(colleagueUuid, goals));
     }
 
     /**
@@ -76,10 +64,12 @@ public class PDPEndpoint {
      */
     @Operation(summary = "Update a PDP", description = "PDP updated", tags = {"pdp"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "PDP updated")
-    @PutMapping(path = "/{colleagueUuid}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public RestResponse<List<PDPGoal>> updatePDP(@PathVariable("colleagueUuid") UUID colleagueUuid,
-                                                 @RequestBody List<@Valid PDPGoal> goals) {
-        return success(pdpService.updatePDP(colleagueUuid, goals));
+    @PutMapping(path = "/colleagues/{colleagueUuid}/goals", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isCurrentUser(#colleagueUuid)")
+    public RestResponse<List<PDPGoal>> update(@PathVariable("colleagueUuid") UUID colleagueUuid,
+                                              @RequestBody List<@Valid PDPGoal> goals) {
+        return success(pdpService.update(colleagueUuid, goals));
     }
 
     /**
@@ -93,10 +83,11 @@ public class PDPEndpoint {
             description = "Delete existing PDP Goal", tags = {"pdp"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "PDP deleted")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PDP not found", content = @Content)
-    @DeleteMapping(path = "/colleagues/{colleagueUuid}/numbers/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestResponse<Void> deletePDPGoalByColleagueAndNumber(@PathVariable("colleagueUuid") UUID colleagueUuid,
-                                                                @PathVariable("number") Integer number) {
-        pdpService.deletePDPGoalByColleagueAndNumber(colleagueUuid, number);
+    @DeleteMapping(path = "/colleagues/{colleagueUuid}/goals/numbers/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isCurrentUser(#colleagueUuid)")
+    public RestResponse<Void> deleteGoal(@PathVariable("colleagueUuid") UUID colleagueUuid,
+                                         @PathVariable("number") Integer number) {
+        pdpService.deleteGoal(colleagueUuid, number);
         return RestResponse.success();
     }
 
@@ -109,9 +100,9 @@ public class PDPEndpoint {
     @Operation(summary = "Delete existing PDP Goal from a Plan by its uuid", description = "Delete existing PDP Goal", tags = {"pdp"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "PDP deleted")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PDP not found", content = @Content)
-    @DeleteMapping(path = "/goals/{goalUuid}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestResponse<Void> deletePDPGoalByUuid(@PathVariable("goalUuid") UUID goalUuid) {
-        pdpService.deletePDPGoalByUuid(goalUuid);
+    @DeleteMapping(path = "/colleagues/goals/{goalUuid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public RestResponse<Void> deleteGoal(@PathVariable("goalUuid") UUID goalUuid, Authentication authentication) {
+        pdpService.deleteGoal(UUID.fromString(authentication.getName()), goalUuid);
         return RestResponse.success();
     }
 
@@ -125,10 +116,11 @@ public class PDPEndpoint {
     @Operation(summary = "Get a PDP Goal by its colleague and number", tags = {"pdp"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the PDP Goal")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PDP Goal not found", content = @Content)
-    @GetMapping(path = "/colleagues/{colleagueUuid}/numbers/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestResponse<PDPGoal> getPDPGoalByColleagueAndNumber(@PathVariable("colleagueUuid") UUID colleagueUuid,
-                                                                @PathVariable("number") Integer number) {
-        return success(pdpService.getPDPGoalByColleagueAndNumber(colleagueUuid, number));
+    @GetMapping(path = "/colleagues/{colleagueUuid}/goals/numbers/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isCurrentUser(#colleagueUuid)")
+    public RestResponse<PDPGoal> getGoal(@PathVariable("colleagueUuid") UUID colleagueUuid,
+                                         @PathVariable("number") Integer number) {
+        return success(pdpService.getGoal(colleagueUuid, number));
     }
 
     /**
@@ -140,9 +132,9 @@ public class PDPEndpoint {
     @Operation(summary = "Get a PDP Goal by its uuid", tags = {"pdp"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the PDP Goal")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PDP Goal not found", content = @Content)
-    @GetMapping(path = "/goals/{goalUuid}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestResponse<PDPGoal> getPDPGoalByUuid(@PathVariable("goalUuid") UUID goalUuid) {
-        return success(pdpService.getPDPGoalByUuid(goalUuid));
+    @GetMapping(path = "/colleagues/goals/{goalUuid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public RestResponse<PDPGoal> getGoal(@PathVariable("goalUuid") UUID goalUuid, Authentication authentication) {
+        return success(pdpService.getGoal(UUID.fromString(authentication.getName()), goalUuid));
     }
 
     /**
@@ -154,8 +146,9 @@ public class PDPEndpoint {
     @Operation(summary = "Get a list of PDP Goals by its colleague", tags = {"pdp"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the PDP Goals")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PDP Goals not found", content = @Content)
-    @GetMapping(path = "/colleagues/{colleagueUuid}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestResponse<List<PDPGoal>> getPDPGoalsByColleague(@PathVariable("colleagueUuid") UUID colleagueUuid) {
-        return success(pdpService.getPDPGoalsByColleague(colleagueUuid));
+    @GetMapping(path = "/colleagues/{colleagueUuid}/goals", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isCurrentUser(#colleagueUuid)")
+    public RestResponse<List<PDPGoal>> getGoals(@PathVariable("colleagueUuid") UUID colleagueUuid) {
+        return success(pdpService.getGoals(colleagueUuid));
     }
 }

@@ -1,52 +1,52 @@
-package com.tesco.pma.pdp.service;
+package com.tesco.pma.pdp.dao;
 
 import com.tesco.pma.pdp.domain.PDPGoal;
+import org.apache.ibatis.annotations.Param;
 
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
 /**
- * Personal Development Plan service.
- * Implementation classes must be annotated with @org.springframework.validation.annotation.Validated.
+ * Interface to perform database operation on Personal Development Plan
  */
-public interface PDPService {
+public interface PDPDao { // NOPMD
 
     /**
-     * Create a PDP with its Goals
+     * Create a PDP Goal
      *
      * @param colleagueUuid is colleague identifier
-     * @param goals         are non-empty list of PDP goals
-     * @return list of created PDP goals
+     * @param goal          is PDP goal
+     * @return number of created PDP goals
      */
-    List<PDPGoal> create(@NotNull UUID colleagueUuid, @NotEmpty List<PDPGoal> goals);
+    int createGoal(@Param("colleagueUuid") UUID colleagueUuid, @Param("goal") PDPGoal goal);
 
     /**
-     * Update a PDP with its Goals
+     * Update a PDP Goal
      *
      * @param colleagueUuid is colleague identifier
-     * @param goals         are non-empty list of PDP goals
-     * @return list of updated PDP goals
+     * @param goal          is PDP goal
+     * @return number of updated rows
      */
-    List<PDPGoal> update(@NotNull UUID colleagueUuid, @NotEmpty List<PDPGoal> goals);
+    int updateGoal(@Param("colleagueUuid") UUID colleagueUuid, @Param("goal") PDPGoal goal);
 
     /**
      * Delete PDP Goal from Plan by its colleague and number
      *
      * @param colleagueUuid is colleague identifier
      * @param number        is goal's number
+     * @return number of deleted rows
+     *
      */
-    void deleteGoal(@NotNull UUID colleagueUuid, @NotNull Integer number);
+    int deleteGoal(@Param("colleagueUuid") UUID colleagueUuid, @Param("number") Integer number);
 
     /**
      * Delete PDP Goal from Plan by its uuid
      *
      * @param colleagueUuid is colleague identifier
      * @param goalUuid is goal identifier
+     * @return number of deleted rows
      */
-    void deleteGoal(@NotNull UUID colleagueUuid, @NotNull UUID goalUuid);
+    int deleteGoal(@Param("colleagueUuid") UUID colleagueUuid, @Param("goalUuid") UUID goalUuid);
 
     /**
      * Get a PDP Goal by its colleague and number
@@ -55,7 +55,7 @@ public interface PDPService {
      * @param number        is goal's number
      * @return PDP Goal by its colleagueUuid and number
      */
-    PDPGoal getGoal(@NotNull UUID colleagueUuid, @NotNull Integer number);
+    PDPGoal readGoal(@Param("colleagueUuid") UUID colleagueUuid, @Param("number") Integer number);
 
     /**
      * Get a PDP Goal by its uuid
@@ -64,7 +64,7 @@ public interface PDPService {
      * @param goalUuid is goal identifier
      * @return PDP Goal by its uuid
      */
-    PDPGoal getGoal(@NotNull UUID colleagueUuid, @NotNull UUID goalUuid);
+    PDPGoal readGoal(@Param("colleagueUuid") UUID colleagueUuid, @Param("goalUuid") UUID goalUuid);
 
     /**
      * Get a list of PDP Goals by its colleague ordered by its number
@@ -72,5 +72,5 @@ public interface PDPService {
      * @param colleagueUuid is colleague identifier
      * @return list of PDP Goals by its colleagueUuid
      */
-    List<PDPGoal> getGoals(@NotNull UUID colleagueUuid);
+    List<PDPGoal> readGoals(@Param("colleagueUuid") UUID colleagueUuid);
 }
