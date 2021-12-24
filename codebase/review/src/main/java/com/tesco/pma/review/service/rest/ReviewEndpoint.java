@@ -316,7 +316,7 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Organisation objectives not found", content = @Content)
     @GetMapping(path = "/org-objectives",
             produces = APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasColleagueWorkLevel('WL4', 'WL5')")
+    @PreAuthorize("hasColleagueWorkLevel('WL4', 'WL5') or isTalentAdmin()")
     public RestResponse<List<OrgObjective>> getOrgObjectives() {
         return success(reviewService.getAllOrgObjectives());
     }
@@ -331,7 +331,7 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Organisation objectives not found", content = @Content)
     @GetMapping(path = "/org-objectives/published",
             produces = APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasColleagueWorkLevel('WL4', 'WL5')")
+    @PreAuthorize("hasColleagueWorkLevel('WL4', 'WL5') or isTalentAdmin()")
     public RestResponse<List<OrgObjective>> getPublishedOrgObjectives() {
         return success(reviewService.getPublishedOrgObjectives());
     }
