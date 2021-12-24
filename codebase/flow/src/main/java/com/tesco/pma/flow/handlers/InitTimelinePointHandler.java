@@ -2,18 +2,15 @@ package com.tesco.pma.flow.handlers;
 
 import com.tesco.pma.bpm.api.ProcessExecutionException;
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
-import com.tesco.pma.bpm.camunda.flow.CamundaExecutionContext;
 import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.api.model.PMElement;
 import com.tesco.pma.cycle.api.model.PMElementType;
-import com.tesco.pma.cycle.model.PMProcessModelParser;
 import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.logging.LogFormatter;
 import lombok.extern.slf4j.Slf4j;
-import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -68,7 +65,7 @@ public class InitTimelinePointHandler extends CamundaAbstractFlowHandler {
         //todo handle cycle statuses
 
         var startDate = context.getVariable(FlowParameters.START_DATE, LocalDate.class);
-        var parent = getParent(context);
+        var parent = HandlerUtils.getParent(context);
         if (PMElementType.TIMELINE_POINT == parent.getType()) {
             processTimelinePoint(context, startDate, parent);
         } else if (PMElementType.REVIEW == parent.getType()) {
@@ -77,12 +74,6 @@ public class InitTimelinePointHandler extends CamundaAbstractFlowHandler {
             //todo replace by required exception
             throw new ProcessExecutionException("Incorrect configuration: none required parameters are specified");
         }
-    }
-
-    PMElement getParent(ExecutionContext context) {
-        var delegate = ((CamundaExecutionContext) context).getDelegateExecution();
-        var activity = (Activity) delegate.getBpmnModelElementInstance().getParentElement();
-        return PMProcessModelParser.fillPMElement(activity, new PMElement());
     }
 
     void processTimelinePoint(ExecutionContext context, LocalDate startDate, PMElement element) throws ProcessExecutionException {
@@ -116,7 +107,9 @@ public class InitTimelinePointHandler extends CamundaAbstractFlowHandler {
             try {
                 var period = parsePeriod(props, names, BEFORE_END);
                 var before = endDate.minus(period);
-                context.setVariable(FlowParameters.BEFORE_END_DATE, before.isBefore(startDate) ? startDate : before);
+                var beforeEnd = before.isBefore(startDate) ? startDate : before;
+                context.setVariable(FlowParameters.BEFORE_END_DATE, beforeEnd);
+                context.setVariable(FlowParameters.BEFORE_END_DATE_S, HandlerUtils.formatDate(beforeEnd));
             } catch (DateTimeParseException e) {
                 throw incorrectParameter(props, names, BEFORE_END, e);
             }
@@ -131,6 +124,7 @@ public class InitTimelinePointHandler extends CamundaAbstractFlowHandler {
                 var period = parsePeriod(props, names, DURATION);
                 endDate = startDate.plus(period);
                 context.setVariable(FlowParameters.END_DATE, endDate);
+                context.setVariable(FlowParameters.END_DATE_S, HandlerUtils.formatDate(endDate));
             } catch (DateTimeParseException e) {
                 throw incorrectParameter(props, names, DURATION, e);
             }
@@ -145,6 +139,7 @@ public class InitTimelinePointHandler extends CamundaAbstractFlowHandler {
                 var period = parsePeriod(props, names, BEFORE_START);
                 var before = startTime.minus(period);
                 context.setVariable(FlowParameters.BEFORE_START_DATE, before);
+                context.setVariable(FlowParameters.BEFORE_START_DATE_S, HandlerUtils.formatDate(before));
             } catch (DateTimeParseException e) {
                 throw incorrectParameter(props, names, BEFORE_START, e);
             }
@@ -172,6 +167,7 @@ public class InitTimelinePointHandler extends CamundaAbstractFlowHandler {
                     + "\nCycle start date is used: " + calculatedStartDate);
         }
         context.setVariable(FlowParameters.START_DATE, calculatedStartDate);
+        context.setVariable(FlowParameters.START_DATE_S, HandlerUtils.formatDate(calculatedStartDate));
         return calculatedStartDate;
     }
 

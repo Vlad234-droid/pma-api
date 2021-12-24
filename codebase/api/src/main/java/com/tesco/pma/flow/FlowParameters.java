@@ -19,6 +19,11 @@ public enum FlowParameters {
     BEFORE_START_DATE,
     BEFORE_END_DATE,
     END_DATE,
+    // formatted date strings
+    START_DATE_S,
+    BEFORE_START_DATE_S,
+    BEFORE_END_DATE_S,
+    END_DATE_S,
 
     COLLEAGUE_UUID
 }

@@ -5,7 +5,6 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.cycle.service.PMCycleService;
-import com.tesco.pma.event.EventParams;
 import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.logging.LogFormatter;
 import com.tesco.pma.organisation.service.ConfigEntryService;
@@ -19,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.tesco.pma.flow.exception.ErrorCodes.EVENT_COLLEAGUE_UUID_ABSENT;
+import static com.tesco.pma.flow.exception.ErrorCodes.EVENT_INVALID_COLLEAGUE_UUID_FORMAT;
 import static com.tesco.pma.flow.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_FOR_COLLEAGUE;
 
 @Slf4j
@@ -36,11 +37,10 @@ public class PMNewColleagueEventHandler extends AbstractColleagueCycleHandler {
 
     @Override
     protected void execute(ExecutionContext context) {
-        var event = context.getEvent();
-        if (event != null) {
-            var eventProperties = event.getEventProperties();
-            if (eventProperties.containsKey(EventParams.COLLEAGUE_UUID.name())) {
-                var colleagueUuid = UUID.fromString(eventProperties.get(EventParams.COLLEAGUE_UUID.name()).toString());
+        try {
+            final UUID colleagueUuid = HandlerUtils.getEventColleagueUuid(context);
+
+            if (colleagueUuid != null) {
                 pmCycleService.getAll(true)
                         .stream()
                         .filter(pmCycle -> PMCycleStatus.ACTIVE == pmCycle.getStatus())
@@ -53,7 +53,11 @@ public class PMNewColleagueEventHandler extends AbstractColleagueCycleHandler {
                                 },
                                 () -> log.warn(LogFormatter.formatMessage(messageSourceAccessor, PM_CYCLE_NOT_FOUND_FOR_COLLEAGUE,
                                         Map.of(COLLEAGUE_UUID_PARAMETER, colleagueUuid))));
+            } else {
+                log.warn(LogFormatter.formatMessage(messageSourceAccessor, EVENT_COLLEAGUE_UUID_ABSENT));
             }
+        } catch (IllegalArgumentException e) {
+            log.warn(LogFormatter.formatMessage(messageSourceAccessor, EVENT_INVALID_COLLEAGUE_UUID_FORMAT));
         }
     }
 
