@@ -25,6 +25,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +66,7 @@ public class ProcessTimelinePointHandlerTest {
 
         var ec = FlowTestUtil.executionBuilder()
                 .withVariable(FlowParameters.PM_CYCLE, pmCycle)
-                .withVariable(FlowParameters.START_DATE, startDate)
+                .withVariable(FlowParameters.START_DATE, DateTimeFormatter.ISO_LOCAL_DATE.format(startDate))
                 .build();
 
         var pmElement = new PMElement();
@@ -87,7 +88,7 @@ public class ProcessTimelinePointHandlerTest {
 
         var ec = FlowTestUtil.executionBuilder()
                 .withVariable(FlowParameters.PM_CYCLE, pmCycle)
-                .withVariable(FlowParameters.START_DATE, startDate)
+                .withVariable(FlowParameters.START_DATE, DateTimeFormatter.ISO_LOCAL_DATE.format(startDate))
                 .build();
 
         var parentElement = new PMElement();
