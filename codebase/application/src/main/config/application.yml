@@ -228,6 +228,8 @@ tesco:
       CEP_COLLEAGUE_ADDED: com.tesco.pma.bpm.action.RunFlowByEventAction
       CEP_COLLEAGUE_UPDATED: com.tesco.pma.bpm.action.RunFlowByEventAction
       CEP_COLLEAGUE_LEFT: com.tesco.pma.bpm.action.RunFlowByEventAction
+      # Account events
+      ACCOUNT_NEW_COLLEAGUE_ADDED: com.tesco.pma.colleague.security.action.CreateAccountByEventAction
     user-management:
         page:
           size: 100
