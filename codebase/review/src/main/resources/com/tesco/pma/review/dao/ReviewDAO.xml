@@ -119,6 +119,7 @@
         <if test="number != null">
             AND r.number = #{number}
         </if>
+        order by r.tl_point_uuid, r.type_id, r.number
     </select>
 
     <select id="getReviewsByColleague" resultMap="reviewResultMap">
@@ -136,8 +137,7 @@
         and csr.rn = 1)
         where cc.colleague_uuid = #{colleagueUuid}
         and cc.cycle_uuid = #{cycleUuid}
-        order by r.type_id,
-        r.number
+        order by r.type_id, r.number
     </select>
 
     <select id="getTeamReviews" resultMap="colleagueReviewsResultMap">
