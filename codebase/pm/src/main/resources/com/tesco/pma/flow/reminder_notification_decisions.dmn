@@ -15,7 +15,7 @@
       </input>
       <input id="InputClause_1t103wm" label="Reminder">
         <inputExpression id="LiteralExpression_10j38y5" typeRef="string">
-          <text>COLLEAGUE_REMINDERS</text>
+          <text>QUARTER</text>
         </inputExpression>
       </input>
       <input id="InputClause_0u1chj8" label="Notification attribute value">
@@ -41,7 +41,7 @@ and attr.getValue() = "true",
           <text>"REMINDER"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0pjgv55">
-          <text>contains(?, "Q1")</text>
+          <text>"Q1"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_00l5o73">
           <text>true</text>
@@ -55,7 +55,7 @@ and attr.getValue() = "true",
           <text>"REMINDER"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0p2rps8">
-          <text>contains(?, "Q3")</text>
+          <text>"Q3"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_170jexr">
           <text>true</text>

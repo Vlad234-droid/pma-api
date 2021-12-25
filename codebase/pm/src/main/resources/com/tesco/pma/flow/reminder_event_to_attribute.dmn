@@ -12,7 +12,7 @@
       </input>
       <input id="InputClause_011oa9g" label="Reminder">
         <inputExpression id="LiteralExpression_0m1ksom" typeRef="string">
-          <text>COLLEAGUE_REMINDERS</text>
+          <text>QUARTER</text>
         </inputExpression>
       </input>
       <output id="Output_1" label="Attribute name" name="PROFILE_ATTRIBUTE_NAME" typeRef="string" biodi:width="367" />
@@ -21,7 +21,7 @@
           <text>"REMINDER"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0tw6odr">
-          <text>contains(?, "Q1")</text>
+          <text>"Q1"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0qmnwwf">
           <text>"Q1 reminder"</text>
@@ -32,7 +32,7 @@
           <text>"REMINDER"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1smleih">
-          <text>contains(?, "Q3")</text>
+          <text>"Q3"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_16bybi4">
           <text>"Q3 reminder"</text>

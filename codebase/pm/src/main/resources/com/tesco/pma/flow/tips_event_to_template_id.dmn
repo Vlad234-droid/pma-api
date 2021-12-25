@@ -14,7 +14,7 @@
       <rule id="DecisionRule_0k5q2rg">
         <description></description>
         <inputEntry id="UnaryTests_11aaqfm">
-          <text>"RECEIVE_TIPS"</text>
+          <text>"TIPS_RECEIVED"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1vayiaq">
           <text>"00000000-0000-0000-0000-000000000000"</text>

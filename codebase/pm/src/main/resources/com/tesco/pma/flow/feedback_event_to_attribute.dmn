@@ -21,7 +21,7 @@
       </rule>
       <rule id="DecisionRule_19hp08h">
         <inputEntry id="UnaryTests_12ofmtu">
-          <text>"RESPOND_TO_FEEDBACK_REQUESTS"</text>
+          <text>"FEEDBACK_REQUESTS_RESPONDED"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0qdm4ha">
           <text>"Respond to feedback requests"</text>
@@ -29,7 +29,7 @@
       </rule>
       <rule id="DecisionRule_1svgltz">
         <inputEntry id="UnaryTests_0a3b3tn">
-          <text>"REQUEST_FEEDBACK"</text>
+          <text>"FEEDBACK_REQUESTED"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_15xr2rd">
           <text>"Request feedback"</text>

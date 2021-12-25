@@ -21,7 +21,7 @@
       </rule>
       <rule id="DecisionRule_0p1xqy1">
         <inputEntry id="UnaryTests_1g2j5bi">
-          <text>"LM_OBJECTIVES_APPROVED_FOR_SHARING"</text>
+          <text>"OBJECTIVES_APPROVED_FOR_SHARING"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1t2pk1d">
           <text>"00000000-0000-0000-0000-000000000000"</text>
@@ -29,7 +29,7 @@
       </rule>
       <rule id="DecisionRule_1ski34y">
         <inputEntry id="UnaryTests_1078fht">
-          <text>"LM_SHARING_START"</text>
+          <text>"OBJECTIVE_SHARING_START"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1i2rk6i">
           <text>"00000000-0000-0000-0000-000000000000"</text>
@@ -37,7 +37,7 @@
       </rule>
       <rule id="DecisionRule_05v936u">
         <inputEntry id="UnaryTests_0mda4jy">
-          <text>"LM_SHARING_END"</text>
+          <text>"OBJECTIVE_SHARING_END"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0g4jlcb">
           <text>"00000000-0000-0000-0000-000000000000"</text>

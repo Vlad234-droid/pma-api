@@ -47,7 +47,7 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_0dar7ec">
         <inputEntry id="UnaryTests_05tlgjt">
-          <text>"RESPOND_TO_FEEDBACK_REQUESTS"</text>
+          <text>"FEEDBACK_REQUESTS_RESPONDED"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1yf1vtp">
           <text>true</text>
@@ -58,7 +58,7 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_0eitxod">
         <inputEntry id="UnaryTests_1978hrv">
-          <text>"REQUEST_FEEDBACK"</text>
+          <text>"FEEDBACK_REQUESTED"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_10qishv">
           <text>true</text>

@@ -11,10 +11,10 @@ import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.model.PMElementType;
+import com.tesco.pma.event.Event;
 import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.flow.handlers.*;
 import com.tesco.pma.review.domain.TimelinePoint;
-import com.tesco.pma.review.service.ReviewService;
 import com.tesco.pma.service.contact.client.ContactApiClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,20 +43,20 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
     private static final String PM_REVIEW_BEFORE_END = "PM_REVIEW_BEFORE_END";
 
     private static final String ORGANISATION_OBJECTIVES = "ORGANISATION_OBJECTIVES";
-    private static final String LM_OBJECTIVES_APPROVED_FOR_SHARING = "LM_OBJECTIVES_APPROVED_FOR_SHARING";
-    private static final String LM_SHARING_START = "LM_SHARING_START";
-    private static final String LM_SHARING_END = "LM_SHARING_END";
+    private static final String LM_OBJECTIVES_APPROVED_FOR_SHARING = "OBJECTIVES_APPROVED_FOR_SHARING";
+    private static final String LM_SHARING_START = "OBJECTIVE_SHARING_START";
+    private static final String LM_SHARING_END = "OBJECTIVE_SHARING_END";
 
     private static final String FEEDBACK_GIVEN = "FEEDBACK_GIVEN";
-    private static final String RESPOND_TO_FEEDBACK_REQUESTS = "RESPOND_TO_FEEDBACK_REQUESTS";
-    private static final String REQUEST_FEEDBACK = "REQUEST_FEEDBACK";
+    private static final String RESPOND_TO_FEEDBACK_REQUESTS = "FEEDBACK_REQUESTS_RESPONDED";
+    private static final String REQUEST_FEEDBACK = "FEEDBACK_REQUESTED";
 
     private static final String REMINDER = "REMINDER";
 
     private static final String BEFORE_CYCLE_START = "BEFORE_CYCLE_START";
     private static final String BEFORE_CYCLE_END = "BEFORE_CYCLE_END";
 
-    private static final String RECEIVE_TIPS = "RECEIVE_TIPS";
+    private static final String RECEIVE_TIPS = "TIPS_RECEIVED";
 
     @SpyBean
     private DefaultInitNotificationHandler initNotificationHandler;
@@ -80,9 +80,6 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
     private ProfileService profileService;
 
     @MockBean
-    private ReviewService reviewService;
-
-    @MockBean
     private NamedMessageSourceAccessor messageSourceAccessor;
 
     private final UUID colleagueUUID = UUID.randomUUID();
@@ -94,9 +91,6 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
 
         Mockito.when(profileService.findProfileByColleagueUuid(Mockito.any()))
                 .thenReturn(Optional.of(colleagueProfile));
-
-        Mockito.when(reviewService.getCycleTimelineByColleague(Mockito.any()))
-                .thenReturn(new ArrayList<>());
     }
 
     @Test
@@ -157,35 +151,11 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
     }
 
     @Test
-    void checkRemindersQ1() throws Exception {
-        Mockito.when(reviewService.getCycleTimelineByColleague(Mockito.any()))
-                .thenReturn(List.of(createTimelinePoint("Q1")));
+    void checkReminders() throws Exception {
 
-        checkRemindersGroup(REMINDER, null, false, WorkLevel.WL1, true);
-    }
-
-    @Test
-    void checkRemindersQ3() throws Exception {
-        Mockito.when(reviewService.getCycleTimelineByColleague(Mockito.any()))
-                .thenReturn(List.of(createTimelinePoint("Q3")));
-
-        checkRemindersGroup(REMINDER, null, false, WorkLevel.WL1, true);
-    }
-
-    @Test
-    void checkRemindersBoth() throws Exception {
-        Mockito.when(reviewService.getCycleTimelineByColleague(Mockito.any()))
-                .thenReturn(List.of(createTimelinePoint( "Q1"), createTimelinePoint( "Q3")));
-
-        checkRemindersGroup(REMINDER, null, false, WorkLevel.WL1, true);
-    }
-
-    @Test
-    void checkRemindersQ2() throws Exception {
-        Mockito.when(reviewService.getCycleTimelineByColleague(Mockito.any()))
-                .thenReturn(List.of(createTimelinePoint( "Q2")));
-
-        checkRemindersGroup(REMINDER, null, false, WorkLevel.WL1, false);
+        checkRemindersGroup(REMINDER, "Q1", true);
+        checkRemindersGroup(REMINDER, "Q3", true);
+        checkRemindersGroup(REMINDER, "Q2", false);
     }
 
     @Test
@@ -214,8 +184,10 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
         check("InitFeedbacksNotifications", "feedbacks_decision_table", evenName, reviewType, isManager, workLevel, send);
     }
 
-    void checkRemindersGroup(String evenName, PMReviewType reviewType, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
-        check("InitRemindersNotifications", "reminders_decision_table", evenName, reviewType, isManager, workLevel, send);
+    void checkRemindersGroup(String evenName, String quarter, boolean send) throws Exception {
+        var event = createEvent(evenName, null);
+        event.putProperty(FlowParameters.QUARTER.name(), quarter);
+        check("InitRemindersNotifications", "reminders_decision_table", event, false, null, send);
     }
 
     void checkCycleGroup(String evenName, PMReviewType reviewType, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
@@ -227,14 +199,11 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
     }
 
     void check(String initHandlerName, String decisionTable, String evenName, PMReviewType reviewType, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
+        var event = createEvent(evenName, reviewType);
+        check(initHandlerName, decisionTable, event, isManager, workLevel, send);
+    }
 
-        var event = new EventSupport(evenName);
-
-        if(reviewType != null) {
-            event.putProperty(FlowParameters.REVIEW_TYPE.name(), reviewType);
-        }
-
-        event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueUUID);
+    void check(String initHandlerName, String decisionTable, Event event, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
 
         colleagueProfile.getColleague().getWorkRelationships().get(0).setIsManager(isManager);
 
@@ -247,6 +216,19 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
                 .activity(decisionTable).executedOnce()
                 .activity("sendNotification").executedTimes(send ? 1 : 0);
     }
+
+    EventSupport createEvent(String evenName, PMReviewType reviewType){
+        var event = new EventSupport(evenName);
+
+        if(reviewType != null) {
+            event.putProperty(FlowParameters.REVIEW_TYPE.name(), reviewType);
+        }
+
+        event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueUUID);
+        return event;
+    }
+
+
 
     private ColleagueProfile createColleagueProfile(UUID colleagueUUID, WorkLevel wl, Map<String, String> attrs){
         var wr = new WorkRelationship();

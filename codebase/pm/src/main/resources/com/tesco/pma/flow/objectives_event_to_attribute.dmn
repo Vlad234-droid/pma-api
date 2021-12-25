@@ -21,7 +21,7 @@
       </rule>
       <rule id="DecisionRule_0s19pf1">
         <inputEntry id="UnaryTests_1hsaabi">
-          <text>"LM_OBJECTIVES_APPROVED_FOR_SHARING"</text>
+          <text>"OBJECTIVES_APPROVED_FOR_SHARING"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0rx733p">
           <text>"LM Objectives approved for sharing"</text>
@@ -29,7 +29,7 @@
       </rule>
       <rule id="DecisionRule_1nt6mei">
         <inputEntry id="UnaryTests_021r8tk">
-          <text>"LM_SHARING_START"</text>
+          <text>"OBJECTIVE_SHARING_START"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1xleuih">
           <text>"LM sharing start"</text>
@@ -37,7 +37,7 @@
       </rule>
       <rule id="DecisionRule_1xyurwn">
         <inputEntry id="UnaryTests_06w2buu">
-          <text>"LM_SHARING_END"</text>
+          <text>"OBJECTIVE_SHARING_END"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0ihl4oq">
           <text>"LM sharing end"</text>

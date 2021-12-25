@@ -23,9 +23,9 @@ public enum FlowParameters {
     COLLEAGUE_UUID,
     COLLEAGUE_PROFILE,
     COLLEAGUE_WORK_LEVEL,
-    COLLEAGUE_REMINDERS,
 
     PROFILE_ATTRIBUTE_NAME,
+    QUARTER,
 
     //notifications
     CONTACT_TEMPLATE_ID
