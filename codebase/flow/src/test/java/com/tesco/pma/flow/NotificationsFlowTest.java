@@ -34,7 +34,7 @@ import java.util.*;
 @ActiveProfiles("test")
 @SpringBootTest(classes = {CamundaSpringBootTestConfig.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
+public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
 
     private static final String PM_REVIEW_SUBMITTED = "PM_REVIEW_SUBMITTED";
     private static final String PM_REVIEW_APPROVED = "PM_REVIEW_APPROVED";
@@ -217,7 +217,7 @@ public class ReviewNotificationsFlowTest extends AbstractCamundaSpringBootTest {
                 .activity("sendNotification").executedTimes(send ? 1 : 0);
     }
 
-    EventSupport createEvent(String evenName, PMReviewType reviewType){
+    EventSupport createEvent(String evenName, PMReviewType reviewType) {
         var event = new EventSupport(evenName);
 
         if(reviewType != null) {
