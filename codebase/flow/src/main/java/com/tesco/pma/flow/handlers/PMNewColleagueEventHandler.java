@@ -8,12 +8,14 @@ import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.logging.LogFormatter;
 import com.tesco.pma.organisation.service.ConfigEntryService;
+import com.tesco.pma.pagination.RequestQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -39,9 +41,11 @@ public class PMNewColleagueEventHandler extends AbstractColleagueCycleHandler {
     protected void execute(ExecutionContext context) {
         try {
             final UUID colleagueUuid = HandlerUtils.getEventColleagueUuid(context);
+            var requestQuery = new RequestQuery();
+            requestQuery.setFilters(Collections.emptyList());
 
             if (colleagueUuid != null) {
-                pmCycleService.getAll(true)
+                pmCycleService.getAll(requestQuery, true)
                         .stream()
                         .filter(pmCycle -> PMCycleStatus.ACTIVE == pmCycle.getStatus())
                         .filter(c -> configEntryService.isColleagueExistsForCompositeKey(colleagueUuid, c.getEntryConfigKey()))

@@ -4,7 +4,6 @@ import com.tesco.pma.api.MapJson;
 import com.tesco.pma.bpm.api.ProcessExecutionException;
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
-import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
@@ -19,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.LinkedHashMap;
@@ -54,24 +54,15 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
     }
 
     private void createTimelinePoints(ExecutionContext context, PMCycle cycle) {
-        var parent = getParent(context);
         var startDate = context.getVariable(FlowParameters.START_DATE, LocalDate.class);
-        var startTime = startDate.atStartOfDay().toInstant(ZoneOffset.UTC);
-        List<PMColleagueCycle> colleagueCycles;
-        if (PMCycleType.HIRING == cycle.getType()) {
-            colleagueCycles = colleagueCycleService.getActiveByCycleUuidWithoutTimelinePoint(cycle.getUuid(), startTime);
-        } else {
-            colleagueCycles = colleagueCycleService.getActiveByCycleUuidWithoutTimelinePoint(cycle.getUuid(), null);
-        }
+        var startTime = toInstantTime(startDate);
+        var colleagueCycles = colleagueCycleService.getActiveByCycleUuidWithoutTimelinePoint(cycle.getUuid(),
+                PMCycleType.HIRING == cycle.getType() ? startTime : null);
         if (CollectionUtils.isEmpty(colleagueCycles)) {
             return;
         }
-
-        var props = buildProps(context, startDate, parent);
-
-        var endTime = Optional.ofNullable(context.getNullableVariable(FlowParameters.END_DATE, LocalDate.class))
-                .map(date -> date.atStartOfDay().toInstant(ZoneOffset.UTC))
-                .orElse(null);
+        var endTime = toInstantTime(context.getVariable(FlowParameters.END_DATE, LocalDate.class));
+        var parent = context.getVariable(FlowParameters.MODEL_PARENT_ELEMENT, PMElement.class);
         var timelinePoints = colleagueCycles.stream()
                 .map(cc -> TimelinePoint.builder()
                         .uuid(UUID.randomUUID())
@@ -81,7 +72,7 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
                         .type(parent.getType())
                         .startTime(startTime)
                         .endTime(endTime)
-                        .properties(props)
+                        .properties(buildProps(context, parent))
                         .status(calculateStatus(startDate))
                         .build())
                 .collect(Collectors.toList());
@@ -89,24 +80,28 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
         timelinePointService.saveAll(timelinePoints);
     }
 
-    PMElement getParent(ExecutionContext context) {
-        return HandlerUtils.getParent(context);
+    static Instant toInstantTime(LocalDate date) {
+        return date.atStartOfDay().toInstant(ZoneOffset.UTC);
     }
 
     private PMTimelinePointStatus calculateStatus(LocalDate startDate) {
         return startDate.isAfter(LocalDate.now()) ? PMTimelinePointStatus.NOT_STARTED : PMTimelinePointStatus.STARTED;
     }
 
-    private MapJson buildProps(ExecutionContext context, LocalDate startDate, PMElement element) {
+    private MapJson buildProps(ExecutionContext context, PMElement parent) {
         var map = new LinkedHashMap<String, String>();
-        map.put(FlowParameters.START_DATE.name(), HandlerUtils.formatDate(startDate));
 
-        List.of(FlowParameters.END_DATE, FlowParameters.BEFORE_START_DATE, FlowParameters.BEFORE_END_DATE)
-                .forEach(e -> Optional.ofNullable(context.getNullableVariable(e, LocalDate.class))
-                        .ifPresent(v -> map.put(e.name(), HandlerUtils.formatDate(v))));
+        List.of(FlowParameters.START_DATE, FlowParameters.END_DATE, FlowParameters.BEFORE_START_DATE, FlowParameters.BEFORE_END_DATE)
+                .forEach(e -> Optional.ofNullable(context.getNullableVariable(e))
+                        .ifPresent(v -> {
+                            var strValue = context.getNullableVariable(FlowParameters.getCorrespondedStringParameter(e), String.class);
+                            if (strValue != null) {
+                                map.put(e.name(), strValue);
+                            }
+                        }));
 
         List.of(PMReviewElement.PM_REVIEW_MIN, PMReviewElement.PM_REVIEW_MAX)
-                .forEach(key -> Optional.ofNullable(element.getProperties().get(key))
+                .forEach(key -> Optional.ofNullable(parent.getProperties().get(key))
                         .ifPresent(v -> map.put(key, v)));
         return new MapJson(map);
     }

@@ -27,7 +27,7 @@ public class HandlerUtils {
      * @param context execution context
      * @return parent element
      */
-    public static PMElement getParent(ExecutionContext context) {
+    public static PMElement getParentModelElement(ExecutionContext context) {
         var delegate = ((CamundaExecutionContext) context).getDelegateExecution();
         var activity = (Activity) delegate.getBpmnModelElementInstance().getParentElement();
         return PMProcessModelParser.fillPMElement(activity, new PMElement());

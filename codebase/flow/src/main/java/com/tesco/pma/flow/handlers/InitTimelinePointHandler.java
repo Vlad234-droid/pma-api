@@ -65,7 +65,7 @@ public class InitTimelinePointHandler extends CamundaAbstractFlowHandler {
         //todo handle cycle statuses
 
         var startDate = context.getVariable(FlowParameters.START_DATE, LocalDate.class);
-        var parent = HandlerUtils.getParent(context);
+        var parent = HandlerUtils.getParentModelElement(context);
         if (PMElementType.TIMELINE_POINT == parent.getType()) {
             processTimelinePoint(context, startDate, parent);
         } else if (PMElementType.REVIEW == parent.getType()) {
@@ -74,6 +74,7 @@ public class InitTimelinePointHandler extends CamundaAbstractFlowHandler {
             //todo replace by required exception
             throw new ProcessExecutionException("Incorrect configuration: none required parameters are specified");
         }
+        context.setVariable(FlowParameters.MODEL_PARENT_ELEMENT, parent);
     }
 
     void processTimelinePoint(ExecutionContext context, LocalDate startDate, PMElement element) throws ProcessExecutionException {
