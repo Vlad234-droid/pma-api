@@ -43,18 +43,17 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
     private static final String PM_REVIEW_BEFORE_END = "PM_REVIEW_BEFORE_END";
 
     private static final String ORGANISATION_OBJECTIVES = "ORGANISATION_OBJECTIVES";
-    private static final String LM_OBJECTIVES_APPROVED_FOR_SHARING = "OBJECTIVES_APPROVED_FOR_SHARING";
-    private static final String LM_SHARING_START = "OBJECTIVE_SHARING_START";
-    private static final String LM_SHARING_END = "OBJECTIVE_SHARING_END";
+    private static final String OBJECTIVES_APPROVED_FOR_SHARING = "OBJECTIVES_APPROVED_FOR_SHARING";
+    private static final String OBJECTIVE_SHARING_START = "OBJECTIVE_SHARING_START";
+    private static final String OBJECTIVE_SHARING_END = "OBJECTIVE_SHARING_END";
 
     private static final String FEEDBACK_GIVEN = "FEEDBACK_GIVEN";
     private static final String RESPOND_TO_FEEDBACK_REQUESTS = "FEEDBACK_REQUESTS_RESPONDED";
     private static final String REQUEST_FEEDBACK = "FEEDBACK_REQUESTED";
 
-    private static final String REMINDER = "REMINDER";
-
     private static final String BEFORE_CYCLE_START = "BEFORE_CYCLE_START";
     private static final String BEFORE_CYCLE_END = "BEFORE_CYCLE_END";
+    private static final String START_TIMELINE_NOTIFICATION = "START_TIMELINE_NOTIFICATION";
 
     private static final String RECEIVE_TIPS = "TIPS_RECEIVED";
 
@@ -68,7 +67,7 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
     private InitObjectiveNotificationHandler objectiveInitHandler;
 
     @SpyBean
-    private InitReminderNotificationHandler reminderNotificationHandler;
+    private InitCycleNotificationHandler reminderNotificationHandler;
 
     @MockBean(name = "sendNotification")
     private SendNotification sendNotification;
@@ -136,10 +135,10 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
         checkObjectivesGroup(ORGANISATION_OBJECTIVES, null, true, WorkLevel.WL1, false);
         checkObjectivesGroup(ORGANISATION_OBJECTIVES, null, true, WorkLevel.WL4, true);
 
-        checkObjectivesGroup(LM_OBJECTIVES_APPROVED_FOR_SHARING, null, true, WorkLevel.WL1, true);
-        checkObjectivesGroup(LM_OBJECTIVES_APPROVED_FOR_SHARING, null, false, WorkLevel.WL1, false);
-        checkObjectivesGroup(LM_SHARING_START, null, false, WorkLevel.WL1, true);
-        checkObjectivesGroup(LM_SHARING_END, null, false, WorkLevel.WL1, true);
+        checkObjectivesGroup(OBJECTIVES_APPROVED_FOR_SHARING, null, true, WorkLevel.WL1, true);
+        checkObjectivesGroup(OBJECTIVES_APPROVED_FOR_SHARING, null, false, WorkLevel.WL1, false);
+        checkObjectivesGroup(OBJECTIVE_SHARING_START, null, false, WorkLevel.WL1, true);
+        checkObjectivesGroup(OBJECTIVE_SHARING_END, null, false, WorkLevel.WL1, true);
 
     }
 
@@ -151,11 +150,11 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
     }
 
     @Test
-    void checkReminders() throws Exception {
+    void checkTimelineNotifications() throws Exception {
 
-        checkRemindersGroup(REMINDER, "Q1", true);
-        checkRemindersGroup(REMINDER, "Q3", true);
-        checkRemindersGroup(REMINDER, "Q2", false);
+        checkTimelineNotifications(START_TIMELINE_NOTIFICATION, "Q1", true);
+        checkTimelineNotifications(START_TIMELINE_NOTIFICATION, "Q3", true);
+        checkTimelineNotifications(START_TIMELINE_NOTIFICATION, "Q2", false);
     }
 
     @Test
@@ -184,10 +183,10 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
         check("InitFeedbacksNotifications", "feedbacks_decision_table", evenName, reviewType, isManager, workLevel, send);
     }
 
-    void checkRemindersGroup(String evenName, String quarter, boolean send) throws Exception {
+    void checkTimelineNotifications(String evenName, String quarter, boolean send) throws Exception {
         var event = createEvent(evenName, null);
         event.putProperty(FlowParameters.QUARTER.name(), quarter);
-        check("InitRemindersNotifications", "reminders_decision_table", event, false, null, send);
+        check("InitCycleNotifications", "cycle_decision_table", event, false, null, send);
     }
 
     void checkCycleGroup(String evenName, PMReviewType reviewType, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {

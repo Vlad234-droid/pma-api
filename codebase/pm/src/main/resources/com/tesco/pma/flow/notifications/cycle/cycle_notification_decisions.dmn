@@ -21,6 +21,11 @@
           <text>IS_MANAGER</text>
         </inputExpression>
       </input>
+      <input id="InputClause_0h6dw4f" label="Quarter">
+        <inputExpression id="LiteralExpression_1a9lhar" typeRef="string">
+          <text>QUARTER</text>
+        </inputExpression>
+      </input>
       <input id="InputClause_0u1chj8" label="Notification attribute value">
         <inputExpression id="LiteralExpression_0jiwba7" typeRef="boolean">
           <text>{
@@ -46,6 +51,9 @@ and attr.getValue() = "true",
         <inputEntry id="UnaryTests_1rclif5">
           <text>false</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_0ewakbs">
+          <text></text>
+        </inputEntry>
         <inputEntry id="UnaryTests_0ntv95x">
           <text>true</text>
         </inputEntry>
@@ -59,6 +67,9 @@ and attr.getValue() = "true",
         </inputEntry>
         <inputEntry id="UnaryTests_1d6psgh">
           <text>false</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_11f8tk0">
+          <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_057h98u">
           <text>true</text>
@@ -74,6 +85,9 @@ and attr.getValue() = "true",
         <inputEntry id="UnaryTests_02tkh7c">
           <text>true</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_000u77a">
+          <text></text>
+        </inputEntry>
         <inputEntry id="UnaryTests_00uyl85">
           <text>true</text>
         </inputEntry>
@@ -88,6 +102,9 @@ and attr.getValue() = "true",
         <inputEntry id="UnaryTests_14ozz1r">
           <text>true</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1m4fqzr">
+          <text></text>
+        </inputEntry>
         <inputEntry id="UnaryTests_02opk6n">
           <text>true</text>
         </inputEntry>
@@ -97,15 +114,52 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_052arhu">
         <inputEntry id="UnaryTests_1evw3jv">
-          <text></text>
+          <text>"START_TIMELINE_NOTIFICATION"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0kigd8e">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_19cswpv">
+          <text>"Q1"</text>
+        </inputEntry>
         <inputEntry id="UnaryTests_0n10894">
-          <text></text>
+          <text>true</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_14bd62q">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0s86p4w">
+        <inputEntry id="UnaryTests_12kx4ry">
+          <text>"START_TIMELINE_NOTIFICATION"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0y3oaop">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_04zmtrw">
+          <text>"Q3"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_18o2fov">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0ezdtgj">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_02ov6q7">
+        <inputEntry id="UnaryTests_16qkzvc">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0mon8kf">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_13iherj">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1p4yaca">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_13gh6vk">
           <text>false</text>
         </outputEntry>
       </rule>

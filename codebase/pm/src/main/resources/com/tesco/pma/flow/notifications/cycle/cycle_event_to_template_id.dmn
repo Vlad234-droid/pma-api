@@ -63,12 +63,23 @@
       <rule id="DecisionRule_1m3o2bb">
         <description>Default</description>
         <inputEntry id="UnaryTests_0v605vb">
-          <text></text>
+          <text>"START_TIMELINE_NOTIFICATION"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0vbi6gm">
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1c2gnu1">
+          <text>"00000000-0000-0000-0000-000000000000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0ppxhfq">
+        <inputEntry id="UnaryTests_1i0vnxa">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0p5hwb8">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0o4ndlm">
           <text>""</text>
         </outputEntry>
       </rule>

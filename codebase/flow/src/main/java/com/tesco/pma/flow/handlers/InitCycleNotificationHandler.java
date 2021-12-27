@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class InitReminderNotificationHandler extends AbstractInitNotificationHandler {
+public class InitCycleNotificationHandler extends AbstractInitNotificationHandler {
 
     @Override
     protected void execute(ExecutionContext context) throws Exception {

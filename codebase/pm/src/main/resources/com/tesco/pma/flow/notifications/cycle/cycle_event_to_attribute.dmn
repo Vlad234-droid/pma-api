@@ -15,6 +15,11 @@
           <text>IS_MANAGER</text>
         </inputExpression>
       </input>
+      <input id="InputClause_1bakg4a" label="Quarter">
+        <inputExpression id="LiteralExpression_0k45bdj" typeRef="string">
+          <text>QUARTER</text>
+        </inputExpression>
+      </input>
       <output id="Output_1" label="Attribute name" name="PROFILE_ATTRIBUTE_NAME" typeRef="string" biodi:width="367" />
       <rule id="DecisionRule_0k3bxnp">
         <inputEntry id="UnaryTests_1b9u06b">
@@ -22,6 +27,9 @@
         </inputEntry>
         <inputEntry id="UnaryTests_1fcvejv">
           <text>false</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ya6pa8">
+          <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_06u4cfw">
           <text>"Before cycle start - Colleague"</text>
@@ -34,6 +42,9 @@
         <inputEntry id="UnaryTests_1kqgpii">
           <text>false</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_02lzp8q">
+          <text></text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_1tdkqcg">
           <text>"Before cycle end - Colleague"</text>
         </outputEntry>
@@ -44,6 +55,9 @@
         </inputEntry>
         <inputEntry id="UnaryTests_1g5yxcx">
           <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1enrg63">
+          <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1s6qds0">
           <text>"Before cycle start - LM"</text>
@@ -56,8 +70,39 @@
         <inputEntry id="UnaryTests_03fzr4k">
           <text>true</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_0c3nav2">
+          <text></text>
+        </inputEntry>
         <outputEntry id="LiteralExpression_08lhcde">
           <text>"Before cycle end - LM"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0sinsp2">
+        <inputEntry id="UnaryTests_0p2ow69">
+          <text>"START_TIMELINE_NOTIFICATION"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1x3f1lh">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0zt4w7d">
+          <text>"Q1"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0e2h4up">
+          <text></text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_10smalj">
+        <inputEntry id="UnaryTests_1d9puvl">
+          <text>"START_TIMELINE_NOTIFICATION"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1v091m1">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1aght4v">
+          <text>"Q3"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0jtv00g">
+          <text></text>
         </outputEntry>
       </rule>
     </decisionTable>
