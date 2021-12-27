@@ -16,6 +16,22 @@
                 javaType="com.tesco.pma.pdp.api.PDPGoalStatus"/>
     </resultMap>
 
+    <insert id="createGoal" flushCache="true">
+        INSERT INTO pdp_goal
+        (uuid,
+         colleague_uuid,
+         number,
+         properties,
+         achievement_date,
+         status_id)
+        VALUES (#{goal.uuid},
+                #{goal.colleagueUuid},
+                #{goal.number},
+                #{goal.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+                #{goal.achievementDate},
+                #{goal.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.pdp.api.PDPGoalStatus});
+    </insert>
+
     <select id="readGoalByColleagueAndNumber" resultMap="goalResultMap">
         SELECT *
         FROM pdp_goal

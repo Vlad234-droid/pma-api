@@ -44,7 +44,7 @@ public class PDPServiceImpl implements PDPService {
         goals.forEach(goal -> {
             try {
                 goal.setStatus(PUBLISHED);
-                pdpDao.createGoal(colleagueUuid, goal);
+                pdpDao.createGoal(goal);
             } catch (DuplicateKeyException ex) {
                 throw new DatabaseConstraintViolationException(PDP_ALREADY_EXISTS.name(),
                         messageSourceAccessor.getMessage(PDP_ALREADY_EXISTS,

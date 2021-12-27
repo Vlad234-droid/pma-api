@@ -52,6 +52,7 @@ public class PDPEndpoint {
     @PreAuthorize("isCurrentUser(#colleagueUuid)")
     public RestResponse<List<PDPGoal>> create(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                               @RequestBody List<@Valid PDPGoal> goals) {
+        goals.forEach(goal -> goal.setColleagueUuid(colleagueUuid));
         return success(pdpService.create(colleagueUuid, goals));
     }
 

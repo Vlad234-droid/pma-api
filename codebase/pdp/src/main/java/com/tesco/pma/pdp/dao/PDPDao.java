@@ -14,11 +14,10 @@ public interface PDPDao {
     /**
      * Create a PDP Goal
      *
-     * @param colleagueUuid is colleague identifier
      * @param goal          is PDP goal
      * @return number of created PDP goals
      */
-    int createGoal(@Param("colleagueUuid") UUID colleagueUuid, @Param("goal") PDPGoal goal);
+    int createGoal(@Param("goal") PDPGoal goal);
 
     /**
      * Update a PDP Goal
