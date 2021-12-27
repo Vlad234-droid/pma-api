@@ -72,5 +72,5 @@ public interface PDPDao {
      * @param colleagueUuid is colleague identifier
      * @return list of PDP Goals by its colleagueUuid
      */
-    List<PDPGoal> readGoals(@Param("colleagueUuid") UUID colleagueUuid);
+    List<PDPGoal> readGoalsByColleague(@Param("colleagueUuid") UUID colleagueUuid);
 }

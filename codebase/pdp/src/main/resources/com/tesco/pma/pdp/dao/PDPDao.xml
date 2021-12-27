@@ -17,17 +17,24 @@
     </resultMap>
 
     <select id="readGoalByColleagueAndNumber" resultMap="goalResultMap">
-        select *
-        from pdp_goal
-        where colleague_uuid = #{colleagueUuid}
-          and number = #{number}
+        SELECT *
+        FROM pdp_goal
+        WHERE colleague_uuid = #{colleagueUuid}
+          AND number = #{number}
     </select>
 
     <select id="readGoalByUuid" resultMap="goalResultMap">
-        select *
-        from pdp_goal
-        where colleague_uuid = #{colleagueUuid}
-          and uuid = #{goalUuid}
+        SELECT *
+        FROM pdp_goal
+        WHERE colleague_uuid = #{colleagueUuid}
+          AND uuid = #{goalUuid}
+    </select>
+
+    <select id="readGoalsByColleague" resultMap="goalResultMap">
+        SELECT *
+        FROM pdp_goal
+        WHERE colleague_uuid = #{colleagueUuid}
+        ORDER BY number
     </select>
 
 </mapper>

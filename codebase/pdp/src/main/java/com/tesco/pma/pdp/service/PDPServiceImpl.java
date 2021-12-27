@@ -117,6 +117,6 @@ public class PDPServiceImpl implements PDPService {
 
     @Override
     public List<PDPGoal> getGoals(UUID colleagueUuid) {
-        return pdpDao.readGoals(colleagueUuid);
+        return pdpDao.readGoalsByColleague(colleagueUuid);
     }
 }
