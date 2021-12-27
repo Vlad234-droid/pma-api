@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.time.Instant;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,4 +18,10 @@ import lombok.experimental.FieldDefaults;
 public class ReviewStatusCounter {
     PMTimelinePointStatus status;
     Integer count;
+    Instant lastUpdatedTime;
+
+    public ReviewStatusCounter(PMTimelinePointStatus status, Integer count) {
+        this.status = status;
+        this.count = count;
+    }
 }

@@ -34,5 +34,6 @@ public class PMColleagueCycleHandler extends AbstractColleagueCycleHandler {
         pmColleagueCycleService.saveColleagueCycles(colleagueCycles);
 
         context.setVariable(FlowParameters.START_DATE, defineStartDate(cycle));
+        context.setVariable(FlowParameters.PM_CYCLE, cycle);
     }
 }
