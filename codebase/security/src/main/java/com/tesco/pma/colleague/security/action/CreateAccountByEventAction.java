@@ -55,7 +55,7 @@ public class CreateAccountByEventAction implements Action {
         try {
             userManagementService.createAccount(request);
         } catch (AccountAlreadyExistsException | DuplicatedAccountException e) {
-            log.error("Can't create account", e);
+            log.error("Can't create account : {}", e.getMessage());
         }
 
     }
