@@ -53,7 +53,7 @@ public class PDPEndpoint {
     public RestResponse<List<PDPGoal>> create(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                               @RequestBody List<@Valid PDPGoal> goals) {
         goals.forEach(goal -> goal.setColleagueUuid(colleagueUuid));
-        return success(pdpService.create(colleagueUuid, goals));
+        return success(pdpService.createGoals(colleagueUuid, goals));
     }
 
     /**
@@ -71,7 +71,7 @@ public class PDPEndpoint {
     public RestResponse<List<PDPGoal>> update(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                               @RequestBody List<@Valid PDPGoal> goals) {
         goals.forEach(goal -> goal.setColleagueUuid(colleagueUuid));
-        return success(pdpService.update(colleagueUuid, goals));
+        return success(pdpService.updateGoals(colleagueUuid, goals));
     }
 
     /**

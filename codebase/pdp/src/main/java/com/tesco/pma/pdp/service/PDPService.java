@@ -21,7 +21,7 @@ public interface PDPService {
      * @param goals         are non-empty list of PDP goals
      * @return list of created PDP goals
      */
-    List<PDPGoal> create(@NotNull UUID colleagueUuid, @NotEmpty List<PDPGoal> goals);
+    List<PDPGoal> createGoals(@NotNull UUID colleagueUuid, @NotEmpty List<PDPGoal> goals);
 
     /**
      * Update a PDP with its Goals
@@ -30,7 +30,7 @@ public interface PDPService {
      * @param goals         are non-empty list of PDP goals
      * @return list of updated PDP goals
      */
-    List<PDPGoal> update(@NotNull UUID colleagueUuid, @NotEmpty List<PDPGoal> goals);
+    List<PDPGoal> updateGoals(@NotNull UUID colleagueUuid, @NotEmpty List<PDPGoal> goals);
 
     /**
      * Delete PDP Goal from Plan by its colleague and number

@@ -40,7 +40,7 @@ public class PDPServiceImpl implements PDPService {
 
     @Override
     @Transactional
-    public List<PDPGoal> create(UUID colleagueUuid, List<PDPGoal> goals) {
+    public List<PDPGoal> createGoals(UUID colleagueUuid, List<PDPGoal> goals) {
         goals.forEach(goal -> {
             try {
                 goal.setStatus(PUBLISHED);
@@ -56,7 +56,7 @@ public class PDPServiceImpl implements PDPService {
 
     @Override
     @Transactional
-    public List<PDPGoal> update(UUID colleagueUuid, List<PDPGoal> goals) {
+    public List<PDPGoal> updateGoals(UUID colleagueUuid, List<PDPGoal> goals) {
         goals.forEach(goal -> {
             int updated;
             try {
