@@ -77,7 +77,7 @@ public class PDPServiceImpl implements PDPService {
     @Transactional
     public void deleteGoals(List<Integer> numbers, UUID colleagueUuid) {
         numbers.forEach(number -> {
-            var deleted = pdpDao.deleteGoal(colleagueUuid, number);
+            var deleted = pdpDao.deleteGoalByColleagueAndNumber(colleagueUuid, number);
             if (1 != deleted) {
                 throw new NotFoundException(PDP_GOAL_NOT_FOUND_BY_COLLEAGUE_AND_NUMBER.getCode(),
                         messageSourceAccessor.getMessage(PDP_GOAL_NOT_FOUND_BY_COLLEAGUE_AND_NUMBER,
@@ -90,7 +90,7 @@ public class PDPServiceImpl implements PDPService {
     @Transactional
     public void deleteGoals(UUID colleagueUuid, List<UUID> goalUuids) {
         goalUuids.forEach(goalUuid -> {
-            var deleted = pdpDao.deleteGoal(colleagueUuid, goalUuid);
+            var deleted = pdpDao.deleteGoalByUuidAndColleague(colleagueUuid, goalUuid);
             if (1 != deleted) {
                 throw new NotFoundException(PDP_GOAL_NOT_FOUND_BY_ID.getCode(),
                         messageSourceAccessor.getMessage(PDP_GOAL_NOT_FOUND_BY_ID,

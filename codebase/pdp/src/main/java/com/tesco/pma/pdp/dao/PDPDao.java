@@ -36,7 +36,7 @@ public interface PDPDao {
      * @return number of deleted rows
      *
      */
-    int deleteGoal(@Param("colleagueUuid") UUID colleagueUuid, @Param("number") Integer number);
+    int deleteGoalByColleagueAndNumber(@Param("colleagueUuid") UUID colleagueUuid, @Param("number") Integer number);
 
     /**
      * Delete PDP Goal from Plan by its uuid
@@ -45,7 +45,7 @@ public interface PDPDao {
      * @param goalUuid is goal identifier
      * @return number of deleted rows
      */
-    int deleteGoal(@Param("colleagueUuid") UUID colleagueUuid, @Param("goalUuid") UUID goalUuid);
+    int deleteGoalByUuidAndColleague(@Param("colleagueUuid") UUID colleagueUuid, @Param("goalUuid") UUID goalUuid);
 
     /**
      * Get a PDP Goal by its colleague and number

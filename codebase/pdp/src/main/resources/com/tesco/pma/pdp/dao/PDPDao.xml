@@ -32,7 +32,21 @@
                 #{goal.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.pdp.api.PDPGoalStatus});
     </insert>
 
-    <select id="readGoalByColleagueAndNumber" resultMap="goalResultMap">
+    <delete id="deleteGoalByColleagueAndNumber">
+        DELETE
+        FROM pdp_goal
+        WHERE colleague_uuid = #{colleagueUuid}
+          AND number = #{number}
+    </delete>
+
+    <delete id="deleteGoalByUuidAndColleague">
+        DELETE
+        FROM pdp_goal
+        WHERE uuid = #{goalUuid}
+          AND colleague_uuid = #{colleagueUuid}
+    </delete>
+
+    <select id="deleteGoalByUuidAndNumber" resultMap="goalResultMap">
         SELECT *
         FROM pdp_goal
         WHERE colleague_uuid = #{colleagueUuid}
