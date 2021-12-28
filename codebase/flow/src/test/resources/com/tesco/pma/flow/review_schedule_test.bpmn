@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_14hkk3c" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="review_schedule_test" name="review_schedule_test" isExecutable="true">
+    <bpmn:startEvent id="Event_1mop64d">
+      <bpmn:outgoing>Flow_1hnn181</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:intermediateCatchEvent id="Event_1gsa5iq" name="Before&#10;start">
+      <bpmn:incoming>Flow_1oilf03</bpmn:incoming>
+      <bpmn:outgoing>Flow_1d3qt6f</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1bgdpl8">
+        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${BEFORE_START_DATE}</bpmn:timeDate>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1hnn181" sourceRef="Event_1mop64d" targetRef="Activity_169rxaf" />
+    <bpmn:scriptTask id="Activity_0gtujyz" name="Send&#10;before start&#10;review&#10;event" scriptFormat="groovy">
+      <bpmn:incoming>Flow_1d3qt6f</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gpmgag</bpmn:outgoing>
+      <bpmn:script>println "\nSend event: " +
+"${execution.getCurrentActivityName()}" +
+" ${java.time.LocalDateTime.now()}"</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_1d3qt6f" sourceRef="Event_1gsa5iq" targetRef="Activity_0gtujyz" />
+    <bpmn:intermediateCatchEvent id="Event_19zy80f" name="Start&#10;review">
+      <bpmn:incoming>Flow_0gpmgag</bpmn:incoming>
+      <bpmn:incoming>Flow_0b75mjz</bpmn:incoming>
+      <bpmn:outgoing>Flow_168874h</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1e29whp">
+        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${START_DATE}</bpmn:timeDate>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_0gpmgag" sourceRef="Activity_0gtujyz" targetRef="Event_19zy80f" />
+    <bpmn:parallelGateway id="Gateway_19u7dw8">
+      <bpmn:incoming>Flow_168874h</bpmn:incoming>
+      <bpmn:outgoing>Flow_0pqo8sq</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0hk6bxu</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_168874h" sourceRef="Event_19zy80f" targetRef="Gateway_19u7dw8" />
+    <bpmn:intermediateCatchEvent id="Event_0j75pfy" name="Before&#10;end">
+      <bpmn:incoming>Flow_0pqo8sq</bpmn:incoming>
+      <bpmn:outgoing>Flow_0jx4z3r</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1ynqk9e">
+        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${BEFORE_END_DATE}</bpmn:timeDate>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_0pqo8sq" sourceRef="Gateway_19u7dw8" targetRef="Event_0j75pfy" />
+    <bpmn:scriptTask id="Activity_02h925b" name="Send start&#10;review&#10;event" scriptFormat="groovy">
+      <bpmn:incoming>Flow_0hk6bxu</bpmn:incoming>
+      <bpmn:outgoing>Flow_04ta6o2</bpmn:outgoing>
+      <bpmn:script>println "\nSend event: " + "${execution.getCurrentActivityName()}" +
+" ${java.time.LocalDateTime.now()}"</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_0hk6bxu" sourceRef="Gateway_19u7dw8" targetRef="Activity_02h925b" />
+    <bpmn:scriptTask id="Activity_14syf2g" name="Send&#10;before end&#10;review&#10;event" scriptFormat="groovy">
+      <bpmn:incoming>Flow_0jx4z3r</bpmn:incoming>
+      <bpmn:outgoing>Flow_0mvokqh</bpmn:outgoing>
+      <bpmn:script>println "\nSend event: " + "${execution.getCurrentActivityName()}" +
+" ${java.time.LocalDateTime.now()}"</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_0jx4z3r" sourceRef="Event_0j75pfy" targetRef="Activity_14syf2g" />
+    <bpmn:intermediateCatchEvent id="Event_1u807sf" name="Review&#10;period">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="groovy">println "\nReview period: start t2 " +
+"${execution.getCurrentActivityName()}" +
+" ${java.time.LocalDateTime.now()}"</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="groovy">println "\nReview period: end t2 " +
+"${execution.getCurrentActivityName()}" +
+" ${java.time.LocalDateTime.now()}"</camunda:script>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1q4oeu0</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xc9oqw</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1dg07s3">
+        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${END_DATE}</bpmn:timeDate>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_04ta6o2" sourceRef="Activity_02h925b" targetRef="Gateway_1do8e8p" />
+    <bpmn:parallelGateway id="Gateway_1do8e8p">
+      <bpmn:incoming>Flow_04ta6o2</bpmn:incoming>
+      <bpmn:incoming>Flow_0mvokqh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1q4oeu0</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_0mvokqh" sourceRef="Activity_14syf2g" targetRef="Gateway_1do8e8p" />
+    <bpmn:sequenceFlow id="Flow_1q4oeu0" sourceRef="Gateway_1do8e8p" targetRef="Event_1u807sf" />
+    <bpmn:scriptTask id="Activity_1arxp9t" name="Send end&#10;review&#10;event" scriptFormat="groovy">
+      <bpmn:incoming>Flow_0xc9oqw</bpmn:incoming>
+      <bpmn:outgoing>Flow_14k9zor</bpmn:outgoing>
+      <bpmn:script>println "\nSend event: " + "${execution.getCurrentActivityName()}" +
+"\n${execution.getVariables()}" +
+"\n${java.time.LocalDateTime.now()}"</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_0xc9oqw" sourceRef="Event_1u807sf" targetRef="Activity_1arxp9t" />
+    <bpmn:endEvent id="Event_1fwl5fm">
+      <bpmn:incoming>Flow_14k9zor</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_14k9zor" sourceRef="Activity_1arxp9t" targetRef="Event_1fwl5fm" />
+    <bpmn:exclusiveGateway id="Gateway_1j7nfg7" default="Flow_0b75mjz">
+      <bpmn:incoming>Flow_0tyhm4w</bpmn:incoming>
+      <bpmn:outgoing>Flow_1oilf03</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0b75mjz</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1oilf03" sourceRef="Gateway_1j7nfg7" targetRef="Event_1gsa5iq">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${BEFORE_START_DATE != null}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0b75mjz" sourceRef="Gateway_1j7nfg7" targetRef="Event_19zy80f" />
+    <bpmn:sequenceFlow id="Flow_19zffgo" sourceRef="Activity_169rxaf" targetRef="Gateway_0mf8rqh" />
+    <bpmn:scriptTask id="Activity_169rxaf" name="Print&#10;variables" scriptFormat="groovy">
+      <bpmn:incoming>Flow_1hnn181</bpmn:incoming>
+      <bpmn:outgoing>Flow_19zffgo</bpmn:outgoing>
+      <bpmn:script>println "\nVariables" +
+"${execution.getVariables()}" +
+"\nLocal${execution.getVariablesLocal()}" +
+" ${java.time.LocalDateTime.now()}"</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:exclusiveGateway id="Gateway_0mf8rqh" default="Flow_0tyhm4w">
+      <bpmn:incoming>Flow_19zffgo</bpmn:incoming>
+      <bpmn:outgoing>Flow_0tyhm4w</bpmn:outgoing>
+      <bpmn:outgoing>Flow_057syh7</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0tyhm4w" sourceRef="Gateway_0mf8rqh" targetRef="Gateway_1j7nfg7" />
+    <bpmn:endEvent id="Event_095p8c5">
+      <bpmn:incoming>Flow_057syh7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_057syh7" sourceRef="Gateway_0mf8rqh" targetRef="Event_095p8c5">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${TEST_MODE}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="review_schedule_test">
+      <bpmndi:BPMNEdge id="Flow_057syh7_di" bpmnElement="Flow_057syh7">
+        <di:waypoint x="380" y="165" />
+        <di:waypoint x="380" y="202" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0tyhm4w_di" bpmnElement="Flow_0tyhm4w">
+        <di:waypoint x="405" y="140" />
+        <di:waypoint x="435" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19zffgo_di" bpmnElement="Flow_19zffgo">
+        <di:waypoint x="320" y="140" />
+        <di:waypoint x="355" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0b75mjz_di" bpmnElement="Flow_0b75mjz">
+        <di:waypoint x="460" y="115" />
+        <di:waypoint x="460" y="80" />
+        <di:waypoint x="730" y="80" />
+        <di:waypoint x="730" y="122" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1oilf03_di" bpmnElement="Flow_1oilf03">
+        <di:waypoint x="485" y="140" />
+        <di:waypoint x="512" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14k9zor_di" bpmnElement="Flow_14k9zor">
+        <di:waypoint x="1240" y="140" />
+        <di:waypoint x="1269" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xc9oqw_di" bpmnElement="Flow_0xc9oqw">
+        <di:waypoint x="1108" y="140" />
+        <di:waypoint x="1140" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1q4oeu0_di" bpmnElement="Flow_1q4oeu0">
+        <di:waypoint x="1045" y="140" />
+        <di:waypoint x="1072" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mvokqh_di" bpmnElement="Flow_0mvokqh">
+        <di:waypoint x="960" y="240" />
+        <di:waypoint x="1020" y="240" />
+        <di:waypoint x="1020" y="165" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04ta6o2_di" bpmnElement="Flow_04ta6o2">
+        <di:waypoint x="960" y="140" />
+        <di:waypoint x="995" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jx4z3r_di" bpmnElement="Flow_0jx4z3r">
+        <di:waypoint x="818" y="240" />
+        <di:waypoint x="860" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hk6bxu_di" bpmnElement="Flow_0hk6bxu">
+        <di:waypoint x="825" y="140" />
+        <di:waypoint x="860" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pqo8sq_di" bpmnElement="Flow_0pqo8sq">
+        <di:waypoint x="800" y="165" />
+        <di:waypoint x="800" y="222" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_168874h_di" bpmnElement="Flow_168874h">
+        <di:waypoint x="748" y="140" />
+        <di:waypoint x="775" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gpmgag_di" bpmnElement="Flow_0gpmgag">
+        <di:waypoint x="680" y="140" />
+        <di:waypoint x="712" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1d3qt6f_di" bpmnElement="Flow_1d3qt6f">
+        <di:waypoint x="548" y="140" />
+        <di:waypoint x="580" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hnn181_di" bpmnElement="Flow_1hnn181">
+        <di:waypoint x="188" y="140" />
+        <di:waypoint x="220" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1mop64d_di" bpmnElement="Event_1mop64d">
+        <dc:Bounds x="152" y="122" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1gsa5iq_di" bpmnElement="Event_1gsa5iq">
+        <dc:Bounds x="512" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="514" y="165" width="33" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0gtujyz_di" bpmnElement="Activity_0gtujyz">
+        <dc:Bounds x="580" y="100" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_19zy80f_di" bpmnElement="Event_19zy80f">
+        <dc:Bounds x="712" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="713" y="168" width="33" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_19u7dw8_di" bpmnElement="Gateway_19u7dw8">
+        <dc:Bounds x="775" y="115" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0j75pfy_di" bpmnElement="Event_0j75pfy">
+        <dc:Bounds x="782" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="783" y="266" width="33" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02h925b_di" bpmnElement="Activity_02h925b">
+        <dc:Bounds x="860" y="100" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_14syf2g_di" bpmnElement="Activity_14syf2g">
+        <dc:Bounds x="860" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1u807sf_di" bpmnElement="Event_1u807sf">
+        <dc:Bounds x="1072" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1071" y="85" width="38" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_11gtxe2_di" bpmnElement="Gateway_1do8e8p">
+        <dc:Bounds x="995" y="115" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1arxp9t_di" bpmnElement="Activity_1arxp9t">
+        <dc:Bounds x="1140" y="100" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1fwl5fm_di" bpmnElement="Event_1fwl5fm">
+        <dc:Bounds x="1269" y="122" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1j7nfg7_di" bpmnElement="Gateway_1j7nfg7" isMarkerVisible="true">
+        <dc:Bounds x="435" y="115" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1f1n8ao_di" bpmnElement="Activity_169rxaf">
+        <dc:Bounds x="220" y="100" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0mf8rqh_di" bpmnElement="Gateway_0mf8rqh" isMarkerVisible="true">
+        <dc:Bounds x="355" y="115" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_095p8c5_di" bpmnElement="Event_095p8c5">
+        <dc:Bounds x="362" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
