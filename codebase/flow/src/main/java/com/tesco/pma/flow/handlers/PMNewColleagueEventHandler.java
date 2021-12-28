@@ -50,10 +50,10 @@ public class PMNewColleagueEventHandler extends AbstractColleagueCycleHandler {
                         .filter(pmCycle -> PMCycleStatus.ACTIVE == pmCycle.getStatus())
                         .filter(c -> configEntryService.isColleagueExistsForCompositeKey(colleagueUuid, c.getEntryConfigKey()))
                         .findFirst()
-                        .ifPresentOrElse(cycle -> {
+                        .ifPresentOrElse(cycleOriginal -> {
+                                    var cycle = adjustStartDate(cycleOriginal);
                                     pmColleagueCycleService.saveColleagueCycles(List.of(mapToColleagueCycle(colleagueUuid, cycle)));
                                     context.setVariable(FlowParameters.PM_CYCLE, cycle);
-                                    context.setVariable(FlowParameters.START_DATE, defineStartDate(cycle));
                                 },
                                 () -> log.warn(LogFormatter.formatMessage(messageSourceAccessor, PM_CYCLE_NOT_FOUND_FOR_COLLEAGUE,
                                         Map.of(COLLEAGUE_UUID_PARAMETER, colleagueUuid))));

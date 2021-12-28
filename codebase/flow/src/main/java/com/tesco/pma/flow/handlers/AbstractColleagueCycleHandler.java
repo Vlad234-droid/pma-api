@@ -5,15 +5,25 @@ import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleType;
 
-import java.time.LocalDate;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.Period;
 import java.util.UUID;
 
-import static com.tesco.pma.flow.handlers.HandlerUtils.instantToDate;
-
 public abstract class AbstractColleagueCycleHandler extends CamundaAbstractFlowHandler {
-
-    protected LocalDate defineStartDate(PMCycle cycle) {
-        return PMCycleType.HIRING == cycle.getType() ? LocalDate.now() : instantToDate(cycle.getStartTime());
+    /**
+     * If cycle type is HIRING the start and end time are adjusted to current date
+     *
+     * @param cycle PM cycle
+     * @return adjusted cycle
+     */
+    protected PMCycle adjustStartDate(PMCycle cycle) {
+        if (PMCycleType.HIRING.equals(cycle.getType())) {
+            var start = Instant.now(Clock.systemUTC());
+            cycle.setStartTime(start);
+            cycle.setEndTime(start.plus(Period.ofYears(1)));
+        }
+        return cycle;
     }
 
     protected PMColleagueCycle mapToColleagueCycle(UUID colleagueUuid, PMCycle cycle) {
@@ -23,14 +33,8 @@ public abstract class AbstractColleagueCycleHandler extends CamundaAbstractFlowH
         cc.setColleagueUuid(colleagueUuid);
         cc.setCycleUuid(cycle.getUuid());
         cc.setStatus(cycle.getStatus());
-        var startTime = cycle.getStartTime();
-        var endTime = cycle.getEndTime();
-        if (PMCycleType.HIRING == cycle.getType()) {
-            startTime = HandlerUtils.dateToInstant(LocalDate.now());
-            endTime = HandlerUtils.dateToInstant(LocalDate.now().plusYears(1));
-        }
-        cc.setStartTime(startTime);
-        cc.setEndTime(endTime);
+        cc.setStartTime(cycle.getStartTime());
+        cc.setEndTime(cycle.getEndTime());
         cc.setProperties(cycle.getProperties());
 
         return cc;

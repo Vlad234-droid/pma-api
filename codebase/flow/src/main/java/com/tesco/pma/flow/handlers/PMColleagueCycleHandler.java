@@ -24,16 +24,14 @@ public class PMColleagueCycleHandler extends AbstractColleagueCycleHandler {
 
     @Override
     protected void execute(ExecutionContext context) {
-        var cycle = context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class);
-        var hireDate = PMCycleType.HIRING == cycle.getType() ? LocalDate.now() : null;
-        var colleagues = pmColleagueCycleService.findColleagues(cycle.getEntryConfigKey(), hireDate, true);
+        var cycle = adjustStartDate(context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class));
+        var hiringDate = PMCycleType.HIRING == cycle.getType() ? LocalDate.now() : null;
+        var colleagues = pmColleagueCycleService.findColleagues(cycle.getEntryConfigKey(),
+                hiringDate, true);
 
         var colleagueCycles = colleagues.stream()
                 .map(c -> mapToColleagueCycle(c.getUuid(), cycle))
                 .collect(Collectors.toList());
         pmColleagueCycleService.saveColleagueCycles(colleagueCycles);
-
-        context.setVariable(FlowParameters.START_DATE, defineStartDate(cycle));
-        context.setVariable(FlowParameters.PM_CYCLE, cycle);
     }
 }
