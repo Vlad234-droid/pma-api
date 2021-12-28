@@ -4,6 +4,8 @@ import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.AccountType;
 import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
+import com.tesco.pma.colleague.security.exception.AccountAlreadyExistsException;
+import com.tesco.pma.colleague.security.exception.DuplicatedAccountException;
 import com.tesco.pma.colleague.security.service.UserManagementService;
 import com.tesco.pma.event.Event;
 import com.tesco.pma.event.EventParams;
@@ -50,7 +52,12 @@ public class CreateAccountByEventAction implements Action {
         request.setType(AccountType.USER);
         request.setStatus(AccountStatus.ENABLED);
 
-        userManagementService.createAccount(request);
+        try {
+            userManagementService.createAccount(request);
+        } catch (AccountAlreadyExistsException | DuplicatedAccountException e) {
+            log.error("Can't create account", e);
+        }
+
     }
 
 }
