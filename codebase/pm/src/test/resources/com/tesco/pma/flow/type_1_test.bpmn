@@ -129,7 +129,7 @@
         <bpmn:incoming>Flow_1kjtz8y</bpmn:incoming>
         <bpmn:outgoing>Flow_18nab1s</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_0jx2py0">
-          <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${START_DATE}</bpmn:timeDate>
+          <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${START_DATE_S}</bpmn:timeDate>
         </bpmn:timerEventDefinition>
       </bpmn:intermediateCatchEvent>
       <bpmn:scriptTask id="Activity_17f87sh" name="Send&#10;before start&#10;Mid year review&#10;event" scriptFormat="groovy">
@@ -143,7 +143,7 @@
         <bpmn:incoming>Flow_1x27u4h</bpmn:incoming>
         <bpmn:outgoing>Flow_04ulxsg</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_1cimfq7">
-          <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${BEFORE_START_DATE}</bpmn:timeDate>
+          <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${BEFORE_START_DATE_S}</bpmn:timeDate>
         </bpmn:timerEventDefinition>
       </bpmn:intermediateCatchEvent>
       <bpmn:startEvent id="Event_16cmiym">
@@ -173,7 +173,7 @@
         <bpmn:incoming>Flow_0ebob6f</bpmn:incoming>
         <bpmn:outgoing>Flow_0v48efj</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_155218z">
-          <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${BEFORE_END_DATE}</bpmn:timeDate>
+          <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${BEFORE_END_DATE_S}</bpmn:timeDate>
         </bpmn:timerEventDefinition>
       </bpmn:intermediateCatchEvent>
       <bpmn:intermediateCatchEvent id="Event_14te82x" name="Review&#10;period">
@@ -193,7 +193,7 @@
         <bpmn:incoming>Flow_1situl8</bpmn:incoming>
         <bpmn:outgoing>Flow_1t10q5l</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_02ufvc4">
-          <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${END_DATE}</bpmn:timeDate>
+          <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${END_DATE_S}</bpmn:timeDate>
         </bpmn:timerEventDefinition>
       </bpmn:intermediateCatchEvent>
       <bpmn:serviceTask id="processTimelinePointMyr" name="Process&#10;timeline&#10;point" camunda:class="com.tesco.pma.flow.handlers.ProcessTimelinePointHandler">
@@ -240,7 +240,7 @@
         <bpmn:incoming>Flow_1nrnhy4</bpmn:incoming>
         <bpmn:outgoing>Flow_1b79yok</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_1e29whp">
-          <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${START_DATE}</bpmn:timeDate>
+          <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${START_DATE_S}</bpmn:timeDate>
         </bpmn:timerEventDefinition>
       </bpmn:intermediateCatchEvent>
       <bpmn:scriptTask id="Activity_0gtujyz" name="Send&#10;before start&#10;EoY review&#10;event" scriptFormat="groovy">
@@ -254,7 +254,7 @@
         <bpmn:incoming>Flow_0dch7uy</bpmn:incoming>
         <bpmn:outgoing>Flow_184sia0</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_1bgdpl8">
-          <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${BEFORE_START_DATE}</bpmn:timeDate>
+          <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${BEFORE_START_DATE_S}</bpmn:timeDate>
         </bpmn:timerEventDefinition>
       </bpmn:intermediateCatchEvent>
       <bpmn:startEvent id="Event_1mop64d">
@@ -284,7 +284,7 @@
         <bpmn:incoming>Flow_0dujr6h</bpmn:incoming>
         <bpmn:outgoing>Flow_0zyqt2d</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_1ynqk9e">
-          <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${BEFORE_END_DATE}</bpmn:timeDate>
+          <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${BEFORE_END_DATE_S}</bpmn:timeDate>
         </bpmn:timerEventDefinition>
       </bpmn:intermediateCatchEvent>
       <bpmn:intermediateCatchEvent id="Event_1u807sf" name="Review&#10;period">
@@ -304,7 +304,7 @@
         <bpmn:incoming>Flow_06o7755</bpmn:incoming>
         <bpmn:outgoing>Flow_0463fuv</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_1dg07s3">
-          <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${END_DATE}</bpmn:timeDate>
+          <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${END_DATE_S}</bpmn:timeDate>
         </bpmn:timerEventDefinition>
       </bpmn:intermediateCatchEvent>
       <bpmn:serviceTask id="processTimelinePointEyr" name="Process&#10;timeline&#10;point" camunda:class="com.tesco.pma.flow.handlers.ProcessTimelinePointHandler">
