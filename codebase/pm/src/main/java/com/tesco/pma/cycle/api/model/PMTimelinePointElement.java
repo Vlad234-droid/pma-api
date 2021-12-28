@@ -1,5 +1,7 @@
 package com.tesco.pma.cycle.api.model;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -10,6 +12,17 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.EXISTING_PROPERTY,
+        property = "type"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = PMTimelinePointElement.class,
+                name = "TIMELINE_POINT"),
+        @JsonSubTypes.Type(value = PMReviewElement.class,
+                name = "REVIEW")
+})
 public class PMTimelinePointElement extends PMElement {
     private static final long serialVersionUID = 8220411457724646393L;
 
