@@ -29,16 +29,6 @@ public interface PDPDao {
     int updateGoal(@Param("colleagueUuid") UUID colleagueUuid, @Param("goal") PDPGoal goal);
 
     /**
-     * Delete PDP Goal from Plan by its colleague and number
-     *
-     * @param colleagueUuid is colleague identifier
-     * @param number        is goal's number
-     * @return number of deleted rows
-     *
-     */
-    int deleteGoalByColleagueAndNumber(@Param("colleagueUuid") UUID colleagueUuid, @Param("number") Integer number);
-
-    /**
      * Delete PDP Goal from Plan by its uuid
      *
      * @param colleagueUuid is colleague identifier

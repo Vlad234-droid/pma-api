@@ -75,25 +75,6 @@ public class PDPEndpoint {
     }
 
     /**
-     * DELETE call to delete PDP Goals by its colleague and numbers.
-     *
-     * @param colleagueUuid an identifier of colleague
-     * @param numbers       a sequence number of PDP Goal
-     * @return a Void RestResponse
-     */
-    @Operation(summary = "Delete existing PDP Goals from a Plan by its colleague and numbers",
-            description = "Delete existing PDP Goals", tags = {"pdp"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "PDP Goals deleted")
-    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PDP Goals not found", content = @Content)
-    @DeleteMapping(path = "/colleagues/{colleagueUuid}/goals/numbers/{numbers}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("isCurrentUser(#colleagueUuid)")
-    public RestResponse<Void> deleteGoals(@PathVariable("colleagueUuid") UUID colleagueUuid,
-                                          @PathVariable("numbers") List<Integer> numbers) {
-        pdpService.deleteGoals(numbers, colleagueUuid);
-        return RestResponse.success();
-    }
-
-    /**
      * DELETE call to delete PDP Goals by its uuids.
      *
      * @param goalUuids an identifier of goals

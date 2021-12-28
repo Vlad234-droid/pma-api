@@ -33,14 +33,6 @@ public interface PDPService {
     List<PDPGoal> updateGoals(@NotNull UUID colleagueUuid, @NotEmpty List<PDPGoal> goals);
 
     /**
-     * Delete PDP Goal from Plan by its colleague and number
-     *
-     * @param numbers       are goal's numbers
-     * @param colleagueUuid is colleague identifier
-     */
-    void deleteGoals(@NotEmpty List<Integer> numbers, @NotNull UUID colleagueUuid);
-
-    /**
      * Delete PDP Goal from Plan by its uuid
      *
      * @param colleagueUuid is colleague identifier

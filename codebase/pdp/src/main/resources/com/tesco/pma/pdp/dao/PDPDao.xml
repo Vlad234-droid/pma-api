@@ -42,13 +42,6 @@
           AND number = #{goal.number}
     </update>
 
-    <delete id="deleteGoalByColleagueAndNumber">
-        DELETE
-        FROM pdp_goal
-        WHERE colleague_uuid = #{colleagueUuid}
-          AND number = #{number}
-    </delete>
-
     <delete id="deleteGoalByUuidAndColleague">
         DELETE
         FROM pdp_goal
