@@ -18,9 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
@@ -55,13 +53,13 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
 
     private void createTimelinePoints(ExecutionContext context, PMCycle cycle) {
         var startDate = context.getVariable(FlowParameters.START_DATE, LocalDate.class);
-        var startTime = toInstantTime(startDate);
+        var startTime = HandlerUtils.dateToInstant(startDate);
         var colleagueCycles = colleagueCycleService.getActiveByCycleUuidWithoutTimelinePoint(cycle.getUuid(),
                 PMCycleType.HIRING == cycle.getType() ? startTime : null);
         if (CollectionUtils.isEmpty(colleagueCycles)) {
             return;
         }
-        var endTime = toInstantTime(context.getVariable(FlowParameters.END_DATE, LocalDate.class));
+        var endTime = HandlerUtils.dateToInstant(context.getVariable(FlowParameters.END_DATE, LocalDate.class));
         var parent = context.getVariable(FlowParameters.MODEL_PARENT_ELEMENT, PMElement.class);
         var timelinePoints = colleagueCycles.stream()
                 .map(cc -> TimelinePoint.builder()
@@ -78,10 +76,6 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
                 .collect(Collectors.toList());
 
         timelinePointService.saveAll(timelinePoints);
-    }
-
-    static Instant toInstantTime(LocalDate date) {
-        return date.atStartOfDay().toInstant(ZoneOffset.UTC);
     }
 
     private PMTimelinePointStatus calculateStatus(LocalDate startDate) {

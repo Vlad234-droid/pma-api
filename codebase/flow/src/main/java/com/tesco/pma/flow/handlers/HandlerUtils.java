@@ -9,7 +9,9 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.model.bpmn.instance.Activity;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
@@ -61,4 +63,23 @@ public class HandlerUtils {
         return null;
     }
 
+    /**
+     * Returns instant at start of date in UTC time zone
+     *
+     * @param date source date
+     * @return instant
+     */
+    public static Instant dateToInstant(LocalDate date) {
+        return date.atStartOfDay().toInstant(ZoneOffset.UTC);
+    }
+
+    /**
+     * Converts instant to date in UTC
+     *
+     * @param datetime source instant
+     * @return date
+     */
+    public static LocalDate instantToDate(Instant datetime) {
+        return LocalDate.ofInstant(datetime, ZoneOffset.UTC);
+    }
 }

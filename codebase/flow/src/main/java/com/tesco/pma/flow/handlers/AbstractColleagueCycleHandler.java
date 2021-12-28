@@ -6,18 +6,14 @@ import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleType;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.UUID;
+
+import static com.tesco.pma.flow.handlers.HandlerUtils.instantToDate;
 
 public abstract class AbstractColleagueCycleHandler extends CamundaAbstractFlowHandler {
 
     protected LocalDate defineStartDate(PMCycle cycle) {
-        LocalDate startDate = LocalDate.ofInstant(cycle.getStartTime(), ZoneId.systemDefault());
-        if (PMCycleType.HIRING == cycle.getType()) {
-            startDate = LocalDate.now();
-        }
-        return startDate;
+        return PMCycleType.HIRING == cycle.getType() ? LocalDate.now() : instantToDate(cycle.getStartTime());
     }
 
     protected PMColleagueCycle mapToColleagueCycle(UUID colleagueUuid, PMCycle cycle) {
@@ -30,8 +26,8 @@ public abstract class AbstractColleagueCycleHandler extends CamundaAbstractFlowH
         var startTime = cycle.getStartTime();
         var endTime = cycle.getEndTime();
         if (PMCycleType.HIRING == cycle.getType()) {
-            startTime = LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC);
-            endTime = LocalDate.now().plusYears(1).atStartOfDay().toInstant(ZoneOffset.UTC);
+            startTime = HandlerUtils.dateToInstant(LocalDate.now());
+            endTime = HandlerUtils.dateToInstant(LocalDate.now().plusYears(1));
         }
         cc.setStartTime(startTime);
         cc.setEndTime(endTime);
