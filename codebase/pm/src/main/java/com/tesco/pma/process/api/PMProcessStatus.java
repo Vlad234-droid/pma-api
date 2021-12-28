@@ -42,13 +42,4 @@ public enum PMProcessStatus implements DictionaryItem<Integer> {
     public String getCode() {
         return name();
     }
-
-    public static PMProcessStatus getByCode(String code) {
-        for (PMProcessStatus status : values()) {
-            if (status.getCode().equals(code)) {
-                return status;
-            }
-        }
-        return null;
-    }
 }

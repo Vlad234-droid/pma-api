@@ -10,6 +10,8 @@ public enum FlowParameters {
     IS_MANAGER,
     SEND,
 
+    MODEL_PARENT_ELEMENT,
+
     PM_CYCLE_UUID,
     PM_CYCLE,
     PM_CYCLE_START_TIME,
@@ -19,6 +21,30 @@ public enum FlowParameters {
     BEFORE_START_DATE,
     BEFORE_END_DATE,
     END_DATE,
+    // formatted date strings
+    START_DATE_S,
+    BEFORE_START_DATE_S,
+    BEFORE_END_DATE_S,
+    END_DATE_S,
 
-    COLLEAGUE_UUID
+    COLLEAGUE_UUID;
+
+    /**
+     * Returns corresponded parameter for string value if exist or the same parameter
+     * @param parameter source parameter
+     *
+     * @return event for corresponded string value
+     */
+    public static FlowParameters getCorrespondedStringParameter(FlowParameters parameter) {
+        if (START_DATE.equals(parameter)) {
+            return START_DATE_S;
+        } else if (BEFORE_START_DATE.equals(parameter)) {
+            return BEFORE_START_DATE_S;
+        } else if (END_DATE.equals(parameter)) {
+            return END_DATE_S;
+        } else if (BEFORE_END_DATE.equals(parameter)) {
+            return BEFORE_END_DATE_S;
+        }
+        return parameter;
+    }
 }
