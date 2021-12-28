@@ -32,6 +32,16 @@
                 #{goal.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.pdp.api.PDPGoalStatus});
     </insert>
 
+    <update id="updateGoal" flushCache="true">
+        UPDATE pdp_goal
+        SET uuid = #{goal.uuid},
+            properties = #{goal.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+            achievement_date = #{goal.achievementDate},
+            status_id = #{goal.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.pdp.api.PDPGoalStatus}
+        WHERE colleague_uuid = #{colleagueUuid}
+          AND number = #{goal.number}
+    </update>
+
     <delete id="deleteGoalByColleagueAndNumber">
         DELETE
         FROM pdp_goal

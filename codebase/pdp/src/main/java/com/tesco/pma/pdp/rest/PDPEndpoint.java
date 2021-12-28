@@ -70,6 +70,7 @@ public class PDPEndpoint {
     @PreAuthorize("isCurrentUser(#colleagueUuid)")
     public RestResponse<List<PDPGoal>> update(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                               @RequestBody List<@Valid PDPGoal> goals) {
+        goals.forEach(goal -> goal.setColleagueUuid(colleagueUuid));
         return success(pdpService.update(colleagueUuid, goals));
     }
 
