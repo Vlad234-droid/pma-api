@@ -27,6 +27,8 @@ public enum FlowParameters {
     PROFILE_ATTRIBUTE_NAME,
     QUARTER,
 
+    TIP_UUID,
+
     //notifications
     CONTACT_TEMPLATE_ID
 }

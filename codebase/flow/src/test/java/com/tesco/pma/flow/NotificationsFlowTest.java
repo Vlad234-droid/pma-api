@@ -69,6 +69,9 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
     @SpyBean
     private InitCycleNotificationHandler reminderNotificationHandler;
 
+    @SpyBean
+    private InitTipsNotificationHandler initTipsNotificationHandler;
+
     @MockBean(name = "sendNotification")
     private SendNotification sendNotification;
 
@@ -168,7 +171,7 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
 
     @Test
     void checkReceiveTips() throws Exception {
-        checkTipsGroup(RECEIVE_TIPS, null, false, WorkLevel.WL1, true);
+        checkTipsGroup(RECEIVE_TIPS, false, WorkLevel.WL1, true);
     }
 
     void checkReviewGroup(String evenName, PMReviewType reviewType, Boolean isManager, boolean send) throws Exception {
@@ -193,8 +196,10 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
         check("InitCycleNotifications", "cycle_decision_table", evenName, reviewType, isManager, workLevel, send);
     }
 
-    void checkTipsGroup(String evenName, PMReviewType reviewType, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
-        check("InitTipsNotifications", "tips_decision_table", evenName, reviewType, isManager, workLevel, send);
+    void checkTipsGroup(String evenName, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
+        var event = createEvent(evenName, null);
+        event.putProperty(FlowParameters.TIP_UUID.name(), UUID.randomUUID().toString());
+        check("InitTipsNotifications", "tips_decision_table", event, isManager, workLevel, send);
     }
 
     void check(String initHandlerName, String decisionTable, String evenName, PMReviewType reviewType, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
