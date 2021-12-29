@@ -60,7 +60,7 @@ public class PDPServiceImpl implements PDPService {
         goals.forEach(goal -> {
             int updated;
             try {
-                updated = pdpDao.updateGoal(colleagueUuid, goal);
+                updated = pdpDao.updateGoal(goal);
             } catch (DataIntegrityViolationException ex) {
                 throw new DatabaseConstraintViolationException(CONSTRAINT_VIOLATION.getCode(), ex.getLocalizedMessage(), null, ex);
             }

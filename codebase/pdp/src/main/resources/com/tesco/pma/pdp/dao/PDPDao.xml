@@ -38,7 +38,7 @@
             properties = #{goal.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
             achievement_date = #{goal.achievementDate},
             status_id = #{goal.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.pdp.api.PDPGoalStatus}
-        WHERE colleague_uuid = #{colleagueUuid}
+        WHERE colleague_uuid = #{goal.colleagueUuid}
           AND number = #{goal.number}
     </update>
 
@@ -50,6 +50,13 @@
     </delete>
 
     <select id="deleteGoalByUuidAndNumber" resultMap="goalResultMap">
+        SELECT *
+        FROM pdp_goal
+        WHERE colleague_uuid = #{colleagueUuid}
+          AND number = #{number}
+    </select>
+
+    <select id="readGoalByColleagueAndNumber" resultMap="goalResultMap">
         SELECT *
         FROM pdp_goal
         WHERE colleague_uuid = #{colleagueUuid}
