@@ -30,6 +30,8 @@ dependencies {
     implementation ("org.camunda.spin:camunda-spin-dataformat-json-jackson:${camundaSpinVersion}")
     implementation ("org.camunda.bpm:camunda-engine-plugin-spin:${camundaVersion}")
 
+    implementation("org.apache.commons:commons-text:${commonsTextVersion}")
+
     testImplementation ("com.h2database:h2:${h2Version}")
     testImplementation ("com.zaxxer:HikariCP:${hikariVersion}")
 

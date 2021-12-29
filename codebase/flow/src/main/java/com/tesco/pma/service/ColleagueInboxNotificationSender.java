@@ -4,8 +4,10 @@ import com.tesco.pma.colleague.inbox.CreateMessageRequestDto;
 import com.tesco.pma.colleague.inbox.MessageCategory;
 import com.tesco.pma.colleague.inbox.RecipientDto;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
+import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.service.colleague.inbox.client.ColleagueInboxApiClient;
 import lombok.AllArgsConstructor;
+import org.apache.commons.text.StringSubstitutor;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -18,13 +20,15 @@ import java.util.UUID;
 public class ColleagueInboxNotificationSender implements SendNotificationService {
 
     private final ColleagueInboxApiClient colleagueInboxApiClient;
+    private final FileService fileService;
 
     @Override
     public void send(ColleagueProfile colleagueProfile, String templateId, Map<String, String> placeholders) {
-        colleagueInboxApiClient.sendNotification(getMessage(colleagueProfile, placeholders));
+        colleagueInboxApiClient.sendNotification(getMessage(colleagueProfile, templateId, placeholders));
     }
 
-    protected CreateMessageRequestDto getMessage(ColleagueProfile colleagueProfile, Map<String, String> placeholders) {
+    private CreateMessageRequestDto getMessage(ColleagueProfile colleagueProfile, String templateId,
+                                               Map<String, String> placeholders) {
         var recipient = new RecipientDto();
         recipient.setRecipientUuid(colleagueProfile.getColleague().getColleagueUUID());
 
@@ -34,9 +38,16 @@ public class ColleagueInboxNotificationSender implements SendNotificationService
         message.setSenderName(colleagueProfile.getColleague().getContact().getEmail());
         message.setLink("link"); //TODO what is link?
         message.setTitle(placeholders.get("TITLE"));
-        message.setContent(""); // TODO content
+        message.setContent(getContent(templateId, placeholders));
         message.setCategory(MessageCategory.OWN);
         message.setRecipients(List.of(recipient));
         return message;
+    }
+
+    private String getContent(String templateId, Map<String, String> placeholders) {
+        var contentFile = fileService.get(UUID.fromString(templateId), true);
+        var content = new String(contentFile.getFileContent());
+        return StringSubstitutor.replace(content, placeholders, "{", "}");
+
     }
 }
