@@ -1,0 +1,6 @@
+tesco:
+  application:
+    security:
+      performance-testing:
+        default-user:
+          username: ${DEFAULT_USER_USERNAME:10000000-0000-0000-0000-000000000000}
