@@ -1,0 +1,58 @@
+plugins {
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
+}
+
+dependencies {
+    implementation project(':api')
+    implementation project(':service')
+
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    // To remove compile time warning,
+    // see: https://stackoverflow.com/questions/53326271/spring-nullable-annotation-generates-unknown-enum-constant-warning
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+
+    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:${springBootMybatisVersion}")
+    implementation("com.fasterxml.jackson.core:jackson-databind:${fasterxmlJacksonDatabindVersion}")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${fasterxmlJacksonDatabindVersion}")
+    runtimeOnly "org.postgresql:postgresql:${postgresVersion}"
+
+    implementation("org.springdoc:springdoc-openapi-core:${openApiCoreVersion}")
+    implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
+
+
+    testCompile project(':service').sourceSets.test.output
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude group: 'junit' // excluding junit 4
+    }
+
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("org.hibernate.validator:hibernate-validator-test-utils:${hibernateValidatorTestUtilsVersion}")
+    testImplementation("org.jeasy:easy-random-core:${easyRandomVersion}")
+    testImplementation("commons-io:commons-io:${commonsIoVersion}")
+
+    testImplementation("com.h2database:h2:${h2Version}")
+
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+    testImplementation "com.github.database-rider:rider-junit5:${databaseRiderVersion}"
+    testRuntimeOnly "org.liquibase:liquibase-core:${liquibaseVersion}"
+    testRuntimeOnly project(':db-pma')
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+        mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+    }
+}

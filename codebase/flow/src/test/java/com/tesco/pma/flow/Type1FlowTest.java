@@ -7,7 +7,6 @@ import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.flow.handlers.ProcessTimelinePointHandler;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
@@ -19,7 +18,7 @@ import java.time.ZoneOffset;
  */
 @ActiveProfiles("test")
 @SpringBootTest(classes = {CamundaSpringBootTestConfig.class})
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class Type1FlowTest extends AbstractCamundaSpringBootTest {
 
     private static final String PROCESS_ID_TYPE_1 = "type_1_test";

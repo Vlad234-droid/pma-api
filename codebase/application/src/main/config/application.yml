@@ -60,7 +60,8 @@ spring:
                               com.tesco.pma.notes.model,
                               com.tesco.pma.fs.domain,
                               com.tesco.pma.config.domain,
-                              com.tesco.pma.tip.api
+                              com.tesco.pma.tip.api,
+                              com.tesco.pma.pdp.domain
         configuration-properties:
           base-package: com.tesco.pma.dao,
                         com.tesco.pma.colleague.profile.dao,
@@ -73,7 +74,8 @@ spring:
                         com.tesco.pma.notes.dao,
                         com.tesco.pma.fs.dao,
                         com.tesco.pma.config.dao,
-                        com.tesco.pma.tip.dao
+                        com.tesco.pma.tip.dao,
+                        com.tesco.pma.pdp.dao
           batchSize: 500
     camunda:
       # Camunda database config
@@ -155,6 +157,7 @@ validation:
     - classpath:com/tesco/pma/tip/validation/constraints-tip.xml
     - classpath:com/tesco/pma/validation/constraints-files-upload-metadata.xml
     - classpath:com/tesco/pma/validation/constraints-upload-metadata.xml
+    - classpath:com/tesco/pma/validation/constraints-pdp-goal.xml
   messages:
     basename: com/tesco/pma/validation/AppValidationMessages
     encoding: UTF-8

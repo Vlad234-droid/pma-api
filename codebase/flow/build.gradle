@@ -15,6 +15,7 @@ dependencies {
     implementation project(':profile')
     implementation project(':review')
     implementation project(':pm')
+    implementation project(':pdp')
 
     implementation("org.springdoc:springdoc-openapi-core:${openApiCoreVersion}")
     implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.pdp.dao.PDPDao">
+
+    <resultMap id="goalResultMap" type="com.tesco.pma.pdp.domain.PDPGoal">
+        <id property="uuid" column="uuid"/>
+        <result property="colleagueUuid" column="colleague_uuid"/>
+        <result property="number" column="number"/>
+        <result property="properties" column="properties"
+                typeHandler="com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler"
+                javaType="com.tesco.pma.api.MapJson"/>
+        <result property="achievementDate" column="achievement_date"/>
+        <result property="status" column="status_id"
+                typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.pdp.api.PDPGoalStatus"/>
+    </resultMap>
+
+    <insert id="createGoal" flushCache="true">
+        INSERT INTO pdp_goal
+        (uuid,
+         colleague_uuid,
+         number,
+         properties,
+         achievement_date,
+         status_id)
+        VALUES (#{goal.uuid},
+                #{goal.colleagueUuid},
+                #{goal.number},
+                #{goal.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+                #{goal.achievementDate},
+                #{goal.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.pdp.api.PDPGoalStatus});
+    </insert>
+
+    <update id="updateGoal" flushCache="true">
+        UPDATE pdp_goal
+        SET uuid = #{goal.uuid},
+            properties = #{goal.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+            achievement_date = #{goal.achievementDate},
+            status_id = #{goal.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.pdp.api.PDPGoalStatus}
+        WHERE colleague_uuid = #{goal.colleagueUuid}
+          AND number = #{goal.number}
+    </update>
+
+    <delete id="deleteGoalByUuidAndColleague">
+        DELETE
+        FROM pdp_goal
+        WHERE uuid = #{goalUuid}
+          AND colleague_uuid = #{colleagueUuid}
+    </delete>
+
+    <select id="deleteGoalByUuidAndNumber" resultMap="goalResultMap">
+        SELECT *
+        FROM pdp_goal
+        WHERE colleague_uuid = #{colleagueUuid}
+          AND number = #{number}
+    </select>
+
+    <select id="readGoalByColleagueAndNumber" resultMap="goalResultMap">
+        SELECT *
+        FROM pdp_goal
+        WHERE colleague_uuid = #{colleagueUuid}
+          AND number = #{number}
+    </select>
+
+    <select id="readGoalByUuid" resultMap="goalResultMap">
+        SELECT *
+        FROM pdp_goal
+        WHERE colleague_uuid = #{colleagueUuid}
+          AND uuid = #{goalUuid}
+    </select>
+
+    <select id="readGoalsByColleague" resultMap="goalResultMap">
+        SELECT *
+        FROM pdp_goal
+        WHERE colleague_uuid = #{colleagueUuid}
+        ORDER BY number
+    </select>
+
+</mapper>
