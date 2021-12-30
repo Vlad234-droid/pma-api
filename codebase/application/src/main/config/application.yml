@@ -60,7 +60,9 @@ spring:
                               com.tesco.pma.notes.model,
                               com.tesco.pma.fs.domain,
                               com.tesco.pma.config.domain,
-                              com.tesco.pma.tip.api
+                              com.tesco.pma.tip.api,
+                              com.tesco.pma.pdp.api,
+                              com.tesco.pma.pdp.domain
         configuration-properties:
           base-package: com.tesco.pma.dao,
                         com.tesco.pma.colleague.profile.dao,
@@ -109,7 +111,8 @@ spring:
       com/tesco/pma/fs/exception/AppExceptionMessage,
       com/tesco/pma/flow/BPMExceptionMessages,
       com/tesco/pma/tip/exception/AppExceptionMessage,
-      com/tesco/pma/event/exception/AppEventMessage
+      com/tesco/pma/event/exception/AppEventMessage,
+      com/tesco/pma/pdp/exception/AppExceptionMessage
     encoding: UTF-8
   async-executor:
     core-pool-size: 2
