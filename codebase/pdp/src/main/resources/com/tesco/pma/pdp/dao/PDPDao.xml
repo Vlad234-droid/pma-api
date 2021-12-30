@@ -49,13 +49,6 @@
           AND colleague_uuid = #{colleagueUuid}
     </delete>
 
-    <select id="deleteGoalByUuidAndNumber" resultMap="goalResultMap">
-        SELECT *
-        FROM pdp_goal
-        WHERE colleague_uuid = #{colleagueUuid}
-          AND number = #{number}
-    </select>
-
     <select id="readGoalByColleagueAndNumber" resultMap="goalResultMap">
         SELECT *
         FROM pdp_goal
