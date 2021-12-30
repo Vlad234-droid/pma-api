@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,6 +65,7 @@ public class ReviewEndpoint {
     @PostMapping(path = "/colleagues/{colleagueUuid}/pm-cycles/{cycleUuid}/review-types/{type}/numbers/{number}",
             produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isColleague()")
     public RestResponse<Review> createReview(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                              @PathVariable("cycleUuid") String cycleUuid,
                                              @PathVariable("type") PMReviewType type,
@@ -87,6 +89,7 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Reviews updated")
     @PutMapping(path = "/colleagues/{colleagueUuid}/pm-cycles/{cycleUuid}/review-types/{type}",
             produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
     public RestResponse<List<Review>> updateReviews(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                                     @PathVariable("cycleUuid") String cycleUuid,
                                                     @PathVariable("type") PMReviewType type,
@@ -112,6 +115,7 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Review not found", content = @Content)
     @GetMapping(path = "/colleagues/{colleagueUuid}/pm-cycles/{cycleUuid}/review-types/{type}/numbers/{number}",
             produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
     public RestResponse<Review> getReview(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                           @PathVariable("cycleUuid") String cycleUuid,
                                           @PathVariable("type") PMReviewType type,
@@ -130,6 +134,7 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Review not found", content = @Content)
     @GetMapping(path = "/reviews/{uuid}",
             produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
     public RestResponse<Review> getReviewByUuid(@PathVariable("uuid") UUID uuid) {
         return success(reviewService.getReview(uuid));
     }
@@ -147,6 +152,7 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Reviews not found", content = @Content)
     @GetMapping(path = "/colleagues/{colleagueUuid}/pm-cycles/{cycleUuid}/review-types/{type}/reviews",
             produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
     public RestResponse<List<Review>> getReviews(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                                  @PathVariable("cycleUuid") String cycleUuid,
                                                  @PathVariable("type") PMReviewType type) {
@@ -165,6 +171,7 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Reviews not found", content = @Content)
     @GetMapping(path = "/colleagues/{colleagueUuid}/pm-cycles/{cycleUuid}/reviews",
             produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
     public RestResponse<List<Review>> getReviewsByColleague(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                                             @PathVariable("cycleUuid") String cycleUuid) {
         return success(reviewService.getReviewsByColleague(getPMCycleUuid(colleagueUuid, cycleUuid), colleagueUuid));
@@ -181,6 +188,7 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Reviews not found", content = @Content)
     @GetMapping(path = "/managers/{managerUuid}/reviews",
             produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
     public RestResponse<List<ColleagueTimeline>> getTeamReviews(@PathVariable("managerUuid") UUID managerUuid) {
         return success(reviewService.getTeamReviews(managerUuid));
     }
@@ -200,6 +208,7 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Review not found", content = @Content)
     @PutMapping(path = "/colleagues/{colleagueUuid}/pm-cycles/{cycleUuid}/review-types/{type}/numbers/{number}",
             consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
     public RestResponse<Review> updateReview(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                              @PathVariable("cycleUuid") String cycleUuid,
                                              @PathVariable("type") PMReviewType type,
@@ -227,6 +236,7 @@ public class ReviewEndpoint {
     @PutMapping(
             path = "/colleagues/{colleagueUuid}/pm-cycles/{cycleUuid}/review-types/{type}/statuses/{status}",
             produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
     public RestResponse<PMTimelinePointStatus> updateReviewsStatus(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                                                    @PathVariable("cycleUuid") String cycleUuid,
                                                                    @PathVariable("type") PMReviewType type,
@@ -257,6 +267,7 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Review not found", content = @Content)
     @DeleteMapping(path = "/colleagues/{colleagueUuid}/pm-cycles/{cycleUuid}/review-types/{type}/numbers/{number}",
             produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
     public RestResponse<Void> deleteReview(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                            @PathVariable("cycleUuid") String cycleUuid,
                                            @PathVariable("type") PMReviewType type,
@@ -272,6 +283,7 @@ public class ReviewEndpoint {
     @Operation(summary = "Get cycle timeline for colleague", tags = {"review"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the cycle timeline")
     @GetMapping(value = "/colleagues/{colleagueUuid}/timeline", produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
     public RestResponse<List<TimelinePoint>> getTimelineByColleague(@PathVariable UUID colleagueUuid) {
         return RestResponse.success(reviewService.getCycleTimelineByColleague(colleagueUuid));
     }
@@ -289,6 +301,7 @@ public class ReviewEndpoint {
     @PostMapping(path = "/org-objectives",
             produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isTalentAdmin()")
     public RestResponse<List<OrgObjective>> createOrgObjectives(@RequestBody List<OrgObjective> orgObjectives) {
         return RestResponse.success(reviewService.createOrgObjectives(orgObjectives, resolveUserUuid()));
     }
@@ -303,6 +316,7 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Organisation objectives not found", content = @Content)
     @GetMapping(path = "/org-objectives",
             produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasColleagueWorkLevel('WL4', 'WL5') or isTalentAdmin()")
     public RestResponse<List<OrgObjective>> getOrgObjectives() {
         return success(reviewService.getAllOrgObjectives());
     }
@@ -317,6 +331,7 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Organisation objectives not found", content = @Content)
     @GetMapping(path = "/org-objectives/published",
             produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasColleagueWorkLevel('WL4', 'WL5') or isTalentAdmin()")
     public RestResponse<List<OrgObjective>> getPublishedOrgObjectives() {
         return success(reviewService.getPublishedOrgObjectives());
     }
@@ -325,6 +340,7 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Organisation objectives have been published")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Organisation objectives not found", content = @Content)
     @PostMapping(value = "/org-objectives/publish", produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isTalentAdmin()")
     public RestResponse<List<OrgObjective>> createAndPublishOrgObjectives(@RequestBody List<OrgObjective> orgObjectives) {
         return success(reviewService.createAndPublishOrgObjectives(orgObjectives, resolveUserUuid()));
     }
@@ -333,6 +349,7 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Organisation objectives have been published")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Organisation objectives not found", content = @Content)
     @PutMapping(value = "/org-objectives/publish", produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isTalentAdmin()")
     public RestResponse<List<OrgObjective>> publishOrgObjectives() {
         return success(reviewService.publishOrgObjectives(resolveUserUuid()));
     }
@@ -340,6 +357,7 @@ public class ReviewEndpoint {
     @Operation(summary = "Get audit log of organisation objective actions", tags = {"org-objective"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found audit log data")
     @GetMapping(value = "/audit-logs", produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isTalentAdmin()")
     public RestResponse<List<AuditOrgObjectiveReport>> getAuditLogReport(@NotNull RequestQuery requestQuery) {
         return success(reviewService.getAuditOrgObjectiveReport(requestQuery));
     }

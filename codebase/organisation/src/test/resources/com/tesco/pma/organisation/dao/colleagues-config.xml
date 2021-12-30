@@ -7,6 +7,7 @@
     <country name="GB" code="GB"/>
     <country name="UK" code="UK"/>
     <country name="IE" code="IE"/>
+    <country name="Ukraine" code="UA"/>
 
     <work_level name="WL1" code="WL1"/>
     <work_level name="WL2" code="WL2"/>
@@ -193,5 +194,56 @@
                job_id="2"
                country_code="IN"
                work_level="WL2"
+               department_id="2"/>
+
+    <colleague uuid="9927a7bc-5362-45fd-8730-2ff4321e74b6"
+               first_name="Ron"
+               middle_name="Peterson"
+               last_name="Rodgers"
+               email="test@test"
+               primary_entity="Tesco Mobile"
+               salary_frequency="ANNUAL"
+               iam_source="Test"
+               iam_id="TPX1435435"
+               job_id="2"
+               employment_type="ET"
+               hire_date="2019-01-02"
+               leaving_date="2021-02-01"
+               country_code="UA"
+               work_level="WL1"
+               department_id="2"/>
+
+    <colleague uuid="70c047ab-3b5a-4113-863e-20f29c824455"
+               first_name="Andrew"
+               middle_name="Johnson"
+               last_name="Rodgers"
+               email="test@test"
+               primary_entity="Tesco Mobile"
+               salary_frequency="ANNUAL"
+               iam_source="Test"
+               iam_id="TPX2431"
+               job_id="2"
+               employment_type="ET"
+               hire_date="2019-01-02"
+               leaving_date="2021-02-01"
+               country_code="UA"
+               work_level="WL2"
+               department_id="2"/>
+
+    <colleague uuid="c86d10ab-fd26-4f9b-b4ff-87e4f5afea53"
+               first_name="Fedor"
+               middle_name="Johnson"
+               last_name="Ivanov"
+               email="test@test"
+               primary_entity="Tesco Mobile"
+               salary_frequency="ANNUAL"
+               iam_source="Test"
+               iam_id="TPX165342"
+               job_id="2"
+               employment_type="ET"
+               hire_date="2019-01-02"
+               leaving_date="2021-02-01"
+               country_code="UA"
+               work_level="WL3"
                department_id="2"/>
 </dataset>

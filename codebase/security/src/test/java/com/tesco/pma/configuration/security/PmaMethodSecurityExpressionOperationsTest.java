@@ -1,5 +1,6 @@
 package com.tesco.pma.configuration.security;
 
+import com.tesco.pma.colleague.profile.service.ProfileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,9 +19,12 @@ class PmaMethodSecurityExpressionOperationsTest {
     @Mock
     private MethodSecurityExpressionOperations mockMethodSecurityExpressionOperations;
 
+    @Mock
+    private ProfileService profileService;
+
     @BeforeEach
     void setUp() {
-        instance = new PmaMethodSecurityExpressionOperations(mockMethodSecurityExpressionOperations);
+        instance = new PmaMethodSecurityExpressionOperations(mockMethodSecurityExpressionOperations, profileService);
     }
 
     @Test

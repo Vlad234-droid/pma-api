@@ -1,9 +1,13 @@
 package com.tesco.pma.cycle.dao;
 
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.lang.Nullable;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -65,8 +69,35 @@ public interface PMColleagueCycleDAO {
     /**
      * Gets list of pm colleague cycles without timeline points
      *
-     * @param cycleUuid     - PM cycle identifier
+     * @param cycleUuid - PM cycle identifier
+     * @param status    - filter by status, optional param.
+     * @param startTime - start time filter
      * @return - collection of PM colleague cycles
      */
-    List<PMColleagueCycle> getByCycleUuidWithoutTimelinePoint(UUID cycleUuid);
+    List<PMColleagueCycle> getByCycleUuidWithoutTimelinePoint(@Param("cycleUuid") UUID cycleUuid,
+                                                              @Nullable @Param("status") PMCycleStatus status,
+                                                              @Param("startTime") Instant startTime);
+
+    /**
+     * Changes status for colleague cycle handler
+     *
+     * @param colleagueUuid - colleague identifier
+     * @param oldStatus     - previous status
+     * @param newStatus     - new status
+     * @return number of changed rows
+     */
+    int changeStatusForColleague(@Param("colleagueUuid") UUID colleagueUuid,
+                                 @Param("oldStatus") PMCycleStatus oldStatus,
+                                 @Param("newStatus") PMCycleStatus newStatus);
+
+    /**
+     * Gets list of colleagues by key
+     *
+     * @param key                   - key
+     * @param hireDate              - colleague hire date
+     * @param withoutColleagueCycle - find without created colleague cycle
+     * @return list of colleagues
+     */
+    List<ColleagueEntity> findColleagues(@Param("key") String key, @Param("hireDate") LocalDate hireDate,
+                                         @Param("withoutColleagueCycle") boolean withoutColleagueCycle);
 }

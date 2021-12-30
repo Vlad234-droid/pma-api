@@ -82,12 +82,19 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             // other public endpoints of the API may be appended to this array
     };
 
+    // Camunda’s authentication for web applications are used
+    private static final String[] CAMUNDA_AUTH_WHITELIST = {
+            "/camunda/app/**",
+            "/camunda/api/**",
+            "/camunda/lib/**",
+            "/engine-rest/**"
+    };
+
     private static final String[] UNAUTHENTICATED_ANT_MATCHERS = {
             "/_working",
             "/live",
             "/_ready",
-            "/hc",
-            "/test/colleagues*/**" //TODO:: remove when we will have service users on ppe
+            "/hc"
     };
 
     @Override
@@ -96,6 +103,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 authorizeRequests
                         // unsecured resources
                         .antMatchers(AUTH_WHITELIST).permitAll()
+                        .antMatchers(CAMUNDA_AUTH_WHITELIST).permitAll()
                         // remained
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer

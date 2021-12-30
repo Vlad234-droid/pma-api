@@ -5,6 +5,7 @@ plugins {
 dependencies {
 
     implementation project(':api')
+    implementation project(':event')
     implementation project(':service')
     implementation project(':profile')
     implementation project(':security')
@@ -28,6 +29,8 @@ dependencies {
         exclude group: 'junit' // excluding junit 4
     }
     testImplementation("org.springframework.security:spring-security-test")
+
+    testRuntimeOnly project(':security')
 
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"

@@ -15,6 +15,7 @@
         <result property="status" column="status_id"
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.cycle.api.PMTimelinePointStatus"/>
+        <result property="lastUpdatedTime" column="last_updated_time"/>
         <result property="changeStatusReason" column="change_reason"/>
     </resultMap>
 
@@ -45,22 +46,25 @@
                 typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.cycle.api.PMTimelinePointStatus"/>
             <result property="count" column="cnt"/>
+            <result property="lastUpdatedTime" column="last_updated_time"/>
         </collection>
     </resultMap>
 
-    <insert id="create" flushCache="true">
+    <insert id="intCreate" flushCache="true">
         INSERT INTO pm_review
         (uuid,
          tl_point_uuid,
          type_id,
          number,
          properties,
+         last_updated_time,
          status_id)
         VALUES (#{review.uuid},
                 #{review.tlPointUuid},
                 #{review.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMReviewType},
                 #{review.number},
                 #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+                #{lastUpdatedTime},
                 #{review.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMTimelinePointStatus});
     </insert>
 
@@ -70,10 +74,11 @@
         WHERE r.uuid = #{uuid}
     </select>
 
-    <update id="update" flushCache="true">
+    <update id="intUpdate" flushCache="true">
         UPDATE pm_review
         SET properties =
         #{review.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+        last_updated_time = #{lastUpdatedTime},
         status_id = #{review.status.id}
         WHERE tl_point_uuid = #{review.tlPointUuid}
         and type_id = #{review.type.id}
@@ -114,6 +119,7 @@
         <if test="number != null">
             AND r.number = #{number}
         </if>
+        order by r.tl_point_uuid, r.type_id, r.number
     </select>
 
     <select id="getReviewsByColleague" resultMap="reviewResultMap">
@@ -131,8 +137,7 @@
         and csr.rn = 1)
         where cc.colleague_uuid = #{colleagueUuid}
         and cc.cycle_uuid = #{cycleUuid}
-        order by r.type_id,
-        r.number
+        order by r.type_id, r.number
     </select>
 
     <select id="getTeamReviews" resultMap="colleagueReviewsResultMap">
@@ -161,9 +166,10 @@
         order by c.last_name, c.first_name, r.type_id, r.status_id, r.uuid
     </select>
 
-    <update id="updateStatusByParams" flushCache="true">
+    <update id="intUpdateStatusByParams" flushCache="true">
         update pm_review r
-        SET status_id=#{newStatus.id}
+        SET status_id=#{newStatus.id},
+        last_updated_time=#{lastUpdatedTime}
         WHERE 1=1
         <if test="tlPointUuid != null">
             AND r.tl_point_uuid = #{tlPointUuid}
@@ -216,12 +222,12 @@
 
     <select id="getReviewStats" resultMap="reviewStatsResultMap">
         select r.tl_point_uuid,
-               r.type_id as review_type_id,
+               r.type_id                as review_type_id,
                r.status_id,
-               count(*)  as cnt
+               count(*)                 as cnt,
+               max(r.last_updated_time) as last_updated_time
         from pm_review r
         where r.tl_point_uuid = #{tlPointUuid}
-          and r.type_id = #{type.id}
         group by r.tl_point_uuid,
                  r.type_id,
                  r.status_id

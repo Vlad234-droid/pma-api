@@ -28,22 +28,22 @@
     </resultMap>
 
     <select id="read" resultMap="pmProcess">
-        select * from pm_rt_process where uuid = #{uuid}
+        SELECT * FROM pm_rt_process WHERE uuid = #{uuid}
     </select>
 
     <select id="findByBusinessKey" resultMap="pmProcess">
-        select * from pm_rt_process where business_key = #{businessKey}
-        order by last_update_time desc
+        SELECT * FROM pm_rt_process WHERE business_key = #{businessKey}
+        ORDER BY last_update_time DESC
     </select>
 
     <select id="readHistory" resultMap="pmProcessHistory">
-        select * from pm_rt_process_hi where uuid = #{uuid}
-        order by update_time
+        SELECT * FROM pm_rt_process_hi WHERE uuid = #{uuid}
+        ORDER BY update_time
     </select>
 
     <insert id="createInt" parameterType="com.tesco.pma.process.api.PMRuntimeProcess" useGeneratedKeys="true" keyColumn="uuid" keyProperty="id">
-        insert into pm_rt_process (uuid, status_id, cycle_uuid, bpm_process_id, business_key, last_update_time)
-        values (
+        INSERT INTO pm_rt_process (uuid, status_id, cycle_uuid, bpm_process_id, business_key, last_update_time)
+        VALUES (
             #{process.id},
             #{process.status.id},
             #{process.cycleUuid},
@@ -61,11 +61,18 @@
     </update>
 
     <insert id="createHistoryRecord">
-        insert into pm_rt_process_hi (uuid, status_id, update_time)
-        values (
+        INSERT INTO pm_rt_process_hi (uuid, status_id, update_time)
+        VALUES (
             #{uuid},
             #{status.id},
             #{updateTime}
         )
     </insert>
+
+    <select id="findByCycleUuidAndStatus" resultMap="pmProcess">
+        SELECT * FROM pm_rt_process
+        WHERE cycle_uuid = #{cycleUUID}
+        <include refid="addStatusIdCondition" />
+        ORDER BY last_update_time DESC
+    </select>
 </mapper>

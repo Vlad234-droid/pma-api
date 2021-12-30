@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +48,7 @@ public class UserManagementEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Users, their status and access levels found")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Users, their status and access levels found not found")
     @GetMapping(path = "/accounts")
+    @PreAuthorize("isAdmin()")
     public RestResponseWrapper<List<Account>> getAccounts(@RequestParam(required = false, defaultValue = "1") int nextPageToken) {
         List<Account> accounts = userManagementService.getAccounts(nextPageToken);
         int nextPage = userManagementService.getNextPageToken(nextPageToken, accounts.size());
@@ -57,6 +59,7 @@ public class UserManagementEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
     @PostMapping(path = "/accounts", consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isAdmin()")
     public RestResponse<Void> createAccount(@RequestBody @Valid CreateAccountRequest request) {
         userManagementService.createAccount(request);
         return RestResponse.success();
@@ -66,6 +69,7 @@ public class UserManagementEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
     @PutMapping(path = "/accounts", consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isAdmin()")
     public RestResponse<Void> changeAccountStatus(@RequestBody @Valid ChangeAccountStatusRequest request) {
         userManagementService.changeAccountStatus(request);
         return RestResponse.success();
@@ -76,6 +80,7 @@ public class UserManagementEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Available access levels & metadata found")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Available access levels & metadata not found")
     @GetMapping(value = "/roles")
+    @PreAuthorize("isAdmin()")
     public RestResponse<List<Role>> getRoles() {
         return RestResponse.success(userManagementService.getRoles());
     }
@@ -84,6 +89,7 @@ public class UserManagementEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
     @PostMapping(path = "/roles", consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isAdmin()")
     public RestResponse<Void> grantRole(@RequestBody @Valid RoleRequest request) {
         userManagementService.grantRole(request);
         return RestResponse.success();
@@ -93,6 +99,7 @@ public class UserManagementEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
     @DeleteMapping(path = "/roles", consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isAdmin()")
     public RestResponse<Void> revokeRole(@RequestBody @Valid RoleRequest request) {
         userManagementService.revokeRole(request);
         return RestResponse.success();

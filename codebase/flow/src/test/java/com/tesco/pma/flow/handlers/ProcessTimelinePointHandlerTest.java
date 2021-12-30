@@ -1,8 +1,7 @@
 package com.tesco.pma.flow.handlers;
 
-import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
+import com.tesco.pma.bpm.camunda.flow.CamundaHandlerTestConfig;
 import com.tesco.pma.bpm.camunda.flow.FlowTestUtil;
-import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleType;
@@ -16,6 +15,7 @@ import com.tesco.pma.review.domain.TimelinePoint;
 import com.tesco.pma.review.service.TimelinePointService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,14 +30,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_DURATION;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MAX;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MIN;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("test")
-@SpringBootTest(classes = CamundaSpringBootTestConfig.class)
+@SpringBootTest(classes = CamundaHandlerTestConfig.class)
 @ExtendWith(MockitoExtension.class)
-public class ProcessTimelinePointHandlerTest {
+class ProcessTimelinePointHandlerTest {
 
     private static final String CODE = "code";
     private static final String PM_CYCLE_MIN_ONE = "1";
@@ -52,27 +55,24 @@ public class ProcessTimelinePointHandlerTest {
     @MockBean
     private TimelinePointService timelinePointService;
 
-    @MockBean
-    private NamedMessageSourceAccessor messageSourceAccessor;
-
     @SpyBean
     private ProcessTimelinePointHandler handler;
 
     @Test
     void testEmptyColleagueCycles() throws Exception {
 
-        var pmCycle = buildPmCycle();
+        var pmCycle = buildPMCycle();
+        var parentElement = new PMElement();
+        parentElement.setType(PMElementType.REVIEW);
 
         var ec = FlowTestUtil.executionBuilder()
+                .withVariable(FlowParameters.MODEL_PARENT_ELEMENT, parentElement)
                 .withVariable(FlowParameters.PM_CYCLE, pmCycle)
+                .withVariable(FlowParameters.START_DATE, startDate)
                 .build();
 
-        var pmElement = new PMElement();
-        pmElement.setType(PMElementType.REVIEW);
-
-        Mockito.doReturn(pmElement).when(handler).getParent(ec);
         Mockito.doReturn(Collections.emptyList()).when(colleagueCycleService)
-                .getByCycleUuidWithoutTimelinePoint(pmCycle.getUuid());
+                .getActiveByCycleUuidWithoutTimelinePoint(pmCycle.getUuid(), null);
 
         handler.execute(ec);
 
@@ -82,48 +82,63 @@ public class ProcessTimelinePointHandlerTest {
     @Test
     void testCreateTimelinePoint() throws Exception {
 
-        var pmCycle = buildPmCycle();
-
-        var ec = FlowTestUtil.executionBuilder()
-                .withVariable(FlowParameters.PM_CYCLE, pmCycle)
-                .build();
+        var pmCycle = buildPMCycle();
 
         var parentElement = new PMElement();
         parentElement.setType(PMElementType.REVIEW);
         parentElement.setCode(CODE);
-        parentElement.setProperties(Map.of(PM_REVIEW_DURATION, "P1Y", PM_REVIEW_MIN, "1", PM_REVIEW_MAX, "5"));
+        parentElement.setProperties(Map.of(PM_REVIEW_MIN, "1", PM_REVIEW_MAX, "5"));
+
+        var ec = FlowTestUtil.executionBuilder()
+                .withVariable(FlowParameters.MODEL_PARENT_ELEMENT, parentElement)
+                .withVariable(FlowParameters.PM_CYCLE, pmCycle)
+                .withVariable(FlowParameters.START_DATE, startDate)
+                .withVariable(FlowParameters.START_DATE_S, HandlerUtils.formatDate(startDate))
+                .withVariable(FlowParameters.END_DATE, endDate)
+                .withVariable(FlowParameters.END_DATE_S, HandlerUtils.formatDate(endDate))
+                .build();
 
         var ccUuid = UUID.randomUUID();
-        var colleagueCycle = PMColleagueCycle.builder().uuid(ccUuid).build();
+        var colleagueCycle = PMColleagueCycle.builder()
+                .uuid(ccUuid)
+                .startTime(pmCycle.getStartTime())
+                .endTime(pmCycle.getEndTime())
+                .build();
 
-        Mockito.doReturn(parentElement).when(handler).getParent(ec);
         Mockito.doReturn(Collections.singletonList(colleagueCycle))
-                .when(colleagueCycleService).getByCycleUuidWithoutTimelinePoint(pmCycle.getUuid());
+                .when(colleagueCycleService).getActiveByCycleUuidWithoutTimelinePoint(pmCycle.getUuid(), null);
 
         handler.execute(ec);
 
-        Mockito.verify(timelinePointService).saveAll(Mockito.argThat((List<TimelinePoint> list) -> {
-            var tp = list.iterator().next();
-            var mapJson = tp.getProperties().getMapJson();
-            return tp.getColleagueCycleUuid().equals(ccUuid)
-                    && tp.getCode().equals(CODE)
-                    && tp.getStartTime().equals(pmCycle.getStartTime())
-                    && tp.getEndTime().equals(endDate.atStartOfDay().toInstant(ZoneOffset.UTC))
-                    && tp.getStatus().equals(PMTimelinePointStatus.STARTED)
-                    && mapJson.containsKey(FlowParameters.START_DATE.name())
-                    && mapJson.containsKey(FlowParameters.END_DATE.name())
-                    && mapJson.get(PMReviewElement.PM_REVIEW_MIN).equals(PM_CYCLE_MIN_ONE)
-                    && mapJson.get(PMReviewElement.PM_REVIEW_MAX).equals(PM_CYCLE_MAX_FIVE);
-        }));
+        ArgumentCaptor<List<TimelinePoint>> argumentCaptor = ArgumentCaptor.forClass(List.class);
+        Mockito.verify(timelinePointService).saveAll(argumentCaptor.capture());
+
+        List<TimelinePoint> capturedArgument = argumentCaptor.getValue();
+        assertFalse(capturedArgument.isEmpty());
+        var tp = capturedArgument.get(0);
+        assertTimelinePoint(colleagueCycle, tp);
     }
 
-    private PMCycle buildPmCycle() {
+    private void assertTimelinePoint(PMColleagueCycle ccCycle, TimelinePoint tp) {
+        assertNotNull(tp.getUuid());
+        assertEquals(ccCycle.getUuid(), tp.getColleagueCycleUuid());
+        assertEquals(CODE, tp.getCode());
+        assertEquals(ccCycle.getStartTime(), tp.getStartTime());
+        assertEquals(endDate.atStartOfDay().toInstant(ZoneOffset.UTC), tp.getEndTime());
+        assertEquals(PMTimelinePointStatus.STARTED, tp.getStatus());
+
+        var mapJson = tp.getProperties().getMapJson();
+        assertTrue(mapJson.containsKey(FlowParameters.START_DATE.name()));
+        assertTrue(mapJson.containsKey(FlowParameters.END_DATE.name()));
+        assertEquals(PM_CYCLE_MIN_ONE, mapJson.get(PMReviewElement.PM_REVIEW_MIN));
+        assertEquals(PM_CYCLE_MAX_FIVE, mapJson.get(PMReviewElement.PM_REVIEW_MAX));
+    }
+
+    private PMCycle buildPMCycle() {
         return PMCycle.builder()
                 .uuid(UUID.randomUUID())
                 .type(PMCycleType.FISCAL)
                 .startTime(startDate.atStartOfDay().toInstant(ZoneOffset.UTC))
                 .build();
     }
-
-
 }

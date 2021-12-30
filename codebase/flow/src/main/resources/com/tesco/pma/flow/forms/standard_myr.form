@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "components": [
     {
-      "text": "# Look back",
+      "text": "## Look back",
       "type": "text",
       "id": "Field_0wbgg9g"
     },
@@ -18,7 +18,7 @@
       }
     },
     {
-      "text": "# Look forward",
+      "text": "## Look forward",
       "type": "text",
       "id": "Field_0yrih7e"
     },

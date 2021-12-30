@@ -155,6 +155,7 @@ validation:
     - classpath:com/tesco/pma/tip/validation/constraints-tip.xml
     - classpath:com/tesco/pma/validation/constraints-files-upload-metadata.xml
     - classpath:com/tesco/pma/validation/constraints-upload-metadata.xml
+    - classpath:com/tesco/pma/validation/constraints-pdp-goal.xml
   messages:
     basename: com/tesco/pma/validation/AppValidationMessages
     encoding: UTF-8
@@ -228,6 +229,10 @@ tesco:
       PM_REVIEW_DECLINED: com.tesco.pma.bpm.action.RunFlowByEventAction
       PM_REVIEW_BEFORE_END: com.tesco.pma.bpm.action.RunFlowByEventAction
       IMPORT_NEW_COLLEAGUE: com.tesco.pma.bpm.action.RunFlowByEventAction
+      # CEP events
+      CEP_COLLEAGUE_ADDED: com.tesco.pma.bpm.action.RunFlowByEventAction
+      CEP_COLLEAGUE_UPDATED: com.tesco.pma.bpm.action.RunFlowByEventAction
+      CEP_COLLEAGUE_LEFT: com.tesco.pma.bpm.action.RunFlowByEventAction
     user-management:
         page:
           size: 100

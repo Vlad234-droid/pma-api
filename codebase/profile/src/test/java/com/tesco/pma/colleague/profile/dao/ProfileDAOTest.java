@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -55,6 +56,51 @@ public class ProfileDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
+    void getColleagueByIamIdWithNullWorkLevel() {
+        var colleagueUuid = UUID.fromString("10000000-0000-0000-0000-000000000001");
+
+        var colleague = dao.getColleagueByIamId("TPX13");
+
+        assertNotNull(colleague);
+        assertEquals(colleagueUuid, colleague.getUuid());
+        assertNotNull(colleague.getCountry());
+        assertNotNull(colleague.getDepartment());
+        assertNotNull(colleague.getJob());
+        assertNull(colleague.getWorkLevel());
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
+    void getColleagueByIamIdWithNullDepartment() {
+        var colleagueUuid = UUID.fromString("10000000-0000-0000-0000-000000000002");
+
+        var colleague = dao.getColleagueByIamId("TPX14");
+
+        assertNotNull(colleague);
+        assertEquals(colleagueUuid, colleague.getUuid());
+        assertNotNull(colleague.getCountry());
+        assertNull(colleague.getDepartment());
+        assertNotNull(colleague.getJob());
+        assertNotNull(colleague.getWorkLevel());
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
+    void getColleagueByIamIdWithNullJob() {
+        var colleagueUuid = UUID.fromString("10000000-0000-0000-0000-000000000003");
+
+        var colleague = dao.getColleagueByIamId("TPX15");
+
+        assertNotNull(colleague);
+        assertEquals(colleagueUuid, colleague.getUuid());
+        assertNotNull(colleague.getCountry());
+        assertNotNull(colleague.getDepartment());
+        assertNull(colleague.getJob());
+        assertNotNull(colleague.getWorkLevel());
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
     void getColleague() {
         var colleague = dao.getColleague(COLLEAGUE_UUID);
 
@@ -63,6 +109,51 @@ public class ProfileDAOTest extends AbstractDAOTest {
         assertNotNull(colleague.getCountry());
         assertNotNull(colleague.getDepartment());
         assertNotNull(colleague.getJob());
+        assertNotNull(colleague.getWorkLevel());
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
+    void getColleagueWithNullWorkLevel() {
+        var colleagueUuid = UUID.fromString("10000000-0000-0000-0000-000000000001");
+
+        var colleague = dao.getColleague(colleagueUuid);
+
+        assertNotNull(colleague);
+        assertEquals(colleagueUuid, colleague.getUuid());
+        assertNotNull(colleague.getCountry());
+        assertNotNull(colleague.getDepartment());
+        assertNotNull(colleague.getJob());
+        assertNull(colleague.getWorkLevel());
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
+    void getColleagueWithNullDepartment() {
+        var colleagueUuid = UUID.fromString("10000000-0000-0000-0000-000000000002");
+
+        var colleague = dao.getColleague(colleagueUuid);
+
+        assertNotNull(colleague);
+        assertEquals(colleagueUuid, colleague.getUuid());
+        assertNotNull(colleague.getCountry());
+        assertNull(colleague.getDepartment());
+        assertNotNull(colleague.getJob());
+        assertNotNull(colleague.getWorkLevel());
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
+    void getColleagueWithNullJob() {
+        var colleagueUuid = UUID.fromString("10000000-0000-0000-0000-000000000003");
+
+        var colleague = dao.getColleague(colleagueUuid);
+
+        assertNotNull(colleague);
+        assertEquals(colleagueUuid, colleague.getUuid());
+        assertNotNull(colleague.getCountry());
+        assertNotNull(colleague.getDepartment());
+        assertNull(colleague.getJob());
         assertNotNull(colleague.getWorkLevel());
     }
 
@@ -158,7 +249,7 @@ public class ProfileDAOTest extends AbstractDAOTest {
         colleague.setSalaryFrequency("SF_1");
         colleague.setPrimaryEntity("PE_1");
         colleague.setManager(false);
-        dao.saveColleague(colleague);
+        dao.updateColleague(colleague);
 
         var updated = dao.getColleague(colleagueUuid);
 
@@ -183,15 +274,15 @@ public class ProfileDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
     void updateColleagueSucceeded() {
         var colleague = getCorrectColleague();
-        final int inserted = dao.saveColleague(colleague);
-        assertThat(inserted).isEqualTo(1);
+        final int updated = dao.updateColleague(colleague);
+        assertThat(updated).isEqualTo(1);
     }
 
     @Test
     void updateColleagueThrowDataIntegrityViolationException() {
         var colleague = getIncorrectColleague();
 
-        assertThatCode(() -> dao.saveColleague(colleague))
+        assertThatCode(() -> dao.updateColleague(colleague))
                 .isExactlyInstanceOf(DataIntegrityViolationException.class)
                 .hasMessageContaining("ERROR: insert or update on table \"colleague\" violates foreign key constraint");
     }
@@ -258,13 +349,16 @@ public class ProfileDAOTest extends AbstractDAOTest {
 
         var managerUUID = "c409869b-2acf-45cd-8cc6-e13af2e6f935";
 
+        dao.updateColleagueManager(UUID.fromString("119e0d2b-1dc2-409f-8198-ecd66e59d47a"),
+                UUID.fromString(managerUUID));
+
         assertEquals(9, dao.findColleagueSuggestionsByFullName(
                 createRQ(Map.of("first-name_like", "fiRst"))).size());
 
         var colleagues = dao.findColleagueSuggestionsByFullName(
                 createRQ(Map.of(
-                        "first-name_like", "JohN",
-                        "manager-uuid_equals", managerUUID)));
+                        "last-name_like", "Dow",
+                        "manager-uuid_eq", managerUUID)));
 
         assertEquals(1, colleagues.size());
         assertEquals(1, dao.findColleagueSuggestionsByFullName(createRQ(Map.of("first-name_like","ohn"))).size());
@@ -272,15 +366,15 @@ public class ProfileDAOTest extends AbstractDAOTest {
         var colleague = dao.findColleagueSuggestionsByFullName(createRQ(Map.of(
                 "first-name_eq", "John",
                 "last-name_eq", "Dow"
-        ))).get(0);
+        ))).stream().filter(col -> "119e0d2b-1dc2-409f-8198-ecd66e59d47a".equals(col.getColleagueUUID().toString())).findFirst().get();
 
-        assertEquals("119e0d2b-1dc2-409f-8198-ecd66e59d47a", colleague.getColleagueUUID().toString());
+        assertNotNull(colleague);
         assertEquals("Tesco Bank", colleague.getWorkRelationships().get(0).getPrimaryEntity());
         assertEquals(WorkLevel.WL1, colleague.getWorkRelationships().get(0).getWorkLevel());
         assertEquals("2", colleague.getWorkRelationships().get(0).getJob().getId());
         assertEquals("ANNUAL", colleague.getWorkRelationships().get(0).getSalaryFrequency());
         assertEquals("ET", colleague.getWorkRelationships().get(0).getEmploymentType());
-        //assertEquals(managerUUID, colleague.getWorkRelationships().get(0).getManagerUUID().toString());
+        assertEquals(managerUUID, colleague.getWorkRelationships().get(0).getManagerUUID().toString());
         assertEquals("4", colleague.getWorkRelationships().get(0).getDepartment().getId());
         assertEquals("John", colleague.getProfile().getFirstName());
         assertEquals("Dow", colleague.getProfile().getLastName());

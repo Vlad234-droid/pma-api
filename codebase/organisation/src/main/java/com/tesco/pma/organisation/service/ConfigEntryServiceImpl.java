@@ -1,9 +1,9 @@
 package com.tesco.pma.organisation.service;
 
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.ConfigEntryErrorCodes;
 import com.tesco.pma.organisation.api.ConfigEntryResponse;
@@ -184,10 +184,7 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
 
     @Override
     public boolean isColleagueExistsForCompositeKey(UUID colleagueUuid, String compositeKey) {
-        var parts = compositeKey.split("/");
-        var searchKey = IntStream.range(0, parts.length)
-                .filter(i -> i % 2 == 1).mapToObj(i -> parts[i]).collect(Collectors.joining("/"));
-
+        String searchKey = getSearchKey(compositeKey);
         return dao.isColleagueExistsForCompositeKey(colleagueUuid, searchKey);
     }
 
@@ -200,10 +197,14 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
 
     @Override
     public List<ColleagueEntity> findColleaguesByCompositeKey(String compositeKey) {
-        var parts = compositeKey.split("/");
-        var searchKey = IntStream.range(0, parts.length)
-                .filter(i -> i % 2 == 1).mapToObj(i -> parts[i]).collect(Collectors.joining("/"));
+        String searchKey = getSearchKey(compositeKey);
         return dao.findColleaguesByCompositeKey(searchKey);
+    }
+
+    private String getSearchKey(String compositeKey) {
+        var parts = compositeKey.split("/");
+        return IntStream.range(0, parts.length)
+                .filter(i -> i % 2 == 1).mapToObj(i -> parts[i]).collect(Collectors.joining("/"));
     }
 
     private String buildCompositeKeySearchTerm(String key) {
