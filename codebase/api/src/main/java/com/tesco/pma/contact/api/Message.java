@@ -7,7 +7,7 @@ import java.util.Map;
 
 /**
  * Contact API
- * /messaging
+ * https://api.tesco.com/messaging/v1/send
  * Message for the given template id
  */
 
