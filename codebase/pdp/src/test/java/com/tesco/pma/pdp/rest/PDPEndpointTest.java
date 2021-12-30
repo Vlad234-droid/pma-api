@@ -31,7 +31,7 @@ public class PDPEndpointTest extends AbstractEndpointTest {
     private static final UUID GOAL_UUID_2 = UUID.fromString("7d37262f-3a00-4706-a74b-6bf98be65765");
     private static final UUID COLLEAGUE_UUID = UUID.fromString("ce245be1-1f43-4d5f-85dc-db6e2cce0c2a");
 
-    private static final String PDP_URL = "/pdp";
+    private static final String PDP_GOALS_URL = "/pdp/goals";
     private static final int GOAL_NUMBER_1 = 1;
     private static final int GOAL_NUMBER_2 = 2;
 
@@ -50,7 +50,7 @@ public class PDPEndpointTest extends AbstractEndpointTest {
         var goals = List.of(buildGoal(GOAL_UUID_1, GOAL_NUMBER_1), buildGoal(GOAL_UUID_2, GOAL_NUMBER_2));
         when(pdpService.updateGoals(COLLEAGUE_UUID, goals)).thenReturn(goals);
 
-        var result = performPut(PDP_GOALS_UPDATE_REQUEST_JSON_FILE_NAME, status().isOk(), PDP_URL + "/goals");
+        var result = performPut(PDP_GOALS_UPDATE_REQUEST_JSON_FILE_NAME, status().isOk(), PDP_GOALS_URL);
 
         assertResponseContent(result.getResponse(), PDP_GOALS_GET_OK_RESPONSE_JSON_FILE_NAME);
     }
@@ -60,28 +60,28 @@ public class PDPEndpointTest extends AbstractEndpointTest {
         var goals = List.of(buildGoal(GOAL_UUID_1, GOAL_NUMBER_1), buildGoal(GOAL_UUID_2, GOAL_NUMBER_2));
         doThrow(NotFoundException.class).when(pdpService).updateGoals(COLLEAGUE_UUID, goals);
 
-        performPut(PDP_GOALS_UPDATE_REQUEST_JSON_FILE_NAME, status().isNotFound(), PDP_URL + "/goals");
+        performPut(PDP_GOALS_UPDATE_REQUEST_JSON_FILE_NAME, status().isNotFound(), PDP_GOALS_URL);
     }
 
     @Test
     void deleteGoals() throws Exception {
         doNothing().when(pdpService).deleteGoals(COLLEAGUE_UUID, List.of(GOAL_UUID_1, GOAL_UUID_2));
 
-        performPost(PDP_GOALS_GET_REQUEST_JSON_FILE_NAME, status().isOk(), PDP_URL + "/goals/delete");
+        performPost(PDP_GOALS_GET_REQUEST_JSON_FILE_NAME, status().isOk(), PDP_GOALS_URL + "/delete");
     }
 
     @Test
     void deleteGoalsUnsuccess() throws Exception {
         doThrow(NotFoundException.class).when(pdpService).deleteGoals(COLLEAGUE_UUID, List.of(GOAL_UUID_1, GOAL_UUID_2));
 
-        performPost(PDP_GOALS_GET_REQUEST_JSON_FILE_NAME, status().isNotFound(), PDP_URL + "/goals/delete");
+        performPost(PDP_GOALS_GET_REQUEST_JSON_FILE_NAME, status().isNotFound(), PDP_GOALS_URL + "/delete");
     }
 
     @Test
     void getGoalByColleagueAndNumber() throws Exception {
         when(pdpService.getGoal(COLLEAGUE_UUID, GOAL_NUMBER_1)).thenReturn(buildGoal(GOAL_UUID_1, GOAL_NUMBER_1));
 
-        var result = performGet(status().isOk(), PDP_URL + "/goals/numbers/{number}", GOAL_NUMBER_1);
+        var result = performGet(status().isOk(), PDP_GOALS_URL + "/numbers/{number}", GOAL_NUMBER_1);
 
         assertResponseContent(result.getResponse(), PDP_GOAL_GET_OK_RESPONSE_JSON_FILE_NAME);
     }
@@ -90,14 +90,14 @@ public class PDPEndpointTest extends AbstractEndpointTest {
     void getGoalByColleagueAndNumberUnsuccess() throws Exception {
         when(pdpService.getGoal(COLLEAGUE_UUID, GOAL_NUMBER_1)).thenThrow(NotFoundException.class);
 
-        performGet(status().isNotFound(), PDP_URL + "/goals/numbers/{number}", GOAL_NUMBER_1);
+        performGet(status().isNotFound(), PDP_GOALS_URL + "/numbers/{number}", GOAL_NUMBER_1);
     }
 
     @Test
     void getGoalByUuid() throws Exception {
         when(pdpService.getGoal(COLLEAGUE_UUID, GOAL_UUID_1)).thenReturn(buildGoal(GOAL_UUID_1, GOAL_NUMBER_1));
 
-        var result = performGet(status().isOk(), PDP_URL + "/goals/{goalUuid}", GOAL_UUID_1);
+        var result = performGet(status().isOk(), PDP_GOALS_URL + "/{goalUuid}", GOAL_UUID_1);
 
         assertResponseContent(result.getResponse(), PDP_GOAL_GET_OK_RESPONSE_JSON_FILE_NAME);
     }
@@ -106,7 +106,7 @@ public class PDPEndpointTest extends AbstractEndpointTest {
     void getGoalByUuidUnsuccess() throws Exception {
         when(pdpService.getGoal(COLLEAGUE_UUID, GOAL_UUID_1)).thenThrow(NotFoundException.class);
 
-        performGet(status().isNotFound(), PDP_URL + "/goals/{goalUuid}", GOAL_UUID_1);
+        performGet(status().isNotFound(), PDP_GOALS_URL + "/{goalUuid}", GOAL_UUID_1);
     }
 
     @Test
@@ -114,7 +114,7 @@ public class PDPEndpointTest extends AbstractEndpointTest {
         when(pdpService.getGoals(COLLEAGUE_UUID))
                 .thenReturn(List.of(buildGoal(GOAL_UUID_1, GOAL_NUMBER_1), buildGoal(GOAL_UUID_2, GOAL_NUMBER_2)));
 
-        var result = performGet(status().isOk(), PDP_URL + "/goals");
+        var result = performGet(status().isOk(), PDP_GOALS_URL);
 
         assertResponseContent(result.getResponse(), PDP_GOALS_GET_OK_RESPONSE_JSON_FILE_NAME);
     }
@@ -123,7 +123,7 @@ public class PDPEndpointTest extends AbstractEndpointTest {
     void getGoalsByColleagueUnsuccess() throws Exception {
         when(pdpService.getGoals(COLLEAGUE_UUID)).thenThrow(NotFoundException.class);
 
-        performGet(status().isNotFound(), PDP_URL + "/goals");
+        performGet(status().isNotFound(), PDP_GOALS_URL);
     }
 
     private PDPGoal buildGoal(UUID uuid, int number) {
