@@ -60,7 +60,8 @@ spring:
                               com.tesco.pma.notes.model,
                               com.tesco.pma.fs.domain,
                               com.tesco.pma.config.domain,
-                              com.tesco.pma.tip.api
+                              com.tesco.pma.tip.api,
+                              com.tesco.pma.pdp.domain
         configuration-properties:
           base-package: com.tesco.pma.dao,
                         com.tesco.pma.colleague.profile.dao,
@@ -73,7 +74,8 @@ spring:
                         com.tesco.pma.notes.dao,
                         com.tesco.pma.fs.dao,
                         com.tesco.pma.config.dao,
-                        com.tesco.pma.tip.dao
+                        com.tesco.pma.tip.dao,
+                        com.tesco.pma.pdp.dao
           batchSize: 500
     camunda:
       # Camunda database config
