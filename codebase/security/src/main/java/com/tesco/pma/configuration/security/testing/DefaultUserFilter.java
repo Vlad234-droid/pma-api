@@ -27,9 +27,6 @@ public class DefaultUserFilter extends OncePerRequestFilter {
         securityContext.setAuthentication(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-//        var session = request.getSession(true);
-//        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, securityContext);
-
         filterChain.doFilter(request, response);
 
     }
