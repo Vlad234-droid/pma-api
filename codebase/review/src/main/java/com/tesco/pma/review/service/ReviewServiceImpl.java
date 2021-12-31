@@ -180,8 +180,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<ColleagueTimeline> getTeamReviews(UUID managerUuid) {
-        List<ColleagueTimeline> results = reviewDAO.getTeamReviews(managerUuid);
+    public List<ColleagueTimeline> getTeamReviews(UUID managerUuid, Integer depth) {
+        List<ColleagueTimeline> results = reviewDAO.getTeamReviews(managerUuid, depth);
         if (results == null) {
             throw notFound(REVIEW_NOT_FOUND,
                     Map.of(MANAGER_UUID_PARAMETER_NAME, managerUuid));

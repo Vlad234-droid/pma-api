@@ -190,7 +190,23 @@ public class ReviewEndpoint {
             produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isColleague()")
     public RestResponse<List<ColleagueTimeline>> getTeamReviews(@PathVariable("managerUuid") UUID managerUuid) {
-        return success(reviewService.getTeamReviews(managerUuid));
+        return success(reviewService.getTeamReviews(managerUuid, 1));
+    }
+
+    /**
+     * Get call using a Path param and return a list of full team reviews as JSON.
+     *
+     * @param managerUuid an identifier of colleague
+     * @return a RestResponse parameterized with list of colleagues reviews
+     */
+    @Operation(summary = "Get a list of full team reviews by managerUuid", tags = {"review"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found reviews")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Reviews not found", content = @Content)
+    @GetMapping(path = "/managers/{managerUuid}/full-team-reviews",
+            produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
+    public RestResponse<List<ColleagueTimeline>> getFullTeamReviews(@PathVariable("managerUuid") UUID managerUuid) {
+        return success(reviewService.getTeamReviews(managerUuid, 2));
     }
 
     /**
