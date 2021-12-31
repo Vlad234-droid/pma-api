@@ -1,6 +1,7 @@
 package com.tesco.pma.pdp.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.tesco.pma.api.MapJson;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.pdp.domain.PDPGoal;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.tesco.pma.pdp.api.PDPGoalStatus.DRAFT;
 import static com.tesco.pma.pdp.api.PDPGoalStatus.PUBLISHED;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -66,6 +68,30 @@ public class PDPDaoTest extends AbstractDAOTest {
         assertThat(result).isNotEmpty();
         assertThat(result).hasSize(2);
         assertThat(result).isEqualTo(buildGoals(GOAL_UUID_1, GOAL_UUID_2));
+    }
+
+    @Test
+    @DataSet(BASE_PATH_TO_DATA_SET + "cleanup.xml")
+    @ExpectedDataSet(BASE_PATH_TO_DATA_SET + "goal_create_expected.xml")
+    void createGoal() {
+        final var goal = buildGoal(GOAL_UUID_1, GOAL_NUMBER_1);
+
+        final var rowsInserted = instance.createGoal(goal);
+
+        assertThat(rowsInserted).isOne();
+    }
+
+    @Test
+    @DataSet(BASE_PATH_TO_DATA_SET + "goals_init.xml")
+    @ExpectedDataSet(BASE_PATH_TO_DATA_SET + "goal_update_expected.xml")
+    void updateGoal() {
+        final var goal = buildGoal(GOAL_UUID_1, GOAL_NUMBER_1);
+        goal.setAchievementDate(LocalDate.parse("2021-12-30"));
+        goal.setStatus(DRAFT);
+
+        final var rowsInserted = instance.updateGoal(goal);
+
+        assertThat(rowsInserted).isOne();
     }
 
     private PDPGoal buildGoal(UUID uuid, int number) {
