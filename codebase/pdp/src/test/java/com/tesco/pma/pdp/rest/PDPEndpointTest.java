@@ -1,6 +1,7 @@
 package com.tesco.pma.pdp.rest;
 
 import com.tesco.pma.api.MapJson;
+import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.pdp.domain.PDPGoal;
 import com.tesco.pma.pdp.service.PDPService;
@@ -29,7 +30,7 @@ public class PDPEndpointTest extends AbstractEndpointTest {
 
     private static final UUID GOAL_UUID_1 = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65765");
     private static final UUID GOAL_UUID_2 = UUID.fromString("7d37262f-3a00-4706-a74b-6bf98be65765");
-    private static final UUID COLLEAGUE_UUID = UUID.fromString("ce245be1-1f43-4d5f-85dc-db6e2cce0c2a");
+    private static final UUID COLLEAGUE_UUID = UUID.fromString(COLLEAGUE_UUID_STR);
 
     private static final String PDP_GOALS_URL = "/pdp/goals";
     private static final int GOAL_NUMBER_1 = 1;
@@ -46,8 +47,25 @@ public class PDPEndpointTest extends AbstractEndpointTest {
     private PDPService pdpService;
 
     @Test
+    void createGoals() throws Exception {
+        var goals = buildGoals(GOAL_UUID_1, GOAL_UUID_2);
+        when(pdpService.createGoals(COLLEAGUE_UUID, goals)).thenReturn(goals);
+
+        var result = performPost(PDP_GOALS_UPDATE_REQUEST_JSON_FILE_NAME, status().isCreated(), PDP_GOALS_URL);
+
+        assertResponseContent(result.getResponse(), PDP_GOALS_GET_OK_RESPONSE_JSON_FILE_NAME);
+    }
+
+    @Test
+    void createGoalsUnsuccessIfBadRequest() throws Exception {
+        doThrow(DatabaseConstraintViolationException.class).when(pdpService).createGoals(COLLEAGUE_UUID, buildGoals(GOAL_UUID_1, GOAL_UUID_2));
+
+        performPost(PDP_GOALS_UPDATE_REQUEST_JSON_FILE_NAME, status().isBadRequest(), PDP_GOALS_URL);
+    }
+
+    @Test
     void updateGoals() throws Exception {
-        var goals = List.of(buildGoal(GOAL_UUID_1, GOAL_NUMBER_1), buildGoal(GOAL_UUID_2, GOAL_NUMBER_2));
+        var goals = buildGoals(GOAL_UUID_1, GOAL_UUID_2);
         when(pdpService.updateGoals(COLLEAGUE_UUID, goals)).thenReturn(goals);
 
         var result = performPut(PDP_GOALS_UPDATE_REQUEST_JSON_FILE_NAME, status().isOk(), PDP_GOALS_URL);
@@ -56,11 +74,17 @@ public class PDPEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void updateGoalsUnsuccess() throws Exception {
-        var goals = List.of(buildGoal(GOAL_UUID_1, GOAL_NUMBER_1), buildGoal(GOAL_UUID_2, GOAL_NUMBER_2));
-        doThrow(NotFoundException.class).when(pdpService).updateGoals(COLLEAGUE_UUID, goals);
+    void updateGoalsUnsuccessIfGoalIsNotFound() throws Exception {
+        doThrow(NotFoundException.class).when(pdpService).updateGoals(COLLEAGUE_UUID, buildGoals(GOAL_UUID_1, GOAL_UUID_2));
 
         performPut(PDP_GOALS_UPDATE_REQUEST_JSON_FILE_NAME, status().isNotFound(), PDP_GOALS_URL);
+    }
+
+    @Test
+    void updateGoalsUnsuccessIfGoalIfBadRequest() throws Exception {
+        doThrow(DatabaseConstraintViolationException.class).when(pdpService).updateGoals(COLLEAGUE_UUID, buildGoals(GOAL_UUID_1, GOAL_UUID_2));
+
+        performPut(PDP_GOALS_UPDATE_REQUEST_JSON_FILE_NAME, status().isBadRequest(), PDP_GOALS_URL);
     }
 
     @Test
@@ -71,7 +95,7 @@ public class PDPEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void deleteGoalsUnsuccess() throws Exception {
+    void deleteGoalsUnsuccessIfGoalIsNotFound() throws Exception {
         doThrow(NotFoundException.class).when(pdpService).deleteGoals(COLLEAGUE_UUID, List.of(GOAL_UUID_1, GOAL_UUID_2));
 
         performPost(PDP_GOALS_GET_REQUEST_JSON_FILE_NAME, status().isNotFound(), PDP_GOALS_URL + "/delete");
@@ -87,7 +111,7 @@ public class PDPEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getGoalByColleagueAndNumberUnsuccess() throws Exception {
+    void getGoalByColleagueAndNumberUnsuccessIfGoalIsNotFound() throws Exception {
         when(pdpService.getGoal(COLLEAGUE_UUID, GOAL_NUMBER_1)).thenThrow(NotFoundException.class);
 
         performGet(status().isNotFound(), PDP_GOALS_URL + "/numbers/{number}", GOAL_NUMBER_1);
@@ -103,7 +127,7 @@ public class PDPEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getGoalByUuidUnsuccess() throws Exception {
+    void getGoalByUuidUnsuccessIfGoalIsNotFound() throws Exception {
         when(pdpService.getGoal(COLLEAGUE_UUID, GOAL_UUID_1)).thenThrow(NotFoundException.class);
 
         performGet(status().isNotFound(), PDP_GOALS_URL + "/{goalUuid}", GOAL_UUID_1);
@@ -111,22 +135,18 @@ public class PDPEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getGoalsByColleague() throws Exception {
-        when(pdpService.getGoals(COLLEAGUE_UUID))
-                .thenReturn(List.of(buildGoal(GOAL_UUID_1, GOAL_NUMBER_1), buildGoal(GOAL_UUID_2, GOAL_NUMBER_2)));
+        when(pdpService.getGoals(COLLEAGUE_UUID)).thenReturn(buildGoals(GOAL_UUID_1, GOAL_UUID_2));
 
         var result = performGet(status().isOk(), PDP_GOALS_URL);
 
         assertResponseContent(result.getResponse(), PDP_GOALS_GET_OK_RESPONSE_JSON_FILE_NAME);
     }
 
-    @Test
-    void getGoalsByColleagueUnsuccess() throws Exception {
-        when(pdpService.getGoals(COLLEAGUE_UUID)).thenThrow(NotFoundException.class);
-
-        performGet(status().isNotFound(), PDP_GOALS_URL);
-    }
-
     private PDPGoal buildGoal(UUID uuid, int number) {
         return new PDPGoal(uuid, COLLEAGUE_UUID, number, PROPERTIES, ACHIEVEMENT_DATE, PUBLISHED);
+    }
+
+    private List<PDPGoal> buildGoals(UUID uuid1, UUID uuid2) {
+        return List.of(buildGoal(uuid1, GOAL_NUMBER_1), buildGoal(uuid2, GOAL_NUMBER_2));
     }
 }
