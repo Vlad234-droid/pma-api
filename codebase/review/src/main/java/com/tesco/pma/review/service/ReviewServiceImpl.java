@@ -41,7 +41,6 @@ import static com.tesco.pma.api.ActionType.PUBLISH;
 import static com.tesco.pma.api.ActionType.SAVE_AS_DRAFT;
 import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
-import static com.tesco.pma.cycle.api.PMTimelinePointStatus.COMPLETED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DECLINED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.OVERDUE;
@@ -343,7 +342,7 @@ public class ReviewServiceImpl implements ReviewService {
                                                      UUID loggedUserUuid) {
         var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, type);
         reviews.forEach(review -> {
-            var prevStatuses = getPrevStatusesForChangeStatus(status);
+            var prevStatuses = getPrevStatusesForChangeStatus(type, status);
             if (0 == prevStatuses.size()) {
                 throw notFound(ALLOWED_STATUSES_NOT_FOUND,
                         Map.of(OPERATION_PARAMETER_NAME, CHANGE_STATUS_OPERATION_NAME));
@@ -511,7 +510,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     private List<PMTimelinePointStatus> getAllowedStatusesForUpdate(PMReviewType reviewType, PMTimelinePointStatus newStatus) {
         var allowedStatusesForUpdate = getStatusesForUpdate(reviewType);
-        var prevStatusesForChangeStatus = getPrevStatusesForChangeStatus(newStatus);
+        var prevStatusesForChangeStatus = getPrevStatusesForChangeStatus(reviewType, newStatus);
         return allowedStatusesForUpdate.stream()
                 .filter(prevStatusesForChangeStatus::contains)
                 .collect(Collectors.toList());
@@ -582,6 +581,36 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
+    private List<PMTimelinePointStatus> getPrevStatusesForChangeStatus(PMReviewType reviewType, PMTimelinePointStatus newStatus) {
+        if (reviewType.equals(OBJECTIVE)) {
+            switch (newStatus) {
+                case DRAFT:
+                    return List.of(DRAFT, DECLINED);
+                case WAITING_FOR_APPROVAL:
+                    return List.of(DRAFT, WAITING_FOR_APPROVAL, DECLINED, APPROVED);
+                case APPROVED:
+                    return List.of(WAITING_FOR_APPROVAL, APPROVED);
+                case DECLINED:
+                    return List.of(WAITING_FOR_APPROVAL, DECLINED);
+                default:
+                    return Collections.emptyList();
+            }
+        } else {
+            switch (newStatus) {
+                case DRAFT:
+                    return List.of(DRAFT, DECLINED);
+                case WAITING_FOR_APPROVAL:
+                    return List.of(DRAFT, WAITING_FOR_APPROVAL, DECLINED);
+                case APPROVED:
+                    return List.of(WAITING_FOR_APPROVAL, APPROVED);
+                case DECLINED:
+                    return List.of(WAITING_FOR_APPROVAL, DECLINED);
+                default:
+                    return Collections.emptyList();
+            }
+        }
+    }
+
     private TimelinePoint updateTLPointStatus(TimelinePoint timelinePoint) {
         var calcTlPoint = calcTlPoint(timelinePoint);
         if (1 == timelinePointDAO.update(
@@ -590,23 +619,6 @@ public class ReviewServiceImpl implements ReviewService {
             return calcTlPoint;
         } else {
             return null;
-        }
-    }
-
-    private List<PMTimelinePointStatus> getPrevStatusesForChangeStatus(PMTimelinePointStatus newStatus) {
-        switch (newStatus) {
-            case DRAFT:
-                return List.of(DRAFT);
-            case WAITING_FOR_APPROVAL:
-                return List.of(DRAFT, WAITING_FOR_APPROVAL, DECLINED);
-            case APPROVED:
-                return List.of(WAITING_FOR_APPROVAL, APPROVED);
-            case DECLINED:
-                return List.of(WAITING_FOR_APPROVAL, DECLINED);
-            case COMPLETED:
-                return List.of(APPROVED, COMPLETED);
-            default:
-                return Collections.emptyList();
         }
     }
 
