@@ -30,7 +30,7 @@ public class PDPEndpointTest extends AbstractEndpointTest {
 
     private static final UUID GOAL_UUID_1 = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65765");
     private static final UUID GOAL_UUID_2 = UUID.fromString("7d37262f-3a00-4706-a74b-6bf98be65765");
-    private static final UUID COLLEAGUE_UUID = UUID.fromString("ce245be1-1f43-4d5f-85dc-db6e2cce0c2a");
+    private static final UUID COLLEAGUE_UUID = UUID.fromString(COLLEAGUE_UUID_STR);
 
     private static final String PDP_GOALS_URL = "/pdp/goals";
     private static final int GOAL_NUMBER_1 = 1;
