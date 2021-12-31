@@ -89,9 +89,18 @@ public class PDPDaoTest extends AbstractDAOTest {
         goal.setAchievementDate(LocalDate.parse("2021-12-30"));
         goal.setStatus(DRAFT);
 
-        final var rowsInserted = instance.updateGoal(goal);
+        final var rowsUpdated = instance.updateGoal(goal);
 
-        assertThat(rowsInserted).isOne();
+        assertThat(rowsUpdated).isOne();
+    }
+
+    @Test
+    @DataSet(BASE_PATH_TO_DATA_SET + "goals_init.xml")
+    @ExpectedDataSet(BASE_PATH_TO_DATA_SET + "goal_delete_expected.xml")
+    void deleteGoalByUuidAndColleague() {
+        final var rowsDeleted = instance.deleteGoalByUuidAndColleague(COLLEAGUE_UUID, GOAL_UUID_2);
+
+        assertThat(rowsDeleted).isOne();
     }
 
     private PDPGoal buildGoal(UUID uuid, int number) {
