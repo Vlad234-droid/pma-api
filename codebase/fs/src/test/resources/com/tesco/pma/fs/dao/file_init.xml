@@ -1,7 +1,7 @@
 <dataset>
 
     <file uuid="6d37262f-3a00-4706-a74b-6bf98be65765"
-          path="/home/dev"
+          colleague_uuid="/home/dev"
           version="1"
           type_id="2"
           status_id="2"
