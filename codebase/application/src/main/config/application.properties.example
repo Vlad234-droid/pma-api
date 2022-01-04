@@ -43,4 +43,5 @@ PMA_DB_USERNAME=luxoft
 PMA_DB_PASSWORD=lux04t
 
 # Performance testing
+# spring.profiles.active=benchmarks
 DEFAULT_USER_USERNAME=10000000-0000-0000-0000-000000000003
