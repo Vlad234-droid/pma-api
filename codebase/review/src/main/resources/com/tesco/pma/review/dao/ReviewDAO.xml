@@ -141,16 +141,29 @@
     </select>
 
     <select id="getTeamReviews" resultMap="colleagueReviewsResultMap">
-        select c.uuid,
-               c.first_name,
-               c.last_name,
-               j.name          as job_name,
-               d.business_type as business_type,
-               r.uuid          as review_uuid,
-               r.type_id       as review_type_id,
-               r.status_id     as review_status_id,
-               r.number        as review_number
-        from colleague c
+        with recursive r_colleague as (
+            select c.*, 1 as level
+            from colleague c
+            where c.manager_uuid = #{managerUuid}
+            union all
+            select c.*, rc.level + 1 as level
+            from r_colleague rc
+                     inner join colleague c
+                                on (c.manager_uuid = rc.uuid)
+            where level &lt; #{depth}
+        )
+        select distinct c.uuid,
+                        c.first_name,
+                        c.last_name,
+                        j.name          as job_name,
+                        d.business_type as business_type,
+                        r.uuid          as review_uuid,
+                        r.type_id       as review_type_id,
+                        r.status_id     as review_status_id,
+                        r.number        as review_number
+        from r_colleague rc
+                 inner join colleague c
+                            on (c.uuid = rc.uuid)
                  inner join job j
                             on (j.id = c.job_id)
                  inner join department d
@@ -162,7 +175,6 @@
                            on (cc.uuid = tlp.colleague_cycle_uuid)
                  left join pm_review r
                            on (tlp.uuid = r.tl_point_uuid)
-        where c.manager_uuid = #{managerUuid}
         order by c.last_name, c.first_name, r.type_id, r.status_id, r.uuid
     </select>
 

@@ -86,9 +86,11 @@ public interface ReviewService {
      * Finds list of colleagues reviews by managerUuid
      *
      * @param managerUuid an identifier of colleague
+     * @param depth       a level of colleague's tree
      * @return a list of colleagues reviews
      */
-    List<ColleagueTimeline> getTeamReviews(@NotNull UUID managerUuid);
+    List<ColleagueTimeline> getTeamReviews(@NotNull UUID managerUuid,
+                                           @NotNull Integer depth);
 
     /**
      * Creates review.

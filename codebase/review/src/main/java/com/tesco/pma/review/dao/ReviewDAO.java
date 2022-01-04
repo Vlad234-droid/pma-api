@@ -96,9 +96,11 @@ public interface ReviewDAO {
      * if some parameter is null it will be ignored
      *
      * @param managerUuid an identifier of colleague
+     * @param depth       a level of colleague's tree
      * @return a list of colleagues reviews with active reviews
      */
-    List<ColleagueTimeline> getTeamReviews(@Param("managerUuid") UUID managerUuid);
+    List<ColleagueTimeline> getTeamReviews(@Param("managerUuid") UUID managerUuid,
+                                           @Param("depth") Integer depth);
 
     /**
      * Updates a review status
