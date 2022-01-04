@@ -1,0 +1,76 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet id="1" author="akuzmin" labels="performance">
+        <insert tableName="colleague">
+            <column name="uuid">10000000-0000-0000-0000-000000000005</column>
+            <column name="country_code">GB</column>
+            <column name="first_name">William</column>
+            <column name="middle_name">Jeffrey</column>
+            <column name="last_name">Smith</column>
+            <column name="email">william.smith5@tesco.com</column>
+            <column name="work_level">WL3</column>
+            <column name="primary_entity">Tesco PLC</column>
+            <column name="department_id">300001051375877</column>
+            <column name="salary_frequency">ANNUAL</column>
+            <column name="job_id">300000600015282</column>
+            <column name="iam_source">OracleHCM</column>
+            <column name="iam_id">UKE55555</column>
+            <column name="manager_uuid">null</column>
+            <column name="employment_type">R</column>
+            <column name="hire_date">2020-01-01</column>
+            <column name="leaving_date">null</column>
+            <column name="is_manager">true</column>
+        </insert>
+        <insert tableName="colleague">
+            <column name="uuid">10000000-0000-0000-0000-000000000006</column>
+            <column name="country_code">GB</column>
+            <column name="first_name">Alex</column>
+            <column name="middle_name">Jeffrey</column>
+            <column name="last_name">Smith</column>
+            <column name="email">alex.smith6@tesco.com</column>
+            <column name="work_level">WL4</column>
+            <column name="primary_entity">Tesco PLC</column>
+            <column name="department_id">300001051375877</column>
+            <column name="salary_frequency">ANNUAL</column>
+            <column name="job_id">300000600015282</column>
+            <column name="iam_source">OracleHCM</column>
+            <column name="iam_id">UKE66666</column>
+            <column name="manager_uuid">10000000-0000-0000-0000-000000000005</column>
+            <column name="employment_type">R</column>
+            <column name="hire_date">2020-01-01</column>
+            <column name="leaving_date">null</column>
+            <column name="is_manager">false</column>
+        </insert>
+        <insert tableName="colleague">
+            <column name="uuid">10000000-0000-0000-0000-000000000007</column>
+            <column name="country_code">GB</column>
+            <column name="first_name">Joe</column>
+            <column name="middle_name">Jeffrey</column>
+            <column name="last_name">Smith</column>
+            <column name="email">joe.smith7@tesco.com</column>
+            <column name="work_level">WL5</column>
+            <column name="primary_entity">Tesco PLC</column>
+            <column name="department_id">300001051375877</column>
+            <column name="salary_frequency">ANNUAL</column>
+            <column name="job_id">300000600015282</column>
+            <column name="iam_source">OracleHCM</column>
+            <column name="iam_id">UKE77777</column>
+            <column name="manager_uuid">10000000-0000-0000-0000-000000000005</column>
+            <column name="employment_type">R</column>
+            <column name="hire_date">2020-01-01</column>
+            <column name="leaving_date">null</column>
+            <column name="is_manager">false</column>
+        </insert>
+        <rollback>
+            <delete tableName="colleague">
+                <where>uuid in('10000000-0000-0000-0000-000000000005',
+                    '10000000-0000-0000-0000-000000000006',
+                    '10000000-0000-0000-0000-000000000007')</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
