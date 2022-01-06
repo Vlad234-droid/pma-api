@@ -28,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -86,7 +87,7 @@ public class FileEndpoint {
     public RestResponse<File> get(@RequestParam("path") String path,
                                   @RequestParam("fileName") String fileName,
                                   @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false") boolean includeFileContent,
-                                  Authentication authentication) {
+                                  @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         return success(fileService.get(path, fileName, includeFileContent, resolveColleagueUuid(authentication)));
     }
 
@@ -101,7 +102,7 @@ public class FileEndpoint {
     @GetMapping("{fileUuid}")
     public RestResponse<File> get(@PathVariable UUID fileUuid,
                                   @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false") boolean includeFileContent,
-                                  Authentication authentication) {
+                                  @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         return success(fileService.get(fileUuid, includeFileContent, resolveColleagueUuid(authentication)));
     }
 
@@ -116,7 +117,7 @@ public class FileEndpoint {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public RestResponse<List<File>> get(RequestQuery requestQuery,
                                         @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false") boolean includeFileContent,
-                                        Authentication authentication) {
+                                        @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         return success(fileService.get(requestQuery, includeFileContent, resolveColleagueUuid(authentication), true));
     }
 
@@ -133,7 +134,7 @@ public class FileEndpoint {
                                                    @RequestParam("fileName") String fileName,
                                                    @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false")
                                                                boolean includeFileContent,
-                                                   Authentication authentication) {
+                                                   @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         return success(fileService.getAllVersions(path, fileName, includeFileContent, resolveColleagueUuid(authentication)));
     }
 
@@ -154,7 +155,8 @@ public class FileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.FORBIDDEN, description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Internal Server Error", content = @Content)
     @GetMapping("/{fileUuid}/download")
-    public ResponseEntity<Resource> download(@PathVariable UUID fileUuid, Authentication authentication) {
+    public ResponseEntity<Resource> download(@PathVariable UUID fileUuid,
+                                             @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         var file = fileService.get(fileUuid, true, resolveColleagueUuid(authentication));
         var content = file.getFileContent();
 
@@ -188,7 +190,7 @@ public class FileEndpoint {
             @Valid @Parameter(schema = @Schema(type = "string", format = "binary")) FilesUploadMetadata filesUploadMetadata,
             @RequestPart("files") @NotEmpty List<@NotNull MultipartFile> files,
             HttpServletResponse response,
-            Authentication authentication) {
+            @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
 
         var traceId = TraceUtils.toParent();
         response.setHeader(TRACE_ID_HEADER, traceId.getValue());

@@ -32,7 +32,7 @@ public interface FileService {
      *
      * @param fileUuid file identifier
      * @param includeFileContent identifies if include file content
-     * @param colleagueUuid an identifier of colleague
+     * @param colleagueUuid an identifier of file's owner
      * @return file data
      * @throws NotFoundException if file by uuid is not found
      */
@@ -43,7 +43,7 @@ public interface FileService {
      *
      * @param requestQuery filter, sorting, offset
      * @param includeFileContent identifies if include file content
-     * @param colleagueUuid an identifier of colleague
+     * @param colleagueUuid an identifier of file's owner
      * @param latest identifies if latest version data needed
      * @return filtered files data
      */
@@ -56,7 +56,7 @@ public interface FileService {
      * @param path file path
      * @param fileName file name
      * @param includeFileContent identifies if include file content
-     * @param colleagueUuid an identifier of colleague
+     * @param colleagueUuid an identifier of file's owner
      * @return file data
      * @throws NotFoundException if file by name and path is not found
      */
@@ -68,7 +68,7 @@ public interface FileService {
      * @param path file path
      * @param fileName file name
      * @param includeFileContent identifies if include file content
-     * @param colleagueUuid an identifier of colleague
+     * @param colleagueUuid an identifier of file's owner
      * @return file data with all versions
      */
     List<File> getAllVersions(@NotNull String path, @NotNull String fileName, boolean includeFileContent, UUID colleagueUuid);

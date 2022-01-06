@@ -15,7 +15,7 @@ public interface FileDAO {
      *
      * @param fileUuid file identifier
      * @param includeFileContent identifies if include file content
-     * @param colleagueUuid an identifier of colleague
+     * @param colleagueUuid an identifier of file's owner
      * @return file data
      */
     File read(@Param("fileUuid") UUID fileUuid,
@@ -29,7 +29,7 @@ public interface FileDAO {
      * @param statusFilters filters by file status
      * @param typeFilters filters by file type
      * @param includeFileContent identifies if include file content
-     * @param colleagueUuid an identifier of colleague
+     * @param colleagueUuid an identifier of file's owner
      * @param latest identifies if latest version data needed
      *
      * @return filtered files data
