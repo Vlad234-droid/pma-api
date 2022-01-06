@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,13 +32,16 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = FileEndpoint.class)
+@WithMockUser(username = FileEndpointTest.COLLEAGUE_UUID_STR)
 public class FileEndpointTest extends AbstractEndpointTest {
+
+    static final String COLLEAGUE_UUID_STR = "6d37262f-3a00-4706-a74b-6bf98be65765";
 
     private static final UUID FILE_UUID_1 = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65765");
 
     private static final String RESOURCES_PATH = "/com/tesco/pma/fs/rest/";
     private static final String FILE_NAME = "test1.txt";
-    private static final UUID CREATOR_ID = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65765");
+    private static final UUID CREATOR_ID = UUID.fromString(COLLEAGUE_UUID_STR);
     private static final String PATH = "/home/dev";
     private static final String FILES_URL = "/files";
 
@@ -49,6 +53,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
     private static final Instant CREATED_TIME = Instant.parse("2021-11-03T22:38:14Z");
     private static final String DOWNLOAD = "/{fileUuid}/download";
     private static final int FILE_LENGTH = 23;
+    private static final String FILES_GET_OK_RESPONSE_JSON_FILE_NAME = "files_get_ok_response.json";
 
     @MockBean
     private FileService service;
@@ -58,7 +63,16 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getByUuid() throws Exception {
-        when(service.get(FILE_UUID_1, true)).thenReturn(buildFileData(FILE_UUID_1, 1));
+        when(service.get(FILE_UUID_1, true, CREATOR_ID)).thenReturn(buildFileData(FILE_UUID_1, 1));
+
+        var result = performGet(status().isOk(), FILES_URL + "/" + FILE_UUID_1 + "?includeFileContent=true");
+
+        assertResponseContent(result.getResponse(), "file_get_ok_response.json");
+    }
+
+    @Test
+    void getByUuidWithAdmin() throws Exception {
+        when(service.get(FILE_UUID_1, true, null)).thenReturn(buildFileData(FILE_UUID_1, 1));
 
         var result = performGetWith(admin(), status().isOk(), FILES_URL + "/" + FILE_UUID_1 + "?includeFileContent=true");
 
@@ -67,23 +81,32 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getByUuidUnsuccess() throws Exception {
-        when(service.get(FILE_UUID_1, true)).thenThrow(NotFoundException.class);
+        when(service.get(FILE_UUID_1, true, null)).thenThrow(NotFoundException.class);
 
         performGetWith(admin(), status().isNotFound(), FILES_URL + "/" + FILE_UUID_1 + "?includeFileContent=true");
     }
 
     @Test
     void getByRequestQuery() throws Exception {
-        when(service.get(any(RequestQuery.class), eq(false), eq(true))).thenReturn(asList(buildFileData(FILE_UUID_1, 1)));
+        when(service.get(any(RequestQuery.class), eq(false), eq(CREATOR_ID), eq(true))).thenReturn(asList(buildFileData(FILE_UUID_1, 1)));
+
+        var result = performGet(status().isOk(), FILES_URL + "?status_in[0]=ACTIVE&file-length_gt=16&includeFileContent=false");
+
+        assertResponseContent(result.getResponse(), FILES_GET_OK_RESPONSE_JSON_FILE_NAME);
+    }
+
+    @Test
+    void getByRequestQueryWithAdmin() throws Exception {
+        when(service.get(any(RequestQuery.class), eq(false), eq(null), eq(true))).thenReturn(asList(buildFileData(FILE_UUID_1, 1)));
 
         var result = performGetWith(admin(), status().isOk(), FILES_URL + "?status_in[0]=ACTIVE&file-length_gt=16&includeFileContent=false");
 
-        assertResponseContent(result.getResponse(), "files_get_ok_response.json");
+        assertResponseContent(result.getResponse(), FILES_GET_OK_RESPONSE_JSON_FILE_NAME);
     }
 
     @Test
     void getByRequestQueryHasEmptyDataResponseWhenServiceReturnsNothing() throws Exception {
-        when(service.get(any(RequestQuery.class), eq(false), eq(true))).thenReturn(emptyList());
+        when(service.get(any(RequestQuery.class), eq(false), eq(null), eq(true))).thenReturn(emptyList());
 
         var result = performGetWith(admin(), status().isOk(), FILES_URL + "?includeFileContent=false");
 
@@ -92,17 +115,27 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getAllVersions() throws Exception {
-        when(service.getAllVersions(PATH, FILE_NAME, false)).thenReturn(asList(buildFileData(FILE_UUID_1, 1)));
+        when(service.getAllVersions(PATH, FILE_NAME, false, CREATOR_ID)).thenReturn(asList(buildFileData(FILE_UUID_1, 1)));
+
+        var result = performGet(status().isOk(),
+                FILES_URL + "/versions?path=" + PATH + "&fileName=" + FILE_NAME + "&includeFileContent=false");
+
+        assertResponseContent(result.getResponse(), FILES_GET_OK_RESPONSE_JSON_FILE_NAME);
+    }
+
+    @Test
+    void getAllVersionsWithAdmin() throws Exception {
+        when(service.getAllVersions(PATH, FILE_NAME, false, null)).thenReturn(asList(buildFileData(FILE_UUID_1, 1)));
 
         var result = performGetWith(admin(), status().isOk(),
                 FILES_URL + "/versions?path=" + PATH + "&fileName=" + FILE_NAME + "&includeFileContent=false");
 
-        assertResponseContent(result.getResponse(), "files_get_ok_response.json");
+        assertResponseContent(result.getResponse(), FILES_GET_OK_RESPONSE_JSON_FILE_NAME);
     }
 
     @Test
     void getAllVersionsHasEmptyDataResponseWhenServiceReturnsNothing() throws Exception {
-        when(service.getAllVersions(PATH, FILE_NAME, false)).thenReturn(emptyList());
+        when(service.getAllVersions(PATH, FILE_NAME, false, null)).thenReturn(emptyList());
 
         var result = performGetWith(admin(), status().isOk(),
                 FILES_URL + "/versions?path=" + PATH + "&fileName=" + FILE_NAME + "&includeFileContent=false");
@@ -112,7 +145,16 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     @Test
     void downloadSuccess() throws Exception {
-        when(service.get(FILE_UUID_1, true)).thenReturn(buildFileData(FILE_UUID_1, 1));
+        when(service.get(FILE_UUID_1, true, CREATOR_ID)).thenReturn(buildFileData(FILE_UUID_1, 1));
+
+        var result = performGet(status().isOk(), MediaType.APPLICATION_OCTET_STREAM, FILES_URL + DOWNLOAD, FILE_UUID_1);
+
+        assertThat(result.getResponse().getContentAsByteArray()).isNotSameAs(CONTENT);
+    }
+
+    @Test
+    void downloadSuccessWithAdmin() throws Exception {
+        when(service.get(FILE_UUID_1, true, null)).thenReturn(buildFileData(FILE_UUID_1, 1));
 
         var result = performGetWith(admin(), status().isOk(), MediaType.APPLICATION_OCTET_STREAM, FILES_URL + DOWNLOAD, FILE_UUID_1);
 
@@ -121,9 +163,9 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     @Test
     void downloadUnsuccess() throws Exception {
-        when(service.get(FILE_UUID_1, true)).thenThrow(NotFoundException.class);
+        when(service.get(FILE_UUID_1, true, CREATOR_ID)).thenThrow(NotFoundException.class);
 
-        performGetWith(admin(), status().isNotFound(), FILES_URL + DOWNLOAD, FILE_UUID_1);
+        performGet(status().isNotFound(), FILES_URL + DOWNLOAD, FILE_UUID_1);
     }
 
     @Test

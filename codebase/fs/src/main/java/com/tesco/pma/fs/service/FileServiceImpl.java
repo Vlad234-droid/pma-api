@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
@@ -65,19 +64,19 @@ public class FileServiceImpl implements FileService {
                     "Failed to save File to database", fileData.getFileName());
         }
 
-        return get(fileData.getUuid(), false);
+        return get(fileData.getUuid(), false, creatorId);
     }
 
     @Override
-    public File get(UUID fileUuid, boolean includeFileContent) {
-        return Optional.ofNullable(fileDao.read(fileUuid, includeFileContent))
+    public File get(UUID fileUuid, boolean includeFileContent, UUID colleagueUuid) {
+        return Optional.ofNullable(fileDao.read(fileUuid, includeFileContent, colleagueUuid))
                 .orElseThrow(() -> new NotFoundException(ERROR_FILE_NOT_FOUND.name(),
                         "File was not found", fileUuid.toString()));
 
     }
 
     @Override
-    public List<File> get(RequestQuery requestQuery, boolean includeFileContent, boolean latest) {
+    public List<File> get(RequestQuery requestQuery, boolean includeFileContent, UUID colleagueUuid, boolean latest) {
         var statusFilters = Arrays.asList(
                 toDictionaryFilterConverter.convert(requestQuery, true, "status", FileStatus.class),
                 toDictionaryFilterConverter.convert(requestQuery, false, "status", FileStatus.class)
@@ -88,28 +87,28 @@ public class FileServiceImpl implements FileService {
                 toDictionaryFilterConverter.convert(requestQuery, false, "type", FileType.class)
         );
 
-        return fileDao.findByRequestQuery(requestQuery, statusFilters, typeFilters, includeFileContent, latest);
+        return fileDao.findByRequestQuery(requestQuery, statusFilters, typeFilters, includeFileContent, colleagueUuid, latest);
     }
 
     @Override
-    public File get(String path, String fileName, boolean includeFileContent) {
+    public File get(String path, String fileName, boolean includeFileContent, UUID colleagueUuid) {
         var requestQuery = new RequestQuery();
         requestQuery.setFilters(Arrays.asList(new Condition("path", EQUALS, path),
                                               new Condition("file-name", EQUALS, fileName)));
 
-        return get(requestQuery, includeFileContent, true).stream()
+        return get(requestQuery, includeFileContent, colleagueUuid, true).stream()
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException(ERROR_FILE_NOT_FOUND.name(), "File was not found", fileName));
     }
 
     @Override
-    public List<File> getAllVersions(@NotNull String path, @NotNull String fileName, boolean includeFileContent) {
+    public List<File> getAllVersions(String path, String fileName, boolean includeFileContent, UUID colleagueUuid) {
         var requestQuery = new RequestQuery();
         requestQuery.setFilters(Arrays.asList(new Condition("path", EQUALS, path),
                 new Condition("file-name", EQUALS, fileName)));
         requestQuery.setLimit(null);
         requestQuery.setSort(Arrays.asList(new Sort("version", DESC)));
 
-        return get(requestQuery, includeFileContent, false);
+        return get(requestQuery, includeFileContent, colleagueUuid, false);
     }
 }

@@ -15,9 +15,12 @@ public interface FileDAO {
      *
      * @param fileUuid file identifier
      * @param includeFileContent identifies if include file content
+     * @param colleagueUuid an identifier of colleague
      * @return file data
      */
-    File read(@Param("fileUuid") UUID fileUuid, @Param("includeFileContent") boolean includeFileContent);
+    File read(@Param("fileUuid") UUID fileUuid,
+              @Param("includeFileContent") boolean includeFileContent,
+              @Param("colleagueUuid") UUID colleagueUuid);
 
     /**
      * Read all information about files with the latest version applying search, filter and sorting
@@ -26,6 +29,7 @@ public interface FileDAO {
      * @param statusFilters filters by file status
      * @param typeFilters filters by file type
      * @param includeFileContent identifies if include file content
+     * @param colleagueUuid an identifier of colleague
      * @param latest identifies if latest version data needed
      *
      * @return filtered files data
@@ -34,6 +38,7 @@ public interface FileDAO {
                                   @Param("statusFilters") List<DictionaryFilter> statusFilters,
                                   @Param("typeFilters") List<DictionaryFilter> typeFilters,
                                   @Param("includeFileContent") boolean includeFileContent,
+                                  @Param("colleagueUuid") UUID colleagueUuid,
                                   @Param("latest") boolean latest);
 
     /**

@@ -27,7 +27,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,6 +55,9 @@ import static com.tesco.pma.logging.TraceId.TRACE_ID_HEADER;
 import static com.tesco.pma.rest.HttpStatusCodes.CREATED;
 
 import static com.tesco.pma.rest.RestResponse.success;
+import static com.tesco.pma.security.UserRoleNames.ADMIN;
+import static com.tesco.pma.util.SecurityUtils.hasAuthority;
+import static com.tesco.pma.util.SecurityUtils.getColleagueUuid;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
 /**
@@ -80,11 +83,11 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
             })
     @GetMapping(path = "/last", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAdmin()")
     public RestResponse<File> get(@RequestParam("path") String path,
                                   @RequestParam("fileName") String fileName,
-                                  @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false") boolean includeFileContent) {
-        return success(fileService.get(path, fileName, includeFileContent));
+                                  @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false") boolean includeFileContent,
+                                  Authentication authentication) {
+        return success(fileService.get(path, fileName, includeFileContent, resolveColleagueUuid(authentication)));
     }
 
     @Operation(
@@ -96,10 +99,10 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
             })
     @GetMapping("{fileUuid}")
-    @PreAuthorize("isAdmin()")
     public RestResponse<File> get(@PathVariable UUID fileUuid,
-                                  @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false") boolean includeFileContent) {
-        return success(fileService.get(fileUuid, includeFileContent));
+                                  @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false") boolean includeFileContent,
+                                  Authentication authentication) {
+        return success(fileService.get(fileUuid, includeFileContent, resolveColleagueUuid(authentication)));
     }
 
     @Operation(
@@ -111,10 +114,10 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Files data not found", content = @Content),
             })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAdmin()")
     public RestResponse<List<File>> get(RequestQuery requestQuery,
-                                        @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false") boolean includeFileContent) {
-        return success(fileService.get(requestQuery, includeFileContent, true));
+                                        @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false") boolean includeFileContent,
+                                        Authentication authentication) {
+        return success(fileService.get(requestQuery, includeFileContent, resolveColleagueUuid(authentication), true));
     }
 
     @Operation(
@@ -126,12 +129,12 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
             })
     @GetMapping(path = "/versions", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAdmin()")
     public RestResponse<List<File>> getAllVersions(@RequestParam("path") String path,
                                                    @RequestParam("fileName") String fileName,
                                                    @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false")
-                                                           boolean includeFileContent) {
-        return success(fileService.getAllVersions(path, fileName, includeFileContent));
+                                                               boolean includeFileContent,
+                                                   Authentication authentication) {
+        return success(fileService.getAllVersions(path, fileName, includeFileContent, resolveColleagueUuid(authentication)));
     }
 
     /**
@@ -151,10 +154,9 @@ public class FileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.FORBIDDEN, description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Internal Server Error", content = @Content)
     @GetMapping("/{fileUuid}/download")
-    @PreAuthorize("isAdmin()")
-    public ResponseEntity<Resource> download(@PathVariable UUID fileUuid) {
-        var file = fileService.get(fileUuid, true);
-        byte[] content = file.getFileContent();
+    public ResponseEntity<Resource> download(@PathVariable UUID fileUuid, Authentication authentication) {
+        var file = fileService.get(fileUuid, true, resolveColleagueUuid(authentication));
+        var content = file.getFileContent();
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
@@ -181,12 +183,12 @@ public class FileEndpoint {
     )
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("isAdmin()")
     public RestResponse<List<File>> upload(
             @RequestPart("uploadMetadata")
             @Valid @Parameter(schema = @Schema(type = "string", format = "binary")) FilesUploadMetadata filesUploadMetadata,
             @RequestPart("files") @NotEmpty List<@NotNull MultipartFile> files,
-            HttpServletResponse response) {
+            HttpServletResponse response,
+            Authentication authentication) {
 
         var traceId = TraceUtils.toParent();
         response.setHeader(TRACE_ID_HEADER, traceId.getValue());
@@ -225,6 +227,10 @@ public class FileEndpoint {
 
         }
         return success(uploadedFiles);
+    }
+
+    private UUID resolveColleagueUuid(Authentication authentication) {
+        return hasAuthority(authentication, ADMIN) ? null : getColleagueUuid(authentication);
     }
 
 }

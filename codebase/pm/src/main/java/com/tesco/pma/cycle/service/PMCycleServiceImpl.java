@@ -190,7 +190,7 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     @Override
     public PMCycleMetadata getFileMetadata(UUID fileUuid) {
-        var file = fileService.get(fileUuid, true);
+        var file = fileService.get(fileUuid, true, null);
         var model = Bpmn.readModelFromStream(new ByteArrayInputStream(file.getFileContent()));
         var parser = new PMProcessModelParser(resourceProvider, messageSourceAccessor);
         return parser.parse(model);
@@ -279,7 +279,7 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     private String intDeployProcess(UUID templateUuid, String processName) throws Exception {
 
-        var file = fileService.get(templateUuid, true);
+        var file = fileService.get(templateUuid, true, null);
         InputStream fileContent = new ByteArrayInputStream(file.getFileContent());
 
         String resourceName = file.getFileName();

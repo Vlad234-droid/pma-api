@@ -27,6 +27,7 @@ import java.util.UUID;
 
 import static com.tesco.pma.rest.RestResponse.success;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static com.tesco.pma.util.SecurityUtils.getColleagueUuid;
 
 @RestController
 @RequestMapping(path = "/pdp")
@@ -122,9 +123,5 @@ public class PDPEndpoint {
     @GetMapping(path = "/goals", produces = MediaType.APPLICATION_JSON_VALUE)
     public RestResponse<List<PDPGoal>> getGoals(Authentication authentication) {
         return success(pdpService.getGoals(getColleagueUuid(authentication)));
-    }
-
-    private UUID getColleagueUuid(Authentication authentication) {
-        return UUID.fromString(authentication.getName());
     }
 }

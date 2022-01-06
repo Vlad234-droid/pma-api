@@ -21,7 +21,7 @@ public interface FileService {
      *
      * @param fileData is file data
      * @param uploadMetadata represents the parts of file metadata
-     * @param creatorId represents the creator identifier
+     * @param creatorId represents the creator identifier; it is identifier of colleague
      * @return uploaded file
      * @throws RegistrationException if failed to save file data to database
      */
@@ -32,20 +32,22 @@ public interface FileService {
      *
      * @param fileUuid file identifier
      * @param includeFileContent identifies if include file content
+     * @param colleagueUuid an identifier of colleague
      * @return file data
      * @throws NotFoundException if file by uuid is not found
      */
-    File get(@NotNull UUID fileUuid, boolean includeFileContent);
+    File get(@NotNull UUID fileUuid, boolean includeFileContent, UUID colleagueUuid);
 
     /**
      * Read all information about files applying search, filter and sorting
      *
      * @param requestQuery filter, sorting, offset
      * @param includeFileContent identifies if include file content
+     * @param colleagueUuid an identifier of colleague
      * @param latest identifies if latest version data needed
      * @return filtered files data
      */
-    List<File> get(@NotNull RequestQuery requestQuery, boolean includeFileContent, boolean latest);
+    List<File> get(@NotNull RequestQuery requestQuery, boolean includeFileContent, UUID colleagueUuid, boolean latest);
 
 
     /**
@@ -54,10 +56,11 @@ public interface FileService {
      * @param path file path
      * @param fileName file name
      * @param includeFileContent identifies if include file content
+     * @param colleagueUuid an identifier of colleague
      * @return file data
      * @throws NotFoundException if file by name and path is not found
      */
-    File get(@NotNull String path, @NotNull String fileName, boolean includeFileContent);
+    File get(@NotNull String path, @NotNull String fileName, boolean includeFileContent, UUID colleagueUuid);
 
     /**
      * Read all information about file with all versions by its name and path
@@ -65,7 +68,8 @@ public interface FileService {
      * @param path file path
      * @param fileName file name
      * @param includeFileContent identifies if include file content
+     * @param colleagueUuid an identifier of colleague
      * @return file data with all versions
      */
-    List<File> getAllVersions(@NotNull String path, @NotNull String fileName, boolean includeFileContent);
+    List<File> getAllVersions(@NotNull String path, @NotNull String fileName, boolean includeFileContent, UUID colleagueUuid);
 }

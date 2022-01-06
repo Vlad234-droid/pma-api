@@ -23,7 +23,7 @@ public class FsResourceProvider implements ResourceProvider {
     public InputStream read(String resourcePath, String resourceName) throws IOException {
 
         return new ByteArrayInputStream(
-                fileService.get(resourcePath, resourceName, true).getFileContent());
+                fileService.get(resourcePath, resourceName, true, null).getFileContent());
     }
 
     @Override
