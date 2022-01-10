@@ -2,7 +2,6 @@ package com.tesco.pma.flow.handlers;
 
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.flow.FlowParameters;
@@ -15,11 +14,10 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
+import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
 import static com.tesco.pma.flow.exception.ErrorCodes.EVENT_COLLEAGUE_UUID_ABSENT;
 import static com.tesco.pma.flow.exception.ErrorCodes.EVENT_INVALID_COLLEAGUE_UUID_FORMAT;
 import static com.tesco.pma.flow.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_FOR_COLLEAGUE;
@@ -31,6 +29,7 @@ import static com.tesco.pma.flow.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_FOR_COL
 public class PMNewColleagueEventHandler extends AbstractColleagueCycleHandler {
 
     private static final String COLLEAGUE_UUID_PARAMETER = "colleagueUuid";
+    private static final String STATUS_FIELD_FILTER = "status";
 
     private final ConfigEntryService configEntryService;
     private final PMColleagueCycleService pmColleagueCycleService;
@@ -40,14 +39,14 @@ public class PMNewColleagueEventHandler extends AbstractColleagueCycleHandler {
     @Override
     protected void execute(ExecutionContext context) {
         try {
-            final UUID colleagueUuid = HandlerUtils.getEventColleagueUuid(context);
-            var requestQuery = new RequestQuery();
-            requestQuery.setFilters(Collections.emptyList());
+            final var colleagueUuid = HandlerUtils.getEventColleagueUuid(context);
 
             if (colleagueUuid != null) {
+                var requestQuery = new RequestQuery();
+                requestQuery.addFilters(STATUS_FIELD_FILTER, ACTIVE.getId());
+
                 pmCycleService.getAll(requestQuery, true)
                         .stream()
-                        .filter(pmCycle -> PMCycleStatus.ACTIVE == pmCycle.getStatus())
                         .filter(c -> configEntryService.isColleagueExistsForCompositeKey(colleagueUuid, c.getEntryConfigKey()))
                         .findFirst()
                         .ifPresentOrElse(cycleOriginal -> {
