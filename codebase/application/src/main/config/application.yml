@@ -234,8 +234,9 @@ tesco:
       CEP_COLLEAGUE_UPDATED: com.tesco.pma.bpm.action.RunFlowByEventAction
       CEP_COLLEAGUE_LEFT: com.tesco.pma.bpm.action.RunFlowByEventAction
     user-management:
-        page:
-          size: 100
+      page:
+        size: 100
+      subject: ${IAM_INTEGRATION_SUBJECT}
 
 camunda:
   bpm:

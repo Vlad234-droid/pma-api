@@ -98,6 +98,7 @@ public class ReviewServiceImpl implements ReviewService {
     private static final Comparator<OrgObjective> ORG_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR =
             Comparator.comparing(OrgObjective::getNumber)
                     .thenComparing(OrgObjective::getTitle);
+    private static final List<PMTimelinePointStatus> MIN_REVIEW_STATUSES = List.of(WAITING_FOR_APPROVAL, APPROVED);
 
     @Override
     public Review getReview(UUID performanceCycleUuid, UUID colleagueUuid, PMReviewType type, Integer number) {
@@ -199,8 +200,8 @@ public class ReviewServiceImpl implements ReviewService {
         review.setTlPointUuid(timelinePoint.getUuid());
         var createdReview = createReview(review, timelinePoint);
 
+        checkReviewStateAfterUpdate(timelinePoint);
         updateTLPointStatus(timelinePoint);
-
         return createdReview;
     }
 
@@ -388,6 +389,7 @@ public class ReviewServiceImpl implements ReviewService {
                 timelinePoint.getUuid(),
                 type,
                 number + 1);
+        checkReviewStateAfterUpdate(timelinePoint);
         updateTLPointStatus(timelinePoint);
     }
 
@@ -624,13 +626,13 @@ public class ReviewServiceImpl implements ReviewService {
 
     private void checkReviewStateAfterUpdate(TimelinePoint timelinePoint) {
         var minReviews = Integer.valueOf(timelinePoint.getProperties().getMapJson().get(PM_REVIEW_MIN));
-        var mapStatusStats = reviewDAO.getReviewStats(timelinePoint.getUuid()).getMapStatusStats();
+        var countReviewWithMinStatus = reviewDAO.getReviewStats(timelinePoint.getUuid())
+                .getCount(MIN_REVIEW_STATUSES);
 
-        if (mapStatusStats.containsKey(WAITING_FOR_APPROVAL)
-                && mapStatusStats.get(WAITING_FOR_APPROVAL) < minReviews) {
+        if (0 < countReviewWithMinStatus && countReviewWithMinStatus < minReviews) {
             throw updateReviewException(MIN_REVIEW_NUMBER_CONSTRAINT_VIOLATION,
-                    Map.of(COUNT_PARAMETER_NAME, mapStatusStats.get(WAITING_FOR_APPROVAL),
-                            STATUS_PARAMETER_NAME, WAITING_FOR_APPROVAL,
+                    Map.of(COUNT_PARAMETER_NAME, countReviewWithMinStatus,
+                            STATUS_PARAMETER_NAME, MIN_REVIEW_STATUSES,
                             MIN_PARAMETER_NAME, minReviews));
         }
     }

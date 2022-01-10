@@ -46,6 +46,17 @@ public class ReviewStats {
                 .sum();
     }
 
+    public Integer getCount(List<PMTimelinePointStatus> statuses) {
+        if (statusStats == null) {
+            return 0;
+        }
+        return statusStats
+                .stream()
+                .filter(ss -> statuses.contains(ss.getStatus()))
+                .mapToInt(ReviewStatusCounter::getCount)
+                .sum();
+    }
+
     public PMTimelinePointStatus getLastUpdatedStatus(PMTimelinePointStatus skipStatus) {
         PMTimelinePointStatus lastUpdatedStatus = null;
         Instant lastUpdatedTime = null;
