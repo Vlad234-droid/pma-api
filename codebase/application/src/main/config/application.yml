@@ -277,3 +277,6 @@ tesco:
       cep:
         publish:
           url: http://localhost:8083/v1/requests/events/local
+    pdp:
+      form:
+        key: forms/standard_pdp.form

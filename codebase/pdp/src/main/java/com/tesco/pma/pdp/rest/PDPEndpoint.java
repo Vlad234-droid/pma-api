@@ -1,5 +1,12 @@
 package com.tesco.pma.pdp.rest;
 
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.cycle.api.model.PMFormElement;
+import com.tesco.pma.cycle.exception.ParseException;
+import com.tesco.pma.cycle.model.ResourceProvider;
+import com.tesco.pma.error.ErrorCodeAware;
+import com.tesco.pma.pdp.PDPFormProperties;
+import com.tesco.pma.pdp.domain.PDPResponse;
 import com.tesco.pma.pdp.service.PDPService;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
@@ -23,9 +30,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import static com.tesco.pma.cycle.api.model.PMFormElement.KEY;
+import static com.tesco.pma.cycle.exception.ErrorCodes.PM_PARSE_NOT_FOUND;
+import static com.tesco.pma.cycle.model.PMProcessModelParser.getFormName;
+import static com.tesco.pma.cycle.exception.ErrorCodes.PM_PARSE_NOT_FOUND;
 import static com.tesco.pma.rest.RestResponse.success;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -36,6 +50,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class PDPEndpoint {
 
     private final PDPService pdpService;
+    private final ResourceProvider resourceProvider;
+    private final PDPFormProperties pdpFormProperties;
+    private final NamedMessageSourceAccessor messages;
 
     /**
      * POST call to create a PDP with its Goals.
@@ -96,9 +113,10 @@ public class PDPEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the PDP Goal")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PDP Goal not found", content = @Content)
     @GetMapping(path = "/goals/numbers/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestResponse<PDPGoal> getGoal(@PathVariable("number") Integer number,
+    public RestResponse<PDPResponse> getGoal(@PathVariable("number") Integer number,
                                          @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        return success(pdpService.getGoal(getColleagueUuid(authentication), number));
+        var goal = pdpService.getGoal(getColleagueUuid(authentication), number);
+        return success(new PDPResponse(Arrays.asList(goal), getPMFormElement()));
     }
 
     /**
@@ -111,9 +129,10 @@ public class PDPEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the PDP Goal")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PDP Goal not found", content = @Content)
     @GetMapping(path = "/goals/{goalUuid}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestResponse<PDPGoal> getGoal(@PathVariable("goalUuid") UUID goalUuid,
+    public RestResponse<PDPResponse> getGoal(@PathVariable("goalUuid") UUID goalUuid,
                                          @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        return success(pdpService.getGoal(getColleagueUuid(authentication), goalUuid));
+        var goal = pdpService.getGoal(getColleagueUuid(authentication), goalUuid);
+        return success(new PDPResponse(Arrays.asList(goal), getPMFormElement()));
     }
 
     /**
@@ -125,11 +144,30 @@ public class PDPEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the PDP Goals")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PDP Goals not found", content = @Content)
     @GetMapping(path = "/goals", produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestResponse<List<PDPGoal>> getGoals(@CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        return success(pdpService.getGoals(getColleagueUuid(authentication)));
+    public RestResponse<PDPResponse> getGoals(@CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+        var goals = pdpService.getGoals(getColleagueUuid(authentication));
+        return success(new PDPResponse(goals, getPMFormElement()));
     }
 
     private UUID getColleagueUuid(Authentication authentication) {
         return UUID.fromString(authentication.getName());
+    }
+
+    private PMFormElement getPMFormElement() {
+        String formJson;
+        var formPath = pdpFormProperties.getPdpProperties().get(KEY);
+
+        try {
+            formJson = resourceProvider.resourceToString(KEY, formPath);
+        } catch (IOException e) {
+            throw parseException(PM_PARSE_NOT_FOUND, Map.of("key", KEY, "value", formPath), KEY, e);
+        }
+
+        var formName = getFormName(formPath);
+        return new PMFormElement(KEY, formName, formJson);
+    }
+
+    private ParseException parseException(ErrorCodeAware errorCode, Map<String, ?> params, String field, Throwable cause) {
+        return new ParseException(errorCode.getCode(), messages.getMessage(errorCode.getCode(), params), field, cause);
     }
 }
