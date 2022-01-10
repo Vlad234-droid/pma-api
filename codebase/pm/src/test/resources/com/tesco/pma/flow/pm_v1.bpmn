@@ -53,7 +53,7 @@
       <bpmn:incoming>Flow_0svbw3h</bpmn:incoming>
       <bpmn:outgoing>Flow_1lrzwch</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="Activity_1ojfucu" name="Update&#10;perf. cycle&#10;status to&#10;Started" camunda:class="com.tesco.pma.flow.handlers.UpdatePMProcessStatusFlowHandler">
+    <bpmn:serviceTask id="Activity_1ojfucu" name="Update&#10;perf. cycle&#10;status to&#10;Started" camunda:class="com.tesco.pma.flow.handlers.UpdatePMProcessStatusHandler">
       <bpmn:extensionElements>
         <camunda:field name="statusValue">
           <camunda:string>started</camunda:string>
@@ -81,7 +81,7 @@
       <bpmn:incoming>Flow_1lrzwch</bpmn:incoming>
       <bpmn:outgoing>Flow_0lwxhsj</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:serviceTask id="Activity_0etkwms" name="Update&#10;perf. cycle&#10;status to&#10;Submited" camunda:class="com.tesco.pma.flow.handlers.UpdatePMProcessStatusFlowHandler">
+    <bpmn:serviceTask id="Activity_0etkwms" name="Update&#10;perf. cycle&#10;status to&#10;Submited" camunda:class="com.tesco.pma.flow.handlers.UpdatePMProcessStatusHandler">
       <bpmn:extensionElements>
         <camunda:field name="statusValue">
           <camunda:string>submited</camunda:string>
@@ -153,7 +153,7 @@
       <bpmn:incoming>Flow_0bj4nn9</bpmn:incoming>
       <bpmn:outgoing>Flow_1km4k8j</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:serviceTask id="Activity_17hibux" name="Update&#10;perf. cycle&#10;status to&#10;Completed" camunda:class="com.tesco.pma.flow.handlers.UpdatePMProcessStatusFlowHandler">
+    <bpmn:serviceTask id="Activity_17hibux" name="Update&#10;perf. cycle&#10;status to&#10;Completed" camunda:class="com.tesco.pma.flow.handlers.UpdatePMProcessStatusHandler">
       <bpmn:extensionElements>
         <camunda:field name="statusValue">
           <camunda:string>completed</camunda:string>
@@ -166,7 +166,7 @@
       <bpmn:incoming>Flow_1km4k8j</bpmn:incoming>
       <bpmn:outgoing>Flow_1szd5zl</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_1bj15hy" name="Update&#10;perf. cycle&#10;status to&#10;Waiting" camunda:class="com.tesco.pma.flow.handlers.UpdatePMProcessStatusFlowHandler">
+    <bpmn:serviceTask id="Activity_1bj15hy" name="Update&#10;perf. cycle&#10;status to&#10;Waiting" camunda:class="com.tesco.pma.flow.handlers.UpdatePMProcessStatusHandler">
       <bpmn:extensionElements>
         <camunda:field name="statusValue">
           <camunda:string>waiting</camunda:string>

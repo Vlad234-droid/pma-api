@@ -1,17 +1,15 @@
 package com.tesco.pma.flow;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
-
 import com.tesco.pma.bpm.camunda.flow.AbstractCamundaSpringBootTest;
 import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
 import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.flow.handlers.AbstractFlowHandler;
 import com.tesco.pma.flow.handlers.CaseFlowHandler;
 import com.tesco.pma.flow.handlers.InitFlowHandler;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 
 import static com.tesco.pma.bpm.camunda.flow.FlowTestUtil.mockExecutionInHandler;
 
@@ -20,7 +18,7 @@ import static com.tesco.pma.bpm.camunda.flow.FlowTestUtil.mockExecutionInHandler
  */
 @ActiveProfiles("test")
 @SpringBootTest(classes = {CamundaSpringBootTestConfig.class})
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class DemoFlowTest extends AbstractCamundaSpringBootTest {
 
     public static final String EP_IS_DIRECT = "IS_DIRECT";

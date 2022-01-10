@@ -128,7 +128,13 @@ public class PMCycleServiceImpl implements PMCycleService {
     @Override
     @Transactional
     public PMCycle updateStatus(UUID uuid, PMCycleStatus status) {
-        return intUpdateStatus(uuid, status);
+        return intUpdateStatus(uuid, status, null); // todo move status map to BPMN or DMN
+    }
+
+    @Override
+    @Transactional
+    public PMCycle updateStatus(UUID uuid, PMCycleStatus status, DictionaryFilter<PMCycleStatus> statusFilter) {
+        return intUpdateStatus(uuid, status, statusFilter);
     }
 
     @Override
@@ -206,7 +212,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     @Override
     @Transactional
     public void completeCycle(UUID cycleUUID) {
-        intUpdateStatus(cycleUUID, COMPLETED);
+        intUpdateStatus(cycleUUID, COMPLETED, null); // todo move status map to BPMN or DMN
         //TODO update rt process
     }
 
@@ -218,7 +224,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     private void cycleFailed(String processKey, UUID uuid, Exception ex) {
         log.error("Performance cycle publish error, cause: ", ex);
         try {
-            intUpdateStatus(uuid, FAILED);
+            intUpdateStatus(uuid, FAILED, null); // todo move status map to BPMN or DMN
         } catch (NotFoundException exc) {
             log.error("Performance cycle change status error, cause: ", exc);
         }
@@ -244,23 +250,25 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
 
-    private PMCycle intUpdateStatus(UUID uuid, PMCycleStatus status) {
+    private PMCycle intUpdateStatus(UUID uuid, PMCycleStatus status, DictionaryFilter<PMCycleStatus> statusFilter) {
         var cycle = cycleDAO.read(uuid, null);
         if (null == cycle) {
             throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID,
                     Map.of(CYCLE_UUID_PARAMETER_NAME, uuid));
         }
 
-        cycle.setStatus(status);
-        DictionaryFilter<PMCycleStatus> statusFilter = UPDATE_STATUS_RULE_MAP.get(status);
+        var resultStatusFilter = statusFilter == null || statusFilter.isEmpty()
+                ? UPDATE_STATUS_RULE_MAP.get(status) // todo move status map to BPMN or DMN
+                : statusFilter;
 
-        if (1 == cycleDAO.updateStatus(uuid, status, statusFilter)) {
+        if (1 == cycleDAO.updateStatus(uuid, status, resultStatusFilter)) {
+            cycle.setStatus(status);
             log.debug("Performance cycle UUID: {} changed status to: {}", cycle.getUuid(), status);
             return cycle;
         } else {
             throw notFound(PM_CYCLE_NOT_FOUND_FOR_STATUS_UPDATE,
                     Map.of(STATUS_PARAMETER_NAME, status,
-                            PREV_STATUSES_PARAMETER_NAME, statusFilter));
+                            PREV_STATUSES_PARAMETER_NAME, resultStatusFilter));
         }
     }
 
@@ -331,7 +339,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         try {
             var processId = intDeployProcess(cycle.getTemplate().getUuid(), processKey);
             log.debug("Process definition id: {}", processId);
-            intUpdateStatus(uuid, PMCycleStatus.REGISTERED);
+            intUpdateStatus(uuid, PMCycleStatus.REGISTERED, null); // todo move status map to BPMN or DMN
 
             var pmRuntimeProcess = PMRuntimeProcess.builder()
                     .bpmProcessId(processId)
@@ -376,7 +384,7 @@ public class PMCycleServiceImpl implements PMCycleService {
             log.debug("Started process: {}", processUUID);
 
             pmProcessService.updateStatus(process.getId(), STARTED, processStatusFilter);
-            intUpdateStatus(cycleUUID, ACTIVE);
+            intUpdateStatus(cycleUUID, ACTIVE, null); // todo move status map to BPMN or DMN
         } catch (ProcessExecutionException e) {
             cycleFailed(process.getBpmProcessId(), cycleUUID, e);
         }

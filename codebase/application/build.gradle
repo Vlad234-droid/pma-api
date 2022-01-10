@@ -36,6 +36,7 @@ dependencies {
     implementation project(':fs')
     implementation project(':flow')
     implementation project(':tip')
+    implementation project(':pdp')
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-web")
