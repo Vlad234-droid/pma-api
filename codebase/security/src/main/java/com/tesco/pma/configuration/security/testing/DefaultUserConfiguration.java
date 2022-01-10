@@ -14,11 +14,10 @@ import org.springframework.security.core.userdetails.User;
 import java.util.ArrayList;
 import java.util.List;
 
-@Profile("benchmarks")
 @Configuration
 public class DefaultUserConfiguration {
 
-    @Value("${tesco.application.benchmarks.default-user.username:10000000-0000-0000-0000-000000000000}")
+    @Value("${tesco.application.security.default-user.username:10000000-1000-1000-1000-100000000001}")
     private String userName;
 
     private static final int DEFAULT_USER_FILTER_PRECEDENCE = 107;

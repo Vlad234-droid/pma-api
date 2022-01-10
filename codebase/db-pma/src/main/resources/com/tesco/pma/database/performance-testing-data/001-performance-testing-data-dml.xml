@@ -5,7 +5,7 @@
 
     <changeSet id="1" author="akuzmin" labels="performance">
         <insert tableName="colleague">
-            <column name="uuid">10000000-0000-0000-0000-000000000005</column>
+            <column name="uuid">10000000-1000-1000-1000-100000000001</column>
             <column name="country_code">GB</column>
             <column name="first_name">William</column>
             <column name="middle_name">Jeffrey</column>
@@ -25,7 +25,7 @@
             <column name="is_manager">true</column>
         </insert>
         <insert tableName="colleague">
-            <column name="uuid">10000000-0000-0000-0000-000000000006</column>
+            <column name="uuid">10000000-1000-1000-1000-100000000002</column>
             <column name="country_code">GB</column>
             <column name="first_name">Alex</column>
             <column name="middle_name">Jeffrey</column>
@@ -38,14 +38,14 @@
             <column name="job_id">300000600015282</column>
             <column name="iam_source">OracleHCM</column>
             <column name="iam_id">UKE66666</column>
-            <column name="manager_uuid">10000000-0000-0000-0000-000000000005</column>
+            <column name="manager_uuid">10000000-1000-1000-1000-100000000001</column>
             <column name="employment_type">R</column>
             <column name="hire_date">2020-01-01</column>
             <column name="leaving_date">null</column>
             <column name="is_manager">false</column>
         </insert>
         <insert tableName="colleague">
-            <column name="uuid">10000000-0000-0000-0000-000000000007</column>
+            <column name="uuid">10000000-1000-1000-1000-100000000003</column>
             <column name="country_code">GB</column>
             <column name="first_name">Joe</column>
             <column name="middle_name">Jeffrey</column>
@@ -58,7 +58,7 @@
             <column name="job_id">300000600015282</column>
             <column name="iam_source">OracleHCM</column>
             <column name="iam_id">UKE77777</column>
-            <column name="manager_uuid">10000000-0000-0000-0000-000000000005</column>
+            <column name="manager_uuid">10000000-1000-1000-1000-100000000001</column>
             <column name="employment_type">R</column>
             <column name="hire_date">2020-01-01</column>
             <column name="leaving_date">null</column>
@@ -66,9 +66,9 @@
         </insert>
         <rollback>
             <delete tableName="colleague">
-                <where>uuid in('10000000-0000-0000-0000-000000000005',
-                    '10000000-0000-0000-0000-000000000006',
-                    '10000000-0000-0000-0000-000000000007')</where>
+                <where>uuid in('10000000-1000-1000-1000-100000000001',
+                    '10000000-1000-1000-1000-100000000002',
+                    '10000000-1000-1000-1000-100000000003')</where>
             </delete>
         </rollback>
     </changeSet>
