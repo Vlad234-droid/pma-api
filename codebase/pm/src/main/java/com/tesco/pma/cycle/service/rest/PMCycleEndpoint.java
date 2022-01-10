@@ -2,9 +2,10 @@ package com.tesco.pma.cycle.service.rest;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.configuration.audit.AuditorAware;
+import com.tesco.pma.cycle.api.CompositePMCycleMetadataResponse;
 import com.tesco.pma.cycle.api.PMCycle;
+import com.tesco.pma.cycle.api.CompositePMCycleResponse;
 import com.tesco.pma.cycle.api.PMCycleStatus;
-import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.exception.InvalidPayloadException;
@@ -50,6 +51,7 @@ public class PMCycleEndpoint {
     private static final String CYCLE_UUID_PARAMETER_NAME = "cycleUuid";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     public static final String INCLUDE_METADATA = "includeMetadata";
+    public static final String INCLUDE_FORMS = "includeForms";
 
     private final PMCycleService service;
     private final AuditorAware<UUID> auditorAware;
@@ -175,8 +177,10 @@ public class PMCycleEndpoint {
             content = @Content)
     @GetMapping(value = "/pm-cycles/{uuid}", produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isProcessManager() or isAdmin()")
-    public RestResponse<PMCycle> get(@PathVariable("uuid") UUID uuid) {
-        return success(service.get(uuid));
+    public RestResponse<CompositePMCycleResponse> get(@PathVariable("uuid") UUID uuid,
+                                                      @RequestParam(value = INCLUDE_FORMS, defaultValue = "false")
+                                                              boolean includeForms) {
+        return success(service.get(uuid, includeForms));
     }
 
     @Operation(summary = "Get full metadata for colleague",
@@ -223,8 +227,10 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Exception while parsing a form")
     @GetMapping(value = "/pm-cycles/files/{uuid}/metadata", produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isProcessManager() or isAdmin()")
-    public RestResponse<PMCycleMetadata> getPmCycleMetadata(@PathVariable("uuid") UUID uuid) {
-        return success(service.getFileMetadata(uuid));
+    public RestResponse<CompositePMCycleMetadataResponse> getPmCycleMetadata(@PathVariable("uuid") UUID uuid,
+                                                                             @RequestParam(value = INCLUDE_FORMS, defaultValue = "false")
+                                                                                     boolean includeForms) {
+        return success(service.getFileMetadata(uuid, includeForms));
     }
 
     /**

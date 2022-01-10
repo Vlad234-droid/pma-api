@@ -1,14 +1,16 @@
 package com.tesco.pma.cycle.service;
 
 import com.tesco.pma.api.DictionaryFilter;
+import com.tesco.pma.api.MapJson;
 import com.tesco.pma.bpm.api.DeploymentInfo;
 import com.tesco.pma.bpm.api.ProcessExecutionException;
 import com.tesco.pma.bpm.api.ProcessManagerService;
 import com.tesco.pma.colleague.api.ColleagueSimple;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.cycle.api.CompositePMCycleMetadataResponse;
+import com.tesco.pma.cycle.api.CompositePMCycleResponse;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
-import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import com.tesco.pma.cycle.dao.PMCycleDAO;
 import com.tesco.pma.cycle.exception.ErrorCodes;
 import com.tesco.pma.cycle.exception.PMCycleException;
@@ -139,13 +141,20 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     @Override
     @Transactional(readOnly = true)
-    public PMCycle get(UUID uuid) {
+    public CompositePMCycleResponse get(UUID uuid, boolean includeForms) {
         var pmCycle = cycleDAO.read(uuid, null);
-        if (null == pmCycle) {
-            throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID,
-                    Map.of(CYCLE_UUID_PARAMETER_NAME, uuid));
+        if (includeForms)
+            if (null == pmCycle) {
+                throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID,
+                        Map.of(CYCLE_UUID_PARAMETER_NAME, uuid));
+            }
+        var result = new CompositePMCycleResponse();
+        result.setCycle(pmCycle);
+
+        if (includeForms) {
+            result.setForms(new MapJson());
         }
-        return pmCycle;
+        return result;
     }
 
     @Override
@@ -189,11 +198,16 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
     @Override
-    public PMCycleMetadata getFileMetadata(UUID fileUuid) {
+    public CompositePMCycleMetadataResponse getFileMetadata(UUID fileUuid, boolean includeForms) {
+
         var file = fileService.get(fileUuid, true);
         var model = Bpmn.readModelFromStream(new ByteArrayInputStream(file.getFileContent()));
-        var parser = new PMProcessModelParser(resourceProvider, messageSourceAccessor);
-        return parser.parse(model);
+        var metadata = new PMProcessModelParser(resourceProvider, messageSourceAccessor).parse(model);
+        var compositeMetadata = CompositePMCycleMetadataResponse.builder().metadata(metadata).build();
+        if (includeForms) {
+            compositeMetadata.setForms(new MapJson());
+        }
+        return compositeMetadata;
     }
 
     @Override
