@@ -58,6 +58,17 @@ class ConventionsTest {
                 "labels attribute must be equal to integration");
     }
 
+    @ParameterizedTest(name = "{displayName} [{index}], file {0}")
+    @MethodSource("providePerformanceTestingDataChangeLogFiles")
+    void performanceTestingChangeSetsMustHaveLabel(Path performanceTestingDataChangeLogPath) {
+        final var changeSets = XmlPath.from(performanceTestingDataChangeLogPath.toFile()).getList("databaseChangeLog.changeSet");
+        final var changeSetsWithLabelsAttribute = XmlPath.from(performanceTestingDataChangeLogPath.toFile())
+                .getList("databaseChangeLog.changeSet.@labels", String.class);
+        Assertions.assertThat(changeSets.size()).isEqualTo(changeSetsWithLabelsAttribute.size());
+        Assertions.assertThat(changeSetsWithLabelsAttribute).allMatch("performance"::equals,
+                "labels attribute must be equal to integration");
+    }
+
     static Stream<Path> provideChangeLogFiles() throws Exception {
         final var walkPath = Path.of(ConventionsTest.class.getResource(CHANGELOG_MASTER_FILE).toURI()).getParent();
         return Files.walk(walkPath)
@@ -74,4 +85,14 @@ class ConventionsTest {
                 .filter(not(Files::isDirectory))
                 .filter(path -> path.getFileName().toString().endsWith(".xml"));
     }
+
+    static Stream<Path> providePerformanceTestingDataChangeLogFiles() throws Exception {
+
+        final var databasePath = Path.of(ConventionsTest.class.getResource(CHANGELOG_MASTER_FILE).toURI()).getParent();
+        final var walkPath = Paths.get(databasePath.toString(), "performance-testing-data");
+        return Files.walk(walkPath)
+                .filter(not(Files::isDirectory))
+                .filter(path -> path.getFileName().toString().endsWith(".xml"));
+    }
+
 }

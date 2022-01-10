@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,7 +47,8 @@ public class PDPEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Successful operation")
     @PostMapping(path = "/goals", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<List<PDPGoal>> create(@RequestBody List<@Valid PDPGoal> goals, Authentication authentication) {
+    public RestResponse<List<PDPGoal>> create(@RequestBody List<@Valid PDPGoal> goals,
+                                              @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         var colleagueUuid = getColleagueUuid(authentication);
         goals.forEach(goal -> goal.setColleagueUuid(colleagueUuid));
         return success(pdpService.createGoals(colleagueUuid, goals));
@@ -61,7 +63,8 @@ public class PDPEndpoint {
     @Operation(summary = "Update a PDP", description = "PDP updated", tags = {"pdp"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "PDP updated")
     @PutMapping(path = "/goals", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public RestResponse<List<PDPGoal>> update(@RequestBody List<@Valid PDPGoal> goals, Authentication authentication) {
+    public RestResponse<List<PDPGoal>> update(@RequestBody List<@Valid PDPGoal> goals,
+                                              @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         var colleagueUuid = getColleagueUuid(authentication);
         goals.forEach(goal -> goal.setColleagueUuid(colleagueUuid));
         return success(pdpService.updateGoals(colleagueUuid, goals));
@@ -77,7 +80,8 @@ public class PDPEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "PDP Goals deleted")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PDP Goals not found", content = @Content)
     @PostMapping(path = "/goals/delete", produces = MediaType.APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-    public RestResponse<Void> deleteGoals(@RequestBody List<UUID> goalUuids, Authentication authentication) {
+    public RestResponse<Void> deleteGoals(@RequestBody List<UUID> goalUuids,
+                                          @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         pdpService.deleteGoals(getColleagueUuid(authentication), goalUuids);
         return RestResponse.success();
     }
@@ -93,7 +97,7 @@ public class PDPEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PDP Goal not found", content = @Content)
     @GetMapping(path = "/goals/numbers/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
     public RestResponse<PDPGoal> getGoal(@PathVariable("number") Integer number,
-                                         Authentication authentication) {
+                                         @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         return success(pdpService.getGoal(getColleagueUuid(authentication), number));
     }
 
@@ -107,7 +111,8 @@ public class PDPEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the PDP Goal")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PDP Goal not found", content = @Content)
     @GetMapping(path = "/goals/{goalUuid}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestResponse<PDPGoal> getGoal(@PathVariable("goalUuid") UUID goalUuid, Authentication authentication) {
+    public RestResponse<PDPGoal> getGoal(@PathVariable("goalUuid") UUID goalUuid,
+                                         @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         return success(pdpService.getGoal(getColleagueUuid(authentication), goalUuid));
     }
 
@@ -120,7 +125,7 @@ public class PDPEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the PDP Goals")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PDP Goals not found", content = @Content)
     @GetMapping(path = "/goals", produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestResponse<List<PDPGoal>> getGoals(Authentication authentication) {
+    public RestResponse<List<PDPGoal>> getGoals(@CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         return success(pdpService.getGoals(getColleagueUuid(authentication)));
     }
 
