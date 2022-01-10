@@ -6,9 +6,7 @@ import com.tesco.pma.cep.domain.EventType;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
-import com.tesco.pma.colleague.security.domain.AccountType;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
-import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
 import com.tesco.pma.colleague.security.service.UserManagementService;
 import com.tesco.pma.event.EventNames;
 import com.tesco.pma.event.EventParams;
@@ -91,8 +89,8 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     private int processJoinerEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
         int updated = profileService.create(colleagueChangeEventPayload.getColleagueUuid());
         if (updated > 0) {
-            // Add a new account
-            createAccount(colleagueChangeEventPayload.getColleagueUuid());
+            // Send an event to User Management Service on creation a new account
+            sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.POST_CEP_COLLEAGUE_ADDED);
 
             // Send an event to Camunda
             sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.CEP_COLLEAGUE_ADDED);
@@ -147,21 +145,6 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         } else {
             return DeliveryMode.valueOf(key.toUpperCase());
         }
-    }
-
-    private void createAccount(UUID colleagueUuid) {
-        var colleague = profileService.getColleague(colleagueUuid);
-        if (colleague == null) {
-            return;
-        }
-
-        var request = new CreateAccountRequest();
-        request.setName(colleague.getIamId());
-        request.setIamId(colleague.getIamId());
-        request.setType(AccountType.USER);
-        request.setStatus(AccountStatus.ENABLED);
-
-        userManagementService.createAccount(request);
     }
 
     private void sendEvent(UUID colleagueUuid, EventNames eventName) {
