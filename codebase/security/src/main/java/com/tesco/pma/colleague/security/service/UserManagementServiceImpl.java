@@ -12,7 +12,6 @@ import com.tesco.pma.colleague.security.domain.request.RoleRequest;
 import com.tesco.pma.colleague.security.exception.AccountAlreadyExistsException;
 import com.tesco.pma.colleague.security.exception.AccountNotFoundException;
 import com.tesco.pma.colleague.security.exception.ColleagueNotFoundException;
-import com.tesco.pma.colleague.security.exception.DuplicatedAccountException;
 import com.tesco.pma.colleague.security.exception.DuplicatedRoleException;
 import com.tesco.pma.colleague.security.exception.ErrorCodes;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
@@ -105,7 +104,7 @@ public class UserManagementServiceImpl implements UserManagementService {
             accountManagementDAO.create(request.getName(), request.getIamId(),
                     request.getStatus(), request.getType());
         } catch (DuplicateKeyException e) {
-            throw duplicatedAccountException(e, request.getName());
+            throw accountAlreadyExistsException(e, request.getName());
         }
 
         Collection<Integer> roleIds = remappingRoles(request.getRoleId());
@@ -240,9 +239,9 @@ public class UserManagementServiceImpl implements UserManagementService {
                         Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName)));
     }
 
-    private DuplicatedAccountException duplicatedAccountException(DuplicateKeyException exception,
-                                                                  String accountName) {
-        throw new DuplicatedAccountException(ErrorCodes.SECURITY_ACCOUNT_ALREADY_EXISTS.name(),
+    private AccountAlreadyExistsException accountAlreadyExistsException(DuplicateKeyException exception,
+                                                                        String accountName) {
+        throw new AccountAlreadyExistsException(ErrorCodes.SECURITY_ACCOUNT_ALREADY_EXISTS.name(),
                 messages.getMessage(ErrorCodes.SECURITY_ACCOUNT_ALREADY_EXISTS,
                         Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName)), null, exception);
     }
