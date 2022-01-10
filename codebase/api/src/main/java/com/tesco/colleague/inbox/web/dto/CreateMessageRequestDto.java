@@ -1,14 +1,21 @@
-package com.tesco.pma.colleague.inbox;
+package com.tesco.colleague.inbox.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+
+/**
+ * Colleague Inbox API
+ * ${COLLEAGUE_INBOX_API_URL}/v1/messages
+ * Message for a colleague by Colleague Inbox
+ */
 @Getter
 @Setter
 public class CreateMessageRequestDto {

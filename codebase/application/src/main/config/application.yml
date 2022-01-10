@@ -224,7 +224,7 @@ tesco:
       contact-api:
         messaging-url: ${TESCO_API_BASE_URL}/messaging/v1/send
       colleague-inbox-api:
-        base-url: ${PMA_API_URL}/v1/messages
+        base-url: ${COLLEAGUE_INBOX_API_URL}/v1/messages
     event-mapping:
       # Review notifications events
       PM_REVIEW_BEFORE_START: com.tesco.pma.bpm.action.RunFlowByEventAction

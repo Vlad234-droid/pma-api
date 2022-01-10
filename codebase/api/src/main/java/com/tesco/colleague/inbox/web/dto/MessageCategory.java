@@ -1,8 +1,13 @@
-package com.tesco.pma.colleague.inbox;
+package com.tesco.colleague.inbox.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+/**
+ * Colleague Inbox API
+ * ${COLLEAGUE_INBOX_API_URL}/v1/messages
+ * Category for a message to send to a colleague by Colleague Inbox
+ */
 public enum MessageCategory {
     OWN( 1, "own"),
     TEAM(2, "team");

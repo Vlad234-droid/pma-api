@@ -1,8 +1,8 @@
 package com.tesco.pma.service;
 
-import com.tesco.pma.colleague.inbox.CreateMessageRequestDto;
-import com.tesco.pma.colleague.inbox.MessageCategory;
-import com.tesco.pma.colleague.inbox.RecipientDto;
+import com.tesco.colleague.inbox.web.dto.CreateMessageRequestDto;
+import com.tesco.colleague.inbox.web.dto.MessageCategory;
+import com.tesco.colleague.inbox.web.dto.RecipientDto;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.service.colleague.inbox.client.ColleagueInboxApiClient;
