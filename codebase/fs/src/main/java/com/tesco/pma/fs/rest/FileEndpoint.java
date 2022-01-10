@@ -189,8 +189,7 @@ public class FileEndpoint {
             @RequestPart("uploadMetadata")
             @Valid @Parameter(schema = @Schema(type = "string", format = "binary")) FilesUploadMetadata filesUploadMetadata,
             @RequestPart("files") @NotEmpty List<@NotNull MultipartFile> files,
-            HttpServletResponse response,
-            @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+            HttpServletResponse response) {
 
         var traceId = TraceUtils.toParent();
         response.setHeader(TRACE_ID_HEADER, traceId.getValue());
