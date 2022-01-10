@@ -3,14 +3,13 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 image:
-    repository: euwdev214pmacontainerregistry.azurecr.io/pma-api
+    repository: euwprod214pmacontainerregistry.azurecr.io/pma-api
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
-
 serviceAccount:
     # Specifies whether a service account should be created
     create: false
@@ -19,13 +18,9 @@ serviceAccount:
     # The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template
     name: ""
-
 podAnnotations: {}
-
 podSecurityContext: {}
-
 # fsGroup: 2000
-
 securityContext: {}
 
 # capabilities:
@@ -92,9 +87,9 @@ AD_ROLE_PEOPLE_TEAM: GG-UK-TescoGlobal-PMA-PPE-PeopleTeam
 AD_ROLE_TALENT_ADMIN: GG-UK-TescoGlobal-PMA-PPE-TalentAdmin
 AD_ROLE_PROCESS_MANAGER: GG-UK-TescoGlobal-PMA-PPE-ProcessManager
 IDENTITY_CLIENT_ID: 69b3ca74-cba0-4efb-a537-7499410de9cc
-PMA_DB_USERNAME: pmadbadmin@euw-dev-214-pma-postgresql
-PMA_DB_URL: jdbc:postgresql://10.123.22.24:5432/pma-dev?sslmode=require
+PMA_DB_USERNAME: pmadbadmin@euw-prod-214-pma-postgresql
+PMA_DB_URL: jdbc:postgresql://10.114.146.8:5432/pma-ppe?sslmode=require
 PMA_DB_SCHEMA: pma
 CAMUNDA_DB_SCHEMA: camunda
 SECURITY_ENABLED: true
-env: "dev/**.dec"
+env: "prod/**.dec"

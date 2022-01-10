@@ -1,0 +1,22 @@
+<dataset>
+
+    <colleague uuid="ce245be1-1f43-4d5f-85dc-db6e2cce0c2a"
+               country_code="GB"/>
+
+    <pdp_goal uuid="6d37262f-3a00-4706-a74b-6bf98be65765"
+              colleague_uuid="ce245be1-1f43-4d5f-85dc-db6e2cce0c2a"
+              number="1"
+              properties="{&quot;pm_pdp_test_property1&quot;: &quot;P1&quot;,
+                           &quot;pm_pdp_test_property2&quot;: &quot;P2&quot;}"
+              achievement_date="2021-12-29"
+              status_id="2"/>
+
+    <pdp_goal uuid="7d37262f-3a00-4706-a74b-6bf98be65765"
+              colleague_uuid="ce245be1-1f43-4d5f-85dc-db6e2cce0c2a"
+              number="2"
+              properties="{&quot;pm_pdp_test_property1&quot;: &quot;P1&quot;,
+                           &quot;pm_pdp_test_property2&quot;: &quot;P2&quot;}"
+              achievement_date="2021-12-29"
+              status_id="2"/>
+
+</dataset>
