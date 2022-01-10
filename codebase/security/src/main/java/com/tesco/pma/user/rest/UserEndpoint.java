@@ -10,7 +10,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,8 +57,7 @@ public class UserEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "User not found")
     @GetMapping(path = "/me")
     @PreAuthorize("hasAnyRole()")
-    public RestResponse<User> getMe() {
-        final var authentication = SecurityContextHolder.getContext().getAuthentication();
+    public RestResponse<User> getMe(@CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         final var userOptional = userService.findUserByAuthentication(authentication);
         if (userOptional.isEmpty()) {
             throw notFound("authentication.name", authentication.getName());

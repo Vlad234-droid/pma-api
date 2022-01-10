@@ -128,7 +128,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     @Override
     @Transactional
     public PMCycle updateStatus(UUID uuid, PMCycleStatus status) {
-        return intUpdateStatus(uuid, status, null);
+        return intUpdateStatus(uuid, status, null); // todo move status map to BPMN or DMN
     }
 
     @Override
@@ -212,7 +212,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     @Override
     @Transactional
     public void completeCycle(UUID cycleUUID) {
-        intUpdateStatus(cycleUUID, COMPLETED, null);
+        intUpdateStatus(cycleUUID, COMPLETED, null); // todo move status map to BPMN or DMN
         //TODO update rt process
     }
 
@@ -224,7 +224,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     private void cycleFailed(String processKey, UUID uuid, Exception ex) {
         log.error("Performance cycle publish error, cause: ", ex);
         try {
-            intUpdateStatus(uuid, FAILED, null);
+            intUpdateStatus(uuid, FAILED, null); // todo move status map to BPMN or DMN
         } catch (NotFoundException exc) {
             log.error("Performance cycle change status error, cause: ", exc);
         }
@@ -249,6 +249,7 @@ public class PMCycleServiceImpl implements PMCycleService {
                 messageSourceAccessor.getMessage(errorCode.getCode(), params), null, cause);
     }
 
+
     private PMCycle intUpdateStatus(UUID uuid, PMCycleStatus status, DictionaryFilter<PMCycleStatus> statusFilter) {
         var cycle = cycleDAO.read(uuid, null);
         if (null == cycle) {
@@ -256,13 +257,12 @@ public class PMCycleServiceImpl implements PMCycleService {
                     Map.of(CYCLE_UUID_PARAMETER_NAME, uuid));
         }
 
-        cycle.setStatus(status);
-
         var resultStatusFilter = statusFilter == null || statusFilter.isEmpty()
                 ? UPDATE_STATUS_RULE_MAP.get(status) // todo move status map to BPMN or DMN
                 : statusFilter;
 
         if (1 == cycleDAO.updateStatus(uuid, status, resultStatusFilter)) {
+            cycle.setStatus(status);
             log.debug("Performance cycle UUID: {} changed status to: {}", cycle.getUuid(), status);
             return cycle;
         } else {
@@ -275,6 +275,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     private PMCycleException pmCycleException(ErrorCodeAware errorCode, Map<String, ?> params) {
         return new PMCycleException(errorCode.getCode(), messageSourceAccessor.getMessage(errorCode.getCode(), params), null, null);
     }
+
 
     private String intDeployProcess(UUID templateUuid, String processName) throws Exception {
 
@@ -326,6 +327,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         return cycle;
     }
 
+
     private UUID intDeploy(PMCycle cycle) {
         String processKey = cycle.getMetadata().getCycle().getCode();
         UUID uuid = cycle.getUuid();
@@ -337,7 +339,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         try {
             var processId = intDeployProcess(cycle.getTemplate().getUuid(), processKey);
             log.debug("Process definition id: {}", processId);
-            intUpdateStatus(uuid, PMCycleStatus.REGISTERED, null);
+            intUpdateStatus(uuid, PMCycleStatus.REGISTERED, null); // todo move status map to BPMN or DMN
 
             var pmRuntimeProcess = PMRuntimeProcess.builder()
                     .bpmProcessId(processId)
@@ -354,6 +356,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         }
         return null;
     }
+
 
     private void intStartCycle(UUID cycleUUID) {
 
@@ -381,7 +384,7 @@ public class PMCycleServiceImpl implements PMCycleService {
             log.debug("Started process: {}", processUUID);
 
             pmProcessService.updateStatus(process.getId(), STARTED, processStatusFilter);
-            intUpdateStatus(cycleUUID, ACTIVE, null);
+            intUpdateStatus(cycleUUID, ACTIVE, null); // todo move status map to BPMN or DMN
         } catch (ProcessExecutionException e) {
             cycleFailed(process.getBpmProcessId(), cycleUUID, e);
         }

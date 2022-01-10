@@ -55,7 +55,7 @@ spring:
   liquibase:
     enabled: true
     change-log: 'classpath:/com/tesco/pma/database/changelog-master.xml'
-    labels: '!integration'
+    labels: '!integration AND !performance'
   messages:
     basename: >
       com/tesco/pma/exception/AppExceptionMessage,
@@ -92,5 +92,6 @@ camunda:
                                            com/tesco/pma/flow/forms/type_1_objective.form,
                                            com/tesco/pma/flow/review_notifications.bpmn,
                                            com/tesco/pma/flow/review_notifications.dmn,
-                                           com/tesco/pma/flow/fiscal_test.bpmn,
-                                           com/tesco/pma/flow/review_schedule_test.bpmn
+                                           com/tesco/pma/flow/review_schedule_test.bpmn,
+                                           com/tesco/pma/flow/fiscal_test.bpmn
+

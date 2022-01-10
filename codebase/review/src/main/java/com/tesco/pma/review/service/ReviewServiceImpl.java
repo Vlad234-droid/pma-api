@@ -41,7 +41,6 @@ import static com.tesco.pma.api.ActionType.PUBLISH;
 import static com.tesco.pma.api.ActionType.SAVE_AS_DRAFT;
 import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
-import static com.tesco.pma.cycle.api.PMTimelinePointStatus.COMPLETED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DECLINED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.OVERDUE;
@@ -99,6 +98,7 @@ public class ReviewServiceImpl implements ReviewService {
     private static final Comparator<OrgObjective> ORG_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR =
             Comparator.comparing(OrgObjective::getNumber)
                     .thenComparing(OrgObjective::getTitle);
+    private static final List<PMTimelinePointStatus> MIN_REVIEW_STATUSES = List.of(WAITING_FOR_APPROVAL, APPROVED);
 
     @Override
     public Review getReview(UUID performanceCycleUuid, UUID colleagueUuid, PMReviewType type, Integer number) {
@@ -180,8 +180,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<ColleagueTimeline> getTeamReviews(UUID managerUuid) {
-        List<ColleagueTimeline> results = reviewDAO.getTeamReviews(managerUuid);
+    public List<ColleagueTimeline> getTeamReviews(UUID managerUuid, Integer depth) {
+        List<ColleagueTimeline> results = reviewDAO.getTeamReviews(managerUuid, depth);
         if (results == null) {
             throw notFound(REVIEW_NOT_FOUND,
                     Map.of(MANAGER_UUID_PARAMETER_NAME, managerUuid));
@@ -198,12 +198,47 @@ public class ReviewServiceImpl implements ReviewService {
     public Review createReview(Review review, UUID performanceCycleUuid, UUID colleagueUuid) {
         var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, review.getType());
         review.setTlPointUuid(timelinePoint.getUuid());
-        var createdReview = intCreateReview(review, timelinePoint);
+        var createdReview = createReview(review, timelinePoint);
 
         checkReviewStateAfterUpdate(timelinePoint);
         updateTLPointStatus(timelinePoint);
-
         return createdReview;
+    }
+
+    private Review createReview(Review review, TimelinePoint timelinePoint) {
+        review.setUuid(UUID.randomUUID());
+        var maxReviews = Integer.valueOf(timelinePoint.getProperties().getMapJson().get(PM_REVIEW_MAX));
+        if (maxReviews < review.getNumber()) {
+            throw createReviewException(
+                    MAX_REVIEW_NUMBER_CONSTRAINT_VIOLATION,
+                    Map.of(MAX_PARAMETER_NAME, maxReviews,
+                            NUMBER_PARAMETER_NAME, review.getNumber())
+            );
+        }
+        try {
+            var allowedStatuses = getStatusesForCreate();
+            if (0 == allowedStatuses.size()) {
+                throw notFound(ALLOWED_STATUSES_NOT_FOUND,
+                        Map.of(OPERATION_PARAMETER_NAME, CREATE_OPERATION_NAME));
+            }
+            if (allowedStatuses.contains(review.getStatus())) {
+                reviewDAO.create(review);
+                return review;
+            } else {
+                throw createReviewException(
+                        REVIEW_STATUS_NOT_ALLOWED,
+                        Map.of(STATUS_PARAMETER_NAME, review.getStatus(),
+                                OPERATION_PARAMETER_NAME, CREATE_OPERATION_NAME)
+                );
+            }
+        } catch (DuplicateKeyException e) {
+            throw databaseConstraintViolation(
+                    REVIEW_ALREADY_EXISTS,
+                    Map.of(TL_POINT_UUID_PARAMETER_NAME, review.getTlPointUuid(),
+                            TYPE_PARAMETER_NAME, review.getType(),
+                            NUMBER_PARAMETER_NAME, review.getNumber()),
+                    e);
+        }
     }
 
     @Override
@@ -226,11 +261,30 @@ public class ReviewServiceImpl implements ReviewService {
         var reviewBefore = reviews.get(0);
         review.setUuid(reviewBefore.getUuid());
         review.setNumber(reviewBefore.getNumber());
-        var updatedReview = intUpdateReview(review);
+        var updatedReview = updateReview(review);
 
         checkReviewStateAfterUpdate(timelinePoint);
         updateTLPointStatus(timelinePoint);
         return updatedReview;
+    }
+
+    private Review updateReview(Review review) {
+        var allowedStatuses = getAllowedStatusesForUpdate(review.getType(), review.getStatus());
+        if (0 == allowedStatuses.size()) {
+            throw notFound(ALLOWED_STATUSES_NOT_FOUND,
+                    Map.of(OPERATION_PARAMETER_NAME, UPDATE_OPERATION_NAME));
+        }
+
+        if (1 == reviewDAO.update(review, allowedStatuses)) {
+            return review;
+        } else {
+            throw notFound(REVIEW_NOT_FOUND,
+                    Map.of(OPERATION_PARAMETER_NAME, UPDATE_OPERATION_NAME,
+                            TL_POINT_UUID_PARAMETER_NAME, review.getTlPointUuid(),
+                            TYPE_PARAMETER_NAME, review.getType(),
+                            NUMBER_PARAMETER_NAME, review.getNumber(),
+                            ALLOWED_STATUSES_PARAMETER_NAME, allowedStatuses));
+        }
     }
 
     @Override
@@ -253,12 +307,12 @@ public class ReviewServiceImpl implements ReviewService {
                     idx + 1);
             if (rvs == null || 1 != rvs.size()) {
                 review.setNumber(idx + 1);
-                intCreateReview(review, timelinePoint);
+                createReview(review, timelinePoint);
             } else {
                 var reviewBefore = rvs.get(0);
                 review.setUuid(reviewBefore.getUuid());
                 review.setNumber(reviewBefore.getNumber());
-                intUpdateReview(review);
+                updateReview(review);
             }
             results.add(review);
         }
@@ -269,7 +323,7 @@ public class ReviewServiceImpl implements ReviewService {
                 null);
         if (prevReviews.size() > reviews.size()) {
             for (int i = reviews.size() + 1; i <= prevReviews.size(); i++) {
-                intDeleteReview(timelinePoint, i);
+                deleteReview(timelinePoint, i);
             }
         }
 
@@ -289,7 +343,7 @@ public class ReviewServiceImpl implements ReviewService {
                                                      UUID loggedUserUuid) {
         var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, type);
         reviews.forEach(review -> {
-            var prevStatuses = getPrevStatusesForChangeStatus(status);
+            var prevStatuses = getPrevStatusesForChangeStatus(type, status);
             if (0 == prevStatuses.size()) {
                 throw notFound(ALLOWED_STATUSES_NOT_FOUND,
                         Map.of(OPERATION_PARAMETER_NAME, CHANGE_STATUS_OPERATION_NAME));
@@ -330,12 +384,41 @@ public class ReviewServiceImpl implements ReviewService {
                              PMReviewType type,
                              Integer number) {
         var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, type);
-        intDeleteReview(timelinePoint, number);
+        deleteReview(timelinePoint, number);
         reviewDAO.renumerateReviews(
                 timelinePoint.getUuid(),
                 type,
                 number + 1);
+        checkReviewStateAfterUpdate(timelinePoint);
         updateTLPointStatus(timelinePoint);
+    }
+
+    private void deleteReview(TimelinePoint timelinePoint,
+                              Integer number) {
+        var minReviews = Integer.valueOf(timelinePoint.getProperties().getMapJson().get(PM_REVIEW_MIN));
+        var reviewCount = reviewDAO.getReviewStats(timelinePoint.getUuid()).getCountAll();
+        if (reviewCount == minReviews) {
+            throw deleteReviewException(CANNOT_DELETE_REVIEW_COUNT_CONSTRAINT,
+                    Map.of(MIN_PARAMETER_NAME, minReviews));
+        }
+
+        var allowedStatuses = getStatusesForDelete(timelinePoint.getReviewType());
+        if (0 == allowedStatuses.size()) {
+            throw notFound(ALLOWED_STATUSES_NOT_FOUND,
+                    Map.of(OPERATION_PARAMETER_NAME, DELETE_OPERATION_NAME));
+        }
+        if (1 != reviewDAO.deleteByParams(
+                timelinePoint.getUuid(),
+                null,
+                null,
+                number,
+                allowedStatuses)) {
+            throw notFound(REVIEW_NOT_FOUND,
+                    Map.of(OPERATION_PARAMETER_NAME, DELETE_OPERATION_NAME,
+                            TL_POINT_UUID_PARAMETER_NAME, timelinePoint.getUuid(),
+                            NUMBER_PARAMETER_NAME, number,
+                            ALLOWED_STATUSES_PARAMETER_NAME, allowedStatuses));
+        }
     }
 
     @Override
@@ -429,7 +512,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     private List<PMTimelinePointStatus> getAllowedStatusesForUpdate(PMReviewType reviewType, PMTimelinePointStatus newStatus) {
         var allowedStatusesForUpdate = getStatusesForUpdate(reviewType);
-        var prevStatusesForChangeStatus = getPrevStatusesForChangeStatus(newStatus);
+        var prevStatusesForChangeStatus = getPrevStatusesForChangeStatus(reviewType, newStatus);
         return allowedStatusesForUpdate.stream()
                 .filter(prevStatusesForChangeStatus::contains)
                 .collect(Collectors.toList());
@@ -440,89 +523,6 @@ public class ReviewServiceImpl implements ReviewService {
             return List.of(STARTED, DRAFT, WAITING_FOR_APPROVAL, APPROVED, DECLINED, OVERDUE);
         } else {
             return List.of(STARTED, DRAFT, WAITING_FOR_APPROVAL, APPROVED, DECLINED);
-        }
-    }
-
-    public Review intCreateReview(Review review, TimelinePoint timelinePoint) {
-        review.setUuid(UUID.randomUUID());
-        var maxReviews = Integer.valueOf(timelinePoint.getProperties().getMapJson().get(PM_REVIEW_MAX));
-        if (maxReviews < review.getNumber()) {
-            throw createReviewException(
-                    MAX_REVIEW_NUMBER_CONSTRAINT_VIOLATION,
-                    Map.of(MAX_PARAMETER_NAME, maxReviews,
-                            NUMBER_PARAMETER_NAME, review.getNumber())
-            );
-        }
-        try {
-            var allowedStatuses = getStatusesForCreate();
-            if (0 == allowedStatuses.size()) {
-                throw notFound(ALLOWED_STATUSES_NOT_FOUND,
-                        Map.of(OPERATION_PARAMETER_NAME, CREATE_OPERATION_NAME));
-            }
-            if (allowedStatuses.contains(review.getStatus())) {
-                reviewDAO.create(review);
-                return review;
-            } else {
-                throw createReviewException(
-                        REVIEW_STATUS_NOT_ALLOWED,
-                        Map.of(STATUS_PARAMETER_NAME, review.getStatus(),
-                                OPERATION_PARAMETER_NAME, CREATE_OPERATION_NAME)
-                );
-            }
-        } catch (DuplicateKeyException e) {
-            throw databaseConstraintViolation(
-                    REVIEW_ALREADY_EXISTS,
-                    Map.of(TL_POINT_UUID_PARAMETER_NAME, review.getTlPointUuid(),
-                            TYPE_PARAMETER_NAME, review.getType(),
-                            NUMBER_PARAMETER_NAME, review.getNumber()),
-                    e);
-        }
-    }
-
-    private Review intUpdateReview(Review review) {
-        var allowedStatuses = getAllowedStatusesForUpdate(review.getType(), review.getStatus());
-        if (0 == allowedStatuses.size()) {
-            throw notFound(ALLOWED_STATUSES_NOT_FOUND,
-                    Map.of(OPERATION_PARAMETER_NAME, UPDATE_OPERATION_NAME));
-        }
-
-        if (1 == reviewDAO.update(review, allowedStatuses)) {
-            return review;
-        } else {
-            throw notFound(REVIEW_NOT_FOUND,
-                    Map.of(OPERATION_PARAMETER_NAME, UPDATE_OPERATION_NAME,
-                            TL_POINT_UUID_PARAMETER_NAME, review.getTlPointUuid(),
-                            TYPE_PARAMETER_NAME, review.getType(),
-                            NUMBER_PARAMETER_NAME, review.getNumber(),
-                            ALLOWED_STATUSES_PARAMETER_NAME, allowedStatuses));
-        }
-    }
-
-    private void intDeleteReview(TimelinePoint timelinePoint,
-                                 Integer number) {
-        var minReviews = Integer.valueOf(timelinePoint.getProperties().getMapJson().get(PM_REVIEW_MIN));
-        var reviewCount = reviewDAO.getReviewStats(timelinePoint.getUuid()).getCountAll();
-        if (reviewCount == minReviews) {
-            throw deleteReviewException(CANNOT_DELETE_REVIEW_COUNT_CONSTRAINT,
-                    Map.of(MIN_PARAMETER_NAME, minReviews));
-        }
-
-        var allowedStatuses = getStatusesForDelete(timelinePoint.getReviewType());
-        if (0 == allowedStatuses.size()) {
-            throw notFound(ALLOWED_STATUSES_NOT_FOUND,
-                    Map.of(OPERATION_PARAMETER_NAME, DELETE_OPERATION_NAME));
-        }
-        if (1 != reviewDAO.deleteByParams(
-                timelinePoint.getUuid(),
-                null,
-                null,
-                number,
-                allowedStatuses)) {
-            throw notFound(REVIEW_NOT_FOUND,
-                    Map.of(OPERATION_PARAMETER_NAME, DELETE_OPERATION_NAME,
-                            TL_POINT_UUID_PARAMETER_NAME, timelinePoint.getUuid(),
-                            NUMBER_PARAMETER_NAME, number,
-                            ALLOWED_STATUSES_PARAMETER_NAME, allowedStatuses));
         }
     }
 
@@ -583,6 +583,36 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
+    private List<PMTimelinePointStatus> getPrevStatusesForChangeStatus(PMReviewType reviewType, PMTimelinePointStatus newStatus) {
+        if (reviewType.equals(OBJECTIVE)) {
+            switch (newStatus) {
+                case DRAFT:
+                    return List.of(DRAFT, DECLINED);
+                case WAITING_FOR_APPROVAL:
+                    return List.of(DRAFT, WAITING_FOR_APPROVAL, DECLINED, APPROVED);
+                case APPROVED:
+                    return List.of(WAITING_FOR_APPROVAL, APPROVED);
+                case DECLINED:
+                    return List.of(WAITING_FOR_APPROVAL, DECLINED);
+                default:
+                    return Collections.emptyList();
+            }
+        } else {
+            switch (newStatus) {
+                case DRAFT:
+                    return List.of(DRAFT, DECLINED);
+                case WAITING_FOR_APPROVAL:
+                    return List.of(DRAFT, WAITING_FOR_APPROVAL, DECLINED);
+                case APPROVED:
+                    return List.of(WAITING_FOR_APPROVAL, APPROVED);
+                case DECLINED:
+                    return List.of(WAITING_FOR_APPROVAL, DECLINED);
+                default:
+                    return Collections.emptyList();
+            }
+        }
+    }
+
     private TimelinePoint updateTLPointStatus(TimelinePoint timelinePoint) {
         var calcTlPoint = calcTlPoint(timelinePoint);
         if (1 == timelinePointDAO.update(
@@ -594,32 +624,15 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    private List<PMTimelinePointStatus> getPrevStatusesForChangeStatus(PMTimelinePointStatus newStatus) {
-        switch (newStatus) {
-            case DRAFT:
-                return List.of(DRAFT);
-            case WAITING_FOR_APPROVAL:
-                return List.of(DRAFT, WAITING_FOR_APPROVAL, DECLINED);
-            case APPROVED:
-                return List.of(WAITING_FOR_APPROVAL, APPROVED);
-            case DECLINED:
-                return List.of(WAITING_FOR_APPROVAL, DECLINED);
-            case COMPLETED:
-                return List.of(APPROVED, COMPLETED);
-            default:
-                return Collections.emptyList();
-        }
-    }
-
     private void checkReviewStateAfterUpdate(TimelinePoint timelinePoint) {
         var minReviews = Integer.valueOf(timelinePoint.getProperties().getMapJson().get(PM_REVIEW_MIN));
-        var mapStatusStats = reviewDAO.getReviewStats(timelinePoint.getUuid()).getMapStatusStats();
+        var countReviewWithMinStatus = reviewDAO.getReviewStats(timelinePoint.getUuid())
+                .getCount(MIN_REVIEW_STATUSES);
 
-        if (mapStatusStats.containsKey(WAITING_FOR_APPROVAL)
-                && mapStatusStats.get(WAITING_FOR_APPROVAL) < minReviews) {
+        if (0 < countReviewWithMinStatus && countReviewWithMinStatus < minReviews) {
             throw updateReviewException(MIN_REVIEW_NUMBER_CONSTRAINT_VIOLATION,
-                    Map.of(COUNT_PARAMETER_NAME, mapStatusStats.get(WAITING_FOR_APPROVAL),
-                            STATUS_PARAMETER_NAME, WAITING_FOR_APPROVAL,
+                    Map.of(COUNT_PARAMETER_NAME, countReviewWithMinStatus,
+                            STATUS_PARAMETER_NAME, MIN_REVIEW_STATUSES,
                             MIN_PARAMETER_NAME, minReviews));
         }
     }

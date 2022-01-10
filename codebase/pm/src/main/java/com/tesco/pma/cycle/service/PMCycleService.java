@@ -48,17 +48,15 @@ public interface PMCycleService {
                          @NotNull PMCycleStatus status);
 
     /**
-     * Update PMCycle status
+     * Update PMCycle status with status filter
      *
      * @param uuid   PMCycle uuid
      * @param status new status
-     * @param statusFilter required status filter
+     * @param statusFilter allowed statuses or null
      * @return updated PMCycle
      * @throws NotFoundException if PMCycle doesn't exist
      */
-    PMCycle updateStatus(@NotNull UUID uuid,
-                         @NotNull PMCycleStatus status,
-                         DictionaryFilter<PMCycleStatus> statusFilter);
+    PMCycle updateStatus(@NotNull UUID uuid, @NotNull PMCycleStatus status, DictionaryFilter<PMCycleStatus> statusFilter);
 
     /**
      * Get PMCycle by uuid

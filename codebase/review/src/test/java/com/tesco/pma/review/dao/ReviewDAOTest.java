@@ -345,7 +345,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                         .build()
         );
 
-        final var result = instance.getTeamReviews(MANAGER_UUID);
+        final var result = instance.getTeamReviews(MANAGER_UUID, 1);
 
         assertThat(result)
                 .singleElement()

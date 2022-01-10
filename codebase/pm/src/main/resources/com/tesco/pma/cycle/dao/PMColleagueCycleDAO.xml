@@ -62,12 +62,16 @@
         SELECT cc.uuid, cc.colleague_uuid, cc.cycle_uuid, cc.status_id, cc.start_time, cc.end_time, cc.properties
         FROM pm_colleague_cycle cc
         WHERE cc.cycle_uuid = #{cycleUuid}
-          AND NOT EXISTS(SELECT uuid
-                         FROM pm_timeline_point tp
-                         WHERE tp.colleague_cycle_uuid = cc.uuid)
-        <if test="startTime != null">
-          AND start_time = #{startTime}
+        <if test="status != null">
+            AND status_id =
+            #{status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus}
         </if>
+        <if test="startTime != null">
+            AND start_time = #{startTime}
+        </if>
+        AND NOT EXISTS(SELECT uuid
+        FROM pm_timeline_point tp
+        WHERE tp.colleague_cycle_uuid = cc.uuid)
     </select>
 
     <insert id="saveAll" flushCache="true" parameterType="java.util.Collection">
@@ -85,6 +89,15 @@
             )
         </foreach>
     </insert>
+
+    <update id="changeStatusForColleague" flushCache="true">
+        UPDATE pm_colleague_cycle
+        SET status_id =
+                #{newStatus, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus}
+        WHERE colleague_uuid = #{colleagueUuid}
+          AND status_id =
+              #{oldStatus, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus}
+    </update>
 
     <insert id="create" flushCache="true">
         INSERT INTO pm_colleague_cycle (uuid, colleague_uuid, cycle_uuid, status_id, start_time, end_time, properties)
