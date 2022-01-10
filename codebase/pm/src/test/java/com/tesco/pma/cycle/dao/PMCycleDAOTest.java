@@ -10,6 +10,7 @@ import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.dao.config.PMCycleTypeHandlerConfig;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.fs.domain.File;
+import com.tesco.pma.pagination.RequestQuery;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
@@ -130,6 +131,16 @@ class PMCycleDAOTest extends AbstractDAOTest {
         var actual = dao.read(CYCLE_UUID, null);
         var expectedJson = json.from(metadata);
         assertThat(expectedJson).isEqualToJson(actual.getJsonMetadata());
+    }
+
+    @Test
+    @DataSet(BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml")
+    void getAll() throws Exception {
+        var rq = new RequestQuery();
+        rq.addFilters("status", ACTIVE.getId());
+        var actual = dao.getAll(rq, false);
+        assertThat(actual).singleElement()
+                .returns(CYCLE_UUID, PMCycle::getUuid);
     }
 
     @Test

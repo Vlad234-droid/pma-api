@@ -7,5 +7,6 @@
 
     <includeAll path="1.0.0" relativeToChangelogFile="true"/>
     <includeAll path="integration-data" relativeToChangelogFile="true"/>
+    <includeAll path="performance-testing-data" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

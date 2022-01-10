@@ -87,9 +87,9 @@ AD_ROLE_PEOPLE_TEAM: GG-UK-TescoGlobal-PMA-PPE-PeopleTeam
 AD_ROLE_TALENT_ADMIN: GG-UK-TescoGlobal-PMA-PPE-TalentAdmin
 AD_ROLE_PROCESS_MANAGER: GG-UK-TescoGlobal-PMA-PPE-ProcessManager
 IDENTITY_CLIENT_ID: 69b3ca74-cba0-4efb-a537-7499410de9cc
+PMA_DB_USERNAME: pmadbadmin@euw-ppe-214-pma-postgresql
 PMA_DB_URL: jdbc:postgresql://10.114.147.8:5432/pma-ppe?sslmode=require
 PMA_DB_SCHEMA: pma
 CAMUNDA_DB_SCHEMA: camunda
-PMA_DB_USERNAME: pmadbadmin@euw-ppe-214-pma-postgresql
 SECURITY_ENABLED: true
 env: "ppe/**.dec"
