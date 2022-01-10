@@ -16,8 +16,8 @@ import java.util.List;
 @Configuration
 public class DefaultUserConfiguration {
 
-    @Value("${tesco.application.security.default-user.username:10000000-1000-1000-1000-100000000001}")
-    private String userName;
+    @Value("${tesco.application.security.default-user.uuid:10000000-1000-1000-1000-100000000001}")
+    private String defaultUserUuid;
 
     private static final int DEFAULT_USER_FILTER_PRECEDENCE = 107;
     private static final String[] DEFAULT_USER_URL_PATTERNS = {"/*"};
@@ -41,7 +41,7 @@ public class DefaultUserConfiguration {
 
     private Authentication createDefaultUserAuthentication() {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        var user = new User(userName, "password", grantedAuthorities);
+        var user = new User(defaultUserUuid, "password", grantedAuthorities);
         return new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
     }
 
