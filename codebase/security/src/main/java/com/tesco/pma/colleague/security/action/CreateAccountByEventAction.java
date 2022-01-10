@@ -4,7 +4,6 @@ import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.AccountType;
 import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
-import com.tesco.pma.colleague.security.exception.AccountAlreadyExistsException;
 import com.tesco.pma.colleague.security.service.UserManagementService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.event.Event;
@@ -13,6 +12,7 @@ import com.tesco.pma.event.EventResponse;
 import com.tesco.pma.event.EventResponseSupport;
 import com.tesco.pma.event.controller.Action;
 import com.tesco.pma.event.controller.EventException;
+import com.tesco.pma.exception.AlreadyExistsException;
 import com.tesco.pma.logging.LogFormatter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,9 +61,9 @@ public class CreateAccountByEventAction implements Action {
 
         try {
             userManagementService.createAccount(request);
-        } catch (AccountAlreadyExistsException e) {
+        } catch (AlreadyExistsException e) {
             var params = Map.of(ACCOUNT_NAME_PARAMETER_NAME, request.getName());
-            log.error(LogFormatter.formatMessage(messages, SECURITY_ACCOUNT_ALREADY_EXISTS, params));
+            log.warn(LogFormatter.formatMessage(messages, SECURITY_ACCOUNT_ALREADY_EXISTS, params));
         }
 
     }

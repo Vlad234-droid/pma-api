@@ -9,12 +9,10 @@ import com.tesco.pma.colleague.security.domain.Role;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
 import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
 import com.tesco.pma.colleague.security.domain.request.RoleRequest;
-import com.tesco.pma.colleague.security.exception.AccountAlreadyExistsException;
-import com.tesco.pma.colleague.security.exception.AccountNotFoundException;
-import com.tesco.pma.colleague.security.exception.ColleagueNotFoundException;
-import com.tesco.pma.colleague.security.exception.DuplicatedRoleException;
 import com.tesco.pma.colleague.security.exception.ErrorCodes;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.exception.AlreadyExistsException;
+import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.pagination.RequestQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -220,39 +218,39 @@ public class UserManagementServiceImpl implements UserManagementService {
         return Optional.ofNullable(colleague);
     }
 
-    private ColleagueNotFoundException colleagueNotFoundException(String accountName, String iamId) {
-        return new ColleagueNotFoundException(ErrorCodes.SECURITY_COLLEAGUE_NOT_FOUND.getCode(),
+    private NotFoundException colleagueNotFoundException(String accountName, String iamId) {
+        return new NotFoundException(ErrorCodes.SECURITY_COLLEAGUE_NOT_FOUND.getCode(),
                 messages.getMessage(ErrorCodes.SECURITY_COLLEAGUE_NOT_FOUND,
                         Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName,
                                 IAM_ID_PARAMETER_NAME, iamId)));
     }
 
-    private AccountNotFoundException accountNotFoundException(String accountName) {
-        return new AccountNotFoundException(ErrorCodes.SECURITY_ACCOUNT_NOT_FOUND.getCode(),
+    private NotFoundException accountNotFoundException(String accountName) {
+        return new NotFoundException(ErrorCodes.SECURITY_ACCOUNT_NOT_FOUND.getCode(),
                 messages.getMessage(ErrorCodes.SECURITY_ACCOUNT_NOT_FOUND,
                         Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName)));
     }
 
-    private AccountAlreadyExistsException accountAlreadyExistsException(String accountName) {
-        throw new AccountAlreadyExistsException(ErrorCodes.SECURITY_ACCOUNT_ALREADY_EXISTS.name(),
+    private AlreadyExistsException accountAlreadyExistsException(String accountName) {
+        throw new AlreadyExistsException(ErrorCodes.SECURITY_ACCOUNT_ALREADY_EXISTS.name(),
                 messages.getMessage(ErrorCodes.SECURITY_ACCOUNT_ALREADY_EXISTS,
                         Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName)));
     }
 
-    private AccountAlreadyExistsException accountAlreadyExistsException(DuplicateKeyException exception,
+    private AlreadyExistsException accountAlreadyExistsException(DuplicateKeyException exception,
                                                                         String accountName) {
-        throw new AccountAlreadyExistsException(ErrorCodes.SECURITY_ACCOUNT_ALREADY_EXISTS.name(),
+        throw new AlreadyExistsException(ErrorCodes.SECURITY_ACCOUNT_ALREADY_EXISTS.name(),
                 messages.getMessage(ErrorCodes.SECURITY_ACCOUNT_ALREADY_EXISTS,
-                        Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName)), null, exception);
+                        Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName)), exception);
     }
 
-    private DuplicatedRoleException duplicatedRoleException(DuplicateKeyException exception,
+    private AlreadyExistsException duplicatedRoleException(DuplicateKeyException exception,
                                                             String accountName, Integer roleName) {
-        return new DuplicatedRoleException(ErrorCodes.SECURITY_DUPLICATED_ROLE.name(),
+        return new AlreadyExistsException(ErrorCodes.SECURITY_DUPLICATED_ROLE.name(),
                 messages.getMessage(ErrorCodes.SECURITY_DUPLICATED_ROLE,
                         Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName,
                                 ROLE_NAME_PARAMETER_NAME, roleName
-                        )), null, exception);
+                        )), exception);
     }
 
 }
