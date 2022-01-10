@@ -4,7 +4,7 @@ import com.tesco.pma.api.GeneralDictionaryItem;
 
 import java.util.List;
 
-public interface GeneralDictionaryItemService {
+public interface DictionaryService {
     /**
      *
      * @param dictionary table name

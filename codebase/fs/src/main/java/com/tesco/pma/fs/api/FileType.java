@@ -13,7 +13,9 @@ public enum FileType implements DictionaryItem<Integer> {
     FORM(2, "GUI Form file"),
     PDF(3, "Portable document format file"),
     PPT(4, "PowerPoint presentation file"),
-    XLS(5, "Excel file");
+    XLS(5, "Excel file"),
+    DMN(6, "Decision Matrix file"),
+    DOC(7, "Word document");
 
     private final Integer id;
     private final String description;

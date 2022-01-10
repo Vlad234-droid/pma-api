@@ -2,7 +2,7 @@ package com.tesco.pma.service;
 
 import com.tesco.pma.api.GeneralDictionaryItem;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.dao.GeneralDictionaryItemDAO;
+import com.tesco.pma.dao.DictionaryDAO;
 import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +17,12 @@ import java.util.Map;
 @Service
 @Validated
 @RequiredArgsConstructor
-public class GeneralDictionaryItemServiceImpl implements GeneralDictionaryItemService {
+public class DictionaryServiceImpl implements DictionaryService {
 
     private static final String PARAM_NAME = "paramName";
     private static final String PARAM_VALUE = "paramValue";
 
-    private final GeneralDictionaryItemDAO dao;
+    private final DictionaryDAO dao;
     private final NamedMessageSourceAccessor namedMessageSourceAccessor;
 
     @Override

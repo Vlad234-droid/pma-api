@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface GeneralDictionaryItemDAO {
+public interface DictionaryDAO {
     /**
      * @param dictionary table name
      * @param id identifier

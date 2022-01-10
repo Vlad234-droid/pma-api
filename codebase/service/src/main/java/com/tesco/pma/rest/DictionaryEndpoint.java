@@ -2,7 +2,7 @@ package com.tesco.pma.rest;
 
 
 import com.tesco.pma.api.GeneralDictionaryItem;
-import com.tesco.pma.service.GeneralDictionaryItemService;
+import com.tesco.pma.service.DictionaryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +23,9 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/dictionaries")
-public class GeneralDictionaryItemEndpoint {
+public class DictionaryEndpoint {
 
-    private final GeneralDictionaryItemService service;
+    private final DictionaryService service;
 
     @Operation(summary = "Get dictionary item", tags = {"dictionaries"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the dictionary item")
