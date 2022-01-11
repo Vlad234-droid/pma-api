@@ -1,7 +1,7 @@
 package com.tesco.pma.cycle.api;
 
 import com.tesco.pma.cycle.api.model.PMCycleMetadata;
-import com.tesco.pma.cycle.api.model.PMFormElement;
+import com.tesco.pma.cycle.api.model.PMForm;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,5 +17,5 @@ public class CompositePMCycleMetadataResponse implements Serializable {
     private static final long serialVersionUID = -9187871593097610915L;
 
     PMCycleMetadata metadata;
-    List<PMFormElement> forms;
+    List<PMForm> forms;
 }

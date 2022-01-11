@@ -11,7 +11,7 @@ import com.tesco.pma.cycle.api.CompositePMCycleResponse;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.model.PMCycleMetadata;
-import com.tesco.pma.cycle.api.model.PMFormElement;
+import com.tesco.pma.cycle.api.model.PMForm;
 import com.tesco.pma.cycle.api.model.PMReviewElement;
 import com.tesco.pma.cycle.dao.PMCycleDAO;
 import com.tesco.pma.cycle.exception.ErrorCodes;
@@ -39,7 +39,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -458,15 +457,16 @@ public class PMCycleServiceImpl implements PMCycleService {
         }
     }
 
-    private List<PMFormElement> getFormsForCycleMetadata(PMCycleMetadata metadata) {
+    private List<PMForm> getFormsForCycleMetadata(PMCycleMetadata metadata) {
         return metadata.getCycle().getTimelinePoints().stream()
                 .filter(tpe -> tpe.getType() == REVIEW)
                 .map(review -> ((PMReviewElement) review).getForm())
+                .map(el -> new PMForm(el.getId(), el.getKey(), el.getCode(), null))
                 .map(this::fillFormJson)
                 .collect(Collectors.toList());
     }
 
-    private PMFormElement fillFormJson(PMFormElement form) {
+    private PMForm fillFormJson(PMForm form) {
         try {
             form.setJson(new String(resourceProvider.readFile(UUID.fromString(form.getId())).getFileContent(), UTF_8));
             return form;

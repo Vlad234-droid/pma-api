@@ -1,6 +1,6 @@
 package com.tesco.pma.cycle.api;
 
-import com.tesco.pma.cycle.api.model.PMFormElement;
+import com.tesco.pma.cycle.api.model.PMForm;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,5 +14,5 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CompositePMCycleResponse implements Serializable {
     PMCycle cycle;
-    List<PMFormElement> forms;
+    List<PMForm> forms;
 }
