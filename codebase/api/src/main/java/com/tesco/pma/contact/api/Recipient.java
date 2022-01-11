@@ -3,6 +3,7 @@ package com.tesco.pma.contact.api;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -12,7 +13,9 @@ import java.util.UUID;
  */
 
 @Data
-public class Recipient {
+public class Recipient implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public static final String COLLEAGUE_MESSAGE_TYPE = "colleague";
     private static final String UUID_FORMAT = "trn:tesco:uid:uuid:%s";

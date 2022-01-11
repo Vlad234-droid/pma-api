@@ -2,6 +2,7 @@ package com.tesco.pma.contact.api;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +13,9 @@ import java.util.Map;
  */
 
 @Data
-public class Message {
+public class Message implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private List<Recipient> recipients;
     private Template template;
