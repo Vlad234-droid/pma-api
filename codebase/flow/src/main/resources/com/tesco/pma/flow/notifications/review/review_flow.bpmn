@@ -21,11 +21,11 @@
       <bpmn:outgoing>Flow_007nzmt</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_09nkjae" messageRef="Message_1r3tvid" />
     </bpmn:startEvent>
-    <bpmn:serviceTask id="sendNotification" name="Send&#10;notification" camunda:class="com.tesco.pma.flow.handlers.SendNotification">
+    <bpmn:serviceTask id="sendNotification" name="Send&#10;notification" camunda:class="com.tesco.pma.flow.notifications.handlers.SendNotificationHandler">
       <bpmn:incoming>Flow_0yqr2fm</bpmn:incoming>
       <bpmn:outgoing>Flow_0qy25ym</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="initReviewNotification" name="Init flow variables" camunda:class="com.tesco.pma.flow.handlers.InitReviewNotificationHandler">
+    <bpmn:serviceTask id="initReviewNotification" name="Init flow variables" camunda:class="com.tesco.pma.flow.notifications.handlers.InitReviewNotificationHandler">
       <bpmn:incoming>Flow_0ridoso</bpmn:incoming>
       <bpmn:incoming>Flow_0l6qkz5</bpmn:incoming>
       <bpmn:incoming>Flow_1k5x4ta</bpmn:incoming>

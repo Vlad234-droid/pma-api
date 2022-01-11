@@ -1,4 +1,4 @@
-package com.tesco.pma.flow.handlers;
+package com.tesco.pma.flow.notifications.handlers;
 
 import org.springframework.stereotype.Component;
 

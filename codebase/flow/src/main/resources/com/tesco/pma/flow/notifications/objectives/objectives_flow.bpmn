@@ -17,7 +17,7 @@
       <bpmn:outgoing>Flow_1b1yg7z</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1w6sete" messageRef="Message_1hcfszu" />
     </bpmn:startEvent>
-    <bpmn:serviceTask id="sendNotification" name="Send&#10;notification" camunda:class="com.tesco.pma.flow.handlers.SendNotification">
+    <bpmn:serviceTask id="sendNotification" name="Send&#10;notification" camunda:class="com.tesco.pma.flow.notifications.handlers.SendNotificationHandler">
       <bpmn:incoming>Flow_1f0drgm</bpmn:incoming>
       <bpmn:outgoing>Flow_0j8eifc</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -25,7 +25,7 @@
       <bpmn:incoming>Flow_0j8eifc</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0j8eifc" sourceRef="sendNotification" targetRef="Event_14zz4ju" />
-    <bpmn:serviceTask id="InitObjectivesNotifications" name="Init flow variables" camunda:class="com.tesco.pma.flow.handlers.InitObjectiveNotificationHandler">
+    <bpmn:serviceTask id="InitObjectivesNotifications" name="Init flow variables" camunda:class="com.tesco.pma.flow.notifications.handlers.InitObjectiveNotificationHandler">
       <bpmn:incoming>Flow_1njc0fu</bpmn:incoming>
       <bpmn:incoming>Flow_0bua9yo</bpmn:incoming>
       <bpmn:incoming>Flow_0ayegec</bpmn:incoming>

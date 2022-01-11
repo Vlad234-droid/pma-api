@@ -1,10 +1,10 @@
-package com.tesco.pma.flow.handlers;
+package com.tesco.pma.flow.notifications.handlers;
 
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.flow.FlowParameters;
-import com.tesco.pma.service.SendNotificationService;
+import com.tesco.pma.flow.notifications.service.SendNotificationService;
 import com.tesco.pma.tip.service.TipService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ import java.util.UUID;
 @Component
 @AllArgsConstructor
 //@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class SendNotification extends CamundaAbstractFlowHandler {
+public class SendNotificationHandler extends CamundaAbstractFlowHandler {
 
     private final List<SendNotificationService> senders;
     private final TipService tipService;

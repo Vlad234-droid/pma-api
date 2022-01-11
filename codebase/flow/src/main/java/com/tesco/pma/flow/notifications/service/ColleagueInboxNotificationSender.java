@@ -1,4 +1,4 @@
-package com.tesco.pma.service;
+package com.tesco.pma.flow.notifications.service;
 
 import com.tesco.pma.colleague.inbox.web.dto.CreateMessageRequestDto;
 import com.tesco.pma.colleague.inbox.web.dto.MessageCategory;

@@ -1,4 +1,4 @@
-package com.tesco.pma.flow;
+package com.tesco.pma.flow.notifications;
 
 import com.tesco.pma.bpm.camunda.flow.AbstractCamundaSpringBootTest;
 import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
@@ -13,7 +13,13 @@ import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.event.Event;
 import com.tesco.pma.event.EventSupport;
-import com.tesco.pma.flow.handlers.*;
+import com.tesco.pma.flow.FlowParameters;
+import com.tesco.pma.flow.notifications.handlers.DefaultInitNotificationHandler;
+import com.tesco.pma.flow.notifications.handlers.InitCycleNotificationHandler;
+import com.tesco.pma.flow.notifications.handlers.InitObjectiveNotificationHandler;
+import com.tesco.pma.flow.notifications.handlers.InitReviewNotificationHandler;
+import com.tesco.pma.flow.notifications.handlers.InitTipsNotificationHandler;
+import com.tesco.pma.flow.notifications.handlers.SendNotificationHandler;
 import com.tesco.pma.review.domain.TimelinePoint;
 import com.tesco.pma.service.contact.client.ContactApiClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,7 +79,7 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
     private InitTipsNotificationHandler initTipsNotificationHandler;
 
     @MockBean(name = "sendNotification")
-    private SendNotification sendNotification;
+    private SendNotificationHandler sendNotification;
 
     @MockBean
     private ContactApiClient contactApiClient;
