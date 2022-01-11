@@ -462,8 +462,8 @@ public class PMCycleServiceImpl implements PMCycleService {
         return metadata.getCycle().getTimelinePoints().stream()
                 .filter(tpe -> tpe.getType() == REVIEW)
                 .map(review -> ((PMReviewElement) review).getForm())
-                        .map(this::fillFormJson)
-                        .collect(Collectors.toList());
+                .map(this::fillFormJson)
+                .collect(Collectors.toList());
     }
 
     private PMFormElement fillFormJson(PMFormElement form) {

@@ -37,11 +37,11 @@ public class FsResourceProvider implements ResourceProvider {
 
     @Override
     public File readFile(String resourcePath, String resourceName) {
-        return fileService.get(resourcePath, resourceName, false);
+        return fileService.get(resourcePath, resourceName, true);
     }
 
     @Override
     public File readFile(UUID uuid) {
-        return fileService.get(uuid, false);
+        return fileService.get(uuid, true);
     }
 }
