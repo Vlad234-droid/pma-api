@@ -1,14 +1,14 @@
 package com.tesco.pma.pdp;
 
 import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
-import java.util.Map;
-
-@Component
-@ConfigurationProperties(prefix = "tesco.application.pdp.form.key")
+@Configuration
+@EnableConfigurationProperties
 @Data
 public class PDPFormProperties {
-    private Map<String, String> pdpProperties;
+    @Value("${tesco.application.pdp.form.key:pdp.form}")
+    private String pdpFormKey;
 }

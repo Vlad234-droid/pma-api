@@ -154,15 +154,14 @@ public class PDPEndpoint {
 
     private PMFormElement getPMFormElement() {
         String formJson;
-        var formPath = pdpFormProperties.getPdpProperties().get(KEY);
-
+        var pdpFormKey = pdpFormProperties.getPdpFormKey();
         try {
-            formJson = resourceProvider.resourceToString(KEY, formPath);
+            formJson = resourceProvider.resourceToString(pdpFormKey, KEY);
         } catch (IOException e) {
-            throw parseException(PM_PARSE_NOT_FOUND, Map.of("key", KEY, "value", formPath), KEY, e);
+            throw parseException(PM_PARSE_NOT_FOUND, Map.of("key", KEY, "value", pdpFormKey), KEY, e);
         }
 
-        var formName = getFormName(formPath);
+        var formName = getFormName(pdpFormKey);
         return new PMFormElement(KEY, formName, formJson);
     }
 
