@@ -34,7 +34,7 @@ public class ReviewNotificationsTest {
     private DmnDecision decision;
 
     @BeforeEach
-    public void init() throws IOException {
+    void init() throws IOException {
         dmnEngine = DmnEngineConfiguration
                 .createDefaultDmnEngineConfiguration()
                 .buildEngine();
@@ -45,45 +45,45 @@ public class ReviewNotificationsTest {
     }
 
     @Test
-    public void sendTest() {
+    void sendTest() {
 
-        String attrName = "Attr name";
+        var attrName = "Attr name";
         var colleagueProfile = createColleagueProfile(null, WorkLevel.WL1, Map.of(attrName, "true"));
 
-        VariableMap variables = new VariableMapImpl();
+        var variables = new VariableMapImpl();
         variables.putValue(FlowParameters.EVENT_NAME.name(), PM_REVIEW_SUBMITTED);
         variables.putValue(FlowParameters.REVIEW_TYPE.name(), PMReviewType.MYR.getCode());
         variables.putValue(FlowParameters.IS_MANAGER.name(), true);
         variables.putValue(FlowParameters.PROFILE_ATTRIBUTE_NAME.name(), attrName);
         variables.putValue(FlowParameters.COLLEAGUE_PROFILE.name(), colleagueProfile);
 
-        var result = dmnEngine.evaluateDecisionTable(decision, variables);
+        var result = dmnEngine.evaluateDecisionTable(decision, (VariableMap) variables);
 
         assertTrue((Boolean) result.getFirstResult().getEntry(FlowParameters.SEND.name()));
     }
 
     @Test
-    public void sendTestWhenAttrNotExist() {
+    void sendTestWhenAttrNotExist() {
         var colleagueProfile = createColleagueProfile(null, WorkLevel.WL1, Map.of("Some attr name", "false"));
 
-        VariableMap variables = new VariableMapImpl();
+        var variables = new VariableMapImpl();
         variables.putValue(FlowParameters.EVENT_NAME.name(), PM_REVIEW_SUBMITTED);
         variables.putValue(FlowParameters.REVIEW_TYPE.name(), PMReviewType.MYR.getCode());
         variables.putValue(FlowParameters.IS_MANAGER.name(), true);
         variables.putValue(FlowParameters.PROFILE_ATTRIBUTE_NAME.name(), "Attr name");
         variables.putValue(FlowParameters.COLLEAGUE_PROFILE.name(), colleagueProfile);
 
-        var result = dmnEngine.evaluateDecisionTable(decision, variables);
+        var result = dmnEngine.evaluateDecisionTable(decision, (VariableMap) variables);
 
         assertTrue((Boolean) result.getFirstResult().getEntry(FlowParameters.SEND.name()));
     }
 
     @Test
-    public void sendTestWhenAttrsNull() {
+    void sendTestWhenAttrsNull() {
 
-        ColleagueProfile colleagueProfile = new ColleagueProfile();
+        var colleagueProfile = new ColleagueProfile();
 
-        VariableMap variables = new VariableMapImpl();
+        var variables = new VariableMapImpl();
         variables.putValue(FlowParameters.EVENT_NAME.name(), PM_REVIEW_SUBMITTED);
         variables.putValue(FlowParameters.REVIEW_TYPE.name(), PMReviewType.MYR.getCode());
         variables.putValue(FlowParameters.IS_MANAGER.name(), true);
@@ -91,7 +91,7 @@ public class ReviewNotificationsTest {
         variables.putValue(FlowParameters.COLLEAGUE_PROFILE.name(), colleagueProfile);
         variables.putValue(FlowParameters.COLLEAGUE_WORK_LEVEL.name(), WorkLevel.WL1.name());
 
-        var result = dmnEngine.evaluateDecisionTable(decision, variables);
+        var result = dmnEngine.evaluateDecisionTable(decision, (VariableMap) variables);
 
         assertTrue((Boolean) result.getFirstResult().getEntry(FlowParameters.SEND.name()));
     }
@@ -104,7 +104,7 @@ public class ReviewNotificationsTest {
         colleague.setColleagueUUID(colleagueUUID);
         colleague.setWorkRelationships(List.of(wr));
 
-        ColleagueProfile colleagueProfile = new ColleagueProfile();
+        var colleagueProfile = new ColleagueProfile();
         colleagueProfile.setColleague(colleague);
         colleagueProfile.setProfileAttributes(new ArrayList<>());
         attrs.forEach((k, v) -> colleagueProfile.getProfileAttributes().add(createAttr(k, v)));
