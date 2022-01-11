@@ -13,6 +13,8 @@ import java.io.Serializable;
 @Data
 public class Template implements Serializable {
 
+    private static final long serialVersionUID = 178480864034144763L;
+
     private String version;
     private String language;
 

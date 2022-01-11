@@ -1,4 +1,4 @@
-package com.tesco.colleague.inbox.web.dto;
+package com.tesco.pma.colleague.inbox.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -16,7 +16,7 @@ import java.util.UUID;
 @Setter
 public class RecipientDto implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 5547882733648421793L;
 
     @JsonProperty("recipientUuid")
     private UUID recipientUuid;

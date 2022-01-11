@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ContractType implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -6523526160893462462L;
 
     String sourceCode;
     String sourceName;

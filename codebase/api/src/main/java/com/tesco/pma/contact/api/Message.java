@@ -15,7 +15,7 @@ import java.util.Map;
 @Data
 public class Message implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -2786609981865544110L;
 
     private List<Recipient> recipients;
     private Template template;

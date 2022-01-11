@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Data
 public class Profile implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -11139684158912855L;
 
     private String title;
 

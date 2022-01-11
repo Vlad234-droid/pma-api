@@ -16,7 +16,7 @@ import java.util.UUID;
 @SuppressWarnings("PMD.TooManyFields")
 public class WorkRelationship implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 8091059063936530669L;
 
     public enum WorkingStatus {
         ACTIVE, INACTIVE, SUSPENDED, INACTIVE_PAID

@@ -15,7 +15,7 @@ import java.util.UUID;
 @Data
 public class Recipient implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1913830987518689523L;
 
     public static final String COLLEAGUE_MESSAGE_TYPE = "colleague";
     private static final String UUID_FORMAT = "trn:tesco:uid:uuid:%s";

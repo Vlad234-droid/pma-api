@@ -1,4 +1,4 @@
-package com.tesco.colleague.inbox.web.dto;
+package com.tesco.pma.colleague.inbox.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

@@ -12,7 +12,7 @@ import java.util.UUID;
 @Data
 public class Colleague implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -4462033047515332131L;
 
     public enum ColleagueType {
         EMPLOYEE,

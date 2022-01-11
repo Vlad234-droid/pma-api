@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Effectivity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2399263549373220659L;
 
     LocalDate from;
     LocalDate to;

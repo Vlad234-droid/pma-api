@@ -11,7 +11,7 @@ import java.io.Serializable;
 @SuppressWarnings("PMD.ShortClassName")
 public class Job implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -6154653887246229480L;
 
     String id;
     String code;

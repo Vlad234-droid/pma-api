@@ -7,7 +7,7 @@ import java.io.Serializable;
 @Data
 public class IamSourceSystem implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -5962142297883091083L;
 
     private String id;
     private String name;

@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ServiceDates implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 4797138225709404661L;
 
     LocalDate hireDate;
     LocalDate leavingDate;
