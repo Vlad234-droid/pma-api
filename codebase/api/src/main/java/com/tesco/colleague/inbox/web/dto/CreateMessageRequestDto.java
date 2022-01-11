@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,9 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class CreateMessageRequestDto {
+public class CreateMessageRequestDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @JsonProperty("id")
     private UUID id;

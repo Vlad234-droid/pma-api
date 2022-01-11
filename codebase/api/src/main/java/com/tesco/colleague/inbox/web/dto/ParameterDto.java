@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -13,7 +14,9 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class ParameterDto {
+public class ParameterDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @JsonProperty("name")
     private String name;
