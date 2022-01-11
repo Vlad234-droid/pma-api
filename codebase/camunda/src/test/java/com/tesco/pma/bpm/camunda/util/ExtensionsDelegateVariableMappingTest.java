@@ -8,9 +8,10 @@ import org.junit.jupiter.api.io.TempDir;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Properties;
 
@@ -52,7 +53,7 @@ class ExtensionsDelegateVariableMappingTest extends AbstractCamundaSpringBootTes
                 .activity(CALL_MYR).executedOnce();
 
         Map.of(EYR_EXP_FILE, EYR_FILE, MYR_EXP_FILE, MYR_FILE).forEach((expected, actual) -> {
-            checkProperties(loadProperties(expected), loadProperties(new File(tempPath, actual)));
+            checkProperties(loadProperties(expected), loadProperties(Paths.get(tempDir.toString(), actual)));
         });
     }
 
@@ -66,9 +67,9 @@ class ExtensionsDelegateVariableMappingTest extends AbstractCamundaSpringBootTes
         return props;
     }
 
-    private Properties loadProperties(File file) {
+    private Properties loadProperties(Path path) {
         var props = new Properties();
-        try (var fi = new FileInputStream(file)) {
+        try (var fi = Files.newBufferedReader(path, StandardCharsets.ISO_8859_1)) {
             props.load(fi);
         } catch (Exception e) {
             Assertions.fail(e);

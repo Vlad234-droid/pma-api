@@ -15,14 +15,15 @@ import org.camunda.bpm.model.xml.instance.ModelElementInstance;
  * 2022-01-10 20:25
  */
 public class ExtensionsDelegateVariableMapping implements DelegateVariableMapping {
-    @Override
-    public void mapInputVariables(DelegateExecution superExecution, VariableMap subVariables) {
-        mapInputVariables(superExecution, subVariables, superExecution.getBpmnModelElementInstance());
-    }
 
     @Override
     public void mapOutputVariables(DelegateExecution superExecution, VariableScope subInstance) {
         // does not implement
+    }
+
+    @Override
+    public void mapInputVariables(DelegateExecution superExecution, VariableMap subVariables) {
+        mapInputVariables(superExecution, subVariables, superExecution.getBpmnModelElementInstance());
     }
 
     private void mapInputVariables(final DelegateExecution superExecution, final VariableMap subVariables,
