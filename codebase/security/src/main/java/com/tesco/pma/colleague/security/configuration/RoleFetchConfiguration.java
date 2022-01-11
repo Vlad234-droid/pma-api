@@ -4,7 +4,6 @@ import com.tesco.pma.colleague.security.rolefetch.RoleFetchFilter;
 import com.tesco.pma.colleague.security.rolefetch.RoleFetchService;
 import com.tesco.pma.colleague.security.rolefetch.RolesMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +16,7 @@ import java.util.Map;
 @Configuration
 public class RoleFetchConfiguration {
 
-    private static final int ROLE_FETCH_FILTER_PRECEDENCE = 103;
+    private static final int ROLE_FETCH_FILTER_PRECEDENCE = 113;
     private static final String[] ROLE_FETCH_URL_PATTERNS = {"/*"};
 
 
@@ -27,7 +26,6 @@ public class RoleFetchConfiguration {
      * @return FilterRegistrationBean
      */
     @Bean
-    @ConditionalOnProperty(name = "tesco.application.security.enabled", havingValue = "true", matchIfMissing = true)
     public FilterRegistrationBean<RoleFetchFilter> roleFetchFilter(RoleFetchService roleFetchService) {
         FilterRegistrationBean<RoleFetchFilter> filterRegistration = new FilterRegistrationBean<>();
         filterRegistration.setName("pmaRoleFetchFilter");
