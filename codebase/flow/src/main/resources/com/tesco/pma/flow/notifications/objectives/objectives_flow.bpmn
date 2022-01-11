@@ -65,37 +65,35 @@
     <bpmn:sequenceFlow id="Flow_0ayegec" sourceRef="Event_0edocze" targetRef="InitObjectivesNotifications" />
     <bpmn:sequenceFlow id="Flow_1b1yg7z" sourceRef="Event_0hgts8l" targetRef="InitObjectivesNotifications" />
     <bpmn:textAnnotation id="TextAnnotation_0jrtxxh">
-      <bpmn:text>eventName: ORGANISATION_OBJECTIVES
-colleagueUuid
-</bpmn:text>
+      <bpmn:text>eventName: NF_ORGANISATION_OBJECTIVES
+colleagueUuid</bpmn:text>
     </bpmn:textAnnotation>
-    <bpmn:association id="Association_1q6odfb" sourceRef="TextAnnotation_0jrtxxh" targetRef="Event_0czaxhc" />
     <bpmn:textAnnotation id="TextAnnotation_0d1x3ma">
-      <bpmn:text>eventName: LM_OBJECTIVES_APPROVED_FOR_SHARING
-colleagueUuid
-</bpmn:text>
+      <bpmn:text>eventName: NF_OBJECTIVES_APPROVED_FOR_SHARING
+colleagueUuid</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0m8fcdt" sourceRef="TextAnnotation_0d1x3ma" targetRef="Event_174jgbz" />
     <bpmn:textAnnotation id="TextAnnotation_0ku9g97">
-      <bpmn:text>eventName: OBJECTIVE_SHARING_START
+      <bpmn:text>eventName: NF_OBJECTIVE_SHARING_START
 colleagueUuid</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1nu0hv5" sourceRef="TextAnnotation_0ku9g97" targetRef="Event_0edocze" />
     <bpmn:textAnnotation id="TextAnnotation_12g3y3h">
-      <bpmn:text>eventName: OBJECTIVE_SHARING_END
+      <bpmn:text>eventName: NF_OBJECTIVE_SHARING_END
 colleagueUuid</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1psab3n" sourceRef="TextAnnotation_12g3y3h" targetRef="Event_0hgts8l" />
+    <bpmn:association id="Association_1q6odfb" sourceRef="TextAnnotation_0jrtxxh" targetRef="Event_0czaxhc" />
   </bpmn:process>
   <bpmn:message id="Message_0we3leq" name="PM_REVIEW_BEFORE_START" />
   <bpmn:message id="Message_1mdskp7" name="PM_REVIEW_APPROVED" />
   <bpmn:message id="Message_0hpbctt" name="PM_REVIEW_DECLINED" />
   <bpmn:message id="Message_1r3tvid" name="PM_REVIEW_BEFORE_END" />
   <bpmn:message id="Message_1wv5ub0" name="PM_REVIEW_SUBMITTED" />
-  <bpmn:message id="Message_0hqp95b" name="ORGANISATION_OBJECTIVES" />
-  <bpmn:message id="Message_0dx8vtc" name="OBJECTIVES_APPROVED_FOR_SHARING" />
-  <bpmn:message id="Message_0r6w1af" name="OBJECTIVE_SHARING_START" />
-  <bpmn:message id="Message_1hcfszu" name="OBJECTIVE_SHARING_END" />
+  <bpmn:message id="Message_0hqp95b" name="NF_ORGANISATION_OBJECTIVES" />
+  <bpmn:message id="Message_0dx8vtc" name="NF_OBJECTIVES_APPROVED_FOR_SHARING" />
+  <bpmn:message id="Message_0r6w1af" name="NF_OBJECTIVE_SHARING_START" />
+  <bpmn:message id="Message_1hcfszu" name="NF_OBJECTIVE_SHARING_END" />
   <bpmn:message id="Message_1q91eml" name="FEEDBACK_GIVEN" />
   <bpmn:message id="Message_0m7hbj4" name="FEEDBACK_REQUESTS_RESPONDED" />
   <bpmn:message id="Message_0d37snm" name="FEEDBACK_REQUESTED" />
@@ -108,56 +106,9 @@ colleagueUuid</bpmn:text>
   <bpmn:message id="Message_1kt741c" name="TIPS_RECEIVED" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="objectives_notifications">
-      <bpmndi:BPMNShape id="TextAnnotation_0jrtxxh_di" bpmnElement="TextAnnotation_0jrtxxh">
-        <dc:Bounds x="149" y="80" width="240" height="68" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0d1x3ma_di" bpmnElement="TextAnnotation_0d1x3ma">
-        <dc:Bounds x="149" y="156" width="240" height="82" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0ku9g97_di" bpmnElement="TextAnnotation_0ku9g97">
-        <dc:Bounds x="150" y="243" width="240" height="54" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_12g3y3h_di" bpmnElement="TextAnnotation_12g3y3h">
-        <dc:Bounds x="150" y="323" width="240" height="54" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_06581ww_di" bpmnElement="Flow_06581ww">
-        <di:waypoint x="680" y="197" />
-        <di:waypoint x="710" y="197" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0rite9h_di" bpmnElement="Flow_0rite9h">
-        <di:waypoint x="810" y="197" />
-        <di:waypoint x="840" y="197" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0dnf68u_di" bpmnElement="Flow_0dnf68u">
-        <di:waypoint x="940" y="197" />
-        <di:waypoint x="1015" y="197" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_039vr1e_di" bpmnElement="Flow_039vr1e">
-        <di:waypoint x="1065" y="197" />
-        <di:waypoint x="1150" y="197" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_03g7v9z_di" bpmnElement="Flow_03g7v9z">
-        <di:waypoint x="1040" y="222" />
-        <di:waypoint x="1040" y="307" />
-        <di:waypoint x="1152" y="307" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0j8eifc_di" bpmnElement="Flow_0j8eifc">
-        <di:waypoint x="1420" y="197" />
-        <di:waypoint x="1502" y="197" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1f0drgm_di" bpmnElement="Flow_1f0drgm">
-        <di:waypoint x="1250" y="197" />
-        <di:waypoint x="1320" y="197" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1njc0fu_di" bpmnElement="Flow_1njc0fu">
-        <di:waypoint x="458" y="110" />
-        <di:waypoint x="519" y="110" />
-        <di:waypoint x="519" y="197" />
-        <di:waypoint x="580" y="197" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0bua9yo_di" bpmnElement="Flow_0bua9yo">
-        <di:waypoint x="458" y="190" />
-        <di:waypoint x="519" y="190" />
+      <bpmndi:BPMNEdge id="Flow_1b1yg7z_di" bpmnElement="Flow_1b1yg7z">
+        <di:waypoint x="458" y="350" />
+        <di:waypoint x="519" y="350" />
         <di:waypoint x="519" y="197" />
         <di:waypoint x="580" y="197" />
       </bpmndi:BPMNEdge>
@@ -167,11 +118,46 @@ colleagueUuid</bpmn:text>
         <di:waypoint x="519" y="197" />
         <di:waypoint x="580" y="197" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1b1yg7z_di" bpmnElement="Flow_1b1yg7z">
-        <di:waypoint x="458" y="350" />
-        <di:waypoint x="519" y="350" />
+      <bpmndi:BPMNEdge id="Flow_0bua9yo_di" bpmnElement="Flow_0bua9yo">
+        <di:waypoint x="458" y="190" />
+        <di:waypoint x="519" y="190" />
         <di:waypoint x="519" y="197" />
         <di:waypoint x="580" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1njc0fu_di" bpmnElement="Flow_1njc0fu">
+        <di:waypoint x="458" y="110" />
+        <di:waypoint x="519" y="110" />
+        <di:waypoint x="519" y="197" />
+        <di:waypoint x="580" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1f0drgm_di" bpmnElement="Flow_1f0drgm">
+        <di:waypoint x="1250" y="197" />
+        <di:waypoint x="1320" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03g7v9z_di" bpmnElement="Flow_03g7v9z">
+        <di:waypoint x="1040" y="222" />
+        <di:waypoint x="1040" y="307" />
+        <di:waypoint x="1152" y="307" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_039vr1e_di" bpmnElement="Flow_039vr1e">
+        <di:waypoint x="1065" y="197" />
+        <di:waypoint x="1150" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dnf68u_di" bpmnElement="Flow_0dnf68u">
+        <di:waypoint x="940" y="197" />
+        <di:waypoint x="1015" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rite9h_di" bpmnElement="Flow_0rite9h">
+        <di:waypoint x="810" y="197" />
+        <di:waypoint x="840" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06581ww_di" bpmnElement="Flow_06581ww">
+        <di:waypoint x="680" y="197" />
+        <di:waypoint x="710" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0j8eifc_di" bpmnElement="Flow_0j8eifc">
+        <di:waypoint x="1420" y="197" />
+        <di:waypoint x="1502" y="197" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0lcl83k_di" bpmnElement="Event_0czaxhc">
         <dc:Bounds x="422" y="92" width="36" height="36" />
@@ -184,6 +170,12 @@ colleagueUuid</bpmn:text>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0hgts8l_di" bpmnElement="Event_0hgts8l">
         <dc:Bounds x="422" y="332" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1nf3c86_di" bpmnElement="sendNotification">
+        <dc:Bounds x="1320" y="157" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_14zz4ju_di" bpmnElement="Event_14zz4ju">
+        <dc:Bounds x="1502" y="179" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0tuwqbq_di" bpmnElement="InitObjectivesNotifications">
         <dc:Bounds x="580" y="157" width="100" height="80" />
@@ -203,11 +195,17 @@ colleagueUuid</bpmn:text>
       <bpmndi:BPMNShape id="Event_1g3cniy_di" bpmnElement="Event_1g3cniy">
         <dc:Bounds x="1152" y="289" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1nf3c86_di" bpmnElement="sendNotification">
-        <dc:Bounds x="1320" y="157" width="100" height="80" />
+      <bpmndi:BPMNShape id="TextAnnotation_0jrtxxh_di" bpmnElement="TextAnnotation_0jrtxxh">
+        <dc:Bounds x="149" y="80" width="240" height="54" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_14zz4ju_di" bpmnElement="Event_14zz4ju">
-        <dc:Bounds x="1502" y="179" width="36" height="36" />
+      <bpmndi:BPMNShape id="TextAnnotation_0d1x3ma_di" bpmnElement="TextAnnotation_0d1x3ma">
+        <dc:Bounds x="149" y="156" width="240" height="68" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0ku9g97_di" bpmnElement="TextAnnotation_0ku9g97">
+        <dc:Bounds x="150" y="243" width="240" height="54" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_12g3y3h_di" bpmnElement="TextAnnotation_12g3y3h">
+        <dc:Bounds x="150" y="323" width="240" height="54" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_1q6odfb_di" bpmnElement="Association_1q6odfb">
         <di:waypoint x="389" y="109" />

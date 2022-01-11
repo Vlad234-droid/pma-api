@@ -13,7 +13,7 @@
       <output id="Output_1" label="Template ID" name="CONTACT_TEMPLATE_ID" typeRef="string" biodi:width="367" />
       <rule id="DecisionRule_0sdxyif">
         <inputEntry id="UnaryTests_0edx4us">
-          <text>"FEEDBACK_GIVEN"</text>
+          <text>"NF_FEEDBACK_GIVEN"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0g7kgmp">
           <text>"00000000-0000-0000-0000-000000000000"</text>
@@ -21,7 +21,7 @@
       </rule>
       <rule id="DecisionRule_07cu6sa">
         <inputEntry id="UnaryTests_04f3m25">
-          <text>"FEEDBACK_REQUESTS_RESPONDED"</text>
+          <text>"NF_FEEDBACK_REQUESTS_RESPONDED"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0y2555a">
           <text>"00000000-0000-0000-0000-000000000000"</text>
@@ -29,7 +29,7 @@
       </rule>
       <rule id="DecisionRule_1b97dnw">
         <inputEntry id="UnaryTests_1wssqqc">
-          <text>"FEEDBACK_REQUESTED"</text>
+          <text>"NF_FEEDBACK_REQUESTED"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0y973tf">
           <text>"00000000-0000-0000-0000-000000000000"</text>

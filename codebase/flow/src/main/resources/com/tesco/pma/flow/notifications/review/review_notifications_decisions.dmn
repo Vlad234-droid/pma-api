@@ -46,7 +46,7 @@ and attr.getValue() = "true",
       <output id="Output_1" label="Send" name="SEND" typeRef="boolean" biodi:width="150" />
       <rule id="DecisionRule_0elotx5">
         <inputEntry id="UnaryTests_0puabg3">
-          <text>"PM_REVIEW_BEFORE_START"</text>
+          <text>"NF_PM_REVIEW_BEFORE_START"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1i4tjw3">
           <text>"MYR"</text>
@@ -63,7 +63,7 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_122xnsy">
         <inputEntry id="UnaryTests_08p0h32">
-          <text>"PM_REVIEW_SUBMITTED"</text>
+          <text>"NF_PM_REVIEW_SUBMITTED"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_135h9gi">
           <text>"MYR"</text>
@@ -80,7 +80,7 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_117lcnh">
         <inputEntry id="UnaryTests_15zqaq3">
-          <text>"PM_REVIEW_APPROVED"</text>
+          <text>"NF_PM_REVIEW_APPROVED"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1nk1zbq">
           <text>"MYR"</text>
@@ -97,7 +97,7 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_0eawc4x">
         <inputEntry id="UnaryTests_0tammby">
-          <text>"PM_REVIEW_DECLINED"</text>
+          <text>"NF_PM_REVIEW_DECLINED"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_06m3d5i">
           <text>"MYR"</text>
@@ -114,7 +114,7 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_0d9dsnr">
         <inputEntry id="UnaryTests_1aejvad">
-          <text>"PM_REVIEW_BEFORE_END"</text>
+          <text>"NF_PM_REVIEW_BEFORE_END"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0fkphmm">
           <text>"MYR"</text>
@@ -131,7 +131,7 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_1ulk2bx">
         <inputEntry id="UnaryTests_0nno71t">
-          <text>"PM_REVIEW_BEFORE_START"</text>
+          <text>"NF_PM_REVIEW_BEFORE_START"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0c5wksc">
           <text>"EYR"</text>
@@ -148,7 +148,7 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_0htd5ki">
         <inputEntry id="UnaryTests_0jhgh9x">
-          <text>"PM_REVIEW_SUBMITTED"</text>
+          <text>"NF_PM_REVIEW_SUBMITTED"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_11alljx">
           <text>"EYR"</text>
@@ -165,7 +165,7 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_0v5108s">
         <inputEntry id="UnaryTests_1cilzkb">
-          <text>"PM_REVIEW_APPROVED"</text>
+          <text>"NF_PM_REVIEW_APPROVED"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0tpcpyr">
           <text>"EYR"</text>
@@ -182,7 +182,7 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_01ol67b">
         <inputEntry id="UnaryTests_19frjxy">
-          <text>"PM_REVIEW_DECLINED"</text>
+          <text>"NF_PM_REVIEW_DECLINED"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0hmj3c0">
           <text>"EYR"</text>
@@ -199,7 +199,7 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_1xbw130">
         <inputEntry id="UnaryTests_0aaf1by">
-          <text>"PM_REVIEW_BEFORE_END"</text>
+          <text>"NF_PM_REVIEW_BEFORE_END"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0p8h424">
           <text>"EYR"</text>
@@ -216,7 +216,7 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_1n9rprq">
         <inputEntry id="UnaryTests_0h6z98a">
-          <text>"PM_REVIEW_SUBMITTED"</text>
+          <text>"NF_PM_REVIEW_SUBMITTED"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_09krgrr">
           <text>"OBJECTIVE"</text>
@@ -233,7 +233,7 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_15x3tsr">
         <inputEntry id="UnaryTests_0h260de">
-          <text>"PM_REVIEW_APPROVED"</text>
+          <text>"NF_PM_REVIEW_APPROVED"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0990r3n">
           <text>"OBJECTIVE"</text>
@@ -250,7 +250,7 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_169ja8y">
         <inputEntry id="UnaryTests_04xdait">
-          <text>"PM_REVIEW_DECLINED"</text>
+          <text>"NF_PM_REVIEW_DECLINED"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0dvrmm2">
           <text>"OBJECTIVE"</text>

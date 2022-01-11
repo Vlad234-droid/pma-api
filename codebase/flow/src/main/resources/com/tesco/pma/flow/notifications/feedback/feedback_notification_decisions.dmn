@@ -36,7 +36,7 @@ and attr.getValue() = "true",
       <output id="Output_1" label="Send" name="SEND" typeRef="boolean" biodi:width="150" />
       <rule id="DecisionRule_10cnzfo">
         <inputEntry id="UnaryTests_1uhx4w3">
-          <text>"FEEDBACK_GIVEN"</text>
+          <text>"NF_FEEDBACK_GIVEN"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1r43vup">
           <text>true</text>
@@ -47,7 +47,7 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_0dar7ec">
         <inputEntry id="UnaryTests_05tlgjt">
-          <text>"FEEDBACK_REQUESTS_RESPONDED"</text>
+          <text>"NF_FEEDBACK_REQUESTS_RESPONDED"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1yf1vtp">
           <text>true</text>
@@ -58,7 +58,7 @@ and attr.getValue() = "true",
       </rule>
       <rule id="DecisionRule_0eitxod">
         <inputEntry id="UnaryTests_1978hrv">
-          <text>"FEEDBACK_REQUESTED"</text>
+          <text>"NF_FEEDBACK_REQUESTED"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_10qishv">
           <text>true</text>

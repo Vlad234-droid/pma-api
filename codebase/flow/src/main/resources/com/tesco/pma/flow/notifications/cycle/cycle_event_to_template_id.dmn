@@ -5,7 +5,7 @@
       <requiredInput href="#InputData_1g0u5hf" />
     </informationRequirement>
     <decisionTable id="DecisionTable_1dpms3v" hitPolicy="FIRST">
-      <input id="InputClause_0anirp2" label="Event Name" biodi:width="254">
+      <input id="InputClause_0anirp2" label="Event Name" biodi:width="283">
         <inputExpression id="LiteralExpression_0jpa5sp" typeRef="string">
           <text>EVENT_NAME</text>
         </inputExpression>
@@ -18,7 +18,7 @@
       <output id="Output_1" label="Template ID" name="CONTACT_TEMPLATE_ID" typeRef="string" biodi:width="367" />
       <rule id="DecisionRule_0nzib8g">
         <inputEntry id="UnaryTests_0e8whni">
-          <text>"BEFORE_CYCLE_START"</text>
+          <text>"NF_BEFORE_CYCLE_START"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1w3439g">
           <text>false</text>
@@ -29,7 +29,7 @@
       </rule>
       <rule id="DecisionRule_0uvrr49">
         <inputEntry id="UnaryTests_0db0uww">
-          <text>"BEFORE_CYCLE_END"</text>
+          <text>"NF_BEFORE_CYCLE_END"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0m7osxx">
           <text>false</text>
@@ -40,7 +40,7 @@
       </rule>
       <rule id="DecisionRule_06won2y">
         <inputEntry id="UnaryTests_1ikgrwu">
-          <text>"BEFORE_CYCLE_START"</text>
+          <text>"NF_BEFORE_CYCLE_START"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_167mce0">
           <text>true</text>
@@ -51,7 +51,7 @@
       </rule>
       <rule id="DecisionRule_1w06om2">
         <inputEntry id="UnaryTests_176hqdx">
-          <text>"BEFORE_CYCLE_END"</text>
+          <text>"NF_BEFORE_CYCLE_END"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0grsw4k">
           <text>true</text>
@@ -63,7 +63,7 @@
       <rule id="DecisionRule_1m3o2bb">
         <description>Default</description>
         <inputEntry id="UnaryTests_0v605vb">
-          <text>"START_TIMELINE_NOTIFICATION"</text>
+          <text>"NF_START_TIMELINE_NOTIFICATION"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0vbi6gm">
           <text></text>

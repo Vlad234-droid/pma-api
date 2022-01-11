@@ -37,7 +37,7 @@ and attr.getValue() = "true",
       <rule id="DecisionRule_0k5q2rg">
         <description></description>
         <inputEntry id="UnaryTests_11aaqfm">
-          <text>"TIPS_RECEIVED"</text>
+          <text>"NF_TIPS_RECEIVED"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_11188id">
           <text>true</text>

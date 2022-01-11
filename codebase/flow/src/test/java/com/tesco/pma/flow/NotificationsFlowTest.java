@@ -36,26 +36,26 @@ import java.util.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
 
-    private static final String PM_REVIEW_SUBMITTED = "PM_REVIEW_SUBMITTED";
-    private static final String PM_REVIEW_APPROVED = "PM_REVIEW_APPROVED";
-    private static final String PM_REVIEW_DECLINED = "PM_REVIEW_DECLINED";
-    private static final String PM_REVIEW_BEFORE_START = "PM_REVIEW_BEFORE_START";
-    private static final String PM_REVIEW_BEFORE_END = "PM_REVIEW_BEFORE_END";
+    private static final String NF_PM_REVIEW_SUBMITTED = "NF_PM_REVIEW_SUBMITTED";
+    private static final String NF_PM_REVIEW_APPROVED = "NF_PM_REVIEW_APPROVED";
+    private static final String NF_PM_REVIEW_DECLINED = "NF_PM_REVIEW_DECLINED";
+    private static final String NF_PM_REVIEW_BEFORE_START = "NF_PM_REVIEW_BEFORE_START";
+    private static final String NF_PM_REVIEW_BEFORE_END = "NF_PM_REVIEW_BEFORE_END";
 
-    private static final String ORGANISATION_OBJECTIVES = "ORGANISATION_OBJECTIVES";
-    private static final String OBJECTIVES_APPROVED_FOR_SHARING = "OBJECTIVES_APPROVED_FOR_SHARING";
-    private static final String OBJECTIVE_SHARING_START = "OBJECTIVE_SHARING_START";
-    private static final String OBJECTIVE_SHARING_END = "OBJECTIVE_SHARING_END";
+    private static final String NF_ORGANISATION_OBJECTIVES = "NF_ORGANISATION_OBJECTIVES";
+    private static final String NF_OBJECTIVES_APPROVED_FOR_SHARING = "NF_OBJECTIVES_APPROVED_FOR_SHARING";
+    private static final String NF_OBJECTIVE_SHARING_START = "NF_OBJECTIVE_SHARING_START";
+    private static final String NF_OBJECTIVE_SHARING_END = "NF_OBJECTIVE_SHARING_END";
 
-    private static final String FEEDBACK_GIVEN = "FEEDBACK_GIVEN";
-    private static final String RESPOND_TO_FEEDBACK_REQUESTS = "FEEDBACK_REQUESTS_RESPONDED";
-    private static final String REQUEST_FEEDBACK = "FEEDBACK_REQUESTED";
+    private static final String NF_FEEDBACK_GIVEN = "NF_FEEDBACK_GIVEN";
+    private static final String NF_RESPOND_TO_FEEDBACK_REQUESTS = "NF_FEEDBACK_REQUESTS_RESPONDED";
+    private static final String NF_REQUEST_FEEDBACK = "NF_FEEDBACK_REQUESTED";
 
-    private static final String BEFORE_CYCLE_START = "BEFORE_CYCLE_START";
-    private static final String BEFORE_CYCLE_END = "BEFORE_CYCLE_END";
-    private static final String START_TIMELINE_NOTIFICATION = "START_TIMELINE_NOTIFICATION";
+    private static final String NF_BEFORE_CYCLE_START = "NF_BEFORE_CYCLE_START";
+    private static final String NF_BEFORE_CYCLE_END = "NF_BEFORE_CYCLE_END";
+    private static final String NF_START_TIMELINE_NOTIFICATION = "NF_START_TIMELINE_NOTIFICATION";
 
-    private static final String RECEIVE_TIPS = "TIPS_RECEIVED";
+    private static final String NF_RECEIVE_TIPS = "NF_TIPS_RECEIVED";
 
     @SpyBean
     private DefaultInitNotificationHandler initNotificationHandler;
@@ -97,81 +97,81 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
 
     @Test
     void checkReviewObjectives() throws Exception {
-        checkReviewGroup(PM_REVIEW_SUBMITTED, PMReviewType.OBJECTIVE, true, true);
-        checkReviewGroup(PM_REVIEW_SUBMITTED, PMReviewType.OBJECTIVE, false, false);
-        checkReviewGroup(PM_REVIEW_APPROVED, PMReviewType.OBJECTIVE, true, true);
-        checkReviewGroup(PM_REVIEW_APPROVED, PMReviewType.OBJECTIVE, false, true);
-        checkReviewGroup(PM_REVIEW_DECLINED, PMReviewType.OBJECTIVE, true, true);
-        checkReviewGroup(PM_REVIEW_DECLINED, PMReviewType.OBJECTIVE, false, true);
+        checkReviewGroup(NF_PM_REVIEW_SUBMITTED, PMReviewType.OBJECTIVE, true, true);
+        checkReviewGroup(NF_PM_REVIEW_SUBMITTED, PMReviewType.OBJECTIVE, false, false);
+        checkReviewGroup(NF_PM_REVIEW_APPROVED, PMReviewType.OBJECTIVE, true, true);
+        checkReviewGroup(NF_PM_REVIEW_APPROVED, PMReviewType.OBJECTIVE, false, true);
+        checkReviewGroup(NF_PM_REVIEW_DECLINED, PMReviewType.OBJECTIVE, true, true);
+        checkReviewGroup(NF_PM_REVIEW_DECLINED, PMReviewType.OBJECTIVE, false, true);
     }
 
     @Test
     void checReviewMYR() throws Exception {
-        checkReviewGroup(PM_REVIEW_BEFORE_START, PMReviewType.MYR, true, true);
-        checkReviewGroup(PM_REVIEW_BEFORE_START, PMReviewType.MYR, false, true);
-        checkReviewGroup(PM_REVIEW_SUBMITTED, PMReviewType.MYR, true, true);
-        checkReviewGroup(PM_REVIEW_SUBMITTED, PMReviewType.MYR, false, false);
-        checkReviewGroup(PM_REVIEW_APPROVED, PMReviewType.MYR, true, true);
-        checkReviewGroup(PM_REVIEW_APPROVED, PMReviewType.MYR, false, false);
-        checkReviewGroup(PM_REVIEW_DECLINED, PMReviewType.MYR, true, true);
-        checkReviewGroup(PM_REVIEW_DECLINED, PMReviewType.MYR, false, true);
-        checkReviewGroup(PM_REVIEW_BEFORE_END, PMReviewType.MYR, true, true);
-        checkReviewGroup(PM_REVIEW_BEFORE_END, PMReviewType.MYR, false, true);
+        checkReviewGroup(NF_PM_REVIEW_BEFORE_START, PMReviewType.MYR, true, true);
+        checkReviewGroup(NF_PM_REVIEW_BEFORE_START, PMReviewType.MYR, false, true);
+        checkReviewGroup(NF_PM_REVIEW_SUBMITTED, PMReviewType.MYR, true, true);
+        checkReviewGroup(NF_PM_REVIEW_SUBMITTED, PMReviewType.MYR, false, false);
+        checkReviewGroup(NF_PM_REVIEW_APPROVED, PMReviewType.MYR, true, true);
+        checkReviewGroup(NF_PM_REVIEW_APPROVED, PMReviewType.MYR, false, false);
+        checkReviewGroup(NF_PM_REVIEW_DECLINED, PMReviewType.MYR, true, true);
+        checkReviewGroup(NF_PM_REVIEW_DECLINED, PMReviewType.MYR, false, true);
+        checkReviewGroup(NF_PM_REVIEW_BEFORE_END, PMReviewType.MYR, true, true);
+        checkReviewGroup(NF_PM_REVIEW_BEFORE_END, PMReviewType.MYR, false, true);
     }
 
     @Test
     void checkReviewEYR() throws Exception {
-        checkReviewGroup(PM_REVIEW_BEFORE_START, PMReviewType.EYR, true, true);
-        checkReviewGroup(PM_REVIEW_BEFORE_START, PMReviewType.EYR, false, true);
-        checkReviewGroup(PM_REVIEW_SUBMITTED, PMReviewType.EYR, true, true);
-        checkReviewGroup(PM_REVIEW_SUBMITTED, PMReviewType.EYR, false, false);
-        checkReviewGroup(PM_REVIEW_APPROVED, PMReviewType.EYR, true, true);
-        checkReviewGroup(PM_REVIEW_APPROVED, PMReviewType.EYR, false, true);
-        checkReviewGroup(PM_REVIEW_DECLINED, PMReviewType.EYR, true, true);
-        checkReviewGroup(PM_REVIEW_DECLINED, PMReviewType.EYR, false, true);
-        checkReviewGroup(PM_REVIEW_BEFORE_END, PMReviewType.EYR, true, true);
-        checkReviewGroup(PM_REVIEW_BEFORE_END, PMReviewType.EYR, false, true);
+        checkReviewGroup(NF_PM_REVIEW_BEFORE_START, PMReviewType.EYR, true, true);
+        checkReviewGroup(NF_PM_REVIEW_BEFORE_START, PMReviewType.EYR, false, true);
+        checkReviewGroup(NF_PM_REVIEW_SUBMITTED, PMReviewType.EYR, true, true);
+        checkReviewGroup(NF_PM_REVIEW_SUBMITTED, PMReviewType.EYR, false, false);
+        checkReviewGroup(NF_PM_REVIEW_APPROVED, PMReviewType.EYR, true, true);
+        checkReviewGroup(NF_PM_REVIEW_APPROVED, PMReviewType.EYR, false, true);
+        checkReviewGroup(NF_PM_REVIEW_DECLINED, PMReviewType.EYR, true, true);
+        checkReviewGroup(NF_PM_REVIEW_DECLINED, PMReviewType.EYR, false, true);
+        checkReviewGroup(NF_PM_REVIEW_BEFORE_END, PMReviewType.EYR, true, true);
+        checkReviewGroup(NF_PM_REVIEW_BEFORE_END, PMReviewType.EYR, false, true);
     }
 
     @Test
     void checkObjectives() throws Exception {
-        checkObjectivesGroup(ORGANISATION_OBJECTIVES, null, true, WorkLevel.WL1, false);
-        checkObjectivesGroup(ORGANISATION_OBJECTIVES, null, true, WorkLevel.WL4, true);
+        checkObjectivesGroup(NF_ORGANISATION_OBJECTIVES, null, true, WorkLevel.WL1, false);
+        checkObjectivesGroup(NF_ORGANISATION_OBJECTIVES, null, true, WorkLevel.WL4, true);
 
-        checkObjectivesGroup(OBJECTIVES_APPROVED_FOR_SHARING, null, true, WorkLevel.WL1, true);
-        checkObjectivesGroup(OBJECTIVES_APPROVED_FOR_SHARING, null, false, WorkLevel.WL1, false);
-        checkObjectivesGroup(OBJECTIVE_SHARING_START, null, false, WorkLevel.WL1, true);
-        checkObjectivesGroup(OBJECTIVE_SHARING_END, null, false, WorkLevel.WL1, true);
+        checkObjectivesGroup(NF_OBJECTIVES_APPROVED_FOR_SHARING, null, true, WorkLevel.WL1, true);
+        checkObjectivesGroup(NF_OBJECTIVES_APPROVED_FOR_SHARING, null, false, WorkLevel.WL1, false);
+        checkObjectivesGroup(NF_OBJECTIVE_SHARING_START, null, false, WorkLevel.WL1, true);
+        checkObjectivesGroup(NF_OBJECTIVE_SHARING_END, null, false, WorkLevel.WL1, true);
 
     }
 
     @Test
     void checkFeedbacks() throws Exception {
-        checkFeedbackGroup(FEEDBACK_GIVEN, null, false, WorkLevel.WL1, true);
-        checkFeedbackGroup(RESPOND_TO_FEEDBACK_REQUESTS, null, false, WorkLevel.WL1, true);
-        checkFeedbackGroup(REQUEST_FEEDBACK, null, false, WorkLevel.WL1, true);
+        checkFeedbackGroup(NF_FEEDBACK_GIVEN, null, false, WorkLevel.WL1, true);
+        checkFeedbackGroup(NF_RESPOND_TO_FEEDBACK_REQUESTS, null, false, WorkLevel.WL1, true);
+        checkFeedbackGroup(NF_REQUEST_FEEDBACK, null, false, WorkLevel.WL1, true);
     }
 
     @Test
     void checkTimelineNotifications() throws Exception {
 
-        checkTimelineNotifications(START_TIMELINE_NOTIFICATION, "Q1", true);
-        checkTimelineNotifications(START_TIMELINE_NOTIFICATION, "Q3", true);
-        checkTimelineNotifications(START_TIMELINE_NOTIFICATION, "Q2", false);
+        checkTimelineNotifications(NF_START_TIMELINE_NOTIFICATION, "Q1", true);
+        checkTimelineNotifications(NF_START_TIMELINE_NOTIFICATION, "Q3", true);
+        checkTimelineNotifications(NF_START_TIMELINE_NOTIFICATION, "Q2", false);
     }
 
     @Test
     void beforeCycleTest() throws Exception {
-        checkCycleGroup(BEFORE_CYCLE_START, null, false, WorkLevel.WL1, true);
-        checkCycleGroup(BEFORE_CYCLE_END, null, false, WorkLevel.WL1, true);
+        checkCycleGroup(NF_BEFORE_CYCLE_START, null, false, WorkLevel.WL1, true);
+        checkCycleGroup(NF_BEFORE_CYCLE_END, null, false, WorkLevel.WL1, true);
 
-        checkCycleGroup(BEFORE_CYCLE_START, null, true, WorkLevel.WL1, true);
-        checkCycleGroup(BEFORE_CYCLE_END, null, true, WorkLevel.WL1, true);
+        checkCycleGroup(NF_BEFORE_CYCLE_START, null, true, WorkLevel.WL1, true);
+        checkCycleGroup(NF_BEFORE_CYCLE_END, null, true, WorkLevel.WL1, true);
     }
 
     @Test
     void checkReceiveTips() throws Exception {
-        checkTipsGroup(RECEIVE_TIPS, false, WorkLevel.WL1, true);
+        checkTipsGroup(NF_RECEIVE_TIPS, false, WorkLevel.WL1, true);
     }
 
     void checkReviewGroup(String evenName, PMReviewType reviewType, Boolean isManager, boolean send) throws Exception {

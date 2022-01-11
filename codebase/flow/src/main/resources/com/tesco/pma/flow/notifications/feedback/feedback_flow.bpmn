@@ -59,18 +59,17 @@
     <bpmn:sequenceFlow id="Flow_1tjbwk1" sourceRef="Event_1yhsxk0" targetRef="InitFeedbacksNotifications" />
     <bpmn:sequenceFlow id="Flow_0dr8n7j" sourceRef="Event_0xrosui" targetRef="InitFeedbacksNotifications" />
     <bpmn:textAnnotation id="TextAnnotation_1at6xls">
-      <bpmn:text>eventName: FEEDBACK_GIVEN
-colleagueUuid
-</bpmn:text>
+      <bpmn:text>eventName: NF_FEEDBACK_GIVEN
+colleagueUuid</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_04v1eaf" sourceRef="TextAnnotation_1at6xls" targetRef="Event_1ls04a6" />
     <bpmn:textAnnotation id="TextAnnotation_15sjzf5">
-      <bpmn:text>eventName: FEEDBACK_REQUESTS_RESPONDED
+      <bpmn:text>eventName: NF_FEEDBACK_REQUESTS_RESPONDED
 colleagueUuid</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0zngf17" sourceRef="TextAnnotation_15sjzf5" targetRef="Event_1yhsxk0" />
     <bpmn:textAnnotation id="TextAnnotation_1t5nxk9">
-      <bpmn:text>eventName: FEEDBACK_REQUESTED
+      <bpmn:text>eventName: NF_FEEDBACK_REQUESTED
 colleagueUuid</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0tavyc9" sourceRef="TextAnnotation_1t5nxk9" targetRef="Event_0xrosui" />
@@ -84,9 +83,9 @@ colleagueUuid</bpmn:text>
   <bpmn:message id="Message_0dx8vtc" name="OBJECTIVES_APPROVED_FOR_SHARING" />
   <bpmn:message id="Message_0r6w1af" name="OBJECTIVE_SHARING_START" />
   <bpmn:message id="Message_1hcfszu" name="OBJECTIVE_SHARING_END" />
-  <bpmn:message id="Message_1q91eml" name="FEEDBACK_GIVEN" />
-  <bpmn:message id="Message_0m7hbj4" name="FEEDBACK_REQUESTS_RESPONDED" />
-  <bpmn:message id="Message_0d37snm" name="FEEDBACK_REQUESTED" />
+  <bpmn:message id="Message_1q91eml" name="NF_FEEDBACK_GIVEN" />
+  <bpmn:message id="Message_0m7hbj4" name="NF_FEEDBACK_REQUESTS_RESPONDED" />
+  <bpmn:message id="Message_0d37snm" name="NF_FEEDBACK_REQUESTED" />
   <bpmn:message id="Message_1fh9jei" name="REMINDER" />
   <bpmn:message id="Message_0dj3j0a" name="Q3_REMINDER" />
   <bpmn:message id="Message_1lilc4k" name="BEFORE_CYCLE_START" />
@@ -96,49 +95,9 @@ colleagueUuid</bpmn:text>
   <bpmn:message id="Message_1kt741c" name="TIPS_RECEIVED" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="feedback_notifications">
-      <bpmndi:BPMNShape id="TextAnnotation_1at6xls_di" bpmnElement="TextAnnotation_1at6xls">
-        <dc:Bounds x="160" y="83" width="240" height="53" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_15sjzf5_di" bpmnElement="TextAnnotation_15sjzf5">
-        <dc:Bounds x="160" y="144" width="240" height="54" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1t5nxk9_di" bpmnElement="TextAnnotation_1t5nxk9">
-        <dc:Bounds x="160" y="220" width="240" height="40" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_17icip6_di" bpmnElement="Flow_17icip6">
-        <di:waypoint x="710" y="170" />
-        <di:waypoint x="740" y="170" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_09khqul_di" bpmnElement="Flow_09khqul">
-        <di:waypoint x="840" y="170" />
-        <di:waypoint x="870" y="170" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0j8eifc_di" bpmnElement="Flow_0j8eifc">
-        <di:waypoint x="1540" y="171" />
-        <di:waypoint x="1622" y="171" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ea8ojc_di" bpmnElement="Flow_1ea8ojc">
-        <di:waypoint x="1350" y="171" />
-        <di:waypoint x="1440" y="171" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1b8350e_di" bpmnElement="Flow_1b8350e">
-        <di:waypoint x="970" y="170" />
-        <di:waypoint x="1028" y="170" />
-        <di:waypoint x="1028" y="171" />
-        <di:waypoint x="1085" y="171" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_13udjod_di" bpmnElement="Flow_13udjod">
-        <di:waypoint x="1135" y="171" />
-        <di:waypoint x="1250" y="171" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0525u8k_di" bpmnElement="Flow_0525u8k">
-        <di:waypoint x="1110" y="196" />
-        <di:waypoint x="1110" y="290" />
-        <di:waypoint x="1252" y="290" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_10ykwls_di" bpmnElement="Flow_10ykwls">
-        <di:waypoint x="468" y="110" />
-        <di:waypoint x="539" y="110" />
+      <bpmndi:BPMNEdge id="Flow_0dr8n7j_di" bpmnElement="Flow_0dr8n7j">
+        <di:waypoint x="468" y="240" />
+        <di:waypoint x="539" y="240" />
         <di:waypoint x="539" y="170" />
         <di:waypoint x="610" y="170" />
       </bpmndi:BPMNEdge>
@@ -146,21 +105,43 @@ colleagueUuid</bpmn:text>
         <di:waypoint x="468" y="170" />
         <di:waypoint x="610" y="170" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0dr8n7j_di" bpmnElement="Flow_0dr8n7j">
-        <di:waypoint x="468" y="240" />
-        <di:waypoint x="539" y="240" />
+      <bpmndi:BPMNEdge id="Flow_10ykwls_di" bpmnElement="Flow_10ykwls">
+        <di:waypoint x="468" y="110" />
+        <di:waypoint x="539" y="110" />
         <di:waypoint x="539" y="170" />
         <di:waypoint x="610" y="170" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Activity_0zpup5t_di" bpmnElement="InitFeedbacksNotifications">
-        <dc:Bounds x="610" y="130" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_17b3jvr_di" bpmnElement="Activity_17b3jvr">
-        <dc:Bounds x="740" y="130" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1pe9sak_di" bpmnElement="feedbacks_decision_table">
-        <dc:Bounds x="870" y="130" width="100" height="80" />
-      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0525u8k_di" bpmnElement="Flow_0525u8k">
+        <di:waypoint x="1110" y="196" />
+        <di:waypoint x="1110" y="290" />
+        <di:waypoint x="1252" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13udjod_di" bpmnElement="Flow_13udjod">
+        <di:waypoint x="1135" y="171" />
+        <di:waypoint x="1250" y="171" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1b8350e_di" bpmnElement="Flow_1b8350e">
+        <di:waypoint x="970" y="170" />
+        <di:waypoint x="1028" y="170" />
+        <di:waypoint x="1028" y="171" />
+        <di:waypoint x="1085" y="171" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ea8ojc_di" bpmnElement="Flow_1ea8ojc">
+        <di:waypoint x="1350" y="171" />
+        <di:waypoint x="1440" y="171" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09khqul_di" bpmnElement="Flow_09khqul">
+        <di:waypoint x="840" y="170" />
+        <di:waypoint x="870" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17icip6_di" bpmnElement="Flow_17icip6">
+        <di:waypoint x="710" y="170" />
+        <di:waypoint x="740" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0j8eifc_di" bpmnElement="Flow_0j8eifc">
+        <di:waypoint x="1540" y="171" />
+        <di:waypoint x="1622" y="171" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1ls04a6_di" bpmnElement="Event_1ls04a6">
         <dc:Bounds x="432" y="92" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -170,20 +151,38 @@ colleagueUuid</bpmn:text>
       <bpmndi:BPMNShape id="Event_0xrosui_di" bpmnElement="Event_0xrosui">
         <dc:Bounds x="432" y="222" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1geuchq_di" bpmnElement="Activity_1geuchq">
-        <dc:Bounds x="1250" y="131" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1nf3c86_di" bpmnElement="sendNotification">
         <dc:Bounds x="1440" y="131" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_14zz4ju_di" bpmnElement="Event_14zz4ju">
         <dc:Bounds x="1622" y="153" width="36" height="36" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0zpup5t_di" bpmnElement="InitFeedbacksNotifications">
+        <dc:Bounds x="610" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_17b3jvr_di" bpmnElement="Activity_17b3jvr">
+        <dc:Bounds x="740" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1pe9sak_di" bpmnElement="feedbacks_decision_table">
+        <dc:Bounds x="870" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1geuchq_di" bpmnElement="Activity_1geuchq">
+        <dc:Bounds x="1250" y="131" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1wens7o_di" bpmnElement="Gateway_1wens7o" isMarkerVisible="true">
         <dc:Bounds x="1085" y="146" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0dqby2t_di" bpmnElement="Event_0dqby2t">
         <dc:Bounds x="1252" y="272" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1at6xls_di" bpmnElement="TextAnnotation_1at6xls">
+        <dc:Bounds x="160" y="83" width="240" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_15sjzf5_di" bpmnElement="TextAnnotation_15sjzf5">
+        <dc:Bounds x="160" y="144" width="240" height="68" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1t5nxk9_di" bpmnElement="TextAnnotation_1t5nxk9">
+        <dc:Bounds x="160" y="220" width="240" height="54" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_04v1eaf_di" bpmnElement="Association_04v1eaf">
         <di:waypoint x="400" y="110" />

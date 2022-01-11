@@ -47,7 +47,7 @@
     <bpmn:sequenceFlow id="Flow_06feeoc" sourceRef="Activity_1u9u2hv" targetRef="sendNotification" />
     <bpmn:sequenceFlow id="Flow_0kva4tj" sourceRef="Event_0jiddfy" targetRef="InitTipsNotifications" />
     <bpmn:textAnnotation id="TextAnnotation_0a5ferg">
-      <bpmn:text>eventName: TIPS_RECEIVED
+      <bpmn:text>eventName: NF_TIPS_RECEIVED
 colleagueUuid
 tipUuid</bpmn:text>
     </bpmn:textAnnotation>
@@ -71,7 +71,7 @@ tipUuid</bpmn:text>
   <bpmn:message id="Message_0n1gxdy" name="BEFORE_CYCLE_END" />
   <bpmn:message id="Message_1woa9kz" name="BEFORE_CYCLE_START_LM" />
   <bpmn:message id="Message_0sziydu" name="BEFORE_CYCLE_END_LM" />
-  <bpmn:message id="Message_1kt741c" name="TIPS_RECEIVED" />
+  <bpmn:message id="Message_1kt741c" name="NF_TIPS_RECEIVED" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="tips_notifications">
       <bpmndi:BPMNEdge id="Flow_0kva4tj_di" bpmnElement="Flow_0kva4tj">
@@ -135,7 +135,7 @@ tipUuid</bpmn:text>
         <dc:Bounds x="1152" y="222" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0a5ferg_di" bpmnElement="TextAnnotation_0a5ferg">
-        <dc:Bounds x="160" y="100" width="240" height="53" />
+        <dc:Bounds x="160" y="100" width="240" height="54" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_1xbw1hb_di" bpmnElement="Association_1xbw1hb">
         <di:waypoint x="400" y="126" />

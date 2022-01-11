@@ -13,7 +13,7 @@
       <output id="Output_1" label="Attribute name" name="PROFILE_ATTRIBUTE_NAME" typeRef="string" biodi:width="367" />
       <rule id="DecisionRule_1uy0sh8">
         <inputEntry id="UnaryTests_1qwu62n">
-          <text>"FEEDBACK_GIVEN"</text>
+          <text>"NF_FEEDBACK_GIVEN"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1jkyxzn">
           <text>"Feedback given"</text>
@@ -21,7 +21,7 @@
       </rule>
       <rule id="DecisionRule_19hp08h">
         <inputEntry id="UnaryTests_12ofmtu">
-          <text>"FEEDBACK_REQUESTS_RESPONDED"</text>
+          <text>"NF_FEEDBACK_REQUESTS_RESPONDED"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0qdm4ha">
           <text>"Respond to feedback requests"</text>
@@ -29,7 +29,7 @@
       </rule>
       <rule id="DecisionRule_1svgltz">
         <inputEntry id="UnaryTests_0a3b3tn">
-          <text>"FEEDBACK_REQUESTED"</text>
+          <text>"NF_FEEDBACK_REQUESTED"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_15xr2rd">
           <text>"Request feedback"</text>

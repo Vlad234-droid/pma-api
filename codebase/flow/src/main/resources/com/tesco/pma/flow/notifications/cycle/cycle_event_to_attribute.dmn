@@ -5,7 +5,7 @@
       <requiredInput href="#InputData_1g0u5hf" />
     </informationRequirement>
     <decisionTable id="DecisionTable_1dpms3v" hitPolicy="FIRST">
-      <input id="InputClause_0anirp2" label="Event Name" biodi:width="254">
+      <input id="InputClause_0anirp2" label="Event Name" biodi:width="282">
         <inputExpression id="LiteralExpression_0jpa5sp" typeRef="string">
           <text>EVENT_NAME</text>
         </inputExpression>
@@ -23,7 +23,7 @@
       <output id="Output_1" label="Attribute name" name="PROFILE_ATTRIBUTE_NAME" typeRef="string" biodi:width="367" />
       <rule id="DecisionRule_0k3bxnp">
         <inputEntry id="UnaryTests_1b9u06b">
-          <text>"BEFORE_CYCLE_START"</text>
+          <text>"NF_BEFORE_CYCLE_START"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1fcvejv">
           <text>false</text>
@@ -37,7 +37,7 @@
       </rule>
       <rule id="DecisionRule_0xn39n6">
         <inputEntry id="UnaryTests_1wdtsez">
-          <text>"BEFORE_CYCLE_END"</text>
+          <text>"NF_BEFORE_CYCLE_END"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1kqgpii">
           <text>false</text>
@@ -51,7 +51,7 @@
       </rule>
       <rule id="DecisionRule_0ympxyw">
         <inputEntry id="UnaryTests_0bxvw41">
-          <text>"BEFORE_CYCLE_START"</text>
+          <text>"NF_BEFORE_CYCLE_START"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1g5yxcx">
           <text>true</text>
@@ -65,7 +65,7 @@
       </rule>
       <rule id="DecisionRule_1phlqvc">
         <inputEntry id="UnaryTests_1h0pdhx">
-          <text>"BEFORE_CYCLE_END"</text>
+          <text>"NF_BEFORE_CYCLE_END"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_03fzr4k">
           <text>true</text>
@@ -79,7 +79,7 @@
       </rule>
       <rule id="DecisionRule_0sinsp2">
         <inputEntry id="UnaryTests_0p2ow69">
-          <text>"START_TIMELINE_NOTIFICATION"</text>
+          <text>"NF_START_TIMELINE_NOTIFICATION"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1x3f1lh">
           <text></text>
@@ -93,7 +93,7 @@
       </rule>
       <rule id="DecisionRule_10smalj">
         <inputEntry id="UnaryTests_1d9puvl">
-          <text>"START_TIMELINE_NOTIFICATION"</text>
+          <text>"NF_START_TIMELINE_NOTIFICATION"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1v091m1">
           <text></text>

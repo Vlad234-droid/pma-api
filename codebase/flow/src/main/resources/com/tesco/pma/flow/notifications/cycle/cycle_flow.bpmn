@@ -59,30 +59,33 @@
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_11o41ch" sourceRef="Event_1c2rlex" targetRef="InitCycleNotifications" />
     <bpmn:textAnnotation id="TextAnnotation_1ejgdx6">
-      <bpmn:text>eventName: BEFORE_CYCLE_START
+      <bpmn:text>eventName: NF_BEFORE_CYCLE_START
 colleagueUuid</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_1hka4h1">
-      <bpmn:text>eventName: BEFORE_CYCLE_END
+      <bpmn:text>eventName: NF_BEFORE_CYCLE_END
 colleagueUuid</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0enne85" sourceRef="TextAnnotation_1ejgdx6" targetRef="Event_1df7jen" />
     <bpmn:association id="Association_11v0mm0" sourceRef="TextAnnotation_1hka4h1" targetRef="Event_1usosf4" />
     <bpmn:textAnnotation id="TextAnnotation_0o052ca">
-      <bpmn:text>eventName: START_TIMELINE_NOTIFICATION
+      <bpmn:text>eventName: NF_START_TIMELINE_NOTIFICATION
 colleagueUuid
 quarter</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0d13qpc" sourceRef="TextAnnotation_0o052ca" targetRef="Event_1c2rlex" />
   </bpmn:process>
-  <bpmn:message id="Message_1vn7xpm" name="BEFORE_CYCLE_START" />
-  <bpmn:message id="Message_07a8d5r" name="BEFORE_CYCLE_END" />
-  <bpmn:message id="Message_0v1typc" name="START_TIMELINE_NOTIFICATION" />
+  <bpmn:message id="Message_1vn7xpm" name="NF_BEFORE_CYCLE_START" />
+  <bpmn:message id="Message_07a8d5r" name="NF_BEFORE_CYCLE_END" />
+  <bpmn:message id="Message_0v1typc" name="NF_START_TIMELINE_NOTIFICATION" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1p5ga8b">
-      <bpmndi:BPMNShape id="TextAnnotation_0o052ca_di" bpmnElement="TextAnnotation_0o052ca">
-        <dc:Bounds x="160" y="283" width="240" height="68" />
-      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_11o41ch_di" bpmnElement="Flow_11o41ch">
+        <di:waypoint x="468" y="310" />
+        <di:waypoint x="504" y="310" />
+        <di:waypoint x="504" y="180" />
+        <di:waypoint x="540" y="180" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_08x2cmk_di" bpmnElement="Flow_08x2cmk">
         <di:waypoint x="1420" y="160" />
         <di:waypoint x="1512" y="160" />
@@ -124,12 +127,6 @@ quarter</bpmn:text>
         <di:waypoint x="640" y="160" />
         <di:waypoint x="670" y="160" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_11o41ch_di" bpmnElement="Flow_11o41ch">
-        <di:waypoint x="468" y="310" />
-        <di:waypoint x="504" y="310" />
-        <di:waypoint x="504" y="180" />
-        <di:waypoint x="540" y="180" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1df7jen_di" bpmnElement="Event_1df7jen">
         <dc:Bounds x="432" y="92" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -160,14 +157,17 @@ quarter</bpmn:text>
       <bpmndi:BPMNShape id="Event_1ola85o_di" bpmnElement="Event_1ola85o">
         <dc:Bounds x="1512" y="142" width="36" height="36" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1c2rlex_di" bpmnElement="Event_1c2rlex">
+        <dc:Bounds x="432" y="292" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1ejgdx6_di" bpmnElement="TextAnnotation_1ejgdx6">
-        <dc:Bounds x="160" y="78" width="240" height="40" />
+        <dc:Bounds x="160" y="78" width="240" height="54" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1hka4h1_di" bpmnElement="TextAnnotation_1hka4h1">
         <dc:Bounds x="160" y="172" width="240" height="40" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1c2rlex_di" bpmnElement="Event_1c2rlex">
-        <dc:Bounds x="432" y="292" width="36" height="36" />
+      <bpmndi:BPMNShape id="TextAnnotation_0o052ca_di" bpmnElement="TextAnnotation_0o052ca">
+        <dc:Bounds x="160" y="283" width="240" height="68" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_0enne85_di" bpmnElement="Association_0enne85">
         <di:waypoint x="400" y="110" />

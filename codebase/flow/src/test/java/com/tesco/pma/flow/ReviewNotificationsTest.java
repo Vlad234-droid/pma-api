@@ -28,7 +28,7 @@ public class ReviewNotificationsTest {
 
     private static final String PATH = "com/tesco/pma/flow/notifications/review/review_notifications_decisions.dmn";
     private static final String DMN_ID = "review_notifications_decisions_table";
-    private static final String PM_REVIEW_SUBMITTED = "PM_REVIEW_SUBMITTED";
+    private static final String NF_PM_REVIEW_SUBMITTED = "NF_PM_REVIEW_SUBMITTED";
 
     private DmnEngine dmnEngine;
     private DmnDecision decision;
@@ -51,7 +51,7 @@ public class ReviewNotificationsTest {
         var colleagueProfile = createColleagueProfile(null, WorkLevel.WL1, Map.of(attrName, "true"));
 
         var variables = new VariableMapImpl();
-        variables.putValue(FlowParameters.EVENT_NAME.name(), PM_REVIEW_SUBMITTED);
+        variables.putValue(FlowParameters.EVENT_NAME.name(), NF_PM_REVIEW_SUBMITTED);
         variables.putValue(FlowParameters.REVIEW_TYPE.name(), PMReviewType.MYR.getCode());
         variables.putValue(FlowParameters.IS_MANAGER.name(), true);
         variables.putValue(FlowParameters.PROFILE_ATTRIBUTE_NAME.name(), attrName);
@@ -67,7 +67,7 @@ public class ReviewNotificationsTest {
         var colleagueProfile = createColleagueProfile(null, WorkLevel.WL1, Map.of("Some attr name", "false"));
 
         var variables = new VariableMapImpl();
-        variables.putValue(FlowParameters.EVENT_NAME.name(), PM_REVIEW_SUBMITTED);
+        variables.putValue(FlowParameters.EVENT_NAME.name(), NF_PM_REVIEW_SUBMITTED);
         variables.putValue(FlowParameters.REVIEW_TYPE.name(), PMReviewType.MYR.getCode());
         variables.putValue(FlowParameters.IS_MANAGER.name(), true);
         variables.putValue(FlowParameters.PROFILE_ATTRIBUTE_NAME.name(), "Attr name");
@@ -84,7 +84,7 @@ public class ReviewNotificationsTest {
         var colleagueProfile = new ColleagueProfile();
 
         var variables = new VariableMapImpl();
-        variables.putValue(FlowParameters.EVENT_NAME.name(), PM_REVIEW_SUBMITTED);
+        variables.putValue(FlowParameters.EVENT_NAME.name(), NF_PM_REVIEW_SUBMITTED);
         variables.putValue(FlowParameters.REVIEW_TYPE.name(), PMReviewType.MYR.getCode());
         variables.putValue(FlowParameters.IS_MANAGER.name(), true);
         variables.putValue(FlowParameters.PROFILE_ATTRIBUTE_NAME.name(), "Attr name");
