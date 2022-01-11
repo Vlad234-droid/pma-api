@@ -1,14 +1,13 @@
 package com.tesco.pma.bpm.camunda.flow;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
-
+import com.tesco.pma.bpm.api.flow.ExecutionContext;
+import com.tesco.pma.event.Event;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 
-import com.tesco.pma.event.Event;
-import com.tesco.pma.bpm.api.flow.ExecutionContext;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -122,12 +121,12 @@ public abstract class FlowTestUtil { //NOPMD
         }
 
         @Override
-        protected Object getVariable(String name) {
+        protected Object getRawVariable(String name) {
             return context.get(name);
         }
 
         @Override
-        protected void setVariable(String name, Object value) {
+        protected void setRawVariable(String name, Object value) {
             context.put(name, value);
         }
     }

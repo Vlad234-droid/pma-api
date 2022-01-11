@@ -1,13 +1,12 @@
 package com.tesco.pma.bpm.camunda.flow;
 
-import java.util.Map;
-
-import org.camunda.bpm.engine.delegate.DelegateExecution;
-
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.bpm.api.flow.FlowMessages;
 import com.tesco.pma.bpm.camunda.util.ApplicationContextProvider;
 import com.tesco.pma.event.Event;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
+
+import java.util.Map;
 
 public class CamundaExecutionContext implements ExecutionContext {
 
@@ -30,15 +29,14 @@ public class CamundaExecutionContext implements ExecutionContext {
     }
 
     @Override
-    public <E extends Enum<E>> void setOutputVariable(E enu, Object object) {
-        Map<String, Object> holder = getVariable(Params.EC_OUTPUT);
-        holder.put(enu.name(), object);
+    public <E extends Enum<E>, T> T getNullableVariable(E enu) {
+        return getNullableVariable(enu.name());
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <E extends Enum<E>, T> T getNullableVariable(E enu) {
-        return (T) getVariable(enu.name());
+    public <T> T getNullableVariable(String name) {
+        return (T) getRawVariable(name);
     }
 
     @Override
@@ -46,15 +44,21 @@ public class CamundaExecutionContext implements ExecutionContext {
         return getNullableVariable(enu);
     }
 
-    protected Object getVariable(String name) {
-        return execution.getVariable(name);
+    @Override
+    public <T> T getNullableVariable(String name, Class<T> cls) {
+        return getNullableVariable(name);
     }
 
     @Override
     public <E extends Enum<E>, T> T getVariable(E enu) {
-        T value = getNullableVariable(enu);
+        return getVariable(enu.name());
+    }
+
+    @Override
+    public <T> T getVariable(String name) {
+        T value = getNullableVariable(name);
         if (value == null) {
-            throw new IllegalArgumentException(FlowMessages.FLOW_ERROR_RUNTIME.format("Variable %s value shouldn't be null", enu.name()));
+            throw new IllegalArgumentException(FlowMessages.FLOW_ERROR_RUNTIME.format("Variable %s value shouldn't be null", name));
         }
         return value;
     }
@@ -64,13 +68,31 @@ public class CamundaExecutionContext implements ExecutionContext {
         return getVariable(enu);
     }
 
-    protected void setVariable(String name, Object value) {
-        execution.setVariable(name, value);
+    @Override
+    public <T> T getVariable(String name, Class<T> cls) {
+        return getVariable(name);
+    }
+
+    @Override
+    public <E extends Enum<E>> void setOutputVariable(E enu, Object object) {
+        Map<String, Object> holder = getVariable(Params.EC_OUTPUT);
+        holder.put(enu.name(), object);
+    }
+
+    @Override
+    public void setOutputVariable(String name, Object object) {
+        Map<String, Object> holder = getVariable(Params.EC_OUTPUT);
+        holder.put(name, object);
     }
 
     @Override
     public <E extends Enum<E>> void setVariable(E enu, Object object) {
-        setVariable(enu.name(), object);
+        setRawVariable(enu.name(), object);
+    }
+
+    @Override
+    public void setVariable(String name, Object object) {
+        setRawVariable(name, object);
     }
 
     @Override
@@ -105,6 +127,14 @@ public class CamundaExecutionContext implements ExecutionContext {
     @Override
     public <T> T getBean(Class<T> requiredType) {
         return ApplicationContextProvider.getBean(requiredType);
+    }
+
+    protected Object getRawVariable(String name) {
+        return execution.getVariable(name);
+    }
+
+    protected void setRawVariable(String name, Object value) {
+        execution.setVariable(name, value);
     }
 }
 
