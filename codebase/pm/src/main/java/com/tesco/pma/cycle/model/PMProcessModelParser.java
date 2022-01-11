@@ -62,7 +62,8 @@ public class PMProcessModelParser {
         target.setId(activity.getId());
         target.setCode(name);
         target.setDescription(name);
-        target.setProperties(props == null ? ExtensionsUtil.getExtensionsProperties(activity) : ExtensionsUtil.getExtensionsProperties(props));
+        target.setProperties(props == null ? ExtensionsUtil.getExtensionsProperties(activity)
+                : ExtensionsUtil.getExtensionsProperties(props));
         if (target.getType() == null) {
             target.setType(PMElementType.getByCode(target.getProperties().get(PMElement.PM_TYPE)));
         }
