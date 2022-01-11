@@ -3,13 +3,12 @@ package com.tesco.pma.cycle.service.rest;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.api.CompositePMCycleMetadataResponse;
-import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.CompositePMCycleResponse;
+import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.exception.InvalidPayloadException;
-import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
@@ -18,10 +17,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,11 +31,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_METADATA_NOT_FOUND;
 import static com.tesco.pma.rest.RestResponse.success;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -190,19 +184,11 @@ public class PMCycleEndpoint {
             content = @Content)
     @GetMapping(value = "/colleagues/{colleagueUuid}/metadata", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     @PreAuthorize("isColleague()")
-    public ResponseEntity<Object> getMetadataByColleague(@PathVariable UUID colleagueUuid) {
-        var cycle = service.getCurrentByColleague(colleagueUuid);
-        var metadata = cycle.getJsonMetadata();
-        if (StringUtils.isBlank(metadata)) {
-            throw new NotFoundException(PM_CYCLE_METADATA_NOT_FOUND.getCode(),
-                    messageSourceAccessor.getMessage(PM_CYCLE_METADATA_NOT_FOUND,
-                            Map.of(CYCLE_UUID_PARAMETER_NAME, cycle.getUuid(),
-                                    COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid)));
-        }
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(jsonMetadataToRestResponse(metadata));
+    public RestResponse<CompositePMCycleMetadataResponse> getMetadataByColleague(@PathVariable UUID colleagueUuid,
+                                                                                 @RequestParam(value = INCLUDE_FORMS,
+                                                                                         defaultValue = "false")
+                                                                                         boolean includeForms) {
+        return success(service.getCurrentMetadataByColleague(colleagueUuid, includeForms));
     }
 
     // todo remove after UAT metadata should be stored with cycle together

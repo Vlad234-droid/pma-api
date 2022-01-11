@@ -80,6 +80,15 @@ public interface PMCycleService {
     PMCycle getCurrentByColleague(@NotNull UUID colleagueUuid);
 
     /**
+     * Returns the current active performance cycle metadata
+     *
+     * @param colleagueUuid Colleague identifier
+     * @return performance cycle
+     * @throws NotFoundException if PMCycle doesn't found
+     */
+    CompositePMCycleMetadataResponse getCurrentMetadataByColleague(@NotNull UUID colleagueUuid, boolean includeForms);
+
+    /**
      * Get list of PMCycle's for an employee
      *
      * @param colleagueUuid Colleague identifier

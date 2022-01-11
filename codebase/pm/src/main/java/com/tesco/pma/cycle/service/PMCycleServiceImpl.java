@@ -1,7 +1,6 @@
 package com.tesco.pma.cycle.service;
 
 import com.tesco.pma.api.DictionaryFilter;
-import com.tesco.pma.api.MapJson;
 import com.tesco.pma.bpm.api.DeploymentInfo;
 import com.tesco.pma.bpm.api.ProcessExecutionException;
 import com.tesco.pma.bpm.api.ProcessManagerService;
@@ -51,6 +50,7 @@ import static com.tesco.pma.cycle.api.PMCycleStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMCycleStatus.FAILED;
 import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_ALREADY_EXISTS;
+import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_METADATA_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_ALLOWED_TO_START;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_BY_UUID;
@@ -143,18 +143,18 @@ public class PMCycleServiceImpl implements PMCycleService {
     @Transactional(readOnly = true)
     public CompositePMCycleResponse get(UUID uuid, boolean includeForms) {
         var pmCycle = cycleDAO.read(uuid, null);
-        if (includeForms)
-            if (null == pmCycle) {
-                throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID,
-                        Map.of(CYCLE_UUID_PARAMETER_NAME, uuid));
-            }
-        var result = new CompositePMCycleResponse();
-        result.setCycle(pmCycle);
+        if (null == pmCycle) {
+            throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID,
+                    Map.of(CYCLE_UUID_PARAMETER_NAME, uuid));
+        }
+        var compositeCycle = new CompositePMCycleResponse();
+        compositeCycle.setCycle(pmCycle);
 
         if (includeForms) {
-            result.setForms(new MapJson());
+            compositeCycle.setForms(null);
         }
-        return result;
+
+        return compositeCycle;
     }
 
     @Override
@@ -173,6 +173,28 @@ public class PMCycleServiceImpl implements PMCycleService {
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid));
         }
         return cycles.iterator().next();
+    }
+
+    @Override
+    public CompositePMCycleMetadataResponse getCurrentMetadataByColleague(@NotNull UUID colleagueUuid, boolean includeForms) {
+        var currentCycle = getCurrentByColleague(colleagueUuid);
+
+        if (null == currentCycle.getMetadata()) {
+            throw new NotFoundException(PM_CYCLE_METADATA_NOT_FOUND.getCode(),
+                    messageSourceAccessor.getMessage(PM_CYCLE_METADATA_NOT_FOUND,
+                            Map.of(CYCLE_UUID_PARAMETER_NAME, currentCycle.getUuid(),
+                                    COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid)));
+
+        }
+
+        var compositeMetadata = new CompositePMCycleMetadataResponse();
+        compositeMetadata.setMetadata(currentCycle.getMetadata());
+
+        if (includeForms) {
+            compositeMetadata.setForms(null);
+        }
+
+        return compositeMetadata;
     }
 
     @Override
@@ -203,9 +225,11 @@ public class PMCycleServiceImpl implements PMCycleService {
         var file = fileService.get(fileUuid, true);
         var model = Bpmn.readModelFromStream(new ByteArrayInputStream(file.getFileContent()));
         var metadata = new PMProcessModelParser(resourceProvider, messageSourceAccessor).parse(model);
-        var compositeMetadata = CompositePMCycleMetadataResponse.builder().metadata(metadata).build();
+        var compositeMetadata = new CompositePMCycleMetadataResponse();
+
+        compositeMetadata.setMetadata(metadata);
         if (includeForms) {
-            compositeMetadata.setForms(new MapJson());
+            compositeMetadata.setForms(null);
         }
         return compositeMetadata;
     }
