@@ -1,6 +1,5 @@
 package com.tesco.pma.fs.rest;
 
-import com.tesco.pma.api.GeneralDictionaryItem;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.RegistrationException;
@@ -202,10 +201,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
         fileData.setUuid(uuid);
         fileData.setPath(PATH);
         fileData.setVersion(version);
-        GeneralDictionaryItem type = new GeneralDictionaryItem();
-        type.setCode("FORM");
-        type.setId(2);
-        fileData.setType(type);
+        fileData.setType("FORM");
         fileData.setStatus(ACTIVE);
         fileData.setDescription(DESCRIPTION);
         fileData.setCreatedBy(CREATOR_ID);

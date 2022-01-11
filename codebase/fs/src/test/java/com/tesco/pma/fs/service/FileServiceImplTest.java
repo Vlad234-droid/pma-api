@@ -1,12 +1,12 @@
 package com.tesco.pma.fs.service;
 
 import com.tesco.pma.api.DictionaryFilter;
-import com.tesco.pma.api.GeneralDictionaryItem;
 import com.tesco.pma.api.RequestQueryToDictionaryFilterConverter;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.RegistrationException;
 import com.tesco.pma.fs.api.FileStatus;
 import com.tesco.pma.fs.api.FileType;
+import com.tesco.pma.fs.dao.FileDAO;
 import com.tesco.pma.fs.domain.File;
 import com.tesco.pma.fs.domain.UploadMetadata;
 import com.tesco.pma.pagination.Condition;
@@ -19,8 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-
-import com.tesco.pma.fs.dao.FileDAO;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -36,12 +34,12 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ActiveProfiles("test")
 @SpringBootTest(classes = FileServiceImpl.class)
@@ -208,10 +206,7 @@ public class FileServiceImplTest {
         fileData.setUuid(uuid);
         fileData.setPath(PATH);
         fileData.setVersion(version);
-        GeneralDictionaryItem type = new GeneralDictionaryItem();
-        type.setCode("FORM");
-        type.setId(2);
-        fileData.setType(type);
+        fileData.setType("FORM");
         fileData.setStatus(ACTIVE);
         fileData.setDescription("other file");
         fileData.setCreatedBy(CREATOR_ID);

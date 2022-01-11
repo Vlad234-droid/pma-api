@@ -1,6 +1,5 @@
 package com.tesco.pma.fs.domain;
 
-import com.tesco.pma.api.GeneralDictionaryItem;
 import com.tesco.pma.fs.api.FileStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -23,7 +22,7 @@ public class UploadMetadata {
 
     String fileName;
 
-    GeneralDictionaryItem type;
+    String type;
 
     FileStatus status;
 
