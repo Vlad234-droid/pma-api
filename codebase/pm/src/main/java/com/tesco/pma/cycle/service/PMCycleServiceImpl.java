@@ -470,7 +470,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         try {
             form.setJson(new String(resourceProvider.readFile(UUID.fromString(form.getId())).getFileContent(), UTF_8));
             return form;
-        } catch (IOException e) {
+        } catch (Exception e) {
             return null;
         }
     }
