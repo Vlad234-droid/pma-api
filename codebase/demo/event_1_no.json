@@ -1,7 +1,0 @@
-{
-    "class":"com.tesco.demo.event.EventSupport",
-    "EVENT_NAME":"E_START_1",
-    "EVENT_ID":"111",
-    "EVENT_PRIORITY":"NORMAL",
-    "PROPERTIES":{"IS_DIRECT":{"class": "java.lang.Boolean","value":"false"}}
-}

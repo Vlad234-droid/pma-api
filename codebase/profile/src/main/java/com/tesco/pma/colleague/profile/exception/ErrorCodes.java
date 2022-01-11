@@ -14,6 +14,8 @@ public enum ErrorCodes implements ErrorCodeAware {
      */
     PROFILE_ATTRIBUTE_ALREADY_EXISTS,
 
+    PROFILE_ATTRIBUTE_NOT_FOUND,
+
     /**
      * Profile attribute name already exists
      */

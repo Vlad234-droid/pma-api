@@ -4,10 +4,15 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
+import java.io.Serializable;
+
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @SuppressWarnings("PMD.ShortClassName")
-public class Job {
+public class Job implements Serializable {
+
+    private static final long serialVersionUID = -6154653887246229480L;
+
     String id;
     String code;
     String name;

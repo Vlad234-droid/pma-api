@@ -27,7 +27,17 @@ public enum FlowParameters {
     BEFORE_END_DATE_S,
     END_DATE_S,
 
-    COLLEAGUE_UUID;
+    COLLEAGUE_UUID,
+    COLLEAGUE_PROFILE,
+    COLLEAGUE_WORK_LEVEL,
+
+    PROFILE_ATTRIBUTE_NAME,
+    QUARTER,
+
+    TIP_UUID,
+
+    //notifications
+    CONTACT_TEMPLATE_ID;
 
     /**
      * Returns corresponded parameter for string value if exist or the same parameter

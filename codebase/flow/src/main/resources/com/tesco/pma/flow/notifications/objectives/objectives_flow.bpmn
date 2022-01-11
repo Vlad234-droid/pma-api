@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_15lqads" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="objectives_notifications" name="objectives_notifications" isExecutable="true">
+    <bpmn:startEvent id="Event_0czaxhc">
+      <bpmn:outgoing>Flow_1njc0fu</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_14e7rnc" messageRef="Message_0hqp95b" />
+    </bpmn:startEvent>
+    <bpmn:startEvent id="Event_174jgbz">
+      <bpmn:outgoing>Flow_0bua9yo</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1xufsvu" messageRef="Message_0dx8vtc" />
+    </bpmn:startEvent>
+    <bpmn:startEvent id="Event_0edocze">
+      <bpmn:outgoing>Flow_0ayegec</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0xp8oei" messageRef="Message_0r6w1af" />
+    </bpmn:startEvent>
+    <bpmn:startEvent id="Event_0hgts8l">
+      <bpmn:outgoing>Flow_1b1yg7z</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1w6sete" messageRef="Message_1hcfszu" />
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="sendNotification" name="Send&#10;notification" camunda:class="com.tesco.pma.flow.notifications.handlers.SendNotificationHandler">
+      <bpmn:incoming>Flow_1f0drgm</bpmn:incoming>
+      <bpmn:outgoing>Flow_0j8eifc</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_14zz4ju">
+      <bpmn:incoming>Flow_0j8eifc</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0j8eifc" sourceRef="sendNotification" targetRef="Event_14zz4ju" />
+    <bpmn:serviceTask id="InitObjectivesNotifications" name="Init flow variables" camunda:class="com.tesco.pma.flow.notifications.handlers.InitObjectiveNotificationHandler">
+      <bpmn:incoming>Flow_1njc0fu</bpmn:incoming>
+      <bpmn:incoming>Flow_0bua9yo</bpmn:incoming>
+      <bpmn:incoming>Flow_0ayegec</bpmn:incoming>
+      <bpmn:incoming>Flow_1b1yg7z</bpmn:incoming>
+      <bpmn:outgoing>Flow_06581ww</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:businessRuleTask id="Activity_03w4agt" name="Map event to notification attribute name" camunda:resultVariable="PROFILE_ATTRIBUTE_NAME" camunda:decisionRef="objective_event_to_profile_attribute" camunda:mapDecisionResult="singleEntry">
+      <bpmn:incoming>Flow_06581ww</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rite9h</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:businessRuleTask id="objectives_decision_table" name="Send&#10;notifications&#10;or not?" camunda:resultVariable="SEND" camunda:decisionRef="objective_notifications_decision_table" camunda:mapDecisionResult="singleEntry">
+      <bpmn:incoming>Flow_0rite9h</bpmn:incoming>
+      <bpmn:outgoing>Flow_0dnf68u</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:businessRuleTask id="Activity_1r3725n" name="Map event to template id" camunda:resultVariable="CONTACT_TEMPLATE_ID" camunda:decisionRef="objective_event_to_template_id" camunda:mapDecisionResult="singleEntry">
+      <bpmn:incoming>Flow_039vr1e</bpmn:incoming>
+      <bpmn:outgoing>Flow_1f0drgm</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:exclusiveGateway id="Gateway_1so5hu1" default="Flow_03g7v9z">
+      <bpmn:incoming>Flow_0dnf68u</bpmn:incoming>
+      <bpmn:outgoing>Flow_039vr1e</bpmn:outgoing>
+      <bpmn:outgoing>Flow_03g7v9z</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="Event_1g3cniy">
+      <bpmn:incoming>Flow_03g7v9z</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_06581ww" sourceRef="InitObjectivesNotifications" targetRef="Activity_03w4agt" />
+    <bpmn:sequenceFlow id="Flow_0rite9h" sourceRef="Activity_03w4agt" targetRef="objectives_decision_table" />
+    <bpmn:sequenceFlow id="Flow_0dnf68u" sourceRef="objectives_decision_table" targetRef="Gateway_1so5hu1" />
+    <bpmn:sequenceFlow id="Flow_039vr1e" sourceRef="Gateway_1so5hu1" targetRef="Activity_1r3725n">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${SEND}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_03g7v9z" sourceRef="Gateway_1so5hu1" targetRef="Event_1g3cniy" />
+    <bpmn:sequenceFlow id="Flow_1f0drgm" sourceRef="Activity_1r3725n" targetRef="sendNotification" />
+    <bpmn:sequenceFlow id="Flow_1njc0fu" sourceRef="Event_0czaxhc" targetRef="InitObjectivesNotifications" />
+    <bpmn:sequenceFlow id="Flow_0bua9yo" sourceRef="Event_174jgbz" targetRef="InitObjectivesNotifications" />
+    <bpmn:sequenceFlow id="Flow_0ayegec" sourceRef="Event_0edocze" targetRef="InitObjectivesNotifications" />
+    <bpmn:sequenceFlow id="Flow_1b1yg7z" sourceRef="Event_0hgts8l" targetRef="InitObjectivesNotifications" />
+    <bpmn:textAnnotation id="TextAnnotation_0jrtxxh">
+      <bpmn:text>eventName: NF_ORGANISATION_OBJECTIVES
+colleagueUuid</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0d1x3ma">
+      <bpmn:text>eventName: NF_OBJECTIVES_APPROVED_FOR_SHARING
+colleagueUuid</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0m8fcdt" sourceRef="TextAnnotation_0d1x3ma" targetRef="Event_174jgbz" />
+    <bpmn:textAnnotation id="TextAnnotation_0ku9g97">
+      <bpmn:text>eventName: NF_OBJECTIVE_SHARING_START
+colleagueUuid</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1nu0hv5" sourceRef="TextAnnotation_0ku9g97" targetRef="Event_0edocze" />
+    <bpmn:textAnnotation id="TextAnnotation_12g3y3h">
+      <bpmn:text>eventName: NF_OBJECTIVE_SHARING_END
+colleagueUuid</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1psab3n" sourceRef="TextAnnotation_12g3y3h" targetRef="Event_0hgts8l" />
+    <bpmn:association id="Association_1q6odfb" sourceRef="TextAnnotation_0jrtxxh" targetRef="Event_0czaxhc" />
+  </bpmn:process>
+  <bpmn:message id="Message_0we3leq" name="PM_REVIEW_BEFORE_START" />
+  <bpmn:message id="Message_1mdskp7" name="PM_REVIEW_APPROVED" />
+  <bpmn:message id="Message_0hpbctt" name="PM_REVIEW_DECLINED" />
+  <bpmn:message id="Message_1r3tvid" name="PM_REVIEW_BEFORE_END" />
+  <bpmn:message id="Message_1wv5ub0" name="PM_REVIEW_SUBMITTED" />
+  <bpmn:message id="Message_0hqp95b" name="NF_ORGANISATION_OBJECTIVES" />
+  <bpmn:message id="Message_0dx8vtc" name="NF_OBJECTIVES_APPROVED_FOR_SHARING" />
+  <bpmn:message id="Message_0r6w1af" name="NF_OBJECTIVE_SHARING_START" />
+  <bpmn:message id="Message_1hcfszu" name="NF_OBJECTIVE_SHARING_END" />
+  <bpmn:message id="Message_1q91eml" name="FEEDBACK_GIVEN" />
+  <bpmn:message id="Message_0m7hbj4" name="FEEDBACK_REQUESTS_RESPONDED" />
+  <bpmn:message id="Message_0d37snm" name="FEEDBACK_REQUESTED" />
+  <bpmn:message id="Message_1fh9jei" name="REMINDER" />
+  <bpmn:message id="Message_0dj3j0a" name="Q3_REMINDER" />
+  <bpmn:message id="Message_1lilc4k" name="BEFORE_CYCLE_START" />
+  <bpmn:message id="Message_0n1gxdy" name="BEFORE_CYCLE_END" />
+  <bpmn:message id="Message_1woa9kz" name="BEFORE_CYCLE_START_LM" />
+  <bpmn:message id="Message_0sziydu" name="BEFORE_CYCLE_END_LM" />
+  <bpmn:message id="Message_1kt741c" name="TIPS_RECEIVED" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="objectives_notifications">
+      <bpmndi:BPMNEdge id="Flow_1b1yg7z_di" bpmnElement="Flow_1b1yg7z">
+        <di:waypoint x="458" y="350" />
+        <di:waypoint x="519" y="350" />
+        <di:waypoint x="519" y="197" />
+        <di:waypoint x="580" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ayegec_di" bpmnElement="Flow_0ayegec">
+        <di:waypoint x="458" y="280" />
+        <di:waypoint x="519" y="280" />
+        <di:waypoint x="519" y="197" />
+        <di:waypoint x="580" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bua9yo_di" bpmnElement="Flow_0bua9yo">
+        <di:waypoint x="458" y="190" />
+        <di:waypoint x="519" y="190" />
+        <di:waypoint x="519" y="197" />
+        <di:waypoint x="580" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1njc0fu_di" bpmnElement="Flow_1njc0fu">
+        <di:waypoint x="458" y="110" />
+        <di:waypoint x="519" y="110" />
+        <di:waypoint x="519" y="197" />
+        <di:waypoint x="580" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1f0drgm_di" bpmnElement="Flow_1f0drgm">
+        <di:waypoint x="1250" y="197" />
+        <di:waypoint x="1320" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03g7v9z_di" bpmnElement="Flow_03g7v9z">
+        <di:waypoint x="1040" y="222" />
+        <di:waypoint x="1040" y="307" />
+        <di:waypoint x="1152" y="307" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_039vr1e_di" bpmnElement="Flow_039vr1e">
+        <di:waypoint x="1065" y="197" />
+        <di:waypoint x="1150" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dnf68u_di" bpmnElement="Flow_0dnf68u">
+        <di:waypoint x="940" y="197" />
+        <di:waypoint x="1015" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rite9h_di" bpmnElement="Flow_0rite9h">
+        <di:waypoint x="810" y="197" />
+        <di:waypoint x="840" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06581ww_di" bpmnElement="Flow_06581ww">
+        <di:waypoint x="680" y="197" />
+        <di:waypoint x="710" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0j8eifc_di" bpmnElement="Flow_0j8eifc">
+        <di:waypoint x="1420" y="197" />
+        <di:waypoint x="1502" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0lcl83k_di" bpmnElement="Event_0czaxhc">
+        <dc:Bounds x="422" y="92" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_174jgbz_di" bpmnElement="Event_174jgbz">
+        <dc:Bounds x="422" y="172" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0edocze_di" bpmnElement="Event_0edocze">
+        <dc:Bounds x="422" y="262" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0hgts8l_di" bpmnElement="Event_0hgts8l">
+        <dc:Bounds x="422" y="332" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1nf3c86_di" bpmnElement="sendNotification">
+        <dc:Bounds x="1320" y="157" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_14zz4ju_di" bpmnElement="Event_14zz4ju">
+        <dc:Bounds x="1502" y="179" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0tuwqbq_di" bpmnElement="InitObjectivesNotifications">
+        <dc:Bounds x="580" y="157" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_03w4agt_di" bpmnElement="Activity_03w4agt">
+        <dc:Bounds x="710" y="157" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1jcwx1i_di" bpmnElement="objectives_decision_table">
+        <dc:Bounds x="840" y="157" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1r3725n_di" bpmnElement="Activity_1r3725n">
+        <dc:Bounds x="1150" y="157" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1so5hu1_di" bpmnElement="Gateway_1so5hu1" isMarkerVisible="true">
+        <dc:Bounds x="1015" y="172" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1g3cniy_di" bpmnElement="Event_1g3cniy">
+        <dc:Bounds x="1152" y="289" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0jrtxxh_di" bpmnElement="TextAnnotation_0jrtxxh">
+        <dc:Bounds x="149" y="80" width="240" height="54" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0d1x3ma_di" bpmnElement="TextAnnotation_0d1x3ma">
+        <dc:Bounds x="149" y="156" width="240" height="68" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0ku9g97_di" bpmnElement="TextAnnotation_0ku9g97">
+        <dc:Bounds x="150" y="243" width="240" height="54" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_12g3y3h_di" bpmnElement="TextAnnotation_12g3y3h">
+        <dc:Bounds x="150" y="323" width="240" height="54" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1q6odfb_di" bpmnElement="Association_1q6odfb">
+        <di:waypoint x="389" y="109" />
+        <di:waypoint x="422" y="110" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0m8fcdt_di" bpmnElement="Association_0m8fcdt">
+        <di:waypoint x="389" y="190" />
+        <di:waypoint x="422" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1nu0hv5_di" bpmnElement="Association_1nu0hv5">
+        <di:waypoint x="390" y="281" />
+        <di:waypoint x="422" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1psab3n_di" bpmnElement="Association_1psab3n">
+        <di:waypoint x="390" y="350" />
+        <di:waypoint x="422" y="350" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
