@@ -1,5 +1,6 @@
 package com.tesco.pma.cycle.model;
 
+import com.tesco.pma.bpm.camunda.util.ExtensionsUtil;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.api.PMReviewType;
@@ -17,18 +18,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Activity;
-import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
-import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperties;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperty;
 
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static com.tesco.pma.cycle.api.model.PMCycleElement.PM_CYCLE_TYPE;
 import static com.tesco.pma.cycle.api.model.PMElement.PM_TYPE;
@@ -56,45 +53,6 @@ public class PMProcessModelParser {
     private final ResourceProvider resourceProvider;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
-    /**
-     * Utility method to get external properties
-     *
-     * @param element source element
-     * @return collection of Camunda properties
-     */
-    public static Collection<CamundaProperty> getCamundaProperties(BaseElement element) {
-        var extensionElements = element.getExtensionElements();
-        if (extensionElements != null) {
-            var propsQuery = extensionElements.getElementsQuery().filterByType(CamundaProperties.class);
-            if (propsQuery.count() > 0) {
-                return propsQuery.singleResult().getCamundaProperties();
-            }
-        }
-        return Collections.emptyList();
-    }
-
-    /**
-     * Utility method to get external properties
-     *
-     * @param element source element
-     * @return map of properties
-     */
-    public static Map<String, String> getExternalProperties(BaseElement element) {
-        return getExternalProperties(getCamundaProperties(element));
-    }
-
-    /**
-     * Utility method to get external properties
-     *
-     * @param properties collection of Camunda properties
-     * @return map of properties
-     */
-    public static Map<String, String> getExternalProperties(Collection<CamundaProperty> properties) {
-        return properties.stream()
-                .collect(Collectors.toMap(camundaProperty -> camundaProperty.getCamundaName().toLowerCase(),
-                        CamundaProperty::getCamundaValue));
-    }
-
     public static <T extends PMElement> T fillPMElement(Activity activity, T target) {
         return fillPMElement(activity, null, target);
     }
@@ -104,7 +62,8 @@ public class PMProcessModelParser {
         target.setId(activity.getId());
         target.setCode(name);
         target.setDescription(name);
-        target.setProperties(props == null ? getExternalProperties(activity) : getExternalProperties(props));
+        target.setProperties(props == null ? ExtensionsUtil.getExtensionsProperties(activity)
+                : ExtensionsUtil.getExtensionsProperties(props));
         if (target.getType() == null) {
             target.setType(PMElementType.getByCode(target.getProperties().get(PMElement.PM_TYPE)));
         }
@@ -134,14 +93,14 @@ public class PMProcessModelParser {
         var cycle = new PMCycleElement();
         cycle.setId(process.getId());
         cycle.setCode(process.getName());
-        var props = getExternalProperties(process);
+        var props = ExtensionsUtil.getExtensionsProperties(process);
         cycle.setProperties(props);
         cycle.setCycleType(getEnum(PMCycleType.class, PM_CYCLE_TYPE, props.get(PM_CYCLE_TYPE)));
         return cycle;
     }
 
     private void processTask(PMCycleElement cycle, Activity activity) {
-        var props = getCamundaProperties(activity);
+        var props = ExtensionsUtil.getCamundaProperties(activity);
         if (props.isEmpty()) {
             return;
         }
