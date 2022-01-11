@@ -10,6 +10,9 @@ import com.tesco.pma.cycle.api.CompositePMCycleMetadataResponse;
 import com.tesco.pma.cycle.api.CompositePMCycleResponse;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
+import com.tesco.pma.cycle.api.model.PMCycleMetadata;
+import com.tesco.pma.cycle.api.model.PMFormElement;
+import com.tesco.pma.cycle.api.model.PMReviewElement;
 import com.tesco.pma.cycle.dao.PMCycleDAO;
 import com.tesco.pma.cycle.exception.ErrorCodes;
 import com.tesco.pma.cycle.exception.PMCycleException;
@@ -36,12 +39,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.tesco.pma.api.DictionaryFilter.includeFilter;
 import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
@@ -49,6 +54,7 @@ import static com.tesco.pma.cycle.api.PMCycleStatus.COMPLETED;
 import static com.tesco.pma.cycle.api.PMCycleStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMCycleStatus.FAILED;
 import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
+import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_ALREADY_EXISTS;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_METADATA_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_ALLOWED_TO_START;
@@ -60,6 +66,7 @@ import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_FOR_ST
 import static com.tesco.pma.logging.TraceId.TRACE_ID_HEADER;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.process.api.PMProcessStatus.STARTED;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Set.of;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
@@ -151,7 +158,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         compositeCycle.setCycle(pmCycle);
 
         if (includeForms) {
-            compositeCycle.setForms(null);
+            compositeCycle.setForms(getFormsForCycleMetadata(pmCycle.getMetadata()));
         }
 
         return compositeCycle;
@@ -191,7 +198,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         compositeMetadata.setMetadata(currentCycle.getMetadata());
 
         if (includeForms) {
-            compositeMetadata.setForms(null);
+            compositeMetadata.setForms(getFormsForCycleMetadata(currentCycle.getMetadata()));
         }
 
         return compositeMetadata;
@@ -229,7 +236,7 @@ public class PMCycleServiceImpl implements PMCycleService {
 
         compositeMetadata.setMetadata(metadata);
         if (includeForms) {
-            compositeMetadata.setForms(null);
+            compositeMetadata.setForms(getFormsForCycleMetadata(metadata));
         }
         return compositeMetadata;
     }
@@ -448,6 +455,23 @@ public class PMCycleServiceImpl implements PMCycleService {
         if (!isEmpty(cycleList)) {
             throw notFound(PM_CYCLE_NOT_ALLOWED_TO_START,
                     Map.of(CONDITION_PARAMETER_NAME, query.getFilters()));
+        }
+    }
+
+    private List<PMFormElement> getFormsForCycleMetadata(PMCycleMetadata metadata) {
+        return metadata.getCycle().getTimelinePoints().stream()
+                .filter(tpe -> tpe.getType() == REVIEW)
+                .map(review -> ((PMReviewElement) review).getForm())
+                        .map(this::fillFormJson)
+                        .collect(Collectors.toList());
+    }
+
+    private PMFormElement fillFormJson(PMFormElement form) {
+        try {
+            form.setJson(new String(resourceProvider.readFile(UUID.fromString(form.getId())).getFileContent(), UTF_8));
+            return form;
+        } catch (IOException e) {
+            return null;
         }
     }
 }

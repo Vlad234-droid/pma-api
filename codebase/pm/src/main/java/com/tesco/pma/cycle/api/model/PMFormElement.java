@@ -20,6 +20,7 @@ public class PMFormElement extends PMElement {
     public static final String PM_FORM_JSON = PM_FORM_PREFIX + "json";
 
     private String key;
+    private String json;
 
     public PMFormElement() {
         setType(PMElementType.FORM);

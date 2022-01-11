@@ -255,10 +255,6 @@ public class PMCycleEndpoint {
         return RestResponse.success();
     }
 
-    private String jsonMetadataToRestResponse(String jsonMetadata) {
-        return "{\"success\": true, \"data\": " + jsonMetadata + "}";
-    }
-
     private UUID resolveUserUuid() {
         return auditorAware.getCurrentAuditor();
     }
