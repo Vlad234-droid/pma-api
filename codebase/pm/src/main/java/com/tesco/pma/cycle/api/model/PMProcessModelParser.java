@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.tesco.pma.util.FormUtils.getFormName;
+import static com.tesco.pma.util.FileUtils.getFormName;
 import static com.tesco.pma.cycle.api.model.PMCycleElement.PM_CYCLE_TYPE;
 import static com.tesco.pma.cycle.api.model.PMElement.PM_TYPE;
 import static com.tesco.pma.cycle.api.model.PMFormElement.PM_FORM_KEY;
