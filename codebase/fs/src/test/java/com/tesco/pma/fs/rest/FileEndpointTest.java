@@ -3,6 +3,7 @@ package com.tesco.pma.fs.rest;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.RegistrationException;
+import com.tesco.pma.file.api.FileType;
 import com.tesco.pma.file.api.File;
 import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.pagination.RequestQuery;
@@ -20,7 +21,6 @@ import java.time.Instant;
 import java.util.UUID;
 
 import static com.tesco.pma.file.api.FileStatus.ACTIVE;
-import static com.tesco.pma.file.api.FileType.FORM;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -202,7 +202,11 @@ public class FileEndpointTest extends AbstractEndpointTest {
         fileData.setUuid(uuid);
         fileData.setPath(PATH);
         fileData.setVersion(version);
-        fileData.setType(FORM);
+        FileType type = new FileType();
+        type.setId(2);
+        type.setCode("FORM");
+        type.setDescription("GUI Form file");
+        fileData.setType(type);
         fileData.setStatus(ACTIVE);
         fileData.setDescription(DESCRIPTION);
         fileData.setCreatedBy(CREATOR_ID);
