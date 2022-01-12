@@ -1,6 +1,6 @@
-package com.tesco.pma.cycle.model;
+package com.tesco.pma.cycle.api.model;
 
-import com.tesco.pma.fs.domain.File;
+import com.tesco.pma.file.api.File;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -2,8 +2,8 @@ package com.tesco.pma.fs.service;
 
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.RegistrationException;
-import com.tesco.pma.fs.domain.File;
-import com.tesco.pma.fs.domain.UploadMetadata;
+import com.tesco.pma.file.api.File;
+import com.tesco.pma.file.api.UploadMetadata;
 import com.tesco.pma.pagination.RequestQuery;
 
 import javax.validation.constraints.NotNull;
