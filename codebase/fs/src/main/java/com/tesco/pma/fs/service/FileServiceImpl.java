@@ -6,7 +6,6 @@ import com.tesco.pma.dao.DictionaryDAO;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.RegistrationException;
 import com.tesco.pma.file.api.FileStatus;
-import com.tesco.pma.file.api.FileType;
 import com.tesco.pma.fs.dao.FileDAO;
 import com.tesco.pma.file.api.File;
 import com.tesco.pma.file.api.UploadMetadata;
