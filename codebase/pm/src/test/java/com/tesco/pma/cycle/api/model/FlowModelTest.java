@@ -4,6 +4,7 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.LocalTestConfig;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.exception.ParseException;
+import com.tesco.pma.util.FileUtils;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.junit.jupiter.api.Assertions;
@@ -75,8 +76,8 @@ class FlowModelTest {
 
     @Test
     void getFormName() {
-        assertEquals(FORM_1, parser.getFormName("camunda-forms:deployment:forms/pm_o_1.form"));
-        assertEquals(FORM_2, parser.getFormName("camunda-forms:deployment:pm_o_2.form"));
+        assertEquals(FORM_1, FileUtils.getFormName("camunda-forms:deployment:forms/pm_o_1.form"));
+        assertEquals(FORM_2, FileUtils.getFormName("camunda-forms:deployment:pm_o_2.form"));
     }
 
     @Test

@@ -81,5 +81,10 @@ public class ClasspathResourceProvider implements ResourceProvider {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public UUID readFileUuid(String resourcePath, String resourceName) {
+        return this.readFile(resourcePath, resourceName).getUuid();
+    }
+
 
 }

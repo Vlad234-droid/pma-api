@@ -34,4 +34,14 @@ public interface ResourceProvider {
     File readFile(String resourcePath, String resourceName) throws IOException;
 
     File readFile(UUID uuid) throws IOException;
+
+    /**
+     * Read resource uuid by path and name
+     *
+     * @param resourcePath - resource path
+     * @param resourceName - resource name
+     * @return uuid of the resource
+     * @throws IOException
+     */
+    UUID readFileUuid(String resourcePath, String resourceName);
 }

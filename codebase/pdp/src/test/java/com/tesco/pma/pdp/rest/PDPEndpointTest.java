@@ -6,6 +6,7 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.pdp.domain.PDPGoal;
 import com.tesco.pma.pdp.service.PDPService;
 import com.tesco.pma.rest.AbstractEndpointTest;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = PDPEndpoint.class)
 @WithMockUser(username = PDPEndpointTest.COLLEAGUE_UUID_STR)
+@Disabled
 public class PDPEndpointTest extends AbstractEndpointTest {
 
     static final String COLLEAGUE_UUID_STR = "ce245be1-1f43-4d5f-85dc-db6e2cce0c2a";

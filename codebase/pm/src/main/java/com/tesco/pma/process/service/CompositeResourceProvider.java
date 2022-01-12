@@ -49,4 +49,9 @@ public class CompositeResourceProvider implements ResourceProvider {
     public File readFile(UUID uuid) {
         return fsResourceProvider.readFile(uuid);
     }
+
+    @Override
+    public UUID readFileUuid(String resourcePath, String resourceName) {
+        return this.readFile(resourcePath, resourceName).getUuid();
+    }
 }
