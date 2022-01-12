@@ -1,7 +1,7 @@
 package com.tesco.pma.pdp.rest;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.cycle.api.model.PMFormElement;
+import com.tesco.pma.cycle.api.model.PMForm;
 import com.tesco.pma.cycle.exception.ParseException;
 import com.tesco.pma.cycle.model.ResourceProvider;
 import com.tesco.pma.error.ErrorCodeAware;
@@ -116,7 +116,7 @@ public class PDPEndpoint {
     public RestResponse<PDPResponse> getGoal(@PathVariable("number") Integer number,
                                          @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         var goal = pdpService.getGoal(getColleagueUuid(authentication), number);
-        return success(new PDPResponse(Arrays.asList(goal), getPMFormElement()));
+        return success(new PDPResponse(Arrays.asList(goal), getPMForm()));
     }
 
     /**
@@ -132,7 +132,7 @@ public class PDPEndpoint {
     public RestResponse<PDPResponse> getGoal(@PathVariable("goalUuid") UUID goalUuid,
                                          @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         var goal = pdpService.getGoal(getColleagueUuid(authentication), goalUuid);
-        return success(new PDPResponse(Arrays.asList(goal), getPMFormElement()));
+        return success(new PDPResponse(Arrays.asList(goal), getPMForm()));
     }
 
     /**
@@ -146,23 +146,25 @@ public class PDPEndpoint {
     @GetMapping(path = "/goals", produces = MediaType.APPLICATION_JSON_VALUE)
     public RestResponse<PDPResponse> getGoals(@CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         var goals = pdpService.getGoals(getColleagueUuid(authentication));
-        return success(new PDPResponse(goals, getPMFormElement()));
+        return success(new PDPResponse(goals, getPMForm()));
     }
 
     private UUID getColleagueUuid(Authentication authentication) {
         return UUID.fromString(authentication.getName());
     }
 
-    private PMFormElement getPMFormElement() {
+    private PMForm getPMForm() {
         String formJson;
+        var formName = getFormName(pdpFormKey);
         try {
-            formJson = resourceProvider.resourceToString(pdpFormKey, KEY);
+            formJson = resourceProvider.resourceToString(pdpFormKey, formName);
         } catch (IOException e) {
             throw parseException(PM_PARSE_NOT_FOUND, Map.of("key", KEY, "value", pdpFormKey), KEY, e);
         }
 
-        var formName = getFormName(pdpFormKey);
-        return new PMFormElement(KEY, formName, formJson);
+
+        var uuid = resourceProvider.readFileUuid(pdpFormKey, formName);
+        return new PMForm(uuid.toString(), formName, formName, formJson);
     }
 
     private ParseException parseException(ErrorCodeAware errorCode, Map<String, ?> params, String field, Throwable cause) {
