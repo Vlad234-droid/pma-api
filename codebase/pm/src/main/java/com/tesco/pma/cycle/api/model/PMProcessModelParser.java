@@ -18,8 +18,8 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
+import static com.tesco.pma.util.FormUtils.getFormName;
 import static com.tesco.pma.cycle.api.model.PMCycleElement.PM_CYCLE_TYPE;
 import static com.tesco.pma.cycle.api.model.PMElement.PM_TYPE;
 import static com.tesco.pma.cycle.api.model.PMFormElement.PM_FORM_KEY;
@@ -39,7 +39,6 @@ import static com.tesco.pma.cycle.exception.ErrorCodes.PM_PARSE_NOT_FOUND;
 @Slf4j
 @AllArgsConstructor
 public class PMProcessModelParser {
-    private static final Pattern FORM_NAME_PATTERN = Pattern.compile("(([\\w\\-_/]+)\\.(form|json))$");
     public static final String KEY = "key";
     public static final String VALUE = "value";
 
@@ -156,11 +155,6 @@ public class PMProcessModelParser {
         return new String[]{
                 path.getParent().toString(),
                 path.getFileName().toString()};
-    }
-
-    public static String getFormName(String key) {
-        var matcher = FORM_NAME_PATTERN.matcher(key);
-        return matcher.find() ? matcher.group(1) : null;
     }
 
     static String defaultValue(String checking, String defaultValue) {
