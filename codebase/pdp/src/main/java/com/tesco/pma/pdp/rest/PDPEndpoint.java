@@ -51,7 +51,7 @@ public class PDPEndpoint {
     private final PDPService pdpService;
     private final ResourceProvider resourceProvider;
     @Value("${tesco.application.pdp.form.key}")
-    private String pdpFormKey;
+    private String formKey;
     private final NamedMessageSourceAccessor messages;
 
     /**
@@ -155,15 +155,15 @@ public class PDPEndpoint {
 
     private PMForm getPMForm() {
         String formJson;
-        var formName = getFormName(pdpFormKey);
+        var formName = getFormName(formKey);
         try {
-            formJson = resourceProvider.resourceToString(pdpFormKey, formName);
+            formJson = resourceProvider.resourceToString(formKey, formName);
         } catch (IOException e) {
-            throw parseException(PM_PARSE_NOT_FOUND, Map.of("key", KEY, "value", pdpFormKey), KEY, e);
+            throw parseException(PM_PARSE_NOT_FOUND, Map.of("key", KEY, "value", formKey), KEY, e);
         }
 
 
-        var uuid = resourceProvider.readFileUuid(pdpFormKey, formName);
+        var uuid = resourceProvider.readFileUuid(formKey, formName);
         return new PMForm(uuid.toString(), formName, formName, formJson);
     }
 
