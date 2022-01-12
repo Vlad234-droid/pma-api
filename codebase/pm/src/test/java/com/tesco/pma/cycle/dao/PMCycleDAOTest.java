@@ -9,7 +9,7 @@ import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.dao.config.PMCycleTypeHandlerConfig;
 import com.tesco.pma.dao.AbstractDAOTest;
-import com.tesco.pma.fs.domain.File;
+import com.tesco.pma.file.api.File;
 import com.tesco.pma.pagination.RequestQuery;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;

@@ -1,16 +1,9 @@
-package com.tesco.pma.cycle.model;
+package com.tesco.pma.cycle.api.model;
 
 import com.tesco.pma.bpm.camunda.util.ExtensionsUtil;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.api.PMReviewType;
-import com.tesco.pma.cycle.api.model.PMCycleElement;
-import com.tesco.pma.cycle.api.model.PMCycleMetadata;
-import com.tesco.pma.cycle.api.model.PMElement;
-import com.tesco.pma.cycle.api.model.PMElementType;
-import com.tesco.pma.cycle.api.model.PMFormElement;
-import com.tesco.pma.cycle.api.model.PMReviewElement;
-import com.tesco.pma.cycle.api.model.PMTimelinePointElement;
 import com.tesco.pma.cycle.exception.ParseException;
 import com.tesco.pma.error.ErrorCodeAware;
 import lombok.AllArgsConstructor;

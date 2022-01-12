@@ -34,4 +34,5 @@ public class TimelinePoint implements Serializable {
     PMTimelinePointStatus status;
     PMReviewType reviewType;
     Integer count;
+    Instant lastUpdatedTime;
 }

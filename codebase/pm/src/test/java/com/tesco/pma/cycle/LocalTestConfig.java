@@ -2,7 +2,7 @@ package com.tesco.pma.cycle;
 
 import com.tesco.pma.configuration.MessageSourceConfig;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.cycle.model.ResourceProvider;
+import com.tesco.pma.cycle.api.model.ResourceProvider;
 import com.tesco.pma.process.service.ClasspathResourceProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration;

@@ -1,7 +1,7 @@
 package com.tesco.pma.fs.dao;
 
 import com.tesco.pma.api.DictionaryFilter;
-import com.tesco.pma.fs.domain.File;
+import com.tesco.pma.file.api.File;
 import com.tesco.pma.pagination.RequestQuery;
 import org.apache.ibatis.annotations.Param;
 

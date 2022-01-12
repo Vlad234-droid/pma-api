@@ -1,4 +1,4 @@
-package com.tesco.pma.fs.domain;
+package com.tesco.pma.file.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
