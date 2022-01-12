@@ -4,7 +4,7 @@ import com.tesco.pma.api.MapJson;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.pdp.LocalTestConfig;
+import com.tesco.pma.pdp.LocalServiceTestConfig;
 import com.tesco.pma.pdp.dao.PDPDao;
 import com.tesco.pma.pdp.domain.PDPGoal;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
-@SpringBootTest(classes = {LocalTestConfig.class, PDPServiceImpl.class})
+@SpringBootTest(classes = {LocalServiceTestConfig.class, PDPServiceImpl.class})
 @ExtendWith(MockitoExtension.class)
 public class PDPServiceImplTest {
 

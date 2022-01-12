@@ -1,5 +1,6 @@
 package com.tesco.pma.user.rest;
 
+import com.tesco.pma.TestConfig;
 import com.tesco.pma.api.User;
 import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.exception.ErrorCodes;
@@ -13,6 +14,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.Authentication;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = UserEndpoint.class)
+@ContextConfiguration(classes = TestConfig.class)
 class UserEndpointTest extends AbstractEndpointTest {
     static final EasyRandom RANDOM = new EasyRandom();
     static final String ERRORS_0_CODE_JSON_PATH = "$.errors[0].code";
