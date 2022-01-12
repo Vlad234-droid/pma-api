@@ -1,6 +1,7 @@
 package com.tesco.pma.process.service;
 
 import com.tesco.pma.cycle.model.ResourceProvider;
+import com.tesco.pma.fs.domain.File;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 @Service
 @Primary
@@ -36,5 +38,15 @@ public class CompositeResourceProvider implements ResourceProvider {
         try (InputStream is = this.read(resourcePath, resourceName)) {
             return IOUtils.toString(is, StandardCharsets.UTF_8);
         }
+    }
+
+    @Override
+    public File readFile(String resourcePath, String resourceName) {
+        return fsResourceProvider.readFile(resourcePath, resourceName);
+    }
+
+    @Override
+    public File readFile(UUID uuid) {
+        return fsResourceProvider.readFile(uuid);
     }
 }

@@ -13,8 +13,8 @@ import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.api.model.PMCycleElement;
 import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import com.tesco.pma.cycle.api.model.PMElementType;
-import com.tesco.pma.cycle.api.model.PMReviewElement;
 import com.tesco.pma.cycle.api.model.PMTimelinePointElement;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,12 +22,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class PMCycleJsonbCombinedSerializer {
     private static final String ID = "id";
     private static final String CODE = "code";
     private static final String DESCRIPTION = "description";
     private static final String TYPE = "type";
     private static final String CYCLE_TYPE = "cycleType";
+    private static final String REVIEW_TYPE = "reviewType";
     private static final String CYCLE = "cycle";
     private static final String PROPERTIES = "properties";
     private static final String TIMELINEPOINTS = "timelinePoints";
@@ -105,10 +107,10 @@ public class PMCycleJsonbCombinedSerializer {
             final List<PMTimelinePointElement> pmReviewElements = new ArrayList<>();
             if (listOrObjectNodeTLP.isArray()) {
                 for (JsonNode cls : listOrObjectNodeTLP) {
-                    pmReviewElements.add(codec.treeToValue(cls, PMReviewElement.class));
+                    pmReviewElements.add(codec.treeToValue(cls, PMTimelinePointElement.class));
                 }
             } else {
-                pmReviewElements.add(codec.treeToValue(listOrObjectNodeTLP, PMReviewElement.class));
+                pmReviewElements.add(codec.treeToValue(listOrObjectNodeTLP, PMTimelinePointElement.class));
             }
 
             element.setTimelinePoints(pmReviewElements);

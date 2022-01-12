@@ -135,9 +135,10 @@ public class PMProcessModelParser {
             try {
                 var formName = getFormName(formKey);
                 var formFullPath = splitCompoundFullPath(formName);
-                var formJson = resourceProvider.resourceToString(formFullPath[0], formFullPath[1]);
 
-                pmReview.setForm(new PMFormElement(formKey, formName, formJson));
+                var formFile = resourceProvider.readFile(formFullPath[0], formFullPath[1]);
+
+                pmReview.setForm(new PMFormElement(formFile.getId().toString(), formKey, formName));
             } catch (Exception e) {
                 throw parseException(PM_PARSE_NOT_FOUND, Map.of(KEY, "formKey", VALUE, formKey), formKey, e);
             }
