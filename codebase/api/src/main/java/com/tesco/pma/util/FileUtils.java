@@ -14,7 +14,7 @@ public class FileUtils {
      * @param key - form key
      * @return form name
      */
-    public String getFormName(String key) {
+    public static String getFormName(String key) {
         var matcher = FORM_NAME_PATTERN.matcher(key);
         return matcher.find() ? matcher.group(1) : null;
     }
