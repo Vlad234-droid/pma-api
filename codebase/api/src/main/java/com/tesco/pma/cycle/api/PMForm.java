@@ -1,5 +1,6 @@
-package com.tesco.pma.cycle.api.model;
+package com.tesco.pma.cycle.api;
 
+import com.tesco.pma.cycle.api.model.PMFormElement;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

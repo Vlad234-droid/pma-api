@@ -10,6 +10,7 @@
             properties="{&quot;title&quot;: &quot;Title init&quot;,
                          &quot;description&quot;: &quot;Description init&quot;}"
             status_id="1"
+            last_updated_time="2022-01-01 10:00:00.000000"
     />
     <pm_timeline_point
             uuid="10000000-0000-0000-2000-000000000000"
@@ -22,5 +23,6 @@
             properties="{&quot;title&quot;: &quot;Title init&quot;,
                          &quot;description&quot;: &quot;Description init&quot;}"
             status_id="1"
+            last_updated_time="2022-01-01 10:00:00.000000"
     />
 </dataset>

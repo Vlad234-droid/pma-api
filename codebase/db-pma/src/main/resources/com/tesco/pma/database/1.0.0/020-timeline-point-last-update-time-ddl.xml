@@ -1,0 +1,49 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+
+    <changeSet author="mdiadia" id="1">
+        <addColumn tableName="pm_timeline_point">
+            <column name="last_updated_time" type="TIMESTAMPTZ"
+                    remarks="Timestamp with zone when changes were applied"/>
+        </addColumn>
+
+        <rollback>
+            <dropColumn tableName="pm_timeline_point" columnName="last_updated_time"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="mdiadia" id="2">
+        <preConditions>
+            <dbms type="postgresql"/>
+        </preConditions>
+        <sql>
+            update pm_timeline_point r
+            set last_updated_time = now()
+            where r.last_updated_time is null;
+        </sql>
+        <rollback>
+            <sql>
+                update pm_timeline_point
+                set last_updated_time = null;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="mdiadia" id="3">
+        <addNotNullConstraint
+                columnDataType="TIMESTAMPTZ"
+                columnName="last_updated_time"
+                tableName="pm_timeline_point"
+                validate="true"/>
+        <rollback>
+            <dropNotNullConstraint
+                    columnDataType="TIMESTAMPTZ"
+                    columnName="last_updated_time"
+                    tableName="pm_timeline_point"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

@@ -3,7 +3,7 @@ package com.tesco.pma.flow.handlers;
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.bpm.camunda.flow.CamundaExecutionContext;
 import com.tesco.pma.cycle.api.model.PMElement;
-import com.tesco.pma.cycle.model.PMProcessModelParser;
+import com.tesco.pma.cycle.api.model.PMProcessModelParser;
 import com.tesco.pma.event.EventParams;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;

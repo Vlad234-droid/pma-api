@@ -4,6 +4,7 @@ import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.review.domain.TimelinePoint;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -19,7 +20,18 @@ public interface TimelinePointDAO {
      * @param tlPoint a timeline point
      * @return number of created timeline points
      */
-    int create(@Param("tlPoint") TimelinePoint tlPoint);
+    default int create(TimelinePoint tlPoint) {
+        tlPoint.setLastUpdatedTime(Instant.now());
+        return intCreate(tlPoint);
+    }
+
+    /**
+     * Creates a timeline point
+     *
+     * @param tlPoint a timeline point
+     * @return number of created timeline points
+     */
+    int intCreate(@Param("tlPoint") TimelinePoint tlPoint);
 
     /**
      * Creates list of timeline points
@@ -27,7 +39,19 @@ public interface TimelinePointDAO {
      * @param timelinePoints list of timeline points
      * @return number of created timeline points
      */
-    int saveAll(@Param("tLPoints") Collection<TimelinePoint> timelinePoints);
+    default int saveAll(Collection<TimelinePoint> timelinePoints) {
+        var now = Instant.now();
+        timelinePoints.forEach(tp -> tp.setLastUpdatedTime(now));
+        return intSaveAll(timelinePoints);
+    }
+
+    /**
+     * Creates list of timeline points
+     *
+     * @param timelinePoints list of timeline points
+     * @return number of created timeline points
+     */
+    int intSaveAll(@Param("tLPoints") Collection<TimelinePoint> timelinePoints);
 
     /**
      * Returns a timeline point by an identifier of timeline point
@@ -44,8 +68,20 @@ public interface TimelinePointDAO {
      * @param allowedStatuses allowed statuses for updating timeline point
      * @return number of updated timeline points
      */
-    int update(@Param("tlPoint") TimelinePoint tlPoint,
-               @Param("allowedStatuses") Collection<PMTimelinePointStatus> allowedStatuses);
+    default int update(TimelinePoint tlPoint, Collection<PMTimelinePointStatus> allowedStatuses) {
+        tlPoint.setLastUpdatedTime(Instant.now());
+        return intUpdate(tlPoint, allowedStatuses);
+    }
+
+    /**
+     * Update a timeline point
+     *
+     * @param tlPoint         a timeline point
+     * @param allowedStatuses allowed statuses for updating timeline point
+     * @return number of updated timeline points
+     */
+    int intUpdate(@Param("tlPoint") TimelinePoint tlPoint,
+                  @Param("allowedStatuses") Collection<PMTimelinePointStatus> allowedStatuses);
 
     /**
      * Delete a timeline point

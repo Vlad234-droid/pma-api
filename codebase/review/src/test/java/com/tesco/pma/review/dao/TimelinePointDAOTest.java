@@ -15,6 +15,8 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -303,6 +305,9 @@ class TimelinePointDAOTest extends AbstractDAOTest {
     void getTimeline() {
         final var result = instance.getTimeline(CYCLE_UUID, COLLEAGUE_UUID);
 
+        var lastUpdatedTime = LocalDateTime.of(2022, 1, 1, 10, 0, 0)
+                .toInstant(ZoneOffset.UTC);
+
         final var objectives = TimelinePoint.builder()
                 .uuid(TIMELINE_POINT_UUID)
                 .colleagueCycleUuid(COLLEAGUE_CYCLE_UUID)
@@ -314,6 +319,7 @@ class TimelinePointDAOTest extends AbstractDAOTest {
                 .properties(TIMELINE_POINT_PROPERTIES_INIT)
                 .status(DRAFT)
                 .reviewType(OBJECTIVE)
+                .lastUpdatedTime(lastUpdatedTime)
                 .build();
 
         final var myr = TimelinePoint.builder()
@@ -327,6 +333,7 @@ class TimelinePointDAOTest extends AbstractDAOTest {
                 .properties(TIMELINE_POINT_PROPERTIES_INIT)
                 .status(DRAFT)
                 .reviewType(MYR)
+                .lastUpdatedTime(lastUpdatedTime)
                 .build();
 
         assertThat(result.get(0))
