@@ -5,7 +5,6 @@ import com.tesco.pma.cycle.api.model.PMFormElement;
 import com.tesco.pma.cycle.exception.ParseException;
 import com.tesco.pma.cycle.model.ResourceProvider;
 import com.tesco.pma.error.ErrorCodeAware;
-import com.tesco.pma.pdp.PDPFormProperties;
 import com.tesco.pma.pdp.domain.PDPResponse;
 import com.tesco.pma.pdp.service.PDPService;
 import com.tesco.pma.rest.HttpStatusCodes;
@@ -15,6 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
@@ -50,7 +50,8 @@ public class PDPEndpoint {
 
     private final PDPService pdpService;
     private final ResourceProvider resourceProvider;
-    private final PDPFormProperties pdpFormProperties;
+    @Value("${tesco.application.pdp.form.key}")
+    private String pdpFormKey;
     private final NamedMessageSourceAccessor messages;
 
     /**
@@ -154,7 +155,6 @@ public class PDPEndpoint {
 
     private PMFormElement getPMFormElement() {
         String formJson;
-        var pdpFormKey = pdpFormProperties.getPdpFormKey();
         try {
             formJson = resourceProvider.resourceToString(pdpFormKey, KEY);
         } catch (IOException e) {
