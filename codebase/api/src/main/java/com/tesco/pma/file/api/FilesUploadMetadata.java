@@ -1,18 +1,20 @@
-package com.tesco.pma.cycle.api;
+package com.tesco.pma.file.api;
 
-import com.tesco.pma.cycle.api.model.PMForm;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import java.io.Serializable;
 import java.util.List;
 
+/**
+ * Represents upload metadata for files
+ */
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CompositePMCycleResponse implements Serializable {
-    PMCycle cycle;
-    List<PMForm> forms;
+public class FilesUploadMetadata {
+    List<UploadMetadata> uploadMetadataList;
 }

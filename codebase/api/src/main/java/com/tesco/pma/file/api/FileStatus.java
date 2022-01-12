@@ -1,4 +1,4 @@
-package com.tesco.pma.fs.api;
+package com.tesco.pma.file.api;
 
 import com.tesco.pma.api.DictionaryItem;
 import lombok.Getter;

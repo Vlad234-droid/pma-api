@@ -1,11 +1,8 @@
-package com.tesco.pma.cycle.model;
+package com.tesco.pma.cycle.api.model;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.LocalTestConfig;
 import com.tesco.pma.cycle.api.PMReviewType;
-import com.tesco.pma.cycle.api.model.PMElementType;
-import com.tesco.pma.cycle.api.model.PMFormElement;
-import com.tesco.pma.cycle.api.model.PMReviewElement;
 import com.tesco.pma.cycle.exception.ParseException;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;

@@ -3,12 +3,12 @@
 
 <mapper namespace="com.tesco.pma.fs.dao.FileDAO">
 
-    <resultMap id="fileResultMap" type="com.tesco.pma.fs.domain.File">
+    <resultMap id="fileResultMap" type="com.tesco.pma.file.api.File">
         <id property="uuid" column="uuid"/>
         <result property="path" column="path"/>
         <result property="version" column="version"/>
-        <result property="type" column="type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.fs.api.FileType"/>
-        <result property="status" column="status_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.fs.api.FileStatus"/>
+        <result property="type" column="type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.file.api.FileType"/>
+        <result property="status" column="status_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.file.api.FileStatus"/>
         <result property="description" column="description"/>
         <result property="createdBy" column="created_by"/>
         <result property="createdTime" column="created_time"/>

@@ -31,7 +31,7 @@
         <result property="lastName" column="last_name"/>
     </resultMap>
 
-    <resultMap id="templateMap" type="com.tesco.pma.fs.domain.File">
+    <resultMap id="templateMap" type="com.tesco.pma.file.api.File">
         <result property="uuid" column="uuid"/>
         <result property="fileName" column="file_name"/>
         <result property="createdBy" column="created_by"/>

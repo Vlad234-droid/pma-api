@@ -5,7 +5,7 @@
             http://xmlns.jcp.org/xml/ns/validation/mapping/validation-mapping-2.0.xsd"
         version="2.0">
 
-    <bean class="com.tesco.pma.fs.domain.UploadMetadata" ignore-annotations="true">
+    <bean class="com.tesco.pma.file.api.UploadMetadata" ignore-annotations="true">
         <field name="path">
             <constraint annotation="javax.validation.constraints.NotNull"/>
         </field>

@@ -35,7 +35,7 @@ spring:
   datasource:
     default:
       mybatis-session:
-        type-aliases-package: com.tesco.pma.api, com.tesco.pma.process.api
+        type-aliases-package: com.tesco.pma.api, com.tesco.pma.process.api, com.tesco.pma.cycle.api
         configuration-properties:
           base-package: com.tesco.pma.dao, com.tesco.pma.process.dao, com.tesco.pma.cycle.dao
           batchSize: 100
