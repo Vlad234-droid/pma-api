@@ -6,14 +6,18 @@ import com.tesco.pma.bpm.api.ProcessExecutionException;
 import com.tesco.pma.bpm.api.ProcessManagerService;
 import com.tesco.pma.colleague.api.ColleagueSimple;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.cycle.api.CompositePMCycleMetadataResponse;
+import com.tesco.pma.cycle.api.CompositePMCycleResponse;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.model.PMCycleMetadata;
+import com.tesco.pma.cycle.api.PMForm;
+import com.tesco.pma.cycle.api.model.PMReviewElement;
 import com.tesco.pma.cycle.dao.PMCycleDAO;
 import com.tesco.pma.cycle.exception.ErrorCodes;
 import com.tesco.pma.cycle.exception.PMCycleException;
-import com.tesco.pma.cycle.model.PMProcessModelParser;
-import com.tesco.pma.cycle.model.ResourceProvider;
+import com.tesco.pma.cycle.api.model.PMProcessModelParser;
+import com.tesco.pma.cycle.api.model.ResourceProvider;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
@@ -41,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.tesco.pma.api.DictionaryFilter.includeFilter;
 import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
@@ -48,7 +53,9 @@ import static com.tesco.pma.cycle.api.PMCycleStatus.COMPLETED;
 import static com.tesco.pma.cycle.api.PMCycleStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMCycleStatus.FAILED;
 import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
+import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_ALREADY_EXISTS;
+import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_METADATA_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_ALLOWED_TO_START;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_BY_UUID;
@@ -58,6 +65,7 @@ import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_FOR_ST
 import static com.tesco.pma.logging.TraceId.TRACE_ID_HEADER;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.process.api.PMProcessStatus.STARTED;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Set.of;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
@@ -128,18 +136,31 @@ public class PMCycleServiceImpl implements PMCycleService {
     @Override
     @Transactional
     public PMCycle updateStatus(UUID uuid, PMCycleStatus status) {
-        return intUpdateStatus(uuid, status);
+        return intUpdateStatus(uuid, status, null); // todo move status map to BPMN or DMN
+    }
+
+    @Override
+    @Transactional
+    public PMCycle updateStatus(UUID uuid, PMCycleStatus status, DictionaryFilter<PMCycleStatus> statusFilter) {
+        return intUpdateStatus(uuid, status, statusFilter);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public PMCycle get(UUID uuid) {
+    public CompositePMCycleResponse get(UUID uuid, boolean includeForms) {
         var pmCycle = cycleDAO.read(uuid, null);
         if (null == pmCycle) {
             throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID,
                     Map.of(CYCLE_UUID_PARAMETER_NAME, uuid));
         }
-        return pmCycle;
+        var compositeCycle = new CompositePMCycleResponse();
+        compositeCycle.setCycle(pmCycle);
+
+        if (includeForms) {
+            compositeCycle.setForms(getFormsForCycleMetadata(pmCycle.getMetadata()));
+        }
+
+        return compositeCycle;
     }
 
     @Override
@@ -158,6 +179,28 @@ public class PMCycleServiceImpl implements PMCycleService {
                     Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid));
         }
         return cycles.iterator().next();
+    }
+
+    @Override
+    public CompositePMCycleMetadataResponse getCurrentMetadataByColleague(@NotNull UUID colleagueUuid, boolean includeForms) {
+        var currentCycle = getCurrentByColleague(colleagueUuid);
+
+        if (null == currentCycle.getMetadata()) {
+            throw new NotFoundException(PM_CYCLE_METADATA_NOT_FOUND.getCode(),
+                    messageSourceAccessor.getMessage(PM_CYCLE_METADATA_NOT_FOUND,
+                            Map.of(CYCLE_UUID_PARAMETER_NAME, currentCycle.getUuid(),
+                                    COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid)));
+
+        }
+
+        var compositeMetadata = new CompositePMCycleMetadataResponse();
+        compositeMetadata.setMetadata(currentCycle.getMetadata());
+
+        if (includeForms) {
+            compositeMetadata.setForms(getFormsForCycleMetadata(currentCycle.getMetadata()));
+        }
+
+        return compositeMetadata;
     }
 
     @Override
@@ -183,11 +226,18 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
     @Override
-    public PMCycleMetadata getFileMetadata(UUID fileUuid) {
+    public CompositePMCycleMetadataResponse getFileMetadata(UUID fileUuid, boolean includeForms) {
+
         var file = fileService.get(fileUuid, true);
         var model = Bpmn.readModelFromStream(new ByteArrayInputStream(file.getFileContent()));
-        var parser = new PMProcessModelParser(resourceProvider, messageSourceAccessor);
-        return parser.parse(model);
+        var metadata = new PMProcessModelParser(resourceProvider, messageSourceAccessor).parse(model);
+        var compositeMetadata = new CompositePMCycleMetadataResponse();
+
+        compositeMetadata.setMetadata(metadata);
+        if (includeForms) {
+            compositeMetadata.setForms(getFormsForCycleMetadata(metadata));
+        }
+        return compositeMetadata;
     }
 
     @Override
@@ -206,7 +256,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     @Override
     @Transactional
     public void completeCycle(UUID cycleUUID) {
-        intUpdateStatus(cycleUUID, COMPLETED);
+        intUpdateStatus(cycleUUID, COMPLETED, null); // todo move status map to BPMN or DMN
         //TODO update rt process
     }
 
@@ -218,7 +268,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     private void cycleFailed(String processKey, UUID uuid, Exception ex) {
         log.error("Performance cycle publish error, cause: ", ex);
         try {
-            intUpdateStatus(uuid, FAILED);
+            intUpdateStatus(uuid, FAILED, null); // todo move status map to BPMN or DMN
         } catch (NotFoundException exc) {
             log.error("Performance cycle change status error, cause: ", exc);
         }
@@ -244,23 +294,25 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
 
-    private PMCycle intUpdateStatus(UUID uuid, PMCycleStatus status) {
+    private PMCycle intUpdateStatus(UUID uuid, PMCycleStatus status, DictionaryFilter<PMCycleStatus> statusFilter) {
         var cycle = cycleDAO.read(uuid, null);
         if (null == cycle) {
             throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID,
                     Map.of(CYCLE_UUID_PARAMETER_NAME, uuid));
         }
 
-        cycle.setStatus(status);
-        DictionaryFilter<PMCycleStatus> statusFilter = UPDATE_STATUS_RULE_MAP.get(status);
+        var resultStatusFilter = statusFilter == null || statusFilter.isEmpty()
+                ? UPDATE_STATUS_RULE_MAP.get(status) // todo move status map to BPMN or DMN
+                : statusFilter;
 
-        if (1 == cycleDAO.updateStatus(uuid, status, statusFilter)) {
+        if (1 == cycleDAO.updateStatus(uuid, status, resultStatusFilter)) {
+            cycle.setStatus(status);
             log.debug("Performance cycle UUID: {} changed status to: {}", cycle.getUuid(), status);
             return cycle;
         } else {
             throw notFound(PM_CYCLE_NOT_FOUND_FOR_STATUS_UPDATE,
                     Map.of(STATUS_PARAMETER_NAME, status,
-                            PREV_STATUSES_PARAMETER_NAME, statusFilter));
+                            PREV_STATUSES_PARAMETER_NAME, resultStatusFilter));
         }
     }
 
@@ -331,7 +383,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         try {
             var processId = intDeployProcess(cycle.getTemplate().getUuid(), processKey);
             log.debug("Process definition id: {}", processId);
-            intUpdateStatus(uuid, PMCycleStatus.REGISTERED);
+            intUpdateStatus(uuid, PMCycleStatus.REGISTERED, null); // todo move status map to BPMN or DMN
 
             var pmRuntimeProcess = PMRuntimeProcess.builder()
                     .bpmProcessId(processId)
@@ -376,7 +428,7 @@ public class PMCycleServiceImpl implements PMCycleService {
             log.debug("Started process: {}", processUUID);
 
             pmProcessService.updateStatus(process.getId(), STARTED, processStatusFilter);
-            intUpdateStatus(cycleUUID, ACTIVE);
+            intUpdateStatus(cycleUUID, ACTIVE, null); // todo move status map to BPMN or DMN
         } catch (ProcessExecutionException e) {
             cycleFailed(process.getBpmProcessId(), cycleUUID, e);
         }
@@ -402,6 +454,24 @@ public class PMCycleServiceImpl implements PMCycleService {
         if (!isEmpty(cycleList)) {
             throw notFound(PM_CYCLE_NOT_ALLOWED_TO_START,
                     Map.of(CONDITION_PARAMETER_NAME, query.getFilters()));
+        }
+    }
+
+    private List<PMForm> getFormsForCycleMetadata(PMCycleMetadata metadata) {
+        return metadata.getCycle().getTimelinePoints().stream()
+                .filter(tpe -> tpe.getType() == REVIEW)
+                .map(review -> ((PMReviewElement) review).getForm())
+                .map(el -> new PMForm(el.getId(), el.getKey(), el.getCode(), null))
+                .map(this::fillFormJson)
+                .collect(Collectors.toList());
+    }
+
+    private PMForm fillFormJson(PMForm form) {
+        try {
+            form.setJson(new String(resourceProvider.readFile(UUID.fromString(form.getId())).getFileContent(), UTF_8));
+            return form;
+        } catch (Exception e) {
+            return null;
         }
     }
 }

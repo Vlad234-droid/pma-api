@@ -5,7 +5,7 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.fs.api.FileType;
-import com.tesco.pma.fs.domain.File;
+import com.tesco.pma.file.api.File;
 import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.pagination.Sort;
@@ -18,7 +18,7 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.UUID;
 
-import static com.tesco.pma.fs.api.FileStatus.ACTIVE;
+import static com.tesco.pma.file.api.FileStatus.ACTIVE;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Condition.Operand.GREATER_THAN;
 import static com.tesco.pma.pagination.Condition.Operand.IN;

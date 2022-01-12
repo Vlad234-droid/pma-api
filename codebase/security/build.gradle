@@ -5,6 +5,7 @@ plugins {
 dependencies {
     implementation project(':api')
     implementation project(':service')
+    implementation project(':event')
     implementation project(':profile')
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"

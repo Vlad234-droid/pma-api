@@ -1,6 +1,6 @@
 package com.tesco.pma.flow.handlers;
 
-import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
+import com.tesco.pma.bpm.camunda.flow.CamundaHandlerTestConfig;
 import com.tesco.pma.bpm.camunda.flow.FlowTestUtil;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.UUID;
 
 @ActiveProfiles("test")
-@SpringBootTest(classes = CamundaSpringBootTestConfig.class)
+@SpringBootTest(classes = CamundaHandlerTestConfig.class)
 @ExtendWith(MockitoExtension.class)
 class PMColleagueCycleHandlerTest {
 

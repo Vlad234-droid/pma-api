@@ -55,7 +55,7 @@ spring:
   liquibase:
     enabled: true
     change-log: 'classpath:/com/tesco/pma/database/changelog-master.xml'
-    labels: '!integration'
+    labels: '!integration AND !performance'
   messages:
     basename: >
       com/tesco/pma/exception/AppExceptionMessage,
@@ -72,7 +72,8 @@ camunda:
     process-engine-name: demo-camunda
     history-level: activity
     database:
-      schema-update: create-drop
+      schema-update: true
+#      schema-update: create-drop
       type: h2
     metrics:
       enabled: false
@@ -80,8 +81,7 @@ camunda:
       enabled: false
     id-generator: strong
     auto-deployment-enabled: true
-    deployment-resource-pattern: classpath:com/tesco/demo/flow/diagram_1.bpmn,
-                                           com/tesco/pma/flow/pm_v1.bpmn,
+    deployment-resource-pattern: classpath:com/tesco/pma/flow/pm_v1.bpmn,
                                            com/tesco/pma/flow/pm_v2.bpmn,
                                            com/tesco/pma/flow/forms/pm_o_1.form,
                                            com/tesco/pma/flow/forms/pm_o_2.form,
@@ -89,6 +89,26 @@ camunda:
                                            com/tesco/pma/flow/forms/type_1_eyr.form,
                                            com/tesco/pma/flow/forms/type_1_myr.form,
                                            com/tesco/pma/flow/forms/type_1_objective.form,
-                                           com/tesco/pma/flow/review_notifications.bpmn,
-                                           com/tesco/pma/flow/review_notifications.dmn
+                                          com/tesco/pma/flow/notifications/review/review_flow.bpmn,
+                                          com/tesco/pma/flow/notifications/review/review_notifications_decisions.dmn,
+                                          com/tesco/pma/flow/notifications/review/review_event_to_attribute.dmn,
+                                          com/tesco/pma/flow/notifications/review/review_event_to_template_id.dmn,
+                                          com/tesco/pma/flow/notifications/objectives/objectives_flow.bpmn,
+                                          com/tesco/pma/flow/notifications/objectives/objectives_event_to_attribute.dmn,
+                                          com/tesco/pma/flow/notifications/objectives/objectives_notification_decisions.dmn,
+                                          com/tesco/pma/flow/notifications/objectives/objectives_event_to_template_id.dmn,
+                                          com/tesco/pma/flow/notifications/feedback/feedback_flow.bpmn,
+                                          com/tesco/pma/flow/notifications/feedback/feedback_event_to_attribute.dmn,
+                                          com/tesco/pma/flow/notifications/feedback/feedback_notification_decisions.dmn,
+                                          com/tesco/pma/flow/notifications/feedback/feedback_event_to_template_id.dmn,
+                                          com/tesco/pma/flow/notifications/cycle/cycle_flow.bpmn,
+                                          com/tesco/pma/flow/notifications/cycle/cycle_event_to_attribute.dmn,
+                                          com/tesco/pma/flow/notifications/cycle/cycle_notification_decisions.dmn,
+                                          com/tesco/pma/flow/notifications/cycle/cycle_event_to_template_id.dmn,
+                                          com/tesco/pma/flow/notifications/tips/tips_event_to_attribute.dmn,
+                                          com/tesco/pma/flow/notifications/tips/tips_flow.bpmn,
+                                          com/tesco/pma/flow/notifications/tips/tips_notification_decisions.dmn,
+                                          com/tesco/pma/flow/notifications/tips/tips_event_to_template_id.dmn,
+                                           com/tesco/pma/flow/review_schedule_test.bpmn,
+                                           com/tesco/pma/flow/fiscal_test.bpmn
 

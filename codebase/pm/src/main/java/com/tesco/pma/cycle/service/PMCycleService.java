@@ -1,8 +1,10 @@
 package com.tesco.pma.cycle.service;
 
+import com.tesco.pma.api.DictionaryFilter;
+import com.tesco.pma.cycle.api.CompositePMCycleMetadataResponse;
+import com.tesco.pma.cycle.api.CompositePMCycleResponse;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
-import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.pagination.RequestQuery;
@@ -47,13 +49,24 @@ public interface PMCycleService {
                          @NotNull PMCycleStatus status);
 
     /**
+     * Update PMCycle status with status filter
+     *
+     * @param uuid         PMCycle uuid
+     * @param status       new status
+     * @param statusFilter allowed statuses or null
+     * @return updated PMCycle
+     * @throws NotFoundException if PMCycle doesn't exist
+     */
+    PMCycle updateStatus(@NotNull UUID uuid, @NotNull PMCycleStatus status, DictionaryFilter<PMCycleStatus> statusFilter);
+
+    /**
      * Get PMCycle by uuid
      *
      * @param uuid PMCycle uuid
      * @return found PMCycle
      * @throws NotFoundException if PMCycle doesn't exist
      */
-    PMCycle get(@NotNull UUID uuid);
+    CompositePMCycleResponse get(@NotNull UUID uuid, boolean includeForms);
 
     PMCycle update(@NotNull PMCycle cycle);
 
@@ -65,6 +78,15 @@ public interface PMCycleService {
      * @throws NotFoundException if PMCycle doesn't found
      */
     PMCycle getCurrentByColleague(@NotNull UUID colleagueUuid);
+
+    /**
+     * Returns the current active performance cycle metadata
+     *
+     * @param colleagueUuid Colleague identifier
+     * @return performance cycle
+     * @throws NotFoundException if PMCycle doesn't found
+     */
+    CompositePMCycleMetadataResponse getCurrentMetadataByColleague(@NotNull UUID colleagueUuid, boolean includeForms);
 
     /**
      * Get list of PMCycle's for an employee
@@ -90,9 +112,9 @@ public interface PMCycleService {
      * Get PMCycleMetadata by file UUID
      *
      * @param fileUuid File UUID
-     * @return PMCycleMetadata
+     * @return CompositePMCycleMetadata
      */
-    PMCycleMetadata getFileMetadata(@NotNull UUID fileUuid);
+    CompositePMCycleMetadataResponse getFileMetadata(@NotNull UUID fileUuid, boolean includeForms);
 
     /**
      * Deploy pm cycle

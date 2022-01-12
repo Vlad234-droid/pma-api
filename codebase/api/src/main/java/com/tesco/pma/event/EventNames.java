@@ -2,7 +2,9 @@ package com.tesco.pma.event;
 
 public enum EventNames {
     IMPORT_NEW_COLLEAGUE,
+    POST_IMPORT_NEW_COLLEAGUE,
     CEP_COLLEAGUE_ADDED,
+    POST_CEP_COLLEAGUE_ADDED,
     CEP_COLLEAGUE_UPDATED,
     CEP_COLLEAGUE_LEFT
 }

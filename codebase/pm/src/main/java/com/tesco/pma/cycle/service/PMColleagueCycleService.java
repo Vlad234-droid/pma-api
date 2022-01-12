@@ -37,7 +37,7 @@ public interface PMColleagueCycleService {
      * @param startTime - start time filter
      * @return - collection of PM colleague cycles
      */
-    List<PMColleagueCycle> getByCycleUuidWithoutTimelinePoint(UUID cycleUuid, Instant startTime);
+    List<PMColleagueCycle> getActiveByCycleUuidWithoutTimelinePoint(UUID cycleUuid, Instant startTime);
 
     /**
      * Gets list of colleagues by types key and hire date
@@ -78,4 +78,13 @@ public interface PMColleagueCycleService {
      * @param uuid - identifier
      */
     void delete(UUID uuid);
+
+    /**
+     * Changes status for colleague cycle handler
+     *
+     * @param colleagueUuid - colleague identifier
+     * @param oldStatus     - previous status
+     * @param newStatus     - new status
+     */
+    void changeStatusForColleague(UUID colleagueUuid, PMCycleStatus oldStatus, PMCycleStatus newStatus);
 }

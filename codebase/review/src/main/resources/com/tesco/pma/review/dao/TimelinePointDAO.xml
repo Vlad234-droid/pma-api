@@ -21,9 +21,10 @@
                 javaType="com.tesco.pma.cycle.api.PMTimelinePointStatus"/>
         <result property="reviewType" column="review_type_code" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
         <result property="count" column="review_count"/>
+        <result property="lastUpdatedTime" column="last_updated_time"/>
     </resultMap>
 
-    <insert id="create" flushCache="true">
+    <insert id="intCreate" flushCache="true">
         INSERT INTO pm_timeline_point
         (uuid,
          colleague_cycle_uuid,
@@ -34,7 +35,8 @@
          end_time,
          properties,
          status_id,
-         review_count)
+         review_count,
+         last_updated_time)
         VALUES (#{tlPoint.uuid},
                 #{tlPoint.colleagueCycleUuid},
                 #{tlPoint.code},
@@ -44,10 +46,11 @@
                 #{tlPoint.endTime},
                 #{tlPoint.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
                 #{tlPoint.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMTimelinePointStatus},
-                #{tlPoint.count});
+                #{tlPoint.count},
+                #{tlPoint.lastUpdatedTime});
     </insert>
 
-    <insert id="saveAll" flushCache="true" parameterType="java.util.Collection">
+    <insert id="intSaveAll" flushCache="true" parameterType="java.util.Collection">
         INSERT INTO pm_timeline_point
         (uuid,
         colleague_cycle_uuid,
@@ -58,7 +61,8 @@
         end_time,
         properties,
         status_id,
-        review_count)
+        review_count,
+        last_updated_time)
         VALUES
         <foreach collection="tLPoints" item="tLPoint" index="index" separator=",">
             (#{tLPoint.uuid},
@@ -70,7 +74,8 @@
             #{tLPoint.endTime},
             #{tLPoint.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
             #{tLPoint.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMTimelinePointStatus}),
-            #{tlPoint.count})
+            #{tlPoint.count},
+            #{tlPoint.lastUpdatedTime})
         </foreach>
     </insert>
 
@@ -83,7 +88,7 @@
         WHERE tlp.uuid = #{uuid}
     </select>
 
-    <update id="update" flushCache="true">
+    <update id="intUpdate" flushCache="true">
         UPDATE pm_timeline_point
         SET start_time = #{tlPoint.startTime},
         end_time = #{tlPoint.endTime},
@@ -93,7 +98,8 @@
         description = #{tlPoint.description},
         element_type_id =
         #{tlPoint.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.model.PMElementType},
-        review_count = #{tlPoint.count}
+        review_count = #{tlPoint.count},
+        last_updated_time = #{tlPoint.lastUpdatedTime}
         WHERE colleague_cycle_uuid = #{tlPoint.colleagueCycleUuid}
         and code = #{tlPoint.code}
         <if test="allowedStatuses != null and !allowedStatuses.isEmpty()">

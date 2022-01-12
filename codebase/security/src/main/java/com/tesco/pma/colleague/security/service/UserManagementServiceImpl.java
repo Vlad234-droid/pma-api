@@ -11,7 +11,7 @@ import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
 import com.tesco.pma.colleague.security.domain.request.RoleRequest;
 import com.tesco.pma.colleague.security.exception.ErrorCodes;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.exception.DatabaseConstraintViolationException;
+import com.tesco.pma.exception.AlreadyExistsException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.pagination.RequestQuery;
 import lombok.RequiredArgsConstructor;
@@ -93,11 +93,16 @@ public class UserManagementServiceImpl implements UserManagementService {
         //    throw colleagueNotFoundException(request.getName(), request.getIamId());
         // }
 
+        Optional<Account> optionalAccount = findAccountByName(request.getName());
+        if (optionalAccount.isPresent()) {
+            throw accountAlreadyExistsException(request.getName());
+        }
+
         try {
             accountManagementDAO.create(request.getName(), request.getIamId(),
                     request.getStatus(), request.getType());
         } catch (DuplicateKeyException e) {
-            throw duplicatedAccountException(e, request.getName());
+            throw accountAlreadyExistsException(e, request.getName());
         }
 
         Collection<Integer> roleIds = remappingRoles(request.getRoleId());
@@ -226,20 +231,26 @@ public class UserManagementServiceImpl implements UserManagementService {
                         Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName)));
     }
 
-    private DatabaseConstraintViolationException duplicatedAccountException(DuplicateKeyException exception,
-                                                                            String accountName) {
-        throw new DatabaseConstraintViolationException(ErrorCodes.SECURITY_ACCOUNT_ALREADY_EXISTS.name(),
+    private AlreadyExistsException accountAlreadyExistsException(String accountName) {
+        throw new AlreadyExistsException(ErrorCodes.SECURITY_ACCOUNT_ALREADY_EXISTS.name(),
                 messages.getMessage(ErrorCodes.SECURITY_ACCOUNT_ALREADY_EXISTS,
-                        Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName)), null, exception);
+                        Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName)));
     }
 
-    private DatabaseConstraintViolationException duplicatedRoleException(DuplicateKeyException exception,
-                                                                         String accountName, Integer roleName) {
-        return new DatabaseConstraintViolationException(ErrorCodes.SECURITY_DUPLICATED_ROLE.name(),
+    private AlreadyExistsException accountAlreadyExistsException(DuplicateKeyException exception,
+                                                                        String accountName) {
+        throw new AlreadyExistsException(ErrorCodes.SECURITY_ACCOUNT_ALREADY_EXISTS.name(),
+                messages.getMessage(ErrorCodes.SECURITY_ACCOUNT_ALREADY_EXISTS,
+                        Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName)), exception);
+    }
+
+    private AlreadyExistsException duplicatedRoleException(DuplicateKeyException exception,
+                                                            String accountName, Integer roleName) {
+        return new AlreadyExistsException(ErrorCodes.SECURITY_DUPLICATED_ROLE.name(),
                 messages.getMessage(ErrorCodes.SECURITY_DUPLICATED_ROLE,
                         Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName,
                                 ROLE_NAME_PARAMETER_NAME, roleName
-                        )), null, exception);
+                        )), exception);
     }
 
 }

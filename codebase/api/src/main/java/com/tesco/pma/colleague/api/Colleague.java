@@ -5,11 +5,14 @@ import com.tesco.pma.colleague.api.service.ServiceDates;
 import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
 @Data
-public class Colleague {
+public class Colleague implements Serializable {
+
+    private static final long serialVersionUID = -4462033047515332131L;
 
     public enum ColleagueType {
         EMPLOYEE,
