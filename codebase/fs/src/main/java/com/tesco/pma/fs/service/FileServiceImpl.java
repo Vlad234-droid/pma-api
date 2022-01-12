@@ -1,6 +1,8 @@
 package com.tesco.pma.fs.service;
 
+import com.tesco.pma.api.GeneralDictionaryItem;
 import com.tesco.pma.api.RequestQueryToDictionaryFilterConverter;
+import com.tesco.pma.dao.DictionaryDAO;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.RegistrationException;
 import com.tesco.pma.fs.api.FileStatus;
@@ -38,6 +40,7 @@ import static com.tesco.pma.pagination.Sort.SortOrder.DESC;
 public class FileServiceImpl implements FileService {
 
     private final FileDAO fileDao;
+    private final DictionaryDAO dictionaryDAO;
     private final RequestQueryToDictionaryFilterConverter toDictionaryFilterConverter;
 
     @Override
@@ -54,6 +57,10 @@ public class FileServiceImpl implements FileService {
             fileData.setFileName(uploadMetadata.getFileName());
         }
         fileData.setStatus(uploadMetadata.getStatus() == null ? DRAFT : uploadMetadata.getStatus());
+        if (uploadMetadata.getType() != null && uploadMetadata.getType().getId() == null && uploadMetadata.getType().getCode() != null) {
+            GeneralDictionaryItem dictionaryItem = dictionaryDAO.findByCode("file_type", uploadMetadata.getType().getCode());
+            uploadMetadata.getType().setId(dictionaryItem.getId());
+        }
         fileData.setType(uploadMetadata.getType());
         fileData.setDescription(uploadMetadata.getDescription());
         fileData.setFileDate(uploadMetadata.getFileDate() == null ? currMomentInUTC : uploadMetadata.getFileDate());

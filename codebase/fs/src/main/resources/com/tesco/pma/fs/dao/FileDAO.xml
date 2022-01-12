@@ -7,7 +7,6 @@
         <id property="uuid" column="uuid"/>
         <result property="path" column="path"/>
         <result property="version" column="version"/>
-        <result property="type" column="t_code"/>
         <result property="status" column="status_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.fs.api.FileStatus"/>
         <result property="description" column="f_description"/>
         <result property="createdBy" column="created_by"/>
@@ -16,6 +15,7 @@
         <result property="fileDate" column="file_date"/>
         <result property="fileLength" column="file_length"/>
         <result property="fileContent" column="file_content" jdbcType="BINARY"/>
+        <association property="type" autoMapping="true" columnPrefix="t_"/>
     </resultMap>
 
     <sql id="addStatusIdCondition">
@@ -257,7 +257,7 @@
                     <property name="path" value="#{path}"/>
                     <property name="fileName" value="#{fileName}"/>
                 </include>) + 1,
-                (SELECT id FROM file_type WHERE code = #{type}),
+                #{type.id},
                 #{status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, jdbcType=INTEGER},
                 #{description},
                 #{createdBy},

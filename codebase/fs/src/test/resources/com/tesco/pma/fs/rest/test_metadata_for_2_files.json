@@ -2,14 +2,18 @@
   "uploadMetadataList": [
     {
       "path": "/home/vsilenko/dev",
-      "type": "PDF",
+      "type": {
+        "code": "PDF"
+      },
       "status": "ACTIVE",
       "description": "text templates",
       "fileDate": "2021-04-22T08:50:08.294Z"
     },
     {
       "path": "/home/vsilenko/dev",
-      "type": "FORM",
+      "type": {
+        "id": "2"
+      },
       "status": "ACTIVE",
       "description": "text templates",
       "fileDate": "2021-04-22T08:50:08.294Z"

@@ -2,6 +2,7 @@ package com.tesco.pma.fs.service;
 
 import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.api.RequestQueryToDictionaryFilterConverter;
+import com.tesco.pma.dao.DictionaryDAO;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.RegistrationException;
 import com.tesco.pma.fs.api.FileStatus;
@@ -26,8 +27,6 @@ import java.util.UUID;
 
 import static com.tesco.pma.fs.api.FileStatus.ACTIVE;
 import static com.tesco.pma.fs.api.FileStatus.INACTIVE;
-import static com.tesco.pma.fs.api.FileType.BPMN;
-import static com.tesco.pma.fs.api.FileType.FORM;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Sort.SortOrder.DESC;
 import static java.util.Arrays.asList;
@@ -57,6 +56,9 @@ public class FileServiceImplTest {
 
     @MockBean
     private FileDAO fileDao;
+
+    @MockBean
+    private DictionaryDAO dictionaryDAO;
 
     @MockBean
     private RequestQueryToDictionaryFilterConverter toDictionaryFilterConverter;
@@ -121,16 +123,10 @@ public class FileServiceImplTest {
         var requestQuery = new RequestQuery();
         var includeStatusFilter = DictionaryFilter.includeFilter(ACTIVE);
         var excludeStatusFilter = DictionaryFilter.excludeFilter(INACTIVE);
-        var includeTypeFilter = DictionaryFilter.includeFilter(FORM);
-        var excludeTypeFilter = DictionaryFilter.excludeFilter(BPMN);
         when(toDictionaryFilterConverter.convert(requestQuery, true, "status", FileStatus.class))
                 .thenReturn(includeStatusFilter);
         when(toDictionaryFilterConverter.convert(requestQuery, false, "status", FileStatus.class))
                 .thenReturn(excludeStatusFilter);
-        when(toDictionaryFilterConverter.convert(requestQuery, true, "type", FileType.class))
-                .thenReturn(includeTypeFilter);
-        when(toDictionaryFilterConverter.convert(requestQuery, false, "type", FileType.class))
-                .thenReturn(excludeTypeFilter);
         when(fileDao.findByRequestQuery(requestQuery, asList(includeStatusFilter, excludeStatusFilter),
                 includeFileContent, true)).thenReturn(filesData);
 
@@ -206,7 +202,11 @@ public class FileServiceImplTest {
         fileData.setUuid(uuid);
         fileData.setPath(PATH);
         fileData.setVersion(version);
-        fileData.setType("FORM");
+        FileType type = new FileType();
+        type.setId(2);
+        type.setCode("FORM");
+        type.setDescription("GUI Form file");
+        fileData.setType(type);
         fileData.setStatus(ACTIVE);
         fileData.setDescription("other file");
         fileData.setCreatedBy(CREATOR_ID);
