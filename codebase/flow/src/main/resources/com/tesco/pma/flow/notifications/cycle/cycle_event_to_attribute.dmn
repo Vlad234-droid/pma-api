@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="cycle_event_to_attribute" name="Event to Profile attribute" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
+  <decision id="cycle_event_to_profile_attribute" name="Map event to profile attribute name">
+    <informationRequirement id="InformationRequirement_0w0zust">
+      <requiredInput href="#InputData_1g0u5hf" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_1dpms3v" hitPolicy="FIRST">
+      <input id="InputClause_0anirp2" label="Event Name" biodi:width="282">
+        <inputExpression id="LiteralExpression_0jpa5sp" typeRef="string">
+          <text>EVENT_NAME</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_09t43wo" label="Is Manager">
+        <inputExpression id="LiteralExpression_064e5ge" typeRef="boolean">
+          <text>IS_MANAGER</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1bakg4a" label="Quarter">
+        <inputExpression id="LiteralExpression_0k45bdj" typeRef="string">
+          <text>QUARTER</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="Attribute name" name="PROFILE_ATTRIBUTE_NAME" typeRef="string" biodi:width="367" />
+      <rule id="DecisionRule_0k3bxnp">
+        <inputEntry id="UnaryTests_1b9u06b">
+          <text>"NF_BEFORE_CYCLE_START"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1fcvejv">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ya6pa8">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_06u4cfw">
+          <text>"Before cycle start - Colleague"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0xn39n6">
+        <inputEntry id="UnaryTests_1wdtsez">
+          <text>"NF_BEFORE_CYCLE_END"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1kqgpii">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_02lzp8q">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1tdkqcg">
+          <text>"Before cycle end - Colleague"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0ympxyw">
+        <inputEntry id="UnaryTests_0bxvw41">
+          <text>"NF_BEFORE_CYCLE_START"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1g5yxcx">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1enrg63">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1s6qds0">
+          <text>"Before cycle start - LM"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1phlqvc">
+        <inputEntry id="UnaryTests_1h0pdhx">
+          <text>"NF_BEFORE_CYCLE_END"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_03fzr4k">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0c3nav2">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_08lhcde">
+          <text>"Before cycle end - LM"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0sinsp2">
+        <inputEntry id="UnaryTests_0p2ow69">
+          <text>"NF_START_TIMELINE_NOTIFICATION"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1x3f1lh">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0zt4w7d">
+          <text>"Q1"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0e2h4up">
+          <text></text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_10smalj">
+        <inputEntry id="UnaryTests_1d9puvl">
+          <text>"NF_START_TIMELINE_NOTIFICATION"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1v091m1">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1aght4v">
+          <text>"Q3"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0jtv00g">
+          <text></text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <inputData id="InputData_1g0u5hf" name="Event Name" />
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="cycle_event_to_profile_attribute">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_0jl626x" dmnElementRef="InputData_1g0u5hf">
+        <dc:Bounds height="45" width="125" x="187" y="247" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_0domkdg" dmnElementRef="InformationRequirement_0w0zust">
+        <di:waypoint x="250" y="247" />
+        <di:waypoint x="250" y="200" />
+        <di:waypoint x="250" y="180" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

@@ -21,16 +21,14 @@ public class PMFormElement extends PMElement {
     public static final String PM_FORM_JSON = PM_FORM_PREFIX + "json";
 
     private String key;
-    private String json;
 
     public PMFormElement() {
         setType(PMElementType.FORM);
     }
 
-    public PMFormElement(String key, String code, String json) {
-        super(key, code, null, PMElementType.FORM);
+    public PMFormElement(String id, String key, String code) {
+        super(id, code, null, PMElementType.FORM);
         this.key = key;
-        this.json = json;
     }
 
     public static List<String> getPropertyNames() {

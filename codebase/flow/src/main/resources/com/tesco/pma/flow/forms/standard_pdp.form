@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "**Development goal**",
+      "type": "textfield",
+      "id": "Field_05ltgf5",
+      "key": "goal",
+      "description": "Build great relationships with other outside my own team",
+      "validate": {
+        "minLength": 10,
+        "maxLength": 500,
+        "required": true
+      }
+    },
+    {
+      "label": "**By achieving this goal, I will be able to...**",
+      "type": "textfield",
+      "id": "Field_0ixqinx",
+      "key": "wiil_be_able_to",
+      "description": "1) Collaborate in a more efficient way 2) Build my credibility and personal brand, both within and outside my own team",
+      "validate": {
+        "required": true,
+        "minLength": 10,
+        "maxLength": 500
+      }
+    },
+    {
+      "label": "**How will I go about achieving my goals**",
+      "type": "textfield",
+      "id": "Field_0v11hqn",
+      "key": "how_will_i_go",
+      "validate": {
+        "required": true,
+        "minLength": 10,
+        "maxLength": 500
+      },
+      "description": "1) Hold a lunch and learn open to wider business to share insight on a topic 2) Research self driven development opportunities around building my network, such as TED Talks 3) Use my current network to support me in connecting with others around the business"
+    },
+    {
+      "label": "**I know I will have succeeded when...**",
+      "type": "textfield",
+      "id": "Field_0wt1xfv",
+      "key": "succeeded_when",
+      "description": " 1) Positive feedback from stakeholders 2) Able to demonstrate that I have a diverse network and can draw on their knowledge, feedback and opinions",
+      "validate": {
+        "required": true,
+        "minLength": 10,
+        "maxLength": 500
+      }
+    },
+    {
+      "label": "**I want to achieve my goal by**",
+      "type": "textfield",
+      "id": "Field_1isb4ro",
+      "key": "expiration_date",
+      "description": "{datepicker}",
+      "validate": {
+        "maxLength": 10,
+        "minLength": 10,
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "Form_1jm6yw6"
+}

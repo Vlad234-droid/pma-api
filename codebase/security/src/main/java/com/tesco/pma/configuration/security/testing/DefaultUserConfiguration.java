@@ -5,13 +5,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Configuration
 public class DefaultUserConfiguration {
@@ -32,17 +25,11 @@ public class DefaultUserConfiguration {
     public FilterRegistrationBean<DefaultUserFilter> defaultUserFilter() {
         FilterRegistrationBean<DefaultUserFilter> filterRegistration = new FilterRegistrationBean<>();
         filterRegistration.setName("pmaDefaultUserFilter");
-        filterRegistration.setFilter(new DefaultUserFilter(createDefaultUserAuthentication()));
+        filterRegistration.setFilter(new DefaultUserFilter(AuthenticationUtils.createDefaultUserAuthentication(defaultUserUuid)));
         // Make sure the filter is registered after the Spring Security Filter Chain
         filterRegistration.setOrder(DEFAULT_USER_FILTER_PRECEDENCE);
         filterRegistration.addUrlPatterns(DEFAULT_USER_URL_PATTERNS);
         return filterRegistration;
-    }
-
-    private Authentication createDefaultUserAuthentication() {
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        var user = new User(defaultUserUuid, "password", grantedAuthorities);
-        return new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
     }
 
 }

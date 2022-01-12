@@ -3,8 +3,10 @@ package com.tesco.pma.process.service;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.model.ResourceProvider;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.fs.domain.File;
 import com.tesco.pma.process.api.PMProcessErrorCodes;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -18,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -63,4 +66,20 @@ public class ClasspathResourceProvider implements ResourceProvider {
             return IOUtils.toString(is, StandardCharsets.UTF_8);
         }
     }
+
+    @SneakyThrows
+    @Override
+    public File readFile(String resourcePath, String resourceName) {
+        File file = new File();
+        file.setUuid(UUID.randomUUID());
+        file.setFileContent(IOUtils.toByteArray(read(resourcePath, resourceName)));
+        return file;
+    }
+
+    @Override
+    public File readFile(UUID uuid) {
+        throw new UnsupportedOperationException();
+    }
+
+
 }

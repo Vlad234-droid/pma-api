@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="objective_event_to_template" name="Review Notifications" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
+  <decision id="objective_event_to_template_id" name="Map event to template id">
+    <informationRequirement id="InformationRequirement_0w0zust">
+      <requiredInput href="#InputData_1g0u5hf" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_1dpms3v" hitPolicy="FIRST">
+      <input id="InputClause_0anirp2" label="Event Name" biodi:width="254">
+        <inputExpression id="LiteralExpression_0jpa5sp" typeRef="string">
+          <text>EVENT_NAME</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="Template ID" name="CONTACT_TEMPLATE_ID" typeRef="string" biodi:width="367" />
+      <rule id="DecisionRule_0bi5wkq">
+        <inputEntry id="UnaryTests_0k3hu72">
+          <text>"NF_ORGANISATION_OBJECTIVES"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ouiawh">
+          <text>"00000000-0000-0000-0000-000000000000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0p1xqy1">
+        <inputEntry id="UnaryTests_1g2j5bi">
+          <text>"NF_OBJECTIVES_APPROVED_FOR_SHARING"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1t2pk1d">
+          <text>"00000000-0000-0000-0000-000000000000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1ski34y">
+        <inputEntry id="UnaryTests_1078fht">
+          <text>"NF_OBJECTIVE_SHARING_START"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1i2rk6i">
+          <text>"00000000-0000-0000-0000-000000000000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_05v936u">
+        <inputEntry id="UnaryTests_0mda4jy">
+          <text>"NF_OBJECTIVE_SHARING_END"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0g4jlcb">
+          <text>"00000000-0000-0000-0000-000000000000"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <inputData id="InputData_1g0u5hf" name="Event Name" />
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="objective_event_to_template_id">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_0jl626x" dmnElementRef="InputData_1g0u5hf">
+        <dc:Bounds height="45" width="125" x="187" y="237" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_0domkdg" dmnElementRef="InformationRequirement_0w0zust">
+        <di:waypoint x="250" y="237" />
+        <di:waypoint x="250" y="200" />
+        <di:waypoint x="250" y="180" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
