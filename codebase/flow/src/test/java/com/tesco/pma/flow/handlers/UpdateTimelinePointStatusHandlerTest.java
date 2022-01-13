@@ -49,7 +49,7 @@ public class UpdateTimelinePointStatusHandlerTest extends AbstractCamundaSpringB
     EventSupport createEvent(String evenName) {
         var event = new EventSupport(evenName);
 
-        event.putProperty(FlowParameters.TL_POINT_UUID.name(), tlPointUUID);
+        event.putProperty(FlowParameters.TIMELINE_POINT_UUID.name(), tlPointUUID);
         return event;
     }
 }

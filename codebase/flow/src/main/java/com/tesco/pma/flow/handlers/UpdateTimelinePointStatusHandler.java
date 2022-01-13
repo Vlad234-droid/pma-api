@@ -34,6 +34,6 @@ public class UpdateTimelinePointStatusHandler extends AbstractUpdateEnumStatusHa
     }
 
     protected UUID getTlPointUUID(Event event) {
-        return (UUID) event.getEventProperty(FlowParameters.TL_POINT_UUID.name());
+        return (UUID) event.getEventProperty(FlowParameters.TIMELINE_POINT_UUID.name());
     }
 }
