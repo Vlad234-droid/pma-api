@@ -6,6 +6,7 @@ import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.exception.ParseException;
 import com.tesco.pma.error.ErrorCodeAware;
+import com.tesco.pma.util.ResourceProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +20,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.tesco.pma.util.FileUtils.getFormName;
 import static com.tesco.pma.cycle.api.model.PMCycleElement.PM_CYCLE_TYPE;
 import static com.tesco.pma.cycle.api.model.PMElement.PM_TYPE;
 import static com.tesco.pma.cycle.api.model.PMFormElement.PM_FORM_KEY;
@@ -32,6 +32,7 @@ import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_TYPE;
 import static com.tesco.pma.cycle.api.model.PMTimelinePointElement.PM_TIMELINE_POINT;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_PARSE_IS_BLANK;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_PARSE_NOT_FOUND;
+import static com.tesco.pma.util.FileUtils.getFormName;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 15.10.2021 Time: 15:45

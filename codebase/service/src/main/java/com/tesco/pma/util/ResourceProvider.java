@@ -1,4 +1,4 @@
-package com.tesco.pma.cycle.api.model;
+package com.tesco.pma.util;
 
 import com.tesco.pma.file.api.File;
 

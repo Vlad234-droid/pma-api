@@ -2,9 +2,8 @@ package com.tesco.pma.pdp.rest;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMForm;
-import com.tesco.pma.cycle.api.model.ResourceProvider;
-import com.tesco.pma.cycle.exception.ParseException;
-import com.tesco.pma.error.ErrorCodeAware;
+import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.util.ResourceProvider;
 import com.tesco.pma.pdp.domain.PDPResponse;
 import com.tesco.pma.pdp.service.PDPService;
 import com.tesco.pma.rest.HttpStatusCodes;
@@ -33,11 +32,9 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
-import static com.tesco.pma.cycle.api.model.PMFormElement.KEY;
-import static com.tesco.pma.cycle.exception.ErrorCodes.PM_PARSE_NOT_FOUND;
+import static com.tesco.pma.exception.ErrorCodes.ERROR_FILE_NOT_FOUND;
 import static com.tesco.pma.rest.RestResponse.success;
 import static com.tesco.pma.util.FileUtils.getFormName;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -159,15 +156,10 @@ public class PDPEndpoint {
         try {
             formJson = resourceProvider.resourceToString(formKey, formName);
         } catch (IOException e) {
-            throw parseException(PM_PARSE_NOT_FOUND, Map.of("key", KEY, "value", formKey), KEY, e);
+            throw new NotFoundException(ERROR_FILE_NOT_FOUND.name(), "Form was not found", formName, e);
         }
-
 
         var uuid = resourceProvider.readFileUuid(formKey, formName);
         return new PMForm(uuid.toString(), formName, formName, formJson);
-    }
-
-    private ParseException parseException(ErrorCodeAware errorCode, Map<String, ?> params, String field, Throwable cause) {
-        return new ParseException(errorCode.getCode(), messages.getMessage(errorCode.getCode(), params), field, cause);
     }
 }
