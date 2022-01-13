@@ -158,6 +158,20 @@
         </if>
     </update>
 
+    <update id="intUpdateStatus" flushCache="true">
+        update pm_timeline_point tlp
+        SET status_id=#{newStatus.id},
+        last_updated_time=#{lastUpdatedTime}
+        WHERE 1=1
+        AND tlp.uuid = #{uuid}
+        <if test="prevStatuses != null and !prevStatuses.isEmpty()">
+            and tlp.status_id in
+            <foreach item="prevStatus" collection="prevStatuses" separator="," open="(" close=")">
+                #{prevStatus.id}
+            </foreach>
+        </if>
+    </update>
+
     <delete id="deleteByParams">
         DELETE
         FROM pm_timeline_point tlp
