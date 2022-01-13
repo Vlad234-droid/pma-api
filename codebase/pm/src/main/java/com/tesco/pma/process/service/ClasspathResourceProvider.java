@@ -1,7 +1,7 @@
 package com.tesco.pma.process.service;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.cycle.api.model.ResourceProvider;
+import com.tesco.pma.util.ResourceProvider;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.file.api.File;
 import com.tesco.pma.process.api.PMProcessErrorCodes;

@@ -1,6 +1,6 @@
 package com.tesco.pma.process.service;
 
-import com.tesco.pma.cycle.api.model.ResourceProvider;
+import com.tesco.pma.util.ResourceProvider;
 import com.tesco.pma.file.api.File;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -5,6 +5,7 @@ import com.tesco.pma.cycle.LocalTestConfig;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.exception.ParseException;
 import com.tesco.pma.util.FileUtils;
+import com.tesco.pma.util.ResourceProvider;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.junit.jupiter.api.Assertions;

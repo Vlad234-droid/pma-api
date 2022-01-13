@@ -6,6 +6,7 @@ import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.exception.ParseException;
 import com.tesco.pma.error.ErrorCodeAware;
+import com.tesco.pma.util.ResourceProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

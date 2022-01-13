@@ -2,8 +2,7 @@ package com.tesco.pma.pdp.rest;
 
 import com.tesco.pma.api.MapJson;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-
-import com.tesco.pma.cycle.api.model.ResourceProvider;
+import com.tesco.pma.util.ResourceProvider;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 
