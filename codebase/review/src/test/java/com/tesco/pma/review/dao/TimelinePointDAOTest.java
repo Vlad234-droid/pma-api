@@ -271,6 +271,22 @@ class TimelinePointDAOTest extends AbstractDAOTest {
             "pm_cycle_init.xml",
             "pm_colleague_cycle_init.xml",
             "pm_timeline_point_init.xml"})
+    @ExpectedDataSet("pm_timeline_point_update_status_expected_1.xml")
+    void updateStatus() {
+
+        final var result = instance.updateStatus(
+                TIMELINE_POINT_UUID,
+                WAITING_FOR_APPROVAL,
+                Collections.singleton(DRAFT));
+
+        assertThat(result).isOne();
+    }
+
+    @Test
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml"})
     @ExpectedDataSet("pm_timeline_point_delete_expected_1.xml")
     void deleteByParamsSucceeded() {
         final var result = instance.deleteByParams(

@@ -37,7 +37,9 @@ public enum FlowParameters {
     TIP_UUID,
 
     //notifications
-    CONTACT_TEMPLATE_ID;
+    CONTACT_TEMPLATE_ID,
+
+    TIMELINE_POINT_UUID;
 
     /**
      * Returns corresponded parameter for string value if exist or the same parameter
