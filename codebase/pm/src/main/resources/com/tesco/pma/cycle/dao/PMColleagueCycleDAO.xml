@@ -108,6 +108,9 @@
                 #{cc.startTime},
                 #{cc.endTime},
                 #{cc.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler})
+        ON CONFLICT(colleague_uuid, cycle_uuid, status_id)
+        WHERE status_id = 1
+        DO NOTHING
     </insert>
 
     <insert id="update" flushCache="true">
