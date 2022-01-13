@@ -12,13 +12,6 @@
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_1hnn181" sourceRef="Event_1mop64d" targetRef="Activity_169rxaf" />
-    <bpmn:scriptTask id="Activity_0gtujyz" name="Send&#10;before start&#10;review&#10;event" scriptFormat="groovy">
-      <bpmn:incoming>Flow_1d3qt6f</bpmn:incoming>
-      <bpmn:outgoing>Flow_0gpmgag</bpmn:outgoing>
-      <bpmn:script>println "\nSend event: " +
-"${execution.getCurrentActivityName()}" +
-" ${java.time.LocalDateTime.now()}"</bpmn:script>
-    </bpmn:scriptTask>
     <bpmn:sequenceFlow id="Flow_1d3qt6f" sourceRef="Event_1gsa5iq" targetRef="Activity_0gtujyz" />
     <bpmn:intermediateCatchEvent id="Event_19zy80f" name="Start&#10;review">
       <bpmn:incoming>Flow_0gpmgag</bpmn:incoming>
@@ -126,6 +119,18 @@
     <bpmn:sequenceFlow id="Flow_057syh7" sourceRef="Gateway_0mf8rqh" targetRef="Event_095p8c5">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${TEST_MODE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_0gtujyz" name="Send&#10;before start&#10;review&#10;event" camunda:class="com.tesco.pma.flow.handlers.SendNotificationEventHandler">
+      <bpmn:extensionElements>
+        <camunda:field name="eventNameExpression">
+          <camunda:string>NF_PM_REVIEW_BEFORE_START</camunda:string>
+        </camunda:field>
+        <camunda:field name="isErrorSensitiveExpression">
+          <camunda:string>true</camunda:string>
+        </camunda:field>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1d3qt6f</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gpmgag</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="review_schedule_test">
@@ -209,9 +214,6 @@
           <dc:Bounds x="514" y="165" width="33" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0gtujyz_di" bpmnElement="Activity_0gtujyz">
-        <dc:Bounds x="580" y="100" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_19zy80f_di" bpmnElement="Event_19zy80f">
         <dc:Bounds x="712" y="122" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -259,6 +261,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_095p8c5_di" bpmnElement="Event_095p8c5">
         <dc:Bounds x="362" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_07eou46_di" bpmnElement="Activity_0gtujyz">
+        <dc:Bounds x="580" y="100" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -46,7 +46,7 @@ class ColleagueEventsSendHandlerTest {
         Mockito.when(expression.getExpressionText()).thenReturn(EXPRESSION_VALUE);
         Expression isErrorSensitiveExpression = Mockito.mock(Expression.class);
         Mockito.when(isErrorSensitiveExpression.getExpressionText()).thenReturn(IS_ERROR_SENSITIVE_EXPRESSION);
-        handler = new ColleagueEventsSendHandler(configEntryService, eventSender, namedMessageSourceAccessor);
+        handler = new ColleagueEventsSendHandler(namedMessageSourceAccessor, configEntryService, eventSender);
         handler.setEventNameExpression(expression);
         handler.setIsErrorSensitiveExpression(isErrorSensitiveExpression);
         executionContext = Mockito.mock(ExecutionContext.class);
