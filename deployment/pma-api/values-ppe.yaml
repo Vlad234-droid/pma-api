@@ -80,6 +80,7 @@ affinity: {}
 TESCO_API_BASE_URL: https://api-ppe.tesco.com
 ONE_LOGIN_BASE_URL: https://loginppe.ourtesco.com
 PMA_API_URL: http://pma-api-service:8083/v1
+COLLEAGUE_INBOX_API_URL: https://ppe.ourtesco.com/dex-colleague-my-inbox/my-inbox
 AD_ROLE_ADMIN: GG-UK-TescoGlobal-PMA-PPE-Admin
 AD_ROLE_COLLEAGUE: GG-UK-TescoGlobal-PMA-PPE-Colleague
 AD_ROLE_LINE_MANAGER: GG-UK-TescoGlobal-PMA-PPE-LineManager
@@ -87,9 +88,15 @@ AD_ROLE_PEOPLE_TEAM: GG-UK-TescoGlobal-PMA-PPE-PeopleTeam
 AD_ROLE_TALENT_ADMIN: GG-UK-TescoGlobal-PMA-PPE-TalentAdmin
 AD_ROLE_PROCESS_MANAGER: GG-UK-TescoGlobal-PMA-PPE-ProcessManager
 IDENTITY_CLIENT_ID: 69b3ca74-cba0-4efb-a537-7499410de9cc
+# has to be set to IAM ClientId
+IAM_INTEGRATION_SUBJECT: 047eab65-0049-44c5-980c-06b6d9592472
+# has to be set to CEP ClientId
+CEP_SUBJECT: 78fe5149-d011-423d-b218-dd3cc967508c
+# has to be set, if SECURITY_ENABLED = false
+#DEFAULT_USER_UUID: 10000000-1000-1000-1000-100000000001
+PMA_DB_USERNAME: pmadbadmin@euw-ppe-214-pma-postgresql
 PMA_DB_URL: jdbc:postgresql://10.114.147.8:5432/pma-ppe?sslmode=require
 PMA_DB_SCHEMA: pma
 CAMUNDA_DB_SCHEMA: camunda
-PMA_DB_USERNAME: pmadbadmin@euw-ppe-214-pma-postgresql
 SECURITY_ENABLED: true
 env: "ppe/**.dec"

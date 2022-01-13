@@ -1,13 +1,14 @@
 package com.tesco.pma.fs.service;
 
+import com.tesco.pma.api.GeneralDictionaryItem;
 import com.tesco.pma.api.RequestQueryToDictionaryFilterConverter;
+import com.tesco.pma.dao.DictionaryDAO;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.RegistrationException;
-import com.tesco.pma.fs.api.FileStatus;
-import com.tesco.pma.fs.api.FileType;
+import com.tesco.pma.file.api.FileStatus;
 import com.tesco.pma.fs.dao.FileDAO;
-import com.tesco.pma.fs.domain.File;
-import com.tesco.pma.fs.domain.UploadMetadata;
+import com.tesco.pma.file.api.File;
+import com.tesco.pma.file.api.UploadMetadata;
 import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.pagination.Sort;
@@ -24,7 +25,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.tesco.pma.exception.ErrorCodes.ERROR_FILE_NOT_FOUND;
-import static com.tesco.pma.fs.api.FileStatus.DRAFT;
+import static com.tesco.pma.file.api.FileStatus.DRAFT;
 import static com.tesco.pma.fs.exception.ErrorCodes.ERROR_FILE_REGISTRATION_FAILED;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Sort.SortOrder.DESC;
@@ -38,6 +39,7 @@ import static com.tesco.pma.pagination.Sort.SortOrder.DESC;
 public class FileServiceImpl implements FileService {
 
     private final FileDAO fileDao;
+    private final DictionaryDAO dictionaryDAO;
     private final RequestQueryToDictionaryFilterConverter toDictionaryFilterConverter;
 
     @Override
@@ -54,6 +56,10 @@ public class FileServiceImpl implements FileService {
             fileData.setFileName(uploadMetadata.getFileName());
         }
         fileData.setStatus(uploadMetadata.getStatus() == null ? DRAFT : uploadMetadata.getStatus());
+        if (uploadMetadata.getType() != null && uploadMetadata.getType().getId() == null && uploadMetadata.getType().getCode() != null) {
+            GeneralDictionaryItem dictionaryItem = dictionaryDAO.findByCode("file_type", uploadMetadata.getType().getCode());
+            uploadMetadata.getType().setId(dictionaryItem.getId());
+        }
         fileData.setType(uploadMetadata.getType());
         fileData.setDescription(uploadMetadata.getDescription());
         fileData.setFileDate(uploadMetadata.getFileDate() == null ? currMomentInUTC : uploadMetadata.getFileDate());
@@ -81,13 +87,7 @@ public class FileServiceImpl implements FileService {
                 toDictionaryFilterConverter.convert(requestQuery, true, "status", FileStatus.class),
                 toDictionaryFilterConverter.convert(requestQuery, false, "status", FileStatus.class)
         );
-
-        var typeFilters = Arrays.asList(
-                toDictionaryFilterConverter.convert(requestQuery, true, "type", FileType.class),
-                toDictionaryFilterConverter.convert(requestQuery, false, "type", FileType.class)
-        );
-
-        return fileDao.findByRequestQuery(requestQuery, statusFilters, typeFilters, includeFileContent, colleagueUuid, latest);
+        return fileDao.findByRequestQuery(requestQuery, statusFilters, includeFileContent, colleagueUuid, latest);
     }
 
     @Override

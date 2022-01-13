@@ -181,6 +181,8 @@ tesco:
         ROLE_PeopleTeam:  ${AD_ROLE_PEOPLE_TEAM}
         ROLE_TalentAdmin: ${AD_ROLE_TALENT_ADMIN}
         ROLE_ProcessManager: ${AD_ROLE_PROCESS_MANAGER}
+      default-user:
+        uuid: ${DEFAULT_USER_UUID:10000000-1000-1000-1000-100000000001}
     rest-template:
       security:
         enabled: ${REST_TEMPLATE_SECURITY_ENABLED:true}
@@ -221,6 +223,10 @@ tesco:
         base-url: ${TESCO_API_BASE_URL}/colleague/v2/colleagues
       events-api:
         base-url: ${PMA_API_URL}/events
+      contact-api:
+        messaging-url: ${TESCO_API_BASE_URL}/messaging/v1/send
+      colleague-inbox-api:
+        base-url: ${COLLEAGUE_INBOX_API_URL}/v1/messages
     event-mapping:
       # Review notifications events
       PM_REVIEW_BEFORE_START: com.tesco.pma.bpm.action.RunFlowByEventAction
@@ -228,14 +234,21 @@ tesco:
       PM_REVIEW_APPROVED: com.tesco.pma.bpm.action.RunFlowByEventAction
       PM_REVIEW_DECLINED: com.tesco.pma.bpm.action.RunFlowByEventAction
       PM_REVIEW_BEFORE_END: com.tesco.pma.bpm.action.RunFlowByEventAction
+      # Import events
       IMPORT_NEW_COLLEAGUE: com.tesco.pma.bpm.action.RunFlowByEventAction
+      POST_IMPORT_NEW_COLLEAGUE: com.tesco.pma.colleague.security.action.CreateAccountByEventAction
       # CEP events
       CEP_COLLEAGUE_ADDED: com.tesco.pma.bpm.action.RunFlowByEventAction
+      POST_CEP_COLLEAGUE_ADDED: com.tesco.pma.colleague.security.action.CreateAccountByEventAction
       CEP_COLLEAGUE_UPDATED: com.tesco.pma.bpm.action.RunFlowByEventAction
       CEP_COLLEAGUE_LEFT: com.tesco.pma.bpm.action.RunFlowByEventAction
     user-management:
-        page:
-          size: 100
+      page:
+        size: 100
+      subject: ${IAM_INTEGRATION_SUBJECT}
+    pdp:
+      form:
+        key: forms/standard_pdp.form
 
 camunda:
   bpm:
@@ -256,8 +269,26 @@ camunda:
                                            com/tesco/pma/flow/forms/type_1_objective.form,
                                            com/tesco/pma/flow/forms/type_2_objective.form,
                                            com/tesco/pma/flow/forms/type_4_eyr.form,
-                                           com/tesco/pma/flow/review_notifications.bpmn,
-                                           com/tesco/pma/flow/review_notifications.dmn
+                                           com/tesco/pma/flow/notifications/review/review_flow.bpmn,
+                                           com/tesco/pma/flow/notifications/review/review_notifications_decisions.dmn,
+                                           com/tesco/pma/flow/notifications/review/review_event_to_attribute.dmn,
+                                           com/tesco/pma/flow/notifications/review/review_event_to_template_id.dmn,
+                                           com/tesco/pma/flow/notifications/objectives/objectives_flow.bpmn,
+                                           com/tesco/pma/flow/notifications/objectives/objectives_event_to_attribute.dmn,
+                                           com/tesco/pma/flow/notifications/objectives/objectives_notification_decisions.dmn,
+                                           com/tesco/pma/flow/notifications/objectives/objectives_event_to_template_id.dmn,
+                                           com/tesco/pma/flow/notifications/feedback/feedback_flow.bpmn,
+                                           com/tesco/pma/flow/notifications/feedback/feedback_event_to_attribute.dmn,
+                                           com/tesco/pma/flow/notifications/feedback/feedback_notification_decisions.dmn,
+                                           com/tesco/pma/flow/notifications/feedback/feedback_event_to_template_id.dmn,
+                                           com/tesco/pma/flow/notifications/cycle/cycle_flow.bpmn,
+                                           com/tesco/pma/flow/notifications/cycle/cycle_event_to_attribute.dmn,
+                                           com/tesco/pma/flow/notifications/cycle/cycle_notification_decisions.dmn,
+                                           com/tesco/pma/flow/notifications/cycle/cycle_event_to_template_id.dmn,
+                                           com/tesco/pma/flow/notifications/tips/tips_event_to_attribute.dmn,
+                                           com/tesco/pma/flow/notifications/tips/tips_flow.bpmn,
+                                           com/tesco/pma/flow/notifications/tips/tips_notification_decisions.dmn,
+                                           com/tesco/pma/flow/notifications/tips/tips_event_to_template_id.dmn
     deployment-resource-paths: com/tesco/pma/flow
 
 ---

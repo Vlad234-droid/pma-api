@@ -91,6 +91,15 @@ public class ImportColleagueServiceImpl implements ImportColleagueService {
             return event;
         }).collect(Collectors.toList());
         eventSender.sendEvents(events);
+
+        // Send events to User Management Service on creation new accounts
+        events = importReport.getImported().stream().map(uuid -> {
+            var event = new EventSupport(EventNames.POST_IMPORT_NEW_COLLEAGUE);
+            event.setEventProperties(Map.of(EventParams.COLLEAGUE_UUID.name(), uuid));
+            return event;
+        }).collect(Collectors.toList());
+        eventSender.sendEvents(events);
+
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.tesco.pma.fs.dao;
 
 import com.tesco.pma.api.DictionaryFilter;
-import com.tesco.pma.fs.domain.File;
+import com.tesco.pma.file.api.File;
 import com.tesco.pma.pagination.RequestQuery;
 import org.apache.ibatis.annotations.Param;
 
@@ -27,7 +27,6 @@ public interface FileDAO {
      *
      * @param requestQuery filter, sorting and pagination
      * @param statusFilters filters by file status
-     * @param typeFilters filters by file type
      * @param includeFileContent identifies if include file content
      * @param colleagueUuid an identifier of file's owner
      * @param latest identifies if latest version data needed
@@ -36,7 +35,6 @@ public interface FileDAO {
      */
     List<File> findByRequestQuery(@Param("requestQuery") RequestQuery requestQuery,
                                   @Param("statusFilters") List<DictionaryFilter> statusFilters,
-                                  @Param("typeFilters") List<DictionaryFilter> typeFilters,
                                   @Param("includeFileContent") boolean includeFileContent,
                                   @Param("colleagueUuid") UUID colleagueUuid,
                                   @Param("latest") boolean latest);

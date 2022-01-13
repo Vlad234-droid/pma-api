@@ -6,13 +6,17 @@ import com.tesco.pma.colleague.api.Colleague.ColleagueType;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+
+import java.io.Serializable;
 import java.util.UUID;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @SuppressWarnings("PMD.TooManyFields")
-public class WorkRelationship {
+public class WorkRelationship implements Serializable {
+
+    private static final long serialVersionUID = 8091059063936530669L;
 
     public enum WorkingStatus {
         ACTIVE, INACTIVE, SUSPENDED, INACTIVE_PAID

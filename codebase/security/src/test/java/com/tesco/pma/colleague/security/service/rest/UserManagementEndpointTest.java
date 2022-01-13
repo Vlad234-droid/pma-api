@@ -1,6 +1,8 @@
 package com.tesco.pma.colleague.security.service.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tesco.pma.TestConfig;
+import com.tesco.pma.colleague.security.configuration.UserManagementProperties;
 import com.tesco.pma.colleague.security.domain.Account;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.Role;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -26,13 +29,21 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = UserManagementEndpoint.class)
+@ContextConfiguration(classes = TestConfig.class)
 // TODO Implement all tests
 class UserManagementEndpointTest extends AbstractEndpointTest {
 
@@ -48,8 +59,13 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
     @MockBean
     private UserManagementService mockUserManagementService;
 
+    @MockBean
+    private UserManagementProperties mockUserManagementProperties;
+
     public static final String ACCOUNTS_URL_TEMPLATE = "/user-management/accounts";
     public static final String ROLES_URL_TEMPLATE = "/user-management/roles";
+
+    private static final String TEST_USER_MANAGEMENT_SUBJECT = "test-user-management-subject";
 
     @BeforeEach
     void setUp() {
@@ -62,7 +78,7 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getAccountsShouldReturnAllAccounts() throws Exception {
+    void getAccountsWithAdminRoleShouldReturnAllAccounts() throws Exception {
 
         when(mockUserManagementService.getAccounts(anyInt()))
                 .thenReturn(randomObjects(Account.class, 3));
@@ -72,6 +88,54 @@ class UserManagementEndpointTest extends AbstractEndpointTest {
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON));
+
+    }
+
+    @Test
+    void getAccountsWithSubjectShouldReturnAllAccounts() throws Exception {
+
+        when(mockUserManagementService.getAccounts(anyInt()))
+                .thenReturn(randomObjects(Account.class, 3));
+        when(mockUserManagementProperties.getSubject()).thenReturn(TEST_USER_MANAGEMENT_SUBJECT);
+
+        mvc.perform(get(ACCOUNTS_URL_TEMPLATE)
+                        .with(jwtWithSubject(TEST_USER_MANAGEMENT_SUBJECT))
+                        .accept(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON));
+
+    }
+
+    @Test
+    void getAccountsUnauthorized() throws Exception {
+
+        mvc.perform(get(ACCOUNTS_URL_TEMPLATE)
+                        .with(anonymous())
+                        .accept(APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().contentType(APPLICATION_JSON));
+
+        verifyNoInteractions(mockUserManagementProperties);
+
+        verifyNoInteractions(mockUserManagementService);
+
+    }
+
+    @Test
+    void getAccountsForbiddenWithSubjectNotMatch() throws Exception {
+
+        when(mockUserManagementProperties.getSubject()).thenReturn(TEST_USER_MANAGEMENT_SUBJECT);
+
+        mvc.perform(get(ACCOUNTS_URL_TEMPLATE)
+                        .with(jwtWithSubject("not-user-management-subject"))
+                        .accept(APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andExpect(content().contentType(APPLICATION_JSON));
+
+        verify(mockUserManagementProperties, times(1))
+                .getSubject();
+
+        verifyNoInteractions(mockUserManagementService);
 
     }
 

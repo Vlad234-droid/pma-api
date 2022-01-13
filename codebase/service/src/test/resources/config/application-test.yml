@@ -87,7 +87,7 @@ spring:
   liquibase:
     enabled: true
     change-log: 'classpath:/com/tesco/pma/database/changelog-master.xml'
-    labels: '!integration'
+    labels: '!integration AND !performance'
 ---
 server:
   port: 8083

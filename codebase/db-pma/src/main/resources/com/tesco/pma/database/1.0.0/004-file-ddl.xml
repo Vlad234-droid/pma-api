@@ -159,4 +159,26 @@
                                  referencedColumnNames="id" referencedTableName="file_status" validate="true"/>
     </changeSet>
 
+    <changeSet author="Stanislav.Eurich" id="6">
+        <comment>Insert additional file types</comment>
+        <insert tableName="file_type">
+            <column name="id" value="6"/>
+            <column name="code" value="DMN"/>
+            <column name="description" value="Decision Matrix file"/>
+        </insert>
+        <insert tableName="file_type">
+            <column name="id" value="7"/>
+            <column name="code" value="DOC"/>
+            <column name="description" value="Word document"/>
+        </insert>
+        <rollback>
+            <delete tableName="file_type">
+                <where>code = 'DMN'</where>
+            </delete>
+            <delete tableName="file_type">
+                <where>code = 'DOC'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

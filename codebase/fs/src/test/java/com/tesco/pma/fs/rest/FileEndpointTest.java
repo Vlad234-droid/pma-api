@@ -1,9 +1,11 @@
 package com.tesco.pma.fs.rest;
 
+import com.tesco.pma.TestConfig;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.RegistrationException;
-import com.tesco.pma.fs.domain.File;
+import com.tesco.pma.file.api.FileType;
+import com.tesco.pma.file.api.File;
 import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.AbstractEndpointTest;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import java.io.IOException;
@@ -20,8 +23,7 @@ import java.io.InputStream;
 import java.time.Instant;
 import java.util.UUID;
 
-import static com.tesco.pma.fs.api.FileStatus.ACTIVE;
-import static com.tesco.pma.fs.api.FileType.FORM;
+import static com.tesco.pma.file.api.FileStatus.ACTIVE;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,6 +34,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = FileEndpoint.class)
+@ContextConfiguration(classes = TestConfig.class)
 @WithMockUser(username = FileEndpointTest.COLLEAGUE_UUID_STR)
 public class FileEndpointTest extends AbstractEndpointTest {
 
@@ -244,7 +247,11 @@ public class FileEndpointTest extends AbstractEndpointTest {
         fileData.setUuid(uuid);
         fileData.setPath(PATH);
         fileData.setVersion(version);
-        fileData.setType(FORM);
+        FileType type = new FileType();
+        type.setId(2);
+        type.setCode("FORM");
+        type.setDescription("GUI Form file");
+        fileData.setType(type);
         fileData.setStatus(ACTIVE);
         fileData.setDescription(DESCRIPTION);
         fileData.setCreatedBy(CREATOR_ID);

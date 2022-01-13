@@ -1,0 +1,16 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <property name="rollback_file_path" value="com/tesco/pma/database/1.0.0/001-initial-import-ddl.xml" global="false"/>
+
+    <changeSet author="akuzmin" id="1">
+        <comment>Remove legacy tables</comment>
+        <dropTable tableName="subsidiary"/>
+        <dropTable tableName="subsidiary_group"/>
+        <rollback changeSetPath="${rollback_file_path}" changeSetId="1" changeSetAuthor="imatvii"/>
+        <rollback changeSetPath="${rollback_file_path}" changeSetId="2" changeSetAuthor="imatvii"/>
+    </changeSet>
+
+</databaseChangeLog>

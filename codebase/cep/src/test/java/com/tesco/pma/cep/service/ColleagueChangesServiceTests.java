@@ -9,8 +9,8 @@ import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.Account;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
-import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
 import com.tesco.pma.colleague.security.service.UserManagementService;
+import com.tesco.pma.event.Event;
 import com.tesco.pma.event.service.EventSender;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -62,17 +62,14 @@ class ColleagueChangesServiceTests {
 
         when(mockCepSubscribeProperties.getFeeds())
                 .thenReturn(Map.of(feedCode, feedId));
-        when(mockProfileService.getColleague(COLLEAGUE_UUID))
-                .thenReturn(colleague(COLLEAGUE_UUID));
         when(mockProfileService.create(COLLEAGUE_UUID))
                 .thenReturn(1);
 
         colleagueChangesService.processColleagueChangeEvent(feedId, colleagueChangeEventPayload);
 
         verify(mockCepSubscribeProperties, times(1)).getFeeds();
-        verify(mockProfileService, times(1)).getColleague(COLLEAGUE_UUID);
         verify(mockProfileService, times(1)).create(COLLEAGUE_UUID);
-        verify(mockUserManagementService, times(1)).createAccount(any(CreateAccountRequest.class));
+        verify(eventSender, times(2)).sendEvent(any(Event.class));
     }
 
     @ParameterizedTest
