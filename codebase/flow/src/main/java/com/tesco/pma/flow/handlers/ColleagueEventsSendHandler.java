@@ -10,10 +10,13 @@ import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.organisation.service.ConfigEntryService;
 import org.springframework.stereotype.Component;
+
+import java.io.Serializable;
+import java.util.Map;
 import java.util.UUID;
 
 @Component
-public class ColleagueEventsSendHandler extends AbstractNotificationEventHandler {
+public class ColleagueEventsSendHandler extends AbstractEventSendHandler {
 
     private final ConfigEntryService configEntryService;
     private final EventSender eventSender;
@@ -35,15 +38,28 @@ public class ColleagueEventsSendHandler extends AbstractNotificationEventHandler
 
         colleagues.stream()
                 .map(ColleagueEntity::getUuid)
-                .map(this::createEvent)
+                .map(uuid -> createEvent(uuid, context))
                 .forEach(e -> eventSender.sendEvent(e, null, isErrorSensitiveExpression()));
 
     }
 
-    protected Event createEvent(UUID colleagueId) {
+    protected Event createEvent(UUID colleagueId, ExecutionContext context) {
         var event = new EventSupport(getEventNameExpression());
         event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueId);
+        propagateEventParams(event, context);
         return event;
+    }
+
+    private void propagateEventParams(EventSupport event, ExecutionContext context) {
+        if (!(context.getVariable(FlowParameters.EVENT_PARAMS) instanceof Map)) {
+            return;
+        }
+
+        var paramMap = (Map<String, Object>) context.getVariable(FlowParameters.EVENT_PARAMS);
+
+        for (Map.Entry<String, Object> entry : paramMap.entrySet()) {
+            event.putProperty(entry.getKey(), (Serializable) entry.getValue());
+        }
     }
 
 

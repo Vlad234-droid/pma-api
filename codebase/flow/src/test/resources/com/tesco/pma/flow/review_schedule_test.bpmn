@@ -119,7 +119,7 @@
     <bpmn:sequenceFlow id="Flow_057syh7" sourceRef="Gateway_0mf8rqh" targetRef="Event_095p8c5">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${TEST_MODE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_0gtujyz" name="Send&#10;before start&#10;review&#10;event" camunda:class="com.tesco.pma.flow.handlers.SendNotificationEventHandler">
+    <bpmn:serviceTask id="Activity_0gtujyz" name="Send&#10;before start&#10;review&#10;event" camunda:class="com.tesco.pma.flow.handlers.ColleagueEventsSendHandler">
       <bpmn:extensionElements>
         <camunda:field name="eventNameExpression">
           <camunda:string>NF_PM_REVIEW_BEFORE_START</camunda:string>
@@ -127,6 +127,13 @@
         <camunda:field name="isErrorSensitiveExpression">
           <camunda:string>true</camunda:string>
         </camunda:field>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="EVENT_PARAMS">
+            <camunda:map>
+              <camunda:entry key="reviewType">reviewtypeval</camunda:entry>
+            </camunda:map>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1d3qt6f</bpmn:incoming>
       <bpmn:outgoing>Flow_0gpmgag</bpmn:outgoing>

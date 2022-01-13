@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public abstract class AbstractNotificationEventHandler extends CamundaAbstractFlowHandler {
+public abstract class AbstractEventSendHandler extends CamundaAbstractFlowHandler {
 
     private Expression eventNameExpression;
     private Expression isErrorSensitiveExpression;

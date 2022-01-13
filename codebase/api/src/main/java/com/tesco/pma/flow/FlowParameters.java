@@ -6,6 +6,7 @@ package com.tesco.pma.flow;
  */
 public enum FlowParameters {
     EVENT_NAME,
+    EVENT_PARAMS,
     REVIEW_TYPE,
     IS_MANAGER,
     SEND,

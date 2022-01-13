@@ -26,6 +26,16 @@
       <bpmn:outgoing>Flow_0qy25ym</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="initReviewNotification" name="Init flow variables" camunda:class="com.tesco.pma.flow.notifications.handlers.InitReviewNotificationHandler">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="EVENT_PARAMS">
+            <camunda:map>
+              <camunda:entry key="REVIEW_TYPE">testType</camunda:entry>
+              <camunda:entry key="EVENT">${EC_EVENT}</camunda:entry>
+            </camunda:map>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ridoso</bpmn:incoming>
       <bpmn:incoming>Flow_0l6qkz5</bpmn:incoming>
       <bpmn:incoming>Flow_1k5x4ta</bpmn:incoming>
