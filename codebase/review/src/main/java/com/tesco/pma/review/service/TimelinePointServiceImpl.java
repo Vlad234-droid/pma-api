@@ -1,5 +1,6 @@
 package com.tesco.pma.review.service;
 
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.review.dao.TimelinePointDAO;
 import com.tesco.pma.review.domain.TimelinePoint;
 import com.tesco.pma.service.BatchService;
@@ -7,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -18,5 +20,10 @@ public class TimelinePointServiceImpl implements TimelinePointService {
     @Override
     public void saveAll(Collection<TimelinePoint> timelinePoints) {
         batchService.executeDBOperationInBatch(timelinePoints, dao::saveAll);
+    }
+
+    @Override
+    public int updateStatus(UUID uuid, PMTimelinePointStatus newStatus, Collection<PMTimelinePointStatus> prevStatuses) {
+        return dao.updateStatus(uuid, newStatus, prevStatuses);
     }
 }

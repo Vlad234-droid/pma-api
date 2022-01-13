@@ -1,0 +1,29 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet author="mdiadia" id="1">
+        <sql>
+            CREATE UNIQUE INDEX coll_cycle_unique
+            ON pm_colleague_cycle(colleague_uuid, cycle_uuid, status_id)
+            WHERE status_id = 1;
+        </sql>
+        <rollback>
+            <dropIndex indexName="coll_cycle_unique"
+                       tableName="pm_colleague_cycle"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="mdiadia" id="2">
+        <sql>
+            CREATE UNIQUE INDEX pm_cycle_unique
+            ON pm_cycle(entry_config_key, template_uuid, status_id) WHERE status_id = 1;
+        </sql>
+        <rollback>
+            <dropIndex indexName="pm_cycle_unique" tableName="pm_cycle"/>
+        </rollback>
+    </changeSet>
+
+
+</databaseChangeLog>

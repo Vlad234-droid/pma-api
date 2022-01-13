@@ -1,23 +1,21 @@
 package com.tesco.pma.util;
 
 import lombok.experimental.UtilityClass;
-import org.apache.commons.io.FilenameUtils;
 
-import java.time.Instant;
-
-import static java.time.ZoneId.from;
-import static java.time.ZoneOffset.UTC;
-import static java.time.format.DateTimeFormatter.ofPattern;
+import java.util.regex.Pattern;
 
 @UtilityClass
 public class FileUtils {
-    public static final String TIMESTAMP_FORMAT = "yyyyMMddHHmmssSSS";
 
-    public String addTimeStampToFileName(String fileName, Instant momentInUTC) {
-        var base = FilenameUtils.removeExtension(fileName);
-        var extension = FilenameUtils.getExtension(fileName);
+    private static final Pattern FORM_NAME_PATTERN = Pattern.compile("(([\\w\\-_/]+)\\.(form|json))$");
 
-        var formattedCurrMomentInUTC = ofPattern(TIMESTAMP_FORMAT).withZone(from(UTC)).format(momentInUTC);
-        return base + "-" + formattedCurrMomentInUTC + "." + extension;
+    /**
+     * Return form name by key using pattern
+     * @param key - form key
+     * @return form name
+     */
+    public static String getFormName(String key) {
+        var matcher = FORM_NAME_PATTERN.matcher(key);
+        return matcher.find() ? matcher.group(1) : null;
     }
 }

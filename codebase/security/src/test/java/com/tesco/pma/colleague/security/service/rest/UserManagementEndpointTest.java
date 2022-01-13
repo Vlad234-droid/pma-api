@@ -1,6 +1,7 @@
 package com.tesco.pma.colleague.security.service.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tesco.pma.TestConfig;
 import com.tesco.pma.colleague.security.configuration.UserManagementProperties;
 import com.tesco.pma.colleague.security.domain.Account;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -41,6 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = UserManagementEndpoint.class)
+@ContextConfiguration(classes = TestConfig.class)
 // TODO Implement all tests
 class UserManagementEndpointTest extends AbstractEndpointTest {
 

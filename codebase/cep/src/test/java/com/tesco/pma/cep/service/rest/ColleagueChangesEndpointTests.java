@@ -1,5 +1,6 @@
 package com.tesco.pma.cep.service.rest;
 
+import com.tesco.pma.TestConfig;
 import com.tesco.pma.cep.domain.ColleagueChangeEventPayload;
 import com.tesco.pma.cep.service.ColleagueChangesService;
 import com.tesco.pma.configuration.cep.CEPProperties;
@@ -11,6 +12,7 @@ import org.mockito.internal.stubbing.answers.DoesNothing;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.util.concurrent.TimeUnit;
@@ -28,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = ColleagueChangesEndpoint.class)
+@ContextConfiguration(classes = TestConfig.class)
 public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
 
     private static final String POST_EVENT_PATH = "/colleagues/events";

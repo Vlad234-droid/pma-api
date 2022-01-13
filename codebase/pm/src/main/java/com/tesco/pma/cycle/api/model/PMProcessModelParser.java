@@ -6,6 +6,7 @@ import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.exception.ParseException;
 import com.tesco.pma.error.ErrorCodeAware;
+import com.tesco.pma.util.ResourceProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -18,7 +19,6 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 import static com.tesco.pma.cycle.api.model.PMCycleElement.PM_CYCLE_TYPE;
 import static com.tesco.pma.cycle.api.model.PMElement.PM_TYPE;
@@ -32,6 +32,7 @@ import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_TYPE;
 import static com.tesco.pma.cycle.api.model.PMTimelinePointElement.PM_TIMELINE_POINT;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_PARSE_IS_BLANK;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_PARSE_NOT_FOUND;
+import static com.tesco.pma.util.FileUtils.getFormName;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 15.10.2021 Time: 15:45
@@ -39,7 +40,6 @@ import static com.tesco.pma.cycle.exception.ErrorCodes.PM_PARSE_NOT_FOUND;
 @Slf4j
 @AllArgsConstructor
 public class PMProcessModelParser {
-    private static final Pattern FORM_NAME_PATTERN = Pattern.compile("(([\\w\\-_/]+)\\.(form|json))$");
     public static final String KEY = "key";
     public static final String VALUE = "value";
 
@@ -156,11 +156,6 @@ public class PMProcessModelParser {
         return new String[]{
                 path.getParent().toString(),
                 path.getFileName().toString()};
-    }
-
-    String getFormName(String key) {
-        var matcher = FORM_NAME_PATTERN.matcher(key);
-        return matcher.find() ? matcher.group(1) : null;
     }
 
     static String defaultValue(String checking, String defaultValue) {

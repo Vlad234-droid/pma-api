@@ -4,7 +4,7 @@ import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import com.tesco.pma.cycle.api.model.PMProcessModelParser;
-import com.tesco.pma.cycle.api.model.ResourceProvider;
+import com.tesco.pma.util.ResourceProvider;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.process.api.PMProcessErrorCodes;

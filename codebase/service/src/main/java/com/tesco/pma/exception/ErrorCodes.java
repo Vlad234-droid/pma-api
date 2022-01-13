@@ -9,6 +9,8 @@ public enum ErrorCodes implements ErrorCodeAware {
      */
     ERROR_FILE_NOT_FOUND,
 
+    DICTIONARY_ITEM_NOT_FOUND,
+
     MESSAGE_NOT_READABLE_EXCEPTION,
     /**
      * Required request part is not present

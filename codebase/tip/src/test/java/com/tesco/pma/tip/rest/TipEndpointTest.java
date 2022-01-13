@@ -1,6 +1,7 @@
 package com.tesco.pma.tip.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tesco.pma.TestConfig;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.AbstractEndpointTest;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -29,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = TipEndpoint.class)
+@ContextConfiguration(classes = TestConfig.class)
 class TipEndpointTest extends AbstractEndpointTest {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();

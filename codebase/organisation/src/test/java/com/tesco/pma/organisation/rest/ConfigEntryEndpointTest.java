@@ -1,6 +1,7 @@
 package com.tesco.pma.organisation.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tesco.pma.TestConfig;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.ConfigEntryResponse;
 import com.tesco.pma.api.GeneralDictionaryItem;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -26,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = ConfigEntryEndpoint.class)
+@ContextConfiguration(classes = TestConfig.class)
 class ConfigEntryEndpointTest extends AbstractEndpointTest {
 
     private static final UUID ENTRY_UUID = UUID.fromString("fe33d24d-1fd2-4e68-8dff-6220609a80df");
