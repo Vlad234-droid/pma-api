@@ -57,7 +57,7 @@
     </bpmn:parallelGateway>
     <bpmn:sequenceFlow id="Flow_0mw0pef" sourceRef="Gateway_1p29s5e" targetRef="Activity_0cz0d29" />
     <bpmn:sequenceFlow id="Flow_1qcajud" sourceRef="Activity_0cz0d29" targetRef="Event_0v9jvii" />
-    <bpmn:callActivity id="objectives" name="My Objectives" calledElement="standard_init_timeline_point" camunda:variableMappingClass="com.tesco.pma.bpm.camunda.util.ExtensionsDelegateVariableMapping">
+    <bpmn:callActivity id="objectives" name="My objectives" calledElement="standard_init_timeline_point" camunda:variableMappingClass="com.tesco.pma.bpm.camunda.util.ExtensionsDelegateVariableMapping">
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="pm_review_min" value="3" />
@@ -70,6 +70,7 @@
           <camunda:property name="pm_review_before_end" value="P1W" />
           <camunda:property name="pm_review_duration" value="P2W" />
           <camunda:property name="pm_timeline_point_code" value="objective" />
+          <camunda:property name="pm_timeline_point_description" value="My objectives" />
         </camunda:properties>
         <camunda:in source="PM_CYCLE" target="PM_CYCLE" />
       </bpmn:extensionElements>
@@ -83,6 +84,7 @@
           <camunda:property name="pm_timeline_point_start_time" value="2021-07-01" />
           <camunda:property name="pm_timeline_point_start_delay" value="P3M" />
           <camunda:property name="pm_timeline_point_code" value="q1" />
+          <camunda:property name="pm_timeline_point_description" value="Q1" />
         </camunda:properties>
         <camunda:in source="PM_CYCLE" target="PM_CYCLE" />
       </bpmn:extensionElements>
@@ -101,6 +103,7 @@
           <camunda:property name="pm_review_duration" value="P2W" />
           <camunda:property name="pm_form_key" value="forms/standard_myr.form" />
           <camunda:property name="pm_timeline_point_code" value="myr" />
+          <camunda:property name="pm_timeline_point_description" value="Mid-year review" />
         </camunda:properties>
         <camunda:in source="PM_CYCLE" target="PM_CYCLE" />
       </bpmn:extensionElements>
@@ -114,6 +117,7 @@
           <camunda:property name="pm_timeline_point_start_time" value="2022-01-01" />
           <camunda:property name="pm_timeline_point_start_delay" value="P9M" />
           <camunda:property name="pm_timeline_point_code" value="q3" />
+          <camunda:property name="pm_timeline_point_description" value="Q3" />
         </camunda:properties>
         <camunda:in source="PM_CYCLE" target="PM_CYCLE" />
       </bpmn:extensionElements>
@@ -132,6 +136,7 @@
           <camunda:property name="pm_review_duration" value="P2W" />
           <camunda:property name="pm_form_key" value="forms/group_a_eyr.form" />
           <camunda:property name="pm_timeline_point_code" value="eyr" />
+          <camunda:property name="pm_timeline_point_description" value="Year-end review" />
         </camunda:properties>
         <camunda:in source="PM_CYCLE" target="PM_CYCLE" />
       </bpmn:extensionElements>
