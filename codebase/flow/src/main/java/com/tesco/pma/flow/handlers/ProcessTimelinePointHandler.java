@@ -8,7 +8,7 @@ import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
-import com.tesco.pma.cycle.api.model.PMElement;
+import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.cycle.api.model.PMReviewElement;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.flow.FlowParameters;
@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.tesco.pma.cycle.api.model.PMElement.PM_TYPE;
 
 /**
  * Calculates all required timeline point's dates for a fiscal year performance cycle
@@ -52,6 +54,11 @@ public class ProcessTimelinePointHandler extends AbstractUpdateEnumStatusHandler
         createTimelinePoints(context, cycle);
     }
 
+    @Override
+    protected Class<PMCycleStatus> getEnumClass() {
+        return PMCycleStatus.class;
+    }
+
     private void createTimelinePoints(ExecutionContext context, PMCycle cycle) {
         var startDate = context.getVariable(FlowParameters.START_DATE, LocalDate.class);
         var startTime = HandlerUtils.dateToInstant(startDate);
@@ -61,17 +68,16 @@ public class ProcessTimelinePointHandler extends AbstractUpdateEnumStatusHandler
             return;
         }
         var endTime = HandlerUtils.dateToInstant(context.getVariable(FlowParameters.END_DATE, LocalDate.class));
-        var parent = context.getVariable(FlowParameters.MODEL_PARENT_ELEMENT, PMElement.class);
         var timelinePoints = colleagueCycles.stream()
                 .map(cc -> TimelinePoint.builder()
                         .uuid(UUID.randomUUID())
                         .colleagueCycleUuid(cc.getUuid())
-                        .code(parent.getCode())
-                        .description(parent.getDescription())
-                        .type(parent.getType())
+                        .code("parent.getCode()")
+                        .description("parent.getDescription()")
+                        .type(PMElementType.getByCode(context.getNullableVariable(PM_TYPE)))
                         .startTime(startTime)
                         .endTime(endTime)
-                        .properties(buildProps(context, parent))
+                        .properties(buildProps(context))
                         .status(calculateStatus(startDate))
                         .build())
                 .collect(Collectors.toList());
@@ -83,7 +89,7 @@ public class ProcessTimelinePointHandler extends AbstractUpdateEnumStatusHandler
         return startDate.isAfter(LocalDate.now()) ? PMTimelinePointStatus.NOT_STARTED : PMTimelinePointStatus.STARTED;
     }
 
-    private MapJson buildProps(ExecutionContext context, PMElement parent) {
+    private MapJson buildProps(ExecutionContext context) {
         var map = new LinkedHashMap<String, String>();
 
         List.of(FlowParameters.START_DATE, FlowParameters.END_DATE, FlowParameters.BEFORE_START_DATE, FlowParameters.BEFORE_END_DATE)
@@ -96,13 +102,9 @@ public class ProcessTimelinePointHandler extends AbstractUpdateEnumStatusHandler
                         }));
 
         List.of(PMReviewElement.PM_REVIEW_MIN, PMReviewElement.PM_REVIEW_MAX)
-                .forEach(key -> Optional.ofNullable(parent.getProperties().get(key))
+                .forEach(key -> Optional.ofNullable(context.getNullableVariable(key))
+                        .map(Object::toString)
                         .ifPresent(v -> map.put(key, v)));
         return new MapJson(map);
-    }
-
-    @Override
-    protected Class<PMCycleStatus> getEnumClass() {
-        return PMCycleStatus.class;
     }
 }
