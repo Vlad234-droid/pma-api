@@ -3,8 +3,8 @@ package com.tesco.pma.flow.handlers;
 import com.tesco.pma.api.MapJson;
 import com.tesco.pma.bpm.api.ProcessExecutionException;
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
-import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
 import com.tesco.pma.cycle.api.PMCycle;
+import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.api.model.PMElement;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component
-public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
+public class ProcessTimelinePointHandler extends AbstractUpdateEnumStatusHandler<PMCycleStatus> {
 
     @Autowired
     private PMColleagueCycleService colleagueCycleService;
@@ -49,6 +49,11 @@ public class ProcessTimelinePointHandler extends CamundaAbstractFlowHandler {
             throw new ProcessExecutionException("Incorrect cycle type: " + cycle.getType());
         }
         createTimelinePoints(context, cycle);
+    }
+
+    @Override
+    protected Class<PMCycleStatus> getEnumClass() {
+        return PMCycleStatus.class;
     }
 
     private void createTimelinePoints(ExecutionContext context, PMCycle cycle) {
