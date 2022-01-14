@@ -190,7 +190,7 @@
     </select>
 
     <select id="findByRequestQuery" resultMap="fileResultMap">
-        SELECT uuid, path, version, type_id, fs.code as status, file.description as f_description,
+        SELECT uuid, path, version, type_id, status_id, file.description as f_description,
         created_by, created_time, file_name, file_date, file_length,
         ft.id as t_id, ft.code as t_code, ft.description as t_description
         <if test="includeFileContent">
