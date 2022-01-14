@@ -55,7 +55,7 @@
       }
     },
     {
-      "key": "how_archieved",
+      "key": "how_achieved",
       "label": "**How do I know I've ACHIEVED this objective?**",
       "type": "textfield",
       "id": "Field_17nyw6d",

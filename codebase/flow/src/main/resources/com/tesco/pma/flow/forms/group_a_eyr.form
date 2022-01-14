@@ -32,7 +32,8 @@
       "key": "objective",
       "validate": {
         "required": true
-      }
+      },
+      "description": "{request.review:OBJECTIVE}"
     },
     {
       "key": "day_job",
