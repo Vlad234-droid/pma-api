@@ -1,5 +1,6 @@
 package com.tesco.pma.event;
 
 public enum EventParams {
-    COLLEAGUE_UUID
+    COLLEAGUE_UUID,
+    PM_CYCLE_UUID
 }
