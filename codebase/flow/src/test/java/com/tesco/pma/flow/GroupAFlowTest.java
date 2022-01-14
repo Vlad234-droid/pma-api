@@ -29,12 +29,6 @@ class GroupAFlowTest extends AbstractCamundaSpringBootTest {
     @MockBean
     PMColleagueCycleHandler pmColleagueCycleHandler;
 
-/*
-    @SpyBean
-    @Qualifier("initTimelinePointHandler")
-    InitTimelinePointHandler initTimelinePointHandler;
-*/
-
     @MockBean
     ProcessTimelinePointHandler processTimelinePointHandler;
 
