@@ -18,15 +18,6 @@
         <association property="type" autoMapping="true" columnPrefix="t_"/>
     </resultMap>
 
-    <sql id="addStatusIdCondition">
-        <if test="statusFilter != null and !statusFilter.isEmpty()">
-            AND STATUS_ID <if test="!statusFilter.isInclude()">NOT</if> IN
-            <foreach collection="statusFilter.getItems()" item="status" index="i" open="(" separator="," close=")">
-                #{status.id}
-            </foreach>
-        </if>
-    </sql>
-
     <sql id="getSortField">
         <choose>
             <when test="sort.field == 'path'">
@@ -113,6 +104,9 @@
                 <when test="filter.property == 'uuid'">
                     #{value}::uuid
                 </when>
+                <when test="filter.property == 'status' or filter.property == 'type'">
+                    #{value}::INTEGER
+                </when>
                 <otherwise>
                     #{value}
                 </otherwise>
@@ -142,14 +136,12 @@
                 NOT LIKE '%'||UPPER('${filter.value}')||'%'
             </when>
 
-            <when test="filter.operand.name == 'IN' and filter.property != 'created-time' and filter.property != 'file-date' and filter.property != 'file-content'
-                        and filter.property != 'type' and filter.property != 'status'">
+            <when test="filter.operand.name == 'IN' and filter.property != 'created-time' and filter.property != 'file-date' and filter.property != 'file-content'">
                 <include refid="getFilterField"/>
                 IN
                 <include refid="prepareValues"/>
             </when>
-            <when test="filter.operand.name == 'NOT_IN' and filter.property != 'created-time' and filter.property != 'file-date' and filter.property != 'file-content'
-                        and filter.property != 'type' and filter.property != 'status'">
+            <when test="filter.operand.name == 'NOT_IN' and filter.property != 'created-time' and filter.property != 'file-date' and filter.property != 'file-content'">
                 <include refid="getFilterField"/>
                 NOT IN
                 <include refid="prepareValues"/>
@@ -198,7 +190,7 @@
     </select>
 
     <select id="findByRequestQuery" resultMap="fileResultMap">
-        SELECT uuid, path, version, type_id, status_id, file.description as f_description,
+        SELECT uuid, path, version, type_id, fs.code as status, file.description as f_description,
         created_by, created_time, file_name, file_date, file_length,
         ft.id as t_id, ft.code as t_code, ft.description as t_description
         <if test="includeFileContent">
@@ -206,15 +198,13 @@
         </if>
         FROM file
         LEFT JOIN file_type ft on file.type_id = ft.id
+        LEFT JOIN file_status fs on file.status_id = fs.id
         WHERE 1 = 1
         <if test="latest">
         AND (path, file_name, version) IN
         (SELECT path, file_name, MAX(version)
         FROM file
         GROUP BY path, file_name)
-        <foreach collection="statusFilters" item="statusFilter" index="i" separator=",">
-            <include refid="addStatusIdCondition"/>
-        </foreach>
         </if>
 
         <if test="!requestQuery.filters.isEmpty()">

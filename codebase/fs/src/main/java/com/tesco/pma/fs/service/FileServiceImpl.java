@@ -1,11 +1,9 @@
 package com.tesco.pma.fs.service;
 
 import com.tesco.pma.api.GeneralDictionaryItem;
-import com.tesco.pma.api.RequestQueryToDictionaryFilterConverter;
 import com.tesco.pma.dao.DictionaryDAO;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.RegistrationException;
-import com.tesco.pma.file.api.FileStatus;
 import com.tesco.pma.fs.dao.FileDAO;
 import com.tesco.pma.file.api.File;
 import com.tesco.pma.file.api.UploadMetadata;
@@ -41,7 +39,6 @@ public class FileServiceImpl implements FileService {
 
     private final FileDAO fileDao;
     private final DictionaryDAO dictionaryDAO;
-    private final RequestQueryToDictionaryFilterConverter toDictionaryFilterConverter;
 
     @Override
     @Transactional
@@ -84,11 +81,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public List<File> get(RequestQuery requestQuery, boolean includeFileContent, boolean latest) {
-        var statusFilters = Arrays.asList(
-                toDictionaryFilterConverter.convert(requestQuery, true, "status", FileStatus.class),
-                toDictionaryFilterConverter.convert(requestQuery, false, "status", FileStatus.class)
-        );
-        return fileDao.findByRequestQuery(requestQuery, statusFilters, includeFileContent, latest);
+        return fileDao.findByRequestQuery(requestQuery, includeFileContent, latest);
     }
 
     @Override
