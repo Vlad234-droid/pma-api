@@ -12,10 +12,10 @@
     <bpmn:serviceTask id="Activity_0n82bsb" name="Process&#10;timeline&#10;point" camunda:class="com.tesco.pma.flow.handlers.ProcessTimelinePointHandler">
       <bpmn:documentation>Calculate all dates according to timeline</bpmn:documentation>
       <bpmn:extensionElements>
-        <camunda:field name="status">
+        <camunda:field name="statusValue">
           <camunda:expression>NOT_STARTED</camunda:expression>
         </camunda:field>
-        <camunda:field name="oldStatuses">
+        <camunda:field name="oldStatusValues">
           <camunda:string>REGISTERED,ACTIVE</camunda:string>
         </camunda:field>
       </bpmn:extensionElements>
