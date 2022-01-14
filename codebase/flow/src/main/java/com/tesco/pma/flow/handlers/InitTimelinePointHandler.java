@@ -65,7 +65,7 @@ public class InitTimelinePointHandler extends CamundaAbstractFlowHandler {
         //todo handle cycle statuses
 
         var cycleStartDate = HandlerUtils.instantToDate(cycle.getStartTime());
-        var type = context.getNullableVariable(PM_TYPE, PMElementType.class);
+        var type = PMElementType.getByCode(context.getNullableVariable(PM_TYPE));
         if (PMElementType.TIMELINE_POINT == type) {
             processTimelinePoint(context, cycleStartDate);
         } else if (PMElementType.REVIEW == type) {

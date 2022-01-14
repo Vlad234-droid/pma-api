@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 /**
@@ -15,7 +16,9 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UploadMetadata {
+public class UploadMetadata implements Serializable {
+
+    private static final long serialVersionUID = -5086179585160147533L;
 
     String path;
 

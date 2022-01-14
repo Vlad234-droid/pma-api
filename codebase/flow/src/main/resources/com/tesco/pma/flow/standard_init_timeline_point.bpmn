@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0e1x1gf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="standard_init_timeline_point" name="Standard init timeline point" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_17y9gy5</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="initTimelinePointHandler" name="Init&#10;timeline&#10;point" camunda:class="com.tesco.pma.flow.handlers.InitTimelinePointHandler">
+      <bpmn:incoming>Flow_17y9gy5</bpmn:incoming>
+      <bpmn:outgoing>Flow_13h7w6t</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_17y9gy5" sourceRef="StartEvent_1" targetRef="initTimelinePointHandler" />
+    <bpmn:serviceTask id="Activity_0n82bsb" name="Process&#10;timeline&#10;point" camunda:class="com.tesco.pma.flow.handlers.ProcessTimelinePointHandler">
+      <bpmn:documentation>Calculate all dates according to timeline</bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:field name="status">
+          <camunda:expression>NOT_STARTED</camunda:expression>
+        </camunda:field>
+        <camunda:field name="oldStatuses">
+          <camunda:string>REGISTERED,ACTIVE</camunda:string>
+        </camunda:field>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_13h7w6t</bpmn:incoming>
+      <bpmn:outgoing>Flow_0diofye</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_13h7w6t" sourceRef="initTimelinePointHandler" targetRef="Activity_0n82bsb" />
+    <bpmn:endEvent id="Event_1rmkyzg">
+      <bpmn:incoming>Flow_1qjpvlo</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0diofye" sourceRef="Activity_0n82bsb" targetRef="Gateway_1gsdgtz" />
+    <bpmn:sequenceFlow id="Flow_1qjpvlo" sourceRef="Gateway_1gsdgtz" targetRef="Event_1rmkyzg" />
+    <bpmn:scriptTask id="Activity_18xvw5z" name="Schedule review" scriptFormat="groovy">
+      <bpmn:incoming>Flow_10fekkl</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qraqd0</bpmn:outgoing>
+      <bpmn:script>println "\nSend event: " + "${execution.getCurrentActivityName()}" +
+" ${execution.getVariable('pm_timeline_point_code')}" +
+" ${java.time.LocalDateTime.now()}"</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_10fekkl" sourceRef="Gateway_1gsdgtz" targetRef="Activity_18xvw5z">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable("SCHEDULE") != null}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_1ef6zeo">
+      <bpmn:incoming>Flow_1qraqd0</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1qraqd0" sourceRef="Activity_18xvw5z" targetRef="Event_1ef6zeo" />
+    <bpmn:exclusiveGateway id="Gateway_1gsdgtz" default="Flow_1qjpvlo">
+      <bpmn:incoming>Flow_0diofye</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qjpvlo</bpmn:outgoing>
+      <bpmn:outgoing>Flow_10fekkl</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="standard_init_timeline_point">
+      <bpmndi:BPMNEdge id="Flow_17y9gy5_di" bpmnElement="Flow_17y9gy5">
+        <di:waypoint x="215" y="97" />
+        <di:waypoint x="260" y="97" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13h7w6t_di" bpmnElement="Flow_13h7w6t">
+        <di:waypoint x="360" y="97" />
+        <di:waypoint x="400" y="97" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0diofye_di" bpmnElement="Flow_0diofye">
+        <di:waypoint x="500" y="97" />
+        <di:waypoint x="525" y="97" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qjpvlo_di" bpmnElement="Flow_1qjpvlo">
+        <di:waypoint x="550" y="122" />
+        <di:waypoint x="550" y="152" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10fekkl_di" bpmnElement="Flow_10fekkl">
+        <di:waypoint x="575" y="97" />
+        <di:waypoint x="610" y="97" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qraqd0_di" bpmnElement="Flow_1qraqd0">
+        <di:waypoint x="710" y="97" />
+        <di:waypoint x="742" y="97" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="79" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_07wrsjd_di" bpmnElement="initTimelinePointHandler">
+        <dc:Bounds x="260" y="57" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0n82bsb_di" bpmnElement="Activity_0n82bsb">
+        <dc:Bounds x="400" y="57" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1rmkyzg_di" bpmnElement="Event_1rmkyzg">
+        <dc:Bounds x="532" y="152" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_18xvw5z_di" bpmnElement="Activity_18xvw5z">
+        <dc:Bounds x="610" y="57" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ef6zeo_di" bpmnElement="Event_1ef6zeo">
+        <dc:Bounds x="742" y="79" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_10sb2rf_di" bpmnElement="Gateway_1gsdgtz" isMarkerVisible="true">
+        <dc:Bounds x="525" y="72" width="50" height="50" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
