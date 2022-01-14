@@ -45,6 +45,9 @@
         <if test="tlPointUuid != null">
           AND pr.tl_point_uuid = #{tlPointUuid}
         </if>
+        <if test="status == null">
+          AND pr.status_id = 3
+        </if>
         <if test="status != null">
           AND pr.status_id = #{status.id}
         </if>
