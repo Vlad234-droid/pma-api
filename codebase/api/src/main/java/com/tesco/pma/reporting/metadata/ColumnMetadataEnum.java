@@ -16,6 +16,7 @@ public enum ColumnMetadataEnum {
     JOB_TITLE("JobTitle", "Job title", STRING, "Job title"),
     LINE_MANAGER("LineManager", "Line Manager", STRING, "Line Manager"),
     OBJECTIVE_NUMBER("ObjectiveNumber", "Objective number", INTEGER, "Objective number"),
+    STATUS("ObjectiveStatus", "Objective Status", STRING, "Objective Status"),
     STRATEGIC_PRIORITY("StrategicPriority", "Strategic priority", STRING,
             "Link to Strategic priorities"),
     OBJECTIVE_TITLE("ObjectiveTitle", "Objective title", STRING, "Objective title"),

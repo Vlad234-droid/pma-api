@@ -19,21 +19,23 @@ import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.LAST_NAME;
 import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.LINE_MANAGER;
 import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.OBJECTIVE_NUMBER;
 import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.OBJECTIVE_TITLE;
+import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.STATUS;
 import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.STRATEGIC_PRIORITY;
 import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.WORKING_LEVEL;
 
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ObjectiveReport implements Reportable {
+public class ObjectiveLinkedReviewReport implements Reportable {
     String employeeNo;
     String employeeUUID;
     String firstName;
     String lastName;
-    String workingLevel;
+    String workLevel;
     String jobTitle;
     String lineManager;
     Integer objectiveNumber;
+    String status;
     String strategicPriority;
     String objectiveTitle;
     String howAchieved;
@@ -46,10 +48,11 @@ public class ObjectiveReport implements Reportable {
                 employeeUUID,
                 firstName,
                 lastName,
-                workingLevel,
+                workLevel,
                 jobTitle,
                 lineManager,
                 objectiveNumber,
+                status,
                 strategicPriority,
                 objectiveTitle,
                 howAchieved,
@@ -67,9 +70,15 @@ public class ObjectiveReport implements Reportable {
                 JOB_TITLE.getColumnMetadata(),
                 LINE_MANAGER.getColumnMetadata(),
                 OBJECTIVE_NUMBER.getColumnMetadata(),
+                STATUS.getColumnMetadata(),
                 STRATEGIC_PRIORITY.getColumnMetadata(),
                 OBJECTIVE_TITLE.getColumnMetadata(),
                 HOW_ACHIEVED.getColumnMetadata(),
                 HOW_OVER_ACHIEVED.getColumnMetadata());
+    }
+
+    @Override
+    public boolean isAvailableReportData() {
+        return objectiveNumber > 0;
     }
 }
