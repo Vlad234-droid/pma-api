@@ -27,6 +27,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.tesco.pma.cycle.api.model.PMElement.PM_TYPE;
+import static com.tesco.pma.cycle.api.model.PMTimelinePointElement.PM_TIMELINE_POINT_CODE;
+import static com.tesco.pma.cycle.api.model.PMTimelinePointElement.PM_TIMELINE_POINT_DESCRIPTION;
 
 /**
  * Calculates all required timeline point's dates for a fiscal year performance cycle
@@ -72,9 +74,9 @@ public class ProcessTimelinePointHandler extends AbstractUpdateEnumStatusHandler
                 .map(cc -> TimelinePoint.builder()
                         .uuid(UUID.randomUUID())
                         .colleagueCycleUuid(cc.getUuid())
-                        .code("parent.getCode()")
-                        .description("parent.getDescription()")
-                        .type(PMElementType.getByCode(context.getNullableVariable(PM_TYPE)))
+                        .code(context.getVariable(PM_TIMELINE_POINT_CODE))
+                        .description(context.getVariable(PM_TIMELINE_POINT_DESCRIPTION))
+                        .type(PMElementType.getByCode(context.getVariable(PM_TYPE)))
                         .startTime(startTime)
                         .endTime(endTime)
                         .properties(buildProps(context))
