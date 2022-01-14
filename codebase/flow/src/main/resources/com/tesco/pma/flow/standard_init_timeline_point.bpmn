@@ -11,6 +11,14 @@
     <bpmn:sequenceFlow id="Flow_17y9gy5" sourceRef="StartEvent_1" targetRef="initTimelinePointHandler" />
     <bpmn:serviceTask id="Activity_0n82bsb" name="Process&#10;timeline&#10;point" camunda:class="com.tesco.pma.flow.handlers.ProcessTimelinePointHandler">
       <bpmn:documentation>Calculate all dates according to timeline</bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:field name="status">
+          <camunda:expression>NOT_STARTED</camunda:expression>
+        </camunda:field>
+        <camunda:field name="oldStatuses">
+          <camunda:string>REGISTERED,ACTIVE</camunda:string>
+        </camunda:field>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_13h7w6t</bpmn:incoming>
       <bpmn:outgoing>Flow_0diofye</bpmn:outgoing>
     </bpmn:serviceTask>
