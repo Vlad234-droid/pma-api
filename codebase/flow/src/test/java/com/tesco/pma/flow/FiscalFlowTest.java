@@ -4,7 +4,7 @@ import com.tesco.pma.bpm.camunda.flow.AbstractCamundaSpringBootTest;
 import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleType;
-import com.tesco.pma.cycle.api.model.PMElementType;
+import com.tesco.pma.cycle.api.model.PMReviewElement;
 import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.flow.handlers.FinalizeFlowHandler;
 import com.tesco.pma.flow.handlers.InitTimelinePointHandler;
@@ -87,7 +87,7 @@ public class FiscalFlowTest extends AbstractCamundaSpringBootTest {
 
         assertThatForProcess(runProcess("fiscal_test",
                 Map.of(FlowParameters.PM_CYCLE.name(), buildPMCycle(),
-                        PM_TYPE, PMElementType.REVIEW)))
+                        PM_TYPE, PMReviewElement.PM_REVIEW)))
                 .activity("initTimelinePointEyr").executedOnce()
                 .activity("call_review_schedule_eyr").executedOnce()
                 .activity("initTimelinePointMyr").executedOnce()
@@ -108,7 +108,7 @@ public class FiscalFlowTest extends AbstractCamundaSpringBootTest {
         assertThatForProcess(runProcessByEvent(new EventSupport(IMPORT_NEW_COLLEAGUE_EVENT_NAME),
                 new HashMap<>(Map.of(FlowParameters.COLLEAGUE_UUID.name(), UUID.randomUUID(),
                         FlowParameters.PM_CYCLE.name(), buildPMCycle(),
-                        PM_TYPE, PMElementType.REVIEW))))
+                        PM_TYPE, PMReviewElement.PM_REVIEW))))
                 .activity("processNewColleague").executedOnce()
                 .activity("initTimelinePointEyr").executedOnce()
                 .activity("processTimelinePointEyr").executedOnce()

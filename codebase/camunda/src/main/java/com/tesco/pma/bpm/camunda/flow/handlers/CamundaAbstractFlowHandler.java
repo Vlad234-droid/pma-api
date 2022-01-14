@@ -1,21 +1,22 @@
 package com.tesco.pma.bpm.camunda.flow.handlers;
 
-import java.util.function.Supplier;
-
-import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.springframework.transaction.PlatformTransactionManager;
-
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.bpm.api.flow.FlowMessages;
 import com.tesco.pma.bpm.camunda.flow.CamundaExecutionContext;
 import com.tesco.spring.tx.TransactionWorker;
-import com.tesco.spring.tx.TransactionWorker.TxSupplier;
 import com.tesco.spring.tx.TransactionWorker.TxExecutor;
-import lombok.extern.slf4j.Slf4j;
+import com.tesco.spring.tx.TransactionWorker.TxSupplier;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.transaction.PlatformTransactionManager;
 
-@Slf4j
+import java.util.function.Supplier;
+
 public abstract class CamundaAbstractFlowHandler implements JavaDelegate { //NOPMD
+
+    protected Logger log = LoggerFactory.getLogger(getClass());
 
     protected abstract void execute(ExecutionContext context) throws Exception;
 
