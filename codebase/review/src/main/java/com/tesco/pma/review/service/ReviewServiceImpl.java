@@ -464,7 +464,7 @@ public class ReviewServiceImpl implements ReviewService {
         try {
             currentCycleUuid = pmCycleService.getCurrentByColleague(colleagueUuid).getUuid();
         } catch (NotFoundException e) {
-            return null;
+            return Collections.emptyList();
         }
         return timelinePointDAO.getTimeline(currentCycleUuid, colleagueUuid);
     }
