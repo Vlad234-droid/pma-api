@@ -1,9 +1,11 @@
 package com.tesco.pma.flow.handlers;
 
+import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.bpm.camunda.flow.CamundaHandlerTestConfig;
 import com.tesco.pma.bpm.camunda.flow.FlowTestUtil;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycle;
+import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.api.model.PMElement;
@@ -13,6 +15,7 @@ import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.review.domain.TimelinePoint;
 import com.tesco.pma.review.service.TimelinePointService;
+import org.camunda.bpm.engine.impl.el.FixedValue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -45,6 +48,7 @@ class ProcessTimelinePointHandlerTest {
     private static final String CODE = "code";
     private static final String PM_CYCLE_MIN_ONE = "1";
     private static final String PM_CYCLE_MAX_FIVE = "5";
+    private static final FixedValue STATUS_VALUES = new FixedValue("REGISTERED,ACTIVE");
 
     private final LocalDate startDate = LocalDate.of(2021, 1, 1);
     private final LocalDate endDate = LocalDate.of(2022, 1, 1);
@@ -72,8 +76,10 @@ class ProcessTimelinePointHandlerTest {
                 .build();
 
         Mockito.doReturn(Collections.emptyList()).when(colleagueCycleService)
-                .getActiveByCycleUuidWithoutTimelinePoint(pmCycle.getUuid(), null);
+                .getByCycleUuidWithoutTimelinePoint(pmCycle.getUuid(), null,
+                        DictionaryFilter.includeFilter(PMCycleStatus.REGISTERED, PMCycleStatus.ACTIVE));
 
+        handler.setOldStatusValues(STATUS_VALUES);
         handler.execute(ec);
 
         Mockito.verifyNoInteractions(timelinePointService);
@@ -106,8 +112,10 @@ class ProcessTimelinePointHandlerTest {
                 .build();
 
         Mockito.doReturn(Collections.singletonList(colleagueCycle))
-                .when(colleagueCycleService).getActiveByCycleUuidWithoutTimelinePoint(pmCycle.getUuid(), null);
+                .when(colleagueCycleService).getByCycleUuidWithoutTimelinePoint(pmCycle.getUuid(),
+                null, DictionaryFilter.includeFilter(PMCycleStatus.REGISTERED, PMCycleStatus.ACTIVE));
 
+        handler.setOldStatusValues(STATUS_VALUES);
         handler.execute(ec);
 
         ArgumentCaptor<List<TimelinePoint>> argumentCaptor = ArgumentCaptor.forClass(List.class);

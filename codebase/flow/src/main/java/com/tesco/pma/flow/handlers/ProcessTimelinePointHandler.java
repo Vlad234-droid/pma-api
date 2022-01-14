@@ -1,5 +1,6 @@
 package com.tesco.pma.flow.handlers;
 
+import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.api.MapJson;
 import com.tesco.pma.bpm.api.ProcessExecutionException;
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
@@ -51,16 +52,11 @@ public class ProcessTimelinePointHandler extends AbstractUpdateEnumStatusHandler
         createTimelinePoints(context, cycle);
     }
 
-    @Override
-    protected Class<PMCycleStatus> getEnumClass() {
-        return PMCycleStatus.class;
-    }
-
     private void createTimelinePoints(ExecutionContext context, PMCycle cycle) {
         var startDate = context.getVariable(FlowParameters.START_DATE, LocalDate.class);
         var startTime = HandlerUtils.dateToInstant(startDate);
-        var colleagueCycles = colleagueCycleService.getActiveByCycleUuidWithoutTimelinePoint(cycle.getUuid(),
-                PMCycleType.HIRING == cycle.getType() ? startTime : null);
+        var colleagueCycles = colleagueCycleService.getByCycleUuidWithoutTimelinePoint(cycle.getUuid(),
+                PMCycleType.HIRING == cycle.getType() ? startTime : null, DictionaryFilter.includeFilter(getOldStatuses()));
         if (CollectionUtils.isEmpty(colleagueCycles)) {
             return;
         }
@@ -103,5 +99,10 @@ public class ProcessTimelinePointHandler extends AbstractUpdateEnumStatusHandler
                 .forEach(key -> Optional.ofNullable(parent.getProperties().get(key))
                         .ifPresent(v -> map.put(key, v)));
         return new MapJson(map);
+    }
+
+    @Override
+    protected Class<PMCycleStatus> getEnumClass() {
+        return PMCycleStatus.class;
     }
 }

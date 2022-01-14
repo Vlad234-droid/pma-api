@@ -1,10 +1,10 @@
 package com.tesco.pma.cycle.dao;
 
+import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.lang.Nullable;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -70,12 +70,12 @@ public interface PMColleagueCycleDAO {
      * Gets list of pm colleague cycles without timeline points
      *
      * @param cycleUuid - PM cycle identifier
-     * @param status    - filter by status, optional param.
+     * @param statusFilter  - filter by status
      * @param startTime - start time filter
      * @return - collection of PM colleague cycles
      */
     List<PMColleagueCycle> getByCycleUuidWithoutTimelinePoint(@Param("cycleUuid") UUID cycleUuid,
-                                                              @Nullable @Param("status") PMCycleStatus status,
+                                                              @Param("statusFilter") DictionaryFilter<PMCycleStatus> statusFilter,
                                                               @Param("startTime") Instant startTime);
 
     /**
