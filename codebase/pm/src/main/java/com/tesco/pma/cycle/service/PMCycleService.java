@@ -125,7 +125,7 @@ public interface PMCycleService {
     UUID deploy(PMCycle cycle);
 
     /**
-     * Start performance cycle by process UUID
+     * Start performance cycle by UUID
      *
      * @param uuid performance cycle UUID
      */

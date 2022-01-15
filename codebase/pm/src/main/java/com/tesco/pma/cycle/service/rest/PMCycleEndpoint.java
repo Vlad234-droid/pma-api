@@ -79,7 +79,7 @@ public class PMCycleEndpoint {
             description = "Performance cycle published",
             tags = {"performance-cycle"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "SPerformance cycle published")
-    @PutMapping(value = "/pm-cycles/publish", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/pm-cycles/publish", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
     public RestResponse<PMCycle> publish(@RequestBody PMCycle cycle) {
@@ -229,10 +229,9 @@ public class PMCycleEndpoint {
             description = "Performance cycle deployed",
             tags = {"performance-cycle"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle deployed")
-    @PutMapping(value = "/pm-cycles/{uuid}/deploy", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/pm-cycles/deploy", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public RestResponse<UUID> deploy(@PathVariable("uuid") UUID uuid,
-                                     @RequestBody PMCycle cycle) {
+    public RestResponse<UUID> deploy(@RequestBody PMCycle cycle) {
 
         return success(service.deploy(cycle));
     }

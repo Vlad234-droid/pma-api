@@ -1,5 +1,6 @@
 package com.tesco.pma.cycle.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tesco.pma.api.MapJson;
 import com.tesco.pma.colleague.api.ColleagueSimple;
 import com.tesco.pma.cycle.api.model.PMCycleMetadata;
@@ -37,6 +38,8 @@ public class PMCycle implements Serializable {
 
     MapJson properties;
 
+    @JsonIgnore
     String jsonMetadata;
+
     PMCycleMetadata metadata;
 }

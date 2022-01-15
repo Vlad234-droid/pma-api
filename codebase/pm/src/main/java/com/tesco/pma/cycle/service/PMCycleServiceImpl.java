@@ -248,9 +248,9 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     @Override
     @Transactional
-    public void start(UUID rtProcessUuid) {
+    public void start(UUID uuid) {
         //TODO get rt
-        intStartCycle(rtProcessUuid);
+        intStartCycle(uuid);
     }
 
     @Override
