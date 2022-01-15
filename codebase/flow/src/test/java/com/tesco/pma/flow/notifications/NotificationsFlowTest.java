@@ -15,9 +15,8 @@ import com.tesco.pma.event.Event;
 import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.flow.notifications.handlers.DefaultInitNotificationHandler;
-import com.tesco.pma.flow.notifications.handlers.InitCycleNotificationHandler;
 import com.tesco.pma.flow.notifications.handlers.InitObjectiveNotificationHandler;
-import com.tesco.pma.flow.notifications.handlers.InitReviewNotificationHandler;
+import com.tesco.pma.flow.notifications.handlers.InitTimelinePointNotificationHandler;
 import com.tesco.pma.flow.notifications.handlers.InitTipsNotificationHandler;
 import com.tesco.pma.flow.notifications.handlers.SendNotificationHandler;
 import com.tesco.pma.review.domain.TimelinePoint;
@@ -67,13 +66,10 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
     private DefaultInitNotificationHandler initNotificationHandler;
 
     @SpyBean
-    private InitReviewNotificationHandler reviewInitHandler;
+    private InitTimelinePointNotificationHandler reviewInitHandler;
 
     @SpyBean
     private InitObjectiveNotificationHandler objectiveInitHandler;
-
-    @SpyBean
-    private InitCycleNotificationHandler reminderNotificationHandler;
 
     @SpyBean
     private InitTipsNotificationHandler initTipsNotificationHandler;
@@ -160,7 +156,6 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
 
     @Test
     void checkTimelineNotifications() throws Exception {
-
         checkTimelineNotifications(NF_START_TIMELINE_NOTIFICATION, "Q1", true);
         checkTimelineNotifications(NF_START_TIMELINE_NOTIFICATION, "Q3", true);
         checkTimelineNotifications(NF_START_TIMELINE_NOTIFICATION, "Q2", false);
@@ -168,11 +163,11 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
 
     @Test
     void beforeCycleTest() throws Exception {
-        checkCycleGroup(NF_BEFORE_CYCLE_START, null, false, WorkLevel.WL1, true);
-        checkCycleGroup(NF_BEFORE_CYCLE_END, null, false, WorkLevel.WL1, true);
+        checkCycleGroup(NF_BEFORE_CYCLE_START, PMReviewType.EYR, false, WorkLevel.WL1, true);
+        checkCycleGroup(NF_BEFORE_CYCLE_END, PMReviewType.EYR, false, WorkLevel.WL1, true);
 
-        checkCycleGroup(NF_BEFORE_CYCLE_START, null, true, WorkLevel.WL1, true);
-        checkCycleGroup(NF_BEFORE_CYCLE_END, null, true, WorkLevel.WL1, true);
+        checkCycleGroup(NF_BEFORE_CYCLE_START, PMReviewType.EYR, true, WorkLevel.WL1, true);
+        checkCycleGroup(NF_BEFORE_CYCLE_END, PMReviewType.EYR, true, WorkLevel.WL1, true);
     }
 
     @Test
@@ -193,8 +188,7 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
     }
 
     void checkTimelineNotifications(String evenName, String quarter, boolean send) throws Exception {
-        var event = createEvent(evenName, null);
-        event.putProperty(FlowParameters.QUARTER.name(), quarter);
+        var event = createEvent(evenName, quarter);
         check("InitCycleNotifications", "cycle_decision_table", event, false, null, send);
     }
 
@@ -209,7 +203,7 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
     }
 
     void check(String initHandlerName, String decisionTable, String evenName, PMReviewType reviewType, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
-        var event = createEvent(evenName, reviewType);
+        var event = createEvent(evenName, reviewType != null? reviewType.getCode(): null);
         check(initHandlerName, decisionTable, event, isManager, workLevel, send);
     }
 
@@ -227,11 +221,13 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
                 .activity("sendNotification").executedTimes(send ? 1 : 0);
     }
 
-    EventSupport createEvent(String evenName, PMReviewType reviewType) {
+    EventSupport createEvent(String evenName, String timelineCode) {
         var event = new EventSupport(evenName);
 
-        if(reviewType != null) {
-            event.putProperty(FlowParameters.REVIEW_TYPE.name(), reviewType);
+        if(timelineCode != null) {
+            var timelinePoint = new TimelinePoint();
+            timelinePoint.setCode(timelineCode);
+            event.putProperty(FlowParameters.TIMELINE_POINT.name(), timelinePoint);
         }
 
         event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueUUID);

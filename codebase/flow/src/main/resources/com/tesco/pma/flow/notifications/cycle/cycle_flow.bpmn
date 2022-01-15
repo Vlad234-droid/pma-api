@@ -13,7 +13,7 @@
       <bpmn:incoming>Flow_1uzgpfn</bpmn:incoming>
       <bpmn:outgoing>Flow_08x2cmk</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="InitCycleNotifications" name="Init flow variables" camunda:class="com.tesco.pma.flow.notifications.handlers.InitCycleNotificationHandler">
+    <bpmn:serviceTask id="InitCycleNotifications" name="Init flow variables" camunda:class="com.tesco.pma.flow.notifications.handlers.InitTimelinePointNotificationHandler">
       <bpmn:incoming>Flow_0jgm24g</bpmn:incoming>
       <bpmn:incoming>Flow_0lagz3y</bpmn:incoming>
       <bpmn:incoming>Flow_11o41ch</bpmn:incoming>
@@ -60,20 +60,20 @@
     <bpmn:sequenceFlow id="Flow_11o41ch" sourceRef="Event_1c2rlex" targetRef="InitCycleNotifications" />
     <bpmn:textAnnotation id="TextAnnotation_1ejgdx6">
       <bpmn:text>eventName: NF_BEFORE_CYCLE_START
-colleagueUuid
-quarter</bpmn:text>
+COLLEAGUE_UUID
+TIMELINE_POINT</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_1hka4h1">
       <bpmn:text>eventName: NF_BEFORE_CYCLE_END
-colleagueUuid
-quarter</bpmn:text>
+COLLEAGUE_UUID
+TIMELINE_POINT</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0enne85" sourceRef="TextAnnotation_1ejgdx6" targetRef="Event_1df7jen" />
     <bpmn:association id="Association_11v0mm0" sourceRef="TextAnnotation_1hka4h1" targetRef="Event_1usosf4" />
     <bpmn:textAnnotation id="TextAnnotation_0o052ca">
       <bpmn:text>eventName: NF_START_TIMELINE_NOTIFICATION
-colleagueUuid
-quarter</bpmn:text>
+COLLEAGUE_UUID
+TIMELINE_POINT</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0d13qpc" sourceRef="TextAnnotation_0o052ca" targetRef="Event_1c2rlex" />
   </bpmn:process>
@@ -166,7 +166,7 @@ quarter</bpmn:text>
         <dc:Bounds x="160" y="78" width="240" height="68" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1hka4h1_di" bpmnElement="TextAnnotation_1hka4h1">
-        <dc:Bounds x="160" y="188" width="240" height="53" />
+        <dc:Bounds x="160" y="188" width="240" height="54" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0o052ca_di" bpmnElement="TextAnnotation_0o052ca">
         <dc:Bounds x="160" y="283" width="240" height="68" />

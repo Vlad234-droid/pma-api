@@ -16,9 +16,9 @@
           <text>EVENT_NAME</text>
         </inputExpression>
       </input>
-      <input id="InputClause_0165gnz" label="Review Type" biodi:width="150">
+      <input id="InputClause_0165gnz" label="Timeline point Code" biodi:width="196">
         <inputExpression id="LiteralExpression_168f57s" typeRef="string">
-          <text>REVIEW_TYPE</text>
+          <text>TIMELINE_POINT.getCode()</text>
         </inputExpression>
       </input>
       <input id="Input_1" label="is Manager" biodi:width="150">

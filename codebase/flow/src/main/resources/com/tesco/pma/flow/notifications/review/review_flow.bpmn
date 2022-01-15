@@ -25,7 +25,7 @@
       <bpmn:incoming>Flow_0yqr2fm</bpmn:incoming>
       <bpmn:outgoing>Flow_0qy25ym</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="initReviewNotification" name="Init flow variables" camunda:class="com.tesco.pma.flow.notifications.handlers.InitReviewNotificationHandler">
+    <bpmn:serviceTask id="initReviewNotification" name="Init flow variables" camunda:class="com.tesco.pma.flow.notifications.handlers.InitTimelinePointNotificationHandler">
       <bpmn:incoming>Flow_0ridoso</bpmn:incoming>
       <bpmn:incoming>Flow_0l6qkz5</bpmn:incoming>
       <bpmn:incoming>Flow_1k5x4ta</bpmn:incoming>
@@ -72,32 +72,32 @@
     <bpmn:sequenceFlow id="Flow_007nzmt" sourceRef="PM_REVIEW_BEFORE_END_ID" targetRef="initReviewNotification" />
     <bpmn:textAnnotation id="TextAnnotation_097i6gf">
       <bpmn:text>eventName: NF_PM_REVIEW_SUBMITTED
-colleagueUuid
-reviewType</bpmn:text>
+COLLEAGUE_UUID
+TIMELINE_POINT</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1da0a5n" sourceRef="PM_REVIEW_SUBMITTED_ID" targetRef="TextAnnotation_097i6gf" />
     <bpmn:textAnnotation id="TextAnnotation_1pea7gg">
       <bpmn:text>eventName: NF_PM_REVIEW_APPROVED
-colleagueUuid
-reviewType</bpmn:text>
+COLLEAGUE_UUID
+TIMELINE_POINT</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0z80f2t" sourceRef="TextAnnotation_1pea7gg" targetRef="PM_REVIEW_APPROVED_ID" />
     <bpmn:textAnnotation id="TextAnnotation_0oh4xv8">
       <bpmn:text>eventName: NF_PM_REVIEW_DECLINED
-colleagueUuid
-reviewType</bpmn:text>
+COLLEAGUE_UUID
+TIMELINE_POINT</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1gs0y5v" sourceRef="TextAnnotation_0oh4xv8" targetRef="PM_REVIEW_DECLINED_ID" />
     <bpmn:textAnnotation id="TextAnnotation_0kevnx2">
       <bpmn:text>eventName: NF_PM_REVIEW_BEFORE_START
-colleagueUuid
-reviewType</bpmn:text>
+COLLEAGUE_UUID
+TIMELINE_POINT</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1pzco93" sourceRef="PM_REVIEW_BEFORE_START_ID" targetRef="TextAnnotation_0kevnx2" />
     <bpmn:textAnnotation id="TextAnnotation_0tbxjln">
       <bpmn:text>eventName: NF_PM_REVIEW_BEFORE_END
-colleagueUuid
-reviewType</bpmn:text>
+COLLEAGUE_UUID
+TIMELINE_POINT</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_18s42lk" sourceRef="PM_REVIEW_BEFORE_END_ID" targetRef="TextAnnotation_0tbxjln" />
   </bpmn:process>

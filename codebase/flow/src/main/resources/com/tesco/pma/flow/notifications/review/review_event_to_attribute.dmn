@@ -10,9 +10,9 @@
           <text>EVENT_NAME</text>
         </inputExpression>
       </input>
-      <input id="InputClause_1mylr30" label="Review type">
+      <input id="InputClause_1mylr30" label="Timeline point Code">
         <inputExpression id="LiteralExpression_00tcpqy" typeRef="string">
-          <text>REVIEW_TYPE</text>
+          <text>TIMELINE_POINT.getCode()</text>
         </inputExpression>
       </input>
       <output id="Output_1" label="Attribute name" name="PROFILE_ATTRIBUTE_NAME" typeRef="string" biodi:width="367" />

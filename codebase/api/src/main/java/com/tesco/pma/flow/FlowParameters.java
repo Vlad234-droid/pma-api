@@ -33,7 +33,7 @@ public enum FlowParameters {
     COLLEAGUE_WORK_LEVEL,
 
     PROFILE_ATTRIBUTE_NAME,
-    QUARTER,
+    TIMELINE_POINT,
 
     TIP_UUID,
 
