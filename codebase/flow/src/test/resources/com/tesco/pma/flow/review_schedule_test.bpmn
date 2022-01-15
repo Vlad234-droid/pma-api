@@ -130,7 +130,7 @@
         <camunda:inputOutput>
           <camunda:inputParameter name="EVENT_PARAMS">
             <camunda:map>
-              <camunda:entry key="reviewType">reviewtypeval</camunda:entry>
+              <camunda:entry key="TIMELINE_POINT">${TIMELINE_POINT}</camunda:entry>
             </camunda:map>
           </camunda:inputParameter>
         </camunda:inputOutput>
