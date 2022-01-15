@@ -79,6 +79,11 @@ public abstract class FlowTestUtil { //NOPMD
             return this;
         }
 
+        public ExecutionMockBuilder withVariable(String variable, Object value) {
+            execution.setVariable(variable, value);
+            return this;
+        }
+
         public ExecutionMockBuilder withEvent(Event event) {
             return withVariable(ExecutionContext.Params.EC_EVENT, event);
         }
