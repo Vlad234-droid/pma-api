@@ -7,7 +7,7 @@
         <camunda:property name="pm_cycle_type" value="fiscal" />
         <camunda:property name="pm_cycle_start_time" value="2021-03-01" />
         <camunda:property name="pm_cycle_before_start" value="P2W" />
-        <camunda:property name="pm_cycle_before_end" value="P2W" />
+        <camunda:property name="pm_cycle_before_end" value="P1W" />
         <camunda:property name="pm_cycle_max" value="5" />
       </camunda:properties>
     </bpmn:extensionElements>
@@ -42,7 +42,7 @@
       <bpmn:outgoing>Flow_0nbbfyl</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_0nbbfyl" sourceRef="Event_0e0xeep" targetRef="processColleagueCycles" />
-    <bpmn:serviceTask id="processColleagueCycles" name="Process Colleagues" camunda:class="com.tesco.pma.flow.handlers.PMColleagueCycleHandler">
+    <bpmn:serviceTask id="processColleagueCycles" name="Initial&#10;processing&#10;of colleagues&#10;in the scope" camunda:class="com.tesco.pma.flow.handlers.PMColleagueCycleHandler">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:outputParameter name="SCHEDULED">${true}</camunda:outputParameter>
@@ -126,7 +126,7 @@
         <camunda:properties>
           <camunda:property name="pm_type" value="review" />
           <camunda:property name="pm_review_type" value="eyr" />
-          <camunda:property name="pm_review_start_delay" value="P1Y" />
+          <camunda:property name="pm_review_start_delay" value="P50W" />
           <camunda:property name="pm_review_before_start" value="P2W" />
           <camunda:property name="pm_review_before_end" value="P1W" />
           <camunda:property name="pm_review_duration" value="P2W" />
@@ -187,12 +187,27 @@ COLLEAGUE_UUID</bpmn:text>
   <bpmn:message id="Message_1ujyhkz" name="CEP_COLLEAGUE_ADDED" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="group_a">
-      <bpmndi:BPMNShape id="TextAnnotation_0zy0dx0_di" bpmnElement="TextAnnotation_0zy0dx0">
-        <dc:Bounds x="192" y="86" width="183" height="68" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0hz728z_di" bpmnElement="TextAnnotation_0hz728z">
-        <dc:Bounds x="192" y="168" width="183" height="68" />
-      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1vbtm51_di" bpmnElement="Flow_1vbtm51">
+        <di:waypoint x="540" y="160" />
+        <di:waypoint x="540" y="275" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="547" y="215" width="45" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ube7ql_di" bpmnElement="Flow_0ube7ql">
+        <di:waypoint x="448" y="202" />
+        <di:waypoint x="469" y="202" />
+        <di:waypoint x="469" y="120" />
+        <di:waypoint x="490" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1844x42_di" bpmnElement="Flow_1844x42">
+        <di:waypoint x="448" y="120" />
+        <di:waypoint x="490" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0h6cs0n_di" bpmnElement="Flow_0h6cs0n">
+        <di:waypoint x="565" y="300" />
+        <di:waypoint x="595" y="300" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1qcajud_di" bpmnElement="Flow_1qcajud">
         <di:waypoint x="980" y="300" />
         <di:waypoint x="1022" y="300" />
@@ -205,6 +220,10 @@ COLLEAGUE_UUID</bpmn:text>
         <di:waypoint x="770" y="480" />
         <di:waypoint x="830" y="480" />
         <di:waypoint x="830" y="325" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nbbfyl_di" bpmnElement="Flow_0nbbfyl">
+        <di:waypoint x="306" y="300" />
+        <di:waypoint x="350" y="300" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1rfkre9_di" bpmnElement="Flow_1rfkre9">
         <di:waypoint x="770" y="390" />
@@ -265,36 +284,20 @@ COLLEAGUE_UUID</bpmn:text>
           <dc:Bounds x="457" y="282" width="46" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0h6cs0n_di" bpmnElement="Flow_0h6cs0n">
-        <di:waypoint x="565" y="300" />
-        <di:waypoint x="595" y="300" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1844x42_di" bpmnElement="Flow_1844x42">
-        <di:waypoint x="448" y="120" />
-        <di:waypoint x="490" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ube7ql_di" bpmnElement="Flow_0ube7ql">
-        <di:waypoint x="448" y="202" />
-        <di:waypoint x="469" y="202" />
-        <di:waypoint x="469" y="120" />
-        <di:waypoint x="490" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1vbtm51_di" bpmnElement="Flow_1vbtm51">
-        <di:waypoint x="540" y="160" />
-        <di:waypoint x="540" y="275" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="547" y="215" width="45" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0nbbfyl_di" bpmnElement="Flow_0nbbfyl">
-        <di:waypoint x="306" y="300" />
-        <di:waypoint x="350" y="300" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0v9jvii_di" bpmnElement="Event_0v9jvii">
         <dc:Bounds x="1022" y="282" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1mwce77_di" bpmnElement="Gateway_1msj1uv">
         <dc:Bounds x="595" y="275" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0yqaexd_di" bpmnElement="Event_0e0xeep">
+        <dc:Bounds x="270" y="282" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="262" y="325" width="53" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1hk3bfm_di" bpmnElement="processColleagueCycles">
+        <dc:Bounds x="350" y="260" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1hvn2qs_di" bpmnElement="Gateway_1p29s5e">
         <dc:Bounds x="805" y="275" width="50" height="50" />
@@ -323,20 +326,17 @@ COLLEAGUE_UUID</bpmn:text>
       <bpmndi:BPMNShape id="Activity_0vy7yuy_di" bpmnElement="Activity_0vy7yuy">
         <dc:Bounds x="490" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_05kflhq_di" bpmnElement="CEP_COLLEAGUE_ADDED">
-        <dc:Bounds x="412" y="184" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1pi5xza_di" bpmnElement="IMPORT_NEW_COLLEAGUE_ID">
         <dc:Bounds x="412" y="102" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0yqaexd_di" bpmnElement="Event_0e0xeep">
-        <dc:Bounds x="270" y="282" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="262" y="325" width="53" height="14" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="Event_05kflhq_di" bpmnElement="CEP_COLLEAGUE_ADDED">
+        <dc:Bounds x="412" y="184" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1hk3bfm_di" bpmnElement="processColleagueCycles">
-        <dc:Bounds x="350" y="260" width="100" height="80" />
+      <bpmndi:BPMNShape id="TextAnnotation_0zy0dx0_di" bpmnElement="TextAnnotation_0zy0dx0">
+        <dc:Bounds x="192" y="86" width="183" height="68" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0hz728z_di" bpmnElement="TextAnnotation_0hz728z">
+        <dc:Bounds x="192" y="168" width="183" height="68" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_1mzu7so_di" bpmnElement="Association_1mzu7so">
         <di:waypoint x="412" y="120" />
