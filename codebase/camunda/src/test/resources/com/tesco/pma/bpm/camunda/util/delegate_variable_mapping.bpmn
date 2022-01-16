@@ -39,7 +39,7 @@
       <bpmn:incoming>Flow_1g8o4jo</bpmn:incoming>
       <bpmn:outgoing>Flow_00o9srj</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:subProcess id="mid_year_review" name="Mid-year review">
+    <bpmn:subProcess id="myr" name="Mid-year review">
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="pm_review_type" value="myr" />
@@ -71,8 +71,8 @@
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="Flow_0dk611d" sourceRef="call_review_init_myr" targetRef="Event_15cuxoy" />
     </bpmn:subProcess>
-    <bpmn:sequenceFlow id="Flow_0k2aae9" sourceRef="Gateway_1m0ygb2" targetRef="mid_year_review" />
-    <bpmn:sequenceFlow id="Flow_0hpepx4" sourceRef="mid_year_review" targetRef="Gateway_1mxa409" />
+    <bpmn:sequenceFlow id="Flow_0k2aae9" sourceRef="Gateway_1m0ygb2" targetRef="myr" />
+    <bpmn:sequenceFlow id="Flow_0hpepx4" sourceRef="myr" targetRef="Gateway_1mxa409" />
     <bpmn:parallelGateway id="Gateway_1mxa409">
       <bpmn:incoming>Flow_0hpepx4</bpmn:incoming>
       <bpmn:incoming>Flow_00o9srj</bpmn:incoming>
@@ -127,7 +127,7 @@
       <bpmndi:BPMNShape id="Event_0bhe86n_di" bpmnElement="Event_0bhe86n">
         <dc:Bounds x="882" y="222" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1sfkc6j_di" bpmnElement="mid_year_review" isExpanded="true">
+      <bpmndi:BPMNShape id="Activity_1sfkc6j_di" bpmnElement="myr" isExpanded="true">
         <dc:Bounds x="370" y="140" width="350" height="200" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0dk611d_di" bpmnElement="Flow_0dk611d">

@@ -28,7 +28,7 @@ class PMElementTest {
 
     @Test
     void pmTimelinePointElementConstants() {
-        check(PMTimelinePointElement.getPropertyNames(), 2);
+        check(PMTimelinePointElement.getPropertyNames(), 4);
     }
 
     private void check(List<String> constants, int size) {

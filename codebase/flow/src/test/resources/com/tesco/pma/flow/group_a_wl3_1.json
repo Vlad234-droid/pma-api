@@ -40,7 +40,7 @@
       "cycleType": "FISCAL",
       "timelinePoints": [
         {
-          "id": "objectives",
+          "id": "objective",
           "code": "My Objectives",
           "description": "My Objectives",
           "type": "REVIEW",
@@ -79,7 +79,7 @@
           }
         },
         {
-          "id": "midYearReview",
+          "id": "myr",
           "code": "Mid-year review",
           "description": "Mid-year review",
           "type": "REVIEW",
@@ -119,7 +119,7 @@
           }
         },
         {
-          "id": "endOfYearReview",
+          "id": "eyr",
           "code": "Year-end review",
           "description": "Year-end review",
           "type": "REVIEW",

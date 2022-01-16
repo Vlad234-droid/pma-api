@@ -12,7 +12,7 @@
         <camunda:property name="pm_cycle_max" value="5" />
       </camunda:properties>
     </bpmn:extensionElements>
-    <bpmn:subProcess id="endOfYearReview" name="Year-end review">
+    <bpmn:subProcess id="eyr" name="Year-end review">
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="pm_review_type" value="eyr" />
@@ -118,8 +118,8 @@
     <bpmn:endEvent id="Event_0v9jvii">
       <bpmn:incoming>Flow_0f4zlnq</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0f4zlnq" sourceRef="endOfYearReview" targetRef="Event_0v9jvii" />
-    <bpmn:sequenceFlow id="Flow_0j0sbw7" sourceRef="Activity_1vkxs1y" targetRef="endOfYearReview" />
+    <bpmn:sequenceFlow id="Flow_0f4zlnq" sourceRef="eyr" targetRef="Event_0v9jvii" />
+    <bpmn:sequenceFlow id="Flow_0j0sbw7" sourceRef="Activity_1vkxs1y" targetRef="eyr" />
     <bpmn:startEvent id="Event_0e0xeep">
       <bpmn:extensionElements>
         <camunda:executionListener event="start">
@@ -153,7 +153,7 @@
         <di:waypoint x="188" y="120" />
         <di:waypoint x="220" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Activity_1bu82ro_di" bpmnElement="endOfYearReview" isExpanded="true">
+      <bpmndi:BPMNShape id="Activity_1bu82ro_di" bpmnElement="eyr" isExpanded="true">
         <dc:Bounds x="370" y="40" width="880" height="240" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0xp3vtj_di" bpmnElement="Flow_0xp3vtj">

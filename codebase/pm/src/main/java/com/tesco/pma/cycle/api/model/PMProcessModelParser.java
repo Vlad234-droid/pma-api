@@ -30,6 +30,8 @@ import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MAX;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MIN;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_TYPE;
 import static com.tesco.pma.cycle.api.model.PMTimelinePointElement.PM_TIMELINE_POINT;
+import static com.tesco.pma.cycle.api.model.PMTimelinePointElement.PM_TIMELINE_POINT_CODE;
+import static com.tesco.pma.cycle.api.model.PMTimelinePointElement.PM_TIMELINE_POINT_DESCRIPTION;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_PARSE_IS_BLANK;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_PARSE_NOT_FOUND;
 import static com.tesco.pma.util.FileUtils.getFormName;
@@ -53,13 +55,15 @@ public class PMProcessModelParser {
     public static <T extends PMElement> T fillPMElement(Activity activity, Collection<CamundaProperty> props, T target) {
         var name = defaultValue(unwrap(activity.getName()), activity.getId());
         target.setId(activity.getId());
-        target.setCode(name);
+        target.setCode(activity.getId());
         target.setDescription(name);
         target.setProperties(props == null ? ExtensionsUtil.getExtensionsProperties(activity)
                 : ExtensionsUtil.getExtensionsProperties(props));
         if (target.getType() == null) {
             target.setType(PMElementType.getByCode(target.getProperties().get(PMElement.PM_TYPE)));
         }
+        target.getProperties().putIfAbsent(PM_TIMELINE_POINT_CODE, target.getCode());
+        target.getProperties().putIfAbsent(PM_TIMELINE_POINT_DESCRIPTION, target.getDescription());
         return target;
     }
 
