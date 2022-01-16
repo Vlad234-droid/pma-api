@@ -38,10 +38,10 @@ class GroupAFlowTest extends AbstractCamundaSpringBootTest {
         var pid = runProcess("group_a", Map.of(FlowParameters.PM_CYCLE.name(), pmCycle));
         assertThatForProcess(pid)
                 .activity("processColleagueCycles").executedOnce()
-                .activity("objectives").executedOnce()
+                .activity("objective").executedOnce()
                 .activity("q1").executedOnce()
                 .activity("q3").executedOnce()
-                .activity("midYearReview").executedOnce()
-                .activity("endOfYearReview").executedOnce();
+                .activity("myr").executedOnce()
+                .activity("eyr").executedOnce();
     }
 }

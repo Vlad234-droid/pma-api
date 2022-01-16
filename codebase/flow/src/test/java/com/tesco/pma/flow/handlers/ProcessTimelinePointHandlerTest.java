@@ -88,6 +88,7 @@ class ProcessTimelinePointHandlerTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void testCreateTimelinePoint() throws Exception {
 
         var pmCycle = buildPMCycle();

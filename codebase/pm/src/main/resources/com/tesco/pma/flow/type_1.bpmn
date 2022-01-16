@@ -11,7 +11,7 @@
         <camunda:property name="pm_cycle_max" value="5" />
       </camunda:properties>
     </bpmn:extensionElements>
-    <bpmn:subProcess id="objectives" name="Objectives">
+    <bpmn:subProcess id="objective" name="Objectives">
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="pm_review_min" value="3" />
@@ -55,8 +55,8 @@
       <bpmn:outgoing>Flow_1qhm8xl</bpmn:outgoing>
     </bpmn:task>
     <bpmn:sequenceFlow id="Flow_1qhm8xl" sourceRef="Activity_1vkxs1y" targetRef="Activity_1qjbqn5" />
-    <bpmn:sequenceFlow id="Flow_1c2mhm6" sourceRef="Gateway_1msj1uv" targetRef="objectives" />
-    <bpmn:sequenceFlow id="Flow_10o56ax" sourceRef="Gateway_1msj1uv" targetRef="endOfYearReview" />
+    <bpmn:sequenceFlow id="Flow_1c2mhm6" sourceRef="Gateway_1msj1uv" targetRef="objective" />
+    <bpmn:sequenceFlow id="Flow_10o56ax" sourceRef="Gateway_1msj1uv" targetRef="eyr" />
     <bpmn:endEvent id="Event_0v9jvii">
       <bpmn:incoming>Flow_0y1flzn</bpmn:incoming>
       <bpmn:incoming>Flow_1yhukqj</bpmn:incoming>
@@ -64,10 +64,10 @@
       <bpmn:incoming>Flow_1wxy8ol</bpmn:incoming>
       <bpmn:incoming>Flow_1rfkre9</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0y1flzn" sourceRef="endOfYearReview" targetRef="Event_0v9jvii" />
-    <bpmn:sequenceFlow id="Flow_10nqhon" sourceRef="Gateway_1msj1uv" targetRef="midYearReview" />
-    <bpmn:sequenceFlow id="Flow_1yhukqj" sourceRef="midYearReview" targetRef="Event_0v9jvii" />
-    <bpmn:scriptTask id="endOfYearReview" name="End of Year&#10;Review" scriptFormat="groovy">
+    <bpmn:sequenceFlow id="Flow_0y1flzn" sourceRef="eyr" targetRef="Event_0v9jvii" />
+    <bpmn:sequenceFlow id="Flow_10nqhon" sourceRef="Gateway_1msj1uv" targetRef="myr" />
+    <bpmn:sequenceFlow id="Flow_1yhukqj" sourceRef="myr" targetRef="Event_0v9jvii" />
+    <bpmn:scriptTask id="eyr" name="End of Year&#10;Review" scriptFormat="groovy">
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="pm_type" value="review" />
@@ -86,7 +86,7 @@
 "${execution.getCurrentActivityName()}" +
 " ${java.time.LocalDateTime.now()}"</bpmn:script>
     </bpmn:scriptTask>
-    <bpmn:scriptTask id="midYearReview" name="Mid Year&#10;Review" scriptFormat="groovy">
+    <bpmn:scriptTask id="myr" name="Mid Year&#10;Review" scriptFormat="groovy">
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="pm_type" value="review" />
@@ -105,7 +105,7 @@
 "${execution.getCurrentActivityName()}" +
 " ${java.time.LocalDateTime.now()}"</bpmn:script>
     </bpmn:scriptTask>
-    <bpmn:sequenceFlow id="Flow_0f4zlnq" sourceRef="objectives" targetRef="Event_0v9jvii" />
+    <bpmn:sequenceFlow id="Flow_0f4zlnq" sourceRef="objective" targetRef="Event_0v9jvii" />
     <bpmn:parallelGateway id="Gateway_1msj1uv">
       <bpmn:incoming>Flow_01fl3ng</bpmn:incoming>
       <bpmn:outgoing>Flow_1c2mhm6</bpmn:outgoing>
@@ -236,7 +236,7 @@
         <di:waypoint x="340" y="210" />
         <di:waypoint x="400" y="210" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Activity_1bu82ro_di" bpmnElement="objectives" isExpanded="true">
+      <bpmndi:BPMNShape id="Activity_1bu82ro_di" bpmnElement="objective" isExpanded="true">
         <dc:Bounds x="340" y="310" width="570" height="160" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1jzbke3_di" bpmnElement="Flow_1jzbke3">
@@ -269,10 +269,10 @@
       <bpmndi:BPMNShape id="Event_0v9jvii_di" bpmnElement="Event_0v9jvii">
         <dc:Bounds x="1222" y="192" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0pi7zaw_di" bpmnElement="endOfYearReview">
+      <bpmndi:BPMNShape id="Activity_0pi7zaw_di" bpmnElement="eyr">
         <dc:Bounds x="1050" y="70" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0av6cmn_di" bpmnElement="midYearReview">
+      <bpmndi:BPMNShape id="Activity_0av6cmn_di" bpmnElement="myr">
         <dc:Bounds x="770" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1mwce77_di" bpmnElement="Gateway_1msj1uv">
