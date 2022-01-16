@@ -23,6 +23,9 @@ import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.STATUS;
 import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.STRATEGIC_PRIORITY;
 import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.WORKING_LEVEL;
 
+/**
+ * Objectives linked with reviews data
+ */
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)

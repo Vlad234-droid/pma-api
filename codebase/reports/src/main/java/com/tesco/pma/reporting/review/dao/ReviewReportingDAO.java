@@ -10,6 +10,9 @@ public interface ReviewReportingDAO {
 
     /**
      * Find Objectives linked with reviews
+     *
+     * @param tlPointUuid - identifier of timeline point
+     * @param status      - status of timeline point
      * @return linked Objectives report data
      */
     ObjectiveLinkedReviewReport getLinkedObjectivesData(@Param("tlPointUuid") UUID tlPointUuid,
