@@ -64,18 +64,20 @@
         review_count,
         last_updated_time)
         VALUES
-        <foreach collection="tLPoints" item="tLPoint" index="index" separator=",">
-            (#{tLPoint.uuid},
-            #{tLPoint.colleagueCycleUuid},
-            #{tLPoint.code},
+        <foreach collection="tlPoints" item="tlPoint" index="index" separator=",">
+        (
+            #{tlPoint.uuid},
+            #{tlPoint.colleagueCycleUuid},
+            #{tlPoint.code},
             #{tlPoint.description},
             #{tlPoint.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.model.PMElementType},
-            #{tLPoint.startTime},
-            #{tLPoint.endTime},
-            #{tLPoint.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-            #{tLPoint.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMTimelinePointStatus}),
+            #{tlPoint.startTime},
+            #{tlPoint.endTime},
+            #{tlPoint.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+            #{tlPoint.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMTimelinePointStatus},
             #{tlPoint.count},
-            #{tlPoint.lastUpdatedTime})
+            #{tlPoint.lastUpdatedTime}
+        )
         </foreach>
     </insert>
 
@@ -150,6 +152,20 @@
         <if test="code != null">
             AND upper(tlp.code) = upper(#{code})
         </if>
+        <if test="prevStatuses != null and !prevStatuses.isEmpty()">
+            and tlp.status_id in
+            <foreach item="prevStatus" collection="prevStatuses" separator="," open="(" close=")">
+                #{prevStatus.id}
+            </foreach>
+        </if>
+    </update>
+    <!-- todo: check 1=1 case usage everywhere -->
+    <update id="intUpdateStatus" flushCache="true">
+        update pm_timeline_point tlp
+        SET status_id=#{newStatus.id},
+        last_updated_time=#{lastUpdatedTime}
+        WHERE 1=1
+        AND tlp.uuid = #{uuid}
         <if test="prevStatuses != null and !prevStatuses.isEmpty()">
             and tlp.status_id in
             <foreach item="prevStatus" collection="prevStatuses" separator="," open="(" close=")">

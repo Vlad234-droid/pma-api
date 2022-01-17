@@ -81,15 +81,7 @@ camunda:
       enabled: false
     id-generator: strong
     auto-deployment-enabled: true
-    deployment-resource-pattern: classpath:com/tesco/pma/flow/pm_v1.bpmn,
-                                           com/tesco/pma/flow/pm_v2.bpmn,
-                                           com/tesco/pma/flow/forms/pm_o_1.form,
-                                           com/tesco/pma/flow/forms/pm_o_2.form,
-                                           com/tesco/pma/flow/type_1_test.bpmn,
-                                           com/tesco/pma/flow/forms/type_1_eyr.form,
-                                           com/tesco/pma/flow/forms/type_1_myr.form,
-                                           com/tesco/pma/flow/forms/type_1_objective.form,
-                                          com/tesco/pma/flow/notifications/review/review_flow.bpmn,
+    deployment-resource-pattern: classpath:com/tesco/pma/flow/notifications/review/review_flow.bpmn,
                                           com/tesco/pma/flow/notifications/review/review_notifications_decisions.dmn,
                                           com/tesco/pma/flow/notifications/review/review_event_to_attribute.dmn,
                                           com/tesco/pma/flow/notifications/review/review_event_to_template_id.dmn,
@@ -109,7 +101,10 @@ camunda:
                                           com/tesco/pma/flow/notifications/tips/tips_flow.bpmn,
                                           com/tesco/pma/flow/notifications/tips/tips_notification_decisions.dmn,
                                           com/tesco/pma/flow/notifications/tips/tips_event_to_template_id.dmn,
-                                           com/tesco/pma/flow/review_schedule_test.bpmn,
-                                           com/tesco/pma/flow/fiscal_test.bpmn,
-                                           com/tesco/pma/flow/colleague_events_send_test.bpmn
+                                          com/tesco/pma/flow/review_schedule_test.bpmn,
+                                          com/tesco/pma/flow/fiscal_test.bpmn,
+                                          com/tesco/pma/flow/tl_point_overdue_status.bpmn,
+                                          com/tesco/pma/flow/group_a.bpmn,
+                                          com/tesco/pma/flow/standard_init_timeline_point.bpmn,
+                                          com/tesco/pma/flow/colleague_events_send_test.bpmn
 

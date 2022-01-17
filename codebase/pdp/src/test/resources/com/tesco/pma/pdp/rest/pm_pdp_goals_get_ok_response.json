@@ -1,31 +1,42 @@
 {
   "success": true,
-  "data": [
-    {
-      "uuid": "6d37262f-3a00-4706-a74b-6bf98be65765",
-      "colleagueUuid": "ce245be1-1f43-4d5f-85dc-db6e2cce0c2a",
-      "number": 1,
-      "properties": {
-        "mapJson": {
-          "pm_pdp_test_property2": "P2",
-          "pm_pdp_test_property1": "P1"
-        }
+  "data": {
+    "goals": [
+      {
+        "uuid": "6d37262f-3a00-4706-a74b-6bf98be65765",
+        "colleagueUuid": "ce245be1-1f43-4d5f-85dc-db6e2cce0c2a",
+        "number": 1,
+        "properties": {
+          "mapJson": {
+            "pm_pdp_test_property2": "P2",
+            "pm_pdp_test_property1": "P1"
+          }
+        },
+        "achievementDate": "2021-12-29",
+        "status": "PUBLISHED"
       },
-      "achievementDate": "2021-12-29",
-      "status": "PUBLISHED"
-    },
-    {
-      "uuid": "7d37262f-3a00-4706-a74b-6bf98be65765",
-      "colleagueUuid": "ce245be1-1f43-4d5f-85dc-db6e2cce0c2a",
-      "number": 2,
-      "properties": {
-        "mapJson": {
-          "pm_pdp_test_property2": "P2",
-          "pm_pdp_test_property1": "P1"
-        }
-      },
-      "achievementDate": "2021-12-29",
-      "status": "PUBLISHED"
+      {
+        "uuid": "7d37262f-3a00-4706-a74b-6bf98be65765",
+        "colleagueUuid": "ce245be1-1f43-4d5f-85dc-db6e2cce0c2a",
+        "number": 2,
+        "properties": {
+          "mapJson": {
+            "pm_pdp_test_property2": "P2",
+            "pm_pdp_test_property1": "P1"
+          }
+        },
+        "achievementDate": "2021-12-29",
+        "status": "PUBLISHED"
+      }
+    ],
+    "form": {
+      "id": "1d37262f-3a00-4706-a74b-6bf98be65767",
+      "code": "forms/standard_pdp.form",
+      "description": null,
+      "type": "FORM",
+      "properties": {},
+      "key": "forms/standard_pdp.form",
+      "json": "test json"
     }
-  ]
+  }
 }

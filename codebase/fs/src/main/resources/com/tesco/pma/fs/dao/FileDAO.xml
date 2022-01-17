@@ -7,15 +7,15 @@
         <id property="uuid" column="uuid"/>
         <result property="path" column="path"/>
         <result property="version" column="version"/>
-        <result property="type" column="type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.file.api.FileType"/>
         <result property="status" column="status_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.file.api.FileStatus"/>
-        <result property="description" column="description"/>
+        <result property="description" column="f_description"/>
         <result property="createdBy" column="created_by"/>
         <result property="createdTime" column="created_time"/>
         <result property="fileName" column="file_name"/>
         <result property="fileDate" column="file_date"/>
         <result property="fileLength" column="file_length"/>
         <result property="fileContent" column="file_content" jdbcType="BINARY"/>
+        <association property="type" autoMapping="true" columnPrefix="t_"/>
     </resultMap>
 
     <sql id="addStatusIdCondition">
@@ -23,15 +23,6 @@
             AND STATUS_ID <if test="!statusFilter.isInclude()">NOT</if> IN
             <foreach collection="statusFilter.getItems()" item="status" index="i" open="(" separator="," close=")">
                 #{status.id}
-            </foreach>
-        </if>
-    </sql>
-
-    <sql id="addTypeIdCondition">
-        <if test="typeFilter != null and !typeFilter.isEmpty()">
-            AND TYPE_ID <if test="!typeFilter.isInclude()">NOT</if> IN
-            <foreach collection="typeFilter.getItems()" item="type" index="i" open="(" separator="," close=")">
-                #{type.id}
             </foreach>
         </if>
     </sql>
@@ -51,7 +42,7 @@
                 status_id
             </when>
             <when test="sort.field == 'description'">
-                description
+                file.description
             </when>
             <when test="sort.field == 'created-by'">
                 created_by
@@ -93,7 +84,7 @@
                 status_id
             </when>
             <when test="filter.property == 'description'">
-                description
+                file.description
             </when>
             <when test="filter.property == 'created-by'">
                 created_by
@@ -195,22 +186,26 @@
     </sql>
 
     <select id="read" resultMap="fileResultMap">
-        SELECT uuid, path, version, type_id, status_id, description,
-        created_by, created_time, file_name, file_date, file_length
+        SELECT uuid, path, version, type_id, status_id, file.description as f_description,
+        created_by, created_time, file_name, file_date, file_length,
+        ft.id as t_id, ft.code as t_code, ft.description as t_description
         <if test="includeFileContent">
             , file_content
         </if>
         FROM file
+        LEFT JOIN file_type ft on file.type_id = ft.id
         WHERE uuid = #{fileUuid}
     </select>
 
     <select id="findByRequestQuery" resultMap="fileResultMap">
-        SELECT uuid, path, version, type_id, status_id, description,
-        created_by, created_time, file_name, file_date, file_length
+        SELECT uuid, path, version, type_id, status_id, file.description as f_description,
+        created_by, created_time, file_name, file_date, file_length,
+        ft.id as t_id, ft.code as t_code, ft.description as t_description
         <if test="includeFileContent">
             , file_content
         </if>
         FROM file
+        LEFT JOIN file_type ft on file.type_id = ft.id
         WHERE 1 = 1
         <if test="latest">
         AND (path, file_name, version) IN
@@ -219,9 +214,6 @@
         GROUP BY path, file_name)
         <foreach collection="statusFilters" item="statusFilter" index="i" separator=",">
             <include refid="addStatusIdCondition"/>
-        </foreach>
-        <foreach collection="typeFilters" item="typeFilter" index="i" separator=",">
-            <include refid="addTypeIdCondition"/>
         </foreach>
         </if>
 
@@ -233,7 +225,7 @@
         <if test="requestQuery.search != null and requestQuery.search != ''">
             AND ( UPPER(path) LIKE '%'||UPPER(#{requestQuery.search})||'%'
                       OR UPPER(file_name) LIKE '%'||UPPER(#{requestQuery.search})||'%'
-                      OR UPPER(description) LIKE '%'||UPPER(#{requestQuery.search})||'%'
+                      OR UPPER(file.description) LIKE '%'||UPPER(#{requestQuery.search})||'%'
             )
         </if>
 
@@ -265,7 +257,7 @@
                     <property name="path" value="#{path}"/>
                     <property name="fileName" value="#{fileName}"/>
                 </include>) + 1,
-                #{type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, jdbcType=INTEGER},
+                #{type.id},
                 #{status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, jdbcType=INTEGER},
                 #{description},
                 #{createdBy},

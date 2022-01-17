@@ -9,6 +9,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import static java.time.Instant.now;
+
 /**
  * Interface to perform database operation on timeline points
  */
@@ -21,7 +23,7 @@ public interface TimelinePointDAO {
      * @return number of created timeline points
      */
     default int create(TimelinePoint tlPoint) {
-        tlPoint.setLastUpdatedTime(Instant.now());
+        tlPoint.setLastUpdatedTime(now());
         return intCreate(tlPoint);
     }
 
@@ -40,7 +42,7 @@ public interface TimelinePointDAO {
      * @return number of created timeline points
      */
     default int saveAll(Collection<TimelinePoint> timelinePoints) {
-        var now = Instant.now();
+        var now = now();
         timelinePoints.forEach(tp -> tp.setLastUpdatedTime(now));
         return intSaveAll(timelinePoints);
     }
@@ -51,7 +53,7 @@ public interface TimelinePointDAO {
      * @param timelinePoints list of timeline points
      * @return number of created timeline points
      */
-    int intSaveAll(@Param("tLPoints") Collection<TimelinePoint> timelinePoints);
+    int intSaveAll(@Param("tlPoints") Collection<TimelinePoint> timelinePoints);
 
     /**
      * Returns a timeline point by an identifier of timeline point
@@ -69,7 +71,7 @@ public interface TimelinePointDAO {
      * @return number of updated timeline points
      */
     default int update(TimelinePoint tlPoint, Collection<PMTimelinePointStatus> allowedStatuses) {
-        tlPoint.setLastUpdatedTime(Instant.now());
+        tlPoint.setLastUpdatedTime(now());
         return intUpdate(tlPoint, allowedStatuses);
     }
 
@@ -120,6 +122,25 @@ public interface TimelinePointDAO {
                              @Param("code") String code,
                              @Param("newStatus") PMTimelinePointStatus newStatus,
                              @Param("prevStatuses") Collection<PMTimelinePointStatus> prevStatuses);
+
+    /**
+     * Updates a timeline point status
+     *
+     * @param uuid         an identifier of timeline point
+     * @param newStatus    a new timeline point status
+     * @param prevStatuses previous timeline point statuses
+     * @return number of updated timeline point statuses
+     */
+    default int updateStatus(@Param("uuid") UUID uuid,
+                             @Param("newStatus") PMTimelinePointStatus newStatus,
+                             @Param("prevStatuses") Collection<PMTimelinePointStatus> prevStatuses) {
+        return intUpdateStatus(uuid, newStatus, prevStatuses, now());
+    }
+
+    int intUpdateStatus(@Param("uuid") UUID uuid,
+                        @Param("newStatus") PMTimelinePointStatus newStatus,
+                        @Param("prevStatuses") Collection<PMTimelinePointStatus> prevStatuses,
+                        @Param("lastUpdatedTime") Instant lastUpdatedTime);
 
     /**
      * Delete timeline points by parameters

@@ -1,6 +1,6 @@
 package com.tesco.pma.process.service;
 
-import com.tesco.pma.cycle.api.model.ResourceProvider;
+import com.tesco.pma.util.ResourceProvider;
 import com.tesco.pma.file.api.File;
 import com.tesco.pma.fs.service.FileService;
 import lombok.AllArgsConstructor;
@@ -43,5 +43,10 @@ public class FsResourceProvider implements ResourceProvider {
     @Override
     public File readFile(UUID uuid) {
         return fileService.get(uuid, true);
+    }
+
+    @Override
+    public UUID readFileUuid(String resourcePath, String resourceName) {
+        return this.readFile(resourcePath, resourceName).getUuid();
     }
 }

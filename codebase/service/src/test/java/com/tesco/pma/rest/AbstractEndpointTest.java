@@ -1,6 +1,5 @@
 package com.tesco.pma.rest;
 
-import com.tesco.pma.TestConfig;
 import com.tesco.pma.security.UserRoleNames;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.json.BasicJsonTester;
@@ -8,10 +7,8 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -19,10 +16,8 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import java.io.UnsupportedEncodingException;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,33 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @ActiveProfiles("test")
-@ContextConfiguration(classes = TestConfig.class)
-@WithMockUser(username = AbstractEndpointTest.MOCK_CREATOR_ID)
 @SuppressWarnings("PMD.TooManyMethods")
 public abstract class AbstractEndpointTest {
-
-    protected static final UUID RP_UUID = UUID.fromString("7f8218ac-2537-4091-9baf-84b37df450e6");
-    protected static final UUID RP_UUID_2 = UUID.fromString("4e10cb67-7667-4a01-b0ca-032bf5ae8e3f");
-    protected static final String RP_NAME = "2021";
-    protected static final String RP_NAME_2 = "2020";
-    protected static final LocalDate START_DATE = LocalDate.parse("2021-04-05");
-    protected static final LocalDate END_DATE = LocalDate.parse("2021-04-04");
-    protected static final LocalDate START_DATE_2 = LocalDate.parse("2020-04-05");
-    protected static final LocalDate END_DATE_2 = LocalDate.parse("2020-04-04");
-    protected static final String MOCK_CREATOR_ID = "MockCreatorId";
-
-    protected static final String DIMENSION_CONFIG_NAME = "Dim1";
-    protected static final String DIMENSION_CONFIG_NAME_2 = "Dim2";
-
-    protected static final String EMPTY_URL_TEMPLATE = "/";
-    protected static final String NOT_FOUND_URL_TEMPLATE = "/wrong/template";
-
-    protected static final String ERROR_GENERAL_RESPONSE_JSON_FILE_NAME = "error_general_response.json";
-    protected static final String ERROR_GENERAL_FOR_ILLEGAL_URI_VAR_RESPONSE_JSON_FILE_NAME = "general_error_for_illegal_uri_var_response.json";
-
-    protected static final String SUCCESS_RESPONSE_WITHOUT_DATA = "{\"success\":true}";
-    protected static final String SUCCESS_RESPONSE_WITH_EMPTY_ARRAY_DATA = "{\"success\":true,\"data\":[]}";
-    protected static final UUID USER_COLLEAGUE_UUID = UUID.randomUUID();
 
     protected final BasicJsonTester json = new BasicJsonTester(getClass());
 

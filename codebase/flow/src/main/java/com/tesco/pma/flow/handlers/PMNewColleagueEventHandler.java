@@ -14,7 +14,6 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Map;
 
 import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
@@ -51,7 +50,7 @@ public class PMNewColleagueEventHandler extends AbstractColleagueCycleHandler {
                         .findFirst()
                         .ifPresentOrElse(cycleOriginal -> {
                                     var cycle = adjustStartDate(cycleOriginal);
-                                    pmColleagueCycleService.saveColleagueCycles(List.of(mapToColleagueCycle(colleagueUuid, cycle)));
+                                    pmColleagueCycleService.create(mapToColleagueCycle(colleagueUuid, cycle));
                                     context.setVariable(FlowParameters.PM_CYCLE, cycle);
                                 },
                                 () -> log.warn(LogFormatter.formatMessage(messageSourceAccessor, PM_CYCLE_NOT_FOUND_FOR_COLLEAGUE,

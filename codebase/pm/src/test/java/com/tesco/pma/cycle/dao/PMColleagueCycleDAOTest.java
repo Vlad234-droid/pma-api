@@ -1,6 +1,7 @@
 package com.tesco.pma.cycle.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.dao.config.PMCycleTypeHandlerConfig;
@@ -16,6 +17,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
+import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
+import static com.tesco.pma.cycle.api.PMCycleStatus.REGISTERED;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ContextConfiguration(classes = PMCycleTypeHandlerConfig.class)
@@ -24,6 +27,7 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
     private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/cycle/dao/";
 
     private static final UUID COLLEAGUE_UUID = UUID.fromString("d1810821-d1a9-48b5-9745-d0841151911f");
+    private static final UUID COLLEAGUE_UUID_2 = UUID.fromString("10000000-0000-0000-0000-000000000001");
     private static final UUID COLLEAGUE_CYCLE_UUID = UUID.fromString("98c23a14-8a46-41f0-bfcf-312a17c7dae2");
     private static final UUID COLLEAGUE_CYCLE_UUID_2 = UUID.fromString("9193e171-49e9-492c-a56f-6a68916722f0");
     private static final UUID CYCLE_UUID = UUID.fromString("10000000-0000-0000-0000-000000000000");
@@ -72,56 +76,53 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
             BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml"})
     void getByCycleUuidWithoutTimelinePoint() {
-        var cc = dao.getByCycleUuidWithoutTimelinePoint(CYCLE_UUID, null, null);
+        var cc = dao.getByCycleUuidWithoutTimelinePoint(CYCLE_UUID,
+                DictionaryFilter.includeFilter(REGISTERED, ACTIVE), null);
         assertThat(cc)
-                .hasSize(2);
-
-        assertThat(dao.getByParams(CYCLE_UUID, COLLEAGUE_UUID, ACTIVE))
                 .singleElement()
-                .returns(UUID.fromString("98c23a14-8a46-41f0-bfcf-312a17c7dae2"), PMColleagueCycle::getUuid);
-
-        assertThat(dao.getByParams(CYCLE_UUID, COLLEAGUE_UUID, PMCycleStatus.INACTIVE))
-                .singleElement()
-                .returns(UUID.fromString("9193e171-49e9-492c-a56f-6a68916722f0"), PMColleagueCycle::getUuid);
+                .returns(UUID.fromString("98c23a14-8a46-41f0-bfcf-312a17c7dae2"), PMColleagueCycle::getUuid)
+                .returns(CYCLE_UUID, PMColleagueCycle::getCycleUuid)
+                .returns(COLLEAGUE_UUID, PMColleagueCycle::getColleagueUuid)
+                .returns(ACTIVE, PMColleagueCycle::getStatus);
 
     }
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
-            BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml"})
+            BASE_PATH_TO_DATA_SET + "colleague_init.xml"})
     void saveAll() {
         var ccUuid1 = UUID.randomUUID();
         var ccUuid2 = UUID.randomUUID();
 
         assertThat(dao.getByParams(null, null, null))
-                .hasSize(2);
+                .isEmpty();
 
-        var saved = dao.saveAll(List.of(createCycle(ccUuid1), createCycle(ccUuid2)));
+        var saved = dao.saveAll(List.of(createCycle(ccUuid1, ACTIVE), createCycle(ccUuid2, INACTIVE)));
 
         assertThat(saved).isEqualTo(2);
 
         assertThat(dao.getByParams(null, null, null))
-                .hasSize(4);
+                .hasSize(2);
 
         var cc1 = dao.read(ccUuid1);
         assertThat(cc1)
                 .returns(ccUuid1, PMColleagueCycle::getUuid)
-                .returns(COLLEAGUE_UUID, PMColleagueCycle::getColleagueUuid)
+                .returns(COLLEAGUE_UUID_2, PMColleagueCycle::getColleagueUuid)
                 .returns(CYCLE_UUID, PMColleagueCycle::getCycleUuid)
                 .returns(ACTIVE, PMColleagueCycle::getStatus);
 
         var cc2 = dao.read(ccUuid2);
         assertThat(cc2)
                 .returns(ccUuid2, PMColleagueCycle::getUuid)
-                .returns(COLLEAGUE_UUID, PMColleagueCycle::getColleagueUuid)
+                .returns(COLLEAGUE_UUID_2, PMColleagueCycle::getColleagueUuid)
                 .returns(CYCLE_UUID, PMColleagueCycle::getCycleUuid)
-                .returns(ACTIVE, PMColleagueCycle::getStatus);
+                .returns(INACTIVE, PMColleagueCycle::getStatus);
 
     }
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
-            BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml"})
+            BASE_PATH_TO_DATA_SET + "colleague_init.xml"})
     void create() {
         var ccUuid = UUID.randomUUID();
 
@@ -132,9 +133,24 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
         var cc = dao.read(ccUuid);
         assertThat(cc)
                 .returns(ccUuid, PMColleagueCycle::getUuid)
-                .returns(COLLEAGUE_UUID, PMColleagueCycle::getColleagueUuid)
+                .returns(COLLEAGUE_UUID_2, PMColleagueCycle::getColleagueUuid)
                 .returns(CYCLE_UUID, PMColleagueCycle::getCycleUuid)
                 .returns(ACTIVE, PMColleagueCycle::getStatus);
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
+            BASE_PATH_TO_DATA_SET + "colleague_init.xml"})
+    void createDuplicate() {
+        var ccUuid = UUID.randomUUID();
+
+        var created = dao.create(createCycle(ccUuid));
+
+        assertThat(created).isOne();
+
+        created = dao.create(createCycle(ccUuid));
+
+        assertThat(created).isZero();
     }
 
     @Test
@@ -151,11 +167,15 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
     }
 
     private PMColleagueCycle createCycle(UUID uuid) {
+        return createCycle(uuid, ACTIVE);
+    }
+
+    private PMColleagueCycle createCycle(UUID uuid, PMCycleStatus status) {
         return PMColleagueCycle.builder()
-                .status(ACTIVE)
+                .status(status)
                 .uuid(uuid)
                 .cycleUuid(CYCLE_UUID)
-                .colleagueUuid(COLLEAGUE_UUID)
+                .colleagueUuid(COLLEAGUE_UUID_2)
                 .startTime(Instant.now())
                 .endTime(Instant.now())
                 .build();

@@ -1,5 +1,6 @@
 package com.tesco.pma.service.rest;
 
+import com.tesco.pma.TestConfig;
 import com.tesco.pma.service.LivenessHealthIndicator;
 import com.tesco.pma.service.OverallHealthIndicator;
 import com.tesco.pma.service.ReadinessHealthIndicator;
@@ -14,6 +15,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.time.Instant;
 import java.util.List;
@@ -31,7 +34,11 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = HealthCheckEndpoint.class)
+@WithMockUser(username = HealthCheckEndpointTest.MOCK_CREATOR_ID)
+@ContextConfiguration(classes = TestConfig.class)
 class HealthCheckEndpointTest extends AbstractEndpointTest {
+
+    static final String MOCK_CREATOR_ID = "MockCreatorId";
 
     private static final String STATUS_TEMPLATE = "/_status";
     private static final String HEALTH_CHECK_TEMPLATE = "/_healthcheck";

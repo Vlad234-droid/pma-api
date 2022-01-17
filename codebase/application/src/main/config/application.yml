@@ -246,6 +246,9 @@ tesco:
       page:
         size: 100
       subject: ${IAM_INTEGRATION_SUBJECT}
+    pdp:
+      form:
+        key: forms/standard_pdp.form
 
 camunda:
   bpm:
@@ -260,12 +263,7 @@ camunda:
 #    deployment-resource-pattern: classpath:*.bpmn
 #   todo: remove in production
     auto-deployment-enabled: true
-    deployment-resource-pattern: classpath:com/tesco/pma/flow/type_1.bpmn,
-                                           com/tesco/pma/flow/type_2.bpmn,
-                                           com/tesco/pma/flow/type_4.bpmn,
-                                           com/tesco/pma/flow/forms/type_1_objective.form,
-                                           com/tesco/pma/flow/forms/type_2_objective.form,
-                                           com/tesco/pma/flow/forms/type_4_eyr.form,
+    deployment-resource-pattern: classpath:com/tesco/pma/flow/standard_init_timeline_point.bpmn,
                                            com/tesco/pma/flow/notifications/review/review_flow.bpmn,
                                            com/tesco/pma/flow/notifications/review/review_notifications_decisions.dmn,
                                            com/tesco/pma/flow/notifications/review/review_event_to_attribute.dmn,

@@ -1,5 +1,10 @@
 package com.tesco.pma.pdp.rest;
 
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.cycle.api.PMForm;
+import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.util.ResourceProvider;
+import com.tesco.pma.pdp.domain.PDPResponse;
 import com.tesco.pma.pdp.service.PDPService;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
@@ -8,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
@@ -23,10 +29,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import static com.tesco.pma.exception.ErrorCodes.ERROR_FILE_NOT_FOUND;
 import static com.tesco.pma.rest.RestResponse.success;
+import static com.tesco.pma.util.FileUtils.getFormName;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -36,6 +46,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class PDPEndpoint {
 
     private final PDPService pdpService;
+    private final ResourceProvider resourceProvider;
+    @Value("${tesco.application.pdp.form.key}")
+    private String formKey;
+    private final NamedMessageSourceAccessor messages;
 
     /**
      * POST call to create a PDP with its Goals.
@@ -96,9 +110,10 @@ public class PDPEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the PDP Goal")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PDP Goal not found", content = @Content)
     @GetMapping(path = "/goals/numbers/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestResponse<PDPGoal> getGoal(@PathVariable("number") Integer number,
+    public RestResponse<PDPResponse> getGoal(@PathVariable("number") Integer number,
                                          @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        return success(pdpService.getGoal(getColleagueUuid(authentication), number));
+        var goal = pdpService.getGoal(getColleagueUuid(authentication), number);
+        return success(new PDPResponse(Arrays.asList(goal), getPMForm()));
     }
 
     /**
@@ -111,9 +126,10 @@ public class PDPEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the PDP Goal")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PDP Goal not found", content = @Content)
     @GetMapping(path = "/goals/{goalUuid}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestResponse<PDPGoal> getGoal(@PathVariable("goalUuid") UUID goalUuid,
+    public RestResponse<PDPResponse> getGoal(@PathVariable("goalUuid") UUID goalUuid,
                                          @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        return success(pdpService.getGoal(getColleagueUuid(authentication), goalUuid));
+        var goal = pdpService.getGoal(getColleagueUuid(authentication), goalUuid);
+        return success(new PDPResponse(Arrays.asList(goal), getPMForm()));
     }
 
     /**
@@ -125,11 +141,25 @@ public class PDPEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the PDP Goals")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PDP Goals not found", content = @Content)
     @GetMapping(path = "/goals", produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestResponse<List<PDPGoal>> getGoals(@CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        return success(pdpService.getGoals(getColleagueUuid(authentication)));
+    public RestResponse<PDPResponse> getGoals(@CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+        var goals = pdpService.getGoals(getColleagueUuid(authentication));
+        return success(new PDPResponse(goals, getPMForm()));
     }
 
     private UUID getColleagueUuid(Authentication authentication) {
         return UUID.fromString(authentication.getName());
+    }
+
+    private PMForm getPMForm() {
+        String formJson;
+        var formName = getFormName(formKey);
+        try {
+            formJson = resourceProvider.resourceToString(formKey, formName);
+        } catch (IOException e) {
+            throw new NotFoundException(ERROR_FILE_NOT_FOUND.name(), "Form was not found", formName, e);
+        }
+
+        var uuid = resourceProvider.readFileUuid(formKey, formName);
+        return new PMForm(uuid.toString(), formName, formName, formJson);
     }
 }

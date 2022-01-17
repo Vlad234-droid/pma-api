@@ -58,14 +58,20 @@
         </if>
     </select>
 
+    <sql id="addStatusIdCondition">
+        <if test="statusFilter != null and !statusFilter.isEmpty()">
+            AND STATUS_ID <if test="!statusFilter.isInclude()">NOT</if> IN
+            <foreach collection="statusFilter.getItems()" item="status" index="i" open="(" separator="," close=")">
+                #{status.id}
+            </foreach>
+        </if>
+    </sql>
+
     <select id="getByCycleUuidWithoutTimelinePoint" resultMap="colleagueCycleResultMap">
         SELECT cc.uuid, cc.colleague_uuid, cc.cycle_uuid, cc.status_id, cc.start_time, cc.end_time, cc.properties
         FROM pm_colleague_cycle cc
         WHERE cc.cycle_uuid = #{cycleUuid}
-        <if test="status != null">
-            AND status_id =
-            #{status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus}
-        </if>
+        <include refid="addStatusIdCondition" />
         <if test="startTime != null">
             AND start_time = #{startTime}
         </if>
@@ -108,6 +114,9 @@
                 #{cc.startTime},
                 #{cc.endTime},
                 #{cc.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler})
+        ON CONFLICT(colleague_uuid, cycle_uuid, status_id)
+        WHERE status_id = 1
+        DO NOTHING
     </insert>
 
     <insert id="update" flushCache="true">

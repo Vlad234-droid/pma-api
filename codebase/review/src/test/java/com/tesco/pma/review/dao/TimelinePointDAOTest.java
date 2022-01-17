@@ -87,7 +87,7 @@ class TimelinePointDAOTest extends AbstractDAOTest {
             "pm_colleague_cycle_init.xml"})
     @ExpectedDataSet("pm_timeline_point_create_expected_1.xml")
     void createSucceeded() {
-        final var tLPoint = TimelinePoint.builder()
+        final var tlPoint = TimelinePoint.builder()
                 .uuid(TIMELINE_POINT_UUID)
                 .colleagueCycleUuid(COLLEAGUE_CYCLE_UUID)
                 .code(OBJECTIVE_CODE)
@@ -99,7 +99,7 @@ class TimelinePointDAOTest extends AbstractDAOTest {
                 .status(DRAFT)
                 .build();
 
-        final int rowsInserted = instance.create(tLPoint);
+        final int rowsInserted = instance.create(tlPoint);
 
         assertThat(rowsInserted).isOne();
     }
@@ -111,7 +111,7 @@ class TimelinePointDAOTest extends AbstractDAOTest {
             "pm_timeline_point_init.xml"})
     void createAlreadyExist() {
 
-        final var tLPoint = TimelinePoint.builder()
+        final var tlPoint = TimelinePoint.builder()
                 .uuid(TIMELINE_POINT_UUID)
                 .colleagueCycleUuid(COLLEAGUE_CYCLE_UUID)
                 .code(OBJECTIVE_CODE)
@@ -123,7 +123,7 @@ class TimelinePointDAOTest extends AbstractDAOTest {
                 .status(DRAFT)
                 .build();
 
-        Assertions.assertThatThrownBy(() -> instance.create(tLPoint))
+        Assertions.assertThatThrownBy(() -> instance.create(tlPoint))
                 .isInstanceOf(DuplicateKeyException.class);
     }
 
@@ -156,7 +156,7 @@ class TimelinePointDAOTest extends AbstractDAOTest {
             "pm_timeline_point_init.xml"})
     @ExpectedDataSet("pm_timeline_point_update_expected_1.xml")
     void updateSucceeded() {
-        final var tLPoint = TimelinePoint.builder()
+        final var tlPoint = TimelinePoint.builder()
                 .uuid(TIMELINE_POINT_UUID)
                 .colleagueCycleUuid(COLLEAGUE_CYCLE_UUID)
                 .code(OBJECTIVE_CODE)
@@ -168,7 +168,7 @@ class TimelinePointDAOTest extends AbstractDAOTest {
                 .status(WAITING_FOR_APPROVAL)
                 .build();
 
-        final var result = instance.update(tLPoint, List.of(DRAFT));
+        final var result = instance.update(tlPoint, List.of(DRAFT));
 
         assertThat(result).isOne();
     }
@@ -179,7 +179,7 @@ class TimelinePointDAOTest extends AbstractDAOTest {
             "pm_colleague_cycle_init.xml",
             "pm_timeline_point_init.xml"})
     void updateNotExist() {
-        final var tLPoint = TimelinePoint.builder()
+        final var tlPoint = TimelinePoint.builder()
                 .uuid(TIMELINE_POINT_UUID)
                 .colleagueCycleUuid(COLLEAGUE_CYCLE_UUID_NOT_EXIST)
                 .code(OBJECTIVE_CODE)
@@ -191,7 +191,7 @@ class TimelinePointDAOTest extends AbstractDAOTest {
                 .status(WAITING_FOR_APPROVAL)
                 .build();
 
-        final var result = instance.update(tLPoint, List.of(DRAFT));
+        final var result = instance.update(tlPoint, List.of(DRAFT));
 
         assertThat(result).isZero();
     }
@@ -260,6 +260,22 @@ class TimelinePointDAOTest extends AbstractDAOTest {
         final var result = instance.updateStatusByParams(
                 COLLEAGUE_CYCLE_UUID,
                 OBJECTIVE_CODE,
+                WAITING_FOR_APPROVAL,
+                Collections.singleton(DRAFT));
+
+        assertThat(result).isOne();
+    }
+
+    @Test
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml"})
+    @ExpectedDataSet("pm_timeline_point_update_status_expected_1.xml")
+    void updateStatus() {
+
+        final var result = instance.updateStatus(
+                TIMELINE_POINT_UUID,
                 WAITING_FOR_APPROVAL,
                 Collections.singleton(DRAFT));
 

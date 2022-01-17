@@ -460,7 +460,12 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<TimelinePoint> getCycleTimelineByColleague(UUID colleagueUuid) {
-        var currentCycleUuid = pmCycleService.getCurrentByColleague(colleagueUuid).getUuid();
+        UUID currentCycleUuid;
+        try {
+            currentCycleUuid = pmCycleService.getCurrentByColleague(colleagueUuid).getUuid();
+        } catch (NotFoundException e) {
+            return Collections.emptyList();
+        }
         return timelinePointDAO.getTimeline(currentCycleUuid, colleagueUuid);
     }
 

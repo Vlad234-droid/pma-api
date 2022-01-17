@@ -4,6 +4,7 @@ import com.tesco.pma.bpm.camunda.flow.AbstractCamundaSpringBootTest;
 import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleType;
+import com.tesco.pma.cycle.api.model.PMReviewElement;
 import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.flow.handlers.FinalizeFlowHandler;
 import com.tesco.pma.flow.handlers.InitTimelinePointHandler;
@@ -23,6 +24,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static com.tesco.pma.bpm.camunda.flow.FlowTestUtil.mockExecutionInHandler;
+import static com.tesco.pma.cycle.api.model.PMElement.PM_TYPE;
 import static com.tesco.pma.flow.FlowParameters.BEFORE_END_DATE;
 import static com.tesco.pma.flow.FlowParameters.BEFORE_START_DATE;
 import static com.tesco.pma.flow.FlowParameters.END_DATE;
@@ -83,7 +85,9 @@ public class FiscalFlowTest extends AbstractCamundaSpringBootTest {
             context.setVariable(END_DATE.name(), "2022-03-31");
         });
 
-        assertThatForProcess(runProcess("fiscal_test", Map.of(FlowParameters.PM_CYCLE.name(), buildPMCycle())))
+        assertThatForProcess(runProcess("fiscal_test",
+                Map.of(FlowParameters.PM_CYCLE.name(), buildPMCycle(),
+                        PM_TYPE, PMReviewElement.PM_REVIEW)))
                 .activity("initTimelinePointEyr").executedOnce()
                 .activity("call_review_schedule_eyr").executedOnce()
                 .activity("initTimelinePointMyr").executedOnce()
@@ -103,7 +107,8 @@ public class FiscalFlowTest extends AbstractCamundaSpringBootTest {
 
         assertThatForProcess(runProcessByEvent(new EventSupport(IMPORT_NEW_COLLEAGUE_EVENT_NAME),
                 new HashMap<>(Map.of(FlowParameters.COLLEAGUE_UUID.name(), UUID.randomUUID(),
-                        FlowParameters.PM_CYCLE.name(), buildPMCycle()))))
+                        FlowParameters.PM_CYCLE.name(), buildPMCycle(),
+                        PM_TYPE, PMReviewElement.PM_REVIEW))))
                 .activity("processNewColleague").executedOnce()
                 .activity("initTimelinePointEyr").executedOnce()
                 .activity("processTimelinePointEyr").executedOnce()

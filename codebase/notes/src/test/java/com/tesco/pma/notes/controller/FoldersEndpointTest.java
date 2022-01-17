@@ -1,6 +1,7 @@
 package com.tesco.pma.notes.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tesco.pma.TestConfig;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.notes.model.Folder;
 import com.tesco.pma.notes.service.NotesServiceImpl;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -20,6 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = FoldersEndpoint.class)
+@ContextConfiguration(classes = TestConfig.class)
 public class FoldersEndpointTest extends AbstractEndpointTest {
 
     private final UUID colleagueUuid = UUID.randomUUID();
