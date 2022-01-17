@@ -1,7 +1,7 @@
 package com.tesco.pma.reporting.review.service.rest;
 
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
-import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReport;
+import com.tesco.pma.reporting.Report;
 import com.tesco.pma.reporting.review.service.ReviewReportingService;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
@@ -40,8 +40,8 @@ public class ReviewReportingEndpoint {
     @GetMapping(path = "/review-reports/pm-linked-objective-report/timeline-points/{tlPointUuid}/statuses/{status}",
             produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isColleague()")
-    public RestResponse<ObjectiveLinkedReviewReport> getLinkedObjectivesReport(@PathVariable("tlPointUuid") UUID tlPointUuid,
-                                                                               @PathVariable("status") PMTimelinePointStatus status) {
+    public RestResponse<Report> getLinkedObjectivesReport(@PathVariable("tlPointUuid") UUID tlPointUuid,
+                                                          @PathVariable("status") PMTimelinePointStatus status) {
         return success(reviewReportingService.getLinkedObjectivesData(tlPointUuid, status));
     }
 }

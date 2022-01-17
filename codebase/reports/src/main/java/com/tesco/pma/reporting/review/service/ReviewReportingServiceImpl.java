@@ -4,8 +4,8 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.reporting.Report;
 import com.tesco.pma.reporting.review.dao.ReviewReportingDAO;
-import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -30,7 +30,7 @@ public class ReviewReportingServiceImpl implements ReviewReportingService {
     private static final String STATUS_PARAMETER_NAME = "status";
 
     @Override
-    public ObjectiveLinkedReviewReport getLinkedObjectivesData(UUID tlPointUuid, PMTimelinePointStatus status) {
+    public Report getLinkedObjectivesData(UUID tlPointUuid, PMTimelinePointStatus status) {
         var res = reviewReportingDAO.getLinkedObjectivesData(tlPointUuid, status);
 
         if (res == null) {
@@ -38,7 +38,7 @@ public class ReviewReportingServiceImpl implements ReviewReportingService {
                     Map.of(TL_POINT_UUID_PARAMETER_NAME, tlPointUuid,
                             STATUS_PARAMETER_NAME, status));
         }
-        return res;
+        return res.getReport();
     }
 
     private NotFoundException notFound(ErrorCodeAware errorCode, Map<String, ?> params) {

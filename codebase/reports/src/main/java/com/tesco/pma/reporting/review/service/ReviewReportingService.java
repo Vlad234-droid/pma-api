@@ -2,7 +2,7 @@ package com.tesco.pma.reporting.review.service;
 
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReport;
+import com.tesco.pma.reporting.Report;
 
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
@@ -17,6 +17,6 @@ public interface ReviewReportingService {
      * @return linked Objectives report data
      * @throws NotFoundException if review report data doesn't exist.
      */
-    ObjectiveLinkedReviewReport getLinkedObjectivesData(@NotNull UUID tlPointUuid,
-                                                        @NotNull PMTimelinePointStatus status);
+    Report getLinkedObjectivesData(@NotNull UUID tlPointUuid,
+                                   @NotNull PMTimelinePointStatus status);
 }
