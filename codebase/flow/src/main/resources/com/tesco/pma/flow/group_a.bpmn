@@ -73,6 +73,8 @@
           <camunda:property name="pm_review_before_start" value="P2W" />
           <camunda:property name="pm_review_before_end" value="P1W" />
           <camunda:property name="pm_review_duration" value="P2W" />
+          <camunda:property name="pm_timeline_point_code" value="OBJECTIVE" />
+          <camunda:property name="pm_timeline_point_description" value="My objectives" />
         </camunda:properties>
         <camunda:in source="PM_CYCLE" target="PM_CYCLE" />
         <camunda:in source="SCHEDULED" target="SCHEDULED" />
@@ -85,6 +87,8 @@
         <camunda:properties>
           <camunda:property name="pm_type" value="timeline_point" />
           <camunda:property name="pm_timeline_point_start_delay" value="P3M" />
+          <camunda:property name="pm_timeline_point_code" value="Q1" />
+          <camunda:property name="pm_timeline_point_description" value="Q1" />
         </camunda:properties>
         <camunda:in source="PM_CYCLE" target="PM_CYCLE" />
         <camunda:in source="SCHEDULED" target="SCHEDULED" />
@@ -102,6 +106,10 @@
           <camunda:property name="pm_review_before_end" value="P1W" />
           <camunda:property name="pm_review_duration" value="P2W" />
           <camunda:property name="pm_form_key" value="forms/standard_myr.form" />
+          <camunda:property name="pm_timeline_point_code" value="MYR" />
+          <camunda:property name="pm_timeline_point_description" value="Mid-year review" />
+          <camunda:property name="pm_review_min" value="1" />
+          <camunda:property name="pm_review_max" value="1" />
         </camunda:properties>
         <camunda:in source="PM_CYCLE" target="PM_CYCLE" />
         <camunda:in source="SCHEDULED" target="SCHEDULED" />
@@ -114,6 +122,8 @@
         <camunda:properties>
           <camunda:property name="pm_type" value="timeline_point" />
           <camunda:property name="pm_timeline_point_start_delay" value="P9M" />
+          <camunda:property name="pm_timeline_point_code" value="Q3" />
+          <camunda:property name="pm_timeline_point_description" value="Q3" />
         </camunda:properties>
         <camunda:in source="PM_CYCLE" target="PM_CYCLE" />
         <camunda:in source="SCHEDULED" target="SCHEDULED" />
@@ -131,6 +141,10 @@
           <camunda:property name="pm_review_before_end" value="P1W" />
           <camunda:property name="pm_review_duration" value="P2W" />
           <camunda:property name="pm_form_key" value="forms/group_a_eyr.form" />
+          <camunda:property name="pm_timeline_point_code" value="EYR" />
+          <camunda:property name="pm_timeline_point_description" value="Year-end review" />
+          <camunda:property name="pm_review_min" value="1" />
+          <camunda:property name="pm_review_max" value="1" />
         </camunda:properties>
         <camunda:in source="PM_CYCLE" target="PM_CYCLE" />
         <camunda:in source="SCHEDULED" target="SCHEDULED" />
