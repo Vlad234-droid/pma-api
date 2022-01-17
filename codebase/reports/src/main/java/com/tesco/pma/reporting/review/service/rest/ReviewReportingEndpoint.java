@@ -39,7 +39,7 @@ public class ReviewReportingEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Report data not found", content = @Content)
     @GetMapping(path = "/review-reports/pm-linked-objective-report/timeline-points/{tlPointUuid}/statuses/{status}",
             produces = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
+    @PreAuthorize("isTalentAdmin() or isAdmin()")
     public RestResponse<Report> getLinkedObjectivesReport(@PathVariable("tlPointUuid") UUID tlPointUuid,
                                                           @PathVariable("status") PMTimelinePointStatus status) {
         return success(reviewReportingService.getLinkedObjectivesData(tlPointUuid, status));
