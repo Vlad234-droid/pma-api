@@ -167,4 +167,13 @@ public interface TimelinePointDAO {
     List<TimelinePoint> getTimeline(@Param("cycleUuid") UUID cycleUuid,
                                     @Param("colleagueUuid") UUID colleagueUuid);
 
+
+    /**
+     * Returns timeline by UUID
+     *
+     * @param id     an identifier of timeline
+     * @return TimelinePoint
+     */
+    TimelinePoint getTimelineByUUID(@Param("timelineUUID") UUID id);
+
 }

@@ -19,6 +19,7 @@ import com.tesco.pma.flow.notifications.handlers.InitObjectiveNotificationHandle
 import com.tesco.pma.flow.notifications.handlers.InitTimelinePointNotificationHandler;
 import com.tesco.pma.flow.notifications.handlers.InitTipsNotificationHandler;
 import com.tesco.pma.flow.notifications.handlers.SendNotificationHandler;
+import com.tesco.pma.review.dao.TimelinePointDAO;
 import com.tesco.pma.review.domain.TimelinePoint;
 import com.tesco.pma.service.contact.client.ContactApiClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -86,8 +87,12 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
     @MockBean
     private NamedMessageSourceAccessor messageSourceAccessor;
 
+    @MockBean
+    private TimelinePointDAO timelinePointDAO;
+
     private final UUID colleagueUUID = UUID.randomUUID();
     private ColleagueProfile colleagueProfile;
+    private final TimelinePoint timelinePoint = new TimelinePoint();
 
     @BeforeEach
     public void init(){
@@ -95,6 +100,11 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
 
         Mockito.when(profileService.findProfileByColleagueUuid(Mockito.any()))
                 .thenReturn(Optional.of(colleagueProfile));
+
+        timelinePoint.setUuid(UUID.randomUUID());
+
+        Mockito.when(timelinePointDAO.getTimelineByUUID(Mockito.eq(timelinePoint.getUuid())))
+                .thenReturn(timelinePoint);
     }
 
     @Test
@@ -225,9 +235,8 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
         var event = new EventSupport(evenName);
 
         if(timelineCode != null) {
-            var timelinePoint = new TimelinePoint();
             timelinePoint.setCode(timelineCode);
-            event.putProperty(FlowParameters.TIMELINE_POINT.name(), timelinePoint);
+            event.putProperty(FlowParameters.TIMELINE_POINT_UUID.name(), timelinePoint.getUuid());
         }
 
         event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueUUID);

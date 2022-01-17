@@ -73,31 +73,31 @@
     <bpmn:textAnnotation id="TextAnnotation_097i6gf">
       <bpmn:text>eventName: NF_PM_REVIEW_SUBMITTED
 COLLEAGUE_UUID
-TIMELINE_POINT</bpmn:text>
+TIMELINE_POINT_UUID</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1da0a5n" sourceRef="PM_REVIEW_SUBMITTED_ID" targetRef="TextAnnotation_097i6gf" />
     <bpmn:textAnnotation id="TextAnnotation_1pea7gg">
       <bpmn:text>eventName: NF_PM_REVIEW_APPROVED
 COLLEAGUE_UUID
-TIMELINE_POINT</bpmn:text>
+TIMELINE_POINT_UUID</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0z80f2t" sourceRef="TextAnnotation_1pea7gg" targetRef="PM_REVIEW_APPROVED_ID" />
     <bpmn:textAnnotation id="TextAnnotation_0oh4xv8">
       <bpmn:text>eventName: NF_PM_REVIEW_DECLINED
 COLLEAGUE_UUID
-TIMELINE_POINT</bpmn:text>
+TIMELINE_POINT_UUID</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1gs0y5v" sourceRef="TextAnnotation_0oh4xv8" targetRef="PM_REVIEW_DECLINED_ID" />
     <bpmn:textAnnotation id="TextAnnotation_0kevnx2">
       <bpmn:text>eventName: NF_PM_REVIEW_BEFORE_START
 COLLEAGUE_UUID
-TIMELINE_POINT</bpmn:text>
+TIMELINE_POINT_UUID</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1pzco93" sourceRef="PM_REVIEW_BEFORE_START_ID" targetRef="TextAnnotation_0kevnx2" />
     <bpmn:textAnnotation id="TextAnnotation_0tbxjln">
       <bpmn:text>eventName: NF_PM_REVIEW_BEFORE_END
 COLLEAGUE_UUID
-TIMELINE_POINT</bpmn:text>
+TIMELINE_POINT_UUID</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_18s42lk" sourceRef="PM_REVIEW_BEFORE_END_ID" targetRef="TextAnnotation_0tbxjln" />
   </bpmn:process>

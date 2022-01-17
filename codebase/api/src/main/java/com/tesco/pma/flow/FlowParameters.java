@@ -34,13 +34,12 @@ public enum FlowParameters {
 
     PROFILE_ATTRIBUTE_NAME,
     TIMELINE_POINT,
+    TIMELINE_POINT_UUID,
 
     TIP_UUID,
 
     //notifications
-    CONTACT_TEMPLATE_ID,
-
-    TIMELINE_POINT_UUID;
+    CONTACT_TEMPLATE_ID;
 
     /**
      * Returns corresponded parameter for string value if exist or the same parameter

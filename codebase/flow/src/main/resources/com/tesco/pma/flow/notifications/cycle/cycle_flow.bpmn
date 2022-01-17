@@ -61,19 +61,19 @@
     <bpmn:textAnnotation id="TextAnnotation_1ejgdx6">
       <bpmn:text>eventName: NF_BEFORE_CYCLE_START
 COLLEAGUE_UUID
-TIMELINE_POINT</bpmn:text>
+TIMELINE_POINT_UUID</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_1hka4h1">
       <bpmn:text>eventName: NF_BEFORE_CYCLE_END
 COLLEAGUE_UUID
-TIMELINE_POINT</bpmn:text>
+TIMELINE_POINT_UUID</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0enne85" sourceRef="TextAnnotation_1ejgdx6" targetRef="Event_1df7jen" />
     <bpmn:association id="Association_11v0mm0" sourceRef="TextAnnotation_1hka4h1" targetRef="Event_1usosf4" />
     <bpmn:textAnnotation id="TextAnnotation_0o052ca">
       <bpmn:text>eventName: NF_START_TIMELINE_NOTIFICATION
 COLLEAGUE_UUID
-TIMELINE_POINT</bpmn:text>
+TIMELINE_POINT_UUID</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0d13qpc" sourceRef="TextAnnotation_0o052ca" targetRef="Event_1c2rlex" />
   </bpmn:process>
