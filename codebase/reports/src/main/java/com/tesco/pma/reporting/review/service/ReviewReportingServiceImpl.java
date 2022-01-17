@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.reporting.exception.ErrorCodes.REVIEW_REPORT_NOT_FOUND;
 
 /**
@@ -31,7 +32,8 @@ public class ReviewReportingServiceImpl implements ReviewReportingService {
 
     @Override
     public Report getLinkedObjectivesData(UUID tlPointUuid, PMTimelinePointStatus status) {
-        var res = reviewReportingDAO.getLinkedObjectivesData(tlPointUuid, status);
+        var res = reviewReportingDAO.getLinkedObjectivesData(tlPointUuid,
+                (status == null) ? APPROVED : status);
 
         if (res == null) {
             throw notFound(REVIEW_REPORT_NOT_FOUND,

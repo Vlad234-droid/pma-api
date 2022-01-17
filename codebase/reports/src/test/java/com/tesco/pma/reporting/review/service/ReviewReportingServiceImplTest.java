@@ -66,8 +66,8 @@ class ReviewReportingServiceImplTest {
 
     private ObjectiveLinkedReviewReport buildObjectiveLinkedReviewReport() {
         var report = new ObjectiveLinkedReviewReport();
-        report.setEmployeeNo("UKE12375189");
-        report.setEmployeeUUID(COLLEAGUE_UUID);
+        report.setIamId("UKE12375189");
+        report.setColleagueUUID(COLLEAGUE_UUID);
         report.setFirstName("Name");
         report.setLastName("Surname");
         report.setWorkLevel("WL5");

@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
-import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.EMPLOYEE_NO;
-import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.EMPLOYEE_UUID;
+import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.COLLEAGUE_UUID;
+import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.IAM_ID;
 import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.FIRST_NAME;
 import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.HOW_ACHIEVED;
 import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.HOW_OVER_ACHIEVED;
@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {LocalTestConfig.class, ReviewReportingEndpoint.class})
 class ReviewReportingEndpointTest extends AbstractEndpointTest {
 
-    private static final String COLLEAGUE_UUID = "10000000-0000-0000-0000-000000000000";
+    private static final String COLLEAGUE_UUID_STR = "10000000-0000-0000-0000-000000000000";
     private static final UUID TIMELINE_POINT_UUID = UUID.fromString("10000000-0000-0000-2000-000000000000");
     private static final String LINKED_OBJECTIVE_REVIEW_REPORT_URL =
             "/review-reports/pm-linked-objective-report/timeline-points/{tlPointUuid}/statuses/{status}";
@@ -79,11 +79,11 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
     private Report buildReport() {
         var report = new Report();
         report.setData(List.of(
-                List.of("UKE12375189", COLLEAGUE_UUID, "Name", "Surname", "WL5", "JobTitle", "UKE12375188", 1,
+                List.of("UKE12375189", COLLEAGUE_UUID_STR, "Name", "Surname", "WL5", "JobTitle", "UKE12375188", 1,
                         "APPROVED", "Priority", "Title", "How Achieved", "How Over-Achieved")));
         report.setMetadata(List.of(
-                EMPLOYEE_NO.getColumnMetadata(),
-                EMPLOYEE_UUID.getColumnMetadata(),
+                IAM_ID.getColumnMetadata(),
+                COLLEAGUE_UUID.getColumnMetadata(),
                 FIRST_NAME.getColumnMetadata(),
                 LAST_NAME.getColumnMetadata(),
                 WORKING_LEVEL.getColumnMetadata(),

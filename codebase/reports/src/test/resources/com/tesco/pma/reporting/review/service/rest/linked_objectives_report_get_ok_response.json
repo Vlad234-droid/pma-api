@@ -20,13 +20,13 @@
     ],
     "metadata": [
       {
-        "id": "EmployeeNo",
+        "id": "IamId",
         "name": "Employee No",
         "type": "STRING",
         "description": "Employee No"
       },
       {
-        "id": "EmployeeUUID",
+        "id": "ColleagueUUID",
         "name": "Employee UUID",
         "type": "STRING",
         "description": "Employee UUID"

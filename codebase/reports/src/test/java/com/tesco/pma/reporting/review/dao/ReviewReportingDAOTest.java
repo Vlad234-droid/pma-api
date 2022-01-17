@@ -2,6 +2,7 @@ package com.tesco.pma.reporting.review.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.dao.AbstractDAOTest;
+import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReport;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -11,11 +12,17 @@ import java.util.UUID;
 
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DECLINED;
+import static com.tesco.pma.reporting.review.dao.ReviewReportingDAOTest.BASE_PATH_TO_DATA_SET;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DataSet({BASE_PATH_TO_DATA_SET + "colleague_init.xml",
+          BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
+          BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml",
+          BASE_PATH_TO_DATA_SET + "pm_timeline_point_init.xml",
+          BASE_PATH_TO_DATA_SET + "pm_review_init.xml"})
 class ReviewReportingDAOTest extends AbstractDAOTest {
 
-    private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/reporting/review/dao/";
+    static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/reporting/review/dao/";
 
     private static final String COLLEAGUE_UUID = "10000000-0000-0000-0000-000000000000";
     private static final UUID TIMELINE_POINT_UUID = UUID.fromString("10000000-0000-0000-2000-000000000000");
@@ -31,24 +38,28 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    @DataSet({BASE_PATH_TO_DATA_SET + "colleague_init.xml",
-              BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
-              BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml",
-              BASE_PATH_TO_DATA_SET + "pm_timeline_point_init.xml",
-              BASE_PATH_TO_DATA_SET + "pm_review_init.xml"})
     void getLinkedObjectivesData() {
         final var result = instance.getLinkedObjectivesData(TIMELINE_POINT_UUID, APPROVED);
 
         assertThat(result).isNotNull();
-        assertThat(result.getEmployeeUUID()).isEqualTo(COLLEAGUE_UUID);
+
+        assertThat(result)
+                .returns(COLLEAGUE_UUID, ObjectiveLinkedReviewReport::getColleagueUUID)
+                .returns("string 2", ObjectiveLinkedReviewReport::getIamId)
+                .returns("first_name", ObjectiveLinkedReviewReport::getFirstName)
+                .returns("last_name", ObjectiveLinkedReviewReport::getLastName)
+                .returns("WL4", ObjectiveLinkedReviewReport::getWorkLevel)
+                .returns("Team lead", ObjectiveLinkedReviewReport::getJobTitle)
+                .returns("first_name last_name", ObjectiveLinkedReviewReport::getLineManager)
+                .returns(1, ObjectiveLinkedReviewReport::getObjectiveNumber)
+                .returns(APPROVED.getCode(), ObjectiveLinkedReviewReport::getStatus)
+                .returns("\"Title init\"", ObjectiveLinkedReviewReport::getObjectiveTitle)
+                .returns("\"Strategic Priority\"", ObjectiveLinkedReviewReport::getStrategicPriority)
+                .returns("\"How achieved objective\"", ObjectiveLinkedReviewReport::getHowAchieved)
+                .returns("\"How overachieved objective\"", ObjectiveLinkedReviewReport::getHowOverAchieved);
     }
 
     @Test
-    @DataSet({BASE_PATH_TO_DATA_SET + "colleague_init.xml",
-              BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
-              BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml",
-              BASE_PATH_TO_DATA_SET + "pm_timeline_point_init.xml",
-              BASE_PATH_TO_DATA_SET + "pm_review_init.xml"})
     void getLinkedObjectivesDataNotExist() {
         final var result = instance.getLinkedObjectivesData(TIMELINE_POINT_UUID, DECLINED);
 

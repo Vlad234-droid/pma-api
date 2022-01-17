@@ -8,8 +8,8 @@ import static com.tesco.pma.api.ValueType.STRING;
 
 @Getter
 public enum ColumnMetadataEnum {
-    EMPLOYEE_NO("EmployeeNo", "Employee No", STRING, "Employee No"),
-    EMPLOYEE_UUID("EmployeeUUID", "Employee UUID", STRING, "Employee UUID"),
+    IAM_ID("IamId", "Employee No", STRING, "Employee No"),
+    COLLEAGUE_UUID("ColleagueUUID", "Employee UUID", STRING, "Employee UUID"),
     FIRST_NAME("FirstName", "First Name", STRING, "First Name"),
     LAST_NAME("LastName", "Surname", STRING, "Surname"),
     WORKING_LEVEL("WorkingLevel", "Working level", STRING, "Working level"),

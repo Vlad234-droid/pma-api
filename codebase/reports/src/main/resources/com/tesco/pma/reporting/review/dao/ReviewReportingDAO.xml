@@ -4,8 +4,8 @@
 <mapper namespace="com.tesco.pma.reporting.review.dao.ReviewReportingDAO">
 
     <resultMap id="objectiveResultMap" type="com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReport">
-        <id property="employeeUUID" column="employee_uuid"/>
-        <result property="employeeNo" column="employee_no"/>
+        <id property="colleagueUUID" column="employee_uuid"/>
+        <result property="iamId" column="employee_no"/>
         <result property="firstName" column="first_name"/>
         <result property="lastName" column="surname"/>
         <result property="workLevel" column="working_level"/>
@@ -44,9 +44,6 @@
           AND c1.work_level IN ('WL4', 'WL5')
         <if test="tlPointUuid != null">
           AND pr.tl_point_uuid = #{tlPointUuid}
-        </if>
-        <if test="status == null">
-          AND pr.status_id = 3
         </if>
         <if test="status != null">
           AND pr.status_id = #{status.id}

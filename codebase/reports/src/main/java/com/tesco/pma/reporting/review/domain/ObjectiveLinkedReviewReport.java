@@ -9,8 +9,8 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
-import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.EMPLOYEE_NO;
-import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.EMPLOYEE_UUID;
+import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.IAM_ID;
+import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.COLLEAGUE_UUID;
 import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.FIRST_NAME;
 import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.HOW_ACHIEVED;
 import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.HOW_OVER_ACHIEVED;
@@ -30,8 +30,8 @@ import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.WORKING_LEVEL;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ObjectiveLinkedReviewReport implements Reportable {
-    String employeeNo;
-    String employeeUUID;
+    String iamId;
+    String colleagueUUID;
     String firstName;
     String lastName;
     String workLevel;
@@ -47,8 +47,8 @@ public class ObjectiveLinkedReviewReport implements Reportable {
     @Override
     public List<List<Object>> getReportData() {
         return List.of(List.of(
-                employeeNo,
-                employeeUUID,
+                iamId,
+                colleagueUUID,
                 firstName,
                 lastName,
                 workLevel,
@@ -65,8 +65,8 @@ public class ObjectiveLinkedReviewReport implements Reportable {
     @Override
     public List<ColumnMetadata> getReportMetadata() {
         return List.of(
-                EMPLOYEE_NO.getColumnMetadata(),
-                EMPLOYEE_UUID.getColumnMetadata(),
+                IAM_ID.getColumnMetadata(),
+                COLLEAGUE_UUID.getColumnMetadata(),
                 FIRST_NAME.getColumnMetadata(),
                 LAST_NAME.getColumnMetadata(),
                 WORKING_LEVEL.getColumnMetadata(),
@@ -78,10 +78,5 @@ public class ObjectiveLinkedReviewReport implements Reportable {
                 OBJECTIVE_TITLE.getColumnMetadata(),
                 HOW_ACHIEVED.getColumnMetadata(),
                 HOW_OVER_ACHIEVED.getColumnMetadata());
-    }
-
-    @Override
-    public boolean isAvailableReportData() {
-        return objectiveNumber > 0;
     }
 }
