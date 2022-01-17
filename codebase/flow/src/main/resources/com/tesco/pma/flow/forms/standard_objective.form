@@ -20,12 +20,12 @@
           "value": "Save to invest"
         },
         {
-          "label": "Other",
-          "value": "Other"
+          "label": "Market or functional priority",
+          "value": "Market or functional priority"
         }
       ],
-      "key": "strategic_priority",
-      "label": "**Strategic priority**",
+      "key": "strategic_driver",
+      "label": "**Strategic driver**",
       "type": "select",
       "id": "Field_1ribi5m",
       "validate": {
@@ -55,7 +55,7 @@
       }
     },
     {
-      "key": "how_achieved",
+      "key": "how_archieved",
       "label": "**How do I know I've ACHIEVED this objective?**",
       "type": "textfield",
       "id": "Field_17nyw6d",
