@@ -201,40 +201,40 @@
                     AND wl.code = 'WL2'
                 </when>
                 <when test="key == 'uk/channels'">
-                    co.code = 'UK'
+                    co.code = 'GB'
                     AND d.business_type = 'Store'
                 </when>
                 <when test="key == 'uk/channels/salaried'">
-                    co.code = 'UK'
+                    co.code = 'GB'
                     AND d.business_type = 'Store'
                     AND c.salary_frequency = 'ANNUAL'
                 </when>
                 <when test="key == 'uk/channels/salaried/wl2_on_bonus'">
-                    co.code = 'UK'
+                    co.code = 'GB'
                     AND d.business_type = 'Store'
                     AND c.salary_frequency = 'ANNUAL'
                     AND wl.code = 'WL2'
                 </when>
                 <when test="key == 'uk/channels/salaried/wl2_tl'">
-                    co.code = 'UK'
+                    co.code = 'GB'
                     AND d.business_type = 'Store'
                     AND c.salary_frequency = 'ANNUAL'
                     AND wl.code = 'WL2'
                     AND j.name IN ('Team Leader', 'Shift Leader')
                 </when>
                 <when test="key == 'uk/channels/salaried/wl1'">
-                    co.code = 'UK'
+                    co.code = 'GB'
                     AND d.business_type = 'Store'
                     AND c.salary_frequency = 'ANNUAL'
                     AND wl.code = 'WL1'
                 </when>
                 <when test="key == 'uk/channels/hp'">
-                    co.code = 'UK'
+                    co.code = 'GB'
                     AND d.business_type = 'Store'
                     AND c.salary_frequency = 'HOURLY'
                 </when>
                 <when test="key == 'uk/channels/hp/colleague'">
-                    co.code = 'UK'
+                    co.code = 'GB'
                     AND d.business_type = 'Store'
                     AND c.salary_frequency = 'HOURLY'
                 </when>
