@@ -21,9 +21,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.tesco.pma.cycle.api.PMReviewType.MYR;
 import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.WAITING_FOR_APPROVAL;
 import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
@@ -102,6 +104,52 @@ class TimelinePointDAOTest extends AbstractDAOTest {
         final int rowsInserted = instance.create(tlPoint);
 
         assertThat(rowsInserted).isOne();
+    }
+
+    @Test
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml"})
+    void saveAll() {
+        var tpUuid1 = UUID.randomUUID();
+        var tpUuid2 = UUID.randomUUID();
+
+        var tlPoint1 = TimelinePoint.builder()
+                .uuid(tpUuid1)
+                .colleagueCycleUuid(COLLEAGUE_CYCLE_UUID)
+                .code(OBJECTIVE_CODE)
+                .description(DESCRIPTION_INIT)
+                .type(REVIEW)
+                .startTime(START_TIME)
+                .endTime(END_TIME)
+                .properties(TIMELINE_POINT_PROPERTIES_INIT)
+                .status(DRAFT)
+                .build();
+
+        var tlPoint2 = TimelinePoint.builder()
+                .uuid(tpUuid2)
+                .colleagueCycleUuid(COLLEAGUE_CYCLE_UUID)
+                .code(MYR_CODE)
+                .description(DESCRIPTION_INIT)
+                .type(REVIEW)
+                .startTime(START_TIME)
+                .endTime(END_TIME)
+                .properties(TIMELINE_POINT_PROPERTIES_INIT)
+                .status(APPROVED)
+                .build();
+
+        int rowsInserted = instance.saveAll(List.of(tlPoint1, tlPoint2));
+
+        assertThat(rowsInserted).isEqualTo(2);
+
+        var points = instance.getByParams(COLLEAGUE_CYCLE_UUID, null, null);
+
+        assertThat(points.stream().map(TimelinePoint::getUuid).collect(Collectors.toSet()))
+                .hasSize(2)
+                .contains(tpUuid1, tpUuid2);
+
+        assertThat(points.stream().map(TimelinePoint::getLastUpdatedTime).collect(Collectors.toList()))
+                .doesNotContainNull();
     }
 
     @Test
