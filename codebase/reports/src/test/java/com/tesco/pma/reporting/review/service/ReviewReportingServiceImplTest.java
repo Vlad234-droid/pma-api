@@ -32,8 +32,8 @@ class ReviewReportingServiceImplTest {
     private static final Instant START_TIME = Instant.parse("2021-11-26T14:18:42.615Z");
     private static final Instant END_TIME = Instant.parse("2021-11-28T14:18:42.615Z");
 
-    private static final String REVIEW_REPORT_NOT_FOUND_MESSAGE =
-            "Review report not found for: {status=APPROVED, tlPointUuid=10000000-0000-0000-2000-000000000000}";
+    private static final String REVIEW_REPORT_NOT_FOUND_MESSAGE = "Review report not found for: " +
+            "{endTime=" + END_TIME.toString() + ", startTime=" + START_TIME.toString() + ", status=APPROVED}";
 
     @Autowired
     private NamedMessageSourceAccessor messageSourceAccessor;

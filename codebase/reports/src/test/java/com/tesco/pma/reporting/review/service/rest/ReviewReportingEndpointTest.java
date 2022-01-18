@@ -31,6 +31,7 @@ import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.STATUS;
 import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.STRATEGIC_PRIORITY;
 import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.WORKING_LEVEL;
 import static java.util.Arrays.asList;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -53,15 +54,9 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getLinkedObjectivesData() throws Exception {
-        var report = buildReport();
-        var requestQuery = new RequestQuery();
-        requestQuery.setFilters(asList(
-                new Condition("start-time", EQUALS, START_TIME),
-                new Condition("end-time", EQUALS, END_TIME),
-                new Condition("status", EQUALS, APPROVED.getCode())));
-        when(service.getLinkedObjectivesData(START_TIME, END_TIME, APPROVED)).thenReturn(report);
+        when(service.getLinkedObjectivesData(any(), any(), any())).thenReturn(buildReport());
 
-        var result = performGetWith(admin(), status().isOk(), LINKED_OBJECTIVE_REVIEW_REPORT_URL, requestQuery);
+        var result = performGetWith(admin(), status().isOk(), LINKED_OBJECTIVE_REVIEW_REPORT_URL, buildRequestQuery());
 
         assertResponseContent(result.getResponse(), LINKED_OBJECTIVES_REPORT_GET_RESPONSE_JSON_FILE_NAME);
     }
@@ -78,10 +73,20 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getLinkedObjectivesDataIfNotFound() throws Exception {
-        when(service.getLinkedObjectivesData(START_TIME, END_TIME, APPROVED)).thenThrow(NotFoundException.class);
+        when(service.getLinkedObjectivesData(any(), any(), any())).thenThrow(NotFoundException.class);
 
         performGetWith(admin(), status().isNotFound(),
                 LINKED_OBJECTIVE_REVIEW_REPORT_URL, new RequestQuery());
+    }
+
+    private RequestQuery buildRequestQuery() {
+        var requestQuery = new RequestQuery();
+        requestQuery.setFilters(asList(
+                new Condition("start-time", EQUALS, START_TIME),
+                new Condition("end-time", EQUALS, END_TIME),
+                new Condition("status", EQUALS, APPROVED.getCode())));
+
+        return requestQuery;
     }
 
     private Report buildReport() {

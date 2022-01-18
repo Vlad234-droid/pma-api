@@ -25,8 +25,8 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
     static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/reporting/review/dao/";
 
     private static final String COLLEAGUE_UUID = "10000000-0000-0000-0000-000000000000";
-    private static final Instant START_TIME = Instant.parse("2021-09-20T14:18:42.615Z");
-    private static final Instant END_TIME = Instant.parse("2021-09-20T19:30:42.615Z");
+    private static final Instant START_TIME = Instant.parse("2021-09-20T10:45:12.448Z");
+    private static final Instant END_TIME = Instant.parse("2021-09-22T10:45:12.448Z");
 
     @Autowired
     private ReviewReportingDAO instance;
