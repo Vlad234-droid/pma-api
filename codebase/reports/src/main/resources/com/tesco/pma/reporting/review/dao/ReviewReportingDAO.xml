@@ -42,8 +42,11 @@
                  INNER JOIN pm_tl_point_status ptps ON pr.status_id = ptps.id
         WHERE pr.type_id = 1
           AND c1.work_level IN ('WL4', 'WL5')
-        <if test="tlPointUuid != null">
-          AND pr.tl_point_uuid = #{tlPointUuid}
+        <if test="startTime != null">
+          AND pcc.start_time >= #{startTime, typeHandler=org.apache.ibatis.type.InstantTypeHandler, javaType=java.time.Instant}
+        </if>
+        <if test="endTime != null">
+            AND pcc.end_time &lt;= #{endTime, typeHandler=org.apache.ibatis.type.InstantTypeHandler, javaType=java.time.Instant}
         </if>
         <if test="status != null">
           AND pr.status_id = #{status.id}

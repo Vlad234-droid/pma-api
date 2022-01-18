@@ -10,10 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.time.Instant;
 import java.util.Map;
-import java.util.UUID;
 
-import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.reporting.exception.ErrorCodes.REVIEW_REPORT_NOT_FOUND;
 
 /**
@@ -27,17 +26,18 @@ public class ReviewReportingServiceImpl implements ReviewReportingService {
     private final ReviewReportingDAO reviewReportingDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
-    private static final String TL_POINT_UUID_PARAMETER_NAME = "tlPointUuid";
+    private static final String START_TIME_PARAMETER_NAME = "startTime";
+    private static final String END_TIME_PARAMETER_NAME = "endTime";
     private static final String STATUS_PARAMETER_NAME = "status";
 
     @Override
-    public Report getLinkedObjectivesData(UUID tlPointUuid, PMTimelinePointStatus status) {
-        var res = reviewReportingDAO.getLinkedObjectivesData(tlPointUuid,
-                (status == null) ? APPROVED : status);
+    public Report getLinkedObjectivesData(Instant startTime, Instant endTime, PMTimelinePointStatus status) {
+        var res = reviewReportingDAO.getLinkedObjectivesData(startTime, endTime, status);
 
         if (res == null) {
             throw notFound(REVIEW_REPORT_NOT_FOUND,
-                    Map.of(TL_POINT_UUID_PARAMETER_NAME, tlPointUuid,
+                    Map.of(START_TIME_PARAMETER_NAME, startTime,
+                            END_TIME_PARAMETER_NAME, endTime,
                             STATUS_PARAMETER_NAME, status));
         }
         return res.getReport();

@@ -1,6 +1,8 @@
 package com.tesco.pma.reporting.review.service.rest;
 
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
+import com.tesco.pma.pagination.Condition;
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.reporting.Report;
 import com.tesco.pma.reporting.review.service.ReviewReportingService;
 import com.tesco.pma.rest.HttpStatusCodes;
@@ -12,11 +14,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
+import java.time.Instant;
 
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.rest.RestResponse.success;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -30,18 +32,33 @@ public class ReviewReportingEndpoint {
     /**
      * Get call using a Path param and return an Objectives linked with reviews data as JSON.
      *
-     * @param tlPointUuid     an identifier of timeline point
-     * @param status          a status of timeline point
+     * @param requestQuery -  filter contains start time, end time of colleague cycle and status of timeline point
      * @return a RestResponse parameterized with Objectives report data
      */
     @Operation(summary = "Get a Linked Objectives Report by its tlPointUuid and status", tags = {"report"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the Report data")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Report data not found", content = @Content)
-    @GetMapping(path = "/timeline-points/{tlPointUuid}/statuses/{status}/pm-linked-objective-report",
+    @GetMapping(path = "/pm-linked-objective-report",
             produces = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isTalentAdmin() or isAdmin()")
-    public RestResponse<Report> getLinkedObjectivesReport(@PathVariable("tlPointUuid") UUID tlPointUuid,
-                                                          @PathVariable("status") PMTimelinePointStatus status) {
-        return success(reviewReportingService.getLinkedObjectivesData(tlPointUuid, status));
+    @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
+    public RestResponse<Report> getLinkedObjectivesReport(RequestQuery requestQuery) {
+        var startTime = parseDateTimeProperty(requestQuery, "start-time");
+        var endTime = parseDateTimeProperty(requestQuery, "end-time");
+        var status = getProperty(requestQuery, "status");
+
+        return success(reviewReportingService.getLinkedObjectivesData(startTime, endTime,
+                (status != null)? PMTimelinePointStatus.valueOf(status.toString()) : APPROVED));
+    }
+
+    private Instant parseDateTimeProperty(RequestQuery requestQuery, String propertyName) {
+        var property = getProperty(requestQuery, propertyName);
+        return (property != null) ? Instant.parse(property.toString()) : null;
+    }
+
+    private Object getProperty(RequestQuery requestQuery, String propertyName) {
+        var dateTime = requestQuery.getFilters().stream()
+                .filter(cond -> propertyName.equalsIgnoreCase(cond.getProperty()))
+                .findFirst();
+        return dateTime.map(Condition::getValue).orElse(null);
     }
 }
