@@ -47,7 +47,7 @@ public class ReviewReportingEndpoint {
         var status = getProperty(requestQuery, "status");
 
         return success(reviewReportingService.getLinkedObjectivesData(startTime, endTime,
-                (status != null)? PMTimelinePointStatus.valueOf(status.toString()) : APPROVED));
+                (status != null) ? PMTimelinePointStatus.valueOf(status.toString()) : APPROVED));
     }
 
     private Instant parseDateTimeProperty(RequestQuery requestQuery, String propertyName) {
