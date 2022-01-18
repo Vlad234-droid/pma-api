@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
-import java.util.UUID;
+import java.time.Instant;
 
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DECLINED;
@@ -25,7 +25,8 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
     static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/reporting/review/dao/";
 
     private static final String COLLEAGUE_UUID = "10000000-0000-0000-0000-000000000000";
-    private static final UUID TIMELINE_POINT_UUID = UUID.fromString("10000000-0000-0000-2000-000000000000");
+    private static final Instant START_TIME = Instant.parse("2021-09-20T14:18:42.615Z");
+    private static final Instant END_TIME = Instant.parse("2021-09-20T19:30:42.615Z");
 
     @Autowired
     private ReviewReportingDAO instance;
@@ -39,7 +40,7 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
 
     @Test
     void getLinkedObjectivesData() {
-        final var result = instance.getLinkedObjectivesData(TIMELINE_POINT_UUID, APPROVED);
+        final var result = instance.getLinkedObjectivesData(START_TIME, END_TIME, APPROVED);
 
         assertThat(result).isNotNull();
 
@@ -61,7 +62,7 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
 
     @Test
     void getLinkedObjectivesDataNotExist() {
-        final var result = instance.getLinkedObjectivesData(TIMELINE_POINT_UUID, DECLINED);
+        final var result = instance.getLinkedObjectivesData(START_TIME, END_TIME, DECLINED);
 
         assertThat(result).isNull();
     }
