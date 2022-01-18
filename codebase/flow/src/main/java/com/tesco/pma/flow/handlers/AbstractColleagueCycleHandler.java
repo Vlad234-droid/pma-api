@@ -6,7 +6,7 @@ import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleType;
 
 import java.time.Clock;
-import java.time.Instant;
+import java.time.LocalDate;
 import java.time.Period;
 import java.util.UUID;
 
@@ -19,9 +19,9 @@ public abstract class AbstractColleagueCycleHandler extends CamundaAbstractFlowH
      */
     protected PMCycle adjustStartDate(PMCycle cycle) {
         if (PMCycleType.HIRING.equals(cycle.getType())) {
-            var start = Instant.now(Clock.systemUTC());
-            cycle.setStartTime(start);
-            cycle.setEndTime(start.plus(Period.ofYears(1)));
+            var start = LocalDate.now(Clock.systemUTC());
+            cycle.setStartTime(HandlerUtils.dateToInstant(start));
+            cycle.setEndTime(HandlerUtils.dateToInstant(start.plus(Period.ofYears(1))));
         }
         return cycle;
     }
