@@ -11,7 +11,7 @@
       <bpmn:outgoing>Flow_1hnn181</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_04cjonx" messageRef="Message_190jdtr" />
     </bpmn:startEvent>
-    <bpmn:serviceTask id="Activity_1arxpfdfds9t" name="Send end&#10;review&#10;event" camunda:class="com.tesco.pma.flow.handlers.ColleagueEventsSendHandler">
+    <bpmn:serviceTask id="Activity_1arxpfdfds9t" name="Send end&#10;review&#10;event" camunda:class="com.tesco.pma.flow.handlers.ColleaguesEventsSendHandler">
       <bpmn:extensionElements>
         <camunda:field name="eventNameExpression">
           <camunda:string>NF_TEST_EVENT</camunda:string>

@@ -9,7 +9,7 @@ import com.tesco.pma.event.Event;
 import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.flow.FlowParameters;
-import com.tesco.pma.flow.handlers.ColleagueEventsSendHandler;
+import com.tesco.pma.flow.handlers.ColleaguesEventsSendHandler;
 import com.tesco.pma.organisation.service.ConfigEntryService;
 import com.tesco.pma.review.domain.TimelinePoint;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,12 +30,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ActiveProfiles("test")
 @SpringBootTest(classes = {CamundaSpringBootTestConfig.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class ColleagueEventsSendHandlerTest extends AbstractCamundaSpringBootTest {
+public class ColleaguesEventsSendHandlerTest extends AbstractCamundaSpringBootTest {
 
     private static final String ENTRY_CONFIG_KEY = "some key";
 
     @SpyBean
-    private ColleagueEventsSendHandler colleagueEventsSendHandler;
+    private ColleaguesEventsSendHandler colleagueEventsSendHandler;
 
     @MockBean
     private ConfigEntryService configEntryService;

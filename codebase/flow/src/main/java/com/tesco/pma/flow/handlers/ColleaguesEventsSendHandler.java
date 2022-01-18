@@ -16,14 +16,14 @@ import java.util.Map;
 import java.util.UUID;
 
 @Component
-public class ColleagueEventsSendHandler extends AbstractEventSendHandler {
+public class ColleaguesEventsSendHandler extends AbstractEventSendHandler {
 
     private final ConfigEntryService configEntryService;
     private final EventSender eventSender;
 
-    public ColleagueEventsSendHandler(NamedMessageSourceAccessor messageSourceAccessor,
-                                      ConfigEntryService configEntryService,
-                                      EventSender eventSender) {
+    public ColleaguesEventsSendHandler(NamedMessageSourceAccessor messageSourceAccessor,
+                                       ConfigEntryService configEntryService,
+                                       EventSender eventSender) {
         super(messageSourceAccessor);
         this.configEntryService = configEntryService;
         this.eventSender = eventSender;

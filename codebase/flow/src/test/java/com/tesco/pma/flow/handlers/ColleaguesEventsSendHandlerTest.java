@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-class ColleagueEventsSendHandlerTest {
+class ColleaguesEventsSendHandlerTest {
 
     private static final String EXPRESSION_VALUE = "injectedValue";
     private static final String IS_ERROR_SENSITIVE_EXPRESSION = "true";
@@ -34,7 +34,7 @@ class ColleagueEventsSendHandlerTest {
     @Mock
     private NamedMessageSourceAccessor namedMessageSourceAccessor;
 
-    private ColleagueEventsSendHandler handler;
+    private ColleaguesEventsSendHandler handler;
     private ExecutionContext executionContext;
     private PMCycle pmCycle;
     private final List<ColleagueEntity> colleagueEntities = new ArrayList<>();
@@ -46,7 +46,7 @@ class ColleagueEventsSendHandlerTest {
         Mockito.when(expression.getExpressionText()).thenReturn(EXPRESSION_VALUE);
         Expression isErrorSensitiveExpression = Mockito.mock(Expression.class);
         Mockito.when(isErrorSensitiveExpression.getExpressionText()).thenReturn(IS_ERROR_SENSITIVE_EXPRESSION);
-        handler = new ColleagueEventsSendHandler(namedMessageSourceAccessor, configEntryService, eventSender);
+        handler = new ColleaguesEventsSendHandler(namedMessageSourceAccessor, configEntryService, eventSender);
         handler.setEventNameExpression(expression);
         handler.setIsErrorSensitiveExpression(isErrorSensitiveExpression);
         executionContext = Mockito.mock(ExecutionContext.class);
