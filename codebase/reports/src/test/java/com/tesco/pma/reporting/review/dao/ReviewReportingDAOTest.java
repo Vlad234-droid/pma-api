@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
-import java.time.Instant;
-
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DECLINED;
 import static com.tesco.pma.reporting.review.dao.ReviewReportingDAOTest.BASE_PATH_TO_DATA_SET;
@@ -25,8 +23,7 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
     static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/reporting/review/dao/";
 
     private static final String COLLEAGUE_UUID = "10000000-0000-0000-0000-000000000000";
-    private static final Instant START_TIME = Instant.parse("2021-09-20T10:45:12.448Z");
-    private static final Instant END_TIME = Instant.parse("2021-09-22T10:45:12.448Z");
+    private static final Integer YEAR = 2021;
 
     @Autowired
     private ReviewReportingDAO instance;
@@ -40,7 +37,7 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
 
     @Test
     void getLinkedObjectivesData() {
-        final var result = instance.getLinkedObjectivesData(START_TIME, END_TIME, APPROVED);
+        final var result = instance.getLinkedObjectivesData(YEAR, APPROVED);
 
         assertThat(result).isNotNull();
 
@@ -62,7 +59,7 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
 
     @Test
     void getLinkedObjectivesDataNotExist() {
-        final var result = instance.getLinkedObjectivesData(START_TIME, END_TIME, DECLINED);
+        final var result = instance.getLinkedObjectivesData(YEAR, DECLINED);
 
         assertThat(result).isNull();
     }

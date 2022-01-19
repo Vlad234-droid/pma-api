@@ -13,8 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.Instant;
-
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.reporting.exception.ErrorCodes.REVIEW_REPORT_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,11 +27,10 @@ class ReviewReportingServiceImplTest {
 
     private static final String COLLEAGUE_UUID = "10000000-0000-0000-0000-000000000000";
     private static final String LINE_MANAGER_UUID = "10000000-0000-0000-0000-000000000002";
-    private static final Instant START_TIME = Instant.parse("2021-11-26T14:18:42.615Z");
-    private static final Instant END_TIME = Instant.parse("2021-11-28T14:18:42.615Z");
+    private static final Integer YEAR = 2021;
 
     private static final String REVIEW_REPORT_NOT_FOUND_MESSAGE = "Review report not found for: " +
-            "{endTime=" + END_TIME.toString() + ", startTime=" + START_TIME.toString() + ", status=APPROVED}";
+            "{status=" + APPROVED + ", year=" + YEAR + "}";
 
     @Autowired
     private NamedMessageSourceAccessor messageSourceAccessor;
@@ -47,19 +44,19 @@ class ReviewReportingServiceImplTest {
     @Test
     void getLinkedObjectivesData() {
         var report = buildObjectiveLinkedReviewReport();
-        when(reviewReportingDAO.getLinkedObjectivesData(any(), any(), any())).thenReturn(report);
+        when(reviewReportingDAO.getLinkedObjectivesData(any(), any())).thenReturn(report);
 
-        final var res = reviewReportingService.getLinkedObjectivesData(START_TIME, END_TIME, APPROVED);
+        final var res = reviewReportingService.getLinkedObjectivesData(YEAR, APPROVED);
 
         assertEquals(report.getReport(), res);
     }
 
     @Test
     void getLinkedObjectivesDataNotExists() {
-        when(reviewReportingDAO.getLinkedObjectivesData(any(), any(), any())).thenReturn(null);
+        when(reviewReportingDAO.getLinkedObjectivesData(any(), any())).thenReturn(null);
 
         final var exception = assertThrows(NotFoundException.class,
-                () -> reviewReportingService.getLinkedObjectivesData(START_TIME, END_TIME, APPROVED));
+                () -> reviewReportingService.getLinkedObjectivesData(YEAR, APPROVED));
 
         assertEquals(REVIEW_REPORT_NOT_FOUND.getCode(), exception.getCode());
         assertEquals(REVIEW_REPORT_NOT_FOUND_MESSAGE, exception.getMessage());

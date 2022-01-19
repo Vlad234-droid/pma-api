@@ -12,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.time.Instant;
 import java.util.List;
 
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
@@ -44,8 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ReviewReportingEndpointTest extends AbstractEndpointTest {
 
     private static final String COLLEAGUE_UUID_STR = "10000000-0000-0000-0000-000000000000";
-    private static final Instant START_TIME = Instant.parse("2021-11-26T14:18:42.615Z");
-    private static final Instant END_TIME = Instant.parse("2021-11-28T14:18:42.615Z");
+    private static final Integer YEAR = 2021;
     private static final String LINKED_OBJECTIVE_REVIEW_REPORT_URL = "/pm-linked-objective-report";
     private static final String LINKED_OBJECTIVES_REPORT_GET_RESPONSE_JSON_FILE_NAME = "linked_objectives_report_get_ok_response.json";
 
@@ -54,7 +52,7 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getLinkedObjectivesData() throws Exception {
-        when(service.getLinkedObjectivesData(any(), any(), any())).thenReturn(buildReport());
+        when(service.getLinkedObjectivesData(any(), any())).thenReturn(buildReport());
 
         var result = performGetWith(admin(), status().isOk(), LINKED_OBJECTIVE_REVIEW_REPORT_URL, buildRequestQuery());
 
@@ -73,7 +71,7 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getLinkedObjectivesDataIfNotFound() throws Exception {
-        when(service.getLinkedObjectivesData(any(), any(), any())).thenThrow(NotFoundException.class);
+        when(service.getLinkedObjectivesData(any(), any())).thenThrow(NotFoundException.class);
 
         performGetWith(admin(), status().isNotFound(),
                 LINKED_OBJECTIVE_REVIEW_REPORT_URL, new RequestQuery());
@@ -82,8 +80,7 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
     private RequestQuery buildRequestQuery() {
         var requestQuery = new RequestQuery();
         requestQuery.setFilters(asList(
-                new Condition("start-time", EQUALS, START_TIME),
-                new Condition("end-time", EQUALS, END_TIME),
+                new Condition("year", EQUALS, YEAR),
                 new Condition("status", EQUALS, APPROVED.getCode())));
 
         return requestQuery;

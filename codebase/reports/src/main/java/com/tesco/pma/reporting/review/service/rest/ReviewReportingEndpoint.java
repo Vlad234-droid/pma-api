@@ -16,8 +16,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Instant;
-
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.rest.RestResponse.success;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -26,6 +24,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @Validated
 public class ReviewReportingEndpoint {
+
+    private static final PMTimelinePointStatus DEFAULT_STATUS = APPROVED;
+    private static final Integer DEFAULT_YEAR = 2021;
 
     private final ReviewReportingService reviewReportingService;
 
@@ -42,17 +43,12 @@ public class ReviewReportingEndpoint {
             produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
     public RestResponse<Report> getLinkedObjectivesReport(RequestQuery requestQuery) {
-        var startTime = parseDateTimeProperty(requestQuery, "start-time");
-        var endTime = parseDateTimeProperty(requestQuery, "end-time");
+        var year = getProperty(requestQuery, "year");
         var status = getProperty(requestQuery, "status");
 
-        return success(reviewReportingService.getLinkedObjectivesData(startTime, endTime,
-                (status != null) ? PMTimelinePointStatus.valueOf(status.toString()) : APPROVED));
-    }
-
-    private Instant parseDateTimeProperty(RequestQuery requestQuery, String propertyName) {
-        var property = getProperty(requestQuery, propertyName);
-        return (property != null) ? Instant.parse(property.toString()) : null;
+        return success(reviewReportingService.getLinkedObjectivesData(
+                (year != null) ? (Integer)year : DEFAULT_YEAR,
+                (status != null) ? PMTimelinePointStatus.valueOf(status.toString()) : DEFAULT_STATUS));
     }
 
     private Object getProperty(RequestQuery requestQuery, String propertyName) {
