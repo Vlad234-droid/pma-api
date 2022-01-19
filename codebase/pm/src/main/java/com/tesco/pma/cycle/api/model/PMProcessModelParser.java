@@ -23,7 +23,6 @@ import java.util.Optional;
 import static com.tesco.pma.cycle.api.model.PMCycleElement.PM_CYCLE_TYPE;
 import static com.tesco.pma.cycle.api.model.PMElement.PM_TYPE;
 import static com.tesco.pma.cycle.api.model.PMFormElement.PM_FORM_KEY;
-import static com.tesco.pma.cycle.api.model.PMReviewElement.DEFAULT_PM_REVIEW_MAX;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.DEFAULT_PM_REVIEW_MIN;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MAX;
@@ -118,8 +117,12 @@ public class PMProcessModelParser {
     private PMReviewElement parseReview(Activity activity, Collection<CamundaProperty> props) {
         var pmReview = fillPMElement(activity, props, new PMReviewElement());
         pmReview.setReviewType(getEnum(PMReviewType.class, PM_REVIEW_TYPE, pmReview.getProperties().get(PM_REVIEW_TYPE)));
-        pmReview.getProperties().putIfAbsent(PM_REVIEW_MIN, DEFAULT_PM_REVIEW_MIN);
-        pmReview.getProperties().putIfAbsent(PM_REVIEW_MAX, DEFAULT_PM_REVIEW_MAX);
+
+        var min = getVariable(pmReview.getProperties(), PMReviewElement.PM_REVIEW_MIN, Integer.parseInt(DEFAULT_PM_REVIEW_MIN));
+        var max = getVariable(pmReview.getProperties(), PMReviewElement.PM_REVIEW_MAX, min);
+
+        pmReview.getProperties().put(PM_REVIEW_MIN, min.toString());
+        pmReview.getProperties().put(PM_REVIEW_MAX, max.toString());
 
         String formKey;
         if (activity instanceof UserTask) {
@@ -141,6 +144,18 @@ public class PMProcessModelParser {
             }
         }
         return pmReview;
+    }
+
+    private Integer getVariable(Map<String, String> properties, String name, int defaultValue) {
+        var value = properties.get(name);
+        if (value != null) {
+            try {
+                return Integer.parseInt(value);
+            } catch (Exception e) {
+                log.trace("The variable {} is not a number: {}", name, value, e);
+            }
+        }
+        return defaultValue;
     }
 
     private String[] splitCompoundFullPath(String compoundFullPath) {
