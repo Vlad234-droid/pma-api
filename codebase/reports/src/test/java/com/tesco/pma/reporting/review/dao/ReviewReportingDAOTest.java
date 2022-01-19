@@ -11,6 +11,7 @@ import org.springframework.test.context.DynamicPropertySource;
 import java.util.Arrays;
 
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DECLINED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
 import static com.tesco.pma.reporting.review.dao.ReviewReportingDAOTest.BASE_PATH_TO_DATA_SET;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -61,7 +62,7 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
 
     @Test
     void getLinkedObjectivesDataNotExist() {
-        final var result = instance.getLinkedObjectivesData(YEAR, Arrays.asList(APPROVED, DRAFT));
+        final var result = instance.getLinkedObjectivesData(YEAR, Arrays.asList(DECLINED));
 
         assertThat(result).isNull();
     }
