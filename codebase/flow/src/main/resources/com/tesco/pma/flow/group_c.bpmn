@@ -47,6 +47,8 @@
           <camunda:property name="pm_form_key" value="forms/group_c_eyr.form" />
           <camunda:property name="pm_timeline_point_code" value="EYR" />
           <camunda:property name="pm_timeline_point_description" value="Year-end review" />
+          <camunda:property name="pm_review_min" value="1" />
+          <camunda:property name="pm_review_max" value="1" />
         </camunda:properties>
         <camunda:in source="PM_CYCLE" target="PM_CYCLE" />
         <camunda:in source="SCHEDULED" target="SCHEDULED" />
