@@ -102,11 +102,22 @@ public class ProcessTimelinePointHandler extends AbstractUpdateEnumStatusHandler
                                 map.put(e.name(), strValue);
                             }
                         }));
-
-        List.of(PMReviewElement.PM_REVIEW_MIN, PMReviewElement.PM_REVIEW_MAX)
-                .forEach(key -> Optional.ofNullable(context.getNullableVariable(key))
-                        .map(Object::toString)
-                        .ifPresent(v -> map.put(key, v)));
+        var min = getVariable(context, PMReviewElement.PM_REVIEW_MIN, 1);
+        var max = getVariable(context, PMReviewElement.PM_REVIEW_MAX, min);
+        map.put(PMReviewElement.PM_REVIEW_MIN, min.toString());
+        map.put(PMReviewElement.PM_REVIEW_MAX, max.toString());
         return new MapJson(map);
+    }
+
+    private Integer getVariable(ExecutionContext context, String name, int defaultValue) {
+        String value = context.getNullableVariable(name);
+        if (value != null) {
+            try {
+                return Integer.parseInt(value);
+            } catch (Exception e) {
+                log.trace("The variable {} is not a number: {}", name, value, e);
+            }
+        }
+        return defaultValue;
     }
 }
