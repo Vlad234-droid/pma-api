@@ -13,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.Arrays;
+
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.reporting.exception.ErrorCodes.REVIEW_REPORT_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,7 +32,7 @@ class ReviewReportingServiceImplTest {
     private static final Integer YEAR = 2021;
 
     private static final String REVIEW_REPORT_NOT_FOUND_MESSAGE = "Review report not found for: " +
-            "{status=" + APPROVED + ", year=" + YEAR + "}";
+            "{statuses=[" + APPROVED + "], year=" + YEAR + "}";
 
     @Autowired
     private NamedMessageSourceAccessor messageSourceAccessor;
@@ -46,7 +48,7 @@ class ReviewReportingServiceImplTest {
         var report = buildObjectiveLinkedReviewReport();
         when(reviewReportingDAO.getLinkedObjectivesData(any(), any())).thenReturn(report);
 
-        final var res = reviewReportingService.getLinkedObjectivesData(YEAR, APPROVED);
+        final var res = reviewReportingService.getLinkedObjectivesData(YEAR, Arrays.asList(APPROVED));
 
         assertEquals(report.getReport(), res);
     }
@@ -56,7 +58,7 @@ class ReviewReportingServiceImplTest {
         when(reviewReportingDAO.getLinkedObjectivesData(any(), any())).thenReturn(null);
 
         final var exception = assertThrows(NotFoundException.class,
-                () -> reviewReportingService.getLinkedObjectivesData(YEAR, APPROVED));
+                () -> reviewReportingService.getLinkedObjectivesData(YEAR, Arrays.asList(APPROVED)));
 
         assertEquals(REVIEW_REPORT_NOT_FOUND.getCode(), exception.getCode());
         assertEquals(REVIEW_REPORT_NOT_FOUND_MESSAGE, exception.getMessage());

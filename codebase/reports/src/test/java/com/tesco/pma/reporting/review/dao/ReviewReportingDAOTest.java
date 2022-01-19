@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
+import java.util.Arrays;
+
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
-import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DECLINED;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
 import static com.tesco.pma.reporting.review.dao.ReviewReportingDAOTest.BASE_PATH_TO_DATA_SET;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,7 +39,7 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
 
     @Test
     void getLinkedObjectivesData() {
-        final var result = instance.getLinkedObjectivesData(YEAR, APPROVED);
+        final var result = instance.getLinkedObjectivesData(YEAR, Arrays.asList(APPROVED, DRAFT));
 
         assertThat(result).isNotNull();
 
@@ -59,7 +61,7 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
 
     @Test
     void getLinkedObjectivesDataNotExist() {
-        final var result = instance.getLinkedObjectivesData(YEAR, DECLINED);
+        final var result = instance.getLinkedObjectivesData(YEAR, Arrays.asList(APPROVED, DRAFT));
 
         assertThat(result).isNull();
     }

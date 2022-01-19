@@ -16,6 +16,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.rest.RestResponse.success;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -44,11 +47,28 @@ public class ReviewReportingEndpoint {
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
     public RestResponse<Report> getLinkedObjectivesReport(RequestQuery requestQuery) {
         var year = getProperty(requestQuery, "year");
-        var status = getProperty(requestQuery, "status");
+        var statuses = getProperty(requestQuery, "statuses");
 
         return success(reviewReportingService.getLinkedObjectivesData(
-                (year != null) ? (Integer)year : DEFAULT_YEAR,
-                (status != null) ? PMTimelinePointStatus.valueOf(status.toString()) : DEFAULT_STATUS));
+                (year != null) ? Integer.parseInt(year.toString()) : DEFAULT_YEAR,
+                getTimelinePointStatuses(statuses)));
+    }
+
+    private List<PMTimelinePointStatus> getTimelinePointStatuses(Object statuses) {
+        var timelinePointStatuses = new LinkedList<PMTimelinePointStatus>();
+
+        if (statuses instanceof List) {
+            var inputStatuses = (List<Object>) statuses;
+            if (inputStatuses.isEmpty()) {
+                timelinePointStatuses.add(DEFAULT_STATUS);
+            }
+
+            inputStatuses.forEach(s -> {
+                var timelinePointStatus = PMTimelinePointStatus.valueOf(s.toString());
+                timelinePointStatuses.add(timelinePointStatus);
+            });
+        }
+        return timelinePointStatuses;
     }
 
     private Object getProperty(RequestQuery requestQuery, String propertyName) {

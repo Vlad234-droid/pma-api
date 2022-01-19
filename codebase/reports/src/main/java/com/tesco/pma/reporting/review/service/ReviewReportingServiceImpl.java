@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
 import java.util.Map;
 
 import static com.tesco.pma.reporting.exception.ErrorCodes.REVIEW_REPORT_NOT_FOUND;
@@ -26,16 +27,16 @@ public class ReviewReportingServiceImpl implements ReviewReportingService {
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
     private static final String YEAR_PARAMETER_NAME = "year";
-    private static final String STATUS_PARAMETER_NAME = "status";
+    private static final String STATUSES_PARAMETER_NAME = "statuses";
 
     @Override
-    public Report getLinkedObjectivesData(Integer year, PMTimelinePointStatus status) {
-        var res = reviewReportingDAO.getLinkedObjectivesData(year, status);
+    public Report getLinkedObjectivesData(Integer year, List<PMTimelinePointStatus> statuses) {
+        var res = reviewReportingDAO.getLinkedObjectivesData(year, statuses);
 
         if (res == null) {
             throw notFound(REVIEW_REPORT_NOT_FOUND,
                     Map.of(YEAR_PARAMETER_NAME, year,
-                           STATUS_PARAMETER_NAME, status));
+                           STATUSES_PARAMETER_NAME, statuses));
         }
         return res.getReport();
     }

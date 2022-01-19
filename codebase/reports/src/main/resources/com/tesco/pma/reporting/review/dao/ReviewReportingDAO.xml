@@ -47,8 +47,12 @@
         <if test="year != null">
           AND EXTRACT(YEAR FROM pc.start_time) = #{year}
         </if>
-        <if test="status != null">
-          AND pr.status_id = #{status.id}
+
+        <if test="statuses != null and !statuses.isEmpty()">
+          AND pr.status_id IN
+          <foreach collection="statuses" item="status" index="i" open="(" separator="," close=")">
+              #{status.id}
+          </foreach>
         </if>
     </select>
 
