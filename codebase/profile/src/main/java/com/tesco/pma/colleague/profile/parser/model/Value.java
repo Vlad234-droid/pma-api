@@ -1,5 +1,6 @@
 package com.tesco.pma.colleague.profile.parser.model;
 
+import com.tesco.pma.api.ValueType;
 import com.tesco.pma.api.Identified;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -8,8 +9,8 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.NonFinal;
 
-import static com.tesco.pma.colleague.profile.parser.model.ValueType.BLANK;
-import static com.tesco.pma.colleague.profile.parser.model.ValueType.ERROR;
+import static com.tesco.pma.api.ValueType.BLANK;
+import static com.tesco.pma.api.ValueType.ERROR;
 
 
 @lombok.Value(staticConstructor = "of")

@@ -1,8 +1,8 @@
 package com.tesco.pma.colleague.profile.service;
 
+import com.tesco.pma.api.ValueType;
 import com.tesco.pma.colleague.profile.parser.model.FieldSet;
 import com.tesco.pma.colleague.profile.parser.model.Value;
-import com.tesco.pma.colleague.profile.parser.model.ValueType;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;

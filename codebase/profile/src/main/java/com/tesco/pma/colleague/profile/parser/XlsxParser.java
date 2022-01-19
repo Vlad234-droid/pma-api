@@ -46,10 +46,10 @@ import static com.tesco.pma.colleague.profile.parser.ParsingErrorCode.PARSE_IO;
 import static com.tesco.pma.colleague.profile.parser.ParsingErrorCode.PARSE_NOT_OOXML;
 import static com.tesco.pma.colleague.profile.parser.ParsingErrorCode.PARSE_PASSWORD_PROTECTED;
 import static com.tesco.pma.colleague.profile.parser.ParsingErrorCode.PARSE_UNHANDLED_ERROR;
-import static com.tesco.pma.colleague.profile.parser.model.ValueType.BOOLEAN;
-import static com.tesco.pma.colleague.profile.parser.model.ValueType.DATE;
-import static com.tesco.pma.colleague.profile.parser.model.ValueType.NUMBER;
-import static com.tesco.pma.colleague.profile.parser.model.ValueType.STRING;
+import static com.tesco.pma.api.ValueType.BOOLEAN;
+import static com.tesco.pma.api.ValueType.DATE;
+import static com.tesco.pma.api.ValueType.NUMBER;
+import static com.tesco.pma.api.ValueType.STRING;
 
 @Slf4j
 @Data
