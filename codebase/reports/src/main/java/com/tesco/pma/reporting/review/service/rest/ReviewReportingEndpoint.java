@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -69,14 +68,14 @@ public class ReviewReportingEndpoint {
 
         var fileName = "ObjectivesReport.xlsx";
         try (var outputStream = new ByteArrayOutputStream(); var workbook = new XSSFWorkbook()) {
-            XSSFSheet sheet = workbook.createSheet("Report");
+            var sheet = workbook.createSheet("Report");
 
-            Row header = sheet.createRow(0);
+            var header = sheet.createRow(0);
             buildHeader(reportMetadata, header);
             buildData(reportData, sheet);
 
             workbook.write(outputStream);
-            HttpHeaders httpHeader = new HttpHeaders();
+            var httpHeader = new HttpHeaders();
             httpHeader.setContentType(new MediaType("application", "force-download"));
             httpHeader.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
 
@@ -88,13 +87,13 @@ public class ReviewReportingEndpoint {
     }
 
     private void buildData(List<List<Object>> reportData, XSSFSheet sheet) {
-        int rowCount = 0;
+        var rowCount = 0;
         for (List<Object> data : reportData) {
-            Row row = sheet.createRow(++rowCount);
-            int column = 0;
+            var row = sheet.createRow(++rowCount);
+            var column = 0;
 
-            for (Object field : data) {
-                Cell cell = row.createCell(column++);
+            for (var field : data) {
+                var cell = row.createCell(column++);
                 if (field instanceof String) {
                     cell.setCellValue((String) field);
                 } else if (field instanceof Integer) {
@@ -105,8 +104,8 @@ public class ReviewReportingEndpoint {
     }
 
     private void buildHeader(List<ColumnMetadata> reportMetadata, Row header) {
-        for (int column = 0; column < reportMetadata.size(); column++) {
-            Cell headerCell = header.createCell(column);
+        for (var column = 0; column < reportMetadata.size(); column++) {
+            var headerCell = header.createCell(column);
             headerCell.setCellValue(reportMetadata.get(column).getName());
         }
     }
