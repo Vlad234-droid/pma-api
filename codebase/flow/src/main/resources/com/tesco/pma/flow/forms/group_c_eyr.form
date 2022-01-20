@@ -18,7 +18,7 @@
       }
     },
     {
-      "text": "**Based on the conversation with my line manager, my overall performance rating for this is year is**",
+      "text": "**Based on the conversation with my line manager, my overall performance rating for this year is:**",
       "type": "text",
       "id": "Field_0acgmyr"
     },
@@ -41,8 +41,8 @@
           "value": "Below expected"
         }
       ],
-      "key": "performance_what",
-      "label": "what",
+      "key": "what_rating",
+      "label": "what rating",
       "type": "select",
       "id": "Field_1ribi5m",
       "validate": {
@@ -68,8 +68,8 @@
           "value": "Below expected"
         }
       ],
-      "key": "performance_how",
-      "label": "how",
+      "key": "how_rating",
+      "label": "how rating",
       "type": "select",
       "id": "Field_1ribi4m",
       "validate": {

@@ -26,7 +26,7 @@ class ExtensionsDelegateVariableMappingTest extends AbstractCamundaSpringBootTes
     private static final String FLOW_ID = "delegate_variable_mapping";
 
     private static final String CALL_EYR = "call_review_init_eyr";
-    private static final String MYR = "mid_year_review";
+    private static final String MYR = "myr";
     private static final String CALL_MYR = "call_review_init_myr";
 
     private static final String EYR_EXP_FILE = "eyr-expected.properties";

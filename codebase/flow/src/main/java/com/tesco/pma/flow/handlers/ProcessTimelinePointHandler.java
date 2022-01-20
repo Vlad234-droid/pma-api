@@ -8,7 +8,7 @@ import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
-import com.tesco.pma.cycle.api.model.PMElement;
+import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.cycle.api.model.PMReviewElement;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.flow.FlowParameters;
@@ -25,6 +25,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.tesco.pma.cycle.api.model.PMElement.PM_TYPE;
+import static com.tesco.pma.cycle.api.model.PMTimelinePointElement.PM_TIMELINE_POINT_CODE;
+import static com.tesco.pma.cycle.api.model.PMTimelinePointElement.PM_TIMELINE_POINT_DESCRIPTION;
 
 /**
  * Calculates all required timeline point's dates for a fiscal year performance cycle
@@ -52,6 +56,11 @@ public class ProcessTimelinePointHandler extends AbstractUpdateEnumStatusHandler
         createTimelinePoints(context, cycle);
     }
 
+    @Override
+    protected Class<PMCycleStatus> getEnumClass() {
+        return PMCycleStatus.class;
+    }
+
     private void createTimelinePoints(ExecutionContext context, PMCycle cycle) {
         var startDate = context.getVariable(FlowParameters.START_DATE, LocalDate.class);
         var startTime = HandlerUtils.dateToInstant(startDate);
@@ -61,17 +70,16 @@ public class ProcessTimelinePointHandler extends AbstractUpdateEnumStatusHandler
             return;
         }
         var endTime = HandlerUtils.dateToInstant(context.getVariable(FlowParameters.END_DATE, LocalDate.class));
-        var parent = context.getVariable(FlowParameters.MODEL_PARENT_ELEMENT, PMElement.class);
         var timelinePoints = colleagueCycles.stream()
                 .map(cc -> TimelinePoint.builder()
                         .uuid(UUID.randomUUID())
                         .colleagueCycleUuid(cc.getUuid())
-                        .code(parent.getCode())
-                        .description(parent.getDescription())
-                        .type(parent.getType())
+                        .code(context.getVariable(PM_TIMELINE_POINT_CODE))
+                        .description(context.getVariable(PM_TIMELINE_POINT_DESCRIPTION))
+                        .type(PMElementType.getByCode(context.getVariable(PM_TYPE)))
                         .startTime(startTime)
                         .endTime(endTime)
-                        .properties(buildProps(context, parent))
+                        .properties(buildProps(context))
                         .status(calculateStatus(startDate))
                         .build())
                 .collect(Collectors.toList());
@@ -83,7 +91,7 @@ public class ProcessTimelinePointHandler extends AbstractUpdateEnumStatusHandler
         return startDate.isAfter(LocalDate.now()) ? PMTimelinePointStatus.NOT_STARTED : PMTimelinePointStatus.STARTED;
     }
 
-    private MapJson buildProps(ExecutionContext context, PMElement parent) {
+    private MapJson buildProps(ExecutionContext context) {
         var map = new LinkedHashMap<String, String>();
 
         List.of(FlowParameters.START_DATE, FlowParameters.END_DATE, FlowParameters.BEFORE_START_DATE, FlowParameters.BEFORE_END_DATE)
@@ -94,15 +102,22 @@ public class ProcessTimelinePointHandler extends AbstractUpdateEnumStatusHandler
                                 map.put(e.name(), strValue);
                             }
                         }));
-
-        List.of(PMReviewElement.PM_REVIEW_MIN, PMReviewElement.PM_REVIEW_MAX)
-                .forEach(key -> Optional.ofNullable(parent.getProperties().get(key))
-                        .ifPresent(v -> map.put(key, v)));
+        var min = getVariable(context, PMReviewElement.PM_REVIEW_MIN, 1);
+        var max = getVariable(context, PMReviewElement.PM_REVIEW_MAX, min);
+        map.put(PMReviewElement.PM_REVIEW_MIN, min.toString());
+        map.put(PMReviewElement.PM_REVIEW_MAX, max.toString());
         return new MapJson(map);
     }
 
-    @Override
-    protected Class<PMCycleStatus> getEnumClass() {
-        return PMCycleStatus.class;
+    private Integer getVariable(ExecutionContext context, String name, int defaultValue) {
+        String value = context.getNullableVariable(name);
+        if (value != null) {
+            try {
+                return Integer.parseInt(value);
+            } catch (Exception e) {
+                log.trace("The variable {} is not a number: {}", name, value, e);
+            }
+        }
+        return defaultValue;
     }
 }

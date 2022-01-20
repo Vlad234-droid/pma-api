@@ -1,11 +1,15 @@
 package com.tesco.pma.colleague.profile.service;
 
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.profile.parser.model.FieldSet;
 import com.tesco.pma.colleague.profile.parser.model.Value;
 import com.tesco.pma.colleague.profile.parser.model.ValueType;
-import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
+import com.tesco.pma.exception.ErrorCodes;
+import com.tesco.pma.logging.LogFormatter;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -19,18 +23,21 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 @UtilityClass
 public class ColleagueEntityMapper {
 
     List<ColleagueEntity> mapColleagues(List<FieldSet> data, Set<ColleagueEntity.WorkLevel> workLevels,
                                         Set<ColleagueEntity.Country> countries, Set<ColleagueEntity.Department> departments,
-                                        Set<ColleagueEntity.Job> jobs) {
+                                        Set<ColleagueEntity.Job> jobs, Set<String> validationErrors) {
+
         var wlMap = workLevels.stream().collect(Collectors.toMap(ColleagueEntity.WorkLevel::getCode, Function.identity()));
         var countryMap = countries.stream().collect(Collectors.toMap(ColleagueEntity.Country::getCode, Function.identity()));
         var depMap = departments.stream().collect(Collectors.toMap(ColleagueEntity.Department::getId, Function.identity()));
         var jobMap = jobs.stream().collect(Collectors.toMap(ColleagueEntity.Job::getId, Function.identity()));
         return data.stream()
                 .map(FieldSet::getValues)
+                .filter(fs -> !containsErrors(validationErrors, fs, "colleague_uuid"))
                 .map(fs -> {
                     var colleague = new ColleagueEntity();
                     colleague.setUuid(getUuidValueNullSafe(fs, "colleague_uuid"));
@@ -78,7 +85,17 @@ public class ColleagueEntityMapper {
         if (value == null || StringUtils.isEmpty(value.getFormatted())) {
             return null;
         }
-        return UUID.fromString(value.getFormatted());
+        try {
+            return UUID.fromString(value.getFormatted());
+        } catch (IllegalArgumentException ex) {
+            log.warn(LogFormatter.formatMessage(ErrorCodes.METHOD_ARGUMENT_TYPE_MISMATCH, ex.getMessage()), ex);
+            return null;
+        }
+    }
+
+    private static boolean containsErrors(Set<String> errors, Map<String, Value> fs, String columnName) {
+        var value = fs.get(columnName);
+        return value == null || StringUtils.isEmpty(value.getFormatted()) || errors.contains(value.getFormatted());
     }
 
     Set<ColleagueEntity.WorkLevel> mapWLs(List<FieldSet> data) {
@@ -86,6 +103,7 @@ public class ColleagueEntityMapper {
                 .map(FieldSet::getValues)
                 .map(v -> v.get("work_level"))
                 .filter(Objects::nonNull)
+                .filter(v -> ValueType.BLANK != v.getType())
                 .distinct()
                 .map(wl -> {
                     var workLevel = new ColleagueEntity.WorkLevel();
@@ -119,7 +137,13 @@ public class ColleagueEntityMapper {
                     department.setName(getValueNullSafe(c, "department_name"));
                     department.setBusinessType(getValueNullSafe(c, "business_type"));
                     return department;
-                }).collect(Collectors.toSet());
+                })
+                .collect(Collectors.groupingBy(ColleagueEntity.Department::getId))
+                .values()
+                .stream()
+                .filter(list -> list.size() == 1)
+                .map(CollectionUtils::firstElement)
+                .collect(Collectors.toSet());
     }
 
     Set<ColleagueEntity.Job> mapJobs(List<FieldSet> data) {
@@ -131,7 +155,13 @@ public class ColleagueEntityMapper {
                     job.setId(getValueNullSafe(c, "job_id"));
                     job.setName(getValueNullSafe(c, "job_name"));
                     return job;
-                }).collect(Collectors.toSet());
+                })
+                .collect(Collectors.groupingBy(ColleagueEntity.Job::getId))
+                .values()
+                .stream()
+                .filter(list -> list.size() == 1)
+                .map(CollectionUtils::firstElement)
+                .collect(Collectors.toSet());
     }
 
     private LocalDate getISODate(String dateString) {
