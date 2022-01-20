@@ -27,6 +27,9 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-core:${openApiCoreVersion}")
     implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
 
+    implementation("org.apache.poi:poi:${poiVersion}")
+    implementation("org.apache.poi:poi-ooxml:${poiVersion}")
+
     testCompile project(':service').sourceSets.test.output
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
