@@ -3,6 +3,7 @@ package com.tesco.pma.reporting.review.service.rest;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
+import com.tesco.pma.reporting.metadata.ColumnMetadata;
 import com.tesco.pma.reporting.review.service.ReviewReportingService;
 import com.tesco.pma.rest.HttpStatusCodes;
 import io.swagger.v3.oas.annotations.Operation;
@@ -66,18 +67,28 @@ public class ReviewReportingEndpoint {
         var reportData = report.getData();
         var reportMetadata = report.getMetadata();
 
-        XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("Report");
+        var fileName = "ObjectivesReport.xlsx";
+        try (var outputStream = new ByteArrayOutputStream(); var workbook = new XSSFWorkbook()) {
+            XSSFSheet sheet = workbook.createSheet("Report");
 
-        int rowCount = 0;
+            Row header = sheet.createRow(0);
+            buildHeader(reportMetadata, header);
+            buildData(reportData, sheet);
 
-        Row header = sheet.createRow(rowCount);
+            workbook.write(outputStream);
+            HttpHeaders httpHeader = new HttpHeaders();
+            httpHeader.setContentType(new MediaType("application", "force-download"));
+            httpHeader.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
 
-        for (int column = 0; column < reportMetadata.size(); column++) {
-            Cell headerCell = header.createCell(column);
-            headerCell.setCellValue(reportMetadata.get(column).getName());
+            return new ResponseEntity<>(new ByteArrayResource(outputStream.toByteArray()), httpHeader, HttpStatus.CREATED);
+        } catch (Exception e) {
+            log.warn("Resource was not closed correctly: " + fileName, e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
 
+    private void buildData(List<List<Object>> reportData, XSSFSheet sheet) {
+        int rowCount = 0;
         for (List<Object> data : reportData) {
             Row row = sheet.createRow(++rowCount);
             int column = 0;
@@ -91,18 +102,12 @@ public class ReviewReportingEndpoint {
                 }
             }
         }
+    }
 
-        var fileName = "ObjectivesReport.xlsx";
-        try (var outputStream = new ByteArrayOutputStream()) {
-            workbook.write(outputStream);
-            HttpHeaders httpHeader = new HttpHeaders();
-            httpHeader.setContentType(new MediaType("application", "force-download"));
-            httpHeader.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
-
-            return new ResponseEntity<>(new ByteArrayResource(outputStream.toByteArray()), httpHeader, HttpStatus.CREATED);
-        } catch (Exception e) {
-            log.warn("Resource was not closed correctly: " + fileName, e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    private void buildHeader(List<ColumnMetadata> reportMetadata, Row header) {
+        for (int column = 0; column < reportMetadata.size(); column++) {
+            Cell headerCell = header.createCell(column);
+            headerCell.setCellValue(reportMetadata.get(column).getName());
         }
     }
 
