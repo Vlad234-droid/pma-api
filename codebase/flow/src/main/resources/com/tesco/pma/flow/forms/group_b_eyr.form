@@ -7,14 +7,25 @@
       "id": "Field_0hu83pj"
     },
     {
-      "key": "look_back_what_and_how",
-      "label": "What have you contributed this year? Capture your thoughts about both **what** you’ve achieved and **how** you’ve gone about it. What could you have done better?",
+      "key": "look_back_what",
+      "label": "What have you contributed in your job, for example towards your team’s priorities or KPIs?",
       "type": "textfield",
       "id": "Field_17nyw6d",
       "validate": {
         "required": true,
         "maxLength": 500,
         "minLength": 10
+      }
+    },
+    {
+      "label": "How have you gone about your work and what have you done to develop yourself? How have you made everyone feel welcome?",
+      "type": "textfield",
+      "id": "Field_1cv5y35",
+      "key": "look_back_how",
+      "validate": {
+        "minLength": 10,
+        "maxLength": 500,
+        "required": true
       }
     },
     {
@@ -29,12 +40,12 @@
           "value": "Outstanding"
         },
         {
-          "label": "Great",
-          "value": "Great"
-        },
-        {
           "label": "Satisfactory",
           "value": "Satisfactory"
+        },
+        {
+          "label": "Great",
+          "value": "Great"
         },
         {
           "label": "Below expected",
@@ -56,12 +67,12 @@
           "value": "Outstanding"
         },
         {
-          "label": "Great",
-          "value": "Great"
-        },
-        {
           "label": "Satisfactory",
           "value": "Satisfactory"
+        },
+        {
+          "label": "Great",
+          "value": "Great"
         },
         {
           "label": "Below expected",
@@ -87,10 +98,21 @@
       "id": "Field_148wy3b"
     },
     {
-      "key": "look_foeward_what_and_how",
-      "label": "Over the next year, **what** do you need to focus on to make the biggest difference in your job? **How** will you develop yourself to be at your best?",
+      "key": "look_forward_focus",
+      "label": "Based on my feedback, next year I am going to focus my development on:",
       "type": "textfield",
       "id": "Field_15z0fpz",
+      "validate": {
+        "required": true,
+        "minLength": 10,
+        "maxLength": 500
+      }
+    },
+    {
+      "label": "In the year ahead my priorities are going to be:",
+      "type": "textfield",
+      "id": "Field_1d07kub",
+      "key": "look_forward_priorities",
       "validate": {
         "required": true,
         "minLength": 10,
