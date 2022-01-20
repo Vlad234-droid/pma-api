@@ -1,17 +1,16 @@
 package com.tesco.pma.flow.handlers;
 
+import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.cycle.api.PMCycle;
-import com.tesco.pma.cycle.api.PMCycleType;
+import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.flow.FlowParameters;
-import com.tesco.pma.organisation.service.ConfigEntryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.util.stream.Collectors;
 
 @Component
@@ -19,18 +18,15 @@ import java.util.stream.Collectors;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PMColleagueCycleHandler extends AbstractColleagueCycleHandler {
 
-    private final ConfigEntryService configEntryService;
     private final PMColleagueCycleService pmColleagueCycleService;
 
     @Override
     protected void execute(ExecutionContext context) {
-        var cycle = adjustStartDate(context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class));
-        var hiringDate = PMCycleType.HIRING == cycle.getType() ? LocalDate.now() : null;
-        var colleagues = pmColleagueCycleService.findColleagues(cycle.getEntryConfigKey(),
-                hiringDate, true);
-
+        var cycle = context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class);
+        DictionaryFilter<PMCycleStatus> statusFilter = DictionaryFilter.excludeFilter(PMCycleStatus.ACTIVE);
+        var colleagues = pmColleagueCycleService.findColleagues(cycle.getEntryConfigKey(), statusFilter);
         var colleagueCycles = colleagues.stream()
-                .map(c -> mapToColleagueCycle(c.getUuid(), cycle))
+                .map(c -> mapToColleagueCycle(c, cycle))
                 .collect(Collectors.toList());
         pmColleagueCycleService.saveColleagueCycles(colleagueCycles);
     }
