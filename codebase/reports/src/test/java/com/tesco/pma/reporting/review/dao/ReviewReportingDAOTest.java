@@ -2,7 +2,7 @@ package com.tesco.pma.reporting.review.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.dao.AbstractDAOTest;
-import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReport;
+import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewData;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -40,30 +40,32 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
 
     @Test
     void getLinkedObjectivesData() {
-        final var result = instance.getLinkedObjectivesData(YEAR, Arrays.asList(APPROVED, DRAFT));
+        final var result = instance.getObjectiveLinkedReviewReport(YEAR, Arrays.asList(APPROVED, DRAFT));
 
         assertThat(result).isNotNull();
 
-        assertThat(result)
-                .returns(COLLEAGUE_UUID, ObjectiveLinkedReviewReport::getColleagueUUID)
-                .returns("string 2", ObjectiveLinkedReviewReport::getIamId)
-                .returns("first_name", ObjectiveLinkedReviewReport::getFirstName)
-                .returns("last_name", ObjectiveLinkedReviewReport::getLastName)
-                .returns("WL4", ObjectiveLinkedReviewReport::getWorkLevel)
-                .returns("Team lead", ObjectiveLinkedReviewReport::getJobTitle)
-                .returns("first_name last_name", ObjectiveLinkedReviewReport::getLineManager)
-                .returns(1, ObjectiveLinkedReviewReport::getObjectiveNumber)
-                .returns(APPROVED.getCode(), ObjectiveLinkedReviewReport::getStatus)
-                .returns("\"Title init\"", ObjectiveLinkedReviewReport::getObjectiveTitle)
-                .returns("\"Strategic Priority\"", ObjectiveLinkedReviewReport::getStrategicPriority)
-                .returns("\"How achieved objective\"", ObjectiveLinkedReviewReport::getHowAchieved)
-                .returns("\"How overachieved objective\"", ObjectiveLinkedReviewReport::getHowOverAchieved);
+        assertThat(result.getObjectives())
+                .hasSize(2)
+                .element(1)
+                .returns(COLLEAGUE_UUID, ObjectiveLinkedReviewData::getColleagueUUID)
+                .returns("string 2", ObjectiveLinkedReviewData::getIamId)
+                .returns("first_name", ObjectiveLinkedReviewData::getFirstName)
+                .returns("last_name", ObjectiveLinkedReviewData::getLastName)
+                .returns("WL4", ObjectiveLinkedReviewData::getWorkLevel)
+                .returns("Team lead", ObjectiveLinkedReviewData::getJobTitle)
+                .returns("first_name last_name", ObjectiveLinkedReviewData::getLineManager)
+                .returns(1, ObjectiveLinkedReviewData::getObjectiveNumber)
+                .returns(APPROVED.getCode(), ObjectiveLinkedReviewData::getStatus)
+                .returns("\"Title init\"", ObjectiveLinkedReviewData::getObjectiveTitle)
+                .returns("\"Strategic Priority\"", ObjectiveLinkedReviewData::getStrategicPriority)
+                .returns("\"How achieved objective\"", ObjectiveLinkedReviewData::getHowAchieved)
+                .returns("\"How overachieved objective\"", ObjectiveLinkedReviewData::getHowOverAchieved);
     }
 
     @Test
     void getLinkedObjectivesDataNotExist() {
         final var result = instance.getLinkedObjectivesData(YEAR, Arrays.asList(DECLINED));
 
-        assertThat(result).isNull();
+        assertThat(result).isEmpty();
     }
 }

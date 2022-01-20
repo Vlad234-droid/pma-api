@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.IAM_ID;
 import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.COLLEAGUE_UUID;
@@ -24,42 +25,20 @@ import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.STRATEGIC_PRIO
 import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.WORKING_LEVEL;
 
 /**
- * Objectives linked with reviews data
+ * Objectives linked with reviews report with data, metadata
  */
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ObjectiveLinkedReviewReport implements Reportable {
-    String iamId;
-    String colleagueUUID;
-    String firstName;
-    String lastName;
-    String workLevel;
-    String jobTitle;
-    String lineManager;
-    Integer objectiveNumber;
-    String status;
-    String strategicPriority;
-    String objectiveTitle;
-    String howAchieved;
-    String howOverAchieved;
+
+    List<ObjectiveLinkedReviewData> objectives;
 
     @Override
     public List<List<Object>> getReportData() {
-        return List.of(List.of(
-                iamId,
-                colleagueUUID,
-                firstName,
-                lastName,
-                workLevel,
-                jobTitle,
-                lineManager,
-                objectiveNumber,
-                status,
-                strategicPriority,
-                objectiveTitle,
-                howAchieved,
-                howOverAchieved));
+        return objectives.stream()
+                .map(ObjectiveLinkedReviewData::toList)
+                .collect(Collectors.toList());
     }
 
     @Override

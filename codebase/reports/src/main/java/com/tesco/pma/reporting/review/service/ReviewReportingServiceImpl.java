@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.tesco.pma.reporting.exception.ErrorCodes.REVIEW_REPORT_NOT_FOUND;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
  * Service for mapping data management
@@ -31,9 +32,9 @@ public class ReviewReportingServiceImpl implements ReviewReportingService {
 
     @Override
     public Report getLinkedObjectivesData(Integer year, List<PMTimelinePointStatus> statuses) {
-        var res = reviewReportingDAO.getLinkedObjectivesData(year, statuses);
+        var res = reviewReportingDAO.getObjectiveLinkedReviewReport(year, statuses);
 
-        if (res == null) {
+        if (isEmpty(res.getObjectives())) {
             throw notFound(REVIEW_REPORT_NOT_FOUND,
                     Map.of(YEAR_PARAMETER_NAME, year,
                            STATUSES_PARAMETER_NAME, statuses));

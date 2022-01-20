@@ -4,6 +4,7 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.reporting.review.LocalServiceTestConfig;
 import com.tesco.pma.reporting.review.dao.ReviewReportingDAO;
+import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewData;
 import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.reporting.exception.ErrorCodes.REVIEW_REPORT_NOT_FOUND;
@@ -46,16 +48,16 @@ class ReviewReportingServiceImplTest {
     @Test
     void getLinkedObjectivesData() {
         var report = buildObjectiveLinkedReviewReport();
-        when(reviewReportingDAO.getLinkedObjectivesData(any(), any())).thenReturn(report);
+        when(reviewReportingDAO.getObjectiveLinkedReviewReport(any(), any())).thenReturn(report);
 
         final var res = reviewReportingService.getLinkedObjectivesData(YEAR, Arrays.asList(APPROVED));
 
-        assertEquals(report.getReport(), res);
+        assertEquals(report.getReportData(), res.getData());
     }
 
     @Test
     void getLinkedObjectivesDataNotExists() {
-        when(reviewReportingDAO.getLinkedObjectivesData(any(), any())).thenReturn(null);
+        when(reviewReportingDAO.getObjectiveLinkedReviewReport(any(), any())).thenReturn(new ObjectiveLinkedReviewReport());
 
         final var exception = assertThrows(NotFoundException.class,
                 () -> reviewReportingService.getLinkedObjectivesData(YEAR, Arrays.asList(APPROVED)));
@@ -66,20 +68,27 @@ class ReviewReportingServiceImplTest {
 
     private ObjectiveLinkedReviewReport buildObjectiveLinkedReviewReport() {
         var report = new ObjectiveLinkedReviewReport();
-        report.setIamId("UKE12375189");
-        report.setColleagueUUID(COLLEAGUE_UUID);
-        report.setFirstName("Name");
-        report.setLastName("Surname");
-        report.setWorkLevel("WL5");
-        report.setJobTitle("JobTitle");
-        report.setLineManager(LINE_MANAGER_UUID);
-        report.setObjectiveNumber(1);
-        report.setStatus("APPROVED");
-        report.setStrategicPriority("Priority");
-        report.setObjectiveTitle("Title");
-        report.setHowAchieved("HowAchieved");
-        report.setHowOverAchieved("HowOverAchieved");
+        report.setObjectives(List.of(buildObjectiveLinkedReviewData(1), buildObjectiveLinkedReviewData(2)));
 
         return report;
+    }
+
+    private ObjectiveLinkedReviewData buildObjectiveLinkedReviewData(Integer objectiveNumber) {
+        var reportData = new ObjectiveLinkedReviewData();
+        reportData.setIamId("UKE12375189");
+        reportData.setColleagueUUID(COLLEAGUE_UUID);
+        reportData.setFirstName("Name");
+        reportData.setLastName("Surname");
+        reportData.setWorkLevel("WL5");
+        reportData.setJobTitle("JobTitle");
+        reportData.setLineManager(LINE_MANAGER_UUID);
+        reportData.setObjectiveNumber(objectiveNumber);
+        reportData.setStatus(APPROVED.getCode());
+        reportData.setStrategicPriority("Priority");
+        reportData.setObjectiveTitle("Title");
+        reportData.setHowAchieved("HowAchieved");
+        reportData.setHowOverAchieved("HowOverAchieved");
+
+        return reportData;
     }
 }

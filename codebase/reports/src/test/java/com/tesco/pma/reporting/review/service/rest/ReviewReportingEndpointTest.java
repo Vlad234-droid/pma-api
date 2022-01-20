@@ -30,7 +30,9 @@ import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.OBJECTIVE_TITL
 import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.STATUS;
 import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.STRATEGIC_PRIORITY;
 import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.WORKING_LEVEL;
+import static com.tesco.pma.reporting.review.service.rest.ReviewReportingEndpoint.APPLICATION_FORCE_DOWNLOAD_VALUE;
 import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -46,7 +48,6 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
     private static final String COLLEAGUE_UUID_STR = "10000000-0000-0000-0000-000000000000";
     private static final Integer YEAR = 2021;
     private static final String LINKED_OBJECTIVE_REVIEW_REPORT_URL = "/pm-linked-objective-report";
-    private static final String LINKED_OBJECTIVES_REPORT_GET_RESPONSE_JSON_FILE_NAME = "linked_objectives_report_get_ok_response.json";
 
     @MockBean
     private ReviewReportingService service;
@@ -55,9 +56,10 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
     void getLinkedObjectivesData() throws Exception {
         when(service.getLinkedObjectivesData(any(), any())).thenReturn(buildReport());
 
-        var result = performGetWith(admin(), status().isOk(), LINKED_OBJECTIVE_REVIEW_REPORT_URL, buildRequestQuery());
+        var result = performGetWith(admin(), status().isCreated(),
+                APPLICATION_FORCE_DOWNLOAD_VALUE, LINKED_OBJECTIVE_REVIEW_REPORT_URL, buildRequestQuery());
 
-        assertResponseContent(result.getResponse(), LINKED_OBJECTIVES_REPORT_GET_RESPONSE_JSON_FILE_NAME);
+        assertThat(result.getResponse().getContentAsByteArray()).hasSizeGreaterThan(0);
     }
 
     @Test
@@ -74,7 +76,7 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
     void getLinkedObjectivesDataIfNotFound() throws Exception {
         when(service.getLinkedObjectivesData(any(), any())).thenThrow(NotFoundException.class);
 
-        performGetWith(admin(), status().isNotFound(),
+        performGetWith(talentAdmin(), status().isNotFound(),
                 LINKED_OBJECTIVE_REVIEW_REPORT_URL, new RequestQuery());
     }
 

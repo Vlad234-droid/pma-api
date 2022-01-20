@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.ByteArrayResource;
@@ -38,8 +37,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Validated
 public class ReviewReportingEndpoint {
 
+    static final String FILE_NAME = "ObjectivesReport.xlsx";
+    static final MediaType APPLICATION_FORCE_DOWNLOAD_VALUE = new MediaType("application", "force-download");
+
     private static final PMTimelinePointStatus DEFAULT_STATUS = APPROVED;
     private static final Integer DEFAULT_YEAR = 2021;
+    private static final String REPORT_SHEETNAME = "Report";
 
     private final ReviewReportingService reviewReportingService;
 
@@ -56,32 +59,28 @@ public class ReviewReportingEndpoint {
             produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
     public ResponseEntity<Resource> getLinkedObjectivesReport(RequestQuery requestQuery) {
-        var year = getProperty(requestQuery, "year");
-        var statuses = getProperty(requestQuery, "statuses");
+        var yearParam = getProperty(requestQuery, "year");
+        var statusesParam = getProperty(requestQuery, "statuses");
 
-        var report = reviewReportingService.getLinkedObjectivesData(
-                (year != null) ? Integer.parseInt(year.toString()) : DEFAULT_YEAR,
-                getTimelinePointStatuses(statuses));
+        var report = reviewReportingService.getLinkedObjectivesData(getYear(yearParam), getStatuses(statusesParam));
 
         var reportData = report.getData();
         var reportMetadata = report.getMetadata();
 
-        var fileName = "ObjectivesReport.xlsx";
         try (var outputStream = new ByteArrayOutputStream(); var workbook = new XSSFWorkbook()) {
-            var sheet = workbook.createSheet("Report");
+            var sheet = workbook.createSheet(REPORT_SHEETNAME);
 
-            var header = sheet.createRow(0);
-            buildHeader(reportMetadata, header);
+            buildHeader(reportMetadata, sheet);
             buildData(reportData, sheet);
 
             workbook.write(outputStream);
             var httpHeader = new HttpHeaders();
-            httpHeader.setContentType(new MediaType("application", "force-download"));
-            httpHeader.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+            httpHeader.setContentType(APPLICATION_FORCE_DOWNLOAD_VALUE);
+            httpHeader.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + FILE_NAME);
 
             return new ResponseEntity<>(new ByteArrayResource(outputStream.toByteArray()), httpHeader, HttpStatus.CREATED);
         } catch (Exception e) {
-            log.warn("Resource was not closed correctly: " + fileName, e);
+            log.warn("Resource was not closed correctly: " + FILE_NAME, e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -103,18 +102,23 @@ public class ReviewReportingEndpoint {
         }
     }
 
-    private void buildHeader(List<ColumnMetadata> reportMetadata, Row header) {
+    private void buildHeader(List<ColumnMetadata> reportMetadata, XSSFSheet sheet) {
+        var header = sheet.createRow(0);
         for (var column = 0; column < reportMetadata.size(); column++) {
             var headerCell = header.createCell(column);
             headerCell.setCellValue(reportMetadata.get(column).getName());
         }
     }
 
-    private List<PMTimelinePointStatus> getTimelinePointStatuses(Object statuses) {
+    private int getYear(Object yearParam) {
+        return (yearParam != null) ? Integer.parseInt(yearParam.toString()) : DEFAULT_YEAR;
+    }
+
+    private List<PMTimelinePointStatus> getStatuses(Object statusesParam) {
         var timelinePointStatuses = new LinkedList<PMTimelinePointStatus>();
 
-        if (statuses instanceof List) {
-            var inputStatuses = (List<Object>) statuses;
+        if (statusesParam instanceof List) {
+            var inputStatuses = (List<Object>) statusesParam;
             if (inputStatuses.isEmpty()) {
                 timelinePointStatuses.add(DEFAULT_STATUS);
             }
