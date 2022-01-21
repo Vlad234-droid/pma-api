@@ -352,7 +352,7 @@ public class ProfileDAOTest extends AbstractDAOTest {
         dao.updateColleagueManager(UUID.fromString("119e0d2b-1dc2-409f-8198-ecd66e59d47a"),
                 UUID.fromString(managerUUID));
 
-        assertEquals(9, dao.findColleagueSuggestionsByFullName(
+        assertEquals(8, dao.findColleagueSuggestionsByFullName(
                 createRQ(Map.of("first-name_like", "fiRst"))).size());
 
         var colleagues = dao.findColleagueSuggestionsByFullName(
@@ -362,6 +362,7 @@ public class ProfileDAOTest extends AbstractDAOTest {
 
         assertEquals(1, colleagues.size());
         assertEquals(1, dao.findColleagueSuggestionsByFullName(createRQ(Map.of("first-name_like","ohn"))).size());
+        assertEquals(1, dao.findColleagueSuggestionsByFullName(createRQ(Map.of("last-name_like","Smith"))).size());
 
         var colleague = dao.findColleagueSuggestionsByFullName(createRQ(Map.of(
                 "first-name_eq", "John",
