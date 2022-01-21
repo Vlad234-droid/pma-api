@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Getter
-public enum ValueType implements DictionaryItem {
+public enum ValueType implements DictionaryItem<Integer> {
 
     BLANK(1, "Value is blank or empty"),
     ERROR(2, "Formula returns error"),

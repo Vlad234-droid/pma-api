@@ -30,7 +30,7 @@ import static com.tesco.pma.reporting.metadata.ColumnMetadataEnum.WORKING_LEVEL;
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ObjectiveLinkedReviewReport implements Reportable {
+public class ObjectiveLinkedReviewReportProvider implements Reportable {
 
     List<ObjectiveLinkedReviewData> objectives;
 

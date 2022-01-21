@@ -47,7 +47,7 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
 
     private static final String COLLEAGUE_UUID_STR = "10000000-0000-0000-0000-000000000000";
     private static final Integer YEAR = 2021;
-    private static final String LINKED_OBJECTIVE_REVIEW_REPORT_URL = "/pm-linked-objective-report";
+    private static final String LINKED_OBJECTIVE_REVIEW_REPORT_URL = "/linked-objective-report";
 
     @MockBean
     private ReviewReportingService service;

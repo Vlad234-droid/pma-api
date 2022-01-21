@@ -1,7 +1,7 @@
 package com.tesco.pma.reporting.review.dao;
 
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
-import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReport;
+import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReportProvider;
 import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewData;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,8 +16,8 @@ public interface ReviewReportingDAO {
      * @param statuses    - statuses of review
      * @return linked Objectives report data
      */
-    default ObjectiveLinkedReviewReport getObjectiveLinkedReviewReport(Integer year, List<PMTimelinePointStatus> statuses) {
-        var report = new ObjectiveLinkedReviewReport();
+    default ObjectiveLinkedReviewReportProvider getObjectiveLinkedReviewReport(Integer year, List<PMTimelinePointStatus> statuses) {
+        var report = new ObjectiveLinkedReviewReportProvider();
         report.setObjectives(getLinkedObjectivesData(year, statuses));
 
         return report;

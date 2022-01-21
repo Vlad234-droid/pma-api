@@ -55,7 +55,7 @@ public class ReviewReportingEndpoint {
     @Operation(summary = "Get a Linked Objectives Report by its tlPointUuid and status", tags = {"report"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the Report data")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Report data not found", content = @Content)
-    @GetMapping(path = "/pm-linked-objective-report",
+    @GetMapping(path = "/linked-objective-report",
             produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
     public ResponseEntity<Resource> getLinkedObjectivesReport(RequestQuery requestQuery) {

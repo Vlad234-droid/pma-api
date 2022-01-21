@@ -5,7 +5,7 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.reporting.review.LocalServiceTestConfig;
 import com.tesco.pma.reporting.review.dao.ReviewReportingDAO;
 import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewData;
-import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReport;
+import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReportProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -57,7 +57,7 @@ class ReviewReportingServiceImplTest {
 
     @Test
     void getLinkedObjectivesDataNotExists() {
-        when(reviewReportingDAO.getObjectiveLinkedReviewReport(any(), any())).thenReturn(new ObjectiveLinkedReviewReport());
+        when(reviewReportingDAO.getObjectiveLinkedReviewReport(any(), any())).thenReturn(new ObjectiveLinkedReviewReportProvider());
 
         final var exception = assertThrows(NotFoundException.class,
                 () -> reviewReportingService.getLinkedObjectivesData(YEAR, Arrays.asList(APPROVED)));
@@ -66,8 +66,8 @@ class ReviewReportingServiceImplTest {
         assertEquals(REVIEW_REPORT_NOT_FOUND_MESSAGE, exception.getMessage());
     }
 
-    private ObjectiveLinkedReviewReport buildObjectiveLinkedReviewReport() {
-        var report = new ObjectiveLinkedReviewReport();
+    private ObjectiveLinkedReviewReportProvider buildObjectiveLinkedReviewReport() {
+        var report = new ObjectiveLinkedReviewReportProvider();
         report.setObjectives(List.of(buildObjectiveLinkedReviewData(1), buildObjectiveLinkedReviewData(2)));
 
         return report;
