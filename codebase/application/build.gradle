@@ -37,6 +37,7 @@ dependencies {
     implementation project(':flow')
     implementation project(':tip')
     implementation project(':pdp')
+    implementation project(':reports')
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-web")
