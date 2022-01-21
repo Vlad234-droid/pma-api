@@ -1,12 +1,10 @@
 package com.tesco.pma.reporting.metadata;
 
 import com.tesco.pma.api.ValueType;
-import lombok.Getter;
 
 import static com.tesco.pma.api.ValueType.INTEGER;
 import static com.tesco.pma.api.ValueType.STRING;
 
-@Getter
 public enum ColumnMetadataEnum {
     IAM_ID("IamId", "Employee No", STRING, "Employee No"),
     COLLEAGUE_UUID("ColleagueUUID", "Employee UUID", STRING, "Employee UUID"),
@@ -36,5 +34,9 @@ public enum ColumnMetadataEnum {
         columnMetadata.setName(name);
         columnMetadata.setType(type);
         columnMetadata.setDescription(description);
+    }
+
+    public ColumnMetadata getColumnMetadata() {
+        return columnMetadata;
     }
 }

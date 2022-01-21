@@ -74,25 +74,25 @@
         "description": "Objective Status"
       },
       {
-        "id": "StrategicPriority",
+        "id": "Strategic_Priority",
         "name": "Strategic priority",
         "type": "STRING",
         "description": "Link to Strategic priorities"
       },
       {
-        "id": "ObjectiveTitle",
+        "id": "Title",
         "name": "Objective title",
         "type": "STRING",
         "description": "Objective title"
       },
       {
-        "id": "HowAchieved",
+        "id": "How_Achieved",
         "name": "How achieved",
         "type": "STRING",
         "description": "How do I know I've ACHIEVED this objective?"
       },
       {
-        "id": "HowOverAchieved",
+        "id": "How_Over_Achieved",
         "name": "How over-achieved",
         "type": "STRING",
         "description": "How do I know I've OVER-ACHIEVED this objective?"
