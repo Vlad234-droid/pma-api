@@ -9,6 +9,7 @@ import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import com.tesco.pma.validation.ValidationGroup;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -125,7 +126,26 @@ public class FeedbackEndpoint {
     @GetMapping("/feedbacks")
     @Operation(summary = "Get all feedbacks with all items", tags = {"feedback"})
     @PreAuthorize("isColleague()")
-    public RestResponse<List<Feedback>> getAllFeedbacks(RequestQuery requestQuery) {
+    public RestResponse<List<Feedback>> getAllFeedbacks(@Parameter(example = "{\n"
+            + "    \"_sort\": \"read:DESC,updated-time:ASC\",\n"
+            + "    \"read\": \"true\",\n"
+            + "    \"colleague-uuid\": \"10000000-0000-0000-0000-000000000001\",\n"
+            + "    \"target-colleague-uuid_ne\": \"10000000-0000-0000-0000-000000000002\",\n"
+            + "    \"target-id\": \"f48c8772-4661-4373-8151-ea89796bb3e6\",\n"
+            + "    \"status_in\": [\"1\",\"2\"],\n"
+            + "    \"target-type_nin\": [\"1\",\"2\"],\n"
+            + "    \"colleague-first-name_contains\": \"a\",\n"
+            + "    \"colleague-last-name_ncontains\": \"Doe\",\n"
+            + "    \"target-colleague-middle-name_contains\": \"jef\",\n"
+            + "    \"created-time_lt\": \"2021-11-26T14:18:42.615Z\",\n"
+            + "    \"created-time_lte\": \"2021-11-26T14:18:42.615Z\",\n"
+            + "    \"updated-time_gt\": \"2021-11-25T14:36:33.587Z\",\n"
+            + "    \"updated-time_gte\": \"2021-11-25T14:36:33.587Z\",\n"
+            + "    \"target-id_null\": \"true\",\n"
+            + "    \"_start\": \"1\",\n"
+            + "    \"_limit\": \"7\",\n"
+            + "    \"_search\": \"Content\"\n"
+            + "  }") RequestQuery requestQuery) {
         log.debug("REST request to get a feedbacks of Feedbacks");
         return RestResponse.success(feedbackService.findAll(requestQuery));
     }
