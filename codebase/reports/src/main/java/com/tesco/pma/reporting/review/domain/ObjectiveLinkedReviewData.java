@@ -1,5 +1,6 @@
 package com.tesco.pma.reporting.review.domain;
 
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,7 +27,7 @@ public class ObjectiveLinkedReviewData {
     String jobTitle;
     String lineManager;
     Integer objectiveNumber;
-    String status;
+    PMTimelinePointStatus status;
     String strategicPriority;
     String objectiveTitle;
     String howAchieved;

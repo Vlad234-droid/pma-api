@@ -83,7 +83,7 @@ class ReviewReportingServiceImplTest {
         reportData.setJobTitle("JobTitle");
         reportData.setLineManager(LINE_MANAGER_UUID);
         reportData.setObjectiveNumber(objectiveNumber);
-        reportData.setStatus(APPROVED.getCode());
+        reportData.setStatus(APPROVED);
         reportData.setStrategicPriority("Priority");
         reportData.setObjectiveTitle("Title");
         reportData.setHowAchieved("HowAchieved");

@@ -12,7 +12,7 @@
         <result property="jobTitle" column="job_title"/>
         <result property="lineManager" column="line_manager"/>
         <result property="objectiveNumber" column="objective_number"/>
-        <result property="status" column="status"/>
+        <result property="status" column="status" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.cycle.api.PMTimelinePointStatus"/>
         <result property="strategicPriority" column="strategic_priority"/>
         <result property="objectiveTitle" column="objective"/>
         <result property="howAchieved" column="how_achieved"/>
@@ -28,7 +28,7 @@
                j.name as "job_title",
                c2.first_name||' '||c2.last_name as "line_manager",
                pr.number as "objective_number",
-               ptps.code as "status",
+               pr.status_id as "status",
                pr.properties::json->'strategic_priority' as "strategic_priority",
                pr.properties::json->'title' as "objective",
                pr.properties::json->'how_achieved' as "how_achieved",

@@ -55,7 +55,7 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
                 .returns("Team lead", ObjectiveLinkedReviewData::getJobTitle)
                 .returns("first_name last_name", ObjectiveLinkedReviewData::getLineManager)
                 .returns(1, ObjectiveLinkedReviewData::getObjectiveNumber)
-                .returns(APPROVED.getCode(), ObjectiveLinkedReviewData::getStatus)
+                .returns(APPROVED, ObjectiveLinkedReviewData::getStatus)
                 .returns("\"Title init\"", ObjectiveLinkedReviewData::getObjectiveTitle)
                 .returns("\"Strategic Priority\"", ObjectiveLinkedReviewData::getStrategicPriority)
                 .returns("\"How achieved objective\"", ObjectiveLinkedReviewData::getHowAchieved)
