@@ -34,6 +34,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.io.FilenameUtils;
+
 import static com.tesco.pma.exception.ErrorCodes.ERROR_FILE_NOT_FOUND;
 import static com.tesco.pma.rest.RestResponse.success;
 import static com.tesco.pma.util.FileUtils.getFormName;
@@ -152,14 +154,16 @@ public class PDPEndpoint {
 
     private PMForm getPMForm() {
         String formJson;
-        var formName = getFormName(formKey);
+
+        var formName = FilenameUtils.getName(getFormName(formKey));
+        var formPath = FilenameUtils.getFullPathNoEndSeparator(formKey);
         try {
-            formJson = resourceProvider.resourceToString(formKey, formName);
+            formJson = resourceProvider.resourceToString(formPath, formName);
         } catch (IOException e) {
             throw new NotFoundException(ERROR_FILE_NOT_FOUND.name(), "Form was not found", formName, e);
         }
 
-        var uuid = resourceProvider.readFileUuid(formKey, formName);
-        return new PMForm(uuid.toString(), formName, formName, formJson);
+        var uuid = resourceProvider.readFileUuid(formPath, formName);
+        return new PMForm(uuid.toString(), formKey, formKey, formJson);
     }
 }
