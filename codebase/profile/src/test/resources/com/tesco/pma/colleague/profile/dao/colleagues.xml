@@ -70,9 +70,9 @@
                department_id="4"/>
 
     <colleague uuid="b919b9f4-7a25-42e0-805d-e351c4e33ff9"
-               first_name="first_name"
+               first_name="Will"
                middle_name="middle_name"
-               last_name="last_name"
+               last_name="Smith"
                email="test@test"
                primary_entity="Tesco Bank"
                salary_frequency="ANNUAL"
@@ -80,8 +80,7 @@
                iam_id="TPX4"
                job_id="2"
                country_code="GB"
-               work_level="WL3"
-               department_id="3"/>
+               work_level="WL3"/>
 
     <colleague uuid="03121555-7246-4b03-b2ed-718cf81d4d31"
                first_name="first_name"
