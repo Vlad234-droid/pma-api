@@ -1,4 +1,4 @@
-package com.tesco.pma.process.service;
+package com.tesco.pma.reports.rating.service;
 
 public interface RatingService {
 

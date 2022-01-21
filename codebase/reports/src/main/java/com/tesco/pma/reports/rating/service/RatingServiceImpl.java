@@ -1,4 +1,4 @@
-package com.tesco.pma.process.service;
+package com.tesco.pma.reports.rating.service;
 
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.ProcessEngine;

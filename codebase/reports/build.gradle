@@ -1,0 +1,53 @@
+plugins {
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+        mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+    }
+}
+
+dependencies {
+    implementation project(':api')
+    implementation project(':service')
+
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter:${springBootVersion}")
+    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:${springBootMybatisVersion}")
+
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    implementation("org.springdoc:springdoc-openapi-core:${openApiCoreVersion}")
+    implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
+
+    implementation ("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter:${camundaVersion}")
+
+    testCompile project(':service').sourceSets.test.output
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude group: 'junit' // excluding junit 4
+    }
+    testImplementation("org.springframework.security:spring-security-test")
+
+    testImplementation "com.github.database-rider:rider-junit5:${databaseRiderVersion}"
+
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+
+    testRuntimeOnly "org.liquibase:liquibase-core:${liquibaseVersion}"
+    testRuntimeOnly project(':db-pma')
+    testRuntimeOnly project(':security')
+
+    testRuntimeOnly("de.odysseus.juel:juel-api:${juelVersion}")
+    testRuntimeOnly("de.odysseus.juel:juel-impl:${juelVersion}")
+    testRuntimeOnly("de.odysseus.juel:juel-spi:${juelVersion}")
+}
+
+

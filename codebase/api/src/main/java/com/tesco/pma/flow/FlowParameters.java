@@ -9,6 +9,7 @@ public enum FlowParameters {
     REVIEW_TYPE,
     IS_MANAGER,
     SEND,
+    RESULT,
 
     MODEL_PARENT_ELEMENT,
 
