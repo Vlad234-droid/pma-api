@@ -26,7 +26,7 @@ public class RatingEndpoint {
     @GetMapping(value = "/reports/overall-rating")
     public RestResponse<Map<String, String>> overall(@RequestParam("what_rating") String whatRating,
                                                      @RequestParam("how_rating") String howRating) {
-        return RestResponse.success(Map.of("overall-rating", ratingService.getOverallRating(whatRating, howRating)));
+        return RestResponse.success(Map.of("overall_rating", ratingService.getOverallRating(whatRating, howRating)));
     }
 
 }
