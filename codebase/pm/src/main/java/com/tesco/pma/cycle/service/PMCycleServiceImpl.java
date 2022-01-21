@@ -273,7 +273,7 @@ public class PMCycleServiceImpl implements PMCycleService {
             log.error("Performance cycle change status error, cause: ", exc);
         }
         throw pmCycleException(ErrorCodes.PROCESS_EXECUTION_EXCEPTION, Map.of(CYCLE_UUID_PARAMETER_NAME, uuid,//NOPMD
-                PROCESS_NAME_PARAMETER_NAME, processKey));
+                PROCESS_NAME_PARAMETER_NAME, processKey), ex);
     }
 
     //TODO refactor to common solution (include @com.tesco.pma.review.service.ReviewServiceImpl)
@@ -316,8 +316,8 @@ public class PMCycleServiceImpl implements PMCycleService {
         }
     }
 
-    private PMCycleException pmCycleException(ErrorCodeAware errorCode, Map<String, ?> params) {
-        return new PMCycleException(errorCode.getCode(), messageSourceAccessor.getMessage(errorCode.getCode(), params), null, null);
+    private PMCycleException pmCycleException(ErrorCodeAware errorCode, Map<String, ?> params, Throwable cause) {
+        return new PMCycleException(errorCode.getCode(), messageSourceAccessor.getMessage(errorCode.getCode(), params), null, cause);
     }
 
 
@@ -377,7 +377,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         UUID uuid = cycle.getUuid();
 
         if (null == processKey || processKey.isEmpty()) {
-            throw pmCycleException(ErrorCodes.PROCESS_NAME_IS_EMPTY, Map.of(CYCLE_UUID_PARAMETER_NAME, uuid));
+            throw pmCycleException(ErrorCodes.PROCESS_NAME_IS_EMPTY, Map.of(CYCLE_UUID_PARAMETER_NAME, uuid), null);
         }
 
         try {
@@ -426,9 +426,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         try {
             var processUUID = processManagerService.runProcessById(process.getBpmProcessId(), prepareFlowProperties(cycle));
             log.debug("Started process: {}", processUUID);
-
             pmProcessService.updateStatus(process.getId(), STARTED, processStatusFilter);
-            intUpdateStatus(cycleUUID, ACTIVE, null); // todo move status map to BPMN or DMN
         } catch (ProcessExecutionException e) {
             cycleFailed(process.getBpmProcessId(), cycleUUID, e);
         }

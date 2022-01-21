@@ -4,14 +4,15 @@ import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
+import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.flow.FlowParameters;
-import com.tesco.pma.organisation.service.ConfigEntryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -19,12 +20,13 @@ import java.util.stream.Collectors;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PMColleagueCycleHandler extends AbstractColleagueCycleHandler {
 
-    private final ConfigEntryService configEntryService;
     private final PMColleagueCycleService pmColleagueCycleService;
+    private final PMCycleService pmCycleService;
 
     @Override
     protected void execute(ExecutionContext context) {
-        var cycle = adjustStartDate(context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class));
+        UUID cycleUUID = context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class).getUuid();
+        var cycle = adjustStartDate(pmCycleService.get(cycleUUID, false).getCycle());
         var hiringDate = PMCycleType.HIRING == cycle.getType() ? LocalDate.now() : null;
         var colleagues = pmColleagueCycleService.findColleagues(cycle.getEntryConfigKey(),
                 hiringDate, true);

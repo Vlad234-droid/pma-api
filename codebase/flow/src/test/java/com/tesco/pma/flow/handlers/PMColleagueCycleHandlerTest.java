@@ -4,6 +4,7 @@ import com.tesco.pma.bpm.camunda.flow.CamundaHandlerTestConfig;
 import com.tesco.pma.bpm.camunda.flow.FlowTestUtil;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.cycle.api.CompositePMCycleResponse;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.PMCycleType;
@@ -20,6 +21,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -31,6 +33,8 @@ import java.util.UUID;
 @ExtendWith(MockitoExtension.class)
 class PMColleagueCycleHandlerTest {
 
+    public static final UUID UUID = java.util.UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
+    public static final Instant START_TIME = LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC);
     @MockBean
     private ConfigEntryService configEntryService;
     @MockBean
@@ -55,6 +59,10 @@ class PMColleagueCycleHandlerTest {
         colleagues.add(new ColleagueEntity());
         Mockito.when(pmColleagueCycleService.findColleagues(KEY, null, true)).thenReturn(colleagues);
 
+        var pmcr = new CompositePMCycleResponse();
+        pmcr.setCycle(pmCycle);
+        Mockito.when(pmCycleService.get(UUID, false)).thenReturn(pmcr);
+
         //when
         handler.execute(ec);
 
@@ -66,11 +74,11 @@ class PMColleagueCycleHandlerTest {
 
     private PMCycle buildPmCycle() {
         return PMCycle.builder()
-                .uuid(UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6"))
+                .uuid(UUID)
                 .type(PMCycleType.FISCAL)
                 .entryConfigKey(KEY)
                 .status(PMCycleStatus.ACTIVE)
-                .startTime(LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC))
+                .startTime(START_TIME)
                 .build();
     }
 
