@@ -3,9 +3,11 @@ package com.tesco.pma.reporting.review.service.rest;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
+import com.tesco.pma.reporting.Report;
 import com.tesco.pma.reporting.metadata.ColumnMetadata;
 import com.tesco.pma.reporting.review.service.ReviewReportingService;
 import com.tesco.pma.rest.HttpStatusCodes;
+import com.tesco.pma.rest.RestResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,6 +31,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
+import static com.tesco.pma.rest.RestResponse.success;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
@@ -47,10 +50,10 @@ public class ReviewReportingEndpoint {
     private final ReviewReportingService reviewReportingService;
 
     /**
-     * Get call using a Path param and return an Objectives linked with reviews data as JSON.
+     * Get call using a Path param and return an Objectives linked with reviews data as Resource.
      *
      * @param requestQuery -  filter contains start time, end time of colleague cycle and status of timeline point
-     * @return a RestResponse parameterized with Objectives report data
+     * @return a RestResponse parameterized with Objectives report resource
      */
     @Operation(summary = "Get a Linked Objectives Report by its tlPointUuid and status", tags = {"report"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the Report data")
@@ -58,11 +61,8 @@ public class ReviewReportingEndpoint {
     @GetMapping(path = "/linked-objective-report",
             produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
-    public ResponseEntity<Resource> getLinkedObjectivesReport(RequestQuery requestQuery) {
-        var yearParam = getProperty(requestQuery, "year");
-        var statusesParam = getProperty(requestQuery, "statuses");
-
-        var report = reviewReportingService.getLinkedObjectivesData(getYear(yearParam), getStatuses(statusesParam));
+    public ResponseEntity<Resource> getLinkedObjectivesReportFile(RequestQuery requestQuery) {
+        var report = getReport(requestQuery);
 
         var reportData = report.getData();
         var reportMetadata = report.getMetadata();
@@ -83,6 +83,29 @@ public class ReviewReportingEndpoint {
             log.warn("Resource was not closed correctly: " + FILE_NAME, e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**
+     * Get call using a Path param and return an Objectives linked with reviews report data as JSON.
+     *
+     * @param requestQuery -  filter contains start time, end time of colleague cycle and status of timeline point
+     * @return a RestResponse parameterized with Objectives report data
+     */
+    @Operation(summary = "Get a Linked Objectives Report Data by its tlPointUuid and status", tags = {"report"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the Report data")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Report data not found", content = @Content)
+    @GetMapping(path = "/linked-objective-report-data",
+            produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
+    public RestResponse<Report> getLinkedObjectivesReportData(RequestQuery requestQuery) {
+        return success(getReport(requestQuery));
+    }
+
+    private Report getReport(RequestQuery requestQuery) {
+        var yearParam = getProperty(requestQuery, "year");
+        var statusesParam = getProperty(requestQuery, "statuses");
+
+        return reviewReportingService.getLinkedObjectivesData(getYear(yearParam), getStatuses(statusesParam));
     }
 
     private void buildData(List<List<Object>> reportData, XSSFSheet sheet) {
