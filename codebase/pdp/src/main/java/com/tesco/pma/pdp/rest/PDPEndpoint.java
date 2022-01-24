@@ -39,6 +39,8 @@ import org.apache.commons.io.FilenameUtils;
 
 import static com.tesco.pma.exception.ErrorCodes.ERROR_FILE_NOT_FOUND;
 import static com.tesco.pma.rest.RestResponse.success;
+import static com.tesco.pma.util.FileUtils.getFormName;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -155,7 +157,7 @@ public class PDPEndpoint {
     private PMForm getPMForm() {
         File formFile;
 
-        var formName = FilenameUtils.getName(formKey);
+        var formName = FilenameUtils.getName(getFormName(formKey));
         var formPath = FilenameUtils.getFullPathNoEndSeparator(formKey);
         try {
             formFile = resourceProvider.readFile(formPath, formName);
@@ -163,6 +165,6 @@ public class PDPEndpoint {
             throw new NotFoundException(ERROR_FILE_NOT_FOUND.name(), "Form was not found", formName, e);
         }
 
-        return new PMForm(formFile.getUuid().toString(), formKey, formKey, new String(formFile.getFileContent()));
+        return new PMForm(formFile.getUuid().toString(), formKey, formKey, new String(formFile.getFileContent(), UTF_8));
     }
 }
