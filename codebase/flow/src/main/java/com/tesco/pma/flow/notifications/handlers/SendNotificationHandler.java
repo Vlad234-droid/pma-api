@@ -27,8 +27,8 @@ public class SendNotificationHandler extends CamundaAbstractFlowHandler {
 
     @Override
     protected void execute(ExecutionContext context) throws Exception {
-        var colleagueProfile = (ColleagueProfile) context.getEvent().getEventProperty(FlowParameters.COLLEAGUE_PROFILE.name());
-        var templateId = (String) context.getEvent().getEventProperty(FlowParameters.CONTACT_TEMPLATE_ID.name());
+        var colleagueProfile = (ColleagueProfile) context.getVariable(FlowParameters.COLLEAGUE_PROFILE.name());
+        var templateId = (String) context.getVariable(FlowParameters.CONTACT_TEMPLATE_ID.name());
         var placeholders = getPlaceholders(context);
         senders.forEach(sender -> sender.send(colleagueProfile, templateId, placeholders));
     }
