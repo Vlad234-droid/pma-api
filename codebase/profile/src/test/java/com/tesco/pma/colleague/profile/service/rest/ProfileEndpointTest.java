@@ -116,7 +116,7 @@ class ProfileEndpointTest extends AbstractEndpointTest {
 
         // when
         ResultActions resultActions = mvc.perform(post("/colleagues/{colleagueUuid}/attributes", colleagueUuid)
-                .with(admin(colleagueUuid.toString()))
+                .with(colleague(colleagueUuid.toString()))
                 .contentType(APPLICATION_JSON)
                 .content(jsonTester.write(profileAttributes).getJson())
                 .accept(APPLICATION_JSON));
