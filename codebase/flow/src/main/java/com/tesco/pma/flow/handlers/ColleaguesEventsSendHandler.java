@@ -47,7 +47,7 @@ public class ColleaguesEventsSendHandler extends AbstractEventSendHandler {
     protected Event createEvent(UUID colleagueId, ExecutionContext context) {
         var params = getParams(context);
         params.put(FlowParameters.COLLEAGUE_UUID.name(), colleagueId);
-        return EventSupport.of(getEventNameExpression(), params);
+        return new EventSupport(getEventNameExpression(), params);
     }
 
     private Map<String, Serializable> getParams(ExecutionContext context){

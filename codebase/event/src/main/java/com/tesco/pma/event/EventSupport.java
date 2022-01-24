@@ -38,6 +38,14 @@ public class EventSupport implements Event {
         this(eventName, UUID.randomUUID().toString().replace("-", ""));
     }
 
+    public EventSupport(String eventName, Map<String, Serializable> eventParams){
+        this(eventName);
+
+        for (Map.Entry<String, Serializable> entry : eventParams.entrySet()) {
+            this.putProperty(entry.getKey(), entry.getValue());
+        }
+    }
+
     EventSupport(String eventName, String eventId) {
         this(eventName, eventId, new Date());
     }
@@ -173,16 +181,6 @@ public class EventSupport implements Event {
     public EventSupport setEventPriority(EventPriority eventPriority) {
         properties.put(EVENT_PRIORITY.name(), eventPriority == null ? EventPriority.getDefaultPriority() : eventPriority);
         return this;
-    }
-
-    public static EventSupport of(String eventName, Map<String, Serializable> eventParams){
-        var event = new EventSupport(eventName);
-
-        for (Map.Entry<String, Serializable> entry : eventParams.entrySet()) {
-            event.putProperty(entry.getKey(), entry.getValue());
-        }
-
-        return event;
     }
 
     @Override

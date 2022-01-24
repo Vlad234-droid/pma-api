@@ -200,7 +200,7 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
         colleagues.stream()
                 .map(ColleagueEntity::getUuid)
                 .peek(uuid -> eventParams.put("COLLEAGUE_UUID", uuid))
-                .map(uuid -> EventSupport.of(eventName, eventParams))
+                .map(uuid -> new EventSupport(eventName, eventParams))
                 .forEach(e -> eventSender.sendEvent(e, null, true));
 
     }
