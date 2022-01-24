@@ -28,4 +28,5 @@ include 'config'
 include 'flow'
 include 'tip'
 include 'pdp'
+include 'reports'
 

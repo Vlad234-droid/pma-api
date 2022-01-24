@@ -208,4 +208,12 @@
           and cc.cycle_uuid = #{cycleUuid}
         order by tlp.start_time
     </select>
+
+    <select id="getTimelineByUUID" resultMap="tlPointResultMap">
+        SELECT tlp.*, prt.code as review_type_code
+        FROM pm_timeline_point tlp
+        LEFT JOIN pm_review_type prt
+        ON (prt.code = upper(tlp.code))
+        WHERE tlp.uuid = #{timelineUUID}
+    </select>
 </mapper>

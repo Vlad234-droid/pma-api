@@ -5,8 +5,8 @@ import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
 import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
-import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.flow.FlowParameters;
+import com.tesco.pma.review.domain.TimelinePoint;
 import org.camunda.bpm.dmn.engine.DmnDecision;
 import org.camunda.bpm.dmn.engine.DmnEngine;
 import org.camunda.bpm.dmn.engine.DmnEngineConfiguration;
@@ -33,6 +33,7 @@ public class ReviewNotificationsTest {
 
     private DmnEngine dmnEngine;
     private DmnDecision decision;
+    private TimelinePoint timelinePoint;
 
     @BeforeEach
     void init() throws IOException {
@@ -43,6 +44,9 @@ public class ReviewNotificationsTest {
         try(InputStream inputStream = getClass().getClassLoader().getResourceAsStream(PATH)) {
             decision = dmnEngine.parseDecision(DMN_ID, inputStream);
         }
+
+        timelinePoint = new TimelinePoint();
+        timelinePoint.setCode("MYR");
     }
 
     @Test
@@ -53,7 +57,7 @@ public class ReviewNotificationsTest {
 
         var variables = new VariableMapImpl();
         variables.putValue(FlowParameters.EVENT_NAME.name(), NF_PM_REVIEW_SUBMITTED);
-        variables.putValue(FlowParameters.REVIEW_TYPE.name(), PMReviewType.MYR.getCode());
+        variables.putValue(FlowParameters.TIMELINE_POINT.name(), timelinePoint);
         variables.putValue(FlowParameters.IS_MANAGER.name(), true);
         variables.putValue(FlowParameters.PROFILE_ATTRIBUTE_NAME.name(), attrName);
         variables.putValue(FlowParameters.COLLEAGUE_PROFILE.name(), colleagueProfile);
@@ -67,9 +71,12 @@ public class ReviewNotificationsTest {
     void sendTestWhenAttrNotExist() {
         var colleagueProfile = createColleagueProfile(null, WorkLevel.WL1, Map.of("Some attr name", "false"));
 
+        var timelinePoint = new TimelinePoint();
+        timelinePoint.setCode("MYR");
+
         var variables = new VariableMapImpl();
         variables.putValue(FlowParameters.EVENT_NAME.name(), NF_PM_REVIEW_SUBMITTED);
-        variables.putValue(FlowParameters.REVIEW_TYPE.name(), PMReviewType.MYR.getCode());
+        variables.putValue(FlowParameters.TIMELINE_POINT.name(), timelinePoint);
         variables.putValue(FlowParameters.IS_MANAGER.name(), true);
         variables.putValue(FlowParameters.PROFILE_ATTRIBUTE_NAME.name(), "Attr name");
         variables.putValue(FlowParameters.COLLEAGUE_PROFILE.name(), colleagueProfile);
@@ -86,7 +93,7 @@ public class ReviewNotificationsTest {
 
         var variables = new VariableMapImpl();
         variables.putValue(FlowParameters.EVENT_NAME.name(), NF_PM_REVIEW_SUBMITTED);
-        variables.putValue(FlowParameters.REVIEW_TYPE.name(), PMReviewType.MYR.getCode());
+        variables.putValue(FlowParameters.TIMELINE_POINT.name(), timelinePoint);
         variables.putValue(FlowParameters.IS_MANAGER.name(), true);
         variables.putValue(FlowParameters.PROFILE_ATTRIBUTE_NAME.name(), "Attr name");
         variables.putValue(FlowParameters.COLLEAGUE_PROFILE.name(), colleagueProfile);
