@@ -164,13 +164,11 @@
         JOIN country co ON co.code = c.country_code
         LEFT JOIN work_level wl ON wl.code = c.work_level
         LEFT JOIN department d ON d.id = c.department_id
-        <if test="withoutColleagueCycle == true">
+        <if test="statusFilter != null and !statusFilter.isEmpty()">
             LEFT JOIN pm_colleague_cycle pcc on c.uuid = pcc.colleague_uuid
         </if>
         <include refid="whereClauseFindColleagueByKey"/>
-        <if test="withoutColleagueCycle == true">
-            AND pcc.colleague_uuid IS NULL
-        </if>
+        <include refid="addStatusIdCondition" />
     </select>
 
     <sql id="whereClauseFindColleagueByKey">

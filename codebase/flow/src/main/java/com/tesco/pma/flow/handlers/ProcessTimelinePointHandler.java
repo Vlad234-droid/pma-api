@@ -62,13 +62,13 @@ public class ProcessTimelinePointHandler extends AbstractUpdateEnumStatusHandler
     }
 
     private void createTimelinePoints(ExecutionContext context, PMCycle cycle) {
-        var startDate = context.getVariable(FlowParameters.START_DATE, LocalDate.class);
-        var startTime = HandlerUtils.dateToInstant(startDate);
         var colleagueCycles = colleagueCycleService.getByCycleUuidWithoutTimelinePoint(cycle.getUuid(),
-                PMCycleType.HIRING == cycle.getType() ? startTime : null, DictionaryFilter.includeFilter(getOldStatuses()));
+                DictionaryFilter.includeFilter(getOldStatuses()));
         if (CollectionUtils.isEmpty(colleagueCycles)) {
             return;
         }
+        var startDate = context.getVariable(FlowParameters.START_DATE, LocalDate.class);
+        var startTime = HandlerUtils.dateToInstant(startDate);
         var endTime = HandlerUtils.dateToInstant(context.getVariable(FlowParameters.END_DATE, LocalDate.class));
         var timelinePoints = colleagueCycles.stream()
                 .map(cc -> TimelinePoint.builder()

@@ -6,8 +6,6 @@ import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import org.apache.ibatis.annotations.Param;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -71,12 +69,10 @@ public interface PMColleagueCycleDAO {
      *
      * @param cycleUuid - PM cycle identifier
      * @param statusFilter  - filter by status
-     * @param startTime - start time filter
      * @return - collection of PM colleague cycles
      */
     List<PMColleagueCycle> getByCycleUuidWithoutTimelinePoint(@Param("cycleUuid") UUID cycleUuid,
-                                                              @Param("statusFilter") DictionaryFilter<PMCycleStatus> statusFilter,
-                                                              @Param("startTime") Instant startTime);
+                                                              @Param("statusFilter") DictionaryFilter<PMCycleStatus> statusFilter);
 
     /**
      * Changes status for colleague cycle handler
@@ -94,10 +90,7 @@ public interface PMColleagueCycleDAO {
      * Gets list of colleagues by key
      *
      * @param key                   - key
-     * @param hireDate              - colleague hire date
-     * @param withoutColleagueCycle - find without created colleague cycle
      * @return list of colleagues
      */
-    List<ColleagueEntity> findColleagues(@Param("key") String key, @Param("hireDate") LocalDate hireDate,
-                                         @Param("withoutColleagueCycle") boolean withoutColleagueCycle);
+    List<ColleagueEntity> findColleagues(@Param("key") String key, @Param("statusFilter") DictionaryFilter<PMCycleStatus> statusFilter);
 }
