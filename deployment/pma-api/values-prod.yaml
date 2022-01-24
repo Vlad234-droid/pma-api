@@ -77,8 +77,8 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
-TESCO_API_BASE_URL: https://api-ppe.tesco.com
-ONE_LOGIN_BASE_URL: https://loginppe.ourtesco.com
+TESCO_API_BASE_URL: https://api.tesco.com
+ONE_LOGIN_BASE_URL: https://login.ourtesco.com
 PMA_API_URL: http://pma-api-service:8083/v1
 COLLEAGUE_INBOX_API_URL: https://api.ourtesco.com/dex-colleague-my-inbox/my-inbox
 AD_ROLE_ADMIN: GG-UK-TescoGlobal-PMA-PPE-Admin
@@ -93,10 +93,10 @@ IAM_INTEGRATION_SUBJECT: 00000000-0000-0000-0000-000000000000
 # has to be set to CEP ClientId
 CEP_SUBJECT: 00000000-0000-0000-0000-000000000000
 # has to be set, if SECURITY_ENABLED = false
-DEFAULT_USER_UUID: 10000000-1000-1000-1000-100000000001
+#DEFAULT_USER_UUID: 10000000-1000-1000-1000-100000000001
 PMA_DB_USERNAME: pmadbadmin@euw-prod-214-pma-postgresql
 PMA_DB_URL: jdbc:postgresql://10.114.146.8:5432/pma-prod?sslmode=require
 PMA_DB_SCHEMA: pma
 CAMUNDA_DB_SCHEMA: camunda
-SECURITY_ENABLED: false
+SECURITY_ENABLED: true
 env: "prod/**.dec"

@@ -17,6 +17,7 @@ import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -31,6 +32,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.COLLEAGUES_MANAGER_NOT_FOUND;
+import static com.tesco.pma.colleague.profile.exception.ErrorCodes.INVALID_COLLEAGUE_IDENTIFIER;
 
 @Service
 @Validated
@@ -74,9 +76,16 @@ public class ImportColleagueServiceImpl implements ImportColleagueService {
         var jobs = ColleagueEntityMapper.mapJobs(result.getData());
         jobs.forEach(profileDAO::updateJob);
 
-        var colleagues = ColleagueEntityMapper.mapColleagues(result.getData(), workLevels, countries, departments, jobs);
-        var importReport = saveColleagues(colleagues, requestUuid);
 
+        var validationErrors = ColleagueEntityValidator.validateColleague(result.getData());
+        var colleagues = ColleagueEntityMapper.mapColleagues(result.getData(), workLevels, countries, departments, jobs, validationErrors);
+        var importReportBuilder = ImportReport.builder();
+        saveColleagues(colleagues, requestUuid, importReportBuilder);
+        validationErrors.forEach(ve -> importReportBuilder.skipColleague(
+                buildImportError(requestUuid, null, INVALID_COLLEAGUE_IDENTIFIER.getCode(),
+                        Map.of("id", StringUtils.defaultString(ve, "null")))));
+
+        var importReport = importReportBuilder.build();
         updateRequestStatus(request, ImportRequestStatus.PROCESSED);
         saveErrors(importReport.getSkipped());
         sendEvents(importReport);
@@ -115,7 +124,7 @@ public class ImportColleagueServiceImpl implements ImportColleagueService {
     }
 
     private List<ImportError> mapParsingErrors(UUID requestUuid, Collection<ParsingError> errors) {
-        return  errors.stream()
+        return errors.stream()
                 .map(e -> buildImportError(requestUuid, null, e.getCode(), e.getProperties()))
                 .collect(Collectors.toList());
     }
@@ -137,31 +146,39 @@ public class ImportColleagueServiceImpl implements ImportColleagueService {
         return ir;
     }
 
-    private ImportReport saveColleagues(List<ColleagueEntity> colleagues, UUID requestUuid) {
+    private void saveColleagues(List<ColleagueEntity> colleagues, UUID requestUuid, ImportReport.ImportReportBuilder importReportBuilder) {
         var uuidToManager = new HashMap<UUID, UUID>();
         var colleagueUuids = colleagues.stream().map(ColleagueEntity::getUuid).collect(Collectors.toSet());
-        var builder = ImportReport.builder()
-                .requestUuid(requestUuid);
+        importReportBuilder.requestUuid(requestUuid);
         colleagues.forEach(c -> {
             var colleagueUuid = c.getUuid();
             var managerUuid = c.getManagerUuid();
             if (managerUuid == null || profileDAO.isColleagueExists(managerUuid)) {
-                profileDAO.saveColleague(c);
-                builder.importColleague(colleagueUuid);
-            } else if (colleagueUuids.contains(managerUuid)) {
-                c.setManagerUuid(null);
-                uuidToManager.put(colleagueUuid, managerUuid);
-                profileDAO.saveColleague(c);
-                builder.importColleague(colleagueUuid);
+                upsertColleague(c);
+                importReportBuilder.importColleague(colleagueUuid);
             } else {
-                builder.skipColleague(buildImportError(requestUuid, colleagueUuid, COLLEAGUES_MANAGER_NOT_FOUND.getCode(),
-                        Map.of("colleagueUuid", colleagueUuid,
-                                "managerUuid", managerUuid)));
+                c.setManagerUuid(null);
+                upsertColleague(c);
+                importReportBuilder.importColleague(colleagueUuid);
+                if (colleagueUuids.contains(managerUuid)) {
+                    uuidToManager.put(colleagueUuid, managerUuid);
+                } else {
+                    importReportBuilder.warnColleague(buildImportError(requestUuid, colleagueUuid, COLLEAGUES_MANAGER_NOT_FOUND.getCode(),
+                            Map.of("colleagueUuid", colleagueUuid,
+                                    "managerUuid", managerUuid)));
+                }
             }
 
         });
         uuidToManager.forEach(profileDAO::updateColleagueManager);
-        return builder.build();
+    }
+
+    private void upsertColleague(ColleagueEntity entity) {
+        if (profileDAO.isColleagueExists(entity.getUuid())) {
+            profileDAO.updateColleague(entity);
+        } else {
+            profileDAO.saveColleague(entity);
+        }
     }
 
     private ImportError buildImportError(UUID requestUuid, UUID colleagueUuid, String code, Map<String, ?> params) {

@@ -34,7 +34,7 @@
       }
     },
     {
-      "text": "**Based on the conversation with my line manager, I am on track to achieve**",
+      "text": "**Based on the conversation with my line manager, I am on track to achieve:**",
       "type": "text",
       "id": "Field_1ptpxt6"
     },
@@ -45,22 +45,22 @@
           "value": "Outstanding"
         },
         {
-          "label": "Satisfactory",
-          "value": "Satisfactory"
-        },
-        {
           "label": "Great",
           "value": "Great"
+        },
+        {
+          "label": "Satisfactory",
+          "value": "Satisfactory"
         },
         {
           "label": "Below expected",
           "value": "Below expected"
         }
       ],
-      "label": "what",
+      "label": "what rating",
       "type": "select",
       "id": "Field_1lasfcg",
-      "key": "what",
+      "key": "what_rating",
       "validate": {
         "required": true
       }
@@ -72,22 +72,22 @@
           "value": "Outstanding"
         },
         {
-          "label": "Satisfactory",
-          "value": "Satisfactory"
-        },
-        {
           "label": "Great",
           "value": "Great"
+        },
+        {
+          "label": "Satisfactory",
+          "value": "Satisfactory"
         },
         {
           "label": "Below expected",
           "value": "Below expected"
         }
       ],
-      "label": "how",
+      "label": "how rating",
       "type": "select",
       "id": "Field_0s32np0",
-      "key": "how",
+      "key": "how_rating",
       "validate": {
         "required": true
       }

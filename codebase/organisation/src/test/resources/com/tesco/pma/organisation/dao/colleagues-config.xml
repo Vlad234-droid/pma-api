@@ -5,7 +5,6 @@
 
     <country name="India" code="IN"/>
     <country name="GB" code="GB"/>
-    <country name="UK" code="UK"/>
     <country name="IE" code="IE"/>
     <country name="Ukraine" code="UA"/>
 
@@ -34,7 +33,7 @@
                employment_type="ET"
                hire_date="2019-01-02"
                leaving_date="2021-02-01"
-               country_code="UK"
+               country_code="GB"
                work_level="WL2"
                department_id="4"/>
 
@@ -48,7 +47,7 @@
                iam_source="Test"
                iam_id="TPX2"
                job_id="2"
-               country_code="UK"
+               country_code="GB"
                work_level="WL1"
                manager_uuid="c409869b-2acf-45cd-8cc6-e13af2e6f935"
                employment_type="ET"
@@ -66,7 +65,7 @@
                iam_source="Test"
                iam_id="TPX3"
                job_id="2"
-               country_code="UK"
+               country_code="GB"
                work_level="WL1"
                department_id="4"/>
 

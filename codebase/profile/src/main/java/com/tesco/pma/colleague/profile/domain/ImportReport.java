@@ -18,4 +18,7 @@ public class ImportReport {
 
     @Singular("skipColleague")
     Set<ImportError> skipped;
+
+    @Singular("warnColleague")
+    Set<ImportError> warn;
 }

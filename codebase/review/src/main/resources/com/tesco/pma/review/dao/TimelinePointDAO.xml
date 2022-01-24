@@ -64,18 +64,20 @@
         review_count,
         last_updated_time)
         VALUES
-        <foreach collection="tLPoints" item="tLPoint" index="index" separator=",">
-            (#{tLPoint.uuid},
-            #{tLPoint.colleagueCycleUuid},
-            #{tLPoint.code},
+        <foreach collection="tlPoints" item="tlPoint" index="index" separator=",">
+        (
+            #{tlPoint.uuid},
+            #{tlPoint.colleagueCycleUuid},
+            #{tlPoint.code},
             #{tlPoint.description},
             #{tlPoint.type, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.model.PMElementType},
-            #{tLPoint.startTime},
-            #{tLPoint.endTime},
-            #{tLPoint.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-            #{tLPoint.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMTimelinePointStatus}),
+            #{tlPoint.startTime},
+            #{tlPoint.endTime},
+            #{tlPoint.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+            #{tlPoint.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMTimelinePointStatus},
             #{tlPoint.count},
-            #{tlPoint.lastUpdatedTime})
+            #{tlPoint.lastUpdatedTime}
+        )
         </foreach>
     </insert>
 
@@ -157,6 +159,20 @@
             </foreach>
         </if>
     </update>
+    <!-- todo: check 1=1 case usage everywhere -->
+    <update id="intUpdateStatus" flushCache="true">
+        update pm_timeline_point tlp
+        SET status_id=#{newStatus.id},
+        last_updated_time=#{lastUpdatedTime}
+        WHERE 1=1
+        AND tlp.uuid = #{uuid}
+        <if test="prevStatuses != null and !prevStatuses.isEmpty()">
+            and tlp.status_id in
+            <foreach item="prevStatus" collection="prevStatuses" separator="," open="(" close=")">
+                #{prevStatus.id}
+            </foreach>
+        </if>
+    </update>
 
     <delete id="deleteByParams">
         DELETE
@@ -191,5 +207,13 @@
           and cc.colleague_uuid = #{colleagueUuid}
           and cc.cycle_uuid = #{cycleUuid}
         order by tlp.start_time
+    </select>
+
+    <select id="getTimelineByUUID" resultMap="tlPointResultMap">
+        SELECT tlp.*, prt.code as review_type_code
+        FROM pm_timeline_point tlp
+        LEFT JOIN pm_review_type prt
+        ON (prt.code = upper(tlp.code))
+        WHERE tlp.uuid = #{timelineUUID}
     </select>
 </mapper>

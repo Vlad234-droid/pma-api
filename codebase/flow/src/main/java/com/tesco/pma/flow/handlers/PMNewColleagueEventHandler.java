@@ -1,6 +1,8 @@
 package com.tesco.pma.flow.handlers;
 
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
+import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.cycle.service.PMCycleService;
@@ -14,7 +16,6 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Map;
 
 import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
@@ -34,6 +35,7 @@ public class PMNewColleagueEventHandler extends AbstractColleagueCycleHandler {
     private final ConfigEntryService configEntryService;
     private final PMColleagueCycleService pmColleagueCycleService;
     private final PMCycleService pmCycleService;
+    private final ProfileService profileService;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Override
@@ -49,9 +51,9 @@ public class PMNewColleagueEventHandler extends AbstractColleagueCycleHandler {
                         .stream()
                         .filter(c -> configEntryService.isColleagueExistsForCompositeKey(colleagueUuid, c.getEntryConfigKey()))
                         .findFirst()
-                        .ifPresentOrElse(cycleOriginal -> {
-                                    var cycle = adjustStartDate(cycleOriginal);
-                                    pmColleagueCycleService.saveColleagueCycles(List.of(mapToColleagueCycle(colleagueUuid, cycle)));
+                        .ifPresentOrElse(cycle -> {
+                                    ColleagueEntity colleague = profileService.getColleague(colleagueUuid);
+                                    pmColleagueCycleService.create(mapToColleagueCycle(colleague, cycle));
                                     context.setVariable(FlowParameters.PM_CYCLE, cycle);
                                 },
                                 () -> log.warn(LogFormatter.formatMessage(messageSourceAccessor, PM_CYCLE_NOT_FOUND_FOR_COLLEAGUE,

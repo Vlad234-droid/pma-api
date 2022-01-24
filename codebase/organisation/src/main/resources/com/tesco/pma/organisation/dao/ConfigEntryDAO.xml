@@ -117,10 +117,10 @@
         d.name as d_name,
         d.business_type as d_businessType
         FROM colleague c
-        JOIN job j ON j.id = c.job_id
+        LEFT JOIN job j ON j.id = c.job_id
         JOIN country co ON co.code = c.country_code
-        JOIN work_level wl ON wl.code = c.work_level
-        JOIN department d ON d.id = c.department_id
+        LEFT JOIN work_level wl ON wl.code = c.work_level
+        LEFT JOIN department d ON d.id = c.department_id
         <include refid="whereClauseFindColleagueByKey"/>
     </select>
 
@@ -128,10 +128,10 @@
         SELECT CASE
         WHEN (EXISTS(SELECT true
         FROM colleague c
-        JOIN job j ON j.id = c.job_id
+        LEFT JOIN job j ON j.id = c.job_id
         JOIN country co ON co.code = c.country_code
-        JOIN work_level wl ON wl.code = c.work_level
-        JOIN department d ON d.id = c.department_id
+        LEFT JOIN work_level wl ON wl.code = c.work_level
+        LEFT JOIN department d ON d.id = c.department_id
         <include refid="whereClauseFindColleagueByKey"/>
         AND c.uuid = #{colleagueUuid}))
         THEN true
@@ -201,40 +201,40 @@
                     AND wl.code = 'WL2'
                 </when>
                 <when test="key == 'uk/channels'">
-                    co.code = 'UK'
+                    co.code = 'GB'
                     AND d.business_type = 'Store'
                 </when>
                 <when test="key == 'uk/channels/salaried'">
-                    co.code = 'UK'
+                    co.code = 'GB'
                     AND d.business_type = 'Store'
                     AND c.salary_frequency = 'ANNUAL'
                 </when>
                 <when test="key == 'uk/channels/salaried/wl2_on_bonus'">
-                    co.code = 'UK'
+                    co.code = 'GB'
                     AND d.business_type = 'Store'
                     AND c.salary_frequency = 'ANNUAL'
                     AND wl.code = 'WL2'
                 </when>
                 <when test="key == 'uk/channels/salaried/wl2_tl'">
-                    co.code = 'UK'
+                    co.code = 'GB'
                     AND d.business_type = 'Store'
                     AND c.salary_frequency = 'ANNUAL'
                     AND wl.code = 'WL2'
                     AND j.name IN ('Team Leader', 'Shift Leader')
                 </when>
                 <when test="key == 'uk/channels/salaried/wl1'">
-                    co.code = 'UK'
+                    co.code = 'GB'
                     AND d.business_type = 'Store'
                     AND c.salary_frequency = 'ANNUAL'
                     AND wl.code = 'WL1'
                 </when>
                 <when test="key == 'uk/channels/hp'">
-                    co.code = 'UK'
+                    co.code = 'GB'
                     AND d.business_type = 'Store'
                     AND c.salary_frequency = 'HOURLY'
                 </when>
                 <when test="key == 'uk/channels/hp/colleague'">
-                    co.code = 'UK'
+                    co.code = 'GB'
                     AND d.business_type = 'Store'
                     AND c.salary_frequency = 'HOURLY'
                 </when>
