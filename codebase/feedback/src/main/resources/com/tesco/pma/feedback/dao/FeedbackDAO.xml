@@ -63,6 +63,24 @@
 
     <sql id="getSortField">
         <choose>
+            <when test="sort.field == 'colleague-first-name'">
+                c.first_name
+            </when>
+            <when test="sort.field == 'colleague-middle-name'">
+                c.middle_name
+            </when>
+            <when test="sort.field == 'colleague-last-name'">
+                c.last_name
+            </when>
+            <when test="sort.field == 'target-colleague-first-name'">
+                tc.first_name
+            </when>
+            <when test="sort.field == 'target-colleague-middle-name'">
+                tc.middle_name
+            </when>
+            <when test="sort.field == 'target-colleague-last-name'">
+                tc.last_name
+            </when>
             <when test="sort.field == 'target-type'">
                 f.target_type_id
             </when>

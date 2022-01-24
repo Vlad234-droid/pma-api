@@ -127,7 +127,7 @@ public class FeedbackEndpoint {
     @Operation(summary = "Get all feedbacks with all items", tags = {"feedback"})
     @PreAuthorize("isColleague()")
     public RestResponse<List<Feedback>> getAllFeedbacks(@Parameter(example = "{\n"
-            + "    \"_sort\": \"read:DESC,updated-time:ASC\",\n"
+            + "    \"_sort\": \"target-colleague-first-name:DESC,updated-time:ASC\",\n"
             + "    \"read\": \"true\",\n"
             + "    \"colleague-uuid\": \"10000000-0000-0000-0000-000000000001\",\n"
             + "    \"target-colleague-uuid_ne\": \"10000000-0000-0000-0000-000000000002\",\n"
