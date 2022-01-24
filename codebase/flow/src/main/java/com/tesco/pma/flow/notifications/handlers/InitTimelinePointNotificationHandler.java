@@ -1,10 +1,8 @@
 package com.tesco.pma.flow.notifications.handlers;
 
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
-import com.tesco.pma.event.Event;
 import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.review.dao.TimelinePointDAO;
-import com.tesco.pma.review.domain.TimelinePoint;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

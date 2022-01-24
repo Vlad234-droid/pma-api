@@ -78,7 +78,7 @@ class ProcessTimelinePointHandlerTest {
                 .build();
 
         Mockito.doReturn(Collections.emptyList()).when(colleagueCycleService)
-                .getByCycleUuidWithoutTimelinePoint(pmCycle.getUuid(), null,
+                .getByCycleUuidWithoutTimelinePoint(pmCycle.getUuid(),
                         DictionaryFilter.includeFilter(PMCycleStatus.REGISTERED, PMCycleStatus.ACTIVE));
 
         handler.setOldStatusValues(STATUS_VALUES);
@@ -115,7 +115,7 @@ class ProcessTimelinePointHandlerTest {
 
         Mockito.doReturn(Collections.singletonList(colleagueCycle))
                 .when(colleagueCycleService).getByCycleUuidWithoutTimelinePoint(pmCycle.getUuid(),
-                null, DictionaryFilter.includeFilter(PMCycleStatus.REGISTERED, PMCycleStatus.ACTIVE));
+                DictionaryFilter.includeFilter(PMCycleStatus.REGISTERED, PMCycleStatus.ACTIVE));
 
         handler.setOldStatusValues(STATUS_VALUES);
         handler.execute(ec);
