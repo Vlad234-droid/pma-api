@@ -32,6 +32,7 @@ import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
 import static org.assertj.core.api.InstanceOfAssertFactories.type;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class TimelinePointDAOTest extends AbstractDAOTest {
     private static final UUID CYCLE_UUID = UUID.fromString("10000000-1000-0000-0000-000000000000");
@@ -405,5 +406,14 @@ class TimelinePointDAOTest extends AbstractDAOTest {
 
         assertThat(result.get(1))
                 .isEqualTo(myr);
+    }
+
+    @Test
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml"})
+    void getTimelineByUUID() {
+        assertNotNull(instance.getTimelineByUUID(MYR_TIMELINE_POINT_UUID));
     }
 }
