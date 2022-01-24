@@ -4,6 +4,7 @@ import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.bpm.camunda.flow.CamundaHandlerTestConfig;
 import com.tesco.pma.bpm.camunda.flow.FlowTestUtil;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
+import com.tesco.pma.cycle.api.CompositePMCycleResponse;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
