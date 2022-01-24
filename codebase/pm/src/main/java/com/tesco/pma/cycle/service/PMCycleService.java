@@ -97,15 +97,6 @@ public interface PMCycleService {
      */
     List<PMCycle> getByColleague(@NotNull UUID colleagueUuid);
 
-    /**
-     * todo remove after UAT
-     * Stores cycle metadata for the cycle
-     *
-     * @param uuid     process UUID
-     * @param metadata process metadata
-     */
-    void updateJsonMetadata(@NotNull UUID uuid, @NotNull String metadata);
-
     List<PMCycle> getAll(RequestQuery requestQuery, boolean includeMetadata);
 
     /**
@@ -119,10 +110,10 @@ public interface PMCycleService {
     /**
      * Deploy pm cycle
      *
-     * @param cycle performance cycle
+     * @param uuid performance cycle UUID
      * @return deployed runtime process UUID
      */
-    UUID deploy(PMCycle cycle);
+    UUID deploy(UUID uuid);
 
     /**
      * Start performance cycle by UUID

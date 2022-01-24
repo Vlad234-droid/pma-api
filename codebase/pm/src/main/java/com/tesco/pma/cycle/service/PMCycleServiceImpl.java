@@ -115,7 +115,6 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
     @Override
-    @Transactional
     public PMCycle publish(@NotNull PMCycle cycle, UUID loggedUserUUID) {
         log.debug("Request to publish Performance cycle : {}", cycle);
 
@@ -126,7 +125,7 @@ public class PMCycleServiceImpl implements PMCycleService {
             intUpdate(cycle);
         }
 
-        UUID rtProcessUuid = intDeploy(cycle);
+        UUID rtProcessUuid = intDeploy(cycleUuid);
         log.debug("Runtime process uuid: {}", rtProcessUuid);
         intStartCycle(cycle.getUuid());
 
@@ -242,8 +241,8 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     @Override
     @Transactional
-    public UUID deploy(PMCycle cycle) {
-        return intDeploy(cycle);
+    public UUID deploy(UUID uuid) {
+        return intDeploy(uuid);
     }
 
     @Override
@@ -258,11 +257,6 @@ public class PMCycleServiceImpl implements PMCycleService {
     public void completeCycle(UUID cycleUUID) {
         intUpdateStatus(cycleUUID, COMPLETED, null); // todo move status map to BPMN or DMN
         //TODO update rt process
-    }
-
-    @Override
-    public void updateJsonMetadata(UUID uuid, String metadata) {
-        cycleDAO.updateMetadata(uuid, metadata);
     }
 
     private void cycleFailed(String processKey, UUID uuid, Exception ex) {
@@ -372,9 +366,17 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
 
-    private UUID intDeploy(PMCycle cycle) {
+    private UUID intDeploy(UUID uuid) {
+        DictionaryFilter<PMCycleStatus> statusFilter = includeFilter(DRAFT);
+        var cycle = cycleDAO.read(uuid, statusFilter);
+
+        if (null == cycle) {
+            throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID_AND_STATUS,
+                    Map.of(CYCLE_UUID_PARAMETER_NAME, uuid,
+                            CYCLE_STATUSES_PARAMETER_NAME, statusFilter.getItems()));
+        }
+
         String processKey = cycle.getMetadata().getCycle().getCode();
-        UUID uuid = cycle.getUuid();
 
         if (null == processKey || processKey.isEmpty()) {
             throw pmCycleException(ErrorCodes.PROCESS_NAME_IS_EMPTY, Map.of(CYCLE_UUID_PARAMETER_NAME, uuid), null);

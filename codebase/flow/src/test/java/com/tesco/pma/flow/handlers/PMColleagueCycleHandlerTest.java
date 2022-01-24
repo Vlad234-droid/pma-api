@@ -4,11 +4,9 @@ import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.bpm.camunda.flow.CamundaHandlerTestConfig;
 import com.tesco.pma.bpm.camunda.flow.FlowTestUtil;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
-import com.tesco.pma.cycle.api.PMColleagueCycle;
-import com.tesco.pma.cycle.api.PMCycle;
-import com.tesco.pma.cycle.api.PMCycleStatus;
-import com.tesco.pma.cycle.api.PMCycleType;
+import com.tesco.pma.cycle.api.*;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
+import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.flow.FlowParameters;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,8 +31,11 @@ import java.util.UUID;
 class PMColleagueCycleHandlerTest {
 
     private static final String KEY = "l1/group/l2/ho_c/l3/salaried/l4/wl5/#v1";
+    public static final UUID UUID = java.util.UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
     @MockBean
     private PMColleagueCycleService pmColleagueCycleService;
+    @MockBean
+    private PMCycleService pmCycleService;
     @SpyBean
     private PMColleagueCycleHandler handler;
 
@@ -49,6 +50,10 @@ class PMColleagueCycleHandlerTest {
         DictionaryFilter<PMCycleStatus> statusFilter = DictionaryFilter.excludeFilter(PMCycleStatus.ACTIVE);
         Mockito.when(pmColleagueCycleService.findColleagues(KEY, statusFilter)).thenReturn(colleagues);
 
+        var pmcr = new CompositePMCycleResponse();
+        pmcr.setCycle(pmCycle);
+        Mockito.when(pmCycleService.get(UUID, false)).thenReturn(pmcr);
+
         //when
         handler.execute(ec);
 
@@ -60,7 +65,7 @@ class PMColleagueCycleHandlerTest {
     void shouldSaveHiringColleagueCycle() throws Exception {
         //given
         var pmCycle = PMCycle.builder()
-                .uuid(UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6"))
+                .uuid(UUID)
                 .type(PMCycleType.HIRING)
                 .entryConfigKey(KEY)
                 .status(PMCycleStatus.ACTIVE)
@@ -76,6 +81,10 @@ class PMColleagueCycleHandlerTest {
         DictionaryFilter<PMCycleStatus> statusFilter = DictionaryFilter.excludeFilter(PMCycleStatus.ACTIVE);
         Mockito.when(pmColleagueCycleService.findColleagues(KEY, statusFilter)).thenReturn(colleagues);
 
+        var pmcr = new CompositePMCycleResponse();
+        pmcr.setCycle(pmCycle);
+        Mockito.when(pmCycleService.get(UUID, false)).thenReturn(pmcr);
+
         //when
         handler.execute(ec);
 
@@ -87,7 +96,7 @@ class PMColleagueCycleHandlerTest {
 
     private PMCycle buildPmCycle() {
         return PMCycle.builder()
-                .uuid(UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6"))
+                .uuid(UUID)
                 .type(PMCycleType.FISCAL)
                 .entryConfigKey(KEY)
                 .status(PMCycleStatus.ACTIVE)

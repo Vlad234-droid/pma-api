@@ -5,6 +5,7 @@ import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
+import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.flow.FlowParameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -19,10 +20,12 @@ import java.util.stream.Collectors;
 public class PMColleagueCycleHandler extends AbstractColleagueCycleHandler {
 
     private final PMColleagueCycleService pmColleagueCycleService;
+    private final PMCycleService pmCycleService;
 
     @Override
     protected void execute(ExecutionContext context) {
-        var cycle = context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class);
+        var cycleUuid = context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class).getUuid();
+        var cycle = pmCycleService.get(cycleUuid, false).getCycle();
         DictionaryFilter<PMCycleStatus> statusFilter = DictionaryFilter.excludeFilter(PMCycleStatus.ACTIVE);
         var colleagues = pmColleagueCycleService.findColleagues(cycle.getEntryConfigKey(), statusFilter);
         var colleagueCycles = colleagues.stream()

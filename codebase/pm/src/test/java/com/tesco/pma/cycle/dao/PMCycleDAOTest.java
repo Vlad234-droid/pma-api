@@ -121,18 +121,6 @@ class PMCycleDAOTest extends AbstractDAOTest {
         dao.updateStatus(CYCLE_UUID, PMCycleStatus.INACTIVE, null);
     }
 
-
-    @Test
-    @DataSet(BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml")
-    void getMetadata() throws Exception {
-        var metadata = IOUtils.toString(Objects.requireNonNull(getClass()
-                .getResourceAsStream("/com/tesco/pma/cycle/dao/type_1_metadata.json")), StandardCharsets.UTF_8);
-        assertEquals(1, dao.updateMetadata(CYCLE_UUID, metadata));
-        var actual = dao.read(CYCLE_UUID, null);
-        var expectedJson = json.from(metadata);
-        assertThat(expectedJson).isEqualToJson(actual.getJsonMetadata());
-    }
-
     @Test
     @DataSet(BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml")
     void getAll() throws Exception {
