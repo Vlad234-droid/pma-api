@@ -14,8 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -50,9 +48,8 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
     }
 
     @Override
-    public List<PMColleagueCycle> getByCycleUuidWithoutTimelinePoint(UUID cycleUuid, Instant startTime,
-                                                                     DictionaryFilter<PMCycleStatus> statusFilter) {
-        return dao.getByCycleUuidWithoutTimelinePoint(cycleUuid, statusFilter, startTime);
+    public List<PMColleagueCycle> getByCycleUuidWithoutTimelinePoint(UUID cycleUuid, DictionaryFilter<PMCycleStatus> statusFilter) {
+        return dao.getByCycleUuidWithoutTimelinePoint(cycleUuid, statusFilter);
     }
 
     @Override
@@ -104,9 +101,9 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
     }
 
     @Override
-    public List<ColleagueEntity> findColleagues(String compositeKey, LocalDate hireDate, boolean withoutColleagueCycle) {
+    public List<ColleagueEntity> findColleagues(String compositeKey, DictionaryFilter<PMCycleStatus> statusFilter) {
         String searchKey = getSearchKey(compositeKey);
-        return dao.findColleagues(searchKey, hireDate, withoutColleagueCycle);
+        return dao.findColleagues(searchKey, statusFilter);
     }
 
     private String getSearchKey(String compositeKey) {
