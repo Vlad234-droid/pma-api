@@ -101,7 +101,8 @@
       "id": "Field_1ribi5m",
       "validate": {
         "required": true
-      }
+      },
+      "description": "{listener.rating:overall_rating}"
     },
     {
       "values": [
@@ -128,10 +129,11 @@
       "id": "Field_1ribi4m",
       "validate": {
         "required": true
-      }
+      },
+      "description": "{listener.rating:overall_rating}"
     },
     {
-      "text": "**Overall:**",
+      "text": "**Overall:**{request.rating:overall_rating}",
       "type": "text",
       "id": "Field_01qd85o"
     },
