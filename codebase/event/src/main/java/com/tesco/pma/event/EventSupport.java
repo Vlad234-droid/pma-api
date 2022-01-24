@@ -175,6 +175,16 @@ public class EventSupport implements Event {
         return this;
     }
 
+    public static EventSupport of(String eventName, Map<String, Serializable> eventParams){
+        var event = new EventSupport(eventName);
+
+        for (Map.Entry<String, Serializable> entry : eventParams.entrySet()) {
+            event.putProperty(entry.getKey(), entry.getValue());
+        }
+
+        return event;
+    }
+
     @Override
     public String toString() {
         return "EventSupport" + properties;

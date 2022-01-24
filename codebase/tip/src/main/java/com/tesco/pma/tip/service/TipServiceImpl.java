@@ -1,8 +1,10 @@
 package com.tesco.pma.tip.service;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.organisation.service.ConfigEntryService;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.tip.api.Tip;
 import com.tesco.pma.tip.dao.TipDAO;
@@ -30,8 +32,11 @@ public class TipServiceImpl implements TipService {
 
     private static final String PARAM_NAME = "paramName";
     private static final String PARAM_VALUE = "paramValue";
+    private static final String NF_PUBLISHED_EVENT_NAME = "NF_TIPS_RECEIVED";
+    private static final String TIP_UUID_PARAM_NAME = "TIP_UUID";
 
     private final TipDAO tipDAO;
+    private final ConfigEntryService configEntryService;
     private final NamedMessageSourceAccessor namedMessageSourceAccessor;
 
     @Override
@@ -108,6 +113,11 @@ public class TipServiceImpl implements TipService {
         tip.setUpdatedTime(Instant.now());
         tip.setPublished(true);
         tipDAO.publish(tip);
+
+        configEntryService.propagateEventsByCompositeKey(tip.getTargetOrganisation().getCompositeKey(),
+                NF_PUBLISHED_EVENT_NAME,
+                Map.of(TIP_UUID_PARAM_NAME, tip.getUuid()));
+
         return tip;
     }
 

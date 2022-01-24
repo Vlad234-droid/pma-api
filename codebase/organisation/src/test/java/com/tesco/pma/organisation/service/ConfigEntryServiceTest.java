@@ -2,6 +2,7 @@ package com.tesco.pma.organisation.service;
 
 import com.tesco.pma.api.GeneralDictionaryItem;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.ConfigEntryErrorCodes;
@@ -39,9 +40,10 @@ public class ConfigEntryServiceTest {
 
     private final ConfigEntryDAO dao = Mockito.mock(ConfigEntryDAO.class);
     private final ConfigEntryTypeDAO configEntryTypeDAO = Mockito.mock(ConfigEntryTypeDAO.class);
+    private final EventSender eventSender = Mockito.mock(EventSender.class);
     private final NamedMessageSourceAccessor accessor = Mockito.mock(NamedMessageSourceAccessor.class);
 
-    private final ConfigEntryService service = new ConfigEntryServiceImpl(dao, configEntryTypeDAO, accessor);
+    private final ConfigEntryService service = new ConfigEntryServiceImpl(dao, configEntryTypeDAO, eventSender, accessor);
 
     @Test
     void getStructure() {

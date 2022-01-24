@@ -7,6 +7,7 @@ import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.service.colleague.inbox.client.ColleagueInboxApiClient;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringSubstitutor;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +18,11 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class ColleagueInboxNotificationSender implements SendNotificationService {
 
     private static final String TITLE_PLACEHOLDER = "TITLE";
+    private static final String CONTENT_PLACEHOLDER = "CONTENT";
 
     private final ColleagueInboxApiClient colleagueInboxApiClient;
     private final FileService fileService;
@@ -47,8 +50,16 @@ public class ColleagueInboxNotificationSender implements SendNotificationService
     }
 
     private String getContent(String templateId, Map<String, String> placeholders) {
-        var contentFile = fileService.get(UUID.fromString(templateId), true);
-        var content = new String(contentFile.getFileContent());
+        String content;
+
+        try {
+            var contentFile = fileService.get(UUID.fromString(templateId), true);
+            content = new String(contentFile.getFileContent());
+        } catch (Exception ex){
+            log.info("Couldn't get template {} from FileService", templateId);
+            content = placeholders.get(CONTENT_PLACEHOLDER);
+        }
+
         return StringSubstitutor.replace(content, placeholders, "{", "}");
 
     }

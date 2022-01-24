@@ -74,7 +74,6 @@
         <camunda:inputOutput>
           <camunda:outputParameter name="PLACEHOLDERS">
             <camunda:map>
-              <camunda:entry key="COLLEAGUE_UUID">${COLLEAGUE_UUID}</camunda:entry>
               <camunda:entry key="TIMELINE_POINT_CODE">${TIMELINE_POINT.getCode()}</camunda:entry>
               <camunda:entry key="TITLE">Review notification</camunda:entry>
             </camunda:map>
