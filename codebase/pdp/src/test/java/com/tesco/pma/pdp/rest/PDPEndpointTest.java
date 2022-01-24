@@ -5,7 +5,7 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.util.ResourceProvider;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
-
+import com.tesco.pma.file.api.File;
 import com.tesco.pma.pdp.LocalTestConfig;
 import com.tesco.pma.pdp.domain.PDPGoal;
 import com.tesco.pma.pdp.service.PDPService;
@@ -51,6 +51,8 @@ public class PDPEndpointTest extends AbstractEndpointTest {
     private static final LocalDate ACHIEVEMENT_DATE = LocalDate.parse("2021-12-29");
     private static final MapJson PROPERTIES = new MapJson(Map.of("pm_pdp_test_property1", "P1", "pm_pdp_test_property2", "P2"));
     public static final String STANDARD_PDP_FORM = "forms/standard_pdp.form";
+    public static final String PDP_FORM_PATH = "forms";
+    public static final String PDP_FORM_NAME = "standard_pdp.form";
 
     @MockBean
     private PDPService pdpService;
@@ -120,8 +122,7 @@ public class PDPEndpointTest extends AbstractEndpointTest {
     @Test
     void getGoalByColleagueAndNumber() throws Exception {
         when(pdpService.getGoal(COLLEAGUE_UUID, GOAL_NUMBER_1)).thenReturn(buildGoal(GOAL_UUID_1, GOAL_NUMBER_1));
-        when(resourceProvider.resourceToString(STANDARD_PDP_FORM, STANDARD_PDP_FORM)).thenReturn("test json");
-        when(resourceProvider.readFileUuid(STANDARD_PDP_FORM, STANDARD_PDP_FORM)).thenReturn(FILE_UUID);
+        when(resourceProvider.readFile(PDP_FORM_PATH, PDP_FORM_NAME)).thenReturn(file(FILE_UUID, "test json"));
 
         var result = performGet(status().isOk(), PDP_GOALS_URL + "/numbers/{number}", GOAL_NUMBER_1);
 
@@ -138,8 +139,7 @@ public class PDPEndpointTest extends AbstractEndpointTest {
     @Test
     void getGoalByUuid() throws Exception {
         when(pdpService.getGoal(COLLEAGUE_UUID, GOAL_UUID_1)).thenReturn(buildGoal(GOAL_UUID_1, GOAL_NUMBER_1));
-        when(resourceProvider.resourceToString(STANDARD_PDP_FORM, STANDARD_PDP_FORM)).thenReturn("test json");
-        when(resourceProvider.readFileUuid(STANDARD_PDP_FORM, STANDARD_PDP_FORM)).thenReturn(FILE_UUID);
+        when(resourceProvider.readFile(PDP_FORM_PATH, PDP_FORM_NAME)).thenReturn(file(FILE_UUID, "test json"));
 
         var result = performGet(status().isOk(), PDP_GOALS_URL + "/{goalUuid}", GOAL_UUID_1);
 
@@ -156,8 +156,7 @@ public class PDPEndpointTest extends AbstractEndpointTest {
     @Test
     void getGoalsByColleague() throws Exception {
         when(pdpService.getGoals(COLLEAGUE_UUID)).thenReturn(buildGoals(GOAL_UUID_1, GOAL_UUID_2));
-        when(resourceProvider.resourceToString(STANDARD_PDP_FORM, STANDARD_PDP_FORM)).thenReturn("test json");
-        when(resourceProvider.readFileUuid(STANDARD_PDP_FORM, STANDARD_PDP_FORM)).thenReturn(FILE_UUID);
+        when(resourceProvider.readFile(PDP_FORM_PATH, PDP_FORM_NAME)).thenReturn(file(FILE_UUID, "test json"));
 
         var result = performGet(status().isOk(), PDP_GOALS_URL);
 
@@ -171,4 +170,12 @@ public class PDPEndpointTest extends AbstractEndpointTest {
     private List<PDPGoal> buildGoals(UUID uuid1, UUID uuid2) {
         return List.of(buildGoal(uuid1, GOAL_NUMBER_1), buildGoal(uuid2, GOAL_NUMBER_2));
     }
+
+    private File file(UUID fileUuid, String json) {
+        var file = new File();
+        file.setUuid(fileUuid);
+        file.setFileContent(json.getBytes());
+        return file;
+    }
+
 }
