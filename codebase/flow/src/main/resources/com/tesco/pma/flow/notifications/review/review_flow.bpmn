@@ -22,7 +22,7 @@
       <bpmn:messageEventDefinition id="MessageEventDefinition_09nkjae" messageRef="Message_1r3tvid" />
     </bpmn:startEvent>
     <bpmn:serviceTask id="sendNotification" name="Send&#10;notification" camunda:class="com.tesco.pma.flow.notifications.handlers.SendNotificationHandler">
-      <bpmn:incoming>Flow_0yqr2fm</bpmn:incoming>
+      <bpmn:incoming>Flow_1gnf7ni</bpmn:incoming>
       <bpmn:outgoing>Flow_0qy25ym</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="initReviewNotification" name="Init flow variables" camunda:class="com.tesco.pma.flow.notifications.handlers.InitTimelinePointNotificationHandler">
@@ -43,7 +43,7 @@
     </bpmn:businessRuleTask>
     <bpmn:businessRuleTask id="Activity_0t1e50m" name="Map event to template id" camunda:resultVariable="CONTACT_TEMPLATE_ID" camunda:decisionRef="review_event_to_template_id" camunda:mapDecisionResult="singleEntry">
       <bpmn:incoming>Flow_0e1zcje</bpmn:incoming>
-      <bpmn:outgoing>Flow_0yqr2fm</bpmn:outgoing>
+      <bpmn:outgoing>Flow_15vpvez</bpmn:outgoing>
     </bpmn:businessRuleTask>
     <bpmn:exclusiveGateway id="Gateway_1ob0c57" default="Flow_1fg80ft">
       <bpmn:incoming>Flow_0wutloo</bpmn:incoming>
@@ -60,7 +60,6 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${SEND}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1fg80ft" sourceRef="Gateway_1ob0c57" targetRef="Event_0x5q5pd" />
-    <bpmn:sequenceFlow id="Flow_0yqr2fm" sourceRef="Activity_0t1e50m" targetRef="sendNotification" />
     <bpmn:endEvent id="Event_0x66oxq">
       <bpmn:incoming>Flow_0qy25ym</bpmn:incoming>
     </bpmn:endEvent>
@@ -70,6 +69,23 @@
     <bpmn:sequenceFlow id="Flow_1k5x4ta" sourceRef="PM_REVIEW_APPROVED_ID" targetRef="initReviewNotification" />
     <bpmn:sequenceFlow id="Flow_08ohgik" sourceRef="PM_REVIEW_DECLINED_ID" targetRef="initReviewNotification" />
     <bpmn:sequenceFlow id="Flow_007nzmt" sourceRef="PM_REVIEW_BEFORE_END_ID" targetRef="initReviewNotification" />
+    <bpmn:task id="Activity_1gifj7e" name="Placeholders mapping">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="PLACEHOLDERS">
+            <camunda:map>
+              <camunda:entry key="COLLEAGUE_UUID">${COLLEAGUE_UUID}</camunda:entry>
+              <camunda:entry key="TIMELINE_POINT_CODE">${TIMELINE_POINT.getCode()}</camunda:entry>
+              <camunda:entry key="TITLE">Review notification</camunda:entry>
+            </camunda:map>
+          </camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_15vpvez</bpmn:incoming>
+      <bpmn:outgoing>Flow_1gnf7ni</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_15vpvez" sourceRef="Activity_0t1e50m" targetRef="Activity_1gifj7e" />
+    <bpmn:sequenceFlow id="Flow_1gnf7ni" sourceRef="Activity_1gifj7e" targetRef="sendNotification" />
     <bpmn:textAnnotation id="TextAnnotation_097i6gf">
       <bpmn:text>eventName: NF_PM_REVIEW_SUBMITTED
 COLLEAGUE_UUID
@@ -152,14 +168,6 @@ TIMELINE_POINT_UUID</bpmn:text>
         <di:waypoint x="504" y="250" />
         <di:waypoint x="550" y="250" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0qy25ym_di" bpmnElement="Flow_0qy25ym">
-        <di:waypoint x="1380" y="277" />
-        <di:waypoint x="1442" y="277" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0yqr2fm_di" bpmnElement="Flow_0yqr2fm">
-        <di:waypoint x="1220" y="277" />
-        <di:waypoint x="1280" y="277" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1fg80ft_di" bpmnElement="Flow_1fg80ft">
         <di:waypoint x="1010" y="302" />
         <di:waypoint x="1010" y="387" />
@@ -180,6 +188,18 @@ TIMELINE_POINT_UUID</bpmn:text>
       <bpmndi:BPMNEdge id="Flow_1uqsizm_di" bpmnElement="Flow_1uqsizm">
         <di:waypoint x="650" y="277" />
         <di:waypoint x="680" y="277" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qy25ym_di" bpmnElement="Flow_0qy25ym">
+        <di:waypoint x="1530" y="277" />
+        <di:waypoint x="1602" y="277" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15vpvez_di" bpmnElement="Flow_15vpvez">
+        <di:waypoint x="1220" y="277" />
+        <di:waypoint x="1270" y="277" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gnf7ni_di" bpmnElement="Flow_1gnf7ni">
+        <di:waypoint x="1370" y="277" />
+        <di:waypoint x="1430" y="277" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0uo16li_di" bpmnElement="PM_REVIEW_SUBMITTED_ID">
         <dc:Bounds x="422" y="182" width="36" height="36" />
@@ -211,9 +231,6 @@ TIMELINE_POINT_UUID</bpmn:text>
           <dc:Bounds x="425" y="475" width="33" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1nf3c86_di" bpmnElement="sendNotification">
-        <dc:Bounds x="1280" y="237" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1vpo4fj_di" bpmnElement="initReviewNotification">
         <dc:Bounds x="550" y="237" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -232,9 +249,6 @@ TIMELINE_POINT_UUID</bpmn:text>
       <bpmndi:BPMNShape id="Event_0x5q5pd_di" bpmnElement="Event_0x5q5pd">
         <dc:Bounds x="1122" y="369" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0x66oxq_di" bpmnElement="Event_0x66oxq">
-        <dc:Bounds x="1442" y="259" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_097i6gf_di" bpmnElement="TextAnnotation_097i6gf">
         <dc:Bounds x="150" y="165" width="240" height="68" />
       </bpmndi:BPMNShape>
@@ -249,6 +263,15 @@ TIMELINE_POINT_UUID</bpmn:text>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0tbxjln_di" bpmnElement="TextAnnotation_0tbxjln">
         <dc:Bounds x="150" y="415" width="240" height="68" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1gifj7e_di" bpmnElement="Activity_1gifj7e">
+        <dc:Bounds x="1270" y="237" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1nf3c86_di" bpmnElement="sendNotification">
+        <dc:Bounds x="1430" y="237" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0x66oxq_di" bpmnElement="Event_0x66oxq">
+        <dc:Bounds x="1602" y="259" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_1da0a5n_di" bpmnElement="Association_1da0a5n">
         <di:waypoint x="422" y="200" />

@@ -11,6 +11,7 @@ public enum FlowParameters {
     IS_MANAGER,
     SEND,
     RESULT,
+    PLACEHOLDERS,
 
     MODEL_PARENT_ELEMENT,
 

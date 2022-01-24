@@ -19,6 +19,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ColleagueInboxNotificationSender implements SendNotificationService {
 
+    private static final String TITLE_PLACEHOLDER = "TITLE";
+
     private final ColleagueInboxApiClient colleagueInboxApiClient;
     private final FileService fileService;
 
@@ -36,8 +38,8 @@ public class ColleagueInboxNotificationSender implements SendNotificationService
         message.setId(UUID.randomUUID());
         message.setSentAt(OffsetDateTime.now());
         message.setSenderName(colleagueProfile.getColleague().getContact().getEmail());
-        message.setLink("link"); //TODO what is link?
-        message.setTitle(placeholders.get("TITLE"));
+        message.setLink("link"); //TODO remove when not required
+        message.setTitle(placeholders.get(TITLE_PLACEHOLDER));
         message.setContent(getContent(templateId, placeholders));
         message.setCategory(MessageCategory.OWN);
         message.setRecipients(List.of(recipient));
