@@ -45,8 +45,4 @@ public class FsResourceProvider implements ResourceProvider {
         return fileService.get(uuid, true);
     }
 
-    @Override
-    public UUID readFileUuid(String resourcePath, String resourceName) {
-        return this.readFile(resourcePath, resourceName).getUuid();
-    }
 }
