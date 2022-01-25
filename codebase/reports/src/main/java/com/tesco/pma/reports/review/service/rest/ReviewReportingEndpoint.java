@@ -120,6 +120,8 @@ public class ReviewReportingEndpoint {
                     cell.setCellValue((String) field);
                 } else if (field instanceof Integer) {
                     cell.setCellValue((Integer) field);
+                } else if (field instanceof Enum<?>) {
+                    cell.setCellValue(field.toString());
                 }
             }
         }
