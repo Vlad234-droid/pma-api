@@ -227,7 +227,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     @Override
     public CompositePMCycleMetadataResponse getFileMetadata(UUID fileUuid, boolean includeForms) {
 
-        var file = fileService.get(fileUuid, true, null);
+        var file = fileService.get(fileUuid, true);
         var model = Bpmn.readModelFromStream(new ByteArrayInputStream(file.getFileContent()));
         var metadata = new PMProcessModelParser(resourceProvider, messageSourceAccessor).parse(model);
         var compositeMetadata = new CompositePMCycleMetadataResponse();
@@ -317,7 +317,7 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     private String intDeployProcess(UUID templateUuid, String processName) throws Exception {
 
-        var file = fileService.get(templateUuid, true, null);
+        var file = fileService.get(templateUuid, true);
         InputStream fileContent = new ByteArrayInputStream(file.getFileContent());
 
         String resourceName = file.getFileName();

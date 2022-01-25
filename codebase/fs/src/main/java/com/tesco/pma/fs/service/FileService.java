@@ -39,6 +39,18 @@ public interface FileService {
     File get(@NotNull UUID fileUuid, boolean includeFileContent, UUID colleagueUuid);
 
     /**
+     * Read all information about file by its identifier without check of it's owner
+     *
+     * @param fileUuid file identifier
+     * @param includeFileContent identifies if include file content
+     * @return file data
+     * @throws NotFoundException if file by uuid is not found
+     */
+    default File get(@NotNull UUID fileUuid, boolean includeFileContent) {
+        return get(fileUuid, includeFileContent, null);
+    }
+
+    /**
      * Read all information about files applying search, filter and sorting
      *
      * @param requestQuery filter, sorting, offset
