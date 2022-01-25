@@ -66,7 +66,7 @@ import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 @RequiredArgsConstructor
 public class FileEndpoint {
 
-    public static final String INCLUDE_FILE_CONTENT = "includeFileContent";
+    static final boolean INCLUDE_FILE_CONTENT_DEFAULT = false;
 
     private final FileService fileService;
     private final AuditorAware<UUID> auditorAware;
@@ -82,9 +82,8 @@ public class FileEndpoint {
     @GetMapping(path = "/last", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAdmin()")
     public RestResponse<File> get(@RequestParam("path") String path,
-                                  @RequestParam("fileName") String fileName,
-                                  @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false") boolean includeFileContent) {
-        return success(fileService.get(path, fileName, includeFileContent));
+                                  @RequestParam("fileName") String fileName) {
+        return success(fileService.get(path, fileName, INCLUDE_FILE_CONTENT_DEFAULT));
     }
 
     @Operation(
@@ -97,9 +96,8 @@ public class FileEndpoint {
             })
     @GetMapping("{fileUuid}")
     @PreAuthorize("isAdmin()")
-    public RestResponse<File> get(@PathVariable UUID fileUuid,
-                                  @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false") boolean includeFileContent) {
-        return success(fileService.get(fileUuid, includeFileContent));
+    public RestResponse<File> get(@PathVariable UUID fileUuid) {
+        return success(fileService.get(fileUuid, INCLUDE_FILE_CONTENT_DEFAULT));
     }
 
     @Operation(
@@ -112,9 +110,8 @@ public class FileEndpoint {
             })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAdmin()")
-    public RestResponse<List<File>> get(RequestQuery requestQuery,
-                                        @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false") boolean includeFileContent) {
-        return success(fileService.get(requestQuery, includeFileContent, true));
+    public RestResponse<List<File>> get(RequestQuery requestQuery) {
+        return success(fileService.get(requestQuery, INCLUDE_FILE_CONTENT_DEFAULT, true));
     }
 
     @Operation(
@@ -128,10 +125,8 @@ public class FileEndpoint {
     @GetMapping(path = "/versions", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAdmin()")
     public RestResponse<List<File>> getAllVersions(@RequestParam("path") String path,
-                                                   @RequestParam("fileName") String fileName,
-                                                   @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false")
-                                                           boolean includeFileContent) {
-        return success(fileService.getAllVersions(path, fileName, includeFileContent));
+                                                   @RequestParam("fileName") String fileName) {
+        return success(fileService.getAllVersions(path, fileName, INCLUDE_FILE_CONTENT_DEFAULT));
     }
 
     /**
