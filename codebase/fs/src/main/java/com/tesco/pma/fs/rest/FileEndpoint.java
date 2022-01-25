@@ -27,6 +27,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.validation.annotation.Validated;
@@ -84,6 +85,7 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
             })
     @GetMapping(path = "/last", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
     public RestResponse<File> get(@RequestParam("path") String path,
                                   @RequestParam("fileName") String fileName,
                                   @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false") boolean includeFileContent,
@@ -100,6 +102,7 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
             })
     @GetMapping("{fileUuid}")
+    @PreAuthorize("isColleague()")
     public RestResponse<File> get(@PathVariable UUID fileUuid,
                                   @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false") boolean includeFileContent,
                                   @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
@@ -115,6 +118,7 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Files data not found", content = @Content),
             })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
     public RestResponse<List<File>> get(RequestQuery requestQuery,
                                         @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false") boolean includeFileContent,
                                         @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
@@ -130,6 +134,7 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
             })
     @GetMapping(path = "/versions", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
     public RestResponse<List<File>> getAllVersions(@RequestParam("path") String path,
                                                    @RequestParam("fileName") String fileName,
                                                    @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false")
@@ -155,6 +160,7 @@ public class FileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.FORBIDDEN, description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Internal Server Error", content = @Content)
     @GetMapping("/{fileUuid}/download")
+    @PreAuthorize("isColleague()")
     public ResponseEntity<Resource> download(@PathVariable UUID fileUuid,
                                              @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         var file = fileService.get(fileUuid, true, resolveColleagueUuid(authentication));
@@ -185,6 +191,7 @@ public class FileEndpoint {
     )
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isColleague()")
     public RestResponse<List<File>> upload(
             @RequestPart("uploadMetadata")
             @Valid @Parameter(schema = @Schema(type = "string", format = "binary")) FilesUploadMetadata filesUploadMetadata,
