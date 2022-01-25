@@ -21,6 +21,7 @@ public enum ErrorCodes implements ErrorCodeAware {
      */
     PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS,
     COLLEAGUES_MANAGER_NOT_FOUND,
+    INVALID_COLLEAGUE_IDENTIFIER,
     IMPORT_REQUEST_NOT_FOUND,
 
     /**

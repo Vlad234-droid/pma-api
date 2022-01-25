@@ -6,9 +6,11 @@ package com.tesco.pma.flow;
  */
 public enum FlowParameters {
     EVENT_NAME,
+    EVENT_PARAMS,
     REVIEW_TYPE,
     IS_MANAGER,
     SEND,
+    RESULT,
 
     MODEL_PARENT_ELEMENT,
 
@@ -32,7 +34,8 @@ public enum FlowParameters {
     COLLEAGUE_WORK_LEVEL,
 
     PROFILE_ATTRIBUTE_NAME,
-    QUARTER,
+    TIMELINE_POINT,
+    TIMELINE_POINT_UUID,
 
     TIP_UUID,
 

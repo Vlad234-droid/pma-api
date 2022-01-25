@@ -16,9 +16,9 @@
           <text>EVENT_NAME</text>
         </inputExpression>
       </input>
-      <input id="InputClause_0165gnz" label="Review Type" biodi:width="150">
+      <input id="InputClause_0165gnz" label="Timeline point Code" biodi:width="196">
         <inputExpression id="LiteralExpression_168f57s" typeRef="string">
-          <text>REVIEW_TYPE</text>
+          <text>TIMELINE_POINT.getCode()</text>
         </inputExpression>
       </input>
       <input id="Input_1" label="is Manager" biodi:width="150">
@@ -129,6 +129,40 @@ and attr.getValue() = "true",
           <text>true</text>
         </outputEntry>
       </rule>
+      <rule id="DecisionRule_1mtluc9">
+        <inputEntry id="UnaryTests_0dx7xf3">
+          <text>"NF_PM_REVIEW_START"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0a9tf6w">
+          <text>"MYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_13x6ng0">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0di6htq">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_13qimka">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_03amscn">
+        <inputEntry id="UnaryTests_07u03kn">
+          <text>"NF_PM_REVIEW_END"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_15e04kp">
+          <text>"MYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1memprw">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1uh3hwk">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_09mq9kw">
+          <text>true</text>
+        </outputEntry>
+      </rule>
       <rule id="DecisionRule_1ulk2bx">
         <inputEntry id="UnaryTests_0nno71t">
           <text>"NF_PM_REVIEW_BEFORE_START"</text>
@@ -211,6 +245,40 @@ and attr.getValue() = "true",
           <text>true</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0agwr1g">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0u7erel">
+        <inputEntry id="UnaryTests_1x0wiuq">
+          <text>"NF_PM_REVIEW_START"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ov4exd">
+          <text>"EYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_05qx6om">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0zomkek">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0h67okp">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1g5diuz">
+        <inputEntry id="UnaryTests_01bo15c">
+          <text>"NF_PM_REVIEW_END"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1tzcz17">
+          <text>"EYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_187r3p6">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0fst8kx">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_01vt0nd">
           <text>true</text>
         </outputEntry>
       </rule>

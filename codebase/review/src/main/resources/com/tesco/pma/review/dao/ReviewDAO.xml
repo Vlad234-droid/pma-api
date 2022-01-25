@@ -164,9 +164,9 @@
         from r_colleague rc
                  inner join colleague c
                             on (c.uuid = rc.uuid)
-                 inner join job j
+                 left join job j
                             on (j.id = c.job_id)
-                 inner join department d
+                 left join department d
                             on (d.id = c.department_id)
                  left join pm_colleague_cycle cc
                            on (c.uuid = cc.colleague_uuid

@@ -15,9 +15,9 @@
           <text>IS_MANAGER</text>
         </inputExpression>
       </input>
-      <input id="InputClause_1bakg4a" label="Quarter">
+      <input id="InputClause_1bakg4a" label="Timeline Point Code">
         <inputExpression id="LiteralExpression_0k45bdj" typeRef="string">
-          <text>QUARTER</text>
+          <text>TIMELINE_POINT.getCode()</text>
         </inputExpression>
       </input>
       <output id="Output_1" label="Attribute name" name="PROFILE_ATTRIBUTE_NAME" typeRef="string" biodi:width="367" />

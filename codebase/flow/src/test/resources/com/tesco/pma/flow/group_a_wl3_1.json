@@ -1,0 +1,151 @@
+{
+  "uuid": "733569b0-a002-4bd1-9ea9-200cd5e94f38",
+  "entryConfigKey": "l1/group/l2/ho_c/l3/salaried/l4/wl3/#v1",
+  "template": {
+    "fileName": "group_a.bpmn",
+    "uuid": "aa8b3038-762a-4809-ad70-ab8fc6347870",
+    "createdBy": "69b3ca74-cba0-4efb-a537-7499410de9cc"
+  },
+  "name": "Group A performance cycle: obj, myr, eyr",
+  "createdBy": {
+    "uuid": "69b3ca74-cba0-4efb-a537-7499410de9cc",
+    "firstName": "Super",
+    "middleName": null,
+    "lastName": "Admin",
+    "jobName": null,
+    "businessType": null
+  },
+  "status": "REGISTERED",
+  "type": "FISCAL",
+  "startTime": "2021-03-01T00:00:00.000Z",
+  "endTime": "2022-02-28T23:59:59.000Z",
+  "properties": {
+    "mapJson": {}
+  },
+  "metadata": {
+    "cycle": {
+      "id": "group_a",
+      "code": "group_a",
+      "description": "null",
+      "type": "CYCLE",
+      "properties": {
+        "pm_cycle_before_start": "P2W",
+        "pm_cycle_type": "fiscal",
+        "pm_type": "cycle",
+        "pm_cycle_max": "5",
+        "pm_cycle_before_end": "P2W",
+        "pm_cycle_start_time": "2021-04-01"
+      },
+      "cycleType": "FISCAL",
+      "timelinePoints": [
+        {
+          "id": "objective",
+          "code": "My Objectives",
+          "description": "My Objectives",
+          "type": "REVIEW",
+          "properties": {
+            "pm_type": "review",
+            "pm_form_key": "forms/standard_objective.form",
+            "pm_review_max": "3",
+            "pm_review_min": "3",
+            "pm_review_type": "objective",
+            "pm_review_duration": "P2W",
+            "pm_review_before_end": "P1W",
+            "pm_review_start_time": "2021-04-01",
+            "pm_review_before_start": "P2W",
+            "pm_timeline_point_code": "objective"
+          },
+          "reviewType": "OBJECTIVE",
+          "form": {
+            "id": "382a229f-2269-41d2-9f81-9612a11298a7",
+            "code": "forms/standard_objective.form",
+            "description": null,
+            "type": "FORM",
+            "properties": {},
+            "key": "forms/standard_objective.form"
+          }
+        },
+        {
+          "id": "q1",
+          "code": "Q1",
+          "description": "Q1",
+          "type": "TIMELINE_POINT",
+          "properties": {
+            "pm_type": "timeline_point",
+            "pm_timeline_point_code": "q1",
+            "pm_timeline_point_start_time": "2021-07-01",
+            "pm_timeline_point_start_delay": "P3M"
+          }
+        },
+        {
+          "id": "myr",
+          "code": "Mid-year review",
+          "description": "Mid-year review",
+          "type": "REVIEW",
+          "properties": {
+            "pm_type": "review",
+            "pm_form_key": "forms/standard_myr.form",
+            "pm_review_max": "1",
+            "pm_review_min": "1",
+            "pm_review_type": "myr",
+            "pm_review_duration": "P2W",
+            "pm_review_before_end": "P1W",
+            "pm_review_start_time": "2021-10-01",
+            "pm_review_start_delay": "P6M",
+            "pm_review_before_start": "P2W",
+            "pm_timeline_point_code": "myr"
+          },
+          "reviewType": "MYR",
+          "form": {
+            "id": "27dc5d9d-a388-4c2b-8526-daa63c7a912a",
+            "code": "forms/standard_myr.form",
+            "description": null,
+            "type": "FORM",
+            "properties": {},
+            "key": "forms/standard_myr.form"
+          }
+        },
+        {
+          "id": "q3",
+          "code": "Q3",
+          "description": "Q3",
+          "type": "TIMELINE_POINT",
+          "properties": {
+            "pm_type": "timeline_point",
+            "pm_timeline_point_code": "q3",
+            "pm_timeline_point_start_time": "2022-01-01",
+            "pm_timeline_point_start_delay": "P9M"
+          }
+        },
+        {
+          "id": "eyr",
+          "code": "Year-end review",
+          "description": "Year-end review",
+          "type": "REVIEW",
+          "properties": {
+            "pm_type": "review",
+            "pm_form_key": "forms/group_a_eyr.form",
+            "pm_review_max": "1",
+            "pm_review_min": "1",
+            "pm_review_type": "eyr",
+            "pm_review_duration": "P2W",
+            "pm_review_before_end": "P1W",
+            "pm_review_start_time": "2022-03-15",
+            "pm_review_start_delay": "P1Y",
+            "pm_review_before_start": "P2W",
+            "pm_timeline_point_code": "eyr"
+          },
+          "reviewType": "EYR",
+          "form": {
+            "id": "2d26850d-716a-496c-8254-fc45beb39df6",
+            "code": "forms/group_a_eyr.form",
+            "description": null,
+            "type": "FORM",
+            "properties": {},
+            "key": "forms/group_a_eyr.form"
+          }
+        }
+      ]
+    }
+  }
+}

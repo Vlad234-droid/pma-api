@@ -94,7 +94,7 @@ public class ProfileEndpoint {
     @ApiResponse(responseCode = CREATED, description = "Successful operation")
     @PostMapping(path = "{colleagueUuid}/attributes", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("isAdmin()")
+    @PreAuthorize("isColleague()")
     public RestResponse<List<TypedAttribute>> createProfileAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                                                       @RequestBody @Valid List<TypedAttribute> profileAttributes) {
         return RestResponse.success(profileService.createProfileAttributes(colleagueUuid, profileAttributes));

@@ -28,6 +28,8 @@ public class PMTimelinePointElement extends PMElement {
 
     public static final String PM_TIMELINE_POINT = "timeline_point";
     public static final String PM_TIMELINE_POINT_PREFIX = PM_PREFIX + PM_TIMELINE_POINT + "_";
+    public static final String PM_TIMELINE_POINT_CODE = PM_TIMELINE_POINT_PREFIX + "code";
+    public static final String PM_TIMELINE_POINT_DESCRIPTION = PM_TIMELINE_POINT_PREFIX + "description";
     public static final String PM_TIMELINE_POINT_START_TIME = PM_TIMELINE_POINT_PREFIX + "start_time";
     public static final String PM_TIMELINE_POINT_START_DELAY = PM_TIMELINE_POINT_PREFIX + "start_delay";
 

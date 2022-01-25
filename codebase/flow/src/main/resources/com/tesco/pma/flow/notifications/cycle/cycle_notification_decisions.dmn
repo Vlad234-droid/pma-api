@@ -21,9 +21,9 @@
           <text>IS_MANAGER</text>
         </inputExpression>
       </input>
-      <input id="InputClause_0h6dw4f" label="Quarter">
+      <input id="InputClause_0h6dw4f" label="Timeline Point Code">
         <inputExpression id="LiteralExpression_1a9lhar" typeRef="string">
-          <text>QUARTER</text>
+          <text>TIMELINE_POINT.getCode()</text>
         </inputExpression>
       </input>
       <input id="InputClause_0u1chj8" label="Notification attribute value">

@@ -58,17 +58,20 @@
         </if>
     </select>
 
+    <sql id="addStatusIdCondition">
+        <if test="statusFilter != null and !statusFilter.isEmpty()">
+            AND STATUS_ID <if test="!statusFilter.isInclude()">NOT</if> IN
+            <foreach collection="statusFilter.getItems()" item="status" index="i" open="(" separator="," close=")">
+                #{status.id}
+            </foreach>
+        </if>
+    </sql>
+
     <select id="getByCycleUuidWithoutTimelinePoint" resultMap="colleagueCycleResultMap">
         SELECT cc.uuid, cc.colleague_uuid, cc.cycle_uuid, cc.status_id, cc.start_time, cc.end_time, cc.properties
         FROM pm_colleague_cycle cc
         WHERE cc.cycle_uuid = #{cycleUuid}
-        <if test="status != null">
-            AND status_id =
-            #{status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus}
-        </if>
-        <if test="startTime != null">
-            AND start_time = #{startTime}
-        </if>
+        <include refid="addStatusIdCondition" />
         AND NOT EXISTS(SELECT uuid
         FROM pm_timeline_point tp
         WHERE tp.colleague_cycle_uuid = cc.uuid)
@@ -108,6 +111,9 @@
                 #{cc.startTime},
                 #{cc.endTime},
                 #{cc.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler})
+        ON CONFLICT(colleague_uuid, cycle_uuid, status_id)
+        WHERE status_id = 1
+        DO NOTHING
     </insert>
 
     <insert id="update" flushCache="true">
@@ -154,20 +160,15 @@
         d.name as d_name,
         d.business_type as d_businessType
         FROM colleague c
-        JOIN job j ON j.id = c.job_id
+        LEFT JOIN job j ON j.id = c.job_id
         JOIN country co ON co.code = c.country_code
-        JOIN work_level wl ON wl.code = c.work_level
-        JOIN department d ON d.id = c.department_id
-        <if test="withoutColleagueCycle == true">
+        LEFT JOIN work_level wl ON wl.code = c.work_level
+        LEFT JOIN department d ON d.id = c.department_id
+        <if test="statusFilter != null and !statusFilter.isEmpty()">
             LEFT JOIN pm_colleague_cycle pcc on c.uuid = pcc.colleague_uuid
         </if>
         <include refid="whereClauseFindColleagueByKey"/>
-        <if test="withoutColleagueCycle == true">
-            AND pcc.colleague_uuid IS NULL
-        </if>
-        <if test="hireDate != null">
-            AND c.hire_date = #{hireDate}
-        </if>
+        <include refid="addStatusIdCondition" />
     </select>
 
     <sql id="whereClauseFindColleagueByKey">
@@ -232,40 +233,40 @@
                     AND wl.code = 'WL2'
                 </when>
                 <when test="key == 'uk/channels'">
-                    co.code = 'UK'
+                    co.code = 'GB'
                     AND d.business_type = 'Store'
                 </when>
                 <when test="key == 'uk/channels/salaried'">
-                    co.code = 'UK'
+                    co.code = 'GB'
                     AND d.business_type = 'Store'
                     AND c.salary_frequency = 'ANNUAL'
                 </when>
                 <when test="key == 'uk/channels/salaried/wl2_on_bonus'">
-                    co.code = 'UK'
+                    co.code = 'GB'
                     AND d.business_type = 'Store'
                     AND c.salary_frequency = 'ANNUAL'
                     AND wl.code = 'WL2'
                 </when>
                 <when test="key == 'uk/channels/salaried/wl2_tl'">
-                    co.code = 'UK'
+                    co.code = 'GB'
                     AND d.business_type = 'Store'
                     AND c.salary_frequency = 'ANNUAL'
                     AND wl.code = 'WL2'
                     AND j.name IN ('Team Leader', 'Shift Leader')
                 </when>
                 <when test="key == 'uk/channels/salaried/wl1'">
-                    co.code = 'UK'
+                    co.code = 'GB'
                     AND d.business_type = 'Store'
                     AND c.salary_frequency = 'ANNUAL'
                     AND wl.code = 'WL1'
                 </when>
                 <when test="key == 'uk/channels/hp'">
-                    co.code = 'UK'
+                    co.code = 'GB'
                     AND d.business_type = 'Store'
                     AND c.salary_frequency = 'HOURLY'
                 </when>
                 <when test="key == 'uk/channels/hp/colleague'">
-                    co.code = 'UK'
+                    co.code = 'GB'
                     AND d.business_type = 'Store'
                     AND c.salary_frequency = 'HOURLY'
                 </when>
