@@ -144,7 +144,7 @@ public class FeedbackEndpoint {
             + "    \"target-id_null\": \"true\",\n"
             + "    \"_start\": \"1\",\n"
             + "    \"_limit\": \"7\",\n"
-            + "    \"_search\": \"Content\"\n"
+            + "    \"_search\": \"first or middle or last target colleague name\"\n"
             + "  }") RequestQuery requestQuery) {
         log.debug("REST request to get a feedbacks of Feedbacks");
         return RestResponse.success(feedbackService.findAll(requestQuery));
