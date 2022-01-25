@@ -2,6 +2,8 @@ package com.tesco.pma.feedback.service;
 
 import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.event.EventSupport;
+import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.feedback.api.Feedback;
@@ -33,6 +35,11 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     private static final String PARAM_NAME = "paramName";
     private static final String PARAM_VALUE = "paramValue";
+    private static final String COLLEAGUE_UUID_PARAM_NAME = "COLLEAGUE_UUID";
+    private static final String SOURCE_COLLEAGUE_UUID_PARAM_NAME = "SOURCE_COLLEAGUE_UUID";
+    private static final String NF_FEEDBACK_GIVEN = "NF_FEEDBACK_GIVEN";
+    private static final String NF_RESPOND_TO_FEEDBACK_REQUESTS = "NF_FEEDBACK_REQUESTS_RESPONDED";
+    private static final String NF_REQUEST_FEEDBACK = "NF_FEEDBACK_REQUESTED";
     private static final Map<FeedbackStatus, DictionaryFilter<FeedbackStatus>> UPDATE_STATUS_RULE_MAP;
 
     static {
@@ -47,6 +54,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     private final FeedbackDAO feedbackDAO;
+    private final EventSender eventSender;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Override
@@ -58,6 +66,7 @@ public class FeedbackServiceImpl implements FeedbackService {
             feedback.setCreatedTime(Instant.now());
             feedback.setUpdatedTime(Instant.now());
             feedbackDAO.insert(feedback);
+
             Set<FeedbackItem> feedbackItems = feedback.getFeedbackItems()
                     .stream()
                     .map(feedbackItem -> {
@@ -66,11 +75,20 @@ public class FeedbackServiceImpl implements FeedbackService {
                     })
                     .map(this::save)
                     .collect(Collectors.toSet());
+
             feedback.setFeedbackItems(feedbackItems);
         } catch (DataIntegrityViolationException ex) {
             throw new DatabaseConstraintViolationException(
                     com.tesco.pma.exception.ErrorCodes.CONSTRAINT_VIOLATION.getCode(), ex.getLocalizedMessage(), null, ex);
         }
+
+        var event = new EventSupport(NF_FEEDBACK_GIVEN, Map.of(
+                COLLEAGUE_UUID_PARAM_NAME, feedback.getTargetColleagueUuid(),
+                SOURCE_COLLEAGUE_UUID_PARAM_NAME, feedback.getColleagueUuid()
+        ));
+
+        eventSender.sendEvent(event, null, true);
+
         return feedback;
     }
 

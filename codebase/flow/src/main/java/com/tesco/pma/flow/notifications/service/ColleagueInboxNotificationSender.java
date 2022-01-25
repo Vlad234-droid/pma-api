@@ -29,7 +29,12 @@ public class ColleagueInboxNotificationSender implements SendNotificationService
 
     @Override
     public void send(ColleagueProfile colleagueProfile, String templateId, Map<String, String> placeholders) {
-        colleagueInboxApiClient.sendNotification(getMessage(colleagueProfile, templateId, placeholders));
+        var message = getMessage(colleagueProfile, templateId, placeholders);
+
+        log.info("Sending message to Colleague Inbox for {}, Title {}, Content {}",
+                colleagueProfile.getColleague().getColleagueUUID(), message.getTitle(), message.getContent());
+
+        colleagueInboxApiClient.sendNotification(message);
     }
 
     private CreateMessageRequestDto getMessage(ColleagueProfile colleagueProfile, String templateId,

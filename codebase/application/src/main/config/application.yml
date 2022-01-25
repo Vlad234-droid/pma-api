@@ -244,6 +244,10 @@ tesco:
       CEP_COLLEAGUE_LEFT: com.tesco.pma.bpm.action.RunFlowByEventAction
       # TIPS events
       NF_TIPS_RECEIVED: com.tesco.pma.bpm.action.RunFlowByEventAction
+      # Feedbacks events
+      NF_FEEDBACK_GIVEN: com.tesco.pma.bpm.action.RunFlowByEventAction
+      NF_FEEDBACK_REQUESTS_RESPONDED: com.tesco.pma.bpm.action.RunFlowByEventAction
+      NF_FEEDBACK_REQUESTED: com.tesco.pma.bpm.action.RunFlowByEventAction
     user-management:
       page:
         size: 100
