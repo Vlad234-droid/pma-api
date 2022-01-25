@@ -38,13 +38,11 @@
 
     <!--todo check exclude null case and replace with
         <if test="statusFilter != null and !statusFilter.isEmpty()">
-            <if test="statusFilter != null and !statusFilter.isEmpty()">
-                AND <if test="!statusFilter.isInclude()">NOT</if> (COALESCE(STATUS_ID, -999) = ANY(ARRAY
-                <foreach collection="statusFilter.getItems()" item="s" index="i" open="[" separator="," close="]">
-                    #{s.id}
-                </foreach>
-                ))
-            </if>
+            AND <if test="!statusFilter.isInclude()">NOT</if> (COALESCE(STATUS_ID, -999) = ANY(ARRAY
+            <foreach collection="statusFilter.getItems()" item="s" index="i" open="[" separator="," close="]">
+                #{s.id}
+            </foreach>
+            ))
         </if>
      -->
     <sql id="addStatusIdCondition">
