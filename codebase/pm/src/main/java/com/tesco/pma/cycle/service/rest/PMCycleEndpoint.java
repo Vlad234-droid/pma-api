@@ -79,7 +79,7 @@ public class PMCycleEndpoint {
             description = "Performance cycle published",
             tags = {"performance-cycle"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "SPerformance cycle published")
-    @PutMapping(value = "/pm-cycles/publish", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/pm-cycles/publish", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
     public RestResponse<PMCycle> publish(@RequestBody PMCycle cycle) {
@@ -191,20 +191,6 @@ public class PMCycleEndpoint {
         return success(service.getCurrentMetadataByColleague(colleagueUuid, includeForms));
     }
 
-    // todo remove after UAT metadata should be stored with cycle together
-    @Operation(summary = "[UAT] Store cycle metadata",
-            tags = {"performance-cycle"})
-    @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Store cycle metadata")
-    @PutMapping(path = "/pm-cycles/{uuid}/metadata", produces = MimeTypeUtils.APPLICATION_JSON_VALUE,
-            consumes = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("isAdmin()")
-    public RestResponse<?> updateJsonMetadata(@PathVariable("uuid") UUID uuid,
-                                              @RequestBody String metadata) {
-        service.updateJsonMetadata(uuid, metadata);
-        return RestResponse.success();
-    }
-
     @Operation(summary = "Get performance cycle metadata by file UUID",
             tags = {"performance-cycle"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found performance cycle metadata by file UUID")
@@ -222,19 +208,18 @@ public class PMCycleEndpoint {
     /**
      * PUT call to deploy Performance Cycle.
      *
-     * @param cycle a PMCycle
-     * @return id of deployed process definition
+     * @param uuid cycle uuid
+     * @return id of deployed runtime process
      */
     @Operation(summary = "Deploy performance cycle",
             description = "Performance cycle deployed",
             tags = {"performance-cycle"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle deployed")
-    @PutMapping(value = "/pm-cycles/{uuid}/deploy", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/pm-cycles/{uuid}/deploy")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public RestResponse<UUID> deploy(@PathVariable("uuid") UUID uuid,
-                                     @RequestBody PMCycle cycle) {
+    public RestResponse<UUID> deploy(@PathVariable final UUID uuid) {
 
-        return success(service.deploy(cycle));
+        return success(service.deploy(uuid));
     }
 
     /**

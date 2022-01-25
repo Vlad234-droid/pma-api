@@ -11,7 +11,6 @@ import com.tesco.pma.cycle.dao.config.PMCycleTypeHandlerConfig;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.file.api.File;
 import com.tesco.pma.pagination.RequestQuery;
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +19,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -37,7 +34,6 @@ import static com.tesco.pma.cycle.api.PMCycleStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ContextConfiguration(classes = PMCycleTypeHandlerConfig.class)
 class PMCycleDAOTest extends AbstractDAOTest {
@@ -119,18 +115,6 @@ class PMCycleDAOTest extends AbstractDAOTest {
     @ExpectedDataSet(value = BASE_PATH_TO_DATA_SET + "pm_update_cycle_status_expected_1.xml", compareOperation = CompareOperation.CONTAINS)
     void changeCycleStatus() {
         dao.updateStatus(CYCLE_UUID, PMCycleStatus.INACTIVE, null);
-    }
-
-
-    @Test
-    @DataSet(BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml")
-    void getMetadata() throws Exception {
-        var metadata = IOUtils.toString(Objects.requireNonNull(getClass()
-                .getResourceAsStream("/com/tesco/pma/cycle/dao/type_1_metadata.json")), StandardCharsets.UTF_8);
-        assertEquals(1, dao.updateMetadata(CYCLE_UUID, metadata));
-        var actual = dao.read(CYCLE_UUID, null);
-        var expectedJson = json.from(metadata);
-        assertThat(expectedJson).isEqualToJson(actual.getJsonMetadata());
     }
 
     @Test

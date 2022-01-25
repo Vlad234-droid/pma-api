@@ -37,6 +37,5 @@ public class PMCycle implements Serializable {
 
     MapJson properties;
 
-    String jsonMetadata;
     PMCycleMetadata metadata;
 }
