@@ -6,16 +6,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class InitTipsNotificationHandler extends AbstractInitNotificationHandler {
+public class InitFeedbacksNotificationHandler extends AbstractInitNotificationHandler {
 
     @Override
     protected void execute(ExecutionContext context) throws Exception {
         super.execute(context);
-        context.setVariable(FlowParameters.TIP_UUID, context.getEvent().getEventProperty(FlowParameters.TIP_UUID.name()));
+
+        context.setVariable(FlowParameters.SOURCE_COLLEAGUE_PROFILE,
+                getColleagueProfile(
+                        (UUID) context.getEvent().getEventProperty(FlowParameters.SOURCE_COLLEAGUE_UUID.name())));
     }
 
 }
