@@ -6,13 +6,12 @@ import com.tesco.pma.contact.api.Message;
 import com.tesco.pma.contact.api.Recipient;
 import com.tesco.pma.service.contact.client.ContactApiClient;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-@Service
+//@Service //TODO return later
 @AllArgsConstructor
 public class ContactApiNotificationSender implements SendNotificationService {
 

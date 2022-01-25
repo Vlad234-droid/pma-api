@@ -3,6 +3,7 @@ package com.tesco.pma.tip.service;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.organisation.service.ConfigEntryService;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.tip.api.Tip;
 import com.tesco.pma.tip.dao.TipDAO;
@@ -34,6 +35,9 @@ class TipServiceTest {
 
     @MockBean
     private TipDAO dao;
+
+    @MockBean
+    private ConfigEntryService configEntryService;
 
     @MockBean
     private NamedMessageSourceAccessor messageSource;
