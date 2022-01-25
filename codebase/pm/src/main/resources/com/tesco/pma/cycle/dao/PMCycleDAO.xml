@@ -16,7 +16,6 @@
         <result property="properties" column="properties"
                 typeHandler="com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler"
                 javaType="com.tesco.pma.api.MapJson"/>
-        <result property="jsonMetadata" column="metadata"/>
         <result property="metadata" column="metadata"
                 typeHandler="com.tesco.pma.cycle.dao.utils.PMCycleJsonbTypeHandler"
                 javaType="com.tesco.pma.cycle.api.model.PMCycleMetadata"/>
