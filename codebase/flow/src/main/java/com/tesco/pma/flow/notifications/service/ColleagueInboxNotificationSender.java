@@ -31,8 +31,8 @@ public class ColleagueInboxNotificationSender implements SendNotificationService
     public void send(ColleagueProfile colleagueProfile, String templateId, Map<String, String> placeholders) {
         var message = getMessage(colleagueProfile, templateId, placeholders);
 
-        log.info("Sending message to Colleague Inbox for {}, Title {}, Content {}",
-                colleagueProfile.getColleague().getColleagueUUID(), message.getTitle(), message.getContent());
+        log.info("Sending message to Colleague Inbox for {}, Title: {}",
+                colleagueProfile.getColleague().getColleagueUUID(), message.getTitle());
 
         colleagueInboxApiClient.sendNotification(message);
     }
@@ -45,13 +45,18 @@ public class ColleagueInboxNotificationSender implements SendNotificationService
         var message = new CreateMessageRequestDto();
         message.setId(UUID.randomUUID());
         message.setSentAt(OffsetDateTime.now());
-        message.setSenderName(colleagueProfile.getColleague().getContact().getEmail());
-        message.setLink("link"); //TODO remove when not required
+        message.setSenderName(getSenderName(colleagueProfile));
+        message.setLink("https://fake/link"); //TODO remove when not required
         message.setTitle(placeholders.get(TITLE_PLACEHOLDER));
         message.setContent(getContent(templateId, placeholders));
         message.setCategory(MessageCategory.OWN);
         message.setRecipients(List.of(recipient));
         return message;
+    }
+
+    private String getSenderName(ColleagueProfile colleagueProfile){
+        var profile = colleagueProfile.getColleague().getProfile();
+        return profile.getFirstName().charAt(0) + profile.getLastName();
     }
 
     private String getContent(String templateId, Map<String, String> placeholders) {
