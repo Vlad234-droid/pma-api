@@ -63,7 +63,7 @@ public class ColleagueInboxNotificationSender implements SendNotificationService
         String content;
 
         try {
-            var contentFile = fileService.get(UUID.fromString(templateId), true, null);
+            var contentFile = fileService.get(UUID.fromString(templateId), true);
             content = new String(contentFile.getFileContent());
         } catch (Exception ex) {
             log.info("Couldn't get template {} from FileService", templateId);
