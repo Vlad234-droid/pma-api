@@ -20,10 +20,12 @@ import org.springframework.test.context.ContextConfiguration;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 import static com.tesco.pma.file.api.FileStatus.ACTIVE;
-import static java.util.Arrays.asList;
+import static com.tesco.pma.security.UserRoleNames.ADMIN;
+import static com.tesco.pma.security.UserRoleNames.COLLEAGUE;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,11 +38,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = TestConfig.class)
 public class FileEndpointTest extends AbstractEndpointTest {
 
+    static final String COLLEAGUE_UUID_STR = "6d37262f-3a00-4706-a74b-6bf98be65765";
+
     private static final UUID FILE_UUID_1 = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65765");
 
     private static final String RESOURCES_PATH = "/com/tesco/pma/fs/rest/";
     private static final String FILE_NAME = "test1.txt";
-    private static final UUID CREATOR_ID = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65765");
+    private static final UUID CREATOR_ID = UUID.fromString(COLLEAGUE_UUID_STR);
     private static final String PATH = "/home/dev";
     private static final String FILES_URL = "/files";
 
@@ -52,6 +56,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
     private static final Instant CREATED_TIME = Instant.parse("2021-11-03T22:38:14Z");
     private static final String DOWNLOAD = "/{fileUuid}/download";
     private static final int FILE_LENGTH = 23;
+    private static final String FILES_GET_OK_RESPONSE_JSON_FILE_NAME = "files_get_ok_response.json";
 
     @MockBean
     private FileService service;
@@ -61,72 +66,115 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getByUuid() throws Exception {
-        when(service.get(FILE_UUID_1, true)).thenReturn(buildFileData(FILE_UUID_1, 1));
+        when(service.get(FILE_UUID_1, false, CREATOR_ID)).thenReturn(buildFileData(FILE_UUID_1, 1));
 
-        var result = performGetWith(admin(), status().isOk(), FILES_URL + "/" + FILE_UUID_1 + "?includeFileContent=true");
+        var result = performGetWith(colleague(COLLEAGUE_UUID_STR),
+                status().isOk(), FILES_URL + "/" + FILE_UUID_1);
+
+        assertResponseContent(result.getResponse(), "file_get_ok_response.json");
+    }
+
+    @Test
+    void getByUuidWithAdmin() throws Exception {
+        when(service.get(FILE_UUID_1, false, null)).thenReturn(buildFileData(FILE_UUID_1, 1));
+
+        var result = performGetWith(roles(List.of(COLLEAGUE, ADMIN)),
+                status().isOk(), FILES_URL + "/" + FILE_UUID_1);
 
         assertResponseContent(result.getResponse(), "file_get_ok_response.json");
     }
 
     @Test
     void getByUuidUnsuccess() throws Exception {
-        when(service.get(FILE_UUID_1, true)).thenThrow(NotFoundException.class);
+        when(service.get(FILE_UUID_1, false, CREATOR_ID)).thenThrow(NotFoundException.class);
 
-        performGetWith(admin(), status().isNotFound(), FILES_URL + "/" + FILE_UUID_1 + "?includeFileContent=true");
+        performGetWith(colleague(COLLEAGUE_UUID_STR), status().isNotFound(), FILES_URL + "/" + FILE_UUID_1);
     }
 
     @Test
     void getByRequestQuery() throws Exception {
-        when(service.get(any(RequestQuery.class), eq(false), eq(true))).thenReturn(asList(buildFileData(FILE_UUID_1, 1)));
+        when(service.get(any(RequestQuery.class), eq(false), eq(CREATOR_ID), eq(true))).thenReturn(List.of(buildFileData(FILE_UUID_1, 1)));
 
-        var result = performGetWith(admin(), status().isOk(), FILES_URL + "?status_in[0]=ACTIVE&file-length_gt=16&includeFileContent=false");
+        var result = performGetWith(colleague(COLLEAGUE_UUID_STR),
+                status().isOk(), FILES_URL + "?status_in[0]=ACTIVE&file-length_gt=16");
 
-        assertResponseContent(result.getResponse(), "files_get_ok_response.json");
+        assertResponseContent(result.getResponse(), FILES_GET_OK_RESPONSE_JSON_FILE_NAME);
+    }
+
+    @Test
+    void getByRequestQueryWithAdmin() throws Exception {
+        when(service.get(any(RequestQuery.class), eq(false), eq(null), eq(true))).thenReturn(List.of(buildFileData(FILE_UUID_1, 1)));
+
+        var result = performGetWith(roles(List.of(COLLEAGUE, ADMIN)),
+                status().isOk(), FILES_URL + "?status_in[0]=ACTIVE&file-length_gt=16");
+
+        assertResponseContent(result.getResponse(), FILES_GET_OK_RESPONSE_JSON_FILE_NAME);
     }
 
     @Test
     void getByRequestQueryHasEmptyDataResponseWhenServiceReturnsNothing() throws Exception {
-        when(service.get(any(RequestQuery.class), eq(false), eq(true))).thenReturn(emptyList());
+        when(service.get(any(RequestQuery.class), eq(false), eq(null), eq(true))).thenReturn(emptyList());
 
-        var result = performGetWith(admin(), status().isOk(), FILES_URL + "?includeFileContent=false");
+        var result = performGetWith(colleague(COLLEAGUE_UUID_STR), status().isOk(), FILES_URL);
 
         assertResponseContent(result.getResponse(), "file_get_empty_data_response.json");
     }
 
     @Test
     void getAllVersions() throws Exception {
-        when(service.getAllVersions(PATH, FILE_NAME, false)).thenReturn(asList(buildFileData(FILE_UUID_1, 1)));
+        when(service.getAllVersions(PATH, FILE_NAME, false, CREATOR_ID)).thenReturn(List.of(buildFileData(FILE_UUID_1, 1)));
 
-        var result = performGetWith(admin(), status().isOk(),
-                FILES_URL + "/versions?path=" + PATH + "&fileName=" + FILE_NAME + "&includeFileContent=false");
+        var result = performGetWith(colleague(COLLEAGUE_UUID_STR), status().isOk(),
+                FILES_URL + "/versions?path=" + PATH + "&fileName=" + FILE_NAME);
 
-        assertResponseContent(result.getResponse(), "files_get_ok_response.json");
+        assertResponseContent(result.getResponse(), FILES_GET_OK_RESPONSE_JSON_FILE_NAME);
+    }
+
+    @Test
+    void getAllVersionsWithAdmin() throws Exception {
+        when(service.getAllVersions(PATH, FILE_NAME, false, null)).thenReturn(List.of(buildFileData(FILE_UUID_1, 1)));
+
+        var result = performGetWith(roles(List.of(COLLEAGUE, ADMIN)), status().isOk(),
+                FILES_URL + "/versions?path=" + PATH + "&fileName=" + FILE_NAME);
+
+        assertResponseContent(result.getResponse(), FILES_GET_OK_RESPONSE_JSON_FILE_NAME);
     }
 
     @Test
     void getAllVersionsHasEmptyDataResponseWhenServiceReturnsNothing() throws Exception {
-        when(service.getAllVersions(PATH, FILE_NAME, false)).thenReturn(emptyList());
+        when(service.getAllVersions(PATH, FILE_NAME, false, null)).thenReturn(emptyList());
 
-        var result = performGetWith(admin(), status().isOk(),
-                FILES_URL + "/versions?path=" + PATH + "&fileName=" + FILE_NAME + "&includeFileContent=false");
+        var result = performGetWith(colleague(COLLEAGUE_UUID_STR), status().isOk(),
+                FILES_URL + "/versions?path=" + PATH + "&fileName=" + FILE_NAME);
 
         assertResponseContent(result.getResponse(), "file_get_empty_data_response.json");
     }
 
     @Test
     void downloadSuccess() throws Exception {
-        when(service.get(FILE_UUID_1, true)).thenReturn(buildFileData(FILE_UUID_1, 1));
+        when(service.get(FILE_UUID_1, true, CREATOR_ID)).thenReturn(buildFileData(FILE_UUID_1, 1));
 
-        var result = performGetWith(admin(), status().isOk(), MediaType.APPLICATION_OCTET_STREAM, FILES_URL + DOWNLOAD, FILE_UUID_1);
+        var result = performGetWith(colleague(COLLEAGUE_UUID_STR), status().isOk(),
+                MediaType.APPLICATION_OCTET_STREAM, FILES_URL + DOWNLOAD, FILE_UUID_1);
+
+        assertThat(result.getResponse().getContentAsByteArray()).isNotSameAs(CONTENT);
+    }
+
+    @Test
+    void downloadSuccessWithAdmin() throws Exception {
+        when(service.get(FILE_UUID_1, true, null)).thenReturn(buildFileData(FILE_UUID_1, 1));
+
+        var result = performGetWith(roles(List.of(COLLEAGUE, ADMIN)),
+                status().isOk(), MediaType.APPLICATION_OCTET_STREAM, FILES_URL + DOWNLOAD, FILE_UUID_1);
 
         assertThat(result.getResponse().getContentAsByteArray()).isNotSameAs(CONTENT);
     }
 
     @Test
     void downloadUnsuccess() throws Exception {
-        when(service.get(FILE_UUID_1, true)).thenThrow(NotFoundException.class);
+        when(service.get(FILE_UUID_1, true, CREATOR_ID)).thenThrow(NotFoundException.class);
 
-        performGetWith(admin(), status().isNotFound(), FILES_URL + DOWNLOAD, FILE_UUID_1);
+        performGetWith(colleague(COLLEAGUE_UUID_STR), status().isNotFound(), FILES_URL + DOWNLOAD, FILE_UUID_1);
     }
 
     @Test
@@ -140,7 +188,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
         when(auditorAware.getCurrentAuditor()). thenReturn(UUID.randomUUID());
 
-        final var result = performMultipartWithMetadata(admin(), multipartUploadMetadataMock, multipartFileMock,
+        final var result = performMultipartWithMetadata(colleague(COLLEAGUE_UUID_STR), multipartUploadMetadataMock, multipartFileMock,
                 status().isCreated(), FILES_URL);
 
         assertResponseContent(result.getResponse(), "files_upload_ok_response.json");
@@ -155,7 +203,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
         when(this.service.upload(any(), any(), any())).thenReturn(dataFile);
 
-        final var result = performMultipartWithMetadata(admin(), multipartUploadMetadataMock, multipartFileMock,
+        final var result = performMultipartWithMetadata(colleague(COLLEAGUE_UUID_STR), multipartUploadMetadataMock, multipartFileMock,
                 status().isBadRequest(), FILES_URL);
 
         assertResponseContent(result.getResponse(), "files_upload_failed_response.json");
@@ -170,7 +218,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
         when(this.service.upload(any(), any(), any())).thenReturn(dataFile);
 
-        final var result = performMultipartWithMetadata(admin(), multipartUploadMetadataMock, multipartFileMock,
+        final var result = performMultipartWithMetadata(colleague(COLLEAGUE_UUID_STR), multipartUploadMetadataMock, multipartFileMock,
                 status().isBadRequest(), FILES_URL);
 
         assertResponseContent(result.getResponse(), "files_upload_failed_invalid_date_response.json");
@@ -183,7 +231,8 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
         when(this.service.upload(any(), any(), any())).thenThrow(RegistrationException.class);
 
-        performMultipartWithMetadata(admin(), multipartUploadMetadataMock, multipartFileMock, status().isInternalServerError(), FILES_URL);
+        performMultipartWithMetadata(colleague(COLLEAGUE_UUID_STR), multipartUploadMetadataMock, multipartFileMock,
+                status().isInternalServerError(), FILES_URL);
     }
 
     private MockMultipartFile getUploadMetadataMultipartFile(String fileName) throws IOException {

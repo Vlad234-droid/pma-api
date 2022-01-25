@@ -100,7 +100,10 @@ public class ReviewServiceImpl implements ReviewService {
     private static final Comparator<OrgObjective> ORG_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR =
             Comparator.comparing(OrgObjective::getNumber)
                     .thenComparing(OrgObjective::getTitle);
-    private static final List<PMTimelinePointStatus> MIN_REVIEW_STATUSES = List.of(WAITING_FOR_APPROVAL, APPROVED);
+    private static final List<PMTimelinePointStatus> MIN_REVIEW_STATUSES = List.of(
+            WAITING_FOR_APPROVAL,
+            APPROVED,
+            DECLINED);
 
     @Override
     public Review getReview(UUID performanceCycleUuid, UUID colleagueUuid, PMReviewType type, Integer number) {
