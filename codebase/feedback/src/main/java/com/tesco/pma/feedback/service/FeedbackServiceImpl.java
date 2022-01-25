@@ -82,7 +82,7 @@ public class FeedbackServiceImpl implements FeedbackService {
                     com.tesco.pma.exception.ErrorCodes.CONSTRAINT_VIOLATION.getCode(), ex.getLocalizedMessage(), null, ex);
         }
 
-        var event = new EventSupport(NF_FEEDBACK_GIVEN, Map.of(
+        var event = EventSupport.create(NF_FEEDBACK_GIVEN, Map.of(
                 COLLEAGUE_UUID_PARAM_NAME, feedback.getTargetColleagueUuid(),
                 SOURCE_COLLEAGUE_UUID_PARAM_NAME, feedback.getColleagueUuid()
         ));

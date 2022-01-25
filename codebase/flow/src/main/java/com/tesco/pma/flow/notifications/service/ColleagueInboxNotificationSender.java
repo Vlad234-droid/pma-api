@@ -54,7 +54,7 @@ public class ColleagueInboxNotificationSender implements SendNotificationService
         return message;
     }
 
-    private String getSenderName(ColleagueProfile colleagueProfile){
+    private String getSenderName(ColleagueProfile colleagueProfile) {
         var profile = colleagueProfile.getColleague().getProfile();
         return profile.getFirstName().charAt(0) + profile.getLastName();
     }
@@ -65,7 +65,7 @@ public class ColleagueInboxNotificationSender implements SendNotificationService
         try {
             var contentFile = fileService.get(UUID.fromString(templateId), true);
             content = new String(contentFile.getFileContent());
-        } catch (Exception ex){
+        } catch (Exception ex) {
             log.info("Couldn't get template {} from FileService", templateId);
             content = placeholders.get(CONTENT_PLACEHOLDER);
         }

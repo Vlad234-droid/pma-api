@@ -6,7 +6,6 @@ import com.tesco.pma.contact.api.Message;
 import com.tesco.pma.contact.api.Recipient;
 import com.tesco.pma.service.contact.client.ContactApiClient;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;

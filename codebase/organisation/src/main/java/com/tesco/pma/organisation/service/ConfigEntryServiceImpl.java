@@ -2,7 +2,6 @@ package com.tesco.pma.organisation.service;
 
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.event.Event;
 import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
@@ -200,7 +199,7 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
         colleagues.stream()
                 .map(ColleagueEntity::getUuid)
                 .peek(uuid -> eventParams.put("COLLEAGUE_UUID", uuid))
-                .map(uuid -> new EventSupport(eventName, eventParams))
+                .map(uuid -> EventSupport.create(eventName, eventParams))
                 .forEach(e -> eventSender.sendEvent(e, null, true));
 
     }
