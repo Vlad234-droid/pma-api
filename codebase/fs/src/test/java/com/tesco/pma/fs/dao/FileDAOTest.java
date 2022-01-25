@@ -133,7 +133,7 @@ public class FileDAOTest extends AbstractDAOTest {
     @DataSet(BASE_PATH_TO_DATA_SET + "file_init.xml")
     void findByRequestQueryWithFilterFoundNothingIfColleagueIsNotOwner() {
         final var result = instance.findByRequestQuery(new RequestQuery(),
-                emptyList(), true, NOT_OWNER_COLLEAGUE_UUID, true);
+                true, NOT_OWNER_COLLEAGUE_UUID, true);
 
         assertThat(result).isEmpty();
     }
