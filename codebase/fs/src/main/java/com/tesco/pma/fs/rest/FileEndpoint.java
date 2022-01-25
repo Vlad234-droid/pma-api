@@ -71,7 +71,7 @@ import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 @RequiredArgsConstructor
 public class FileEndpoint {
 
-    public static final String INCLUDE_FILE_CONTENT = "includeFileContent";
+    static final boolean INCLUDE_FILE_CONTENT_DEFAULT = false;
 
     private final FileService fileService;
     private final AuditorAware<UUID> auditorAware;
@@ -88,9 +88,8 @@ public class FileEndpoint {
     @PreAuthorize("isColleague()")
     public RestResponse<File> get(@RequestParam("path") String path,
                                   @RequestParam("fileName") String fileName,
-                                  @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false") boolean includeFileContent,
                                   @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        return success(fileService.get(path, fileName, includeFileContent, resolveColleagueUuid(authentication)));
+        return success(fileService.get(path, fileName, INCLUDE_FILE_CONTENT_DEFAULT, resolveColleagueUuid(authentication)));
     }
 
     @Operation(
@@ -104,9 +103,8 @@ public class FileEndpoint {
     @GetMapping("{fileUuid}")
     @PreAuthorize("isColleague()")
     public RestResponse<File> get(@PathVariable UUID fileUuid,
-                                  @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false") boolean includeFileContent,
                                   @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        return success(fileService.get(fileUuid, includeFileContent, resolveColleagueUuid(authentication)));
+        return success(fileService.get(fileUuid, INCLUDE_FILE_CONTENT_DEFAULT, resolveColleagueUuid(authentication)));
     }
 
     @Operation(
@@ -120,9 +118,8 @@ public class FileEndpoint {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isColleague()")
     public RestResponse<List<File>> get(RequestQuery requestQuery,
-                                        @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false") boolean includeFileContent,
                                         @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        return success(fileService.get(requestQuery, includeFileContent, resolveColleagueUuid(authentication), true));
+        return success(fileService.get(requestQuery, INCLUDE_FILE_CONTENT_DEFAULT, resolveColleagueUuid(authentication), true));
     }
 
     @Operation(
@@ -137,10 +134,8 @@ public class FileEndpoint {
     @PreAuthorize("isColleague()")
     public RestResponse<List<File>> getAllVersions(@RequestParam("path") String path,
                                                    @RequestParam("fileName") String fileName,
-                                                   @RequestParam(value = INCLUDE_FILE_CONTENT, defaultValue = "false")
-                                                               boolean includeFileContent,
                                                    @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        return success(fileService.getAllVersions(path, fileName, includeFileContent, resolveColleagueUuid(authentication)));
+        return success(fileService.getAllVersions(path, fileName, INCLUDE_FILE_CONTENT_DEFAULT, resolveColleagueUuid(authentication)));
     }
 
     /**

@@ -288,7 +288,9 @@
             </foreach>
         </if>
         <if test="requestQuery.search != null and requestQuery.search != ''">
-            AND UPPER(fi.content) LIKE '%'||UPPER(#{requestQuery.search})||'%'
+            AND (UPPER(tc.first_name) LIKE '%'||UPPER(#{requestQuery.search})||'%' OR
+                UPPER(tc.middle_name) LIKE '%'||UPPER(#{requestQuery.search})||'%' OR
+                UPPER(tc.last_name) LIKE '%'||UPPER(#{requestQuery.search})||'%')
         </if>
 
         <if test="requestQuery.sort.isEmpty()">
