@@ -1,4 +1,4 @@
-package com.tesco.pma.reporting.review.service;
+package com.tesco.pma.reports.review.service;
 
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.reporting.Report;

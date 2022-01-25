@@ -1,4 +1,4 @@
-package com.tesco.pma.reporting.configuration;
+package com.tesco.pma.reports.configuration;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

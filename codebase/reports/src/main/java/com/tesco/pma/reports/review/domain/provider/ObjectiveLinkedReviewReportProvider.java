@@ -1,8 +1,9 @@
-package com.tesco.pma.reporting.review.domain;
+package com.tesco.pma.reports.review.domain.provider;
 
 import com.tesco.pma.api.ValueType;
 import com.tesco.pma.reporting.Reportable;
 import com.tesco.pma.reporting.metadata.ColumnMetadata;
+import com.tesco.pma.reports.review.domain.ObjectiveLinkedReviewData;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,19 +14,19 @@ import java.util.stream.Collectors;
 
 import static com.tesco.pma.api.ValueType.INTEGER;
 import static com.tesco.pma.api.ValueType.STRING;
-import static com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.COLLEAGUE_UUID;
-import static com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.FIRST_NAME;
-import static com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.HOW_ACHIEVED;
-import static com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.HOW_OVER_ACHIEVED;
-import static com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.IAM_ID;
-import static com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.JOB_TITLE;
-import static com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.LAST_NAME;
-import static com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.LINE_MANAGER;
-import static com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.OBJECTIVE_NUMBER;
-import static com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.OBJECTIVE_TITLE;
-import static com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.STATUS;
-import static com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.STRATEGIC_PRIORITY;
-import static com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.WORKING_LEVEL;
+import static com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.COLLEAGUE_UUID;
+import static com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.FIRST_NAME;
+import static com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.HOW_ACHIEVED;
+import static com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.HOW_OVER_ACHIEVED;
+import static com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.IAM_ID;
+import static com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.JOB_TITLE;
+import static com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.LAST_NAME;
+import static com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.LINE_MANAGER;
+import static com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.OBJECTIVE_NUMBER;
+import static com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.OBJECTIVE_TITLE;
+import static com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.STATUS;
+import static com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.STRATEGIC_PRIORITY;
+import static com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.WORKING_LEVEL;
 
 /**
  * Objectives linked with reviews report with data, metadata

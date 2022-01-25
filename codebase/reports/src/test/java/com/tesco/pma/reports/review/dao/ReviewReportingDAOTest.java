@@ -1,8 +1,8 @@
-package com.tesco.pma.reporting.review.dao;
+package com.tesco.pma.reports.review.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.dao.AbstractDAOTest;
-import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewData;
+import com.tesco.pma.reports.review.domain.ObjectiveLinkedReviewData;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -13,7 +13,7 @@ import java.util.Arrays;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DECLINED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
-import static com.tesco.pma.reporting.review.dao.ReviewReportingDAOTest.BASE_PATH_TO_DATA_SET;
+import static com.tesco.pma.reports.review.dao.ReviewReportingDAOTest.BASE_PATH_TO_DATA_SET;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataSet({BASE_PATH_TO_DATA_SET + "colleague_init.xml",

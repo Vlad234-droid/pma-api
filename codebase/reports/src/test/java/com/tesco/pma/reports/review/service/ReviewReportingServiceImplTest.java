@@ -1,11 +1,11 @@
-package com.tesco.pma.reporting.review.service;
+package com.tesco.pma.reports.review.service;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.reporting.review.LocalServiceTestConfig;
-import com.tesco.pma.reporting.review.dao.ReviewReportingDAO;
-import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewData;
-import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReportProvider;
+import com.tesco.pma.reports.review.LocalServiceTestConfig;
+import com.tesco.pma.reports.review.dao.ReviewReportingDAO;
+import com.tesco.pma.reports.review.domain.ObjectiveLinkedReviewData;
+import com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
-import static com.tesco.pma.reporting.exception.ErrorCodes.REVIEW_REPORT_NOT_FOUND;
+import static com.tesco.pma.reports.exception.ErrorCodes.REVIEW_REPORT_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;

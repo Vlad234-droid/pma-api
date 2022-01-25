@@ -1,11 +1,11 @@
-package com.tesco.pma.reporting.review.service.rest;
+package com.tesco.pma.reports.review.service.rest;
 
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.reporting.Report;
 import com.tesco.pma.reporting.metadata.ColumnMetadata;
-import com.tesco.pma.reporting.review.service.ReviewReportingService;
+import com.tesco.pma.reports.review.service.ReviewReportingService;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import io.swagger.v3.oas.annotations.Operation;

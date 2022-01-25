@@ -63,7 +63,7 @@ spring:
                               com.tesco.pma.tip.api,
                               com.tesco.pma.pdp.api,
                               com.tesco.pma.pdp.domain,
-                              com.tesco.pma.reporting.review.domain
+                              com.tesco.pma.reports.review.domain
         configuration-properties:
           base-package: com.tesco.pma.dao,
                         com.tesco.pma.colleague.profile.dao,
@@ -78,7 +78,7 @@ spring:
                         com.tesco.pma.config.dao,
                         com.tesco.pma.tip.dao,
                         com.tesco.pma.pdp.dao,
-                        com.tesco.pma.reporting.review.dao
+                        com.tesco.pma.reports.review.dao
           batchSize: 500
     camunda:
       # Camunda database config

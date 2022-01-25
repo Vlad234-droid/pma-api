@@ -1,8 +1,8 @@
-package com.tesco.pma.reporting.review.dao;
+package com.tesco.pma.reports.review.dao;
 
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
-import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReportProvider;
-import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewData;
+import com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider;
+import com.tesco.pma.reports.review.domain.ObjectiveLinkedReviewData;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

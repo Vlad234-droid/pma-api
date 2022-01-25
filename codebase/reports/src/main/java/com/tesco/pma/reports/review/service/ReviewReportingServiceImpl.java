@@ -1,11 +1,12 @@
-package com.tesco.pma.reporting.review.service;
+package com.tesco.pma.reports.review.service;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.reporting.Report;
-import com.tesco.pma.reporting.review.dao.ReviewReportingDAO;
+import com.tesco.pma.reports.review.dao.ReviewReportingDAO;
+import com.tesco.pma.reports.exception.ErrorCodes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -13,7 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import java.util.List;
 import java.util.Map;
 
-import static com.tesco.pma.reporting.exception.ErrorCodes.REVIEW_REPORT_NOT_FOUND;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
@@ -35,7 +35,7 @@ public class ReviewReportingServiceImpl implements ReviewReportingService {
         var res = reviewReportingDAO.getObjectiveLinkedReviewReport(year, statuses);
 
         if (isEmpty(res.getObjectives())) {
-            throw notFound(REVIEW_REPORT_NOT_FOUND,
+            throw notFound(ErrorCodes.REVIEW_REPORT_NOT_FOUND,
                     Map.of(YEAR_PARAMETER_NAME, year,
                            STATUSES_PARAMETER_NAME, statuses));
         }

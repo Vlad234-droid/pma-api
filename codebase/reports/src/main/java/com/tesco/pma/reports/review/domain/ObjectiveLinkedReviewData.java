@@ -1,4 +1,4 @@
-package com.tesco.pma.reporting.review.domain;
+package com.tesco.pma.reports.review.domain;
 
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import lombok.AccessLevel;

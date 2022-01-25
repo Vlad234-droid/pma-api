@@ -1,4 +1,4 @@
-package com.tesco.pma.reporting.exception;
+package com.tesco.pma.reports.exception;
 
 import com.tesco.pma.error.ErrorCodeAware;
 

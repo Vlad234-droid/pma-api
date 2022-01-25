@@ -1,12 +1,12 @@
-package com.tesco.pma.reporting.review.service.rest;
+package com.tesco.pma.reports.review.service.rest;
 
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.reporting.Report;
-import com.tesco.pma.reporting.review.LocalTestConfig;
-import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewReportProvider;
-import com.tesco.pma.reporting.review.service.ReviewReportingService;
+import com.tesco.pma.reports.review.LocalTestConfig;
+import com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider;
+import com.tesco.pma.reports.review.service.ReviewReportingService;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -18,7 +18,7 @@ import java.util.List;
 
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
-import static com.tesco.pma.reporting.review.service.rest.ReviewReportingEndpoint.APPLICATION_FORCE_DOWNLOAD_VALUE;
+import static com.tesco.pma.reports.review.service.rest.ReviewReportingEndpoint.APPLICATION_FORCE_DOWNLOAD_VALUE;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

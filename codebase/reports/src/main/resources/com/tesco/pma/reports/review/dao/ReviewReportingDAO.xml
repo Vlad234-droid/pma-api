@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.tesco.pma.reporting.review.dao.ReviewReportingDAO">
+<mapper namespace="com.tesco.pma.reports.review.dao.ReviewReportingDAO">
 
-    <resultMap id="objectiveResultMap" type="com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewData">
+    <resultMap id="objectiveResultMap" type="com.tesco.pma.reports.review.domain.ObjectiveLinkedReviewData">
         <id property="colleagueUUID" column="employee_uuid"/>
         <result property="iamId" column="employee_no"/>
         <result property="firstName" column="first_name"/>
