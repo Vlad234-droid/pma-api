@@ -15,6 +15,7 @@ public enum FlowParameters {
     PM_CYCLE_UUID,
     PM_CYCLE,
     PM_CYCLE_START_TIME,
+    PM_CYCLE_REPEAT_COUNT,
 
     //timeline variables
     START_DATE,
