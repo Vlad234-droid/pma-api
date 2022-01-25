@@ -76,7 +76,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getByUuidWithAdmin() throws Exception {
-        when(service.get(FILE_UUID_1, true, null)).thenReturn(buildFileData(FILE_UUID_1, 1));
+        when(service.get(FILE_UUID_1, false, null)).thenReturn(buildFileData(FILE_UUID_1, 1));
 
         var result = performGetWith(roles(List.of(COLLEAGUE, ADMIN)),
                 status().isOk(), FILES_URL + "/" + FILE_UUID_1);
@@ -106,7 +106,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
         when(service.get(any(RequestQuery.class), eq(false), eq(null), eq(true))).thenReturn(List.of(buildFileData(FILE_UUID_1, 1)));
 
         var result = performGetWith(roles(List.of(COLLEAGUE, ADMIN)),
-                status().isOk(), FILES_URL + "?status_in[0]=ACTIVE&file-length_gt=16&includeFileContent=false");
+                status().isOk(), FILES_URL + "?status_in[0]=ACTIVE&file-length_gt=16");
 
         assertResponseContent(result.getResponse(), FILES_GET_OK_RESPONSE_JSON_FILE_NAME);
     }
@@ -135,7 +135,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
         when(service.getAllVersions(PATH, FILE_NAME, false, null)).thenReturn(List.of(buildFileData(FILE_UUID_1, 1)));
 
         var result = performGetWith(roles(List.of(COLLEAGUE, ADMIN)), status().isOk(),
-                FILES_URL + "/versions?path=" + PATH + "&fileName=" + FILE_NAME + "&includeFileContent=false");
+                FILES_URL + "/versions?path=" + PATH + "&fileName=" + FILE_NAME);
 
         assertResponseContent(result.getResponse(), FILES_GET_OK_RESPONSE_JSON_FILE_NAME);
     }
