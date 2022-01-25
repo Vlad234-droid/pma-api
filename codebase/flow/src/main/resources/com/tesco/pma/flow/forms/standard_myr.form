@@ -63,7 +63,8 @@
       "key": "what_rating",
       "validate": {
         "required": true
-      }
+      },
+      "description": "{listener.rating:overall_rating}"
     },
     {
       "values": [
@@ -90,7 +91,13 @@
       "key": "how_rating",
       "validate": {
         "required": true
-      }
+      },
+      "description": "{listener.rating:overall_rating}"
+    },
+    {
+      "text": "**Overall:**{request.rating:overall_rating}",
+      "type": "text",
+      "id": "Field_1emo38h"
     }
   ],
   "type": "default",
