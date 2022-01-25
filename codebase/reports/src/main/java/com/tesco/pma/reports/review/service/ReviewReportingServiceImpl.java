@@ -7,6 +7,7 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.reporting.Report;
 import com.tesco.pma.reports.review.dao.ReviewReportingDAO;
 import com.tesco.pma.reports.exception.ErrorCodes;
+import com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -31,15 +32,29 @@ public class ReviewReportingServiceImpl implements ReviewReportingService {
     private static final String STATUSES_PARAMETER_NAME = "statuses";
 
     @Override
-    public Report getLinkedObjectivesData(Integer year, List<PMTimelinePointStatus> statuses) {
-        var res = reviewReportingDAO.getObjectiveLinkedReviewReport(year, statuses);
+    public Report getLinkedObjectivesReport(Integer year, List<PMTimelinePointStatus> statuses) {
+        var reportProvider = getLinkedObjectivesReportProvider(year, statuses);
 
-        if (isEmpty(res.getObjectives())) {
+        if (isEmpty(reportProvider.getObjectives())) {
             throw notFound(ErrorCodes.REVIEW_REPORT_NOT_FOUND,
                     Map.of(YEAR_PARAMETER_NAME, year,
                            STATUSES_PARAMETER_NAME, statuses));
         }
-        return res.getReport();
+        return reportProvider.getReport();
+    }
+
+    /**
+     * Find Objectives linked with reviews
+     *
+     * @param year        - time of colleague cycle
+     * @param statuses    - statuses of review
+     * @return linked Objectives report data
+     */
+    private ObjectiveLinkedReviewReportProvider getLinkedObjectivesReportProvider(Integer year, List<PMTimelinePointStatus> statuses) {
+        var report = new ObjectiveLinkedReviewReportProvider();
+        report.setObjectives(reviewReportingDAO.getLinkedObjectivesData(year, statuses));
+
+        return report;
     }
 
     private NotFoundException notFound(ErrorCodeAware errorCode, Map<String, ?> params) {

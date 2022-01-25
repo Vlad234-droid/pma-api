@@ -20,5 +20,5 @@ public interface ReviewReportingService {
      * @return linked Objectives report
      * @throws NotFoundException if review report data doesn't exist.
      */
-    Report getLinkedObjectivesData(@NotNull Integer year, @NotEmpty List<PMTimelinePointStatus> statuses);
+    Report getLinkedObjectivesReport(@NotNull Integer year, @NotEmpty List<PMTimelinePointStatus> statuses);
 }

@@ -105,7 +105,7 @@ public class ReviewReportingEndpoint {
         var yearParam = getProperty(requestQuery, "year");
         var statusesParam = getProperty(requestQuery, "statuses");
 
-        return reviewReportingService.getLinkedObjectivesData(getYear(yearParam), getStatuses(statusesParam));
+        return reviewReportingService.getLinkedObjectivesReport(getYear(yearParam), getStatuses(statusesParam));
     }
 
     private void buildData(List<List<Object>> reportData, XSSFSheet sheet) {

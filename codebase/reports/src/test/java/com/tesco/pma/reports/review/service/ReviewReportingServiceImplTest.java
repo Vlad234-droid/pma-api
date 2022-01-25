@@ -5,7 +5,6 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.reports.review.LocalServiceTestConfig;
 import com.tesco.pma.reports.review.dao.ReviewReportingDAO;
 import com.tesco.pma.reports.review.domain.ObjectiveLinkedReviewData;
-import com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -14,11 +13,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.reports.exception.ErrorCodes.REVIEW_REPORT_NOT_FOUND;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -47,30 +47,30 @@ class ReviewReportingServiceImplTest {
 
     @Test
     void getLinkedObjectivesData() {
-        var report = buildObjectiveLinkedReviewReport();
-        when(reviewReportingDAO.getObjectiveLinkedReviewReport(any(), any())).thenReturn(report);
+        var reportData = List.of(buildObjectiveLinkedReviewData(1),
+                                                            buildObjectiveLinkedReviewData(2));
+        when(reviewReportingDAO.getLinkedObjectivesData(any(), any())).thenReturn(reportData);
 
-        final var res = reviewReportingService.getLinkedObjectivesData(YEAR, Arrays.asList(APPROVED));
+        final var res = reviewReportingService.getLinkedObjectivesReport(YEAR, List.of(APPROVED));
 
-        assertEquals(report.getReportData(), res.getData());
+        assertEquals(getExpectedReportData(reportData), res.getData());
     }
 
     @Test
     void getLinkedObjectivesDataNotExists() {
-        when(reviewReportingDAO.getObjectiveLinkedReviewReport(any(), any())).thenReturn(new ObjectiveLinkedReviewReportProvider());
+        when(reviewReportingDAO.getLinkedObjectivesData(any(), any())).thenReturn(null);
 
         final var exception = assertThrows(NotFoundException.class,
-                () -> reviewReportingService.getLinkedObjectivesData(YEAR, Arrays.asList(APPROVED)));
+                () -> reviewReportingService.getLinkedObjectivesReport(YEAR, List.of(APPROVED)));
 
         assertEquals(REVIEW_REPORT_NOT_FOUND.getCode(), exception.getCode());
         assertEquals(REVIEW_REPORT_NOT_FOUND_MESSAGE, exception.getMessage());
     }
 
-    private ObjectiveLinkedReviewReportProvider buildObjectiveLinkedReviewReport() {
-        var report = new ObjectiveLinkedReviewReportProvider();
-        report.setObjectives(List.of(buildObjectiveLinkedReviewData(1), buildObjectiveLinkedReviewData(2)));
-
-        return report;
+    private List<List<Object>> getExpectedReportData(List<ObjectiveLinkedReviewData> reportData) {
+        return reportData.stream()
+                .map(ObjectiveLinkedReviewData::toList)
+                .collect(Collectors.toList());
     }
 
     private ObjectiveLinkedReviewData buildObjectiveLinkedReviewData(Integer objectiveNumber) {

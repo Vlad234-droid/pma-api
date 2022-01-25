@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
           BASE_PATH_TO_DATA_SET + "pm_review_init.xml"})
 class ReviewReportingDAOTest extends AbstractDAOTest {
 
-    static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/reporting/review/dao/";
+    static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/reports/review/dao/";
 
     private static final String COLLEAGUE_UUID = "10000000-0000-0000-0000-000000000000";
     private static final Integer YEAR = 2021;
@@ -40,11 +40,11 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
 
     @Test
     void getLinkedObjectivesData() {
-        final var result = instance.getObjectiveLinkedReviewReport(YEAR, Arrays.asList(APPROVED, DRAFT));
+        final var result = instance.getLinkedObjectivesData(YEAR, Arrays.asList(APPROVED, DRAFT));
 
         assertThat(result).isNotNull();
 
-        assertThat(result.getObjectives())
+        assertThat(result)
                 .hasSize(2)
                 .element(1)
                 .returns(COLLEAGUE_UUID, ObjectiveLinkedReviewData::getColleagueUUID)

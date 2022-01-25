@@ -42,7 +42,7 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getLinkedObjectivesData() throws Exception {
-        when(service.getLinkedObjectivesData(any(), any())).thenReturn(buildReport());
+        when(service.getLinkedObjectivesReport(any(), any())).thenReturn(buildReport());
 
         var result = performGetWith(admin(), status().isCreated(),
                 APPLICATION_FORCE_DOWNLOAD_VALUE, LINKED_OBJECTIVE_REVIEW_REPORT_URL, buildRequestQuery());
@@ -62,7 +62,7 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getLinkedObjectivesDataIfNotFound() throws Exception {
-        when(service.getLinkedObjectivesData(any(), any())).thenThrow(NotFoundException.class);
+        when(service.getLinkedObjectivesReport(any(), any())).thenThrow(NotFoundException.class);
 
         performGetWith(talentAdmin(), status().isNotFound(),
                 LINKED_OBJECTIVE_REVIEW_REPORT_URL, new RequestQuery());
