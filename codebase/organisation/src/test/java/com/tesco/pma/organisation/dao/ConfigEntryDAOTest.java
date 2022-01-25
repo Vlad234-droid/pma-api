@@ -303,7 +303,7 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
                         Set.of(e3)),
                 Arguments.of(
                         "uk",
-                        Set.of(e1, e2, e3, e4, e5)),
+                        Set.of(e1, e2, e3, e4, e5, e31, e21, e11)),
                 Arguments.of(
                         "uk/ho",
                         Set.of(e4, e5)),

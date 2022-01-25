@@ -77,7 +77,7 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
             BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml"})
     void getByCycleUuidWithoutTimelinePoint() {
         var cc = dao.getByCycleUuidWithoutTimelinePoint(CYCLE_UUID,
-                DictionaryFilter.includeFilter(REGISTERED, ACTIVE), null);
+                DictionaryFilter.includeFilter(REGISTERED, ACTIVE));
         assertThat(cc)
                 .singleElement()
                 .returns(UUID.fromString("98c23a14-8a46-41f0-bfcf-312a17c7dae2"), PMColleagueCycle::getUuid)

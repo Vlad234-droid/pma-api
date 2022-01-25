@@ -53,7 +53,7 @@ public interface TimelinePointDAO {
      * @param timelinePoints list of timeline points
      * @return number of created timeline points
      */
-    int intSaveAll(@Param("tLPoints") Collection<TimelinePoint> timelinePoints);
+    int intSaveAll(@Param("tlPoints") Collection<TimelinePoint> timelinePoints);
 
     /**
      * Returns a timeline point by an identifier of timeline point
@@ -166,5 +166,14 @@ public interface TimelinePointDAO {
      */
     List<TimelinePoint> getTimeline(@Param("cycleUuid") UUID cycleUuid,
                                     @Param("colleagueUuid") UUID colleagueUuid);
+
+
+    /**
+     * Returns timeline by UUID
+     *
+     * @param id     an identifier of timeline
+     * @return TimelinePoint
+     */
+    TimelinePoint getTimelineByUUID(@Param("timelineUUID") UUID id);
 
 }

@@ -26,6 +26,8 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-core:${openApiCoreVersion}")
     implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
 
+    implementation("commons-io:commons-io:${commonsIoVersion}")
+
 
     testCompile project(':service').sourceSets.test.output
 

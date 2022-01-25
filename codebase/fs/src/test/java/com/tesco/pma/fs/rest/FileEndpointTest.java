@@ -61,25 +61,25 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getByUuid() throws Exception {
-        when(service.get(FILE_UUID_1, true)).thenReturn(buildFileData(FILE_UUID_1, 1));
+        when(service.get(FILE_UUID_1, false)).thenReturn(buildFileData(FILE_UUID_1, 1));
 
-        var result = performGetWith(admin(), status().isOk(), FILES_URL + "/" + FILE_UUID_1 + "?includeFileContent=true");
+        var result = performGetWith(admin(), status().isOk(), FILES_URL + "/" + FILE_UUID_1);
 
         assertResponseContent(result.getResponse(), "file_get_ok_response.json");
     }
 
     @Test
     void getByUuidUnsuccess() throws Exception {
-        when(service.get(FILE_UUID_1, true)).thenThrow(NotFoundException.class);
+        when(service.get(FILE_UUID_1, false)).thenThrow(NotFoundException.class);
 
-        performGetWith(admin(), status().isNotFound(), FILES_URL + "/" + FILE_UUID_1 + "?includeFileContent=true");
+        performGetWith(admin(), status().isNotFound(), FILES_URL + "/" + FILE_UUID_1);
     }
 
     @Test
     void getByRequestQuery() throws Exception {
         when(service.get(any(RequestQuery.class), eq(false), eq(true))).thenReturn(asList(buildFileData(FILE_UUID_1, 1)));
 
-        var result = performGetWith(admin(), status().isOk(), FILES_URL + "?status_in[0]=ACTIVE&file-length_gt=16&includeFileContent=false");
+        var result = performGetWith(admin(), status().isOk(), FILES_URL + "?status_in[0]=ACTIVE&file-length_gt=16");
 
         assertResponseContent(result.getResponse(), "files_get_ok_response.json");
     }
@@ -88,7 +88,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
     void getByRequestQueryHasEmptyDataResponseWhenServiceReturnsNothing() throws Exception {
         when(service.get(any(RequestQuery.class), eq(false), eq(true))).thenReturn(emptyList());
 
-        var result = performGetWith(admin(), status().isOk(), FILES_URL + "?includeFileContent=false");
+        var result = performGetWith(admin(), status().isOk(), FILES_URL);
 
         assertResponseContent(result.getResponse(), "file_get_empty_data_response.json");
     }
@@ -98,7 +98,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
         when(service.getAllVersions(PATH, FILE_NAME, false)).thenReturn(asList(buildFileData(FILE_UUID_1, 1)));
 
         var result = performGetWith(admin(), status().isOk(),
-                FILES_URL + "/versions?path=" + PATH + "&fileName=" + FILE_NAME + "&includeFileContent=false");
+                FILES_URL + "/versions?path=" + PATH + "&fileName=" + FILE_NAME);
 
         assertResponseContent(result.getResponse(), "files_get_ok_response.json");
     }
@@ -108,7 +108,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
         when(service.getAllVersions(PATH, FILE_NAME, false)).thenReturn(emptyList());
 
         var result = performGetWith(admin(), status().isOk(),
-                FILES_URL + "/versions?path=" + PATH + "&fileName=" + FILE_NAME + "&includeFileContent=false");
+                FILES_URL + "/versions?path=" + PATH + "&fileName=" + FILE_NAME);
 
         assertResponseContent(result.getResponse(), "file_get_empty_data_response.json");
     }
