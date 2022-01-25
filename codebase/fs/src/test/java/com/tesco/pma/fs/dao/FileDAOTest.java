@@ -31,6 +31,8 @@ public class FileDAOTest extends AbstractDAOTest {
     private static final UUID FILE_UUID_1 = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65765");
     private static final UUID FILE_UUID_2 = UUID.fromString("ede76e9d-deb9-47b9-83b3-cf2a57b8baeb");
     private static final UUID FILE_UUID_3 = UUID.fromString("e0f57a75-0bae-405e-9952-76c9c60aa6a3");
+    private static final UUID COLLEAGUE_UUID = UUID.fromString("3d1ebbee-bafc-467c-acf1-5334db06e723");
+    private static final UUID NOT_OWNER_COLLEAGUE_UUID = UUID.fromString("5d1ebbee-bafc-467c-acf1-5334db06e723");
     private static final String PATH = "/home/dev";
 
     @Autowired
@@ -46,10 +48,18 @@ public class FileDAOTest extends AbstractDAOTest {
     @Test
     @DataSet(BASE_PATH_TO_DATA_SET + "file_init.xml")
     void readByUuid() {
-        final var result = instance.read(FILE_UUID_1, true);
+        final var result = instance.read(FILE_UUID_1, true, COLLEAGUE_UUID);
 
         assertThat(result).isNotNull();
         assertThat(result.getUuid()).isEqualTo(FILE_UUID_1);
+    }
+
+    @Test
+    @DataSet(BASE_PATH_TO_DATA_SET + "file_init.xml")
+    void readByUuidFoundNothingIfColleagueIsNotOwner() {
+        final var result = instance.read(FILE_UUID_1, true, NOT_OWNER_COLLEAGUE_UUID);
+
+        assertThat(result).isNull();
     }
 
     @Test
@@ -58,7 +68,7 @@ public class FileDAOTest extends AbstractDAOTest {
         final var requestQuery = new RequestQuery();
         requestQuery.setSearch("test2");
 
-        final var result = instance.findByRequestQuery(requestQuery, true, true);
+        final var result = instance.findByRequestQuery(requestQuery, true, COLLEAGUE_UUID, true);
 
         assertThat(result).isNotEmpty();
         assertThat(result).hasSize(1);
@@ -71,7 +81,7 @@ public class FileDAOTest extends AbstractDAOTest {
         final var requestQuery = new RequestQuery();
         requestQuery.setFilters(asList(Condition.build("type", 2), Condition.build("status", 2)));
 
-        final var result = instance.findByRequestQuery(requestQuery, true, true);
+        final var result = instance.findByRequestQuery(requestQuery, true, COLLEAGUE_UUID, true);
 
         assertThat(result).isNotEmpty();
         assertThat(result).hasSize(1);
@@ -85,7 +95,8 @@ public class FileDAOTest extends AbstractDAOTest {
         requestQuery.setFilters(asList(new Condition("description", IN, asList("another files")),
                                        new Condition("status", IN, asList("2"))));
 
-        final var result = instance.findByRequestQuery(requestQuery, true, true);
+        final var result = instance.findByRequestQuery(requestQuery,
+                 true, COLLEAGUE_UUID, true);
 
         assertThat(result).isNotEmpty();
         assertThat(result).hasSize(1);
@@ -98,7 +109,8 @@ public class FileDAOTest extends AbstractDAOTest {
         final var requestQuery = new RequestQuery();
         requestQuery.setFilters(asList(new Condition("uuid", EQUALS, FILE_UUID_2)));
 
-        final var result = instance.findByRequestQuery(requestQuery, true, true);
+        final var result = instance.findByRequestQuery(requestQuery,
+                 true, COLLEAGUE_UUID, true);
 
         assertThat(result).isNotEmpty();
         assertThat(result).hasSize(1);
@@ -111,7 +123,17 @@ public class FileDAOTest extends AbstractDAOTest {
         final var requestQuery = new RequestQuery();
         requestQuery.setFilters(asList(new Condition("file-length", GREATER_THAN, 15)));
 
-        final var result = instance.findByRequestQuery(requestQuery, true, true);
+        final var result = instance.findByRequestQuery(requestQuery,
+                 true, COLLEAGUE_UUID, true);
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    @DataSet(BASE_PATH_TO_DATA_SET + "file_init.xml")
+    void findByRequestQueryWithFilterFoundNothingIfColleagueIsNotOwner() {
+        final var result = instance.findByRequestQuery(new RequestQuery(),
+                true, NOT_OWNER_COLLEAGUE_UUID, true);
 
         assertThat(result).isEmpty();
     }
@@ -122,7 +144,8 @@ public class FileDAOTest extends AbstractDAOTest {
         final var requestQuery = new RequestQuery();
         requestQuery.setSort(asList(Sort.build("file-length:ASC")));
 
-        final var result = instance.findByRequestQuery(requestQuery, true, true);
+        final var result = instance.findByRequestQuery(requestQuery,
+                 true, COLLEAGUE_UUID, true);
 
         assertThat(result).isNotEmpty();
         assertThat(result).hasSize(2);
@@ -137,7 +160,8 @@ public class FileDAOTest extends AbstractDAOTest {
         requestQuery.setFilters(asList(new Condition("path", EQUALS, PATH),
                                        new Condition("file-name", EQUALS, "test1.txt")));
 
-        final var result = instance.findByRequestQuery(requestQuery, true, false);
+        final var result = instance.findByRequestQuery(requestQuery,
+                 true, COLLEAGUE_UUID, false);
 
         assertThat(result).isNotEmpty();
         assertThat(result).hasSize(2);
@@ -150,7 +174,8 @@ public class FileDAOTest extends AbstractDAOTest {
         requestQuery.setFilters(asList(new Condition("path", EQUALS, PATH),
                                        new Condition("file-name", EQUALS, "not_existed_file.txt")));
 
-        final var result = instance.findByRequestQuery(requestQuery, true, false);
+        final var result = instance.findByRequestQuery(requestQuery,
+                 true, COLLEAGUE_UUID, false);
 
         assertThat(result).isEmpty();
     }

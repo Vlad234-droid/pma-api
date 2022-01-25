@@ -45,7 +45,7 @@ public class ColleagueInboxNotificationSender implements SendNotificationService
     }
 
     private String getContent(String templateId, Map<String, String> placeholders) {
-        var contentFile = fileService.get(UUID.fromString(templateId), true);
+        var contentFile = fileService.get(UUID.fromString(templateId), true, null);
         var content = new String(contentFile.getFileContent());
         return StringSubstitutor.replace(content, placeholders, "{", "}");
 
