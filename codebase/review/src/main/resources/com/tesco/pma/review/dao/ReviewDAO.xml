@@ -165,9 +165,9 @@
                  inner join colleague c
                             on (c.uuid = rc.uuid)
                  left join job j
-                            on (j.id = c.job_id)
+                           on (j.id = c.job_id)
                  left join department d
-                            on (d.id = c.department_id)
+                           on (d.id = c.department_id)
                  left join pm_colleague_cycle cc
                            on (c.uuid = cc.colleague_uuid
                                and cc.status_id = 1)
@@ -175,6 +175,11 @@
                            on (cc.uuid = tlp.colleague_cycle_uuid)
                  left join pm_review r
                            on (tlp.uuid = r.tl_point_uuid)
+        where 1 = 1
+          and not exists(select 1
+                         from r_colleague rc2
+                         where rc.uuid = rc2.uuid
+                           and rc2.level &lt; #{depth})
         order by c.last_name, c.first_name, r.type_id, r.status_id, r.uuid
     </select>
 
