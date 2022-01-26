@@ -82,13 +82,7 @@ public class FeedbackServiceImpl implements FeedbackService {
                     com.tesco.pma.exception.ErrorCodes.CONSTRAINT_VIOLATION.getCode(), ex.getLocalizedMessage(), null, ex);
         }
 
-        var event = EventSupport.create(NF_FEEDBACK_GIVEN, Map.of(
-                COLLEAGUE_UUID_PARAM_NAME, feedback.getTargetColleagueUuid(),
-                SOURCE_COLLEAGUE_UUID_PARAM_NAME, feedback.getColleagueUuid()
-        ));
-
-        eventSender.sendEvent(event, null, true);
-
+        sendEvent(feedback);
         return feedback;
     }
 
@@ -117,6 +111,8 @@ public class FeedbackServiceImpl implements FeedbackService {
             throw new DatabaseConstraintViolationException(
                     com.tesco.pma.exception.ErrorCodes.CONSTRAINT_VIOLATION.getCode(), ex.getLocalizedMessage(), null, ex);
         }
+
+        sendEvent(feedback);
         return feedback;
     }
 
@@ -159,6 +155,24 @@ public class FeedbackServiceImpl implements FeedbackService {
             throw new NotFoundException(ErrorCodes.FEEDBACK_ITEM_NOT_FOUND.getCode(), message);
         }
         return feedbackItem;
+    }
+
+    private void sendEvent(Feedback feedback) {
+        String eventName;
+
+        switch (feedback.getStatus()) {
+            case SUBMITTED: eventName = NF_FEEDBACK_GIVEN; break;
+            case PENDING: eventName = NF_REQUEST_FEEDBACK; break;
+            case COMPLETED: eventName = NF_RESPOND_TO_FEEDBACK_REQUESTS; break;
+            default: return;
+        }
+
+        var event = EventSupport.create(eventName, Map.of(
+                COLLEAGUE_UUID_PARAM_NAME, feedback.getTargetColleagueUuid(),
+                SOURCE_COLLEAGUE_UUID_PARAM_NAME, feedback.getColleagueUuid()
+        ));
+
+        eventSender.sendEvent(event, null, true);
     }
 
 }
