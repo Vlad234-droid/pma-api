@@ -35,12 +35,14 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
     private static final String COLLEAGUE_UUID_STR = "10000000-0000-0000-0000-000000000000";
     private static final Integer YEAR = 2021;
     private static final String LINKED_OBJECTIVE_REVIEW_REPORT_URL = "/linked-objective-report";
+    private static final String LINKED_OBJECTIVE_REVIEW_REPORT_DATA_URL = "/linked-objective-report-data";
+    private static final String LINKED_OBJECTIVES_REPORT_GET_RESPONSE_JSON_FILE_NAME = "linked_objectives_report_get_ok_response.json";
 
     @MockBean
     private ReviewReportingService service;
 
     @Test
-    void getLinkedObjectivesData() throws Exception {
+    void getLinkedObjectivesReport() throws Exception {
         var requestQuery = buildRequestQuery();
         when(service.getLinkedObjectivesReport(any())).thenReturn(buildReport());
 
@@ -51,7 +53,7 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void cannotGetLinkedObjectivesDataIfUnauthorized() throws Exception {
+    void cannotGetLinkedObjectivesReportIfUnauthorized() throws Exception {
         mvc.perform(get(LINKED_OBJECTIVE_REVIEW_REPORT_URL, new RequestQuery())
                         .with(anonymous())
                         .accept(APPLICATION_JSON))
@@ -61,11 +63,38 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getLinkedObjectivesDataIfNotFound() throws Exception {
+    void getLinkedObjectivesReportIfNotFound() throws Exception {
         when(service.getLinkedObjectivesReport(any())).thenThrow(NotFoundException.class);
 
         performGetWith(talentAdmin(), status().isNotFound(),
                 LINKED_OBJECTIVE_REVIEW_REPORT_URL, new RequestQuery());
+    }
+
+    @Test
+    void getLinkedObjectivesReportData() throws Exception {
+        var requestQuery = buildRequestQuery();
+        when(service.getLinkedObjectivesReport(any())).thenReturn(buildReport());
+
+        var result = performGetWith(talentAdmin(), status().isOk(), LINKED_OBJECTIVE_REVIEW_REPORT_DATA_URL, requestQuery);
+
+        assertResponseContent(result.getResponse(), LINKED_OBJECTIVES_REPORT_GET_RESPONSE_JSON_FILE_NAME);
+    }
+
+    @Test
+    void cannotGetLinkedObjectivesReportDataIfUnauthorized() throws Exception {
+        mvc.perform(get(LINKED_OBJECTIVE_REVIEW_REPORT_DATA_URL, new RequestQuery())
+                        .with(anonymous())
+                        .accept(APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+
+        verifyNoInteractions(service);
+    }
+
+    @Test
+    void getLinkedObjectivesReportDataIfNotFound() throws Exception {
+        when(service.getLinkedObjectivesReport(any())).thenThrow(NotFoundException.class);
+
+        performGetWith(admin(), status().isNotFound(), LINKED_OBJECTIVE_REVIEW_REPORT_DATA_URL, new RequestQuery());
     }
 
     private RequestQuery buildRequestQuery() {
