@@ -57,7 +57,7 @@
     <bpmn:sequenceFlow id="Flow_10ykwls" sourceRef="Event_1ls04a6" targetRef="InitFeedbacksNotifications" />
     <bpmn:sequenceFlow id="Flow_1tjbwk1" sourceRef="Event_1yhsxk0" targetRef="InitFeedbacksNotifications" />
     <bpmn:sequenceFlow id="Flow_0dr8n7j" sourceRef="Event_0xrosui" targetRef="InitFeedbacksNotifications" />
-    <bpmn:task id="Activity_1bbytca" name="Placeholders mapping">
+    <bpmn:task id="feedbacks_placeholders_mapping" name="Placeholders mapping">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:outputParameter name="PLACEHOLDERS">
@@ -73,8 +73,8 @@
       <bpmn:incoming>Flow_071bnrq</bpmn:incoming>
       <bpmn:outgoing>Flow_0efae47</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="Flow_071bnrq" sourceRef="Activity_1geuchq" targetRef="Activity_1bbytca" />
-    <bpmn:sequenceFlow id="Flow_0efae47" sourceRef="Activity_1bbytca" targetRef="sendNotification" />
+    <bpmn:sequenceFlow id="Flow_071bnrq" sourceRef="Activity_1geuchq" targetRef="feedbacks_placeholders_mapping" />
+    <bpmn:sequenceFlow id="Flow_0efae47" sourceRef="feedbacks_placeholders_mapping" targetRef="sendNotification" />
     <bpmn:textAnnotation id="TextAnnotation_1at6xls">
       <bpmn:text>eventName: NF_FEEDBACK_GIVEN
 COLLEGUE_UUID
@@ -115,6 +115,14 @@ SOURCE_COLLEAGUE_UUID</bpmn:text>
   <bpmn:message id="Message_1kt741c" name="TIPS_RECEIVED" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="feedback_notifications">
+      <bpmndi:BPMNEdge id="Flow_0efae47_di" bpmnElement="Flow_0efae47">
+        <di:waypoint x="1420" y="170" />
+        <di:waypoint x="1450" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_071bnrq_di" bpmnElement="Flow_071bnrq">
+        <di:waypoint x="1280" y="170" />
+        <di:waypoint x="1320" y="170" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0dr8n7j_di" bpmnElement="Flow_0dr8n7j">
         <di:waypoint x="468" y="240" />
         <di:waypoint x="539" y="240" />
@@ -156,14 +164,6 @@ SOURCE_COLLEAGUE_UUID</bpmn:text>
         <di:waypoint x="1550" y="170" />
         <di:waypoint x="1602" y="170" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_071bnrq_di" bpmnElement="Flow_071bnrq">
-        <di:waypoint x="1280" y="170" />
-        <di:waypoint x="1320" y="170" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0efae47_di" bpmnElement="Flow_0efae47">
-        <di:waypoint x="1420" y="170" />
-        <di:waypoint x="1450" y="170" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1ls04a6_di" bpmnElement="Event_1ls04a6">
         <dc:Bounds x="432" y="92" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -172,6 +172,12 @@ SOURCE_COLLEAGUE_UUID</bpmn:text>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0xrosui_di" bpmnElement="Event_0xrosui">
         <dc:Bounds x="432" y="222" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1nf3c86_di" bpmnElement="sendNotification">
+        <dc:Bounds x="1450" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_14zz4ju_di" bpmnElement="Event_14zz4ju">
+        <dc:Bounds x="1602" y="152" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0zpup5t_di" bpmnElement="InitFeedbacksNotifications">
         <dc:Bounds x="610" y="130" width="100" height="80" />
@@ -182,8 +188,17 @@ SOURCE_COLLEAGUE_UUID</bpmn:text>
       <bpmndi:BPMNShape id="Activity_1pe9sak_di" bpmnElement="feedbacks_decision_table">
         <dc:Bounds x="870" y="130" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1geuchq_di" bpmnElement="Activity_1geuchq">
+        <dc:Bounds x="1180" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1wens7o_di" bpmnElement="Gateway_1wens7o" isMarkerVisible="true">
+        <dc:Bounds x="1085" y="145" width="50" height="50" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0dqby2t_di" bpmnElement="Event_0dqby2t">
         <dc:Bounds x="1252" y="272" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1bbytca_di" bpmnElement="feedbacks_placeholders_mapping">
+        <dc:Bounds x="1320" y="130" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1at6xls_di" bpmnElement="TextAnnotation_1at6xls">
         <dc:Bounds x="160" y="83" width="240" height="54" />
@@ -193,21 +208,6 @@ SOURCE_COLLEAGUE_UUID</bpmn:text>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1t5nxk9_di" bpmnElement="TextAnnotation_1t5nxk9">
         <dc:Bounds x="160" y="220" width="240" height="68" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1geuchq_di" bpmnElement="Activity_1geuchq">
-        <dc:Bounds x="1180" y="130" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1bbytca_di" bpmnElement="Activity_1bbytca">
-        <dc:Bounds x="1320" y="130" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1wens7o_di" bpmnElement="Gateway_1wens7o" isMarkerVisible="true">
-        <dc:Bounds x="1085" y="145" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1nf3c86_di" bpmnElement="sendNotification">
-        <dc:Bounds x="1450" y="130" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_14zz4ju_di" bpmnElement="Event_14zz4ju">
-        <dc:Bounds x="1602" y="152" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_04v1eaf_di" bpmnElement="Association_04v1eaf">
         <di:waypoint x="400" y="110" />

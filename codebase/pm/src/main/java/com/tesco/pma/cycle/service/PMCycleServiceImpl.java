@@ -118,14 +118,13 @@ public class PMCycleServiceImpl implements PMCycleService {
     public PMCycle publish(@NotNull PMCycle cycle, UUID loggedUserUUID) {
         log.debug("Request to publish Performance cycle : {}", cycle);
 
-        var cycleUuid = cycle.getUuid();
-        if (cycleUuid == null) {
+        if (cycle.getUuid() == null) {
             intCreate(cycle, loggedUserUUID);
         } else {
             intUpdate(cycle);
         }
 
-        UUID rtProcessUuid = intDeploy(cycleUuid);
+        UUID rtProcessUuid = intDeploy(cycle.getUuid());
         log.debug("Runtime process uuid: {}", rtProcessUuid);
         intStartCycle(cycle.getUuid());
 
