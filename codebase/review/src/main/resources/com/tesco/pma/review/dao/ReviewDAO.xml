@@ -175,8 +175,7 @@
                            on (cc.uuid = tlp.colleague_cycle_uuid)
                  left join pm_review r
                            on (tlp.uuid = r.tl_point_uuid)
-        where 1 = 1
-          and not exists(select 1
+        where not exists(select 1
                          from r_colleague rc2
                          where rc.uuid = rc2.uuid
                            and rc2.level &lt; #{depth})
