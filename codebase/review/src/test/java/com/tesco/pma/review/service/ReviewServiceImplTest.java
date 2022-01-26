@@ -7,6 +7,7 @@ import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.review.LocalTestConfig;
 import com.tesco.pma.review.dao.OrgObjectiveDAO;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
@@ -77,6 +78,9 @@ class ReviewServiceImplTest {
 
     @MockBean
     private PMCycleService pmCycleService;
+
+    @MockBean
+    private FileService mockFileService;
 
     @MockBean
     private ProfileService mockProfileService;
