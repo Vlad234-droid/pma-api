@@ -49,11 +49,7 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
             BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml"})
     void read() {
-        var cc = dao.read(COLLEAGUE_CYCLE_UUID);
-        assertEquals(COLLEAGUE_CYCLE_UUID, cc.getUuid());
-        assertEquals(COLLEAGUE_UUID, cc.getColleagueUuid());
-        assertEquals(CYCLE_UUID, cc.getCycleUuid());
-        assertEquals(ACTIVE, cc.getStatus());
+        assertColleagueCycle(COLLEAGUE_CYCLE_UUID, COLLEAGUE_UUID, ACTIVE, dao.read(COLLEAGUE_CYCLE_UUID));
     }
 
     @Test
