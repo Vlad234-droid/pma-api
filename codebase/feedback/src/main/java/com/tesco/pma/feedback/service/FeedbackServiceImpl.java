@@ -53,6 +53,12 @@ public class FeedbackServiceImpl implements FeedbackService {
         );
     }
 
+    private static final Map<FeedbackStatus, String> FEEDBACK_STATUS_TO_EVENT_NAME_MAP = Map.of(
+            FeedbackStatus.SUBMITTED, NF_FEEDBACK_GIVEN,
+            FeedbackStatus.PENDING, NF_REQUEST_FEEDBACK,
+            FeedbackStatus.COMPLETED, NF_RESPOND_TO_FEEDBACK_REQUESTS
+    );
+
     private final FeedbackDAO feedbackDAO;
     private final EventSender eventSender;
     private final NamedMessageSourceAccessor messageSourceAccessor;
@@ -158,19 +164,10 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     private void sendEvent(Feedback feedback) {
-        String eventName;
+        var eventName = FEEDBACK_STATUS_TO_EVENT_NAME_MAP.get(feedback.getStatus());
 
-        switch (feedback.getStatus()) {
-            case SUBMITTED:
-                eventName = NF_FEEDBACK_GIVEN;
-                break;
-            case PENDING:
-                eventName = NF_REQUEST_FEEDBACK;
-                break;
-            case COMPLETED:
-                eventName = NF_RESPOND_TO_FEEDBACK_REQUESTS;
-                break;
-            default: return;
+        if (eventName == null) {
+            return;
         }
 
         var event = EventSupport.create(eventName, Map.of(
