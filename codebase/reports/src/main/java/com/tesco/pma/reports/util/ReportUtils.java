@@ -15,10 +15,6 @@ import java.util.List;
 @UtilityClass
 public class ReportUtils {
 
-    public static final String LINKED_OBJECTIVES_REPORT_FILE_NAME = "ObjectivesReport.xlsx";
-
-    public static final String LINKED_OBJECTIVES_REPORT_SHEET_NAME = "Report";
-
     public static Resource buildResource(String reportFileName, String sheetName,
                                          List<List<Object>> reportData, List<ColumnMetadata> reportMetadata) {
         try (var outputStream = new ByteArrayOutputStream(); var workbook = new XSSFWorkbook()) {

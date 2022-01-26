@@ -19,8 +19,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.tesco.pma.reports.util.ReportUtils.LINKED_OBJECTIVES_REPORT_FILE_NAME;
-import static com.tesco.pma.reports.util.ReportUtils.LINKED_OBJECTIVES_REPORT_SHEET_NAME;
 import static com.tesco.pma.reports.util.ReportUtils.buildResource;
 import static com.tesco.pma.rest.RestResponse.success;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -31,6 +29,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Validated
 public class ReviewReportingEndpoint {
 
+    static final String LINKED_OBJECTIVES_REPORT_FILE_NAME = "ObjectivesReport.xlsx";
+    static final String LINKED_OBJECTIVES_REPORT_SHEET_NAME = "Report";
     static final MediaType APPLICATION_FORCE_DOWNLOAD_VALUE = new MediaType("application", "force-download");
 
     private final ReviewReportingService reviewReportingService;
