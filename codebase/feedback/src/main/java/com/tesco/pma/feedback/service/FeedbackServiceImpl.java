@@ -161,9 +161,15 @@ public class FeedbackServiceImpl implements FeedbackService {
         String eventName;
 
         switch (feedback.getStatus()) {
-            case SUBMITTED: eventName = NF_FEEDBACK_GIVEN; break;
-            case PENDING: eventName = NF_REQUEST_FEEDBACK; break;
-            case COMPLETED: eventName = NF_RESPOND_TO_FEEDBACK_REQUESTS; break;
+            case SUBMITTED:
+                eventName = NF_FEEDBACK_GIVEN;
+                break;
+            case PENDING:
+                eventName = NF_REQUEST_FEEDBACK;
+                break;
+            case COMPLETED:
+                eventName = NF_RESPOND_TO_FEEDBACK_REQUESTS;
+                break;
             default: return;
         }
 
