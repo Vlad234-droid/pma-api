@@ -53,6 +53,12 @@ public class FeedbackServiceImpl implements FeedbackService {
         );
     }
 
+    private static final Map<FeedbackStatus, String> FEEDBACK_STATUS_TO_EVENT_NAME_MAP = Map.of(
+            FeedbackStatus.SUBMITTED, NF_FEEDBACK_GIVEN,
+            FeedbackStatus.PENDING, NF_REQUEST_FEEDBACK,
+            FeedbackStatus.COMPLETED, NF_RESPOND_TO_FEEDBACK_REQUESTS
+    );
+
     private final FeedbackDAO feedbackDAO;
     private final EventSender eventSender;
     private final NamedMessageSourceAccessor messageSourceAccessor;
@@ -82,13 +88,7 @@ public class FeedbackServiceImpl implements FeedbackService {
                     com.tesco.pma.exception.ErrorCodes.CONSTRAINT_VIOLATION.getCode(), ex.getLocalizedMessage(), null, ex);
         }
 
-        var event = EventSupport.create(NF_FEEDBACK_GIVEN, Map.of(
-                COLLEAGUE_UUID_PARAM_NAME, feedback.getTargetColleagueUuid(),
-                SOURCE_COLLEAGUE_UUID_PARAM_NAME, feedback.getColleagueUuid()
-        ));
-
-        eventSender.sendEvent(event, null, true);
-
+        sendEvent(feedback);
         return feedback;
     }
 
@@ -117,6 +117,8 @@ public class FeedbackServiceImpl implements FeedbackService {
             throw new DatabaseConstraintViolationException(
                     com.tesco.pma.exception.ErrorCodes.CONSTRAINT_VIOLATION.getCode(), ex.getLocalizedMessage(), null, ex);
         }
+
+        sendEvent(feedback);
         return feedback;
     }
 
@@ -159,6 +161,21 @@ public class FeedbackServiceImpl implements FeedbackService {
             throw new NotFoundException(ErrorCodes.FEEDBACK_ITEM_NOT_FOUND.getCode(), message);
         }
         return feedbackItem;
+    }
+
+    private void sendEvent(Feedback feedback) {
+        var eventName = FEEDBACK_STATUS_TO_EVENT_NAME_MAP.get(feedback.getStatus());
+
+        if (eventName == null) {
+            return;
+        }
+
+        var event = EventSupport.create(eventName, Map.of(
+                COLLEAGUE_UUID_PARAM_NAME, feedback.getTargetColleagueUuid(),
+                SOURCE_COLLEAGUE_UUID_PARAM_NAME, feedback.getColleagueUuid()
+        ));
+
+        eventSender.sendEvent(event, null, true);
     }
 
 }

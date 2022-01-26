@@ -25,7 +25,12 @@
       <bpmn:incoming>Flow_0j8eifc</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0j8eifc" sourceRef="sendNotification" targetRef="Event_14zz4ju" />
-    <bpmn:serviceTask id="InitObjectivesNotifications" name="Init flow variables" camunda:class="com.tesco.pma.flow.notifications.handlers.InitObjectiveNotificationHandler">
+    <bpmn:serviceTask id="InitObjectivesNotifications" name="Init flow variables" camunda:class="com.tesco.pma.flow.notifications.handlers.DefaultInitNotificationHandler">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="COLLEAGUE_WORK_LEVEL">${COLLEAGUE_PROFILE.getColleague().getWorkRelationships().get(0).getWorkLevel()}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1njc0fu</bpmn:incoming>
       <bpmn:incoming>Flow_0bua9yo</bpmn:incoming>
       <bpmn:incoming>Flow_0ayegec</bpmn:incoming>
@@ -207,10 +212,6 @@ colleagueUuid</bpmn:text>
       <bpmndi:BPMNShape id="TextAnnotation_12g3y3h_di" bpmnElement="TextAnnotation_12g3y3h">
         <dc:Bounds x="150" y="323" width="240" height="54" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_1q6odfb_di" bpmnElement="Association_1q6odfb">
-        <di:waypoint x="389" y="109" />
-        <di:waypoint x="422" y="110" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0m8fcdt_di" bpmnElement="Association_0m8fcdt">
         <di:waypoint x="389" y="190" />
         <di:waypoint x="422" y="190" />
@@ -222,6 +223,10 @@ colleagueUuid</bpmn:text>
       <bpmndi:BPMNEdge id="Association_1psab3n_di" bpmnElement="Association_1psab3n">
         <di:waypoint x="390" y="350" />
         <di:waypoint x="422" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1q6odfb_di" bpmnElement="Association_1q6odfb">
+        <di:waypoint x="389" y="109" />
+        <di:waypoint x="422" y="110" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
