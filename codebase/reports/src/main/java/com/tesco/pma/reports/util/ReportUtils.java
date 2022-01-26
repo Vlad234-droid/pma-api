@@ -17,11 +17,12 @@ public class ReportUtils {
 
     public static final String LINKED_OBJECTIVES_REPORT_FILE_NAME = "ObjectivesReport.xlsx";
 
-    private static final String LINKED_OBJECTIVES_REPORT_SHEET_NAME = "Report";
+    public static final String LINKED_OBJECTIVES_REPORT_SHEET_NAME = "Report";
 
-    public static Resource buildResource(List<List<Object>> reportData, List<ColumnMetadata> reportMetadata) {
+    public static Resource buildResource(String reportFileName, String sheetName,
+                                         List<List<Object>> reportData, List<ColumnMetadata> reportMetadata) {
         try (var outputStream = new ByteArrayOutputStream(); var workbook = new XSSFWorkbook()) {
-            var sheet = workbook.createSheet(LINKED_OBJECTIVES_REPORT_SHEET_NAME);
+            var sheet = workbook.createSheet(sheetName);
 
             buildHeader(reportMetadata, sheet);
             buildData(reportData, sheet);
@@ -30,7 +31,7 @@ public class ReportUtils {
 
             return new ByteArrayResource(outputStream.toByteArray());
         } catch (Exception e) {
-            log.warn("Resource was not closed correctly: " + LINKED_OBJECTIVES_REPORT_FILE_NAME, e);
+            log.warn("Resource was not closed correctly: " + reportFileName, e);
             return null;
         }
     }

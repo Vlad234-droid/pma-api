@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.tesco.pma.reports.util.ReportUtils.LINKED_OBJECTIVES_REPORT_FILE_NAME;
+import static com.tesco.pma.reports.util.ReportUtils.LINKED_OBJECTIVES_REPORT_SHEET_NAME;
 import static com.tesco.pma.reports.util.ReportUtils.buildResource;
 import static com.tesco.pma.rest.RestResponse.success;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -52,7 +53,8 @@ public class ReviewReportingEndpoint {
         var reportData = report.getData();
         var reportMetadata = report.getMetadata();
 
-        var resource = buildResource(reportData, reportMetadata);
+        var resource = buildResource(LINKED_OBJECTIVES_REPORT_FILE_NAME, LINKED_OBJECTIVES_REPORT_SHEET_NAME,
+                reportData, reportMetadata);
         if (resource == null) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
