@@ -66,10 +66,3 @@ dependencies {
     testRuntimeOnly("de.odysseus.juel:juel-impl:${juelVersion}")
     testRuntimeOnly("de.odysseus.juel:juel-spi:${juelVersion}")
 }
-
-dependencyManagement {
-    imports {
-        mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
-        mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
-    }
-}
