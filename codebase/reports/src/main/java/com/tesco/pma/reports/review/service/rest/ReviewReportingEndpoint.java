@@ -1,7 +1,5 @@
 package com.tesco.pma.reports.review.service.rest;
 
-import com.tesco.pma.cycle.api.PMTimelinePointStatus;
-import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.reporting.Report;
 import com.tesco.pma.reporting.metadata.ColumnMetadata;
@@ -27,10 +25,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayOutputStream;
-import java.util.LinkedList;
 import java.util.List;
 
-import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.rest.RestResponse.success;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -43,8 +39,6 @@ public class ReviewReportingEndpoint {
     static final String FILE_NAME = "ObjectivesReport.xlsx";
     static final MediaType APPLICATION_FORCE_DOWNLOAD_VALUE = new MediaType("application", "force-download");
 
-    private static final PMTimelinePointStatus DEFAULT_STATUS = APPROVED;
-    private static final Integer DEFAULT_YEAR = 2021;
     private static final String REPORT_SHEETNAME = "Report";
 
     private final ReviewReportingService reviewReportingService;
@@ -62,11 +56,24 @@ public class ReviewReportingEndpoint {
             produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
     public ResponseEntity<Resource> getLinkedObjectivesReportFile(RequestQuery requestQuery) {
-        var report = getReport(requestQuery);
+        var report = reviewReportingService.getLinkedObjectivesReport(requestQuery);
 
         var reportData = report.getData();
         var reportMetadata = report.getMetadata();
 
+        var resource = buildResource(reportData, reportMetadata);
+        if (resource == null) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        var httpHeader = new HttpHeaders();
+        httpHeader.setContentType(APPLICATION_FORCE_DOWNLOAD_VALUE);
+        httpHeader.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + FILE_NAME);
+
+        return new ResponseEntity<>(resource, httpHeader, HttpStatus.CREATED);
+    }
+
+    private Resource buildResource(List<List<Object>> reportData, List<ColumnMetadata> reportMetadata) {
         try (var outputStream = new ByteArrayOutputStream(); var workbook = new XSSFWorkbook()) {
             var sheet = workbook.createSheet(REPORT_SHEETNAME);
 
@@ -74,14 +81,11 @@ public class ReviewReportingEndpoint {
             buildData(reportData, sheet);
 
             workbook.write(outputStream);
-            var httpHeader = new HttpHeaders();
-            httpHeader.setContentType(APPLICATION_FORCE_DOWNLOAD_VALUE);
-            httpHeader.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + FILE_NAME);
 
-            return new ResponseEntity<>(new ByteArrayResource(outputStream.toByteArray()), httpHeader, HttpStatus.CREATED);
+            return new ByteArrayResource(outputStream.toByteArray());
         } catch (Exception e) {
             log.warn("Resource was not closed correctly: " + FILE_NAME, e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return null;
         }
     }
 
@@ -98,14 +102,7 @@ public class ReviewReportingEndpoint {
             produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
     public RestResponse<Report> getLinkedObjectivesReportData(RequestQuery requestQuery) {
-        return success(getReport(requestQuery));
-    }
-
-    private Report getReport(RequestQuery requestQuery) {
-        var yearParam = getProperty(requestQuery, "year");
-        var statusesParam = getProperty(requestQuery, "statuses");
-
-        return reviewReportingService.getLinkedObjectivesReport(getYear(yearParam), getStatuses(statusesParam));
+        return success(reviewReportingService.getLinkedObjectivesReport(requestQuery));
     }
 
     private void buildData(List<List<Object>> reportData, XSSFSheet sheet) {
@@ -133,33 +130,5 @@ public class ReviewReportingEndpoint {
             var headerCell = header.createCell(column);
             headerCell.setCellValue(reportMetadata.get(column).getName());
         }
-    }
-
-    private int getYear(Object yearParam) {
-        return (yearParam != null) ? Integer.parseInt(yearParam.toString()) : DEFAULT_YEAR;
-    }
-
-    private List<PMTimelinePointStatus> getStatuses(Object statusesParam) {
-        var timelinePointStatuses = new LinkedList<PMTimelinePointStatus>();
-
-        if (statusesParam instanceof List) {
-            var inputStatuses = (List<Object>) statusesParam;
-            if (inputStatuses.isEmpty()) {
-                timelinePointStatuses.add(DEFAULT_STATUS);
-            }
-
-            inputStatuses.forEach(s -> {
-                var timelinePointStatus = PMTimelinePointStatus.valueOf(s.toString());
-                timelinePointStatuses.add(timelinePointStatus);
-            });
-        }
-        return timelinePointStatuses;
-    }
-
-    private Object getProperty(RequestQuery requestQuery, String propertyName) {
-        var dateTime = requestQuery.getFilters().stream()
-                .filter(cond -> propertyName.equalsIgnoreCase(cond.getProperty()))
-                .findFirst();
-        return dateTime.map(Condition::getValue).orElse(null);
     }
 }

@@ -19,6 +19,42 @@
         <result property="howOverAchieved" column="how_over_achieved"/>
     </resultMap>
 
+    <sql id="getFilterField">
+        AND
+        <choose>
+            <when test="filter.property == 'year'">
+                EXTRACT(YEAR FROM pc.start_time)
+            </when>
+            <when test="filter.property == 'statuses'">
+                pr.status_id
+            </when>
+        </choose>
+    </sql>
+
+    <sql id="getExpression">
+        <choose>
+            <when test="filter.operand.name == 'EQUALS' and (filter.property == 'year' or filter.property == 'statuses')">
+                <include refid="getFilterField"/>
+                = '${filter.value}'
+            </when>
+            <when test="filter.operand.name == 'IN' and filter.property == 'statuses'">
+                <include refid="getFilterField"/>
+                IN
+                <include refid="prepareValues"/>
+            </when>
+        </choose>
+    </sql>
+
+    <sql id="prepareValues">
+        <foreach item="value" collection="filter.value" separator="," open="(" close=")">
+            <choose>
+                <when test="filter.property == 'statuses'">
+                    #{value}::INTEGER
+                </when>
+            </choose>
+        </foreach>
+    </sql>
+
     <select id="getLinkedObjectivesData" resultMap="objectiveResultMap">
         SELECT c1.iam_id as "employee_no",
                c1.uuid as "employee_uuid",
@@ -44,15 +80,11 @@
         WHERE pr.type_id = 1
           AND c1.work_level IN ('WL4', 'WL5')
           AND pc.type_id = 1
-        <if test="year != null">
-          AND EXTRACT(YEAR FROM pc.start_time) = #{year}
-        </if>
 
-        <if test="statuses != null and !statuses.isEmpty()">
-          AND pr.status_id IN
-          <foreach collection="statuses" item="status" index="i" open="(" separator="," close=")">
-              #{status.id}
-          </foreach>
+        <if test="!requestQuery.filters.isEmpty()">
+            <foreach collection="requestQuery.filters" item="filter" index="index">
+                <include refid="getExpression"/>
+            </foreach>
         </if>
     </select>
 

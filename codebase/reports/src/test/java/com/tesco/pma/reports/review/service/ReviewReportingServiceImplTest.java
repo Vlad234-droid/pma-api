@@ -2,6 +2,8 @@ package com.tesco.pma.reports.review.service;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.pagination.Condition;
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.reports.review.LocalServiceTestConfig;
 import com.tesco.pma.reports.review.dao.ReviewReportingDAO;
 import com.tesco.pma.reports.review.domain.ObjectiveLinkedReviewData;
@@ -13,15 +15,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
+import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
+import static com.tesco.pma.pagination.Condition.Operand.IN;
 import static com.tesco.pma.reports.exception.ErrorCodes.REVIEW_REPORT_NOT_FOUND;
 
+import static com.tesco.pma.reports.review.service.ReviewReportingServiceImpl.QUERY_PARAMS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
@@ -33,8 +39,10 @@ class ReviewReportingServiceImplTest {
     private static final String LINE_MANAGER_UUID = "10000000-0000-0000-0000-000000000002";
     private static final Integer YEAR = 2021;
 
-    private static final String REVIEW_REPORT_NOT_FOUND_MESSAGE = "Review report not found for: " +
-            "{statuses=[" + APPROVED + "], year=" + YEAR + "}";
+    private static final String REVIEW_REPORT_NOT_FOUND_MESSAGE = "Review report not found for: {" +
+            QUERY_PARAMS + "=RequestQuery(offset=null, limit=null, sort=[], filters=[" +
+            "Condition(property=year, operand=" + EQUALS + ", value=" + YEAR + "), " +
+            "Condition(property=statuses, operand=" + IN + ", value=[" + APPROVED + "])], search=null)}";
 
     @Autowired
     private NamedMessageSourceAccessor messageSourceAccessor;
@@ -49,19 +57,26 @@ class ReviewReportingServiceImplTest {
     void getLinkedObjectivesData() {
         var reportData = List.of(buildObjectiveLinkedReviewData(1),
                                                             buildObjectiveLinkedReviewData(2));
-        when(reviewReportingDAO.getLinkedObjectivesData(any(), any())).thenReturn(reportData);
+        final var requestQuery = new RequestQuery();
+        requestQuery.setFilters(new ArrayList<>(Arrays.asList(new Condition("year", EQUALS, YEAR),
+                                                              new Condition("statuses", IN, List.of(APPROVED)))));
 
-        final var res = reviewReportingService.getLinkedObjectivesReport(YEAR, List.of(APPROVED));
+        when(reviewReportingDAO.getLinkedObjectivesData(requestQuery)).thenReturn(reportData);
+
+        final var res = reviewReportingService.getLinkedObjectivesReport(requestQuery);
 
         assertEquals(getExpectedReportData(reportData), res.getData());
     }
 
     @Test
     void getLinkedObjectivesDataNotExists() {
-        when(reviewReportingDAO.getLinkedObjectivesData(any(), any())).thenReturn(null);
+        final var requestQuery = new RequestQuery();
+        requestQuery.setFilters(new ArrayList<>(Arrays.asList(new Condition("year", EQUALS, YEAR),
+                                                              new Condition("statuses", IN, List.of(APPROVED)))));
+        when(reviewReportingDAO.getLinkedObjectivesData(requestQuery)).thenReturn(null);
 
         final var exception = assertThrows(NotFoundException.class,
-                () -> reviewReportingService.getLinkedObjectivesReport(YEAR, List.of(APPROVED)));
+                () -> reviewReportingService.getLinkedObjectivesReport(requestQuery));
 
         assertEquals(REVIEW_REPORT_NOT_FOUND.getCode(), exception.getCode());
         assertEquals(REVIEW_REPORT_NOT_FOUND_MESSAGE, exception.getMessage());

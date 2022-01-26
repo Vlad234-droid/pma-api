@@ -2,17 +2,21 @@ package com.tesco.pma.reports.review.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.dao.AbstractDAOTest;
+import com.tesco.pma.pagination.Condition;
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.reports.review.domain.ObjectiveLinkedReviewData;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
-import java.util.Arrays;
+import java.util.List;
 
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DECLINED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
+import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
+import static com.tesco.pma.pagination.Condition.Operand.IN;
 import static com.tesco.pma.reports.review.dao.ReviewReportingDAOTest.BASE_PATH_TO_DATA_SET;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,7 +44,11 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
 
     @Test
     void getLinkedObjectivesData() {
-        final var result = instance.getLinkedObjectivesData(YEAR, Arrays.asList(APPROVED, DRAFT));
+        final var requestQuery = new RequestQuery();
+        requestQuery.setFilters(List.of(new Condition("year", EQUALS, YEAR),
+                                        new Condition("statuses", IN, List.of(APPROVED.getId(), DRAFT.getId()))));
+
+        final var result = instance.getLinkedObjectivesData(requestQuery);
 
         assertThat(result).isNotNull();
 
@@ -64,7 +72,10 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
 
     @Test
     void getLinkedObjectivesDataNotExist() {
-        final var result = instance.getLinkedObjectivesData(YEAR, Arrays.asList(DECLINED));
+        final var requestQuery = new RequestQuery();
+        requestQuery.setFilters(List.of(new Condition("year", EQUALS, YEAR),
+                                        new Condition("statuses", IN, List.of(DECLINED.getId()))));
+        final var result = instance.getLinkedObjectivesData(requestQuery);
 
         assertThat(result).isEmpty();
     }

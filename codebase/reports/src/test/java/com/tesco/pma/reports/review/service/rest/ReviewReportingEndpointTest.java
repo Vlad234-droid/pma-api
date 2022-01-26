@@ -13,13 +13,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
+import static com.tesco.pma.pagination.Condition.Operand.IN;
 import static com.tesco.pma.reports.review.service.rest.ReviewReportingEndpoint.APPLICATION_FORCE_DOWNLOAD_VALUE;
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -42,10 +41,11 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getLinkedObjectivesData() throws Exception {
-        when(service.getLinkedObjectivesReport(any(), any())).thenReturn(buildReport());
+        var requestQuery = buildRequestQuery();
+        when(service.getLinkedObjectivesReport(any())).thenReturn(buildReport());
 
         var result = performGetWith(admin(), status().isCreated(),
-                APPLICATION_FORCE_DOWNLOAD_VALUE, LINKED_OBJECTIVE_REVIEW_REPORT_URL, buildRequestQuery());
+                APPLICATION_FORCE_DOWNLOAD_VALUE, LINKED_OBJECTIVE_REVIEW_REPORT_URL, requestQuery);
 
         assertThat(result.getResponse().getContentAsByteArray()).hasSizeGreaterThan(0);
     }
@@ -62,7 +62,7 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getLinkedObjectivesDataIfNotFound() throws Exception {
-        when(service.getLinkedObjectivesReport(any(), any())).thenThrow(NotFoundException.class);
+        when(service.getLinkedObjectivesReport(any())).thenThrow(NotFoundException.class);
 
         performGetWith(talentAdmin(), status().isNotFound(),
                 LINKED_OBJECTIVE_REVIEW_REPORT_URL, new RequestQuery());
@@ -70,9 +70,9 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
 
     private RequestQuery buildRequestQuery() {
         var requestQuery = new RequestQuery();
-        requestQuery.setFilters(asList(
+        requestQuery.setFilters(List.of(
                 new Condition("year", EQUALS, YEAR),
-                new Condition("statuses", EQUALS, Arrays.asList(APPROVED.getCode()))));
+                new Condition("statuses", IN, List.of(APPROVED.getId()))));
 
         return requestQuery;
     }
