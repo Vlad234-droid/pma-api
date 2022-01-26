@@ -125,7 +125,7 @@ public class PMCycleServiceImpl implements PMCycleService {
             intUpdate(cycle);
         }
 
-        UUID rtProcessUuid = intDeploy(cycleUuid);
+        UUID rtProcessUuid = intDeploy(cycle.getUuid());
         log.debug("Runtime process uuid: {}", rtProcessUuid);
         intStartCycle(cycle.getUuid());
 
