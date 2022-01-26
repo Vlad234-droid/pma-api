@@ -46,6 +46,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     private static final UUID MYR_TIMELINE_POINT_UUID = UUID.fromString("10000000-0000-0000-2000-000000000000");
     private static final UUID MANAGER_UUID = UUID.fromString("10000000-0000-0000-0000-000000000001");
     private static final UUID COLLEAGUE_UUID = UUID.fromString("10000000-0000-0000-0000-000000000000");
+    private static final UUID COLLEAGUE_UUID_2 = UUID.fromString("10000000-0000-0000-0000-000000000002");
     private static final UUID TIMELINE_POINT_UUID_NOT_EXIST = UUID.fromString("ccb9ab0b-f50f-4442-8900-000000000000");
     private static final UUID CYCLE_UUID = UUID.fromString("10000000-1000-0000-0000-000000000000");
     private static final Integer NUMBER_1 = 1;
@@ -352,6 +353,22 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .asInstanceOf(type(ColleagueTimeline.class))
                 .returns(null, from(ColleagueTimeline::getTimeline))
                 .returns(simplifiedReviews, from(ColleagueTimeline::getReviews));
+    }
+
+    @Test
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml",
+            "pm_review_init.xml"})
+    void getFullTeamReviews() {
+
+        final var result = instance.getTeamReviews(MANAGER_UUID, 2);
+
+        assertThat(result)
+                .singleElement()
+                .asInstanceOf(type(ColleagueTimeline.class))
+                .returns(COLLEAGUE_UUID_2, from(ColleagueTimeline::getUuid));
     }
 
     @Test
