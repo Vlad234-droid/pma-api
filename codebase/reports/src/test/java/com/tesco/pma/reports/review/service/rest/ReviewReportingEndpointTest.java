@@ -101,7 +101,7 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
         var requestQuery = new RequestQuery();
         requestQuery.setFilters(List.of(
                 new Condition("year", EQUALS, YEAR),
-                new Condition("statuses", IN, List.of(APPROVED.getId()))));
+                new Condition("statuses", IN, List.of(APPROVED.getCode()))));
 
         return requestQuery;
     }

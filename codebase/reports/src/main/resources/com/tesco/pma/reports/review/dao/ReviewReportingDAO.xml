@@ -26,7 +26,7 @@
                 EXTRACT(YEAR FROM pc.start_time)
             </when>
             <when test="filter.property == 'statuses'">
-                pr.status_id
+                ptps.code
             </when>
         </choose>
     </sql>
@@ -49,7 +49,7 @@
         <foreach item="value" collection="filter.value" separator="," open="(" close=")">
             <choose>
                 <when test="filter.property == 'statuses'">
-                    #{value}::INTEGER
+                    #{value}
                 </when>
             </choose>
         </foreach>

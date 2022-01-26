@@ -46,7 +46,7 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
     void getLinkedObjectivesData() {
         final var requestQuery = new RequestQuery();
         requestQuery.setFilters(List.of(new Condition("year", EQUALS, YEAR),
-                                        new Condition("statuses", IN, List.of(APPROVED.getId(), DRAFT.getId()))));
+                                        new Condition("statuses", IN, List.of(APPROVED.getCode(), DRAFT.getCode()))));
 
         final var result = instance.getLinkedObjectivesData(requestQuery);
 
@@ -74,7 +74,7 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
     void getLinkedObjectivesDataNotExist() {
         final var requestQuery = new RequestQuery();
         requestQuery.setFilters(List.of(new Condition("year", EQUALS, YEAR),
-                                        new Condition("statuses", IN, List.of(DECLINED.getId()))));
+                                        new Condition("statuses", IN, List.of(DECLINED.getCode()))));
         final var result = instance.getLinkedObjectivesData(requestQuery);
 
         assertThat(result).isEmpty();

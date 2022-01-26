@@ -59,7 +59,7 @@ class ReviewReportingServiceImplTest {
                                                             buildObjectiveLinkedReviewData(2));
         final var requestQuery = new RequestQuery();
         requestQuery.setFilters(new ArrayList<>(Arrays.asList(new Condition("year", EQUALS, YEAR),
-                                                              new Condition("statuses", IN, List.of(APPROVED)))));
+                                                              new Condition("statuses", IN, List.of(APPROVED.getCode())))));
 
         when(reviewReportingDAO.getLinkedObjectivesData(requestQuery)).thenReturn(reportData);
 
@@ -72,7 +72,7 @@ class ReviewReportingServiceImplTest {
     void getLinkedObjectivesDataNotExists() {
         final var requestQuery = new RequestQuery();
         requestQuery.setFilters(new ArrayList<>(Arrays.asList(new Condition("year", EQUALS, YEAR),
-                                                              new Condition("statuses", IN, List.of(APPROVED)))));
+                                                              new Condition("statuses", IN, List.of(APPROVED.getCode())))));
         when(reviewReportingDAO.getLinkedObjectivesData(requestQuery)).thenReturn(null);
 
         final var exception = assertThrows(NotFoundException.class,
