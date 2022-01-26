@@ -19,7 +19,10 @@ import java.util.UUID;
 import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
 import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
 import static com.tesco.pma.cycle.api.PMCycleStatus.REGISTERED;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ContextConfiguration(classes = PMCycleTypeHandlerConfig.class)
 class PMColleagueCycleDAOTest extends AbstractDAOTest {
@@ -47,11 +50,10 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
             BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml"})
     void read() {
         var cc = dao.read(COLLEAGUE_CYCLE_UUID);
-        assertThat(cc)
-                .returns(COLLEAGUE_CYCLE_UUID, PMColleagueCycle::getUuid)
-                .returns(COLLEAGUE_UUID, PMColleagueCycle::getColleagueUuid)
-                .returns(CYCLE_UUID, PMColleagueCycle::getCycleUuid)
-                .returns(ACTIVE, PMColleagueCycle::getStatus);
+        assertEquals(COLLEAGUE_CYCLE_UUID, cc.getUuid());
+        assertEquals(COLLEAGUE_UUID, cc.getColleagueUuid());
+        assertEquals(CYCLE_UUID, cc.getCycleUuid());
+        assertEquals(ACTIVE, cc.getStatus());
     }
 
     @Test
@@ -59,17 +61,15 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
             BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml"})
     void getByParams() {
         var cc = dao.getByParams(CYCLE_UUID, COLLEAGUE_UUID, null);
-        assertThat(cc)
-                .hasSize(2);
+        assertEquals(2, cc.size());
 
-        assertThat(dao.getByParams(CYCLE_UUID, COLLEAGUE_UUID, ACTIVE))
-                .singleElement()
-                .returns(UUID.fromString("98c23a14-8a46-41f0-bfcf-312a17c7dae2"), PMColleagueCycle::getUuid);
+        cc = dao.getByParams(CYCLE_UUID, COLLEAGUE_UUID, ACTIVE);
+        assertEquals(1, cc.size());
+        assertEquals(UUID.fromString("98c23a14-8a46-41f0-bfcf-312a17c7dae2"), cc.get(0).getUuid());
 
-        assertThat(dao.getByParams(CYCLE_UUID, COLLEAGUE_UUID, PMCycleStatus.INACTIVE))
-                .singleElement()
-                .returns(UUID.fromString("9193e171-49e9-492c-a56f-6a68916722f0"), PMColleagueCycle::getUuid);
-
+        cc = dao.getByParams(CYCLE_UUID, COLLEAGUE_UUID, PMCycleStatus.INACTIVE);
+        assertEquals(1, cc.size());
+        assertEquals(UUID.fromString("9193e171-49e9-492c-a56f-6a68916722f0"), cc.get(0).getUuid());
     }
 
     @Test
@@ -78,13 +78,8 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
     void getByCycleUuidWithoutTimelinePoint() {
         var cc = dao.getByCycleUuidWithoutTimelinePoint(CYCLE_UUID,
                 DictionaryFilter.includeFilter(REGISTERED, ACTIVE));
-        assertThat(cc)
-                .singleElement()
-                .returns(UUID.fromString("98c23a14-8a46-41f0-bfcf-312a17c7dae2"), PMColleagueCycle::getUuid)
-                .returns(CYCLE_UUID, PMColleagueCycle::getCycleUuid)
-                .returns(COLLEAGUE_UUID, PMColleagueCycle::getColleagueUuid)
-                .returns(ACTIVE, PMColleagueCycle::getStatus);
-
+        assertEquals(1, cc.size());
+        assertColleagueCycle(UUID.fromString("98c23a14-8a46-41f0-bfcf-312a17c7dae2"), COLLEAGUE_UUID, ACTIVE, cc.get(0));
     }
 
     @Test
@@ -94,30 +89,15 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
         var ccUuid1 = UUID.randomUUID();
         var ccUuid2 = UUID.randomUUID();
 
-        assertThat(dao.getByParams(null, null, null))
-                .isEmpty();
-
-        var saved = dao.saveAll(List.of(createCycle(ccUuid1, ACTIVE), createCycle(ccUuid2, INACTIVE)));
-
-        assertThat(saved).isEqualTo(2);
-
-        assertThat(dao.getByParams(null, null, null))
-                .hasSize(2);
+        assertTrue(dao.getByParams(null, null, null).isEmpty());
+        assertEquals(2, dao.saveAll(List.of(createCycle(ccUuid1, ACTIVE), createCycle(ccUuid2, INACTIVE))));
+        assertEquals(2, dao.getByParams(null, null, null).size());
 
         var cc1 = dao.read(ccUuid1);
-        assertThat(cc1)
-                .returns(ccUuid1, PMColleagueCycle::getUuid)
-                .returns(COLLEAGUE_UUID_2, PMColleagueCycle::getColleagueUuid)
-                .returns(CYCLE_UUID, PMColleagueCycle::getCycleUuid)
-                .returns(ACTIVE, PMColleagueCycle::getStatus);
+        assertColleagueCycle(ccUuid1, COLLEAGUE_UUID_2, ACTIVE, cc1);
 
         var cc2 = dao.read(ccUuid2);
-        assertThat(cc2)
-                .returns(ccUuid2, PMColleagueCycle::getUuid)
-                .returns(COLLEAGUE_UUID_2, PMColleagueCycle::getColleagueUuid)
-                .returns(CYCLE_UUID, PMColleagueCycle::getCycleUuid)
-                .returns(INACTIVE, PMColleagueCycle::getStatus);
-
+        assertColleagueCycle(ccUuid2, COLLEAGUE_UUID_2, INACTIVE, cc2);
     }
 
     @Test
@@ -126,16 +106,10 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
     void create() {
         var ccUuid = UUID.randomUUID();
 
-        var created = dao.create(createCycle(ccUuid));
-
-        assertThat(created).isEqualTo(1);
+        assertEquals(1, dao.create(createCycle(ccUuid)));
 
         var cc = dao.read(ccUuid);
-        assertThat(cc)
-                .returns(ccUuid, PMColleagueCycle::getUuid)
-                .returns(COLLEAGUE_UUID_2, PMColleagueCycle::getColleagueUuid)
-                .returns(CYCLE_UUID, PMColleagueCycle::getCycleUuid)
-                .returns(ACTIVE, PMColleagueCycle::getStatus);
+        assertColleagueCycle(ccUuid, COLLEAGUE_UUID_2, ACTIVE, cc);
     }
 
     @Test
@@ -144,26 +118,24 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
     void createDuplicate() {
         var ccUuid = UUID.randomUUID();
 
-        var created = dao.create(createCycle(ccUuid));
-
-        assertThat(created).isOne();
-
-        created = dao.create(createCycle(ccUuid));
-
-        assertThat(created).isZero();
+        assertEquals(1, dao.create(createCycle(ccUuid)));
+        assertEquals(0, dao.create(createCycle(ccUuid)));
     }
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
             BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml"})
     void delete() {
+        assertEquals(1, dao.delete(COLLEAGUE_CYCLE_UUID_2));
+        assertNull(dao.read(COLLEAGUE_CYCLE_UUID_2));
+    }
 
-        var deleted = dao.delete(COLLEAGUE_CYCLE_UUID_2);
-
-        assertThat(deleted).isEqualTo(1);
-
-        var cc = dao.read(COLLEAGUE_CYCLE_UUID_2);
-        assertThat(cc).isNull();
+    private void assertColleagueCycle(UUID uuid, UUID colleagueUuid, PMCycleStatus status, PMColleagueCycle colleagueCycle) {
+        assertNotNull(colleagueCycle);
+        assertEquals(uuid, colleagueCycle.getUuid());
+        assertEquals(colleagueUuid, colleagueCycle.getColleagueUuid());
+        assertEquals(CYCLE_UUID, colleagueCycle.getCycleUuid());
+        assertEquals(status, colleagueCycle.getStatus());
     }
 
     private PMColleagueCycle createCycle(UUID uuid) {
