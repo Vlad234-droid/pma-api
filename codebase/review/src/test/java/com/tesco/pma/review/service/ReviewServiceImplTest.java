@@ -1,6 +1,7 @@
 package com.tesco.pma.review.service;
 
 import com.tesco.pma.api.MapJson;
+import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
@@ -76,6 +77,9 @@ class ReviewServiceImplTest {
 
     @MockBean
     private PMCycleService pmCycleService;
+
+    @MockBean
+    private ProfileService mockProfileService;
 
     @SpyBean
     private ReviewServiceImpl reviewService;
@@ -218,4 +222,16 @@ class ReviewServiceImplTest {
         assertEquals(REVIEW_NOT_FOUND_MESSAGE, exception.getMessage());
 
     }
+
+    @Test
+    void getReviewFilesByColleagueWithColleague() {
+        // TODO Implement test
+
+    }
+
+    @Test
+    void getReviewFilesByColleagueWithLineManager() {
+        // TODO Implement test
+    }
+
 }

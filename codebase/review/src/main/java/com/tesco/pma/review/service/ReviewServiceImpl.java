@@ -1,6 +1,7 @@
 package com.tesco.pma.review.service;
 
 import com.tesco.pma.api.OrgObjectiveStatus;
+import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
@@ -12,6 +13,10 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.ReviewCreationException;
 import com.tesco.pma.exception.ReviewDeletionException;
 import com.tesco.pma.exception.ReviewUpdateException;
+import com.tesco.pma.file.api.File;
+import com.tesco.pma.file.api.FileType;
+import com.tesco.pma.fs.service.FileService;
+import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.review.dao.OrgObjectiveDAO;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
@@ -30,13 +35,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.tesco.pma.api.ActionType.PUBLISH;
 import static com.tesco.pma.api.ActionType.SAVE_AS_DRAFT;
@@ -49,6 +55,8 @@ import static com.tesco.pma.cycle.api.PMTimelinePointStatus.STARTED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.WAITING_FOR_APPROVAL;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MAX;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MIN;
+import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
+import static com.tesco.pma.pagination.Condition.Operand.IN;
 import static com.tesco.pma.review.exception.ErrorCodes.ALLOWED_STATUSES_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.CANNOT_DELETE_REVIEW_COUNT_CONSTRAINT;
 import static com.tesco.pma.review.exception.ErrorCodes.COLLEAGUE_CYCLE_NOT_FOUND;
@@ -60,6 +68,7 @@ import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_ALREADY_EXISTS;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_STATUS_NOT_ALLOWED;
 import static com.tesco.pma.review.exception.ErrorCodes.TIMELINE_POINT_NOT_FOUND;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Implementation of {@link ReviewService}.
@@ -76,6 +85,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final TimelinePointDAO timelinePointDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final PMCycleService pmCycleService;
+    private final FileService fileService;
+    private final ProfileService profileService;
 
     private static final String REVIEW_UUID_PARAMETER_NAME = "reviewUuid";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
@@ -104,6 +115,8 @@ public class ReviewServiceImpl implements ReviewService {
             WAITING_FOR_APPROVAL,
             APPROVED,
             DECLINED);
+
+    private static final String REVIEWS_FILES_PATH = "/home/%s/reviews";
 
     @Override
     public Review getReview(UUID performanceCycleUuid, UUID colleagueUuid, PMReviewType type, Integer number) {
@@ -478,6 +491,32 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewAuditLogDAO.getAuditOrgObjectiveReport(requestQuery);
     }
 
+    @Override
+    public List<File> getReviewsFilesByColleague(UUID colleagueUuid, UUID currentUserUuid) {
+        var isCurrentUserLineManager = false;
+
+        if (!colleagueUuid.equals(currentUserUuid)) {
+            var profile = profileService.getColleague(colleagueUuid);
+            if (currentUserUuid.equals(profile.getManagerUuid())) {
+                isCurrentUserLineManager = true;
+            }
+        }
+
+        String path = String.format(REVIEWS_FILES_PATH, colleagueUuid);
+        var types = Stream.of(FileType.FileTypeEnum.PDF, FileType.FileTypeEnum.DOC, FileType.FileTypeEnum.PPT)
+                .map(FileType.FileTypeEnum::getId)
+                .collect(toList());
+
+        var requestQuery = new RequestQuery();
+        requestQuery.setFilters(Arrays.asList(
+                new Condition("path", EQUALS, path),
+                new Condition("type", IN, types)));
+
+        var fileOwnerUuid = isCurrentUserLineManager ? colleagueUuid : currentUserUuid;
+
+        return fileService.get(requestQuery, false, fileOwnerUuid, true);
+    }
+
     private TimelinePoint calcTlPoint(TimelinePoint timelinePoint) {
         var reviewStats = reviewDAO.getReviewStats(timelinePoint.getUuid());
         if (null == reviewStats || reviewStats.getStatusStats().isEmpty()) {
@@ -524,7 +563,7 @@ public class ReviewServiceImpl implements ReviewService {
         var prevStatusesForChangeStatus = getPrevStatusesForChangeStatus(reviewType, newStatus);
         return allowedStatusesForUpdate.stream()
                 .filter(prevStatusesForChangeStatus::contains)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     private List<PMTimelinePointStatus> getAllowedStatusesForTLPointUpdate(PMTimelinePointStatus newStatus) {

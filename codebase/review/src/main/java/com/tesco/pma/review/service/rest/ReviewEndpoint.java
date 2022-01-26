@@ -6,6 +6,7 @@ import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
+import com.tesco.pma.file.api.File;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
@@ -22,6 +23,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -376,6 +379,24 @@ public class ReviewEndpoint {
     @PreAuthorize("isTalentAdmin()")
     public RestResponse<List<AuditOrgObjectiveReport>> getAuditLogReport(@NotNull RequestQuery requestQuery) {
         return success(reviewService.getAuditOrgObjectiveReport(requestQuery));
+    }
+
+    /**
+     * Get call using a Path param and return a list of reviews files.
+     *
+     * @param colleagueUuid an identifier of colleague
+     * @return a RestResponse parameterized with list of reviews files
+     */
+    @Operation(summary = "Get a list of reviews by colleagueUuid", tags = {"review"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found reviews")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Reviews not found", content = @Content)
+    @GetMapping(path = "/colleagues/{colleagueUuid}/reviews/files", produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
+    public RestResponse<List<File>> getReviewsFilesByColleague(@PathVariable UUID colleagueUuid,
+                                @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+
+        var currentUserUuid = UUID.fromString(authentication.getName());
+        return RestResponse.success(reviewService.getReviewsFilesByColleague(colleagueUuid, currentUserUuid));
     }
 
     private UUID resolveUserUuid() {
