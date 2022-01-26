@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public enum PMReviewType implements DictionaryItem<Integer> {
+public enum PMReviewType implements DictionaryItem<Integer> { //TODO consider TimelinePointType
 
     OBJECTIVE(1, "Objective review"),
     MYR(2, "Mid year review"),

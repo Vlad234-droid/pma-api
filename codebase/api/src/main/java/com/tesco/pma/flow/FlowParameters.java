@@ -6,9 +6,12 @@ package com.tesco.pma.flow;
  */
 public enum FlowParameters {
     EVENT_NAME,
+    EVENT_PARAMS,
     REVIEW_TYPE,
     IS_MANAGER,
     SEND,
+    RESULT,
+    PLACEHOLDERS,
 
     MODEL_PARENT_ELEMENT,
 
@@ -30,16 +33,17 @@ public enum FlowParameters {
     COLLEAGUE_UUID,
     COLLEAGUE_PROFILE,
     COLLEAGUE_WORK_LEVEL,
+    SOURCE_COLLEAGUE_UUID,
+    SOURCE_COLLEAGUE_PROFILE,
 
     PROFILE_ATTRIBUTE_NAME,
-    QUARTER,
+    TIMELINE_POINT,
+    TIMELINE_POINT_UUID,
 
     TIP_UUID,
 
     //notifications
-    CONTACT_TEMPLATE_ID,
-
-    TIMELINE_POINT_UUID;
+    CONTACT_TEMPLATE_ID;
 
     /**
      * Returns corresponded parameter for string value if exist or the same parameter

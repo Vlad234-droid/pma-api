@@ -124,12 +124,12 @@ public class InitTimelinePointHandler extends CamundaAbstractFlowHandler {
             try {
                 var period = parsePeriod(context, names, DURATION);
                 endDate = startDate.plus(period);
-                context.setVariable(FlowParameters.END_DATE, endDate);
-                context.setVariable(FlowParameters.END_DATE_S, HandlerUtils.formatDate(endDate));
             } catch (DateTimeParseException e) {
                 throw incorrectParameter(context, names, DURATION, e);
             }
         }
+        context.setVariable(FlowParameters.END_DATE, endDate);
+        context.setVariable(FlowParameters.END_DATE_S, HandlerUtils.formatDate(endDate));
         return endDate;
     }
 

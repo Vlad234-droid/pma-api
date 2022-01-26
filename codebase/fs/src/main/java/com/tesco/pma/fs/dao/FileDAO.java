@@ -1,6 +1,5 @@
 package com.tesco.pma.fs.dao;
 
-import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.file.api.File;
 import com.tesco.pma.pagination.RequestQuery;
 import org.apache.ibatis.annotations.Param;
@@ -15,23 +14,26 @@ public interface FileDAO {
      *
      * @param fileUuid file identifier
      * @param includeFileContent identifies if include file content
+     * @param colleagueUuid an identifier of file's owner
      * @return file data
      */
-    File read(@Param("fileUuid") UUID fileUuid, @Param("includeFileContent") boolean includeFileContent);
+    File read(@Param("fileUuid") UUID fileUuid,
+              @Param("includeFileContent") boolean includeFileContent,
+              @Param("colleagueUuid") UUID colleagueUuid);
 
     /**
      * Read all information about files with the latest version applying search, filter and sorting
      *
      * @param requestQuery filter, sorting and pagination
-     * @param statusFilters filters by file status
      * @param includeFileContent identifies if include file content
+     * @param colleagueUuid an identifier of file's owner
      * @param latest identifies if latest version data needed
      *
      * @return filtered files data
      */
     List<File> findByRequestQuery(@Param("requestQuery") RequestQuery requestQuery,
-                                  @Param("statusFilters") List<DictionaryFilter> statusFilters,
                                   @Param("includeFileContent") boolean includeFileContent,
+                                  @Param("colleagueUuid") UUID colleagueUuid,
                                   @Param("latest") boolean latest);
 
     /**

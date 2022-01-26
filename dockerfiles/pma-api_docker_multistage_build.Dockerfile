@@ -36,7 +36,8 @@ RUN apt-get update \
 
 RUN set -o errexit -o nounset \
     && echo "Downloading Gradle" \
-    && wget --no-verbose --output-document=gradle.zip "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
+    && wget --no-verbose --output-document=gradle.zip \
+       "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
     \
     && echo "Checking download hash" \
     && echo "${GRADLE_DOWNLOAD_SHA256} *gradle.zip" | sha256sum --check - \
@@ -57,7 +58,7 @@ WORKDIR /home/gradle/app
 # Build app, and skip tests
 RUN gradle build --no-daemon -PbuildProfiles=$BUILD_PROFILES -x test
 
-FROM openjdk:11-jre-slim
+FROM openjdk:11-jdk-slim
 
 ARG RUNTIME_JAVA_OPTS ""
 ARG RUNTIME_JAVA_ARGS ""

@@ -25,7 +25,7 @@ public class FsResourceProvider implements ResourceProvider {
     public InputStream read(String resourcePath, String resourceName) throws IOException {
 
         return new ByteArrayInputStream(
-                fileService.get(resourcePath, resourceName, true).getFileContent());
+                fileService.get(resourcePath, resourceName, true, null).getFileContent());
     }
 
     @Override
@@ -37,7 +37,7 @@ public class FsResourceProvider implements ResourceProvider {
 
     @Override
     public File readFile(String resourcePath, String resourceName) {
-        return fileService.get(resourcePath, resourceName, true);
+        return fileService.get(resourcePath, resourceName, true, null);
     }
 
     @Override
@@ -45,8 +45,4 @@ public class FsResourceProvider implements ResourceProvider {
         return fileService.get(uuid, true);
     }
 
-    @Override
-    public UUID readFileUuid(String resourcePath, String resourceName) {
-        return this.readFile(resourcePath, resourceName).getUuid();
-    }
 }

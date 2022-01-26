@@ -23,6 +23,17 @@
                manager_uuid="[null]"
     />
 
+    <colleague
+            uuid="10000000-0000-0000-0000-000000000000"
+            country_code="GB"
+            first_name="First"
+            middle_name="Middle"
+            last_name="Last"
+            job_id="1"
+            department_id="1"
+            manager_uuid="10000000-0000-0000-0000-000000000001"
+    />
+
     <colleague uuid="10000000-0000-0000-0000-000000000002"
                first_name="first_name"
                middle_name="middle_name"
@@ -36,17 +47,6 @@
                country_code="GB"
                work_level="WL1"
                department_id="1"
-               manager_uuid="[null]"
-    />
-
-    <colleague
-            uuid="10000000-0000-0000-0000-000000000000"
-            country_code="GB"
-            first_name="First"
-            middle_name="Middle"
-            last_name="Last"
-            job_id="1"
-            department_id="1"
-            manager_uuid="10000000-0000-0000-0000-000000000001"
+               manager_uuid="10000000-0000-0000-0000-000000000000"
     />
 </dataset>

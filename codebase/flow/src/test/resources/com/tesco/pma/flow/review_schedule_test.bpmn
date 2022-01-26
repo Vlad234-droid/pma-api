@@ -12,13 +12,6 @@
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_1hnn181" sourceRef="Event_1mop64d" targetRef="Activity_169rxaf" />
-    <bpmn:scriptTask id="Activity_0gtujyz" name="Send&#10;before start&#10;review&#10;event" scriptFormat="groovy">
-      <bpmn:incoming>Flow_1d3qt6f</bpmn:incoming>
-      <bpmn:outgoing>Flow_0gpmgag</bpmn:outgoing>
-      <bpmn:script>println "\nSend event: " +
-"${execution.getCurrentActivityName()}" +
-" ${java.time.LocalDateTime.now()}"</bpmn:script>
-    </bpmn:scriptTask>
     <bpmn:sequenceFlow id="Flow_1d3qt6f" sourceRef="Event_1gsa5iq" targetRef="Activity_0gtujyz" />
     <bpmn:intermediateCatchEvent id="Event_19zy80f" name="Start&#10;review">
       <bpmn:incoming>Flow_0gpmgag</bpmn:incoming>
@@ -43,19 +36,7 @@
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_0pqo8sq" sourceRef="Gateway_19u7dw8" targetRef="Event_0j75pfy" />
-    <bpmn:scriptTask id="Activity_02h925b" name="Send start&#10;review&#10;event" scriptFormat="groovy">
-      <bpmn:incoming>Flow_0hk6bxu</bpmn:incoming>
-      <bpmn:outgoing>Flow_04ta6o2</bpmn:outgoing>
-      <bpmn:script>println "\nSend event: " + "${execution.getCurrentActivityName()}" +
-" ${java.time.LocalDateTime.now()}"</bpmn:script>
-    </bpmn:scriptTask>
     <bpmn:sequenceFlow id="Flow_0hk6bxu" sourceRef="Gateway_19u7dw8" targetRef="Activity_02h925b" />
-    <bpmn:scriptTask id="Activity_14syf2g" name="Send&#10;before end&#10;review&#10;event" scriptFormat="groovy">
-      <bpmn:incoming>Flow_0jx4z3r</bpmn:incoming>
-      <bpmn:outgoing>Flow_0mvokqh</bpmn:outgoing>
-      <bpmn:script>println "\nSend event: " + "${execution.getCurrentActivityName()}" +
-" ${java.time.LocalDateTime.now()}"</bpmn:script>
-    </bpmn:scriptTask>
     <bpmn:sequenceFlow id="Flow_0jx4z3r" sourceRef="Event_0j75pfy" targetRef="Activity_14syf2g" />
     <bpmn:intermediateCatchEvent id="Event_1u807sf" name="Review&#10;period">
       <bpmn:extensionElements>
@@ -84,13 +65,6 @@
     </bpmn:parallelGateway>
     <bpmn:sequenceFlow id="Flow_0mvokqh" sourceRef="Activity_14syf2g" targetRef="Gateway_1do8e8p" />
     <bpmn:sequenceFlow id="Flow_1q4oeu0" sourceRef="Gateway_1do8e8p" targetRef="Event_1u807sf" />
-    <bpmn:scriptTask id="Activity_1arxp9t" name="Send end&#10;review&#10;event" scriptFormat="groovy">
-      <bpmn:incoming>Flow_0xc9oqw</bpmn:incoming>
-      <bpmn:outgoing>Flow_14k9zor</bpmn:outgoing>
-      <bpmn:script>println "\nSend event: " + "${execution.getCurrentActivityName()}" +
-"\n${execution.getVariables()}" +
-"\n${java.time.LocalDateTime.now()}"</bpmn:script>
-    </bpmn:scriptTask>
     <bpmn:sequenceFlow id="Flow_0xc9oqw" sourceRef="Event_1u807sf" targetRef="Activity_1arxp9t" />
     <bpmn:endEvent id="Event_1fwl5fm">
       <bpmn:incoming>Flow_14k9zor</bpmn:incoming>
@@ -126,6 +100,82 @@
     <bpmn:sequenceFlow id="Flow_057syh7" sourceRef="Gateway_0mf8rqh" targetRef="Event_095p8c5">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${TEST_MODE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_0gtujyz" name="Send&#10;before start&#10;review&#10;event" camunda:class="com.tesco.pma.flow.handlers.ColleaguesEventsSendHandler">
+      <bpmn:extensionElements>
+        <camunda:field name="eventNameExpression">
+          <camunda:string>NF_PM_REVIEW_BEFORE_START</camunda:string>
+        </camunda:field>
+        <camunda:field name="isErrorSensitiveExpression">
+          <camunda:string>true</camunda:string>
+        </camunda:field>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="EVENT_PARAMS">
+            <camunda:map>
+              <camunda:entry key="TIMELINE_POINT_UUID">${TIMELINE_POINT.getUuid()}</camunda:entry>
+            </camunda:map>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1d3qt6f</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gpmgag</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_02h925b" name="Send start&#10;review&#10;event" camunda:class="com.tesco.pma.flow.handlers.ColleaguesEventsSendHandler">
+      <bpmn:extensionElements>
+        <camunda:field name="eventNameExpression">
+          <camunda:string>NF_PM_REVIEW_START</camunda:string>
+        </camunda:field>
+        <camunda:field name="isErrorSensitiveExpression">
+          <camunda:string>true</camunda:string>
+        </camunda:field>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="EVENT_PARAMS">
+            <camunda:map>
+              <camunda:entry key="TIMELINE_POINT_UUID">${TIMELINE_POINT.getUuid()}</camunda:entry>
+            </camunda:map>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0hk6bxu</bpmn:incoming>
+      <bpmn:outgoing>Flow_04ta6o2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_14syf2g" name="Send&#10;before end&#10;review&#10;event" camunda:class="com.tesco.pma.flow.handlers.ColleaguesEventsSendHandler">
+      <bpmn:extensionElements>
+        <camunda:field name="eventNameExpression">
+          <camunda:string>NF_PM_REVIEW_BEFORE_END</camunda:string>
+        </camunda:field>
+        <camunda:field name="isErrorSensitiveExpression">
+          <camunda:string>true</camunda:string>
+        </camunda:field>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="EVENT_PARAMS">
+            <camunda:map>
+              <camunda:entry key="TIMELINE_POINT_UUID">${TIMELINE_POINT.getUuid()}</camunda:entry>
+            </camunda:map>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0jx4z3r</bpmn:incoming>
+      <bpmn:outgoing>Flow_0mvokqh</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_1arxp9t" name="Send end&#10;review&#10;event" camunda:class="com.tesco.pma.flow.handlers.ColleaguesEventsSendHandler">
+      <bpmn:extensionElements>
+        <camunda:field name="eventNameExpression">
+          <camunda:string>NF_PM_REVIEW_END</camunda:string>
+        </camunda:field>
+        <camunda:field name="isErrorSensitiveExpression">
+          <camunda:string>true</camunda:string>
+        </camunda:field>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="EVENT_PARAMS">
+            <camunda:map>
+              <camunda:entry key="TIMELINE_POINT_UUID">${TIMELINE_POINT.getUuid()}</camunda:entry>
+            </camunda:map>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0xc9oqw</bpmn:incoming>
+      <bpmn:outgoing>Flow_14k9zor</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="review_schedule_test">
@@ -209,9 +259,6 @@
           <dc:Bounds x="514" y="165" width="33" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0gtujyz_di" bpmnElement="Activity_0gtujyz">
-        <dc:Bounds x="580" y="100" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_19zy80f_di" bpmnElement="Event_19zy80f">
         <dc:Bounds x="712" y="122" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -227,12 +274,6 @@
           <dc:Bounds x="783" y="266" width="33" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_02h925b_di" bpmnElement="Activity_02h925b">
-        <dc:Bounds x="860" y="100" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_14syf2g_di" bpmnElement="Activity_14syf2g">
-        <dc:Bounds x="860" y="200" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1u807sf_di" bpmnElement="Event_1u807sf">
         <dc:Bounds x="1072" y="122" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -241,9 +282,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_11gtxe2_di" bpmnElement="Gateway_1do8e8p">
         <dc:Bounds x="995" y="115" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1arxp9t_di" bpmnElement="Activity_1arxp9t">
-        <dc:Bounds x="1140" y="100" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1fwl5fm_di" bpmnElement="Event_1fwl5fm">
         <dc:Bounds x="1269" y="122" width="36" height="36" />
@@ -259,6 +297,18 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_095p8c5_di" bpmnElement="Event_095p8c5">
         <dc:Bounds x="362" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_07eou46_di" bpmnElement="Activity_0gtujyz">
+        <dc:Bounds x="580" y="100" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1rpanoc_di" bpmnElement="Activity_02h925b">
+        <dc:Bounds x="860" y="100" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1r8uu1l_di" bpmnElement="Activity_14syf2g">
+        <dc:Bounds x="860" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1s4o099_di" bpmnElement="Activity_1arxp9t">
+        <dc:Bounds x="1140" y="100" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

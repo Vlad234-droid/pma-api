@@ -1,11 +1,8 @@
 package com.tesco.pma.fs.service;
 
-import com.tesco.pma.api.DictionaryFilter;
-import com.tesco.pma.api.RequestQueryToDictionaryFilterConverter;
 import com.tesco.pma.dao.DictionaryDAO;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.RegistrationException;
-import com.tesco.pma.file.api.FileStatus;
 import com.tesco.pma.file.api.FileType;
 import com.tesco.pma.fs.dao.FileDAO;
 import com.tesco.pma.file.api.File;
@@ -26,7 +23,6 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import static com.tesco.pma.file.api.FileStatus.ACTIVE;
-import static com.tesco.pma.file.api.FileStatus.INACTIVE;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Sort.SortOrder.DESC;
 import static java.util.Arrays.asList;
@@ -36,7 +32,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -60,15 +55,12 @@ public class FileServiceImplTest {
     @MockBean
     private DictionaryDAO dictionaryDAO;
 
-    @MockBean
-    private RequestQueryToDictionaryFilterConverter toDictionaryFilterConverter;
-
     @Test
     void upload() {
         var fileData = buildFileData(FILE_NAME, FILE_UUID_1, 1);
         var uploadMetadata = new UploadMetadata();
         when(fileDao.create(any())).thenReturn(1);
-        when(fileDao.read(any(), eq(false))).thenReturn(fileData);
+        when(fileDao.read(any(), eq(false), eq(CREATOR_ID))).thenReturn(fileData);
 
         var result = service.upload(fileData, uploadMetadata, CREATOR_ID);
 
@@ -82,7 +74,7 @@ public class FileServiceImplTest {
         var uploadMetadata = new UploadMetadata();
         uploadMetadata.setFileName(FILE_NAME_2);
         when(fileDao.create(any())).thenReturn(1);
-        when(fileDao.read(any(), eq(false))).thenReturn(fileData);
+        when(fileDao.read(any(), eq(false), eq(CREATOR_ID))).thenReturn(fileData);
 
         var result = service.upload(fileData, uploadMetadata, CREATOR_ID);
 
@@ -102,18 +94,18 @@ public class FileServiceImplTest {
     @Test
     void getByUuid() {
         var fileData = buildFileData(FILE_NAME, FILE_UUID_1, 1);
-        when(fileDao.read(FILE_UUID_1, false)).thenReturn(fileData);
+        when(fileDao.read(FILE_UUID_1, false, CREATOR_ID)).thenReturn(fileData);
 
-        var result = service.get(FILE_UUID_1, false);
+        var result = service.get(FILE_UUID_1, false, CREATOR_ID);
 
         assertEquals(fileData, result);
     }
 
     @Test
     void getByUuidThrowsExceptionWhenDaoReturnsNull() {
-        when(fileDao.read(FILE_UUID_1, true)).thenReturn(null);
+        when(fileDao.read(FILE_UUID_1, true, CREATOR_ID)).thenReturn(null);
 
-        assertThrows(NotFoundException.class, () -> service.get(FILE_UUID_1, true));
+        assertThrows(NotFoundException.class, () -> service.get(FILE_UUID_1, true, CREATOR_ID));
     }
 
     @Test
@@ -121,16 +113,9 @@ public class FileServiceImplTest {
         var filesData = asList(buildFileData(FILE_NAME, FILE_UUID_1, 1));
         var includeFileContent = false;
         var requestQuery = new RequestQuery();
-        var includeStatusFilter = DictionaryFilter.includeFilter(ACTIVE);
-        var excludeStatusFilter = DictionaryFilter.excludeFilter(INACTIVE);
-        when(toDictionaryFilterConverter.convert(requestQuery, true, "status", FileStatus.class))
-                .thenReturn(includeStatusFilter);
-        when(toDictionaryFilterConverter.convert(requestQuery, false, "status", FileStatus.class))
-                .thenReturn(excludeStatusFilter);
-        when(fileDao.findByRequestQuery(requestQuery, asList(includeStatusFilter, excludeStatusFilter),
-                includeFileContent, true)).thenReturn(filesData);
+        when(fileDao.findByRequestQuery(requestQuery, includeFileContent, CREATOR_ID, true)).thenReturn(filesData);
 
-        var result = service.get(requestQuery, includeFileContent, true);
+        var result = service.get(requestQuery, includeFileContent, CREATOR_ID, true);
 
         assertEquals(filesData, result);
     }
@@ -138,11 +123,9 @@ public class FileServiceImplTest {
     @Test
     void getByRequestQueryReturnsNothingWhenDaoFindsNothing() {
         var includeFileContent = true;
-        var requestQuery = new RequestQuery();
-        when(fileDao.findByRequestQuery(any(RequestQuery.class), anyList(), eq(includeFileContent), eq(true)))
-                .thenReturn(emptyList());
+        when(fileDao.findByRequestQuery(any(RequestQuery.class), eq(includeFileContent), eq(CREATOR_ID), eq(true))).thenReturn(emptyList());
 
-        var result = service.get(requestQuery, includeFileContent, true);
+        var result = service.get(new RequestQuery(), includeFileContent, CREATOR_ID, true);
 
         assertEquals(emptyList(), result);
     }
@@ -153,9 +136,10 @@ public class FileServiceImplTest {
         var includeFileContent = false;
         var requestQuery = new RequestQuery();
         requestQuery.setFilters(asList(new Condition("path", EQUALS, PATH), new Condition("file-name", EQUALS, FILE_NAME)));
-        when(fileDao.findByRequestQuery(eq(requestQuery), any(), eq(includeFileContent), eq(true))).thenReturn(asList(fileData));
+        when(fileDao.findByRequestQuery(eq(requestQuery), eq(includeFileContent), eq(CREATOR_ID), eq(true)))
+                .thenReturn(asList(fileData));
 
-        var result = service.get(PATH, FILE_NAME, includeFileContent);
+        var result = service.get(PATH, FILE_NAME, includeFileContent, CREATOR_ID);
 
         assertEquals(fileData, result);
     }
@@ -163,9 +147,9 @@ public class FileServiceImplTest {
     @Test
     void getByFileNameAndPathThrowsExceptionWhenDaoReturnsNull() {
         var includeFileContent = true;
-        when(fileDao.findByRequestQuery(any(), any(), eq(includeFileContent), eq(true))).thenReturn(emptyList());
+        when(fileDao.findByRequestQuery(any(), eq(includeFileContent), eq(CREATOR_ID), eq(true))).thenReturn(emptyList());
 
-        assertThrows(NotFoundException.class, () -> service.get("/not/existed", "not_existed_file.txt", includeFileContent));
+        assertThrows(NotFoundException.class, () -> service.get("/not/existed", "not_existed_file.txt", includeFileContent, CREATOR_ID));
     }
 
     @Test
@@ -176,9 +160,9 @@ public class FileServiceImplTest {
         requestQuery.setFilters(asList(new Condition("path", EQUALS, PATH), new Condition("file-name", EQUALS, FILE_NAME)));
         requestQuery.setLimit(null);
         requestQuery.setSort(Arrays.asList(new Sort("version", DESC)));
-        when(fileDao.findByRequestQuery(eq(requestQuery), any(), eq(includeFileContent), eq(false))).thenReturn(filesData);
+        when(fileDao.findByRequestQuery(eq(requestQuery), eq(includeFileContent), eq(CREATOR_ID), eq(false))).thenReturn(filesData);
 
-        var result = service.getAllVersions(PATH, FILE_NAME, includeFileContent);
+        var result = service.getAllVersions(PATH, FILE_NAME, includeFileContent, CREATOR_ID);
 
         assertEquals(filesData, result);
     }
@@ -190,9 +174,9 @@ public class FileServiceImplTest {
         requestQuery.setFilters(asList(new Condition("path", EQUALS, PATH), new Condition("file-name", EQUALS, FILE_NAME)));
         requestQuery.setLimit(null);
         requestQuery.setSort(Arrays.asList(new Sort("version", DESC)));
-        when(fileDao.findByRequestQuery(eq(requestQuery), any(), eq(includeFileContent), eq(false))).thenReturn(emptyList());
+        when(fileDao.findByRequestQuery(eq(requestQuery), eq(includeFileContent), eq(CREATOR_ID), eq(false))).thenReturn(emptyList());
 
-        var result = service.getAllVersions(PATH, FILE_NAME, includeFileContent);
+        var result = service.getAllVersions(PATH, FILE_NAME, includeFileContent, CREATOR_ID);
 
         assertThat(result).isEmpty();
     }

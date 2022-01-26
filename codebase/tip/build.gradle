@@ -10,6 +10,7 @@ dependencies {
     implementation project(':service')
     implementation project(':organisation')
     implementation project(':fs')
+    implementation project(':event')
 
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:${springBootMybatisVersion}")
     implementation("org.springframework.boot:spring-boot-starter:${springBootVersion}")
