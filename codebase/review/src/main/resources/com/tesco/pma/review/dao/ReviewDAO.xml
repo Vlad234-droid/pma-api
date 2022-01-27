@@ -19,7 +19,7 @@
         <result property="changeStatusReason" column="change_reason"/>
     </resultMap>
 
-    <resultMap id="colleagueReviewsResultMap" type="com.tesco.pma.review.domain.ColleagueTimeline">
+    <resultMap id="colleagueReviewsResultMap" type="com.tesco.pma.review.domain.ColleagueView">
         <id property="uuid" column="uuid"/>
         <result property="firstName" column="first_name"/>
         <result property="lastName" column="last_name"/>
@@ -141,7 +141,7 @@
         order by r.type_id, r.number
     </select>
 
-    <select id="getTeamReviews" resultMap="colleagueReviewsResultMap">
+    <select id="getTeamView" resultMap="colleagueReviewsResultMap">
         with recursive r_colleague as (
             select c.*, 1 as level
             from colleague c

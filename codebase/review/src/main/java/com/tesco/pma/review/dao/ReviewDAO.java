@@ -2,7 +2,7 @@ package com.tesco.pma.review.dao;
 
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
-import com.tesco.pma.review.domain.ColleagueTimeline;
+import com.tesco.pma.review.domain.ColleagueView;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStats;
 import org.apache.ibatis.annotations.Param;
@@ -92,15 +92,15 @@ public interface ReviewDAO {
                                        @Param("colleagueUuid") UUID colleagueUuid);
 
     /**
-     * Returns list of colleagues reviews by managerUuid
+     * Returns list of colleague's view with active reviews, timeline points etc. by managerUuid
      * if some parameter is null it will be ignored
      *
      * @param managerUuid an identifier of colleague
      * @param depth       a level of colleague's tree
-     * @return a list of colleagues reviews with active reviews
+     * @return a list of colleague's view with active reviews, timeline points etc.
      */
-    List<ColleagueTimeline> getTeamReviews(@Param("managerUuid") UUID managerUuid,
-                                           @Param("depth") Integer depth);
+    List<ColleagueView> getTeamView(@Param("managerUuid") UUID managerUuid,
+                                    @Param("depth") Integer depth);
 
     /**
      * Updates a review status

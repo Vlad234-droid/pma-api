@@ -6,7 +6,7 @@ import com.tesco.pma.api.MapJson;
 import com.tesco.pma.colleague.api.ColleagueSimple;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.dao.AbstractDAOTest;
-import com.tesco.pma.review.domain.ColleagueTimeline;
+import com.tesco.pma.review.domain.ColleagueView;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStats;
 import com.tesco.pma.review.domain.SimplifiedReview;
@@ -348,13 +348,13 @@ class ReviewDAOTest extends AbstractDAOTest {
                         .build()
         );
 
-        final var result = instance.getTeamReviews(MANAGER_UUID, 1);
+        final var result = instance.getTeamView(MANAGER_UUID, 1);
 
         assertThat(result)
                 .singleElement()
-                .asInstanceOf(type(ColleagueTimeline.class))
-                .returns(null, from(ColleagueTimeline::getTimeline))
-                .returns(simplifiedReviews, from(ColleagueTimeline::getReviews));
+                .asInstanceOf(type(ColleagueView.class))
+                .returns(null, from(ColleagueView::getTimeline))
+                .returns(simplifiedReviews, from(ColleagueView::getReviews));
     }
 
     @Test
@@ -365,7 +365,7 @@ class ReviewDAOTest extends AbstractDAOTest {
             "pm_review_init.xml"})
     void getFullTeamReviews() {
 
-        final var result = instance.getTeamReviews(MANAGER_UUID, 2);
+        final var result = instance.getTeamView(MANAGER_UUID, 2);
         final var lineManager = ColleagueSimple.builder()
                 .uuid(COLLEAGUE_UUID)
                 .firstName("First")
@@ -376,9 +376,9 @@ class ReviewDAOTest extends AbstractDAOTest {
 
         assertThat(result)
                 .singleElement()
-                .asInstanceOf(type(ColleagueTimeline.class))
-                .returns(COLLEAGUE_UUID_2, from(ColleagueTimeline::getUuid))
-                .returns(lineManager, from(ColleagueTimeline::getLineManager));
+                .asInstanceOf(type(ColleagueView.class))
+                .returns(COLLEAGUE_UUID_2, from(ColleagueView::getUuid))
+                .returns(lineManager, from(ColleagueView::getLineManager));
     }
 
     @Test
