@@ -3,6 +3,7 @@ package com.tesco.pma.review.dao;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.tesco.pma.api.MapJson;
+import com.tesco.pma.colleague.api.ColleagueSimple;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.review.domain.ColleagueTimeline;
@@ -46,6 +47,7 @@ class ReviewDAOTest extends AbstractDAOTest {
     private static final UUID MYR_TIMELINE_POINT_UUID = UUID.fromString("10000000-0000-0000-2000-000000000000");
     private static final UUID MANAGER_UUID = UUID.fromString("10000000-0000-0000-0000-000000000001");
     private static final UUID COLLEAGUE_UUID = UUID.fromString("10000000-0000-0000-0000-000000000000");
+    private static final UUID COLLEAGUE_UUID_1 = UUID.fromString("10000000-0000-0000-0000-000000000001");
     private static final UUID COLLEAGUE_UUID_2 = UUID.fromString("10000000-0000-0000-0000-000000000002");
     private static final UUID TIMELINE_POINT_UUID_NOT_EXIST = UUID.fromString("ccb9ab0b-f50f-4442-8900-000000000000");
     private static final UUID CYCLE_UUID = UUID.fromString("10000000-1000-0000-0000-000000000000");
@@ -364,11 +366,19 @@ class ReviewDAOTest extends AbstractDAOTest {
     void getFullTeamReviews() {
 
         final var result = instance.getTeamReviews(MANAGER_UUID, 2);
+        final var lineManager = ColleagueSimple.builder()
+                .uuid(COLLEAGUE_UUID)
+                .firstName("First")
+                .lastName("Last")
+                .businessType("Bank")
+                .jobName("Team lead")
+                .build();
 
         assertThat(result)
                 .singleElement()
                 .asInstanceOf(type(ColleagueTimeline.class))
-                .returns(COLLEAGUE_UUID_2, from(ColleagueTimeline::getUuid));
+                .returns(COLLEAGUE_UUID_2, from(ColleagueTimeline::getUuid))
+                .returns(lineManager, from(ColleagueTimeline::getLineManager));
     }
 
     @Test

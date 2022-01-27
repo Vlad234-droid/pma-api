@@ -25,6 +25,7 @@
         <result property="lastName" column="last_name"/>
         <result property="jobName" column="job_name"/>
         <result property="businessType" column="business_type"/>
+        <association property="lineManager" autoMapping="true" columnPrefix="lm_"/>
         <collection property="reviews" ofType="com.tesco.pma.review.domain.SimplifiedReview">
             <id property="uuid" column="review_uuid"/>
             <result property="type" column="review_type_id"
@@ -155,12 +156,17 @@
         select distinct c.uuid,
                         c.first_name,
                         c.last_name,
-                        j.name          as job_name,
-                        d.business_type as business_type,
-                        r.uuid          as review_uuid,
-                        r.type_id       as review_type_id,
-                        r.status_id     as review_status_id,
-                        r.number        as review_number
+                        j.name             as job_name,
+                        d.business_type    as business_type,
+                        lm_c.uuid          as lm_uuid,
+                        lm_c.first_name    as lm_firstName,
+                        lm_c.last_name     as lm_lastName,
+                        lm_j.name          as lm_jobName,
+                        lm_d.business_type as lm_businessType,
+                        r.uuid             as review_uuid,
+                        r.type_id          as review_type_id,
+                        r.status_id        as review_status_id,
+                        r.number           as review_number
         from r_colleague rc
                  inner join colleague c
                             on (c.uuid = rc.uuid)
@@ -168,6 +174,12 @@
                            on (j.id = c.job_id)
                  left join department d
                            on (d.id = c.department_id)
+                 inner join colleague lm_c
+                            on (c.manager_uuid = lm_c.uuid)
+                 left join job lm_j
+                           on (lm_j.id = lm_c.job_id)
+                 left join department lm_d
+                           on (lm_d.id = lm_c.department_id)
                  left join pm_colleague_cycle cc
                            on (c.uuid = cc.colleague_uuid
                                and cc.status_id = 1)

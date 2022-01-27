@@ -19,6 +19,7 @@ import java.util.List;
 @SuperBuilder
 public class ColleagueTimeline extends ColleagueSimple {
 
+    ColleagueSimple lineManager;
     List<SimplifiedReview> reviews;
     List<TimelinePoint> timeline;
 }
