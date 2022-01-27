@@ -1,6 +1,7 @@
 package com.tesco.pma.reports.review.domain.provider;
 
 import com.tesco.pma.api.ValueType;
+import com.tesco.pma.reporting.ReportMetadata;
 import com.tesco.pma.reporting.Reportable;
 import com.tesco.pma.reporting.metadata.ColumnMetadata;
 import com.tesco.pma.reports.review.domain.ObjectiveLinkedReviewData;
@@ -36,40 +37,45 @@ import static com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReview
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ObjectiveLinkedReviewReportProvider implements Reportable {
 
-     enum ColumnMetadataEnum {
-        IAM_ID("IamId", "Employee No", STRING, "Employee No"),
-        COLLEAGUE_UUID("ColleagueUUID", "Employee UUID", STRING, "Employee UUID"),
-        FIRST_NAME("FirstName", "First Name", STRING, "First Name"),
-        LAST_NAME("LastName", "Surname", STRING, "Surname"),
-        WORKING_LEVEL("WorkingLevel", "Working level", STRING, "Working level"),
-        JOB_TITLE("JobTitle", "Job title", STRING, "Job title"),
-        LINE_MANAGER("LineManager", "Line Manager", STRING, "Line Manager"),
-        OBJECTIVE_NUMBER("ObjectiveNumber", "Objective number", INTEGER, "Objective number"),
-        STATUS("ObjectiveStatus", "Objective Status", STRING, "Objective Status"),
-        STRATEGIC_PRIORITY("Strategic_Priority", "Strategic priority", STRING,
-                "Link to Strategic priorities"),
-        OBJECTIVE_TITLE("Title", "Objective title", STRING, "Objective title"),
-        HOW_ACHIEVED("How_Achieved", "How achieved", STRING,
-                "How do I know I've ACHIEVED this objective?"),
-        HOW_OVER_ACHIEVED("How_Over_Achieved", "How over-achieved", STRING,
-                "How do I know I've OVER-ACHIEVED this objective?");
+    public static final String REPORT_NAME = "linked-objective-report";
+    public static final String REPORT_DESCRIPTION = "Linked Objectives Review Report";
+    public static final String REPORT_FILE_NAME = "LinkedObjectivesReport.xlsx";
+    public static final String REPORT_SHEET_NAME = "Report";
 
-        private final ColumnMetadata columnMetadata;
+    enum ColumnMetadataEnum {
+       IAM_ID("IamId", "Employee No", STRING, "Employee No"),
+       COLLEAGUE_UUID("ColleagueUUID", "Employee UUID", STRING, "Employee UUID"),
+       FIRST_NAME("FirstName", "First Name", STRING, "First Name"),
+       LAST_NAME("LastName", "Surname", STRING, "Surname"),
+       WORKING_LEVEL("WorkingLevel", "Working level", STRING, "Working level"),
+       JOB_TITLE("JobTitle", "Job title", STRING, "Job title"),
+       LINE_MANAGER("LineManager", "Line Manager", STRING, "Line Manager"),
+       OBJECTIVE_NUMBER("ObjectiveNumber", "Objective number", INTEGER, "Objective number"),
+       STATUS("ObjectiveStatus", "Objective Status", STRING, "Objective Status"),
+       STRATEGIC_PRIORITY("Strategic_Priority", "Strategic priority", STRING,
+               "Link to Strategic priorities"),
+       OBJECTIVE_TITLE("Title", "Objective title", STRING, "Objective title"),
+       HOW_ACHIEVED("How_Achieved", "How achieved", STRING,
+               "How do I know I've ACHIEVED this objective?"),
+       HOW_OVER_ACHIEVED("How_Over_Achieved", "How over-achieved", STRING,
+               "How do I know I've OVER-ACHIEVED this objective?");
 
-        ColumnMetadataEnum(String id,
-                           String name,
-                           ValueType type,
-                           String description) {
-            columnMetadata = new ColumnMetadata();
-            columnMetadata.setId(id);
-            columnMetadata.setName(name);
-            columnMetadata.setType(type);
-            columnMetadata.setDescription(description);
-        }
+       private final ColumnMetadata columnMetadata;
 
-        public ColumnMetadata getColumnMetadata() {
-            return columnMetadata;
-        }
+       ColumnMetadataEnum(String id,
+                          String name,
+                          ValueType type,
+                          String description) {
+           columnMetadata = new ColumnMetadata();
+           columnMetadata.setId(id);
+           columnMetadata.setName(name);
+           columnMetadata.setType(type);
+           columnMetadata.setDescription(description);
+       }
+
+       public ColumnMetadata getColumnMetadata() {
+           return columnMetadata;
+       }
     }
 
     List<ObjectiveLinkedReviewData> objectives;
@@ -82,7 +88,18 @@ public class ObjectiveLinkedReviewReportProvider implements Reportable {
     }
 
     @Override
-    public List<ColumnMetadata> getReportMetadata() {
+    public ReportMetadata getReportMetadata() {
+        var reportMetadata = new ReportMetadata();
+        reportMetadata.setId(REPORT_NAME);
+        reportMetadata.setCode(REPORT_NAME);
+        reportMetadata.setDescription(REPORT_DESCRIPTION);
+        reportMetadata.setFileName(REPORT_FILE_NAME);
+        reportMetadata.setSheetName(REPORT_SHEET_NAME);
+        reportMetadata.setColumnMetadata(getColumnMetadata());
+        return reportMetadata;
+    }
+
+    private List<ColumnMetadata> getColumnMetadata() {
         return List.of(
                 IAM_ID.getColumnMetadata(),
                 COLLEAGUE_UUID.getColumnMetadata(),

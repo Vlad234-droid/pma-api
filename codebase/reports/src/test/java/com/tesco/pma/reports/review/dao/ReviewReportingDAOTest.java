@@ -4,7 +4,6 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
-import com.tesco.pma.reports.review.domain.ObjectiveLinkedReviewData;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -18,7 +17,10 @@ import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Condition.Operand.IN;
 import static com.tesco.pma.reports.review.dao.ReviewReportingDAOTest.BASE_PATH_TO_DATA_SET;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataSet({BASE_PATH_TO_DATA_SET + "colleague_init.xml",
           BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
@@ -50,24 +52,24 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
 
         final var result = instance.getLinkedObjectivesData(requestQuery);
 
-        assertThat(result).isNotNull();
+        assertNotNull(result);
 
-        assertThat(result)
-                .hasSize(2)
-                .element(1)
-                .returns(COLLEAGUE_UUID, ObjectiveLinkedReviewData::getColleagueUUID)
-                .returns("string 2", ObjectiveLinkedReviewData::getIamId)
-                .returns("first_name", ObjectiveLinkedReviewData::getFirstName)
-                .returns("last_name", ObjectiveLinkedReviewData::getLastName)
-                .returns("WL4", ObjectiveLinkedReviewData::getWorkLevel)
-                .returns("Team lead", ObjectiveLinkedReviewData::getJobTitle)
-                .returns("first_name last_name", ObjectiveLinkedReviewData::getLineManager)
-                .returns(1, ObjectiveLinkedReviewData::getObjectiveNumber)
-                .returns(APPROVED, ObjectiveLinkedReviewData::getStatus)
-                .returns("\"Title init\"", ObjectiveLinkedReviewData::getObjectiveTitle)
-                .returns("\"Strategic Priority\"", ObjectiveLinkedReviewData::getStrategicPriority)
-                .returns("\"How achieved objective\"", ObjectiveLinkedReviewData::getHowAchieved)
-                .returns("\"How overachieved objective\"", ObjectiveLinkedReviewData::getHowOverAchieved);
+        assertEquals(2, result.size());
+
+        assertAll("report",
+                () -> assertEquals(COLLEAGUE_UUID, result.get(1).getColleagueUUID()),
+                () -> assertEquals("string 2", result.get(1).getIamId()),
+                () -> assertEquals("first_name", result.get(1).getFirstName()),
+                () -> assertEquals("last_name", result.get(1).getLastName()),
+                () -> assertEquals("WL4", result.get(1).getWorkLevel()),
+                () -> assertEquals("Team lead", result.get(1).getJobTitle()),
+                () -> assertEquals("first_name last_name", result.get(1).getLineManager()),
+                () -> assertEquals(1, result.get(1).getObjectiveNumber()),
+                () -> assertEquals(APPROVED, result.get(1).getStatus()),
+                () -> assertEquals("\"Title init\"", result.get(1).getObjectiveTitle()),
+                () -> assertEquals("\"Strategic Priority\"", result.get(1).getStrategicPriority()),
+                () -> assertEquals("\"How achieved objective\"", result.get(1).getHowAchieved()),
+                () -> assertEquals("\"How overachieved objective\"", result.get(1).getHowOverAchieved()));
     }
 
     @Test
@@ -77,6 +79,6 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
                                         new Condition("statuses", IN, List.of(DECLINED.getCode()))));
         final var result = instance.getLinkedObjectivesData(requestQuery);
 
-        assertThat(result).isEmpty();
+        assertTrue(result.isEmpty());
     }
 }

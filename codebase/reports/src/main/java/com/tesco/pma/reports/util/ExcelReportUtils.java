@@ -2,33 +2,41 @@ package com.tesco.pma.reports.util;
 
 import com.tesco.pma.reporting.metadata.ColumnMetadata;
 import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
-@Slf4j
+/**
+ * Excel utilities to build Excel report
+ */
 @UtilityClass
-public class ReportUtils {
+public class ExcelReportUtils {
 
-    public static Resource buildResource(String reportFileName, String sheetName,
-                                         List<List<Object>> reportData, List<ColumnMetadata> reportMetadata) {
+    /**
+     * Build Excel Report
+     *
+     * @param sheetName       - name of sheet
+     * @param reportData      - data of report
+     * @param columnMetadata  - column metadata, report name, etc
+     * @return resource with Report
+     * @throws IOException if the resource cannot be written
+     */
+    public static Resource buildResource(String sheetName,
+                                         List<List<Object>> reportData, List<ColumnMetadata> columnMetadata) throws IOException {
         try (var outputStream = new ByteArrayOutputStream(); var workbook = new XSSFWorkbook()) {
             var sheet = workbook.createSheet(sheetName);
 
-            buildHeader(reportMetadata, sheet);
+            buildHeader(columnMetadata, sheet);
             buildData(reportData, sheet);
 
             workbook.write(outputStream);
 
             return new ByteArrayResource(outputStream.toByteArray());
-        } catch (Exception e) {
-            log.warn("Resource was not closed correctly: " + reportFileName, e);
-            return null;
         }
     }
 

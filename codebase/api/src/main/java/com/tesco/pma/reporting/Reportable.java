@@ -1,8 +1,5 @@
 package com.tesco.pma.reporting;
 
-
-import com.tesco.pma.reporting.metadata.ColumnMetadata;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -21,9 +18,9 @@ public interface Reportable {
     /**
      * Report metadata.
      *
-     * @return list of column's metadata.
+     * @return metadata of report.
      */
-    List<ColumnMetadata> getReportMetadata();
+    ReportMetadata getReportMetadata();
 
     /**
      * Returns {@code true} if report data is available.
@@ -35,14 +32,14 @@ public interface Reportable {
     }
 
     /**
-     * Report.
+     * Returns Report with data and metadata
      *
      * @return report.
      */
     default Report getReport() {
-        var reportData = new Report();
-        reportData.setData(isAvailableReportData() ? getReportData() : Collections.emptyList());
-        reportData.setMetadata(getReportMetadata());
-        return reportData;
+        var report = new Report();
+        report.setData(isAvailableReportData() ? getReportData() : Collections.emptyList());
+        report.setMetadata(getReportMetadata());
+        return report;
     }
 }

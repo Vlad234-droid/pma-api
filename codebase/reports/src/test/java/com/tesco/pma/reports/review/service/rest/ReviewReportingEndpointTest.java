@@ -19,7 +19,8 @@ import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Condition.Operand.IN;
 import static com.tesco.pma.reports.review.service.rest.ReviewReportingEndpoint.APPLICATION_FORCE_DOWNLOAD_VALUE;
-import static org.assertj.core.api.Assertions.assertThat;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -34,8 +35,8 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
 
     private static final String COLLEAGUE_UUID_STR = "10000000-0000-0000-0000-000000000000";
     private static final Integer YEAR = 2021;
-    private static final String LINKED_OBJECTIVE_REVIEW_REPORT_URL = "/linked-objective-report";
-    private static final String LINKED_OBJECTIVE_REVIEW_REPORT_DATA_URL = "/linked-objective-report-data";
+    private static final String LINKED_OBJECTIVE_REVIEW_REPORT_URL = "/reports/linked-objective-report/formats/excel";
+    private static final String LINKED_OBJECTIVE_REVIEW_REPORT_DATA_URL = "/reports/linked-objective-report";
     private static final String LINKED_OBJECTIVES_REPORT_GET_RESPONSE_JSON_FILE_NAME = "linked_objectives_report_get_ok_response.json";
 
     @MockBean
@@ -49,7 +50,7 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
         var result = performGetWith(admin(), status().isCreated(),
                 APPLICATION_FORCE_DOWNLOAD_VALUE, LINKED_OBJECTIVE_REVIEW_REPORT_URL, requestQuery);
 
-        assertThat(result.getResponse().getContentAsByteArray()).hasSizeGreaterThan(0);
+        assertTrue(result.getResponse().getContentAsByteArray().length > 0);
     }
 
     @Test
