@@ -6,7 +6,7 @@ import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.review.domain.AuditOrgObjectiveReport;
-import com.tesco.pma.review.domain.ColleagueTimeline;
+import com.tesco.pma.review.domain.ColleagueView;
 import com.tesco.pma.review.domain.OrgObjective;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.TimelinePoint;
@@ -83,14 +83,14 @@ public interface ReviewService {
                                        @NotNull UUID colleagueUuid);
 
     /**
-     * Finds list of colleagues reviews by managerUuid
+     * Finds list of colleague's view with active reviews, timeline points etc. by managerUuid
      *
      * @param managerUuid an identifier of colleague
      * @param depth       a level of colleague's tree
-     * @return a list of colleagues reviews
+     * @return a list of colleague's view with active reviews, timeline points etc.
      */
-    List<ColleagueTimeline> getTeamReviews(@NotNull UUID managerUuid,
-                                           @NotNull Integer depth);
+    List<ColleagueView> getTeamView(@NotNull UUID managerUuid,
+                                    @NotNull Integer depth);
 
     /**
      * Creates review.
