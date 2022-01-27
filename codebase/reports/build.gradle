@@ -12,19 +12,31 @@ dependencyManagement {
 dependencies {
     implementation project(':api')
     implementation project(':service')
+    implementation project(':pm')
 
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter:${springBootVersion}")
+
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:${springBootMybatisVersion}")
+    implementation("com.fasterxml.jackson.core:jackson-databind:${fasterxmlJacksonDatabindVersion}")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${fasterxmlJacksonDatabindVersion}")
+    runtimeOnly "org.postgresql:postgresql:${postgresVersion}"
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    // To remove compile time warning,
+    // see: https://stackoverflow.com/questions/53326271/spring-nullable-annotation-generates-unknown-enum-constant-warning
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
 
     implementation("org.springdoc:springdoc-openapi-core:${openApiCoreVersion}")
     implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
 
     implementation ("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter:${camundaVersion}")
+    implementation("org.apache.poi:poi:${poiVersion}")
+    implementation("org.apache.poi:poi-ooxml:${poiVersion}")
 
     testCompile project(':service').sourceSets.test.output
 
@@ -38,6 +50,11 @@ dependencies {
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
+    testImplementation("org.hibernate.validator:hibernate-validator-test-utils:${hibernateValidatorTestUtilsVersion}")
+    testImplementation("org.jeasy:easy-random-core:${easyRandomVersion}")
+
+    testImplementation("com.h2database:h2:${h2Version}")
+
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:postgresql'
 
@@ -49,5 +66,3 @@ dependencies {
     testRuntimeOnly("de.odysseus.juel:juel-impl:${juelVersion}")
     testRuntimeOnly("de.odysseus.juel:juel-spi:${juelVersion}")
 }
-
-
