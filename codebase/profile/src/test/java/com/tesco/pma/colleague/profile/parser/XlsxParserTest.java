@@ -11,12 +11,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * 2022-01-28 11:56
  */
 class XlsxParserTest {
-
+    private static final String PACKAGE_PATH = "/com/tesco/pma/colleague/profile/parser/";
     private static final int LINE_COUNT = 7;
 
     @Test
     void skipEmptyLines() throws Exception {
-        try (var fis = getClass().getResourceAsStream("test-parser.xlsx")) {
+        try (var fis = getClass().getResourceAsStream(PACKAGE_PATH + "test-parser.xlsx")) {
             var parser = new XlsxParser();
             assertNotNull(fis);
             var result = parser.parse(fis);
