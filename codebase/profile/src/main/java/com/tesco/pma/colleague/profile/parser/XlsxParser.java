@@ -4,8 +4,8 @@ import com.github.pjfanning.xlsx.StreamingReader;
 import com.tesco.pma.colleague.profile.parser.model.FieldDescriptor;
 import com.tesco.pma.colleague.profile.parser.model.FieldSet;
 import com.tesco.pma.colleague.profile.parser.model.Metadata;
-import com.tesco.pma.colleague.profile.parser.model.ParsingResult;
 import com.tesco.pma.colleague.profile.parser.model.ParsingError;
+import com.tesco.pma.colleague.profile.parser.model.ParsingResult;
 import com.tesco.pma.colleague.profile.parser.model.Value;
 import lombok.Data;
 import lombok.NonNull;
@@ -42,14 +42,14 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeMap;
 
-import static com.tesco.pma.colleague.profile.parser.ParsingErrorCode.PARSE_IO;
-import static com.tesco.pma.colleague.profile.parser.ParsingErrorCode.PARSE_NOT_OOXML;
-import static com.tesco.pma.colleague.profile.parser.ParsingErrorCode.PARSE_PASSWORD_PROTECTED;
-import static com.tesco.pma.colleague.profile.parser.ParsingErrorCode.PARSE_UNHANDLED_ERROR;
 import static com.tesco.pma.api.ValueType.BOOLEAN;
 import static com.tesco.pma.api.ValueType.DATE;
 import static com.tesco.pma.api.ValueType.NUMBER;
 import static com.tesco.pma.api.ValueType.STRING;
+import static com.tesco.pma.colleague.profile.parser.ParsingErrorCode.PARSE_IO;
+import static com.tesco.pma.colleague.profile.parser.ParsingErrorCode.PARSE_NOT_OOXML;
+import static com.tesco.pma.colleague.profile.parser.ParsingErrorCode.PARSE_PASSWORD_PROTECTED;
+import static com.tesco.pma.colleague.profile.parser.ParsingErrorCode.PARSE_UNHANDLED_ERROR;
 
 @Slf4j
 @Data
@@ -220,12 +220,16 @@ public class XlsxParser {
             while (rowIterator.hasNext()) {
                 final var row = rowIterator.next();
                 var fieldSetBuilder = FieldSet.builderForId(row.getRowNum() + 1);
+                var notEmptyRow = false;
                 for (FieldDescriptor descriptor : metadata.getDescriptors()) {
                     final var columnIndex = CellReference.convertColStringToIndex(descriptor.getId());
                     final var cell = row.getCell(columnIndex, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+                    notEmptyRow |= CellType.BLANK != cell.getCellType();
                     fieldSetBuilder.value(descriptor.getName(), createValue(cell, cell.getCellType()));
                 }
-                resultBuilder.datum(fieldSetBuilder.build());
+                if (notEmptyRow) {
+                    resultBuilder.datum(fieldSetBuilder.build());
+                }
             }
         }
 

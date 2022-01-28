@@ -18,8 +18,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ProfileAttributeDAOTest extends AbstractDAOTest {
 
@@ -57,8 +60,8 @@ class ProfileAttributeDAOTest extends AbstractDAOTest {
     void get() {
         final var result = instance.get(COLLEAGUE_UUID_1);
 
-        assertThat(result).isNotEmpty();
-        assertThat(result.size()).isEqualTo(4);
+        assertFalse(result.isEmpty());
+        assertEquals(4, result.size());
     }
 
     @Test
@@ -67,10 +70,7 @@ class ProfileAttributeDAOTest extends AbstractDAOTest {
     void insertSucceeded() {
         List<TypedAttribute> profileAttributes = profileAttributes(3);
         profileAttributes.forEach(profileAttribute -> {
-            final var result = instance.create(profileAttribute);
-
-            assertThat(result).isOne();
-
+            assertEquals(1, instance.create(profileAttribute));
         });
     }
 
@@ -79,9 +79,9 @@ class ProfileAttributeDAOTest extends AbstractDAOTest {
     void insertAlreadyExistsWithSameName() {
         TypedAttribute profileAttribute = profileAttribute(1);
 
-        assertThatCode(() -> instance.create(profileAttribute))
-                .isExactlyInstanceOf(DuplicateKeyException.class)
-                .hasMessageContaining(COLLEAGUE_UUID_1.toString());
+        var exception = assertThrows(DuplicateKeyException.class, () -> instance.create(profileAttribute));
+        assertNotNull(exception.getMessage());
+        assertTrue(exception.getMessage().contains(COLLEAGUE_UUID_1.toString()));
     }
 
     @Test
@@ -95,10 +95,7 @@ class ProfileAttributeDAOTest extends AbstractDAOTest {
         });
 
         profileAttributes.forEach(profileAttribute -> {
-            final var result = instance.update(profileAttribute);
-
-            assertThat(result).isOne();
-
+            assertEquals(1, instance.update(profileAttribute));
         });
     }
 
@@ -107,10 +104,7 @@ class ProfileAttributeDAOTest extends AbstractDAOTest {
     void deleteSucceeded() {
         List<TypedAttribute> profileAttributes = profileAttributes(3);
         profileAttributes.forEach(profileAttribute -> {
-            final var result = instance.delete(profileAttribute);
-
-            assertThat(result).isOne();
-
+            assertEquals(1, instance.delete(profileAttribute));
         });
     }
 
@@ -129,5 +123,4 @@ class ProfileAttributeDAOTest extends AbstractDAOTest {
         profileAttribute.setType(AttributeType.valueOf(TEST_DATA[index - 1][3]));
         return profileAttribute;
     }
-
 }

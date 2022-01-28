@@ -5,7 +5,6 @@ import com.tesco.pma.colleague.profile.domain.ImportError;
 import com.tesco.pma.colleague.profile.domain.ImportRequest;
 import com.tesco.pma.colleague.profile.domain.ImportRequestStatus;
 import com.tesco.pma.dao.AbstractDAOTest;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -79,19 +78,18 @@ public class ImportColleagueDAOTest extends AbstractDAOTest {
 
         var requestErrors = dao.getRequestErrors(REQUEST_UUID_2);
 
-        Assertions.assertThat(requestErrors)
-                .hasSize(3)
-                .element(2)
-                .returns("code", ImportError::getCode)
-                .returns(message, ImportError::getMessage)
-                .returns(REQUEST_UUID_2, ImportError::getRequestUuid)
-                .returns(colleagueUuid, ImportError::getColleagueUuid);
+        assertEquals(3, requestErrors.size());
+        assertError(requestErrors.get(2), "code", message, colleagueUuid);
+        assertError(requestErrors.get(0), "ERROR", message, null);
+    }
 
-        Assertions.assertThat(requestErrors)
-                .element(1)
-                .returns("ERROR", ImportError::getCode)
-                .returns(message, ImportError::getMessage)
-                .returns(REQUEST_UUID_2, ImportError::getRequestUuid);
+    private void assertError(ImportError importError, String code, String message, UUID colleagueUuid) {
+        assertEquals(code, importError.getCode());
+        assertEquals(message, importError.getMessage());
+        assertEquals(REQUEST_UUID_2, importError.getRequestUuid());
+        if (colleagueUuid != null) {
+            assertEquals(colleagueUuid, importError.getColleagueUuid());
+        }
     }
 
 
