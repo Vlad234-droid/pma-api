@@ -14,13 +14,12 @@ import org.springframework.test.context.DynamicPropertySource;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProfileDAOTest extends AbstractDAOTest {
@@ -273,74 +272,56 @@ public class ProfileDAOTest extends AbstractDAOTest {
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
     void updateColleagueSucceeded() {
-        var colleague = getCorrectColleague();
-        final int updated = dao.updateColleague(colleague);
-        assertThat(updated).isEqualTo(1);
+        assertEquals(1, dao.updateColleague(getCorrectColleague()));
     }
 
     @Test
     void updateColleagueThrowDataIntegrityViolationException() {
         var colleague = getIncorrectColleague();
 
-        assertThatCode(() -> dao.updateColleague(colleague))
-                .isExactlyInstanceOf(DataIntegrityViolationException.class)
-                .hasMessageContaining("ERROR: insert or update on table \"colleague\" violates foreign key constraint");
+        var exception = assertThrows(DataIntegrityViolationException.class, () -> dao.updateColleague(colleague));
+        assertNotNull(exception.getMessage());
+        assertTrue(exception.getMessage().contains("ERROR: insert or update on table \"colleague\" violates foreign key constraint"));
     }
 
     @Test
     void insertJobWithExistsId() {
-        var job = getJob("1");
-        final int inserted = dao.updateJob(job);
-        assertThat(inserted).isEqualTo(1);
+        assertEquals(1, dao.updateJob(getJob("1")));
     }
 
     @Test
     void insertJobWithNotExistsId() {
-        var job = getJob("3");
-        final int inserted = dao.updateJob(job);
-        assertThat(inserted).isEqualTo(1);
+        assertEquals(1, dao.updateJob(getJob("3")));
     }
 
     @Test
     void insertCountryWithExistsCode() {
-        var country = getCountry("GB");
-        final int inserted = dao.updateCountry(country);
-        assertThat(inserted).isEqualTo(1);
+        assertEquals(1, dao.updateCountry(getCountry("GB")));
     }
 
     @Test
     void insertCountryWithNotExistsCode() {
-        var country = getCountry("ZZ");
-        final int inserted = dao.updateCountry(country);
-        assertThat(inserted).isEqualTo(1);
+        assertEquals(1, dao.updateCountry(getCountry("ZZ")));
     }
 
     @Test
     void insertWorkLevelWithExistsCode() {
-        var workLevel = getWorkLevel("WL1");
-        final int inserted = dao.updateWorkLevel(workLevel);
-        assertThat(inserted).isEqualTo(1);
+        assertEquals(1, dao.updateWorkLevel(getWorkLevel("WL1")));
     }
 
     @Test
     void insertWorkLevelWithNotExistsCode() {
-        var workLevel = getWorkLevel("WL7");
-        final int inserted = dao.updateWorkLevel(workLevel);
-        assertThat(inserted).isEqualTo(1);
+        assertEquals(1, dao.updateWorkLevel(getWorkLevel("WL7")));
     }
 
     @Test
     void insertDepartmentWithExistsId() {
-        var department = getDepartment("1");
-        final int inserted = dao.updateDepartment(department);
-        assertThat(inserted).isEqualTo(1);
+        assertEquals(1, dao.updateDepartment(getDepartment("1")));
     }
 
     @Test
     void insertDepartmentWithNotExistsId() {
-        var department = getDepartment("5");
-        final int inserted = dao.updateDepartment(department);
-        assertThat(inserted).isEqualTo(1);
+        assertEquals(1, dao.updateDepartment(getDepartment("5")));
     }
 
     @Test
