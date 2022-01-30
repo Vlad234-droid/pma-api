@@ -6,6 +6,8 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.service.PMCycleService;
+import com.tesco.pma.event.EventSupport;
+import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.logging.LogFormatter;
@@ -32,10 +34,18 @@ public class ObjectiveSharingServiceImpl implements ObjectiveSharingService {
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     private static final String PERFORMANCE_CYCLE_UUID_PARAMETER_NAME = "performanceCycleUuid";
 
+    private static final String NF_ORGANISATION_OBJECTIVES = "NF_ORGANISATION_OBJECTIVES";
+    private static final String NF_OBJECTIVES_APPROVED_FOR_SHARING = "NF_OBJECTIVES_APPROVED_FOR_SHARING";
+    private static final String NF_OBJECTIVE_SHARING_START = "NF_OBJECTIVE_SHARING_START";
+    private static final String NF_OBJECTIVE_SHARING_END = "NF_OBJECTIVE_SHARING_END";
+
+    private static final String COLLEAGUE_UUID_EVENT_PARAM = "COLLEAGUE_UUID";
+
     private final ProfileService profileService;
     private final PMCycleService pmCycleService;
     private final ReviewService reviewService;
     private final ObjectiveSharingDAO dao;
+    private final EventSender eventSender;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Override
@@ -50,6 +60,8 @@ public class ObjectiveSharingServiceImpl implements ObjectiveSharingService {
 
         }
 
+        sendEvent(NF_OBJECTIVE_SHARING_START, colleagueUuid);
+
     }
 
     @Override
@@ -61,6 +73,8 @@ public class ObjectiveSharingServiceImpl implements ObjectiveSharingService {
                             Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid,
                                     PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, cycleUuid)));
         }
+
+        sendEvent(NF_OBJECTIVE_SHARING_END, colleagueUuid);
     }
 
     @Override
@@ -83,5 +97,12 @@ public class ObjectiveSharingServiceImpl implements ObjectiveSharingService {
             return Collections.emptyList();
         }
         return reviewService.getReviews(cycle.getUuid(), managerUuid, PMReviewType.OBJECTIVE, PMTimelinePointStatus.APPROVED);
+    }
+
+    private void sendEvent(String eventName, UUID colleagueUuid){
+        var event = EventSupport.create(eventName,
+                Map.of(COLLEAGUE_UUID_EVENT_PARAM, colleagueUuid));
+
+        eventSender.sendEvent(event, null, true);
     }
 }
