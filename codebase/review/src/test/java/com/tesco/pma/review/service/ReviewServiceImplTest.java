@@ -99,6 +99,9 @@ class ReviewServiceImplTest {
     @SpyBean
     private ReviewServiceImpl reviewService;
 
+    @MockBean
+    private EventSender eventSender;
+
     @Test
     void getReviewByUuidShouldReturnReview() {
         final var randomUUID = UUID.randomUUID();
