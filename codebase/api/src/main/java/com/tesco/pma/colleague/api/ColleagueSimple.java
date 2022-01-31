@@ -24,4 +24,5 @@ public class ColleagueSimple implements Serializable {
     String lastName;
     String jobName;
     String businessType;
+    ColleagueSimple lineManager;
 }

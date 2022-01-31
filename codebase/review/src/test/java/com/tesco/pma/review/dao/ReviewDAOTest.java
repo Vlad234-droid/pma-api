@@ -3,9 +3,10 @@ package com.tesco.pma.review.dao;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.tesco.pma.api.MapJson;
+import com.tesco.pma.colleague.api.ColleagueSimple;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.dao.AbstractDAOTest;
-import com.tesco.pma.review.domain.ColleagueTimeline;
+import com.tesco.pma.review.domain.ColleagueView;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStats;
 import com.tesco.pma.review.domain.SimplifiedReview;
@@ -46,6 +47,8 @@ class ReviewDAOTest extends AbstractDAOTest {
     private static final UUID MYR_TIMELINE_POINT_UUID = UUID.fromString("10000000-0000-0000-2000-000000000000");
     private static final UUID MANAGER_UUID = UUID.fromString("10000000-0000-0000-0000-000000000001");
     private static final UUID COLLEAGUE_UUID = UUID.fromString("10000000-0000-0000-0000-000000000000");
+    private static final UUID COLLEAGUE_UUID_1 = UUID.fromString("10000000-0000-0000-0000-000000000001");
+    private static final UUID COLLEAGUE_UUID_2 = UUID.fromString("10000000-0000-0000-0000-000000000002");
     private static final UUID TIMELINE_POINT_UUID_NOT_EXIST = UUID.fromString("ccb9ab0b-f50f-4442-8900-000000000000");
     private static final UUID CYCLE_UUID = UUID.fromString("10000000-1000-0000-0000-000000000000");
     private static final Integer NUMBER_1 = 1;
@@ -345,13 +348,37 @@ class ReviewDAOTest extends AbstractDAOTest {
                         .build()
         );
 
-        final var result = instance.getTeamReviews(MANAGER_UUID, 1);
+        final var result = instance.getTeamView(MANAGER_UUID, 1);
 
         assertThat(result)
                 .singleElement()
-                .asInstanceOf(type(ColleagueTimeline.class))
-                .returns(null, from(ColleagueTimeline::getTimeline))
-                .returns(simplifiedReviews, from(ColleagueTimeline::getReviews));
+                .asInstanceOf(type(ColleagueView.class))
+                .returns(null, from(ColleagueView::getTimeline))
+                .returns(simplifiedReviews, from(ColleagueView::getReviews));
+    }
+
+    @Test
+    @DataSet({"colleague_init.xml",
+            "pm_cycle_init.xml",
+            "pm_colleague_cycle_init.xml",
+            "pm_timeline_point_init.xml",
+            "pm_review_init.xml"})
+    void getFullTeamReviews() {
+
+        final var result = instance.getTeamView(MANAGER_UUID, 2);
+        final var lineManager = ColleagueSimple.builder()
+                .uuid(COLLEAGUE_UUID)
+                .firstName("First")
+                .lastName("Last")
+                .businessType("Bank")
+                .jobName("Team lead")
+                .build();
+
+        assertThat(result)
+                .singleElement()
+                .asInstanceOf(type(ColleagueView.class))
+                .returns(COLLEAGUE_UUID_2, from(ColleagueView::getUuid))
+                .returns(lineManager, from(ColleagueView::getLineManager));
     }
 
     @Test

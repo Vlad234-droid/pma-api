@@ -1,6 +1,5 @@
-package com.tesco.pma.colleague.profile.parser.model;
+package com.tesco.pma.api;
 
-import com.tesco.pma.api.DictionaryItem;
 import lombok.Getter;
 
 import java.util.HashMap;
@@ -14,7 +13,9 @@ public enum ValueType implements DictionaryItem<Integer> {
     STRING(3, "String value type"),
     BOOLEAN(4, "Boolean value type"),
     NUMBER(5, "Number value type"),
-    DATE(6, "Date value type");
+    DATE(6, "Date value type"),
+    INTEGER(7, "Integer value type"),
+    DECIMAL(8, "Decimal value type");
 
     private final Integer id;
     private final String description;

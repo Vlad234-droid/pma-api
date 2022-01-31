@@ -25,7 +25,12 @@
       <bpmn:incoming>Flow_0j8eifc</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0j8eifc" sourceRef="sendNotification" targetRef="Event_14zz4ju" />
-    <bpmn:serviceTask id="InitObjectivesNotifications" name="Init flow variables" camunda:class="com.tesco.pma.flow.notifications.handlers.InitObjectiveNotificationHandler">
+    <bpmn:serviceTask id="InitObjectivesNotifications" name="Init flow variables" camunda:class="com.tesco.pma.flow.notifications.handlers.DefaultInitNotificationHandler">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="COLLEAGUE_WORK_LEVEL">${COLLEAGUE_PROFILE.getColleague().getWorkRelationships().get(0).getWorkLevel()}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1njc0fu</bpmn:incoming>
       <bpmn:incoming>Flow_0bua9yo</bpmn:incoming>
       <bpmn:incoming>Flow_0ayegec</bpmn:incoming>
