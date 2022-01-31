@@ -24,7 +24,7 @@ public class DefaultAttributesEndpoint {
 
     @Operation(summary = "Update default attributes for a colleague", tags = {"Config"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Update default attributes for a colleague")
-    @PutMapping(path = "/default/attributes/{colleagueUuid}")
+    @PutMapping(path = "/default/attributes/colleagues/{colleagueUuid}")
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse<?> updateDefaultAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid) {
         defaultAttributesService.updateDefaultAttributes(colleagueUuid);
