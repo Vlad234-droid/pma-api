@@ -80,11 +80,8 @@ public class ProfileServiceImpl implements ProfileService {
     private ColleagueProfile prepareColleagueProfile(Colleague colleague) {
         var colleagueProfile = new ColleagueProfile();
         colleagueProfile.setColleague(colleague);
-
         var profileAttributes = findProfileAttributes(colleague.getColleagueUUID());
-        if (!profileAttributes.isEmpty()) {
-            colleagueProfile.setProfileAttributes(profileAttributes);
-        }
+        colleagueProfile.setProfileAttributes(profileAttributes);
         return colleagueProfile;
     }
 
