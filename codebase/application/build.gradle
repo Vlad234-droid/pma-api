@@ -38,6 +38,7 @@ dependencies {
     implementation project(':tip')
     implementation project(':pdp')
     implementation project(':reports')
+    implementation project(':config')
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-web")
