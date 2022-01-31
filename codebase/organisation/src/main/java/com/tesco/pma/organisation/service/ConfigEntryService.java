@@ -4,7 +4,9 @@ import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.ConfigEntryResponse;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface ConfigEntryService {
@@ -114,5 +116,7 @@ public interface ConfigEntryService {
      * @return true/false
      */
     boolean isColleagueExistsForCompositeKey(UUID colleagueUuid, String key);
+
+    void propagateEventsByCompositeKey(String compositeKey, String eventName, Map<String, Serializable> eventParams);
 
 }

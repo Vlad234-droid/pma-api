@@ -67,6 +67,17 @@ and attr.getValue() = "true",
           <text>true</text>
         </outputEntry>
       </rule>
+      <rule id="DecisionRule_10isllv">
+        <inputEntry id="UnaryTests_0o01eq6">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_11870tm">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_05haqk0">
+          <text>false</text>
+        </outputEntry>
+      </rule>
     </decisionTable>
   </decision>
   <inputData id="InputData_1r3ahyr" name="Review Type" />

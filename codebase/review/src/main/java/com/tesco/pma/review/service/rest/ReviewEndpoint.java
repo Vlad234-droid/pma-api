@@ -10,7 +10,7 @@ import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import com.tesco.pma.review.domain.AuditOrgObjectiveReport;
-import com.tesco.pma.review.domain.ColleagueTimeline;
+import com.tesco.pma.review.domain.ColleagueView;
 import com.tesco.pma.review.domain.OrgObjective;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.TimelinePoint;
@@ -178,10 +178,11 @@ public class ReviewEndpoint {
     }
 
     /**
-     * Get call using a Path param and return a list of colleagues reviews as JSON.
+     * Get call using a Path param and return a list of colleague's view
+     * with active reviews, timeline points etc. as JSON.
      *
      * @param managerUuid an identifier of colleague
-     * @return a RestResponse parameterized with list of colleagues reviews
+     * @return a RestResponse parameterized with list of colleague's view with active reviews, timeline points etc.
      */
     @Operation(summary = "Get a list of colleagues reviews by managerUuid", tags = {"review"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found reviews")
@@ -189,15 +190,16 @@ public class ReviewEndpoint {
     @GetMapping(path = "/managers/{managerUuid}/reviews",
             produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isColleague()")
-    public RestResponse<List<ColleagueTimeline>> getTeamReviews(@PathVariable("managerUuid") UUID managerUuid) {
-        return success(reviewService.getTeamReviews(managerUuid, 1));
+    public RestResponse<List<ColleagueView>> getTeamView(@PathVariable("managerUuid") UUID managerUuid) {
+        return success(reviewService.getTeamView(managerUuid, 1));
     }
 
     /**
-     * Get call using a Path param and return a list of full team reviews as JSON.
+     * Get call using a Path param and return a list of colleague's view
+     * with active reviews, timeline points etc. as JSON.
      *
      * @param managerUuid an identifier of colleague
-     * @return a RestResponse parameterized with list of colleagues reviews
+     * @return a RestResponse parameterized with list of colleague's view with active reviews, timeline points etc.
      */
     @Operation(summary = "Get a list of full team reviews by managerUuid", tags = {"review"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found reviews")
@@ -205,8 +207,8 @@ public class ReviewEndpoint {
     @GetMapping(path = "/managers/{managerUuid}/full-team-reviews",
             produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isColleague()")
-    public RestResponse<List<ColleagueTimeline>> getFullTeamReviews(@PathVariable("managerUuid") UUID managerUuid) {
-        return success(reviewService.getTeamReviews(managerUuid, 2));
+    public RestResponse<List<ColleagueView>> getFullTeamView(@PathVariable("managerUuid") UUID managerUuid) {
+        return success(reviewService.getTeamView(managerUuid, 2));
     }
 
     /**

@@ -52,6 +52,16 @@ public class EventSupport implements Event {
         properties.put(CREATION_DATE.name(), creationDate);
     }
 
+    public static EventSupport create(String eventName, Map<String, Serializable> eventParams) {
+        var event = new EventSupport(eventName);
+
+        for (Map.Entry<String, Serializable> entry : eventParams.entrySet()) {
+            event.putProperty(entry.getKey(), entry.getValue());
+        }
+
+        return event;
+    }
+
     /**
      * Stores a property if it is not null
      * 
@@ -64,7 +74,7 @@ public class EventSupport implements Event {
      *             2. the name is null or empty
      *             3. the value is null
      */
-    public EventSupport putProperty(String name, Serializable value) {
+    public final EventSupport putProperty(String name, Serializable value) {
         if (!isValidName(name)) {
             throw new IllegalArgumentException("Property name cannot be null or empty");
         }

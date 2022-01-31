@@ -2,6 +2,8 @@ package com.tesco.pma.organisation.service;
 
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.event.EventSupport;
+import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.organisation.api.ConfigEntry;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,6 +40,7 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
     private static final String ID = "id";
     private final ConfigEntryDAO dao;
     private final ConfigEntryTypeDAO configEntryTypeDAO;
+    private final EventSender eventSender;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Override
@@ -186,6 +190,18 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
     public boolean isColleagueExistsForCompositeKey(UUID colleagueUuid, String compositeKey) {
         String searchKey = getSearchKey(compositeKey);
         return dao.isColleagueExistsForCompositeKey(colleagueUuid, searchKey);
+    }
+
+    @Override
+    public void propagateEventsByCompositeKey(String compositeKey, String eventName, Map<String, Serializable> eventParams) {
+        var colleagues = this.findColleaguesByCompositeKey(compositeKey);
+
+        colleagues.stream()
+                .map(ColleagueEntity::getUuid)
+                .peek(uuid -> eventParams.put("COLLEAGUE_UUID", uuid))
+                .map(uuid -> EventSupport.create(eventName, eventParams))
+                .forEach(e -> eventSender.sendEvent(e, null, true));
+
     }
 
     @Override

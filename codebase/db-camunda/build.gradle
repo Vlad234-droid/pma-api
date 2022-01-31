@@ -24,7 +24,6 @@ dependencies {
     testRuntimeOnly "org.yaml:snakeyaml:${snakeyamlVersion}"
     testRuntimeOnly "org.postgresql:postgresql:${postgresVersion}"
 
-    testImplementation "org.assertj:assertj-core:${assertjVersion}"
     testImplementation "io.rest-assured:xml-path:${xmlPathVersion}"
 
     liquibaseRuntime "org.liquibase:liquibase-core:${liquibaseVersion}"

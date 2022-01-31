@@ -25,9 +25,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.times;
@@ -76,7 +77,7 @@ class ProfileServiceImplTest extends AbstractProfileTests {
                 .thenReturn(randomColleague());
 
         Optional<ColleagueProfile> profileResponse = profileService.findProfileByColleagueUuid(colleagueUuid);
-        assertThat(profileResponse).isPresent();
+        assertTrue(profileResponse.isPresent());
     }
 
     @Test
@@ -87,8 +88,8 @@ class ProfileServiceImplTest extends AbstractProfileTests {
 
         var results = profileService.updateProfileAttributes(colleagueUuid, profileAttributes(3));
 
-        assertThat(results).isNotEmpty();
-        assertThat(results.size()).isEqualTo(3);
+        assertFalse(results.isEmpty());
+        assertEquals(3, results.size());
 
         verify(mockProfileDAO, times(3)).update(any(TypedAttribute.class));
 
@@ -102,8 +103,8 @@ class ProfileServiceImplTest extends AbstractProfileTests {
 
         var results = profileService.createProfileAttributes(colleagueUuid, profileAttributes(3));
 
-        assertThat(results).isNotEmpty();
-        assertThat(results.size()).isEqualTo(3);
+        assertFalse(results.isEmpty());
+        assertEquals(3, results.size());
 
         verify(mockProfileDAO, times(3)).create(any(TypedAttribute.class));
 
@@ -134,8 +135,8 @@ class ProfileServiceImplTest extends AbstractProfileTests {
 
         var results = profileService.deleteProfileAttributes(colleagueUuid, profileAttributes(3));
 
-        assertThat(results).isNotEmpty();
-        assertThat(results.size()).isEqualTo(3);
+        assertFalse(results.isEmpty());
+        assertEquals(3, results.size());
 
         verify(mockProfileDAO, times(3)).delete(any(TypedAttribute.class));
     }

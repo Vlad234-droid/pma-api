@@ -1,6 +1,7 @@
 package com.tesco.pma.feedback.service;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.feedback.api.Feedback;
@@ -38,6 +39,9 @@ class FeedbackServiceTest {
 
     @MockBean
     private FeedbackDAO feedbackDAO;
+
+    @MockBean
+    private EventSender eventSender;
 
     @MockBean
     private NamedMessageSourceAccessor messageSourceAccessor;

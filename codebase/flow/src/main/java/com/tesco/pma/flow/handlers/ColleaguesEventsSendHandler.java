@@ -11,6 +11,9 @@ import com.tesco.pma.organisation.service.ConfigEntryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Component
@@ -34,10 +37,20 @@ public class ColleaguesEventsSendHandler extends AbstractEventSendHandler {
     }
 
     protected Event createEvent(UUID colleagueId, ExecutionContext context) {
-        var event = new EventSupport(getEventNameExpression());
-        event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueId);
-        propagateEventParams(event, context);
-        return event;
+        var params = getParams(context);
+        params.put(FlowParameters.COLLEAGUE_UUID.name(), colleagueId);
+        return EventSupport.create(getEventNameExpression(), params);
     }
+
+    private Map<String, Serializable> getParams(ExecutionContext context) {
+        var params = context.getVariable(FlowParameters.EVENT_PARAMS);
+
+        if (!(params instanceof Map)) {
+            params = new HashMap<>();
+        }
+
+        return (Map) params;
+    }
+
 
 }

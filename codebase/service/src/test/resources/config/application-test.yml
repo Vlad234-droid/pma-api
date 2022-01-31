@@ -38,7 +38,8 @@ spring:
       com/tesco/pma/review/exception/AppExceptionMessage,
       com/tesco/pma/colleague/security/exception/AppExceptionMessage,
       com/tesco/pma/fs/exception/AppExceptionMessage,
-      com/tesco/pma/pdp/exception/AppExceptionMessage
+      com/tesco/pma/pdp/exception/AppExceptionMessage,
+      com/tesco/pma/reports/review/exception/AppExceptionMessage
     encoding: UTF-8
   async-executor:
     core-pool-size: 2
@@ -58,7 +59,8 @@ spring:
                               com.tesco.pma.config.domain,
                               com.tesco.pma.tip.api,
                               com.tesco.pma.pdp.api,
-                              com.tesco.pma.pdp.domain
+                              com.tesco.pma.pdp.domain,
+                              com.tesco.pma.reports.review.domain
         configuration-properties:
           base-package: com.tesco.pma.dao,
                         com.tesco.pma.colleague.profile.dao,
@@ -70,7 +72,8 @@ spring:
                         com.tesco.pma.fs.dao,
                         com.tesco.pma.config.dao,
                         com.tesco.pma.tip.dao,
-                        com.tesco.pma.pdp.dao
+                        com.tesco.pma.pdp.dao,
+                        com.tesco.pma.reports.review.dao
           batchSize: 100
     postgres-version: 11.11
     testdb:

@@ -28,6 +28,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,6 +57,9 @@ import static com.tesco.pma.logging.TraceId.TRACE_ID_HEADER;
 import static com.tesco.pma.rest.HttpStatusCodes.CREATED;
 
 import static com.tesco.pma.rest.RestResponse.success;
+import static com.tesco.pma.security.UserRoleNames.ADMIN;
+import static com.tesco.pma.util.SecurityUtils.hasAuthority;
+import static com.tesco.pma.util.SecurityUtils.getColleagueUuid;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
 /**
@@ -80,10 +85,11 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
             })
     @GetMapping(path = "/last", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAdmin()")
+    @PreAuthorize("isColleague()")
     public RestResponse<File> get(@RequestParam("path") String path,
-                                  @RequestParam("fileName") String fileName) {
-        return success(fileService.get(path, fileName, INCLUDE_FILE_CONTENT_DEFAULT));
+                                  @RequestParam("fileName") String fileName,
+                                  @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+        return success(fileService.get(path, fileName, INCLUDE_FILE_CONTENT_DEFAULT, resolveColleagueUuid(authentication)));
     }
 
     @Operation(
@@ -95,9 +101,10 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
             })
     @GetMapping("{fileUuid}")
-    @PreAuthorize("isAdmin()")
-    public RestResponse<File> get(@PathVariable UUID fileUuid) {
-        return success(fileService.get(fileUuid, INCLUDE_FILE_CONTENT_DEFAULT));
+    @PreAuthorize("isColleague()")
+    public RestResponse<File> get(@PathVariable UUID fileUuid,
+                                  @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+        return success(fileService.get(fileUuid, INCLUDE_FILE_CONTENT_DEFAULT, resolveColleagueUuid(authentication)));
     }
 
     @Operation(
@@ -109,9 +116,10 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Files data not found", content = @Content),
             })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAdmin()")
-    public RestResponse<List<File>> get(RequestQuery requestQuery) {
-        return success(fileService.get(requestQuery, INCLUDE_FILE_CONTENT_DEFAULT, true));
+    @PreAuthorize("isColleague()")
+    public RestResponse<List<File>> get(RequestQuery requestQuery,
+                                        @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+        return success(fileService.get(requestQuery, INCLUDE_FILE_CONTENT_DEFAULT, resolveColleagueUuid(authentication), true));
     }
 
     @Operation(
@@ -123,10 +131,11 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
             })
     @GetMapping(path = "/versions", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAdmin()")
+    @PreAuthorize("isColleague()")
     public RestResponse<List<File>> getAllVersions(@RequestParam("path") String path,
-                                                   @RequestParam("fileName") String fileName) {
-        return success(fileService.getAllVersions(path, fileName, INCLUDE_FILE_CONTENT_DEFAULT));
+                                                   @RequestParam("fileName") String fileName,
+                                                   @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+        return success(fileService.getAllVersions(path, fileName, INCLUDE_FILE_CONTENT_DEFAULT, resolveColleagueUuid(authentication)));
     }
 
     /**
@@ -146,10 +155,11 @@ public class FileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.FORBIDDEN, description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Internal Server Error", content = @Content)
     @GetMapping("/{fileUuid}/download")
-    @PreAuthorize("isAdmin()")
-    public ResponseEntity<Resource> download(@PathVariable UUID fileUuid) {
-        var file = fileService.get(fileUuid, true);
-        byte[] content = file.getFileContent();
+    @PreAuthorize("isColleague()")
+    public ResponseEntity<Resource> download(@PathVariable UUID fileUuid,
+                                             @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+        var file = fileService.get(fileUuid, true, resolveColleagueUuid(authentication));
+        var content = file.getFileContent();
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
@@ -176,7 +186,7 @@ public class FileEndpoint {
     )
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("isAdmin()")
+    @PreAuthorize("isColleague()")
     public RestResponse<List<File>> upload(
             @RequestPart("uploadMetadata")
             @Valid @Parameter(schema = @Schema(type = "string", format = "binary")) FilesUploadMetadata filesUploadMetadata,
@@ -220,6 +230,10 @@ public class FileEndpoint {
 
         }
         return success(uploadedFiles);
+    }
+
+    private UUID resolveColleagueUuid(Authentication authentication) {
+        return hasAuthority(authentication, ADMIN) ? null : getColleagueUuid(authentication);
     }
 
 }
