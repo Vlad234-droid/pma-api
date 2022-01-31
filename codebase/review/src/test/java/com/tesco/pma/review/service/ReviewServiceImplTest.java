@@ -1,16 +1,12 @@
 package com.tesco.pma.review.service;
 
 import com.tesco.pma.api.MapJson;
-import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
-import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.fs.service.FileService;
-import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.review.LocalTestConfig;
 import com.tesco.pma.review.dao.OrgObjectiveDAO;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
@@ -39,13 +35,11 @@ import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MAX;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MIN;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND;
-import static com.tesco.pma.review.util.TestDataUtils.files;
 import static org.assertj.core.api.Assertions.from;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
@@ -86,12 +80,6 @@ class ReviewServiceImplTest {
 
     @MockBean
     private PMCycleService pmCycleService;
-
-    @MockBean
-    private FileService mockFileService;
-
-    @MockBean
-    private ProfileService mockProfileService;
 
     @SpyBean
     private ReviewServiceImpl reviewService;
@@ -235,30 +223,6 @@ class ReviewServiceImplTest {
         assertEquals(REVIEW_NOT_FOUND.getCode(), exception.getCode());
         assertEquals(REVIEW_NOT_FOUND_MESSAGE, exception.getMessage());
 
-    }
-
-    @Test
-    void getReviewFilesByColleagueWithColleague() {
-        final var files = files(3);
-        when(mockFileService.get(any(), eq(false), eq(COLLEAGUE_UUID), eq(true))).thenReturn(files);
-
-        final var res = reviewService.getReviewsFilesByColleague(COLLEAGUE_UUID, COLLEAGUE_UUID, new RequestQuery());
-
-        assertEquals(files, res);
-    }
-
-    @Test
-    void getReviewFilesByColleagueWithLineManager() {
-        final var profile = new ColleagueEntity();
-        profile.setManagerUuid(CURRENT_USER_UUID);
-        when(mockProfileService.getColleague(COLLEAGUE_UUID)).thenReturn(profile);
-
-        final var files = files(3);
-        when(mockFileService.get(any(), eq(false), eq(COLLEAGUE_UUID), eq(true))).thenReturn(files);
-
-        final var res = reviewService.getReviewsFilesByColleague(COLLEAGUE_UUID, CURRENT_USER_UUID, new RequestQuery());
-
-        assertEquals(files, res);
     }
 
 }

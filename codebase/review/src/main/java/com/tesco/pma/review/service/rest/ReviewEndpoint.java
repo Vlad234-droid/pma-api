@@ -1,5 +1,6 @@
 package com.tesco.pma.review.service.rest;
 
+import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.CaseInsensitiveEnumEditor;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.api.PMReviewType;
@@ -8,6 +9,7 @@ import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.file.api.File;
 import com.tesco.pma.file.api.FileType.FileTypeEnum;
+import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
@@ -60,6 +62,8 @@ public class ReviewEndpoint {
     private final ReviewService reviewService;
     private final AuditorAware<UUID> auditorAware;
     private final PMCycleService pmCycleService;
+    private final FileService fileService;
+    private final ProfileService profileService;
 
     private static final String CURRENT_PARAMETER_NAME = "CURRENT";
     private static final String REVIEWS_FILES_PATH = "/home/%s/reviews";
@@ -418,7 +422,19 @@ public class ReviewEndpoint {
         requestQuery.setFilters(Arrays.asList(
                 new Condition("path", EQUALS, path),
                 new Condition("type", IN, types)));
-        return RestResponse.success(reviewService.getReviewsFilesByColleague(colleagueUuid, currentUserUuid, requestQuery));
+
+        var isCurrentUserLineManager = false;
+
+        if (!colleagueUuid.equals(currentUserUuid)) {
+            var profile = profileService.getColleague(colleagueUuid);
+            if (currentUserUuid.equals(profile.getManagerUuid())) {
+                isCurrentUserLineManager = true;
+            }
+        }
+
+        var fileOwnerUuid = isCurrentUserLineManager ? colleagueUuid : currentUserUuid;
+
+        return RestResponse.success(fileService.get(requestQuery, false, fileOwnerUuid, true));
     }
 
     private UUID resolveUserUuid() {

@@ -1,7 +1,6 @@
 package com.tesco.pma.review.service;
 
 import com.tesco.pma.api.OrgObjectiveStatus;
-import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
@@ -15,8 +14,6 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.ReviewCreationException;
 import com.tesco.pma.exception.ReviewDeletionException;
 import com.tesco.pma.exception.ReviewUpdateException;
-import com.tesco.pma.file.api.File;
-import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.review.dao.OrgObjectiveDAO;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
@@ -81,8 +78,6 @@ public class ReviewServiceImpl implements ReviewService {
     private final TimelinePointDAO timelinePointDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final PMCycleService pmCycleService;
-    private final FileService fileService;
-    private final ProfileService profileService;
     private final EventSender eventSender;
 
     private static final String REVIEW_UUID_PARAMETER_NAME = "reviewUuid";
@@ -495,22 +490,6 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public List<AuditOrgObjectiveReport> getAuditOrgObjectiveReport(RequestQuery requestQuery) {
         return reviewAuditLogDAO.getAuditOrgObjectiveReport(requestQuery);
-    }
-
-    @Override
-    public List<File> getReviewsFilesByColleague(UUID colleagueUuid, UUID currentUserUuid, RequestQuery requestQuery) {
-        var isCurrentUserLineManager = false;
-
-        if (!colleagueUuid.equals(currentUserUuid)) {
-            var profile = profileService.getColleague(colleagueUuid);
-            if (currentUserUuid.equals(profile.getManagerUuid())) {
-                isCurrentUserLineManager = true;
-            }
-        }
-
-        var fileOwnerUuid = isCurrentUserLineManager ? colleagueUuid : currentUserUuid;
-
-        return fileService.get(requestQuery, false, fileOwnerUuid, true);
     }
 
     private TimelinePoint calcTlPoint(TimelinePoint timelinePoint) {

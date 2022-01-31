@@ -4,7 +4,6 @@ import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.file.api.File;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.review.domain.AuditOrgObjectiveReport;
 import com.tesco.pma.review.domain.ColleagueView;
@@ -228,16 +227,4 @@ public interface ReviewService {
      * @return a list of AuditOrgObjectiveReport
      */
     List<AuditOrgObjectiveReport> getAuditOrgObjectiveReport(@NotNull RequestQuery requestQuery);
-
-    /**
-     * Get review files by colleagueUuid
-     *
-     * @param colleagueUuid        an identifier of colleague
-     * @param currentUserUuid      an identifier of current user
-     * @param requestQuery         a request query
-     * @return a list of review files
-     * @throws NotFoundException if review files don't exist.
-     */
-    List<File> getReviewsFilesByColleague(@NotNull UUID colleagueUuid, @NotNull UUID currentUserUuid, @NotNull RequestQuery requestQuery);
-
 }
