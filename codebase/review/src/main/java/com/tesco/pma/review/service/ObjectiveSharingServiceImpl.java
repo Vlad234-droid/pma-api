@@ -99,7 +99,7 @@ public class ObjectiveSharingServiceImpl implements ObjectiveSharingService {
         return reviewService.getReviews(cycle.getUuid(), managerUuid, PMReviewType.OBJECTIVE, PMTimelinePointStatus.APPROVED);
     }
 
-    private void sendEvent(String eventName, UUID colleagueUuid){
+    private void sendEvent(String eventName, UUID colleagueUuid) {
         var event = EventSupport.create(eventName,
                 Map.of(COLLEAGUE_UUID_EVENT_PARAM, colleagueUuid));
 
