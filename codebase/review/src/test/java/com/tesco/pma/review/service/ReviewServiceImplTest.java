@@ -1,6 +1,7 @@
 package com.tesco.pma.review.service;
 
 import com.tesco.pma.api.MapJson;
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
@@ -8,6 +9,7 @@ import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.fs.service.FileService;
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.review.LocalTestConfig;
 import com.tesco.pma.review.dao.OrgObjectiveDAO;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
@@ -17,6 +19,7 @@ import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStats;
 import com.tesco.pma.review.domain.ReviewStatusCounter;
 import com.tesco.pma.review.domain.TimelinePoint;
+import com.tesco.pma.file.api.File;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -41,6 +44,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
@@ -54,6 +58,9 @@ class ReviewServiceImplTest {
             Map.of(PM_REVIEW_MIN, "3",
                     PM_REVIEW_MAX, "5"
             ));
+
+    private static final UUID COLLEAGUE_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
+    private static final UUID CURRENT_USER_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0014");
 
     final static String REVIEW_NOT_FOUND_MESSAGE =
             "Review not found for: {allowedStatuses=[DRAFT, DECLINED, APPROVED], number=1, operation=DELETE, tlPointUuid=ddb9ab0b-f50f-4442-8900-b03777ee0010}";
@@ -190,7 +197,6 @@ class ReviewServiceImplTest {
     @Test
     void deleteReviewNotExists() {
         final var tlPointUUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0010");
-        final var colleagueUuid = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
         final var performanceCycleUuid = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0012");
 
         final var expectedColleagueCycle = PMColleagueCycle.builder().build();
@@ -218,7 +224,7 @@ class ReviewServiceImplTest {
         final var exception = assertThrows(NotFoundException.class,
                 () -> reviewService.deleteReview(
                         performanceCycleUuid,
-                        colleagueUuid,
+                        COLLEAGUE_UUID,
                         OBJECTIVE,
                         1));
 
@@ -229,13 +235,36 @@ class ReviewServiceImplTest {
 
     @Test
     void getReviewFilesByColleagueWithColleague() {
-        // TODO Implement test
+        final var files = getFiles();
+        when(mockFileService.get(any(), eq(false), eq(COLLEAGUE_UUID), eq(true))).thenReturn(files);
 
+        final var res = reviewService.getReviewsFilesByColleague(COLLEAGUE_UUID, COLLEAGUE_UUID, new RequestQuery());
+
+        assertEquals(files, res);
     }
 
     @Test
     void getReviewFilesByColleagueWithLineManager() {
-        // TODO Implement test
+        final var profile = new ColleagueEntity();
+        profile.setManagerUuid(CURRENT_USER_UUID);
+        when(mockProfileService.getColleague(COLLEAGUE_UUID)).thenReturn(profile);
+
+        final var files = getFiles();
+        when(mockFileService.get(any(), eq(false), eq(COLLEAGUE_UUID), eq(true))).thenReturn(files);
+
+        final var res = reviewService.getReviewsFilesByColleague(COLLEAGUE_UUID, CURRENT_USER_UUID, new RequestQuery());
+
+        assertEquals(files, res);
+    }
+
+    private List<File> getFiles() {
+        var filePdf = new File();
+        filePdf.setFileName("test.pdf");
+        filePdf.setCreatedBy(COLLEAGUE_UUID);
+        var fileDoc = new File();
+        fileDoc.setFileName("test.doc");
+        fileDoc.setCreatedBy(COLLEAGUE_UUID);
+        return List.of(filePdf, fileDoc);
     }
 
 }

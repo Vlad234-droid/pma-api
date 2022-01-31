@@ -234,9 +234,10 @@ public interface ReviewService {
      *
      * @param colleagueUuid        an identifier of colleague
      * @param currentUserUuid      an identifier of current user
+     * @param requestQuery         a request query
      * @return a list of review files
      * @throws NotFoundException if review files don't exist.
      */
-    List<File> getReviewsFilesByColleague(UUID colleagueUuid, UUID currentUserUuid);
+    List<File> getReviewsFilesByColleague(@NotNull UUID colleagueUuid, @NotNull UUID currentUserUuid, @NotNull RequestQuery requestQuery);
 
 }

@@ -2,6 +2,7 @@ package com.tesco.pma.review.service.rest;
 
 import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.service.PMCycleService;
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import com.tesco.pma.review.LocalTestConfig;
 import com.tesco.pma.review.service.ReviewService;
@@ -38,7 +39,7 @@ class ReviewEndpointTest extends AbstractEndpointTest {
     void getReviewsFilesByColleagueWithColleague() throws Exception {
         UUID colleagueUuid = UUID.randomUUID();
 
-        when(mockReviewService.getReviewsFilesByColleague(colleagueUuid, colleagueUuid))
+        when(mockReviewService.getReviewsFilesByColleague(colleagueUuid, colleagueUuid, new RequestQuery()))
                 .thenReturn(files(3));
 
         mvc.perform(get(REVIEWS_FILES_URL_TEMPLATE, colleagueUuid.toString())
@@ -53,7 +54,7 @@ class ReviewEndpointTest extends AbstractEndpointTest {
         UUID colleagueUuid = UUID.randomUUID();
         UUID currentUserUuid = UUID.randomUUID();
 
-        when(mockReviewService.getReviewsFilesByColleague(colleagueUuid, currentUserUuid))
+        when(mockReviewService.getReviewsFilesByColleague(colleagueUuid, currentUserUuid, new RequestQuery()))
                 .thenReturn(files(3));
 
         mvc.perform(get(REVIEWS_FILES_URL_TEMPLATE, colleagueUuid.toString())

@@ -7,6 +7,8 @@ import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.file.api.File;
+import com.tesco.pma.file.api.FileType;
+import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
@@ -37,10 +39,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
+import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
+import static com.tesco.pma.pagination.Condition.Operand.IN;
 import static com.tesco.pma.rest.RestResponse.success;
+import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -52,6 +59,7 @@ public class ReviewEndpoint {
     private final PMCycleService pmCycleService;
 
     private static final String CURRENT_PARAMETER_NAME = "CURRENT";
+    private static final String REVIEWS_FILES_PATH = "/home/%s/reviews";
 
     /**
      * POST call to create a Review.
@@ -396,7 +404,16 @@ public class ReviewEndpoint {
                                 @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
 
         var currentUserUuid = UUID.fromString(authentication.getName());
-        return RestResponse.success(reviewService.getReviewsFilesByColleague(colleagueUuid, currentUserUuid));
+        var path = String.format(REVIEWS_FILES_PATH, colleagueUuid);
+        var types = Stream.of(FileType.FileTypeEnum.PDF, FileType.FileTypeEnum.DOC, FileType.FileTypeEnum.PPT)
+                .map(FileType.FileTypeEnum::getId)
+                .collect(toList());
+
+        var requestQuery = new RequestQuery();
+        requestQuery.setFilters(Arrays.asList(
+                new Condition("path", EQUALS, path),
+                new Condition("type", IN, types)));
+        return RestResponse.success(reviewService.getReviewsFilesByColleague(colleagueUuid, currentUserUuid, requestQuery));
     }
 
     private UUID resolveUserUuid() {
