@@ -749,17 +749,17 @@ public class ReviewServiceImpl implements ReviewService {
         return defaultValue;
     }
 
-    private void sendEvent(String eventName, UUID colleagueUuid) {
+    private void sendEvent(String eventName, UUID colleagueUuid){
         var event = EventSupport.create(eventName,
                 Map.of(COLLEAGUE_UUID_EVENT_PARAM, colleagueUuid));
 
         eventSender.sendEvent(event, null, true);
     }
 
-    private void sendEvent(TimelinePoint timelinePoint, UUID colleagueUuid) {
+    private void sendEvent(TimelinePoint timelinePoint, UUID colleagueUuid){
         var eventName = STATUS_TO_EVENT_NAME_MAP.get(timelinePoint.getStatus());
 
-        if (eventName == null) {
+        if(eventName == null){
             return;
         }
 
