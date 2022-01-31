@@ -12,7 +12,8 @@
         <result property="jobTitle" column="job_title"/>
         <result property="lineManager" column="line_manager"/>
         <result property="objectiveNumber" column="objective_number"/>
-        <result property="status" column="status" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler" javaType="com.tesco.pma.cycle.api.PMTimelinePointStatus"/>
+        <result property="status" column="status" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.cycle.api.PMTimelinePointStatus"/>
         <result property="strategicPriority" column="strategic_priority"/>
         <result property="objectiveTitle" column="objective"/>
         <result property="howAchieved" column="how_achieved"/>
@@ -57,29 +58,29 @@
 
     <select id="getLinkedObjectivesData" resultMap="objectiveResultMap">
         SELECT c1.iam_id as "employee_no",
-               c1.uuid as "employee_uuid",
-               c1.first_name as "first_name",
-               c1.last_name as "surname",
-               c1.work_level as "working_level",
-               j.name as "job_title",
-               c2.first_name||' '||c2.last_name as "line_manager",
-               pr.number as "objective_number",
-               pr.status_id as "status",
-               pr.properties::json->'strategic_priority' as "strategic_priority",
-               pr.properties::json->'title' as "objective",
-               pr.properties::json->'how_achieved' as "how_achieved",
-               pr.properties::json->'how_over_achieved' as "how_over_achieved"
+        c1.uuid as "employee_uuid",
+        c1.first_name as "first_name",
+        c1.last_name as "surname",
+        c1.work_level as "working_level",
+        j.name as "job_title",
+        c2.first_name||' '||c2.last_name as "line_manager",
+        pr.number as "objective_number",
+        pr.status_id as "status",
+        pr.properties::json->'strategic_priority' as "strategic_priority",
+        pr.properties::json->'title' as "objective",
+        pr.properties::json->'how_achieved' as "how_achieved",
+        pr.properties::json->'how_over_achieved' as "how_over_achieved"
         FROM colleague c1
-                 LEFT JOIN job j ON c1.job_id = j.id
-                 LEFT JOIN colleague c2 ON c1.manager_uuid = c2.uuid
-                 INNER JOIN pm_colleague_cycle pcc ON c1.uuid = pcc.colleague_uuid
-                 INNER JOIN pm_cycle pc ON pcc.cycle_uuid = pc.uuid
-                 INNER JOIN pm_timeline_point ptp ON pcc.uuid = ptp.colleague_cycle_uuid
-                 INNER JOIN pm_review pr ON ptp.uuid = pr.tl_point_uuid
-                 INNER JOIN pm_tl_point_status ptps ON pr.status_id = ptps.id
+        LEFT JOIN job j ON c1.job_id = j.id
+        LEFT JOIN colleague c2 ON c1.manager_uuid = c2.uuid
+        INNER JOIN pm_colleague_cycle pcc ON c1.uuid = pcc.colleague_uuid
+        INNER JOIN pm_cycle pc ON pcc.cycle_uuid = pc.uuid
+        INNER JOIN pm_timeline_point ptp ON pcc.uuid = ptp.colleague_cycle_uuid
+        INNER JOIN pm_review pr ON ptp.uuid = pr.tl_point_uuid
+        INNER JOIN pm_tl_point_status ptps ON pr.status_id = ptps.id
         WHERE pr.type_id = 1
-          AND c1.work_level IN ('WL4', 'WL5')
-          AND pc.type_id = 1
+        AND c1.work_level IN ('WL4', 'WL5')
+        AND pc.type_id = 1
 
         <if test="!requestQuery.filters.isEmpty()">
             <foreach collection="requestQuery.filters" item="filter" index="index">
@@ -88,5 +89,16 @@
         </if>
     </select>
 
-
+    <sql id="colleagueQuery">
+        select c.*,
+               pcc.uuid   as colleague_cycle_uuid,
+               pc.type_id as cycle_type_id
+        from colleague c
+                 inner join pm_colleague_cycle pcc
+                            on (pcc.colleague_uuid = c.uuid)
+                 inner join pm_cycle pc
+                            on (pcc.cycle_uuid = pc.uuid)
+        where 1 = 1
+--     filters
+    </sql>
 </mapper>
