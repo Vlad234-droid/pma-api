@@ -243,6 +243,7 @@ public class FileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Files deleted")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Files not found", content = @Content)
     @PostMapping(path = "/delete", produces = MediaType.APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
     public RestResponse<Void> delete(@org.springframework.web.bind.annotation.RequestBody List<UUID> fileUuids,
                                           @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         fileService.delete(fileUuids, resolveColleagueUuid(authentication));
