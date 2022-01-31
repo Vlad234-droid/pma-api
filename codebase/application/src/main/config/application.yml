@@ -242,6 +242,8 @@ tesco:
       POST_CEP_COLLEAGUE_ADDED: com.tesco.pma.colleague.security.action.CreateAccountByEventAction
       CEP_COLLEAGUE_UPDATED: com.tesco.pma.bpm.action.RunFlowByEventAction
       CEP_COLLEAGUE_LEFT: com.tesco.pma.bpm.action.RunFlowByEventAction
+      # Cycle
+      PM_CYCLE_REPEAT: com.tesco.pma.bpm.action.RunFlowByEventAction
     user-management:
       page:
         size: 100

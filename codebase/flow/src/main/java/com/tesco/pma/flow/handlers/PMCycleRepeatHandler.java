@@ -1,18 +1,20 @@
 package com.tesco.pma.flow.handlers;
 
+import com.tesco.pma.api.MapJson;
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
 import com.tesco.pma.cycle.api.PMCycle;
+import com.tesco.pma.cycle.api.model.PMCycleElement;
 import com.tesco.pma.cycle.service.PMCycleService;
-import com.tesco.pma.event.EventParams;
 import com.tesco.pma.flow.FlowParameters;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.time.Period;
+import java.time.ZoneOffset;
+import java.util.HashMap;
 import java.util.UUID;
 
 @Component
@@ -24,31 +26,48 @@ public class PMCycleRepeatHandler extends CamundaAbstractFlowHandler {
 
     @Override
     protected void execute(ExecutionContext context) {
-        String repeatCount = context.getVariable(FlowParameters.PM_CYCLE_REPEAT_COUNT, String.class);
-        if (StringUtils.isBlank(repeatCount)) {
-            return;
-        }
         var event = context.getEvent();
         if (event == null) {
             return;
         }
         var eventProperties = event.getEventProperties();
-        if (!eventProperties.containsKey(EventParams.PM_CYCLE_UUID.name())) {
+        if (!eventProperties.containsKey(FlowParameters.PM_CYCLE_UUID.name())) {
             return;
         }
-        UUID cycleUuid = UUID.fromString(eventProperties.get(EventParams.PM_CYCLE_UUID.name()).toString());
+        if (!eventProperties.containsKey(FlowParameters.PM_CYCLE_REPEAT_COUNT.name())) {
+            return;
+        }
+        UUID cycleUuid = UUID.fromString(eventProperties.get(FlowParameters.PM_CYCLE_UUID.name()).toString());
         PMCycle previousCycle = pmCycleService.get(cycleUuid, false).getCycle();
-        int previousCycleRepeatCount =
-                Integer.parseInt(previousCycle.getProperties().getMapJson().getOrDefault(FlowParameters.PM_CYCLE_REPEAT_COUNT.name(),
-                        "0")) - 1;
-        if (Integer.parseInt(repeatCount) == previousCycleRepeatCount) {
+        if (previousCycle.getCreatedBy() == null || previousCycle.getTemplate() == null) {
             return;
         }
-        previousCycle.getProperties().getMapJson().put(FlowParameters.PM_CYCLE_REPEAT_COUNT.name(), repeatCount);
-        previousCycle.setStartTime(previousCycle.getStartTime().plus(Period.ofYears(1)));
-        previousCycle.setEndTime(previousCycle.getEndTime().plus(Period.ofYears(1)));
-        PMCycle nextCycle = pmCycleService.create(previousCycle, previousCycle.getCreatedBy().getUuid());
-        pmCycleService.start(nextCycle.getUuid());
+        int previousCycleRepeatCount = 0;
+        if (previousCycle.getProperties() != null && previousCycle.getProperties().getMapJson() != null) {
+            previousCycleRepeatCount =
+                    Integer.parseInt(previousCycle.getProperties().getMapJson().getOrDefault(FlowParameters.PM_CYCLE_REPEAT_COUNT.name(),
+                            "0")) - 1;
+        } else if (previousCycle.getMetadata() != null && previousCycle.getMetadata().getCycle() != null &&
+                previousCycle.getMetadata().getCycle().getProperties() != null) {
+            previousCycleRepeatCount =
+                    Integer.parseInt(previousCycle.getMetadata().getCycle().getProperties().getOrDefault(PMCycleElement.PM_CYCLE_MAX,
+                            "0"));
+        }
+        int repeatCount = Integer.parseInt(eventProperties.get(FlowParameters.PM_CYCLE_REPEAT_COUNT.name()).toString());
+        if (repeatCount == previousCycleRepeatCount) {
+            return;
+        }
+        if (previousCycle.getProperties() == null) {
+            previousCycle.setProperties(new MapJson());
+        }
+        if (previousCycle.getProperties().getMapJson() == null) {
+            previousCycle.getProperties().setMapJson(new HashMap<>());
+        }
+        previousCycle.getProperties().getMapJson().put(FlowParameters.PM_CYCLE_REPEAT_COUNT.name(), String.valueOf(repeatCount));
+        previousCycle.setStartTime(previousCycle.getStartTime().atZone(ZoneOffset.UTC).plus(Period.ofYears(1)).toInstant());
+        previousCycle.setEndTime(previousCycle.getEndTime().atZone(ZoneOffset.UTC).plus(Period.ofYears(1)).toInstant());
+        previousCycle.setUuid(null);
+        PMCycle nextCycle = pmCycleService.publish(previousCycle, previousCycle.getCreatedBy().getUuid());
         context.setVariable(FlowParameters.PM_CYCLE, nextCycle);
     }
 }

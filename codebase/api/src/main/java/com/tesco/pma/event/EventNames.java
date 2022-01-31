@@ -1,7 +1,7 @@
 package com.tesco.pma.event;
 
 public enum EventNames {
-    REPEAT_CYCLE,
+    PM_CYCLE_REPEAT,
     IMPORT_NEW_COLLEAGUE,
     POST_IMPORT_NEW_COLLEAGUE,
     CEP_COLLEAGUE_ADDED,
