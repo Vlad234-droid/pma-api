@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -113,9 +115,11 @@ public class TipServiceImpl implements TipService {
         tip.setPublished(true);
         tipDAO.publish(tip);
 
+        var params = new HashMap<String, Serializable>();
+        params.put(TIP_UUID_PARAM_NAME, tip.getUuid());
+
         configEntryService.propagateEventsByCompositeKey(tip.getTargetOrganisation().getCompositeKey(),
-                NF_PUBLISHED_EVENT_NAME,
-                Map.of(TIP_UUID_PARAM_NAME, tip.getUuid()));
+                NF_PUBLISHED_EVENT_NAME, params);
 
         return tip;
     }
