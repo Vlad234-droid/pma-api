@@ -7,7 +7,7 @@ import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.file.api.File;
-import com.tesco.pma.file.api.FileType;
+import com.tesco.pma.file.api.FileType.FileTypeEnum;
 import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
@@ -44,6 +44,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static com.tesco.pma.file.api.FileType.FileTypeEnum.DOC;
+import static com.tesco.pma.file.api.FileType.FileTypeEnum.PDF;
+import static com.tesco.pma.file.api.FileType.FileTypeEnum.PPT;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Condition.Operand.IN;
 import static com.tesco.pma.rest.RestResponse.success;
@@ -407,8 +410,8 @@ public class ReviewEndpoint {
 
         var currentUserUuid = UUID.fromString(authentication.getName());
         var path = String.format(REVIEWS_FILES_PATH, colleagueUuid);
-        var types = Stream.of(FileType.FileTypeEnum.PDF, FileType.FileTypeEnum.DOC, FileType.FileTypeEnum.PPT)
-                .map(FileType.FileTypeEnum::getId)
+        var types = Stream.of(PDF, DOC, PPT)
+                .map(FileTypeEnum::getId)
                 .collect(toList());
 
         var requestQuery = new RequestQuery();
