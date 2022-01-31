@@ -1,5 +1,6 @@
 package com.tesco.pma.fs.service;
 
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.dao.DictionaryDAO;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.RegistrationException;
@@ -54,6 +55,9 @@ public class FileServiceImplTest {
 
     @MockBean
     private DictionaryDAO dictionaryDAO;
+
+    @MockBean
+    private NamedMessageSourceAccessor messageSourceAccessor;
 
     @Test
     void upload() {

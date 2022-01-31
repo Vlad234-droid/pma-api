@@ -60,6 +60,7 @@ import static com.tesco.pma.rest.RestResponse.success;
 import static com.tesco.pma.security.UserRoleNames.ADMIN;
 import static com.tesco.pma.util.SecurityUtils.hasAuthority;
 import static com.tesco.pma.util.SecurityUtils.getColleagueUuid;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
 /**
@@ -230,6 +231,22 @@ public class FileEndpoint {
 
         }
         return success(uploadedFiles);
+    }
+
+    /**
+     * POST call to delete files by its uuids.
+     *
+     * @param fileUuids file identifiers
+     * @return a Void RestResponse
+     */
+    @Operation(summary = "Delete existing Files by its uuids", description = "Delete existing files", tags = {"file"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Files deleted")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Files not found", content = @Content)
+    @PostMapping(path = "/delete", produces = MediaType.APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    public RestResponse<Void> delete(@org.springframework.web.bind.annotation.RequestBody List<UUID> fileUuids,
+                                          @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+        fileService.delete(fileUuids, resolveColleagueUuid(authentication));
+        return RestResponse.success();
     }
 
     private UUID resolveColleagueUuid(Authentication authentication) {

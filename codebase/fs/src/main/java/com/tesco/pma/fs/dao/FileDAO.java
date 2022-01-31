@@ -47,4 +47,14 @@ public interface FileDAO {
      * have no matching type in file_type table, etc
      */
     int create(File file);
+
+    /**
+     * Delete file information by its uuid
+     *
+     * @param fileUuid file identifier
+     * @param colleagueUuid an identifier of file's owner
+     * @return number of deleted rows
+     */
+    int deleteByUuidAndColleague(@Param("fileUuid") UUID fileUuid,
+                                 @Param("colleagueUuid") UUID colleagueUuid);
 }

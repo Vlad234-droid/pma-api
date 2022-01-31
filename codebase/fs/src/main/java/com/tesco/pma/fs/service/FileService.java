@@ -6,6 +6,7 @@ import com.tesco.pma.file.api.File;
 import com.tesco.pma.file.api.UploadMetadata;
 import com.tesco.pma.pagination.RequestQuery;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
@@ -84,4 +85,13 @@ public interface FileService {
      * @return file data with all versions
      */
     List<File> getAllVersions(@NotNull String path, @NotNull String fileName, boolean includeFileContent, UUID colleagueUuid);
+
+    /**
+     * Delete files by its uuid
+     *
+     * @param fileUuids     file identifiers
+     * @param colleagueUuid an identifier of file's owner
+     * @throws NotFoundException if file by uuid is not found
+     */
+    void delete(@NotEmpty List<UUID> fileUuids, UUID colleagueUuid);
 }

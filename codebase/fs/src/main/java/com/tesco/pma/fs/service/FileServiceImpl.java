@@ -1,7 +1,9 @@
 package com.tesco.pma.fs.service;
 
 import com.tesco.pma.api.GeneralDictionaryItem;
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.dao.DictionaryDAO;
+import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.RegistrationException;
 import com.tesco.pma.fs.dao.FileDAO;
@@ -19,6 +21,7 @@ import org.springframework.validation.annotation.Validated;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,8 +39,12 @@ import static com.tesco.pma.pagination.Sort.SortOrder.DESC;
 @RequiredArgsConstructor
 public class FileServiceImpl implements FileService {
 
+    private static final String FILE_NAME = "fileName";
+    private static final String FILE_UUID = "fileUuid";
     private final FileDAO fileDao;
     private final DictionaryDAO dictionaryDAO;
+
+    private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Override
     @Transactional
@@ -73,9 +80,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public File get(UUID fileUuid, boolean includeFileContent, UUID colleagueUuid) {
         return Optional.ofNullable(fileDao.read(fileUuid, includeFileContent, colleagueUuid))
-                .orElseThrow(() -> new NotFoundException(ERROR_FILE_NOT_FOUND.name(),
-                        "File was not found", fileUuid.toString()));
-
+                .orElseThrow(() -> notFound(ERROR_FILE_NOT_FOUND, Map.of(FILE_UUID, fileUuid)));
     }
 
     @Override
@@ -91,7 +96,7 @@ public class FileServiceImpl implements FileService {
 
         return get(requestQuery, includeFileContent, colleagueUuid, true).stream()
                 .findFirst()
-                .orElseThrow(() -> new NotFoundException(ERROR_FILE_NOT_FOUND.name(), "File was not found", fileName));
+                .orElseThrow(() -> notFound(ERROR_FILE_NOT_FOUND, Map.of(FILE_NAME, fileName)));
     }
 
     @Override
@@ -103,5 +108,24 @@ public class FileServiceImpl implements FileService {
         requestQuery.setSort(Arrays.asList(new Sort("version", DESC)));
 
         return get(requestQuery, includeFileContent, colleagueUuid, false);
+    }
+
+    @Override
+    @Transactional
+    public void delete(List<UUID> fileUuids, UUID colleagueUuid) {
+        fileUuids.forEach(fileUuid -> {
+            var deleted = fileDao.deleteByUuidAndColleague(fileUuid, colleagueUuid);
+            if (1 != deleted) {
+                throw notFound(ERROR_FILE_NOT_FOUND, Map.of(FILE_UUID, fileUuid));
+            }
+        });
+    }
+
+    private NotFoundException notFound(ErrorCodeAware errorCode, Map<String, ?> params) {
+        return new NotFoundException(
+                errorCode.getCode(),
+                messageSourceAccessor.getMessageForParams(errorCode.getCode(), params),
+                null,
+                null);
     }
 }

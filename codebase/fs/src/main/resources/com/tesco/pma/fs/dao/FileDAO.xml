@@ -264,6 +264,15 @@
                 #{fileContent, jdbcType=BINARY})
     </insert>
 
+    <delete id="deleteByUuidAndColleague">
+        DELETE
+        FROM file
+        WHERE uuid = #{fileUuid}
+        <if test="colleagueUuid != null">
+            AND created_by = #{colleagueUuid}
+        </if>
+    </delete>
+
     <sql id="getMaxVersion">
         SELECT COALESCE(MAX(version), 0)
         FROM file
