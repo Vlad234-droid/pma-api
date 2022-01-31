@@ -7,6 +7,7 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.cycle.service.PMCycleService;
+import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.pagination.RequestQuery;
@@ -19,7 +20,6 @@ import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStats;
 import com.tesco.pma.review.domain.ReviewStatusCounter;
 import com.tesco.pma.review.domain.TimelinePoint;
-import com.tesco.pma.file.api.File;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -39,6 +39,7 @@ import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MAX;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MIN;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND;
+import static com.tesco.pma.review.util.TestDataUtils.files;
 import static org.assertj.core.api.Assertions.from;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -91,6 +92,9 @@ class ReviewServiceImplTest {
 
     @MockBean
     private ProfileService mockProfileService;
+
+    @MockBean
+    private EventSender eventSender;
 
     @SpyBean
     private ReviewServiceImpl reviewService;
@@ -235,7 +239,7 @@ class ReviewServiceImplTest {
 
     @Test
     void getReviewFilesByColleagueWithColleague() {
-        final var files = getFiles();
+        final var files = files(3);
         when(mockFileService.get(any(), eq(false), eq(COLLEAGUE_UUID), eq(true))).thenReturn(files);
 
         final var res = reviewService.getReviewsFilesByColleague(COLLEAGUE_UUID, COLLEAGUE_UUID, new RequestQuery());
@@ -249,22 +253,12 @@ class ReviewServiceImplTest {
         profile.setManagerUuid(CURRENT_USER_UUID);
         when(mockProfileService.getColleague(COLLEAGUE_UUID)).thenReturn(profile);
 
-        final var files = getFiles();
+        final var files = files(3);
         when(mockFileService.get(any(), eq(false), eq(COLLEAGUE_UUID), eq(true))).thenReturn(files);
 
         final var res = reviewService.getReviewsFilesByColleague(COLLEAGUE_UUID, CURRENT_USER_UUID, new RequestQuery());
 
         assertEquals(files, res);
-    }
-
-    private List<File> getFiles() {
-        var filePdf = new File();
-        filePdf.setFileName("test.pdf");
-        filePdf.setCreatedBy(COLLEAGUE_UUID);
-        var fileDoc = new File();
-        fileDoc.setFileName("test.doc");
-        fileDoc.setCreatedBy(COLLEAGUE_UUID);
-        return List.of(filePdf, fileDoc);
     }
 
 }
