@@ -31,6 +31,8 @@
       <bpmn:incoming>Flow_1k5x4ta</bpmn:incoming>
       <bpmn:incoming>Flow_08ohgik</bpmn:incoming>
       <bpmn:incoming>Flow_007nzmt</bpmn:incoming>
+      <bpmn:incoming>Flow_1pmdngi</bpmn:incoming>
+      <bpmn:incoming>Flow_086pwoz</bpmn:incoming>
       <bpmn:outgoing>Flow_1uqsizm</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:businessRuleTask id="Activity_0tqpitg" name="Map event to notification attribute name" camunda:resultVariable="PROFILE_ATTRIBUTE_NAME" camunda:decisionRef="review_event_to_profile_attribute" camunda:mapDecisionResult="singleEntry">
@@ -85,6 +87,16 @@
     </bpmn:task>
     <bpmn:sequenceFlow id="Flow_15vpvez" sourceRef="Activity_0t1e50m" targetRef="Activity_1gifj7e" />
     <bpmn:sequenceFlow id="Flow_1gnf7ni" sourceRef="Activity_1gifj7e" targetRef="sendNotification" />
+    <bpmn:startEvent id="Event_0dnryhf">
+      <bpmn:outgoing>Flow_086pwoz</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_04j1nkh" messageRef="Message_0m9s61t" />
+    </bpmn:startEvent>
+    <bpmn:startEvent id="Event_0a2hmoz">
+      <bpmn:outgoing>Flow_1pmdngi</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0k426km" messageRef="Message_0zcp6tw" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1pmdngi" sourceRef="Event_0a2hmoz" targetRef="initReviewNotification" />
+    <bpmn:sequenceFlow id="Flow_086pwoz" sourceRef="Event_0dnryhf" targetRef="initReviewNotification" />
     <bpmn:textAnnotation id="TextAnnotation_097i6gf">
       <bpmn:text>eventName: NF_PM_REVIEW_SUBMITTED
 COLLEAGUE_UUID
@@ -115,6 +127,18 @@ COLLEAGUE_UUID
 TIMELINE_POINT_UUID</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_18s42lk" sourceRef="PM_REVIEW_BEFORE_END_ID" targetRef="TextAnnotation_0tbxjln" />
+    <bpmn:textAnnotation id="TextAnnotation_1x5vypf">
+      <bpmn:text>eventName: NF_PM_REVIEW_START
+COLLEAGUE_UUID
+TIMELINE_POINT_UUID</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0pahqr4" sourceRef="TextAnnotation_1x5vypf" targetRef="Event_0dnryhf" />
+    <bpmn:textAnnotation id="TextAnnotation_0oxls24">
+      <bpmn:text>eventName: NF_PM_REVIEW_END
+COLLEAGUE_UUID
+TIMELINE_POINT_UUID</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0w3g3on" sourceRef="TextAnnotation_0oxls24" targetRef="Event_0a2hmoz" />
   </bpmn:process>
   <bpmn:message id="Message_0we3leq" name="NF_PM_REVIEW_BEFORE_START" />
   <bpmn:message id="Message_1mdskp7" name="NF_PM_REVIEW_APPROVED" />
@@ -135,8 +159,24 @@ TIMELINE_POINT_UUID</bpmn:text>
   <bpmn:message id="Message_1woa9kz" name="BEFORE_CYCLE_START_LM" />
   <bpmn:message id="Message_0sziydu" name="BEFORE_CYCLE_END_LM" />
   <bpmn:message id="Message_1kt741c" name="TIPS_RECEIVED" />
+  <bpmn:message id="Message_0m9s61t" name="NF_PM_REVIEW_START" />
+  <bpmn:message id="Message_0zcp6tw" name="NF_PM_REVIEW_END" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="review_notifications">
+      <bpmndi:BPMNShape id="TextAnnotation_1x5vypf_di" bpmnElement="TextAnnotation_1x5vypf">
+        <dc:Bounds x="150" y="516" width="240" height="54" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0oxls24_di" bpmnElement="TextAnnotation_0oxls24">
+        <dc:Bounds x="150" y="596" width="240" height="54" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1gnf7ni_di" bpmnElement="Flow_1gnf7ni">
+        <di:waypoint x="1370" y="277" />
+        <di:waypoint x="1430" y="277" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15vpvez_di" bpmnElement="Flow_15vpvez">
+        <di:waypoint x="1220" y="277" />
+        <di:waypoint x="1270" y="277" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_007nzmt_di" bpmnElement="Flow_007nzmt">
         <di:waypoint x="457" y="450" />
         <di:waypoint x="504" y="450" />
@@ -167,6 +207,10 @@ TIMELINE_POINT_UUID</bpmn:text>
         <di:waypoint x="504" y="250" />
         <di:waypoint x="550" y="250" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qy25ym_di" bpmnElement="Flow_0qy25ym">
+        <di:waypoint x="1530" y="277" />
+        <di:waypoint x="1602" y="277" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1fg80ft_di" bpmnElement="Flow_1fg80ft">
         <di:waypoint x="1010" y="302" />
         <di:waypoint x="1010" y="387" />
@@ -188,17 +232,17 @@ TIMELINE_POINT_UUID</bpmn:text>
         <di:waypoint x="650" y="277" />
         <di:waypoint x="680" y="277" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0qy25ym_di" bpmnElement="Flow_0qy25ym">
-        <di:waypoint x="1530" y="277" />
-        <di:waypoint x="1602" y="277" />
+      <bpmndi:BPMNEdge id="Flow_1pmdngi_di" bpmnElement="Flow_1pmdngi">
+        <di:waypoint x="458" y="630" />
+        <di:waypoint x="504" y="630" />
+        <di:waypoint x="504" y="250" />
+        <di:waypoint x="550" y="250" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_15vpvez_di" bpmnElement="Flow_15vpvez">
-        <di:waypoint x="1220" y="277" />
-        <di:waypoint x="1270" y="277" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1gnf7ni_di" bpmnElement="Flow_1gnf7ni">
-        <di:waypoint x="1370" y="277" />
-        <di:waypoint x="1430" y="277" />
+      <bpmndi:BPMNEdge id="Flow_086pwoz_di" bpmnElement="Flow_086pwoz">
+        <di:waypoint x="458" y="550" />
+        <di:waypoint x="504" y="550" />
+        <di:waypoint x="504" y="250" />
+        <di:waypoint x="550" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0uo16li_di" bpmnElement="PM_REVIEW_SUBMITTED_ID">
         <dc:Bounds x="422" y="182" width="36" height="36" />
@@ -230,6 +274,9 @@ TIMELINE_POINT_UUID</bpmn:text>
           <dc:Bounds x="425" y="475" width="33" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1nf3c86_di" bpmnElement="sendNotification">
+        <dc:Bounds x="1430" y="237" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1vpo4fj_di" bpmnElement="initReviewNotification">
         <dc:Bounds x="550" y="237" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -248,6 +295,12 @@ TIMELINE_POINT_UUID</bpmn:text>
       <bpmndi:BPMNShape id="Event_0x5q5pd_di" bpmnElement="Event_0x5q5pd">
         <dc:Bounds x="1122" y="369" width="36" height="36" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0x66oxq_di" bpmnElement="Event_0x66oxq">
+        <dc:Bounds x="1602" y="259" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1gifj7e_di" bpmnElement="Activity_1gifj7e">
+        <dc:Bounds x="1270" y="237" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_097i6gf_di" bpmnElement="TextAnnotation_097i6gf">
         <dc:Bounds x="150" y="165" width="240" height="68" />
       </bpmndi:BPMNShape>
@@ -263,14 +316,11 @@ TIMELINE_POINT_UUID</bpmn:text>
       <bpmndi:BPMNShape id="TextAnnotation_0tbxjln_di" bpmnElement="TextAnnotation_0tbxjln">
         <dc:Bounds x="150" y="415" width="240" height="68" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1gifj7e_di" bpmnElement="Activity_1gifj7e">
-        <dc:Bounds x="1270" y="237" width="100" height="80" />
+      <bpmndi:BPMNShape id="Event_0lc2whv_di" bpmnElement="Event_0dnryhf">
+        <dc:Bounds x="422" y="532" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1nf3c86_di" bpmnElement="sendNotification">
-        <dc:Bounds x="1430" y="237" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0x66oxq_di" bpmnElement="Event_0x66oxq">
-        <dc:Bounds x="1602" y="259" width="36" height="36" />
+      <bpmndi:BPMNShape id="Event_1pt1e8l_di" bpmnElement="Event_0a2hmoz">
+        <dc:Bounds x="422" y="612" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_1da0a5n_di" bpmnElement="Association_1da0a5n">
         <di:waypoint x="422" y="200" />
@@ -291,6 +341,14 @@ TIMELINE_POINT_UUID</bpmn:text>
       <bpmndi:BPMNEdge id="Association_18s42lk_di" bpmnElement="Association_18s42lk">
         <di:waypoint x="421" y="450" />
         <di:waypoint x="390" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0pahqr4_di" bpmnElement="Association_0pahqr4">
+        <di:waypoint x="390" y="550" />
+        <di:waypoint x="422" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0w3g3on_di" bpmnElement="Association_0w3g3on">
+        <di:waypoint x="390" y="630" />
+        <di:waypoint x="422" y="630" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
