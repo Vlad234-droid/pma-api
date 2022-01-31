@@ -250,6 +250,27 @@ public class FileEndpoint {
         return RestResponse.success();
     }
 
+    /**
+     * POST call to delete files by its path, name and versions.
+     *
+     * @param path      file path
+     * @param fileName  file name
+     * @param versions  file versions
+     * @return a Void RestResponse
+     */
+    @Operation(summary = "Delete existing Files by its path, name and versions", description = "Delete existing files", tags = {"file"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Files deleted")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Files not found", content = @Content)
+    @PostMapping(path = "/versions/delete", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
+    public RestResponse<Void> delete(@RequestParam("path") String path,
+                                     @RequestParam("fileName") String fileName,
+                                     @RequestParam("versions") @NotEmpty List<@NotNull Integer> versions,
+                                     @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+        fileService.deleteVersions(path, fileName, versions, resolveColleagueUuid(authentication));
+        return RestResponse.success();
+    }
+
     private UUID resolveColleagueUuid(Authentication authentication) {
         return hasAuthority(authentication, ADMIN) ? null : getColleagueUuid(authentication);
     }

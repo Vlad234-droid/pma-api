@@ -73,7 +73,7 @@ public interface FileService {
      * @return file data
      * @throws NotFoundException if file by name and path is not found
      */
-    File get(@NotNull String path, @NotNull String fileName, boolean includeFileContent, UUID colleagueUuid);
+    File get(@NotEmpty String path, @NotEmpty String fileName, boolean includeFileContent, UUID colleagueUuid);
 
     /**
      * Read all information about file with all versions by its name and path
@@ -84,7 +84,7 @@ public interface FileService {
      * @param colleagueUuid an identifier of file's owner
      * @return file data with all versions
      */
-    List<File> getAllVersions(@NotNull String path, @NotNull String fileName, boolean includeFileContent, UUID colleagueUuid);
+    List<File> getAllVersions(@NotEmpty String path, @NotEmpty String fileName, boolean includeFileContent, UUID colleagueUuid);
 
     /**
      * Delete files by its uuid
@@ -94,4 +94,15 @@ public interface FileService {
      * @throws NotFoundException if file by uuid is not found
      */
     void delete(@NotEmpty List<UUID> fileUuids, UUID colleagueUuid);
+
+    /**
+     * Delete files by its path, name and versions
+     *
+     * @param path          file path
+     * @param fileName      file name
+     * @param versions      file versions; if null, remove all versions
+     * @param colleagueUuid an identifier of file's owner
+     * @throws NotFoundException if file by uuid is not found
+     */
+    void deleteVersions(@NotEmpty String path, @NotEmpty String fileName, List<Integer> versions, UUID colleagueUuid);
 }

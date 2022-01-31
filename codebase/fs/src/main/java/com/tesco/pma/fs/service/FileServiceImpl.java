@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.Instant;
@@ -41,6 +42,8 @@ public class FileServiceImpl implements FileService {
 
     private static final String FILE_NAME = "fileName";
     private static final String FILE_UUID = "fileUuid";
+    private static final String FILE_PATH = "path";
+    private static final String FILE_VERSION = "version";
     private final FileDAO fileDao;
     private final DictionaryDAO dictionaryDAO;
 
@@ -119,6 +122,22 @@ public class FileServiceImpl implements FileService {
                 throw notFound(ERROR_FILE_NOT_FOUND, Map.of(FILE_UUID, fileUuid));
             }
         });
+    }
+
+    @Override
+    @Transactional
+    public void deleteVersions(String path, String fileName, List<Integer> versions, UUID colleagueUuid) {
+        if (CollectionUtils.isEmpty(versions)) {
+            fileDao.deleteVersions(path, fileName, null, colleagueUuid);
+            return;
+        }
+        versions.forEach(version -> {
+            var deleted = fileDao.deleteVersions(path, fileName, version, colleagueUuid);
+            if (1 != deleted) {
+                throw notFound(ERROR_FILE_NOT_FOUND, Map.of(FILE_PATH, path, FILE_NAME, fileName, FILE_VERSION, version));
+            }
+        });
+
     }
 
     private NotFoundException notFound(ErrorCodeAware errorCode, Map<String, ?> params) {

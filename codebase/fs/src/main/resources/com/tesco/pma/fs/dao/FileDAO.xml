@@ -273,6 +273,19 @@
         </if>
     </delete>
 
+    <delete id="deleteVersions">
+        DELETE
+        FROM file
+        WHERE path = #{path}
+            AND file_name = #{fileName}
+        <if test="version != null">
+            AND version = #{version}
+        </if>
+        <if test="colleagueUuid != null">
+            AND created_by = #{colleagueUuid}
+        </if>
+    </delete>
+
     <sql id="getMaxVersion">
         SELECT COALESCE(MAX(version), 0)
         FROM file
