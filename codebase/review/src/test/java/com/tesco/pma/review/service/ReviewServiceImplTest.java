@@ -93,9 +93,6 @@ class ReviewServiceImplTest {
     @MockBean
     private ProfileService mockProfileService;
 
-    @MockBean
-    private EventSender eventSender;
-
     @SpyBean
     private ReviewServiceImpl reviewService;
 
