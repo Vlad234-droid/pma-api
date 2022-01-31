@@ -7,6 +7,8 @@ import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.error.ErrorCodeAware;
+import com.tesco.pma.event.EventSupport;
+import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.exception.ReviewCreationException;
@@ -76,6 +78,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final TimelinePointDAO timelinePointDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final PMCycleService pmCycleService;
+    private final EventSender eventSender;
 
     private static final String REVIEW_UUID_PARAMETER_NAME = "reviewUuid";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
@@ -97,13 +100,24 @@ public class ReviewServiceImpl implements ReviewService {
     private static final String DELETE_OPERATION_NAME = "DELETE";
     private static final String UPDATE_OPERATION_NAME = "UPDATE";
     private static final String CHANGE_STATUS_OPERATION_NAME = "CHANGE STATUS";
+    private static final String NF_ORGANISATION_OBJECTIVES_EVENT_NAME = "NF_ORGANISATION_OBJECTIVES";
+    private static final String NF_OBJECTIVES_APPROVED_FOR_SHARING_EVENT_NAME = "NF_OBJECTIVES_APPROVED_FOR_SHARING";
+    private static final String COLLEAGUE_UUID_EVENT_PARAM = "COLLEAGUE_UUID";
+    private static final String TIMELINE_POINT_UUID_EVENT_PARAM = "TIMELINE_POINT_UUID";
+
     private static final Comparator<OrgObjective> ORG_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR =
             Comparator.comparing(OrgObjective::getNumber)
                     .thenComparing(OrgObjective::getTitle);
+
     private static final List<PMTimelinePointStatus> MIN_REVIEW_STATUSES = List.of(
             WAITING_FOR_APPROVAL,
             APPROVED,
             DECLINED);
+
+    private static final Map<PMTimelinePointStatus, String> STATUS_TO_EVENT_NAME_MAP = Map.of(
+            WAITING_FOR_APPROVAL, "NF_PM_REVIEW_SUBMITTED",
+            APPROVED, "NF_PM_REVIEW_APPROVED",
+            DECLINED, "NF_PM_REVIEW_DECLINED");
 
     @Override
     public Review getReview(UUID performanceCycleUuid, UUID colleagueUuid, PMReviewType type, Integer number) {
@@ -378,7 +392,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         checkReviewStateAfterUpdate(timelinePoint);
         updateTLPointStatus(timelinePoint);
-
+        sendEvent(timelinePoint, loggedUserUuid);
         return status;
     }
 
@@ -560,6 +574,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         });
         reviewAuditLogDAO.logOrgObjectiveAction(SAVE_AS_DRAFT, loggedUserUuid);
+        sendEvent(NF_ORGANISATION_OBJECTIVES_EVENT_NAME, loggedUserUuid);
         return results;
     }
 
@@ -569,6 +584,7 @@ public class ReviewServiceImpl implements ReviewService {
             throw notFound(ORG_OBJECTIVES_NOT_FOUND, Map.of());
         }
         reviewAuditLogDAO.logOrgObjectiveAction(PUBLISH, loggedUserUuid);
+        sendEvent(NF_OBJECTIVES_APPROVED_FOR_SHARING_EVENT_NAME, loggedUserUuid);
         return getPublishedOrgObjectives();
     }
 
@@ -710,5 +726,26 @@ public class ReviewServiceImpl implements ReviewService {
             }
         }
         return defaultValue;
+    }
+
+    private void sendEvent(String eventName, UUID colleagueUuid){
+        var event = EventSupport.create(eventName,
+                Map.of(COLLEAGUE_UUID_EVENT_PARAM, colleagueUuid));
+
+        eventSender.sendEvent(event, null, true);
+    }
+
+    private void sendEvent(TimelinePoint timelinePoint, UUID colleagueUuid){
+        var eventName = STATUS_TO_EVENT_NAME_MAP.get(timelinePoint.getStatus());
+
+        if(eventName == null){
+            return;
+        }
+
+        var event = EventSupport.create(eventName, Map.of(
+                COLLEAGUE_UUID_EVENT_PARAM, colleagueUuid,
+                TIMELINE_POINT_UUID_EVENT_PARAM, timelinePoint.getUuid()));
+
+        eventSender.sendEvent(event, null, true);
     }
 }
