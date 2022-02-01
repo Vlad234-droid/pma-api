@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -19,5 +20,5 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @SuperBuilder
 public class ColleagueReportTargeting extends ColleagueSimple {
-    MapJson tags;
+    Map<String, String> tags;
 }

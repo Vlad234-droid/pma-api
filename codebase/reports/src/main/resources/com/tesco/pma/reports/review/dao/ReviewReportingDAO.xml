@@ -20,15 +20,29 @@
         <result property="howOverAchieved" column="how_over_achieved"/>
     </resultMap>
 
+    <resultMap id="colleagueReportTagsResultMap" type="map">
+        <result column="must_create_objective" property="must_create_objective"/>
+        <result column="has_objective_submitted" property="has_objective_submitted"/>
+        <result column="has_objective_approved" property="has_objective_approved"/>
+        <result column="must_create_myr" property="must_create_myr"/>
+        <result column="has_myr_submitted" property="has_myr_submitted"/>
+        <result column="has_myr_approved" property="has_myr_approved"/>
+        <result column="myr_what_rating" property="myr_what_rating"/>
+        <result column="myr_how_rating" property="myr_how_rating"/>
+        <result column="must_create_eyr" property="must_create_eyr"/>
+        <result column="has_eyr_submitted" property="has_eyr_submitted"/>
+        <result column="has_eyr_approved" property="has_eyr_approved"/>
+        <result column="eyr_what_rating" property="eyr_what_rating"/>
+        <result column="eyr_how_rating" property="eyr_how_rating"/>
+    </resultMap>
+
     <resultMap id="colleagueReportTargetingResultMap" type="com.tesco.pma.reports.domain.ColleagueReportTargeting">
         <id property="uuid" column="uuid"/>
         <result property="firstName" column="first_name"/>
         <result property="lastName" column="last_name"/>
         <result property="jobName" column="job_name"/>
         <result property="businessType" column="business_type"/>
-        <result property="tags" column="tags"
-                typeHandler="com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler"
-                javaType="com.tesco.pma.api.MapJson"/>
+        <association property="tags" resultMap="colleagueReportTagsResultMap"/>
     </resultMap>
 
     <sql id="getFilterField">
@@ -153,22 +167,19 @@
                ec.last_name,
                ec.job_name,
                ec.business_type,
-               jsonb_build_object('is_objective', case when ec.objective_cnt > 0 then 'TRUE' else 'FALSE' end,
-                                  'is_objective_submitted',
-                                  case when ec.objective_submitted_cnt > 0 then 'TRUE' else 'FALSE' end,
-                                  'is_objective_approved', case when ec.objective_approved_cnt > 0 then 'TRUE' else 'FALSE' end,
-                                  'is_myr', case when ec.myr_cnt > 0 then 'TRUE' else 'FALSE' end,
-                                  'is_myr_submitted', case when ec.myr_submitted_cnt > 0 then 'TRUE' else 'FALSE' end,
-                                  'is_myr_approved', case when ec.myr_approved_cnt > 0 then 'TRUE' else 'FALSE' end,
-                                  'myr_what_rating', ec.myr_what_rating,
-                                  'myr_how_rating', ec.myr_how_rating,
-                                  'is_eyr', case when ec.eyr_cnt > 0 then 'TRUE' else 'FALSE' end,
-                                  'is_eyr_submitted', case when ec.eyr_submitted_cnt > 0 then 'TRUE' else 'FALSE' end,
-                                  'is_eyr_approved', case when ec.eyr_approved_cnt > 0 then 'TRUE' else 'FALSE' end,
-                                  'eyr_what_rating', ec.eyr_what_rating,
-                                  'eyr_how_rating', ec.eyr_how_rating
-
-                   ) as tags
+               case when ec.objective_cnt > 0 then '1' else '0' end as must_create_objective,
+               case when ec.objective_submitted_cnt > 0 then '1' else '0' end as has_objective_submitted,
+               case when ec.objective_approved_cnt > 0 then '1' else '0' end as has_objective_approved,
+               case when ec.myr_cnt > 0 then '1' else '0' end as must_create_myr,
+               case when ec.myr_submitted_cnt > 0 then '1' else '0' end as has_myr_submitted,
+               case when ec.myr_approved_cnt > 0 then '1' else '0' end as has_myr_approved,
+               coalesce(ec.myr_what_rating,'0') as myr_what_rating,
+               coalesce(ec.myr_how_rating,'0') as myr_how_rating,
+               case when ec.eyr_cnt > 0 then '1' else '0' end as must_create_eyr,
+               case when ec.eyr_submitted_cnt > 0 then '1' else '0' end as has_eyr_submitted,
+               case when ec.eyr_approved_cnt > 0 then '1' else '0' end as has_eyr_approved,
+               coalesce(ec.eyr_what_rating,'0') as eyr_what_rating,
+               coalesce(ec.eyr_how_rating,'0') as eyr_how_rating
         from enriched_colleagues ec
     </select>
 
