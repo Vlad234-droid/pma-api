@@ -1,6 +1,7 @@
 package com.tesco.pma.reports.review.dao;
 
 import com.tesco.pma.pagination.RequestQuery;
+import com.tesco.pma.reports.domain.ColleagueReportTargeting;
 import com.tesco.pma.reports.review.domain.ObjectiveLinkedReviewData;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,4 +16,6 @@ public interface ReviewReportingDAO {
      * @return linked Objectives report data
      */
     List<ObjectiveLinkedReviewData> getLinkedObjectivesData(@Param("requestQuery") RequestQuery requestQuery);
+
+    List<ColleagueReportTargeting> getColleagueTargeting(@Param("requestQuery") RequestQuery requestQuery);
 }

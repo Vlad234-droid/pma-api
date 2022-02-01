@@ -20,6 +20,17 @@
         <result property="howOverAchieved" column="how_over_achieved"/>
     </resultMap>
 
+    <resultMap id="colleagueReportTargetingResultMap" type="com.tesco.pma.reports.domain.ColleagueReportTargeting">
+        <id property="uuid" column="uuid"/>
+        <result property="firstName" column="first_name"/>
+        <result property="lastName" column="last_name"/>
+        <result property="jobName" column="job_name"/>
+        <result property="businessType" column="business_type"/>
+        <result property="tags" column="tags"
+                typeHandler="com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler"
+                javaType="com.tesco.pma.api.MapJson"/>
+    </resultMap>
+
     <sql id="getFilterField">
         AND
         <choose>
@@ -89,15 +100,95 @@
         </if>
     </select>
 
+    <select id="getColleagueTargeting" resultMap="colleagueReportTargetingResultMap">
+        with filtered_colleague as (
+        <include refid="colleagueQuery"/>
+        ),
+             enriched_colleagues as
+                 (
+                     select fc.uuid,
+                            fc.first_name,
+                            fc.last_name,
+                            fc.job_name,
+                            fc.business_type,
+                            count(case when upper(ptp.code) = 'OBJECTIVE' then 1 end)                        as objective_cnt,
+                            count(
+                                    case when upper(ptp.code) = 'OBJECTIVE' and pr.status_id = 2 then 1 end) as objective_submitted_cnt,
+                            count(
+                                    case when upper(ptp.code) = 'OBJECTIVE' and pr.status_id = 3 then 1 end) as objective_approved_cnt,
+                            count(case when upper(ptp.code) = 'MYR' then 1 end)                              as myr_cnt,
+                            count(
+                                    case when upper(ptp.code) = 'MYR' and pr.status_id = 2 then 1 end)       as myr_submitted_cnt,
+                            count(
+                                    case when upper(ptp.code) = 'MYR' and pr.status_id = 3 then 1 end)       as myr_approved_cnt,
+                            max(case
+                                    when upper(ptp.code) = 'MYR'
+                                        then (pr.properties::json -> 'what_rating')::varchar end)            as myr_what_rating,
+                            max(case
+                                    when upper(ptp.code) = 'MYR'
+                                        then (pr.properties::json -> 'how_rating')::varchar end)             as myr_how_rating,
+                            count(case when upper(ptp.code) = 'EYR' then 1 end)                              as eyr_cnt,
+                            count(
+                                    case when upper(ptp.code) = 'EYR' and pr.status_id = 2 then 1 end)       as eyr_submitted_cnt,
+                            count(
+                                    case when upper(ptp.code) = 'EYR' and pr.status_id = 3 then 1 end)       as eyr_approved_cnt,
+                            max(case
+                                    when upper(ptp.code) = 'EYR'
+                                        then (pr.properties::json -> 'what_rating')::varchar end)            as eyr_what_rating,
+                            max(case
+                                    when upper(ptp.code) = 'EYR'
+                                        then (pr.properties::json -> 'how_rating')::varchar end)             as eyr_how_rating
+                     from filtered_colleague fc
+                              left join pm_timeline_point ptp
+                                        on (ptp.colleague_cycle_uuid = fc.colleague_cycle_uuid)
+                              left join pm_review pr
+                                        on (pr.tl_point_uuid = ptp.uuid)
+                     group by fc.uuid,
+                              fc.first_name,
+                              fc.last_name,
+                              fc.job_name,
+                              fc.business_type)
+        select ec.uuid,
+               ec.first_name,
+               ec.last_name,
+               ec.job_name,
+               ec.business_type,
+               jsonb_build_object('is_objective', case when ec.objective_cnt > 0 then 'TRUE' else 'FALSE' end,
+                                  'is_objective_submitted',
+                                  case when ec.objective_submitted_cnt > 0 then 'TRUE' else 'FALSE' end,
+                                  'is_objective_approved', case when ec.objective_approved_cnt > 0 then 'TRUE' else 'FALSE' end,
+                                  'is_myr', case when ec.myr_cnt > 0 then 'TRUE' else 'FALSE' end,
+                                  'is_myr_submitted', case when ec.myr_submitted_cnt > 0 then 'TRUE' else 'FALSE' end,
+                                  'is_myr_approved', case when ec.myr_approved_cnt > 0 then 'TRUE' else 'FALSE' end,
+                                  'myr_what_rating', ec.myr_what_rating,
+                                  'myr_how_rating', ec.myr_how_rating,
+                                  'is_eyr', case when ec.eyr_cnt > 0 then 'TRUE' else 'FALSE' end,
+                                  'is_eyr_submitted', case when ec.eyr_submitted_cnt > 0 then 'TRUE' else 'FALSE' end,
+                                  'is_eyr_approved', case when ec.eyr_approved_cnt > 0 then 'TRUE' else 'FALSE' end,
+                                  'eyr_what_rating', ec.eyr_what_rating,
+                                  'eyr_how_rating', ec.eyr_how_rating
+
+                   ) as tags
+        from enriched_colleagues ec
+    </select>
+
     <sql id="colleagueQuery">
-        select c.*,
-               pcc.uuid   as colleague_cycle_uuid,
-               pc.type_id as cycle_type_id
+        select c.uuid,
+               c.first_name,
+               c.last_name,
+               j.name          as job_name,
+               d.business_type as business_type,
+               pcc.uuid        as colleague_cycle_uuid,
+               pc.type_id      as cycle_type_id
         from colleague c
                  inner join pm_colleague_cycle pcc
                             on (pcc.colleague_uuid = c.uuid)
                  inner join pm_cycle pc
                             on (pcc.cycle_uuid = pc.uuid)
+                 left join job j
+                           on (j.id = c.job_id)
+                 left join department d
+                           on (d.id = c.department_id)
         where 1 = 1
 --     filters
     </sql>

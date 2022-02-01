@@ -18,6 +18,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EqualsAndHashCode(callSuper = false)
 @SuperBuilder
-public class ColleagueReportView extends ColleagueSimple {
+public class ColleagueReportTargeting extends ColleagueSimple {
     MapJson tags;
 }

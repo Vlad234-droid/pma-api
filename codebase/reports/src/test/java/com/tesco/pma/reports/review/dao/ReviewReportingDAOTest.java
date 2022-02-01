@@ -81,4 +81,15 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
 
         assertTrue(result.isEmpty());
     }
+
+    @Test
+    void getColleagueTargeting() {
+        final var requestQuery = new RequestQuery();
+        requestQuery.setFilters(List.of(new Condition("year", EQUALS, YEAR),
+                new Condition("statuses", IN, List.of(APPROVED.getCode(), DRAFT.getCode()))));
+
+        final var result = instance.getColleagueTargeting(requestQuery);
+
+        System.out.println(result);
+    }
 }
