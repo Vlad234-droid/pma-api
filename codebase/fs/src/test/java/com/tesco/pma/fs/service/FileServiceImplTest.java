@@ -21,6 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import static com.tesco.pma.file.api.FileStatus.ACTIVE;
@@ -34,6 +35,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
@@ -42,8 +45,11 @@ import static org.mockito.Mockito.when;
 public class FileServiceImplTest {
 
     private static final UUID FILE_UUID_1 = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65765");
+    private static final UUID FILE_UUID_2 = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65769");
     private static final String FILE_NAME = "test1.txt";
     private static final String FILE_NAME_2 = "test2.txt";
+    private static final Integer VERSION_1 = 1;
+    private static final Integer VERSION_2 = 2;
     private static final UUID CREATOR_ID = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65767");
     private static final String PATH = "/home/dev";
 
@@ -183,6 +189,42 @@ public class FileServiceImplTest {
         var result = service.getAllVersions(PATH, FILE_NAME, includeFileContent, CREATOR_ID);
 
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void deleteFileByUuids() {
+        when(fileDao.deleteByUuidAndColleague(FILE_UUID_1, CREATOR_ID)).thenReturn(1);
+        when(fileDao.deleteByUuidAndColleague(FILE_UUID_2, CREATOR_ID)).thenReturn(1);
+
+        service.delete(List.of(FILE_UUID_1, FILE_UUID_2), CREATOR_ID);
+
+        verify(fileDao, times(1)).deleteByUuidAndColleague(FILE_UUID_1, CREATOR_ID);
+        verify(fileDao, times(1)).deleteByUuidAndColleague(FILE_UUID_2, CREATOR_ID);
+    }
+
+    @Test
+    void deleteFileByUuidsThrowsNotFoundExceptionWhenDaoReturnsNotOne() {
+        when(fileDao.deleteByUuidAndColleague(CREATOR_ID, FILE_UUID_1)).thenReturn(0);
+
+        assertThrows(NotFoundException.class, () -> service.delete(List.of(FILE_UUID_1, FILE_UUID_2), CREATOR_ID));
+    }
+
+    @Test
+    void deleteFileByVersions() {
+        when(fileDao.deleteVersions(PATH, FILE_NAME, VERSION_1, CREATOR_ID)).thenReturn(1);
+        when(fileDao.deleteVersions(PATH, FILE_NAME, VERSION_2, CREATOR_ID)).thenReturn(1);
+
+        service.deleteVersions(PATH, FILE_NAME, List.of(VERSION_1, VERSION_2), CREATOR_ID);
+
+        verify(fileDao, times(1)).deleteVersions(PATH, FILE_NAME, VERSION_1, CREATOR_ID);
+        verify(fileDao, times(1)).deleteVersions(PATH, FILE_NAME, VERSION_2, CREATOR_ID);
+    }
+
+    @Test
+    void deleteFileByVersionsThrowsNotFoundExceptionWhenDaoReturnsNotOne() {
+        when(fileDao.deleteVersions(PATH, FILE_NAME, VERSION_1, CREATOR_ID)).thenReturn(0);
+
+        assertThrows(NotFoundException.class, () -> service.deleteVersions(PATH, FILE_NAME, List.of(VERSION_1, VERSION_2), CREATOR_ID));
     }
 
     private File buildFileData(String fileName, UUID uuid, Integer version) {

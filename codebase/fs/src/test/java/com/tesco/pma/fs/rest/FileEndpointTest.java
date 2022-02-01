@@ -250,7 +250,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void deleteFilesByUuids() throws Exception {
+    void deleteFileByUuids() throws Exception {
         doNothing().when(service).delete(List.of(FILE_UUID_1, FILE_UUID_2), CREATOR_ID);
 
         performPostWith(colleague(COLLEAGUE_UUID_STR), FILES_DELETE_BY_UUIDS_REQUEST_JSON_FILE_NAME,
@@ -266,7 +266,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void deleteFilesByVersions() throws Exception {
+    void deleteFileByVersions() throws Exception {
         doNothing().when(service).deleteVersions(PATH, FILE_NAME, List.of(VERSION_1, VERSION_2), CREATOR_ID);
 
         performPostWith(colleague(COLLEAGUE_UUID_STR), FILES_DELETE_BY_VERSIONS_REQUEST_JSON_FILE_NAME,
