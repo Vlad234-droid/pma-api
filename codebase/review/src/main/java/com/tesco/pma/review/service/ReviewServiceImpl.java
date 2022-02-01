@@ -379,11 +379,12 @@ public class ReviewServiceImpl implements ReviewService {
                         null,
                         review.getNumber());
                 var actualReview = actualReviews.get(0);
-                if (review.getProperties() != null) {
+                if (review.getProperties() != null
+                        && !review.getProperties().getMapJson().isEmpty()) {
                     actualReview.setProperties(review.getProperties());
                     updateReview(actualReview);
                 }
-                reviewAuditLogDAO.logReviewUpdating(actualReviews.get(0), status, reason, loggedUserUuid);
+                reviewAuditLogDAO.logReviewUpdating(actualReview, status, reason, loggedUserUuid);
             } else {
                 throw notFound(REVIEW_NOT_FOUND,
                         Map.of(STATUS_PARAMETER_NAME, status,
