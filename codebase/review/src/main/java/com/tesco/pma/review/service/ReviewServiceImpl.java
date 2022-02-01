@@ -378,6 +378,11 @@ public class ReviewServiceImpl implements ReviewService {
                         type,
                         null,
                         review.getNumber());
+                var actualReview = actualReviews.get(0);
+                if (review.getProperties() != null) {
+                    actualReview.setProperties(review.getProperties());
+                    updateReview(actualReview);
+                }
                 reviewAuditLogDAO.logReviewUpdating(actualReviews.get(0), status, reason, loggedUserUuid);
             } else {
                 throw notFound(REVIEW_NOT_FOUND,
@@ -593,10 +598,14 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private List<PMTimelinePointStatus> getStatusesForUpdate(PMReviewType reviewType) {
-        if (reviewType.equals(OBJECTIVE)) {
-            return List.of(DRAFT, DECLINED, APPROVED);
-        } else {
-            return List.of(DRAFT, DECLINED);
+        switch (reviewType) {
+            case OBJECTIVE:
+            case EYR:
+                return List.of(DRAFT, DECLINED, APPROVED);
+            case MYR:
+                return List.of(DRAFT, DECLINED);
+            default:
+                return Collections.emptyList();
         }
     }
 
