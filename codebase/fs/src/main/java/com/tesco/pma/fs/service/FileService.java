@@ -6,7 +6,7 @@ import com.tesco.pma.file.api.File;
 import com.tesco.pma.file.api.UploadMetadata;
 import com.tesco.pma.pagination.RequestQuery;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
@@ -73,7 +73,7 @@ public interface FileService {
      * @return file data
      * @throws NotFoundException if file by name and path is not found
      */
-    File get(@NotEmpty String path, @NotEmpty String fileName, boolean includeFileContent, UUID colleagueUuid);
+    File get(@NotBlank String path, @NotBlank String fileName, boolean includeFileContent, UUID colleagueUuid);
 
     /**
      * Read all information about file with all versions by its name and path
@@ -84,7 +84,7 @@ public interface FileService {
      * @param colleagueUuid an identifier of file's owner
      * @return file data with all versions
      */
-    List<File> getAllVersions(@NotEmpty String path, @NotEmpty String fileName, boolean includeFileContent, UUID colleagueUuid);
+    List<File> getAllVersions(@NotBlank String path, @NotBlank String fileName, boolean includeFileContent, UUID colleagueUuid);
 
     /**
      * Delete files by its uuid
@@ -104,5 +104,5 @@ public interface FileService {
      * @param colleagueUuid an identifier of file's owner
      * @throws NotFoundException if file by uuid is not found
      */
-    void deleteVersions(@NotEmpty String path, @NotEmpty String fileName, List<Integer> versions, UUID colleagueUuid);
+    void deleteVersions(@NotBlank String path, @NotBlank String fileName, List<Integer> versions, UUID colleagueUuid);
 }
