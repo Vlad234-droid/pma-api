@@ -1,11 +1,16 @@
 package com.tesco.pma.review.service.rest;
 
+import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.CaseInsensitiveEnumEditor;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
+import com.tesco.pma.file.api.File;
+import com.tesco.pma.file.api.FileType.FileTypeEnum;
+import com.tesco.pma.fs.service.FileService;
+import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
@@ -22,6 +27,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,10 +41,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
+import static com.tesco.pma.file.api.FileType.FileTypeEnum.DOC;
+import static com.tesco.pma.file.api.FileType.FileTypeEnum.PDF;
+import static com.tesco.pma.file.api.FileType.FileTypeEnum.PPT;
+import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
+import static com.tesco.pma.pagination.Condition.Operand.IN;
 import static com.tesco.pma.rest.RestResponse.success;
+import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -47,8 +62,11 @@ public class ReviewEndpoint {
     private final ReviewService reviewService;
     private final AuditorAware<UUID> auditorAware;
     private final PMCycleService pmCycleService;
+    private final FileService fileService;
+    private final ProfileService profileService;
 
     private static final String CURRENT_PARAMETER_NAME = "CURRENT";
+    private static final String REVIEWS_FILES_PATH = "/home/%s/reviews";
 
     /**
      * POST call to create a Review.
@@ -378,6 +396,45 @@ public class ReviewEndpoint {
     @PreAuthorize("isTalentAdmin()")
     public RestResponse<List<AuditOrgObjectiveReport>> getAuditLogReport(@NotNull RequestQuery requestQuery) {
         return success(reviewService.getAuditOrgObjectiveReport(requestQuery));
+    }
+
+    /**
+     * Get call using a Path param and return a list of reviews files.
+     *
+     * @param colleagueUuid an identifier of colleague
+     * @return a RestResponse parameterized with list of reviews files
+     */
+    @Operation(summary = "Get a list of reviews by colleagueUuid", tags = {"review"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found reviews")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Reviews not found", content = @Content)
+    @GetMapping(path = "/colleagues/{colleagueUuid}/reviews/files", produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
+    public RestResponse<List<File>> getReviewsFilesByColleague(@PathVariable UUID colleagueUuid,
+                                @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+
+        var currentUserUuid = UUID.fromString(authentication.getName());
+        var path = String.format(REVIEWS_FILES_PATH, colleagueUuid);
+        var types = Stream.of(PDF, DOC, PPT)
+                .map(FileTypeEnum::getId)
+                .collect(toList());
+
+        var requestQuery = new RequestQuery();
+        requestQuery.setFilters(Arrays.asList(
+                new Condition("path", EQUALS, path),
+                new Condition("type", IN, types)));
+
+        var isCurrentUserLineManager = false;
+
+        if (!colleagueUuid.equals(currentUserUuid)) {
+            var profile = profileService.getColleague(colleagueUuid);
+            if (currentUserUuid.equals(profile.getManagerUuid())) {
+                isCurrentUserLineManager = true;
+            }
+        }
+
+        var fileOwnerUuid = isCurrentUserLineManager ? colleagueUuid : currentUserUuid;
+
+        return RestResponse.success(fileService.get(requestQuery, false, fileOwnerUuid, true));
     }
 
     private UUID resolveUserUuid() {

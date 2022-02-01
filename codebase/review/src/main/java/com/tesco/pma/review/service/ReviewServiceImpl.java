@@ -38,7 +38,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.tesco.pma.api.ActionType.PUBLISH;
 import static com.tesco.pma.api.ActionType.SAVE_AS_DRAFT;
@@ -62,6 +61,7 @@ import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_ALREADY_EXISTS;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_STATUS_NOT_ALLOWED;
 import static com.tesco.pma.review.exception.ErrorCodes.TIMELINE_POINT_NOT_FOUND;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Implementation of {@link ReviewService}.
@@ -538,7 +538,7 @@ public class ReviewServiceImpl implements ReviewService {
         var prevStatusesForChangeStatus = getPrevStatusesForChangeStatus(reviewType, newStatus);
         return allowedStatusesForUpdate.stream()
                 .filter(prevStatusesForChangeStatus::contains)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     private List<PMTimelinePointStatus> getAllowedStatusesForTLPointUpdate(PMTimelinePointStatus newStatus) {
