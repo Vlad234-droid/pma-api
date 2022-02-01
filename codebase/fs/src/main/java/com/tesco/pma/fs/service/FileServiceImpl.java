@@ -42,6 +42,7 @@ public class FileServiceImpl implements FileService {
 
     private static final String FILE_NAME = "fileName";
     private static final String FILE_UUID = "fileUuid";
+    private static final String FILE_OWNER = "fileOwner";
     private static final String FILE_PATH = "path";
     private static final String FILE_VERSION = "version";
     private final FileDAO fileDao;
@@ -83,7 +84,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public File get(UUID fileUuid, boolean includeFileContent, UUID colleagueUuid) {
         return Optional.ofNullable(fileDao.read(fileUuid, includeFileContent, colleagueUuid))
-                .orElseThrow(() -> notFound(ERROR_FILE_NOT_FOUND, Map.of(FILE_UUID, fileUuid)));
+                .orElseThrow(() -> notFound(ERROR_FILE_NOT_FOUND, Map.of(FILE_UUID, fileUuid, FILE_OWNER, colleagueUuid)));
     }
 
     @Override
@@ -99,7 +100,7 @@ public class FileServiceImpl implements FileService {
 
         return get(requestQuery, includeFileContent, colleagueUuid, true).stream()
                 .findFirst()
-                .orElseThrow(() -> notFound(ERROR_FILE_NOT_FOUND, Map.of(FILE_NAME, fileName)));
+                .orElseThrow(() -> notFound(ERROR_FILE_NOT_FOUND, Map.of(FILE_NAME, fileName, FILE_OWNER, colleagueUuid)));
     }
 
     @Override
@@ -115,13 +116,11 @@ public class FileServiceImpl implements FileService {
 
     @Override
     @Transactional
-    public void delete(List<UUID> fileUuids, UUID colleagueUuid) {
-        fileUuids.forEach(fileUuid -> {
-            var deleted = fileDao.deleteByUuidAndColleague(fileUuid, colleagueUuid);
-            if (1 != deleted) {
-                throw notFound(ERROR_FILE_NOT_FOUND, Map.of(FILE_UUID, fileUuid));
-            }
-        });
+    public void delete(UUID fileUuid, UUID colleagueUuid) {
+        var deleted = fileDao.deleteByUuidAndColleague(fileUuid, colleagueUuid);
+        if (1 != deleted) {
+            throw notFound(ERROR_FILE_NOT_FOUND, Map.of(FILE_UUID, fileUuid, FILE_OWNER, colleagueUuid));
+        }
     }
 
     @Override
@@ -134,7 +133,8 @@ public class FileServiceImpl implements FileService {
         versions.forEach(version -> {
             var deleted = fileDao.deleteVersions(path, fileName, version, colleagueUuid);
             if (1 != deleted) {
-                throw notFound(ERROR_FILE_NOT_FOUND, Map.of(FILE_PATH, path, FILE_NAME, fileName, FILE_VERSION, version));
+                throw notFound(ERROR_FILE_NOT_FOUND, Map.of(FILE_PATH, path, FILE_NAME, fileName,
+                                                            FILE_VERSION, version, FILE_OWNER, colleagueUuid));
             }
         });
 

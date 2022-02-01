@@ -45,7 +45,6 @@ import static org.mockito.Mockito.when;
 public class FileServiceImplTest {
 
     private static final UUID FILE_UUID_1 = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65765");
-    private static final UUID FILE_UUID_2 = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65769");
     private static final String FILE_NAME = "test1.txt";
     private static final String FILE_NAME_2 = "test2.txt";
     private static final Integer VERSION_1 = 1;
@@ -194,19 +193,17 @@ public class FileServiceImplTest {
     @Test
     void deleteFileByUuids() {
         when(fileDao.deleteByUuidAndColleague(FILE_UUID_1, CREATOR_ID)).thenReturn(1);
-        when(fileDao.deleteByUuidAndColleague(FILE_UUID_2, CREATOR_ID)).thenReturn(1);
 
-        service.delete(List.of(FILE_UUID_1, FILE_UUID_2), CREATOR_ID);
+        service.delete(FILE_UUID_1, CREATOR_ID);
 
         verify(fileDao, times(1)).deleteByUuidAndColleague(FILE_UUID_1, CREATOR_ID);
-        verify(fileDao, times(1)).deleteByUuidAndColleague(FILE_UUID_2, CREATOR_ID);
     }
 
     @Test
     void deleteFileByUuidsThrowsNotFoundExceptionWhenDaoReturnsNotOne() {
         when(fileDao.deleteByUuidAndColleague(CREATOR_ID, FILE_UUID_1)).thenReturn(0);
 
-        assertThrows(NotFoundException.class, () -> service.delete(List.of(FILE_UUID_1, FILE_UUID_2), CREATOR_ID));
+        assertThrows(NotFoundException.class, () -> service.delete(FILE_UUID_1, CREATOR_ID));
     }
 
     @Test

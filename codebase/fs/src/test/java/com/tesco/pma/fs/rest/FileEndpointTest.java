@@ -43,7 +43,6 @@ public class FileEndpointTest extends AbstractEndpointTest {
     static final String COLLEAGUE_UUID_STR = "6d37262f-3a00-4706-a74b-6bf98be65765";
 
     private static final UUID FILE_UUID_1 = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65765");
-    private static final UUID FILE_UUID_2 = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65767");
 
     private static final String RESOURCES_PATH = "/com/tesco/pma/fs/rest/";
     private static final String FILE_NAME = "test1.txt";
@@ -53,11 +52,10 @@ public class FileEndpointTest extends AbstractEndpointTest {
     private static final Integer VERSION_2 = 2;
 
     private static final String FILES_URL = "/files";
-    private static final String DELETE_URL = "/delete";
     private static final String VERSIONS_URL = "/versions";
     private static final String PATH_AND_NAME_PARAMS_URL = "?path=" + PATH + "&fileName=" + FILE_NAME;
     private static final String VERSIONS_PARAMS_URL = "&versions=" + VERSION_1 + "&versions=" + VERSION_2;
-    private static final String DELETE_BY_VERSIONS_URL = FILES_URL + VERSIONS_URL + DELETE_URL + PATH_AND_NAME_PARAMS_URL + VERSIONS_PARAMS_URL;
+    private static final String DELETE_BY_VERSIONS_URL = FILES_URL + VERSIONS_URL + PATH_AND_NAME_PARAMS_URL + VERSIONS_PARAMS_URL;
 
     private static final byte[] CONTENT = {72, 101, 108};
     private static final String TXT_FILE_CONTENT_TYPE = "application/vnd.oasis.opendocument.text";
@@ -68,8 +66,6 @@ public class FileEndpointTest extends AbstractEndpointTest {
     private static final String DOWNLOAD = "/{fileUuid}/download";
     private static final int FILE_LENGTH = 23;
 
-    private static final String FILES_DELETE_BY_UUIDS_REQUEST_JSON_FILE_NAME = "files_delete_by_uuids_request.json";
-    private static final String FILES_DELETE_BY_VERSIONS_REQUEST_JSON_FILE_NAME = "files_delete_by_versions_request.json";
     private static final String FILES_GET_OK_RESPONSE_JSON_FILE_NAME = "files_get_ok_response.json";
 
     @MockBean
@@ -251,34 +247,30 @@ public class FileEndpointTest extends AbstractEndpointTest {
 
     @Test
     void deleteFileByUuids() throws Exception {
-        doNothing().when(service).delete(List.of(FILE_UUID_1, FILE_UUID_2), CREATOR_ID);
+        doNothing().when(service).delete(FILE_UUID_1, CREATOR_ID);
 
-        performPostWith(colleague(COLLEAGUE_UUID_STR), FILES_DELETE_BY_UUIDS_REQUEST_JSON_FILE_NAME,
-                status().isOk(), FILES_URL + DELETE_URL);
+        performDeleteWith(colleague(COLLEAGUE_UUID_STR), status().isOk(), FILES_URL + "/" + FILE_UUID_1);
     }
 
     @Test
     void deleteFileByUuidsUnsuccessIfFileIsNotFound() throws Exception {
-        doThrow(NotFoundException.class).when(service).delete(List.of(FILE_UUID_1, FILE_UUID_2), null);
+        doThrow(NotFoundException.class).when(service).delete(FILE_UUID_1, null);
 
-        performPostWith(roles(List.of(COLLEAGUE, ADMIN)), FILES_DELETE_BY_UUIDS_REQUEST_JSON_FILE_NAME,
-                status().isNotFound(), FILES_URL + DELETE_URL);
+        performDeleteWith(roles(List.of(COLLEAGUE, ADMIN)), status().isNotFound(), FILES_URL + "/" + FILE_UUID_1);
     }
 
     @Test
     void deleteFileByVersions() throws Exception {
         doNothing().when(service).deleteVersions(PATH, FILE_NAME, List.of(VERSION_1, VERSION_2), CREATOR_ID);
 
-        performPostWith(colleague(COLLEAGUE_UUID_STR), FILES_DELETE_BY_VERSIONS_REQUEST_JSON_FILE_NAME,
-                status().isOk(), DELETE_BY_VERSIONS_URL);
+        performDeleteWith(colleague(COLLEAGUE_UUID_STR), status().isOk(), DELETE_BY_VERSIONS_URL);
     }
 
     @Test
     void deleteFileByVersionsUnsuccessIfFileIsNotFound() throws Exception {
         doThrow(NotFoundException.class).when(service).deleteVersions(PATH, FILE_NAME, List.of(VERSION_1, VERSION_2), null);
 
-        performPostWith(roles(List.of(COLLEAGUE, ADMIN)), FILES_DELETE_BY_VERSIONS_REQUEST_JSON_FILE_NAME,
-                status().isNotFound(), DELETE_BY_VERSIONS_URL);
+        performDeleteWith(roles(List.of(COLLEAGUE, ADMIN)), status().isNotFound(), DELETE_BY_VERSIONS_URL);
     }
 
     private MockMultipartFile getUploadMetadataMultipartFile(String fileName) throws IOException {

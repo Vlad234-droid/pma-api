@@ -89,11 +89,11 @@ public interface FileService {
     /**
      * Delete files by its uuid
      *
-     * @param fileUuids     file identifiers
+     * @param fileUuid      file identifier
      * @param colleagueUuid an identifier of file's owner
      * @throws NotFoundException if file by uuid is not found
      */
-    void delete(@NotEmpty List<UUID> fileUuids, UUID colleagueUuid);
+    void delete(@NotNull UUID fileUuid, UUID colleagueUuid);
 
     /**
      * Delete files by its path, name and versions
