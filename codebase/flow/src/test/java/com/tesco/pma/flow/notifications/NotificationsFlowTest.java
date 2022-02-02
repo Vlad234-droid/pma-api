@@ -213,6 +213,10 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
                 SEND_NOTIFICATION_HANDLER_ID, send? 1: 0
         ), event);
 
+        if (send) {
+            checkContent(evenName, NF_ORGANISATION_OBJECTIVES, "Please check the organisation objectives for the year");
+        }
+
     }
 
     void checkFeedbackGroup(String evenName){
@@ -226,15 +230,7 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
                 SEND_NOTIFICATION_HANDLER_ID, 1
         ), event);
 
-        if (!evenName.equals(NF_FEEDBACK_GIVEN)) {
-            return;
-        }
-
-        var content = "You have feedback from Random Name";
-
-        Mockito.verify(colleagueInboxApiClient).sendNotification(Mockito.argThat(msg ->
-                content.equals(msg.getContent())
-        ));
+        checkContent(evenName, NF_FEEDBACK_GIVEN, "You have feedback from Random Name");
     }
 
     void checkTimelineNotifications(String evenName, String quarter, boolean send) throws Exception {
@@ -282,6 +278,16 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
     void check(Map<String, Integer> execBlocks, Event event) {
         var assertion = assertThatForProcess(runProcessByEvent(event));
         execBlocks.forEach((block, execTimes) -> assertion.activity(block).executedTimes(execTimes));
+    }
+
+    void checkContent(String eventName, String eventNameExpected, String content){
+        if (!eventName.equals(eventNameExpected)) {
+            return;
+        }
+
+        Mockito.verify(colleagueInboxApiClient).sendNotification(Mockito.argThat(msg ->
+                content.equals(msg.getContent())
+        ));
     }
 
     EventSupport createEvent(String evenName, String timelineCode) {
