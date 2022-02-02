@@ -34,8 +34,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
@@ -75,9 +79,11 @@ import static com.tesco.pma.util.SecurityUtils.getColleagueUuid;
 import static com.tesco.pma.util.SecurityUtils.hasAuthority;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
 @RestController
 @RequiredArgsConstructor
+@SuppressWarnings("PMD.ExcessiveImports")
 public class ReviewEndpoint {
 
     private static final List<FileTypeEnum> REVIEW_FILE_TYPES = List.of(PDF, DOC, PPT);
@@ -551,6 +557,33 @@ public class ReviewEndpoint {
 
         }
         return success(uploadedFiles);
+    }
+
+    /**
+     * GET call to download review file.
+     *
+     * @return a RestResponse with downloaded review file
+     */
+    @Operation(summary = "Download Review File", description = "Download Review File", tags = {"review"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Review File downloaded")
+    @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Invalid id supplied", content = @Content)
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Review File not found",
+            content = @Content(mediaType = APPLICATION_OCTET_STREAM_VALUE))
+    @ApiResponse(responseCode = HttpStatusCodes.UNAUTHORIZED, description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = HttpStatusCodes.FORBIDDEN, description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Internal Server Error", content = @Content)
+
+    @GetMapping("/reviews/files/{fileUuid}/download")
+    @PreAuthorize("isColleague()")
+    public ResponseEntity<Resource> download(@PathVariable UUID fileUuid,
+                                             @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+        var file = fileService.get(fileUuid, true, resolveColleagueUuid(authentication));
+        var content = file.getFileContent();
+
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(content.length)
+                .body(new ByteArrayResource(content));
     }
 
     private RequestQuery getRequestQueryForReviewFiles(UUID colleagueUuid) {
