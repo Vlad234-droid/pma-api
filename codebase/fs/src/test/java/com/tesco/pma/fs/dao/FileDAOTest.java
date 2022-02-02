@@ -191,6 +191,24 @@ public class FileDAOTest extends AbstractDAOTest {
         assertThat(rowsInserted).isOne();
     }
 
+    @Test
+    @DataSet(BASE_PATH_TO_DATA_SET + "file_init.xml")
+    @ExpectedDataSet(BASE_PATH_TO_DATA_SET + "file_delete_expected.xml")
+    void deleteByUuidAndColleague() {
+        final var rowsDeleted = instance.deleteByUuidAndColleague(FILE_UUID_1, COLLEAGUE_UUID);
+
+        assertThat(rowsDeleted).isOne();
+    }
+
+    @Test
+    @DataSet(BASE_PATH_TO_DATA_SET + "file_init.xml")
+    @ExpectedDataSet(BASE_PATH_TO_DATA_SET + "file_delete_versions_expected.xml")
+    void deleteVersions() {
+        final var rowsDeleted = instance.deleteVersions(PATH, "test1.txt", 2, COLLEAGUE_UUID);
+
+        assertThat(rowsDeleted).isOne();
+    }
+
     private File buildFileData() {
         final var fileData = new File();
         fileData.setUuid(FILE_UUID);
