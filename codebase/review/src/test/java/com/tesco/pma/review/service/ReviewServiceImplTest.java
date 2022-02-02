@@ -54,6 +54,9 @@ class ReviewServiceImplTest {
                     PM_REVIEW_MAX, "5"
             ));
 
+    private static final UUID COLLEAGUE_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
+    private static final UUID CURRENT_USER_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0014");
+
     final static String REVIEW_NOT_FOUND_MESSAGE =
             "Review not found for: {allowedStatuses=[DRAFT, DECLINED, APPROVED], number=1, operation=DELETE, tlPointUuid=ddb9ab0b-f50f-4442-8900-b03777ee0010}";
 
@@ -186,7 +189,6 @@ class ReviewServiceImplTest {
     @Test
     void deleteReviewNotExists() {
         final var tlPointUUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0010");
-        final var colleagueUuid = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
         final var performanceCycleUuid = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0012");
 
         final var expectedColleagueCycle = PMColleagueCycle.builder().build();
@@ -214,7 +216,7 @@ class ReviewServiceImplTest {
         final var exception = assertThrows(NotFoundException.class,
                 () -> reviewService.deleteReview(
                         performanceCycleUuid,
-                        colleagueUuid,
+                        COLLEAGUE_UUID,
                         OBJECTIVE,
                         1));
 
@@ -222,4 +224,5 @@ class ReviewServiceImplTest {
         assertEquals(REVIEW_NOT_FOUND_MESSAGE, exception.getMessage());
 
     }
+
 }

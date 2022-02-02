@@ -8,6 +8,7 @@ dependencies {
     implementation project(':pm')
     implementation project(':profile')
     implementation project(':event')
+    implementation project(':fs')
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
