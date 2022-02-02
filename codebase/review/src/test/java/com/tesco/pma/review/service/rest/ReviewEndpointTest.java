@@ -16,6 +16,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -29,6 +30,7 @@ import static com.tesco.pma.file.api.FileStatus.ACTIVE;
 import static com.tesco.pma.review.util.TestDataUtils.files;
 import static com.tesco.pma.security.UserRoleNames.ADMIN;
 import static com.tesco.pma.security.UserRoleNames.COLLEAGUE;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -59,6 +61,7 @@ class ReviewEndpointTest extends AbstractEndpointTest {
     private static final String DESCRIPTION = "other file";
     private static final Instant CREATED_TIME = Instant.parse("2021-11-03T22:38:14Z");
     private static final int FILE_LENGTH = 23;
+    private static final String PDF_FILE_NAME = "test.pdf";
 
     @MockBean
     private ReviewService mockReviewService;
@@ -123,14 +126,14 @@ class ReviewEndpointTest extends AbstractEndpointTest {
     @Test
     void uploadReviewFilesSuccess() throws Exception {
         var multipartUploadMetadataMock = getUploadMetadataMultipartFile("test_metadata.json");
-        var multipartFileMock = getMultipartFileToUpload(CONTENT, "test.pdf");
+        var multipartFileMock = getMultipartFileToUpload(CONTENT, PDF_FILE_NAME);
         var fileType = new FileType();
         fileType.setId(3);
         fileType.setCode("PDF");
         fileType.setDescription("Portable document format file");
 
-        var dataFile = buildFileData(FILE_UUID, "test.pdf", 1, fileType);
-        when(this.mockFileService.upload(any(), any(), any())).thenReturn(dataFile);
+        var dataFile = buildFileData(FILE_UUID, PDF_FILE_NAME, 1, fileType);
+        when(mockFileService.upload(any(), any(), any())).thenReturn(dataFile);
 
         final var result = performMultipartWithMetadata(colleague(COLLEAGUE_UUID_STR), multipartUploadMetadataMock, multipartFileMock,
                 status().isCreated(), REVIEWS_FILES_URL);
@@ -149,12 +152,34 @@ class ReviewEndpointTest extends AbstractEndpointTest {
         fileType.setDescription("GUI Form file");
 
         var dataFile = buildFileData(fileUuid, "test.form", 1, fileType);
-        when(this.mockFileService.upload(any(), any(), any())).thenReturn(dataFile);
+        when(mockFileService.upload(any(), any(), any())).thenReturn(dataFile);
 
         final var result = performMultipartWithMetadata(colleague(COLLEAGUE_UUID_STR), multipartUploadMetadataMock, multipartFileMock,
                 status().isBadRequest(), REVIEWS_FILES_URL);
 
         assertResponseContent(result.getResponse(), "files_upload_failed_type_response.json");
+    }
+
+    @Test
+    void downloadSuccess() throws Exception {
+        var fileType = new FileType();
+        fileType.setId(3);
+        fileType.setCode("PDF");
+        fileType.setDescription("Portable document format file");
+        when(mockFileService.get(FILE_UUID, true, CREATOR_ID))
+                .thenReturn(buildFileData(FILE_UUID, PDF_FILE_NAME, 1, fileType));
+
+        var result = performGetWith(colleague(COLLEAGUE_UUID_STR), status().isOk(),
+                MediaType.APPLICATION_OCTET_STREAM, REVIEWS_FILES_URL + "/" + FILE_UUID + "/download");
+
+        assertThat(result.getResponse().getContentAsByteArray()).isNotSameAs(CONTENT);
+    }
+
+    @Test
+    void downloadUnsuccess() throws Exception {
+        when(mockFileService.get(FILE_UUID, true, null)).thenThrow(NotFoundException.class);
+
+        performGetWith(roles(List.of(COLLEAGUE, ADMIN)), status().isNotFound(), REVIEWS_FILES_URL + "/" + FILE_UUID + "/download");
     }
 
     private MockMultipartFile getUploadMetadataMultipartFile(String fileName) throws IOException {
