@@ -52,6 +52,9 @@ import static com.tesco.pma.file.api.FileType.FileTypeEnum.PPT;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Condition.Operand.IN;
 import static com.tesco.pma.rest.RestResponse.success;
+import static com.tesco.pma.security.UserRoleNames.ADMIN;
+import static com.tesco.pma.util.SecurityUtils.getColleagueUuid;
+import static com.tesco.pma.util.SecurityUtils.hasAuthority;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -413,15 +416,8 @@ public class ReviewEndpoint {
                                 @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
 
         var currentUserUuid = UUID.fromString(authentication.getName());
-        var path = String.format(REVIEWS_FILES_PATH, colleagueUuid);
-        var types = Stream.of(PDF, DOC, PPT)
-                .map(FileTypeEnum::getId)
-                .collect(toList());
 
-        var requestQuery = new RequestQuery();
-        requestQuery.setFilters(Arrays.asList(
-                new Condition("path", EQUALS, path),
-                new Condition("type", IN, types)));
+        var requestQuery = getRequestQueryForReviewFiles(colleagueUuid);
 
         var isCurrentUserLineManager = false;
 
@@ -435,6 +431,40 @@ public class ReviewEndpoint {
         var fileOwnerUuid = isCurrentUserLineManager ? colleagueUuid : currentUserUuid;
 
         return RestResponse.success(fileService.get(requestQuery, false, fileOwnerUuid, true));
+    }
+
+    /**
+     * Delete call using a Path params and delete a review file.
+     *
+     * @param fileUuid file identifier
+     * @return a Void RestResponse
+     */
+    @Operation(summary = "Delete Review File by its uuid", tags = {"review"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Review File deleted")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Review File not found", content = @Content)
+    @DeleteMapping(path = "/reviews/files/{fileUuid}", produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
+    public RestResponse<Void> delete(@PathVariable UUID fileUuid,
+                                     @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+        fileService.delete(fileUuid, resolveColleagueUuid(authentication));
+        return RestResponse.success();
+    }
+
+    private RequestQuery getRequestQueryForReviewFiles(UUID colleagueUuid) {
+        var path = String.format(REVIEWS_FILES_PATH, colleagueUuid);
+        var types = Stream.of(PDF, DOC, PPT)
+                .map(FileTypeEnum::getId)
+                .collect(toList());
+
+        var requestQuery = new RequestQuery();
+        requestQuery.setFilters(Arrays.asList(
+                new Condition("path", EQUALS, path),
+                new Condition("type", IN, types)));
+        return requestQuery;
+    }
+
+    private UUID resolveColleagueUuid(Authentication authentication) {
+        return hasAuthority(authentication, ADMIN) ? null : getColleagueUuid(authentication);
     }
 
     private UUID resolveUserUuid() {

@@ -234,7 +234,7 @@ public class FileEndpoint {
     }
 
     /**
-     * POST call to delete files by its uuid.
+     * DELETE call to delete file by its uuid.
      *
      * @param fileUuid file identifier
      * @return a Void RestResponse
