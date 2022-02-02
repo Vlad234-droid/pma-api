@@ -15,7 +15,11 @@ import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.event.Event;
 import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.flow.FlowParameters;
-import com.tesco.pma.flow.notifications.handlers.*;
+import com.tesco.pma.flow.notifications.handlers.DefaultInitNotificationHandler;
+import com.tesco.pma.flow.notifications.handlers.InitTimelinePointNotificationHandler;
+import com.tesco.pma.flow.notifications.handlers.InitFeedbacksNotificationHandler;
+import com.tesco.pma.flow.notifications.handlers.InitTipsNotificationHandler;
+import com.tesco.pma.flow.notifications.handlers.SendNotificationHandler;
 import com.tesco.pma.flow.notifications.service.ColleagueInboxNotificationSender;
 import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.review.dao.TimelinePointDAO;
@@ -33,7 +37,14 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.*;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -195,12 +206,23 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
     }
 
     @Test
-    void beforeCycleTest() throws Exception {
-        checkCycleGroup(NF_BEFORE_CYCLE_START, PMReviewType.EYR, false, WorkLevel.WL1, true);
-        checkCycleGroup(NF_BEFORE_CYCLE_END, PMReviewType.EYR, false, WorkLevel.WL1, true);
+    void beforeCycleStartTest() throws Exception {
+        var initCycleNotifications = "InitCycleNotifications";
+        var cycleDmn = "cycle_decision_table";
+        check(initCycleNotifications, cycleDmn, NF_BEFORE_CYCLE_START, PMReviewType.EYR, false, WorkLevel.WL1, true);
+        check(initCycleNotifications, cycleDmn, NF_BEFORE_CYCLE_START, PMReviewType.EYR, true, WorkLevel.WL1, true);
 
-        checkCycleGroup(NF_BEFORE_CYCLE_START, PMReviewType.EYR, true, WorkLevel.WL1, true);
-        checkCycleGroup(NF_BEFORE_CYCLE_END, PMReviewType.EYR, true, WorkLevel.WL1, true);
+        checkContent(NF_BEFORE_CYCLE_START, NF_BEFORE_CYCLE_START, "Next performance cycle starts tomorrow!");
+    }
+
+    @Test
+    void beforeCycleEndTest() throws Exception {
+        var initCycleNotifications = "InitCycleNotifications";
+        var cycleDmn = "cycle_decision_table";
+        check(initCycleNotifications, cycleDmn, NF_BEFORE_CYCLE_END, PMReviewType.EYR, false, WorkLevel.WL1, true);
+        check(initCycleNotifications, cycleDmn, NF_BEFORE_CYCLE_END, PMReviewType.EYR, true, WorkLevel.WL1, true);
+
+        checkContent(NF_BEFORE_CYCLE_END, NF_BEFORE_CYCLE_END, "Current performance cycle ends tomorrow!");
     }
 
     @Test
@@ -248,10 +270,6 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
         check("InitCycleNotifications", "cycle_decision_table", event, false, null, send);
     }
 
-    void checkCycleGroup(String evenName, PMReviewType reviewType, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
-        check("InitCycleNotifications", "cycle_decision_table", evenName, reviewType, isManager, workLevel, send);
-    }
-
     void checkTipsGroup(String evenName, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
         var event = createEvent(evenName, null);
         event.putProperty(FlowParameters.TIP_UUID.name(), UUID.randomUUID());
@@ -295,7 +313,7 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
             return;
         }
 
-        Mockito.verify(colleagueInboxApiClient).sendNotification(Mockito.argThat(msg -> {
+        Mockito.verify(colleagueInboxApiClient, Mockito.atLeastOnce()).sendNotification(Mockito.argThat(msg -> {
                 assertEquals(content, msg.getContent());
                 return true;
             }));

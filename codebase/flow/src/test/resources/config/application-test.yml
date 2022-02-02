@@ -101,6 +101,7 @@ camunda:
                                           com/tesco/pma/flow/notifications/cycle/cycle_event_to_attribute.dmn,
                                           com/tesco/pma/flow/notifications/cycle/cycle_notification_decisions.dmn,
                                           com/tesco/pma/flow/notifications/cycle/cycle_event_to_template_id.dmn,
+                                          com/tesco/pma/flow/notifications/cycle/cycle_event_to_content.dmn,
                                           com/tesco/pma/flow/notifications/tips/tips_event_to_attribute.dmn,
                                           com/tesco/pma/flow/notifications/tips/tips_flow.bpmn,
                                           com/tesco/pma/flow/notifications/tips/tips_notification_decisions.dmn,
