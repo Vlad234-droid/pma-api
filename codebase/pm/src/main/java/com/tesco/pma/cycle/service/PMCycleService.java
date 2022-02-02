@@ -122,6 +122,8 @@ public interface PMCycleService {
      */
     void start(UUID uuid);
 
+    void start(PMCycle cycle);
+
     void completeCycle(UUID cycleUUID);
 }
 

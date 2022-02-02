@@ -4,9 +4,12 @@ import com.tesco.pma.api.MapJson;
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
 import com.tesco.pma.cycle.api.PMCycle;
+import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.model.PMCycleElement;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.flow.FlowParameters;
+import com.tesco.pma.pagination.Condition;
+import com.tesco.pma.pagination.RequestQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Period;
 import java.time.ZoneOffset;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -42,19 +46,22 @@ public class PMCycleRepeatHandler extends CamundaAbstractFlowHandler {
         if (previousCycle.getCreatedBy() == null || previousCycle.getTemplate() == null) {
             return;
         }
-        int previousCycleRepeatCount = 0;
+        RequestQuery requestQuery = new RequestQuery();
+        Condition condition = new Condition("entry-config-key", Condition.Operand.EQUALS, previousCycle.getEntryConfigKey());
+        requestQuery.setFilters(Collections.singletonList(condition));
+        int existCyclesCount = pmCycleService.getAll(requestQuery, false).size();
+        int max = 0;
+        int left = 0;
         if (previousCycle.getProperties() != null && previousCycle.getProperties().getMapJson() != null) {
-            previousCycleRepeatCount =
-                    Integer.parseInt(previousCycle.getProperties().getMapJson().getOrDefault(FlowParameters.PM_CYCLE_REPEAT_COUNT.name(),
-                            "0")) - 1;
-        } else if (previousCycle.getMetadata() != null && previousCycle.getMetadata().getCycle() != null &&
+            left = Integer.parseInt(previousCycle.getProperties().getMapJson().getOrDefault(FlowParameters.PM_CYCLE_REPEAT_COUNT.name(),
+                    "0")) - 1;
+        }
+        if (previousCycle.getMetadata() != null && previousCycle.getMetadata().getCycle() != null &&
                 previousCycle.getMetadata().getCycle().getProperties() != null) {
-            previousCycleRepeatCount =
-                    Integer.parseInt(previousCycle.getMetadata().getCycle().getProperties().getOrDefault(PMCycleElement.PM_CYCLE_MAX,
-                            "0"));
+            max = Integer.parseInt(previousCycle.getMetadata().getCycle().getProperties().getOrDefault(PMCycleElement.PM_CYCLE_MAX, "0"));
         }
         int repeatCount = Integer.parseInt(eventProperties.get(FlowParameters.PM_CYCLE_REPEAT_COUNT.name()).toString());
-        if (repeatCount == previousCycleRepeatCount) {
+        if (existCyclesCount > max - left) {
             return;
         }
         if (previousCycle.getProperties() == null) {
@@ -67,7 +74,9 @@ public class PMCycleRepeatHandler extends CamundaAbstractFlowHandler {
         previousCycle.setStartTime(previousCycle.getStartTime().atZone(ZoneOffset.UTC).plus(Period.ofYears(1)).toInstant());
         previousCycle.setEndTime(previousCycle.getEndTime().atZone(ZoneOffset.UTC).plus(Period.ofYears(1)).toInstant());
         previousCycle.setUuid(null);
-        PMCycle nextCycle = pmCycleService.publish(previousCycle, previousCycle.getCreatedBy().getUuid());
+        PMCycle nextCycle = pmCycleService.create(previousCycle, previousCycle.getCreatedBy().getUuid());
+        PMCycle updatedCycle = pmCycleService.updateStatus(nextCycle.getUuid(), PMCycleStatus.REGISTERED);
+        pmCycleService.start(updatedCycle);
         context.setVariable(FlowParameters.PM_CYCLE, nextCycle);
     }
 }

@@ -17,8 +17,7 @@ public class EventSenderHandler extends AbstractEventSendHandler {
 
     @Override
     protected void execute(ExecutionContext context) throws Exception {
-        var event = new EventSupport(getEventNameExpression());
-        propagateEventParams(event, context);
+        var event = EventSupport.create(getEventNameExpression(), getParams(context));
         eventSender.sendEvent(event, null, isErrorSensitiveExpression());
     }
 

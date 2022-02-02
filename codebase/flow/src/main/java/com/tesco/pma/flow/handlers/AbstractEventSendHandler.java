@@ -3,13 +3,13 @@ package com.tesco.pma.flow.handlers;
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.process.api.PMProcessErrorCodes;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.Expression;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -49,14 +49,12 @@ public abstract class AbstractEventSendHandler extends CamundaAbstractFlowHandle
         this.isErrorSensitiveExpression = isErrorSensitiveExpression;
     }
 
-    public void propagateEventParams(EventSupport event, ExecutionContext context) {
-        if (!(context.getVariable(FlowParameters.EVENT_PARAMS) instanceof Map)) {
-            return;
+    public Map<String, Serializable> getParams(ExecutionContext context) {
+        var params = context.getVariable(FlowParameters.EVENT_PARAMS);
+        if (!(params instanceof Map)) {
+            params = new HashMap<>();
         }
-        var paramMap = (Map<String, Object>) context.getVariable(FlowParameters.EVENT_PARAMS);
-        for (Map.Entry<String, Object> entry : paramMap.entrySet()) {
-            event.putProperty(entry.getKey(), (Serializable) entry.getValue());
-        }
+        return (Map) params;
     }
 
 }

@@ -96,6 +96,8 @@ public interface ProcessManagerService {
      */
     String runProcess(String processName, Map<String, ?> varMap) throws ProcessExecutionException;
 
+    String runProcessByResourceName(String resourceName, Map<String, ?> varMap) throws ProcessExecutionException;
+
     /**
      * Run latest process version
      *
