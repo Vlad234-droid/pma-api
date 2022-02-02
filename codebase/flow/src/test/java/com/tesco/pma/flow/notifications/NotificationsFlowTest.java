@@ -35,6 +35,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 /**
  * @author Vadim Shatokhin <a href="mailto:vadim.shatokhin1@tesco.com">vadim.shatokhin1@tesco.com</a>
  * 2021-11-20 00:03
@@ -142,6 +144,14 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
         checkReviewGroup(NF_PM_REVIEW_DECLINED, PMReviewType.MYR, false, true);
         checkReviewGroup(NF_PM_REVIEW_BEFORE_END, PMReviewType.MYR, true, true);
         checkReviewGroup(NF_PM_REVIEW_BEFORE_END, PMReviewType.MYR, false, true);
+    }
+
+    @Test
+    void checReviewMyrApproval() throws Exception {
+        checkReviewGroup(NF_PM_REVIEW_APPROVED, PMReviewType.MYR, true, true);
+
+        checkTitle(NF_PM_REVIEW_APPROVED, NF_PM_REVIEW_APPROVED, "Mid-year approval");
+        checkContent(NF_PM_REVIEW_APPROVED, NF_PM_REVIEW_APPROVED, "Mid-year review was approved by Random Name");
     }
 
     @Test
@@ -285,9 +295,21 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
             return;
         }
 
-        Mockito.verify(colleagueInboxApiClient).sendNotification(Mockito.argThat(msg ->
-                content.equals(msg.getContent())
-        ));
+        Mockito.verify(colleagueInboxApiClient).sendNotification(Mockito.argThat(msg -> {
+                assertEquals(content, msg.getContent());
+                return true;
+            }));
+    }
+
+    void checkTitle(String eventName, String eventNameExpected, String title){
+        if (!eventName.equals(eventNameExpected)) {
+            return;
+        }
+
+        Mockito.verify(colleagueInboxApiClient, Mockito.atLeastOnce()).sendNotification(Mockito.argThat(msg -> {
+            assertEquals(title, msg.getTitle());
+            return true;
+        }));
     }
 
     EventSupport createEvent(String evenName, String timelineCode) {

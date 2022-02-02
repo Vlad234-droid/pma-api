@@ -85,6 +85,8 @@ camunda:
                                           com/tesco/pma/flow/notifications/review/review_notifications_decisions.dmn,
                                           com/tesco/pma/flow/notifications/review/review_event_to_attribute.dmn,
                                           com/tesco/pma/flow/notifications/review/review_event_to_template_id.dmn,
+                                          com/tesco/pma/flow/notifications/review/review_event_to_content.dmn,
+                                          com/tesco/pma/flow/notifications/review/review_event_to_title.dmn,
                                           com/tesco/pma/flow/notifications/objectives/objectives_flow.bpmn,
                                           com/tesco/pma/flow/notifications/objectives/objectives_event_to_attribute.dmn,
                                           com/tesco/pma/flow/notifications/objectives/objectives_notification_decisions.dmn,
