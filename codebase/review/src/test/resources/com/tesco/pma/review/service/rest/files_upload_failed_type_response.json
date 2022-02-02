@@ -1,0 +1,10 @@
+{
+  "success": false,
+  "errors": [
+    {
+      "code": "INVALID_PAYLOAD",
+      "message": "Review file type must be one of [PDF, DOC, PPT]",
+      "target": "type"
+    }
+  ]
+}

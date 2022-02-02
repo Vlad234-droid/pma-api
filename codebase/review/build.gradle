@@ -36,6 +36,7 @@ dependencies {
         exclude group: 'junit' // excluding junit 4
     }
     testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("commons-io:commons-io:${commonsIoVersion}")
 
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"

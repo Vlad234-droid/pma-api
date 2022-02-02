@@ -4,6 +4,10 @@ import com.tesco.pma.configuration.MessageSourceConfig;
 import com.tesco.pma.error.ApiExceptionHandler;
 import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration;
+import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
@@ -13,7 +17,14 @@ import org.springframework.context.annotation.Profile;
 @Import({MessageSourceAutoConfiguration.class,
         MessageSourceConfig.class,
         HttpMessageConvertersAutoConfiguration.class,
-        ApiExceptionHandler.class})
+        ApiExceptionHandler.class,
+        JacksonAutoConfiguration.class,
+        // for security
+        HttpMessageConvertersAutoConfiguration.class,
+        OAuth2ResourceServerAutoConfiguration.class,
+        RestTemplateAutoConfiguration.class,
+        OAuth2ClientAutoConfiguration.class
+})
 public class LocalTestConfig {
 
 }
