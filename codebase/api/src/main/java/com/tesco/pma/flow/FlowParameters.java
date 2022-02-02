@@ -41,6 +41,7 @@ public enum FlowParameters {
     TIMELINE_POINT_UUID,
 
     TIP_UUID,
+    TIP,
 
     //notifications
     CONTACT_TEMPLATE_ID;

@@ -16,9 +16,14 @@ import com.tesco.pma.event.Event;
 import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.flow.notifications.handlers.*;
+import com.tesco.pma.flow.notifications.service.ColleagueInboxNotificationSender;
+import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.review.dao.TimelinePointDAO;
 import com.tesco.pma.review.domain.TimelinePoint;
+import com.tesco.pma.service.colleague.inbox.client.ColleagueInboxApiClient;
 import com.tesco.pma.service.contact.client.ContactApiClient;
+import com.tesco.pma.tip.api.Tip;
+import com.tesco.pma.tip.service.TipService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -74,8 +79,8 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
     @SpyBean
     private InitTipsNotificationHandler initTipsNotificationHandler;
 
-    @MockBean(name = "sendNotification")
-    private SendNotificationHandler sendNotification;
+    @SpyBean
+    private SendNotificationHandler sendNotificationHandler;
 
     @MockBean
     private ContactApiClient contactApiClient;
@@ -89,25 +94,30 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
     @MockBean
     private TimelinePointDAO timelinePointDAO;
 
-    private final UUID colleagueUUID = UUID.randomUUID();
+    @MockBean
+    private TipService tipService;
+
+    @SpyBean
+    private ColleagueInboxNotificationSender colleagueInboxNotificationSender;
+
+    @MockBean
+    private ColleagueInboxApiClient colleagueInboxApiClient;
+
+    @MockBean
+    private FileService fileService;
+
     private final UUID sourceColleagueUUID = UUID.randomUUID();
     private ColleagueProfile colleagueProfile;
-    private final TimelinePoint timelinePoint = new TimelinePoint();
 
     @BeforeEach
-    public void init(){
-        colleagueProfile = createColleagueProfile(colleagueUUID, WorkLevel.WL1, Map.of());
+    public void init() throws Exception {
+        colleagueProfile = createColleagueProfile(UUID.randomUUID(), WorkLevel.WL1, Map.of());
 
-        Mockito.when(profileService.findProfileByColleagueUuid(Mockito.eq(colleagueUUID)))
+        Mockito.when(profileService.findProfileByColleagueUuid(Mockito.eq(colleagueProfile.getColleague().getColleagueUUID())))
                 .thenReturn(Optional.of(colleagueProfile));
 
         Mockito.when(profileService.findProfileByColleagueUuid(Mockito.eq(sourceColleagueUUID)))
                 .thenReturn(Optional.of(createColleagueProfile(sourceColleagueUUID, WorkLevel.WL1, new HashMap<>())));
-
-        timelinePoint.setUuid(UUID.randomUUID());
-
-        Mockito.when(timelinePointDAO.getTimelineByUUID(Mockito.eq(timelinePoint.getUuid())))
-                .thenReturn(timelinePoint);
     }
 
     @Test
@@ -216,6 +226,15 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
                 SEND_NOTIFICATION_HANDLER_ID, 1
         ), event);
 
+        if (!evenName.equals(NF_FEEDBACK_GIVEN)) {
+            return;
+        }
+
+        var content = "You have feedback from Random Name";
+
+        Mockito.verify(colleagueInboxApiClient).sendNotification(Mockito.argThat(msg ->
+                content.equals(msg.getContent())
+        ));
     }
 
     void checkTimelineNotifications(String evenName, String quarter, boolean send) throws Exception {
@@ -229,8 +248,19 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
 
     void checkTipsGroup(String evenName, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
         var event = createEvent(evenName, null);
-        event.putProperty(FlowParameters.TIP_UUID.name(), UUID.randomUUID().toString());
-        check("InitTipsNotifications", "tips_decision_table", event, isManager, workLevel, send);
+        event.putProperty(FlowParameters.TIP_UUID.name(), UUID.randomUUID());
+
+        var tip = new Tip();
+        var tipTitle = "test title";
+        tip.setTitle(tipTitle);
+
+        Mockito.when(tipService.findOne(Mockito.any())).thenReturn(tip);
+
+        check(Map.of("InitTipsNotifications", 1, "tips_decision_table", 1, "sendTipsNotification", 1), event);
+
+        Mockito.verify(colleagueInboxNotificationSender).send(Mockito.any(), Mockito.any(), Mockito.argThat(placeholders ->
+            tipTitle.equals(placeholders.get("CONTENT"))
+        ));
     }
 
     void check(String initHandlerName, String decisionTable, String evenName, PMReviewType reviewType, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
@@ -246,10 +276,7 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
             colleagueProfile.getColleague().getWorkRelationships().get(0).setWorkLevel(workLevel);
         }
 
-        assertThatForProcess(runProcessByEvent(event))
-                .activity(initHandlerName).executedOnce()
-                .activity(decisionTable).executedOnce()
-                .activity("sendNotification").executedTimes(send ? 1 : 0);
+        check(Map.of(initHandlerName, 1, decisionTable, 1, "sendNotification", send ? 1 : 0), event);
     }
 
     void check(Map<String, Integer> execBlocks, Event event) {
@@ -261,11 +288,14 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
         var event = new EventSupport(evenName);
 
         if(timelineCode != null) {
+            var timelinePoint = new TimelinePoint();
+            timelinePoint.setUuid(UUID.randomUUID());
+            Mockito.when(timelinePointDAO.getTimelineByUUID(Mockito.eq(timelinePoint.getUuid()))).thenReturn(timelinePoint);
             timelinePoint.setCode(timelineCode);
             event.putProperty(FlowParameters.TIMELINE_POINT_UUID.name(), timelinePoint.getUuid());
         }
 
-        event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueUUID);
+        event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueProfile.getColleague().getColleagueUUID());
         return event;
     }
 
