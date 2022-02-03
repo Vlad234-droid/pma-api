@@ -159,7 +159,7 @@
     <bpmn:serviceTask id="Activity_09mx21d" name="Update performance cycle status" camunda:class="com.tesco.pma.flow.handlers.UpdatePMCycleStatusHandler">
       <bpmn:extensionElements>
         <camunda:field name="statusValue">
-          <camunda:string>STARTED</camunda:string>
+          <camunda:string>ACTIVE</camunda:string>
         </camunda:field>
         <camunda:field name="oldStatusValues">
           <camunda:string>REGISTERED</camunda:string>
@@ -178,9 +178,10 @@
   <bpmn:message id="Message_1ujyhkz" name="CEP_COLLEAGUE_ADDED" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="group_a">
-      <bpmndi:BPMNShape id="TextAnnotation_0p819rb_di" bpmnElement="TextAnnotation_0p819rb">
-        <dc:Bounds x="380" y="380" width="100" height="54" />
-      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0xsx4js_di" bpmnElement="Flow_0xsx4js">
+        <di:waypoint x="340" y="300" />
+        <di:waypoint x="380" y="300" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1qcajud_di" bpmnElement="Flow_1qcajud">
         <di:waypoint x="940" y="300" />
         <di:waypoint x="982" y="300" />
@@ -257,15 +258,17 @@
           <dc:Bounds x="492" y="282" width="46" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0xsx4js_di" bpmnElement="Flow_0xsx4js">
-        <di:waypoint x="340" y="300" />
-        <di:waypoint x="380" y="300" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0v9jvii_di" bpmnElement="Event_0v9jvii">
         <dc:Bounds x="982" y="282" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1mwce77_di" bpmnElement="Gateway_1msj1uv">
         <dc:Bounds x="555" y="275" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0yqaexd_di" bpmnElement="Event_0e0xeep">
+        <dc:Bounds x="162" y="282" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="154" y="325" width="53" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1hk3bfm_di" bpmnElement="processColleagueCycles">
         <dc:Bounds x="380" y="260" width="100" height="80" />
@@ -294,11 +297,8 @@
       <bpmndi:BPMNShape id="Activity_09mx21d_di" bpmnElement="Activity_09mx21d">
         <dc:Bounds x="240" y="260" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0yqaexd_di" bpmnElement="Event_0e0xeep">
-        <dc:Bounds x="162" y="282" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="154" y="325" width="53" height="14" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="TextAnnotation_0p819rb_di" bpmnElement="TextAnnotation_0p819rb">
+        <dc:Bounds x="380" y="380" width="100" height="54" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_04cqskj_di" bpmnElement="Association_04cqskj">
         <di:waypoint x="430" y="340" />
