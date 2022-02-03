@@ -31,11 +31,11 @@
     ],
     "form": {
       "id": "1d37262f-3a00-4706-a74b-6bf98be65767",
-      "code": "forms/standard_pdp.form",
+      "code": "pdp/forms/standard_pdp.form",
       "description": null,
       "type": "FORM",
       "properties": {},
-      "key": "forms/standard_pdp.form",
+      "key": "pdp/forms/standard_pdp.form",
       "json": "test json"
     }
   }
