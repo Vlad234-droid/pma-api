@@ -5,14 +5,14 @@
       <bpmn:outgoing>Flow_0kva4tj</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0v6d7d0" messageRef="Message_1kt741c" />
     </bpmn:startEvent>
-    <bpmn:serviceTask id="sendNotification" name="Send&#10;notification" camunda:class="com.tesco.pma.flow.notifications.handlers.SendNotificationHandler">
+    <bpmn:serviceTask id="sendTipsNotification" name="Send&#10;notification" camunda:class="com.tesco.pma.flow.notifications.handlers.SendNotificationHandler">
       <bpmn:incoming>Flow_084j405</bpmn:incoming>
       <bpmn:outgoing>Flow_0j8eifc</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="Event_14zz4ju">
       <bpmn:incoming>Flow_0j8eifc</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0j8eifc" sourceRef="sendNotification" targetRef="Event_14zz4ju" />
+    <bpmn:sequenceFlow id="Flow_0j8eifc" sourceRef="sendTipsNotification" targetRef="Event_14zz4ju" />
     <bpmn:businessRuleTask id="Activity_1u9u2hv" name="Map event to template id" camunda:resultVariable="CONTACT_TEMPLATE_ID" camunda:decisionRef="tips_event_to_template_id" camunda:mapDecisionResult="singleEntry">
       <bpmn:incoming>Flow_1ptf6tn</bpmn:incoming>
       <bpmn:outgoing>Flow_034rrj4</bpmn:outgoing>
@@ -50,8 +50,8 @@
         <camunda:inputOutput>
           <camunda:outputParameter name="PLACEHOLDERS">
             <camunda:map>
-              <camunda:entry key="TITLE">Tips notification</camunda:entry>
-              <camunda:entry key="CONTENT">Test tips notification content</camunda:entry>
+              <camunda:entry key="TITLE">New Tip</camunda:entry>
+              <camunda:entry key="CONTENT">${TIP.getTitle()}</camunda:entry>
             </camunda:map>
           </camunda:outputParameter>
         </camunda:inputOutput>
@@ -60,7 +60,7 @@
       <bpmn:outgoing>Flow_084j405</bpmn:outgoing>
     </bpmn:task>
     <bpmn:sequenceFlow id="Flow_034rrj4" sourceRef="Activity_1u9u2hv" targetRef="Activity_15zfdmk" />
-    <bpmn:sequenceFlow id="Flow_084j405" sourceRef="Activity_15zfdmk" targetRef="sendNotification" />
+    <bpmn:sequenceFlow id="Flow_084j405" sourceRef="Activity_15zfdmk" targetRef="sendTipsNotification" />
     <bpmn:textAnnotation id="TextAnnotation_0a5ferg">
       <bpmn:text>eventName: NF_TIPS_RECEIVED
 COLLEAGUE_UUID
@@ -89,6 +89,14 @@ TIP_UUID</bpmn:text>
   <bpmn:message id="Message_1kt741c" name="NF_TIPS_RECEIVED" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="tips_notifications">
+      <bpmndi:BPMNEdge id="Flow_084j405_di" bpmnElement="Flow_084j405">
+        <di:waypoint x="1420" y="126" />
+        <di:waypoint x="1510" y="126" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_034rrj4_di" bpmnElement="Flow_034rrj4">
+        <di:waypoint x="1250" y="126" />
+        <di:waypoint x="1320" y="126" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0kva4tj_di" bpmnElement="Flow_0kva4tj">
         <di:waypoint x="468" y="126" />
         <di:waypoint x="530" y="126" />
@@ -118,16 +126,14 @@ TIP_UUID</bpmn:text>
         <di:waypoint x="1610" y="126" />
         <di:waypoint x="1712" y="126" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_034rrj4_di" bpmnElement="Flow_034rrj4">
-        <di:waypoint x="1250" y="126" />
-        <di:waypoint x="1320" y="126" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_084j405_di" bpmnElement="Flow_084j405">
-        <di:waypoint x="1420" y="126" />
-        <di:waypoint x="1510" y="126" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0jiddfy_di" bpmnElement="Event_0jiddfy">
         <dc:Bounds x="432" y="108" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1nf3c86_di" bpmnElement="sendTipsNotification">
+        <dc:Bounds x="1510" y="86" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_14zz4ju_di" bpmnElement="Event_14zz4ju">
+        <dc:Bounds x="1712" y="108" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1u9u2hv_di" bpmnElement="Activity_1u9u2hv">
         <dc:Bounds x="1150" y="86" width="100" height="80" />
@@ -147,17 +153,11 @@ TIP_UUID</bpmn:text>
       <bpmndi:BPMNShape id="Event_18bqats_di" bpmnElement="Event_18bqats">
         <dc:Bounds x="1152" y="222" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0a5ferg_di" bpmnElement="TextAnnotation_0a5ferg">
-        <dc:Bounds x="160" y="100" width="240" height="54" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1nf3c86_di" bpmnElement="sendNotification">
-        <dc:Bounds x="1510" y="86" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_14zz4ju_di" bpmnElement="Event_14zz4ju">
-        <dc:Bounds x="1712" y="108" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_15zfdmk_di" bpmnElement="Activity_15zfdmk">
         <dc:Bounds x="1320" y="86" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0a5ferg_di" bpmnElement="TextAnnotation_0a5ferg">
+        <dc:Bounds x="160" y="100" width="240" height="54" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_1xbw1hb_di" bpmnElement="Association_1xbw1hb">
         <di:waypoint x="400" y="126" />

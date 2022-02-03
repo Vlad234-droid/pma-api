@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="cycle_event_to_template" name="Review Notifications" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
+  <decision id="cycle_event_to_content_table" name="Map event to content">
+    <informationRequirement id="InformationRequirement_0w0zust">
+      <requiredInput href="#InputData_1g0u5hf" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_1dpms3v" hitPolicy="FIRST">
+      <input id="InputClause_0anirp2" label="Event Name" biodi:width="283">
+        <inputExpression id="LiteralExpression_0jpa5sp" typeRef="string">
+          <text>EVENT_NAME</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0bi7u0d" label="Is Manager">
+        <inputExpression id="LiteralExpression_0u7j2yz" typeRef="boolean">
+          <text>IS_MANAGER</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="Content" name="CONTENT" typeRef="string" biodi:width="367" />
+      <rule id="DecisionRule_0nzib8g">
+        <inputEntry id="UnaryTests_0e8whni">
+          <text>"NF_BEFORE_CYCLE_START"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1w3439g">
+          <text>false</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_158d1an">
+          <text>"Next performance cycle starts tomorrow!"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0uvrr49">
+        <inputEntry id="UnaryTests_0db0uww">
+          <text>"NF_BEFORE_CYCLE_END"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0m7osxx">
+          <text>false</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1c07k1c">
+          <text>"Current performance cycle ends tomorrow!"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_06won2y">
+        <inputEntry id="UnaryTests_1ikgrwu">
+          <text>"NF_BEFORE_CYCLE_START"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_167mce0">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0lurd8x">
+          <text>"Next performance cycle starts tomorrow!"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1w06om2">
+        <inputEntry id="UnaryTests_176hqdx">
+          <text>"NF_BEFORE_CYCLE_END"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0grsw4k">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_00o27fc">
+          <text>"Current performance cycle ends tomorrow!"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1m3o2bb">
+        <description></description>
+        <inputEntry id="UnaryTests_0v605vb">
+          <text>"NF_START_TIMELINE_NOTIFICATION"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0vbi6gm">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1c2gnu1">
+          <text>""</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0ppxhfq">
+        <inputEntry id="UnaryTests_1i0vnxa">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0p5hwb8">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0o4ndlm">
+          <text>""</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <inputData id="InputData_1g0u5hf" name="Event Name" />
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="cycle_event_to_content_table">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_0jl626x" dmnElementRef="InputData_1g0u5hf">
+        <dc:Bounds height="45" width="125" x="187" y="237" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_0domkdg" dmnElementRef="InformationRequirement_0w0zust">
+        <di:waypoint x="250" y="237" />
+        <di:waypoint x="250" y="200" />
+        <di:waypoint x="250" y="180" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

@@ -47,7 +47,7 @@
     </bpmn:businessRuleTask>
     <bpmn:businessRuleTask id="Activity_1r3725n" name="Map event to template id" camunda:resultVariable="CONTACT_TEMPLATE_ID" camunda:decisionRef="objective_event_to_template_id" camunda:mapDecisionResult="singleEntry">
       <bpmn:incoming>Flow_039vr1e</bpmn:incoming>
-      <bpmn:outgoing>Flow_0wx4q9x</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0argxbm</bpmn:outgoing>
     </bpmn:businessRuleTask>
     <bpmn:exclusiveGateway id="Gateway_1so5hu1" default="Flow_03g7v9z">
       <bpmn:incoming>Flow_0dnf68u</bpmn:incoming>
@@ -74,15 +74,31 @@
           <camunda:outputParameter name="PLACEHOLDERS">
             <camunda:map>
               <camunda:entry key="TITLE">Objectives notification</camunda:entry>
+              <camunda:entry key="CONTENT">${CONTENT}</camunda:entry>
             </camunda:map>
           </camunda:outputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0wx4q9x</bpmn:incoming>
+      <bpmn:incoming>Flow_020qyy1</bpmn:incoming>
+      <bpmn:incoming>Flow_0hbxnqn</bpmn:incoming>
       <bpmn:outgoing>Flow_18svpaq</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="Flow_0wx4q9x" sourceRef="Activity_1r3725n" targetRef="Activity_01pmwq1" />
     <bpmn:sequenceFlow id="Flow_18svpaq" sourceRef="Activity_01pmwq1" targetRef="sendNotification" />
+    <bpmn:exclusiveGateway id="Gateway_0l15zfz" default="Flow_020qyy1">
+      <bpmn:incoming>Flow_0argxbm</bpmn:incoming>
+      <bpmn:outgoing>Flow_020qyy1</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0zulrd2</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0argxbm" sourceRef="Activity_1r3725n" targetRef="Gateway_0l15zfz" />
+    <bpmn:sequenceFlow id="Flow_020qyy1" sourceRef="Gateway_0l15zfz" targetRef="Activity_01pmwq1" />
+    <bpmn:businessRuleTask id="Activity_0gcmir5" name="Map event to content" camunda:resultVariable="CONTENT" camunda:decisionRef="objective_event_to_content_table" camunda:mapDecisionResult="singleEntry">
+      <bpmn:incoming>Flow_0zulrd2</bpmn:incoming>
+      <bpmn:outgoing>Flow_0hbxnqn</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:sequenceFlow id="Flow_0zulrd2" sourceRef="Gateway_0l15zfz" targetRef="Activity_0gcmir5">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${CONTACT_TEMPLATE_ID.equals('00000000-0000-0000-0000-000000000000')}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0hbxnqn" sourceRef="Activity_0gcmir5" targetRef="Activity_01pmwq1" />
     <bpmn:textAnnotation id="TextAnnotation_0jrtxxh">
       <bpmn:text>eventName: NF_ORGANISATION_OBJECTIVES
 COLLEAGUE_UUID</bpmn:text>
@@ -125,14 +141,6 @@ COLLEAGUE_UUID</bpmn:text>
   <bpmn:message id="Message_1kt741c" name="TIPS_RECEIVED" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="objectives_notifications">
-      <bpmndi:BPMNEdge id="Flow_18svpaq_di" bpmnElement="Flow_18svpaq">
-        <di:waypoint x="1440" y="197" />
-        <di:waypoint x="1500" y="197" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0wx4q9x_di" bpmnElement="Flow_0wx4q9x">
-        <di:waypoint x="1250" y="197" />
-        <di:waypoint x="1340" y="197" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1b1yg7z_di" bpmnElement="Flow_1b1yg7z">
         <di:waypoint x="458" y="350" />
         <di:waypoint x="519" y="350" />
@@ -178,9 +186,32 @@ COLLEAGUE_UUID</bpmn:text>
         <di:waypoint x="680" y="197" />
         <di:waypoint x="710" y="197" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18svpaq_di" bpmnElement="Flow_18svpaq">
+        <di:waypoint x="1750" y="197" />
+        <di:waypoint x="1810" y="197" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0j8eifc_di" bpmnElement="Flow_0j8eifc">
+        <di:waypoint x="1910" y="197" />
+        <di:waypoint x="1952" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0argxbm_di" bpmnElement="Flow_0argxbm">
+        <di:waypoint x="1250" y="197" />
+        <di:waypoint x="1335" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_020qyy1_di" bpmnElement="Flow_020qyy1">
+        <di:waypoint x="1385" y="197" />
+        <di:waypoint x="1650" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zulrd2_di" bpmnElement="Flow_0zulrd2">
+        <di:waypoint x="1360" y="222" />
+        <di:waypoint x="1360" y="320" />
+        <di:waypoint x="1450" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hbxnqn_di" bpmnElement="Flow_0hbxnqn">
+        <di:waypoint x="1550" y="320" />
+        <di:waypoint x="1600" y="320" />
         <di:waypoint x="1600" y="197" />
-        <di:waypoint x="1642" y="197" />
+        <di:waypoint x="1650" y="197" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0lcl83k_di" bpmnElement="Event_0czaxhc">
         <dc:Bounds x="422" y="92" width="36" height="36" />
@@ -193,12 +224,6 @@ COLLEAGUE_UUID</bpmn:text>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0hgts8l_di" bpmnElement="Event_0hgts8l">
         <dc:Bounds x="422" y="332" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1nf3c86_di" bpmnElement="sendNotification">
-        <dc:Bounds x="1500" y="157" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_14zz4ju_di" bpmnElement="Event_14zz4ju">
-        <dc:Bounds x="1642" y="179" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0tuwqbq_di" bpmnElement="InitObjectivesNotifications">
         <dc:Bounds x="580" y="157" width="100" height="80" />
@@ -218,9 +243,6 @@ COLLEAGUE_UUID</bpmn:text>
       <bpmndi:BPMNShape id="Event_1g3cniy_di" bpmnElement="Event_1g3cniy">
         <dc:Bounds x="1152" y="289" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_01pmwq1_di" bpmnElement="Activity_01pmwq1">
-        <dc:Bounds x="1340" y="157" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0jrtxxh_di" bpmnElement="TextAnnotation_0jrtxxh">
         <dc:Bounds x="149" y="80" width="240" height="54" />
       </bpmndi:BPMNShape>
@@ -232,6 +254,21 @@ COLLEAGUE_UUID</bpmn:text>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_12g3y3h_di" bpmnElement="TextAnnotation_12g3y3h">
         <dc:Bounds x="150" y="323" width="240" height="54" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1nf3c86_di" bpmnElement="sendNotification">
+        <dc:Bounds x="1810" y="157" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_14zz4ju_di" bpmnElement="Event_14zz4ju">
+        <dc:Bounds x="1952" y="179" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_01pmwq1_di" bpmnElement="Activity_01pmwq1">
+        <dc:Bounds x="1650" y="157" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0l15zfz_di" bpmnElement="Gateway_0l15zfz" isMarkerVisible="true">
+        <dc:Bounds x="1335" y="172" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0gcmir5_di" bpmnElement="Activity_0gcmir5">
+        <dc:Bounds x="1450" y="280" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_0m8fcdt_di" bpmnElement="Association_0m8fcdt">
         <di:waypoint x="389" y="190" />
