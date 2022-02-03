@@ -6,10 +6,15 @@ import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.service.PMCycleService;
+import com.tesco.pma.exception.DataUploadException;
 import com.tesco.pma.exception.InvalidParameterException;
+import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.file.api.File;
 import com.tesco.pma.file.api.FileType.FileTypeEnum;
+import com.tesco.pma.file.api.FilesUploadMetadata;
 import com.tesco.pma.fs.service.FileService;
+import com.tesco.pma.logging.TraceUtils;
+import com.tesco.pma.fs.exception.ErrorCodes;
 import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
@@ -22,10 +27,19 @@ import com.tesco.pma.review.domain.TimelinePoint;
 import com.tesco.pma.review.domain.request.UpdateReviewsStatusRequest;
 import com.tesco.pma.review.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Encoding;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
@@ -37,28 +51,42 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 import static com.tesco.pma.file.api.FileType.FileTypeEnum.DOC;
 import static com.tesco.pma.file.api.FileType.FileTypeEnum.PDF;
 import static com.tesco.pma.file.api.FileType.FileTypeEnum.PPT;
+import static com.tesco.pma.logging.TraceId.TRACE_ID_HEADER;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Condition.Operand.IN;
+import static com.tesco.pma.rest.HttpStatusCodes.CREATED;
 import static com.tesco.pma.rest.RestResponse.success;
+import static com.tesco.pma.security.UserRoleNames.ADMIN;
+import static com.tesco.pma.util.SecurityUtils.getColleagueUuid;
+import static com.tesco.pma.util.SecurityUtils.hasAuthority;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
 @RestController
 @RequiredArgsConstructor
+@SuppressWarnings("PMD.ExcessiveImports")
 public class ReviewEndpoint {
 
+    private static final List<FileTypeEnum> REVIEW_FILE_TYPES = List.of(PDF, DOC, PPT);
     private final ReviewService reviewService;
     private final AuditorAware<UUID> auditorAware;
     private final PMCycleService pmCycleService;
@@ -413,15 +441,8 @@ public class ReviewEndpoint {
                                 @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
 
         var currentUserUuid = UUID.fromString(authentication.getName());
-        var path = String.format(REVIEWS_FILES_PATH, colleagueUuid);
-        var types = Stream.of(PDF, DOC, PPT)
-                .map(FileTypeEnum::getId)
-                .collect(toList());
 
-        var requestQuery = new RequestQuery();
-        requestQuery.setFilters(Arrays.asList(
-                new Condition("path", EQUALS, path),
-                new Condition("type", IN, types)));
+        var requestQuery = getRequestQueryForReviewFiles(colleagueUuid);
 
         var isCurrentUserLineManager = false;
 
@@ -435,6 +456,151 @@ public class ReviewEndpoint {
         var fileOwnerUuid = isCurrentUserLineManager ? colleagueUuid : currentUserUuid;
 
         return RestResponse.success(fileService.get(requestQuery, false, fileOwnerUuid, true));
+    }
+
+    /**
+     * Delete call using a Path params and delete a review file.
+     *
+     * @param fileUuid file identifier
+     * @return a Void RestResponse
+     */
+    @Operation(summary = "Delete Review File by its uuid", tags = {"review"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Review File deleted")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Review File not found", content = @Content)
+    @DeleteMapping(path = "/reviews/files/{fileUuid}", produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
+    public RestResponse<Void> delete(@PathVariable UUID fileUuid,
+                                     @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+        fileService.delete(fileUuid, resolveColleagueUuid(authentication));
+        return RestResponse.success();
+    }
+
+    /**
+     * Post call to upload Review Files
+     *
+     * @param filesUploadMetadata files metadata
+     * @param files files data
+     * @return uploaded files
+     */
+    @Operation(
+            summary = "Upload Review Files",
+            description = "Upload Review Files",
+            tags = "review",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    content = @Content(
+                            mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+                            encoding = {
+                                    @Encoding(name = "uploadMetadata", contentType = MediaType.APPLICATION_JSON_VALUE),
+                                    @Encoding(name = "files", contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+                            })
+            ),
+            responses = {
+                    @ApiResponse(responseCode = CREATED, description = "Uploaded review file")
+            }
+    )
+    @PostMapping(path = "/reviews/files",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isColleague()")
+    public RestResponse<List<File>> upload(
+            @RequestPart("uploadMetadata")
+            @Valid @Parameter(schema = @Schema(type = "string", format = "binary")) FilesUploadMetadata filesUploadMetadata,
+            @RequestPart("files") @NotEmpty List<@NotNull MultipartFile> files,
+            @CurrentSecurityContext(expression = "authentication") Authentication authentication,
+            HttpServletResponse response) {
+
+        var traceId = TraceUtils.toParent();
+        response.setHeader(TRACE_ID_HEADER, traceId.getValue());
+
+        var uploadMetadataList = filesUploadMetadata.getUploadMetadataList();
+        if (uploadMetadataList.size() != files.size()) {
+            throw new DataUploadException(ErrorCodes.FILES_COUNT_MISMATCH.name(),
+                    "Count of data review files and metadata files do not match", null);
+        }
+
+        var uploadMetadataIterator = uploadMetadataList.iterator();
+        var filesIterator = files.iterator();
+        var uploadedFiles = new LinkedList<File>();
+        while (uploadMetadataIterator.hasNext() && filesIterator.hasNext()) {
+            var file = filesIterator.next();
+
+            var fileName = file.getOriginalFilename();
+            if (file.isEmpty()) {
+                throw new DataUploadException(ErrorCodes.ERROR_FILE_UPLOAD_FAILED.name(),
+                        "Failed to store empty review file.", fileName);
+            }
+
+            if (StringUtils.isBlank(fileName)) {
+                throw new InvalidPayloadException(ErrorCodes.INVALID_PAYLOAD.getCode(),
+                        "Review file name cannot be empty", "fileName");
+            }
+
+            var fileData = new File();
+            fileData.setFileName(fileName);
+            fileData.setFileLength((int) file.getSize());
+
+            try {
+                fileData.setFileContent(file.getBytes());
+                var fileUploadMetadata = uploadMetadataIterator.next();
+                var creatorId = getColleagueUuid(authentication);
+                fileUploadMetadata.setPath(String.format(REVIEWS_FILES_PATH, creatorId));
+                if (REVIEW_FILE_TYPES.stream().noneMatch(t -> t.getCode().equals(fileUploadMetadata.getType().getCode()))) {
+                    throw new InvalidPayloadException(ErrorCodes.INVALID_PAYLOAD.getCode(),
+                            "Review file type must be one of " + REVIEW_FILE_TYPES, "type");
+                }
+                uploadedFiles.add(fileService.upload(fileData, fileUploadMetadata, creatorId));
+            } catch (IOException e) {
+                throw new DataUploadException(ErrorCodes.ERROR_FILE_UPLOAD_FAILED.name(),
+                        "Failed to store review file.", fileName, e);
+            }
+
+        }
+        return success(uploadedFiles);
+    }
+
+    /**
+     * GET call to download review file.
+     *
+     * @return a RestResponse with downloaded review file
+     */
+    @Operation(summary = "Download Review File", description = "Download Review File", tags = {"review"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Review File downloaded")
+    @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Invalid id supplied", content = @Content)
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Review File not found",
+            content = @Content(mediaType = APPLICATION_OCTET_STREAM_VALUE))
+    @ApiResponse(responseCode = HttpStatusCodes.UNAUTHORIZED, description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = HttpStatusCodes.FORBIDDEN, description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Internal Server Error", content = @Content)
+
+    @GetMapping("/reviews/files/{fileUuid}/download")
+    @PreAuthorize("isColleague()")
+    public ResponseEntity<Resource> download(@PathVariable UUID fileUuid,
+                                             @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+        var file = fileService.get(fileUuid, true, resolveColleagueUuid(authentication));
+        var content = file.getFileContent();
+
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(content.length)
+                .body(new ByteArrayResource(content));
+    }
+
+    private RequestQuery getRequestQueryForReviewFiles(UUID colleagueUuid) {
+        var path = String.format(REVIEWS_FILES_PATH, colleagueUuid);
+        var types = REVIEW_FILE_TYPES.stream()
+                .map(FileTypeEnum::getId)
+                .collect(toList());
+
+        var requestQuery = new RequestQuery();
+        requestQuery.setFilters(Arrays.asList(
+                new Condition("path", EQUALS, path),
+                new Condition("type", IN, types)));
+        return requestQuery;
+    }
+
+    private UUID resolveColleagueUuid(Authentication authentication) {
+        return hasAuthority(authentication, ADMIN) ? null : getColleagueUuid(authentication);
     }
 
     private UUID resolveUserUuid() {
