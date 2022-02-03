@@ -75,15 +75,13 @@ public class PDPServiceImpl implements PDPService {
 
     @Override
     @Transactional
-    public void deleteGoals(UUID colleagueUuid, List<UUID> goalUuids) {
-        goalUuids.forEach(goalUuid -> {
-            var deleted = pdpDao.deleteGoalByUuidAndColleague(colleagueUuid, goalUuid);
-            if (1 != deleted) {
-                throw new NotFoundException(PDP_GOAL_NOT_FOUND_BY_ID.getCode(),
-                        messageSourceAccessor.getMessage(PDP_GOAL_NOT_FOUND_BY_ID,
-                                Map.of(GOAL_UUID, goalUuid)));
-            }
-        });
+    public void deleteGoal(UUID colleagueUuid, UUID goalUuid) {
+        var deleted = pdpDao.deleteGoalByUuidAndColleague(colleagueUuid, goalUuid);
+        if (1 != deleted) {
+            throw new NotFoundException(PDP_GOAL_NOT_FOUND_BY_ID.getCode(),
+                    messageSourceAccessor.getMessage(PDP_GOAL_NOT_FOUND_BY_ID,
+                            Map.of(GOAL_UUID, goalUuid)));
+        }
     }
 
     @Override

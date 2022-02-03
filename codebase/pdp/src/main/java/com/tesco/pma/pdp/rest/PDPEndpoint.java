@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,8 +42,6 @@ import static com.tesco.pma.exception.ErrorCodes.ERROR_FILE_NOT_FOUND;
 import static com.tesco.pma.rest.RestResponse.success;
 import static com.tesco.pma.util.FileUtils.getFormName;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static com.tesco.pma.util.SecurityUtils.getColleagueUuid;
 
 @RestController
 @RequestMapping(path = "/pdp")
@@ -90,18 +89,18 @@ public class PDPEndpoint {
     }
 
     /**
-     * DELETE call to delete PDP Goals by its uuids.
+     * DELETE call to delete PDP Goal by its uuid.
      *
-     * @param goalUuids an identifier of goals
+     * @param goalUuid an identifier of goal
      * @return a Void RestResponse
      */
-    @Operation(summary = "Delete existing PDP Goals from a Plan by its uuids", description = "Delete existing PDP Goal", tags = {"pdp"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "PDP Goals deleted")
-    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PDP Goals not found", content = @Content)
-    @PostMapping(path = "/goals/delete", produces = MediaType.APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-    public RestResponse<Void> deleteGoals(@RequestBody List<UUID> goalUuids,
-                                          @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        pdpService.deleteGoals(getColleagueUuid(authentication), goalUuids);
+    @Operation(summary = "Delete existing PDP Goal from a Plan by its uuid", description = "Delete existing PDP Goal", tags = {"pdp"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "PDP Goal deleted")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PDP Goal not found", content = @Content)
+    @DeleteMapping(path = "/goals/{goalUuid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public RestResponse<Void> deleteGoal(@PathVariable("goalUuid") UUID goalUuid,
+                                         @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+        pdpService.deleteGoal(getColleagueUuid(authentication), goalUuid);
         return RestResponse.success();
     }
 
