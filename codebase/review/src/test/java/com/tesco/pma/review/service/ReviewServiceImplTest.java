@@ -1,13 +1,14 @@
 package com.tesco.pma.review.service;
 
 import com.tesco.pma.api.MapJson;
+import com.tesco.pma.configuration.MessageSourceConfig;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.cycle.service.PMCycleService;
+import com.tesco.pma.error.ApiExceptionHandler;
 import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.review.LocalTestConfig;
 import com.tesco.pma.review.dao.OrgObjectiveDAO;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
 import com.tesco.pma.review.dao.ReviewDAO;
@@ -20,9 +21,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration;
+import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Collections;
@@ -43,7 +50,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
-@SpringBootTest(classes = LocalTestConfig.class)
+@SpringBootTest(classes = ReviewServiceImplTest.LocalTestConfig.class)
 @ExtendWith(MockitoExtension.class)
 class ReviewServiceImplTest {
 
@@ -86,6 +93,17 @@ class ReviewServiceImplTest {
 
     @MockBean
     private EventSender eventSender;
+
+    @Profile("test")
+    @Configuration
+    @Import({MessageSourceAutoConfiguration.class,
+            MessageSourceConfig.class,
+            HttpMessageConvertersAutoConfiguration.class,
+            ApiExceptionHandler.class,
+            JacksonAutoConfiguration.class
+    })
+    static class LocalTestConfig {
+    }
 
     @Test
     void getReviewByUuidShouldReturnReview() {
