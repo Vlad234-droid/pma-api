@@ -1,6 +1,5 @@
 package com.tesco.pma.reports.domain;
 
-import com.tesco.pma.api.MapJson;
 import com.tesco.pma.colleague.api.ColleagueSimple;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
 import java.util.Map;
 
 @Data

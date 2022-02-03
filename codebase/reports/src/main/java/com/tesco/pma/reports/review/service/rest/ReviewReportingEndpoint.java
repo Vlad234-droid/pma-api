@@ -4,8 +4,10 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DownloadException;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.reporting.Report;
+import com.tesco.pma.reports.domain.ColleagueReportTargeting;
 import com.tesco.pma.reports.exception.ErrorCodes;
 import com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider;
+import com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider;
 import com.tesco.pma.reports.review.service.ReviewReportingService;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import static com.tesco.pma.reports.util.ExcelReportUtils.buildResource;
@@ -88,5 +91,35 @@ public class ReviewReportingEndpoint {
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
     public RestResponse<Report> getLinkedObjectivesReportData(RequestQuery requestQuery) {
         return success(reviewReportingService.getLinkedObjectivesReport(requestQuery));
+    }
+
+    /**
+     * Get call using a Path params and return targeting colleagues data as JSON.
+     *
+     * @param requestQuery -  filters
+     * @return a RestResponse parameterized with targeting colleagues data
+     */
+    @Operation(summary = "Get Colleagues marked with Tags", tags = {"report"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found Targeting Colleagues data")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Targeting Colleagues data not found", content = @Content)
+    @GetMapping(path = "targeting-colleagues", produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
+    public RestResponse<List<ColleagueReportTargeting>> getReviewReportColleagues(RequestQuery requestQuery) {
+        return success(reviewReportingService.getReviewReportColleagues(requestQuery));
+    }
+
+    /**
+     * Get call using a Path param and return review statistics report data as JSON.
+     *
+     * @param requestQuery -  filters
+     * @return a RestResponse parameterized with review statistics report data
+     */
+    @Operation(summary = "Get Review Statistics Report Data by year of cycle and statuses of review", tags = {"report"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the Review Statistics Report data")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Review Statistics Report data not found", content = @Content)
+    @GetMapping(path = ReviewStatsReportProvider.REPORT_NAME, produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
+    public RestResponse<Report> getReviewStatsReport(RequestQuery requestQuery) {
+        return success(reviewReportingService.getReviewStatsReport(requestQuery));
     }
 }
