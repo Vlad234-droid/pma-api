@@ -34,9 +34,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
 
     private static final String POST_EVENT_PATH = "/colleagues/events";
-    private static final String JIT_REQUEST_CEP_JSON = "jit_request_cep.json";
-    private static final String IMMEDIATE_REQUEST_CEP_JSON = "immediate_request_cep.json";
+
+    private static final String REQUEST_CEP_HEADER_FEED_ID = "FeedId";
+
+    private static final String JIT_REQUEST_CEP_FEED_ID = "colleagues-jit-v1";
+    private static final String JIT_REQUEST_CEP_JSON = "jit_request_cep_2.json";
+
+    private static final String IMMEDIATE_REQUEST_CEP_FEED_ID = "colleagues-immediate-v1";
+    private static final String IMMEDIATE_REQUEST_CEP_JSON = "immediate_request_cep_2.json";
+
     private static final int MAX_NUMBER_PARALLEL_REQUESTS = 2;
+
     private static final String TEST_CEP_SUBJECT = "test-cep-subject";
 
     @MockBean
@@ -54,7 +62,7 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
     @Test
     void processJustInTimeFlowColleagueChangeEventShouldReturnAcceptedHttpStatus() throws Exception {
 
-        callEventRequest(JIT_REQUEST_CEP_JSON, status().isAccepted());
+        callEventRequest(JIT_REQUEST_CEP_FEED_ID, JIT_REQUEST_CEP_JSON, status().isAccepted());
 
         verify(mockColleagueChangesService, timeout(500))
                 .processColleagueChangeEvent(any(String.class), any(ColleagueChangeEventPayload.class));
@@ -64,7 +72,7 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
     @Test
     void processImmediateFlowColleagueChangeEventShouldReturnAcceptedHttpStatus() throws Exception {
 
-        callEventRequest(IMMEDIATE_REQUEST_CEP_JSON, status().isAccepted());
+        callEventRequest(IMMEDIATE_REQUEST_CEP_FEED_ID, IMMEDIATE_REQUEST_CEP_JSON, status().isAccepted());
 
         verify(mockColleagueChangesService, timeout(500))
                 .processColleagueChangeEvent(any(String.class), any(ColleagueChangeEventPayload.class));
@@ -75,7 +83,7 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
     @Test
     void processColleagueChangeEventSeveralTimesShouldReturnAcceptedHttpStatus() throws Exception {
         for (var i = 0; i < MAX_NUMBER_PARALLEL_REQUESTS; i++) {
-            callEventRequest(JIT_REQUEST_CEP_JSON, status().isAccepted());
+            callEventRequest(JIT_REQUEST_CEP_FEED_ID, JIT_REQUEST_CEP_JSON, status().isAccepted());
         }
 
         verify(mockColleagueChangesService, timeout(500)
@@ -94,10 +102,10 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
 
         // when
         for (var i = 0; i < MAX_NUMBER_PARALLEL_REQUESTS; i++) {
-            callEventRequest(JIT_REQUEST_CEP_JSON, status().isAccepted());
+            callEventRequest(JIT_REQUEST_CEP_FEED_ID, JIT_REQUEST_CEP_JSON, status().isAccepted());
         }
 
-        callEventRequest(JIT_REQUEST_CEP_JSON, status().isTooManyRequests());
+        callEventRequest(JIT_REQUEST_CEP_FEED_ID, JIT_REQUEST_CEP_JSON, status().isTooManyRequests());
 
         // then
         verify(mockColleagueChangesService, timeout(1000).times(MAX_NUMBER_PARALLEL_REQUESTS))
@@ -109,13 +117,15 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
 
         mvc.perform(post(POST_EVENT_PATH)
                         .with(jwtWithSubject(TEST_CEP_SUBJECT))
-                        .content("{\"payload\":{}}")
+                        .header(REQUEST_CEP_HEADER_FEED_ID, JIT_REQUEST_CEP_FEED_ID)
+                        .content("{\"colleagueUUID\":\"77778888-9999-0000-1111-222222222222\"}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isAccepted());
 
         mvc.perform(post(POST_EVENT_PATH)
                         .with(jwtWithSubject(TEST_CEP_SUBJECT))
+                        .header(REQUEST_CEP_HEADER_FEED_ID, JIT_REQUEST_CEP_FEED_ID)
                         .content("{}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -139,6 +149,7 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
     @Test
     void processColleagueChangeEventForbiddenWithSubjectNotMatch() throws Exception {
         mvc.perform(post(POST_EVENT_PATH).with(jwtWithSubject("not-cep-subject"))
+                        .header(REQUEST_CEP_HEADER_FEED_ID, JIT_REQUEST_CEP_FEED_ID)
                         .content(json.from(JIT_REQUEST_CEP_JSON).getJson())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -147,9 +158,10 @@ public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
         verifyNoInteractions(mockColleagueChangesService);
     }
 
-    private void callEventRequest(String jsonSource, ResultMatcher resultMatcher) throws Exception {
+    private void callEventRequest(String feedId, String jsonSource, ResultMatcher resultMatcher) throws Exception {
         mvc.perform(post(POST_EVENT_PATH)
                         .with(jwtWithSubject(TEST_CEP_SUBJECT))
+                        .header(REQUEST_CEP_HEADER_FEED_ID, feedId)
                         .content(json.from(jsonSource).getJson())
                         .contentType(APPLICATION_JSON)
                         .accept(APPLICATION_JSON))
