@@ -20,6 +20,7 @@ import static com.tesco.pma.reports.review.dao.ReviewReportingDAOTest.BASE_PATH_
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataSet({BASE_PATH_TO_DATA_SET + "colleague_init.xml",
@@ -90,6 +91,33 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
 
         final var result = instance.getColleagueTargeting(requestQuery);
 
-        System.out.println(result);
+        assertNotNull(result);
+
+        assertEquals(1, result.size());
+
+        assertAll("colleagueTargeting",
+                () -> assertEquals("10000000-0000-0000-0000-000000000000", result.get(0).getUuid().toString()),
+                () -> assertEquals("first_name", result.get(0).getFirstName()),
+                () -> assertEquals("last_name", result.get(0).getLastName()),
+                () -> assertNull(result.get(0).getMiddleName()),
+                () -> assertNull(result.get(0).getLineManager()),
+                () -> assertEquals("first_name", result.get(0).getFirstName()),
+                () -> assertEquals("last_name", result.get(0).getLastName()),
+                () -> assertEquals("Team lead", result.get(0).getJobName()),
+                () -> assertEquals("Bank", result.get(0).getBusinessType()),
+
+                () -> assertEquals("1", result.get(0).getTags().get("has_objective_approved")),
+                () -> assertEquals("0", result.get(0).getTags().get("has_objective_submitted")),
+                () -> assertEquals("1", result.get(0).getTags().get("has_myr_approved")),
+                () -> assertEquals("0", result.get(0).getTags().get("has_eyr_approved")),
+                () -> assertEquals("0", result.get(0).getTags().get("myr_how_rating")),
+                () -> assertEquals("0", result.get(0).getTags().get("myr_what_rating")),
+                () -> assertEquals("0", result.get(0).getTags().get("eyr_how_rating")),
+                () -> assertEquals("0", result.get(0).getTags().get("eyr_what_rating")),
+                () -> assertEquals("0", result.get(0).getTags().get("has_myr_submitted")),
+                () -> assertEquals("0", result.get(0).getTags().get("has_eyr_submitted")),
+                () -> assertEquals("0", result.get(0).getTags().get("must_create_eyr")),
+                () -> assertEquals("1", result.get(0).getTags().get("must_create_objective")),
+                () -> assertEquals("1", result.get(0).getTags().get("must_create_myr")));
     }
 }

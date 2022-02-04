@@ -16,11 +16,36 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@SuppressWarnings("PMD.TooManyFields")
 public class ReviewStatsData {
 
-    // TODO: make it (all percentages) decimal instead of integer; add all review percentages here
     Integer objectivesSubmittedPercentage;
     Integer objectivesApprovedPercentage;
+
+    Integer myrSubmittedPercentage;
+    Integer myrApprovedPercentage;
+    Integer eyrSubmittedPercentage;
+    Integer eyrApprovedPercentage;
+
+    Integer myrRatingBreakdownBelowExpectedPercentage;
+    Long myrRatingBreakdownBelowExpectedCount;
+    Integer myrRatingBreakdownSatisfactoryPercentage;
+    Long myrRatingBreakdownSatisfactoryCount;
+    Integer myrRatingBreakdownGreatPercentage;
+    Long myrRatingBreakdownGreatCount;
+    Integer myrRatingBreakdownOutstandingPercentage;
+    Long myrRatingBreakdownOutstandingCount;
+
+
+    Integer eyrRatingBreakdownBelowExpectedPercentage;
+    Long eyrRatingBreakdownBelowExpectedCount;
+    Integer eyrRatingBreakdownSatisfactoryPercentage;
+    Long eyrRatingBreakdownSatisfactoryCount;
+    Integer eyrRatingBreakdownGreatPercentage;
+    Long eyrRatingBreakdownGreatCount;
+    Integer eyrRatingBreakdownOutstandingPercentage;
+    Long eyrRatingBreakdownOutstandingCount;
+
 
     public List<Object> toList() {
         var statistics = new ArrayList<>();
@@ -28,23 +53,29 @@ public class ReviewStatsData {
         statistics.add(objectivesSubmittedPercentage);
         statistics.add(objectivesApprovedPercentage);
 
+        statistics.add(myrSubmittedPercentage);
+        statistics.add(myrApprovedPercentage);
+        statistics.add(eyrSubmittedPercentage);
+        statistics.add(eyrApprovedPercentage);
+
+        statistics.add(myrRatingBreakdownBelowExpectedPercentage);
+        statistics.add(myrRatingBreakdownBelowExpectedCount);
+        statistics.add(myrRatingBreakdownSatisfactoryPercentage);
+        statistics.add(myrRatingBreakdownSatisfactoryCount);
+        statistics.add(myrRatingBreakdownGreatPercentage);
+        statistics.add(myrRatingBreakdownGreatCount);
+        statistics.add(myrRatingBreakdownOutstandingPercentage);
+        statistics.add(myrRatingBreakdownOutstandingCount);
+
+        statistics.add(eyrRatingBreakdownBelowExpectedPercentage);
+        statistics.add(eyrRatingBreakdownBelowExpectedCount);
+        statistics.add(eyrRatingBreakdownSatisfactoryPercentage);
+        statistics.add(eyrRatingBreakdownSatisfactoryCount);
+        statistics.add(eyrRatingBreakdownGreatPercentage);
+        statistics.add(eyrRatingBreakdownGreatCount);
+        statistics.add(eyrRatingBreakdownOutstandingPercentage);
+        statistics.add(eyrRatingBreakdownOutstandingCount);
+
         return statistics;
     }
 }
-
-    /*
-    <resultMap id="colleagueReportTagsResultMap" type="map">
-        <result column="must_create_objective" property="must_create_objective"/>
-        <result column="has_objective_submitted" property="has_objective_submitted"/>
-        <result column="has_objective_approved" property="has_objective_approved"/>
-        <result column="must_create_myr" property="must_create_myr"/>
-        <result column="has_myr_submitted" property="has_myr_submitted"/>
-        <result column="has_myr_approved" property="has_myr_approved"/>
-        <result column="myr_what_rating" property="myr_what_rating"/>
-        <result column="myr_how_rating" property="myr_how_rating"/>
-        <result column="must_create_eyr" property="must_create_eyr"/>
-        <result column="has_eyr_submitted" property="has_eyr_submitted"/>
-        <result column="has_eyr_approved" property="has_eyr_approved"/>
-        <result column="eyr_what_rating" property="eyr_what_rating"/>
-        <result column="eyr_how_rating" property="eyr_how_rating"/>
-    </resultMap> */
