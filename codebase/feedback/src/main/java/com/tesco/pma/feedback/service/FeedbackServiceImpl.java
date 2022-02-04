@@ -170,9 +170,17 @@ public class FeedbackServiceImpl implements FeedbackService {
             return;
         }
 
+        var target = feedback.getTargetColleagueUuid();
+        var source = feedback.getColleagueUuid();
+
+        if (eventName.equals(NF_REQUEST_FEEDBACK)) {
+            target = feedback.getColleagueUuid();
+            source = feedback.getTargetColleagueUuid();
+        }
+
         var event = EventSupport.create(eventName, Map.of(
-                COLLEAGUE_UUID_PARAM_NAME, feedback.getTargetColleagueUuid(),
-                SOURCE_COLLEAGUE_UUID_PARAM_NAME, feedback.getColleagueUuid()
+                COLLEAGUE_UUID_PARAM_NAME, target,
+                SOURCE_COLLEAGUE_UUID_PARAM_NAME, source
         ));
 
         eventSender.sendEvent(event, null, true);
