@@ -46,7 +46,6 @@ public class ColleagueInboxNotificationSender implements SendNotificationService
         message.setId(UUID.randomUUID());
         message.setSentAt(OffsetDateTime.now());
         message.setSenderName(getSenderName(colleagueProfile));
-        message.setLink("https://fake/link"); //TODO remove when not required
         message.setTitle(placeholders.get(TITLE_PLACEHOLDER));
         message.setContent(getContent(templateId, placeholders));
         message.setCategory(MessageCategory.OWN);
