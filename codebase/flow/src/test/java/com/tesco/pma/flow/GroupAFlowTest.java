@@ -6,6 +6,7 @@ import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.flow.handlers.PMColleagueCycleHandler;
 import com.tesco.pma.flow.handlers.ProcessTimelinePointHandler;
+import com.tesco.pma.flow.handlers.UpdatePMCycleStatusHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
@@ -31,6 +32,9 @@ class GroupAFlowTest extends AbstractCamundaSpringBootTest {
 
     @MockBean
     ProcessTimelinePointHandler processTimelinePointHandler;
+
+    @MockBean
+    UpdatePMCycleStatusHandler updatePMCycleStatusHandler;
 
     @Test
     void success() throws Exception {

@@ -29,7 +29,7 @@
     </bpmn:businessRuleTask>
     <bpmn:businessRuleTask id="Activity_12royms" name="Map event to template id" camunda:resultVariable="CONTACT_TEMPLATE_ID" camunda:decisionRef="cycle_event_to_template_id" camunda:mapDecisionResult="singleEntry">
       <bpmn:incoming>Flow_1wvql1s</bpmn:incoming>
-      <bpmn:outgoing>Flow_1btsynq</bpmn:outgoing>
+      <bpmn:outgoing>Flow_120nhsj</bpmn:outgoing>
     </bpmn:businessRuleTask>
     <bpmn:sequenceFlow id="Flow_08hyi1o" sourceRef="InitCycleNotifications" targetRef="Activity_04neep0" />
     <bpmn:sequenceFlow id="Flow_0x7gq94" sourceRef="Activity_04neep0" targetRef="cycle_decision_table" />
@@ -62,16 +62,32 @@
         <camunda:inputOutput>
           <camunda:outputParameter name="PLACEHOLDERS">
             <camunda:map>
-              <camunda:entry key="TITLE">Cycle notification</camunda:entry>
+              <camunda:entry key="TITLE">Performance cycle</camunda:entry>
+              <camunda:entry key="CONTENT">${CONTENT}</camunda:entry>
             </camunda:map>
           </camunda:outputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1btsynq</bpmn:incoming>
+      <bpmn:incoming>Flow_0wfkybf</bpmn:incoming>
+      <bpmn:incoming>Flow_0mowt7e</bpmn:incoming>
       <bpmn:outgoing>Flow_0xiws4t</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="Flow_1btsynq" sourceRef="Activity_12royms" targetRef="cycle_placeholders_mapping" />
     <bpmn:sequenceFlow id="Flow_0xiws4t" sourceRef="cycle_placeholders_mapping" targetRef="sendNotification" />
+    <bpmn:exclusiveGateway id="Gateway_0vdxke3" default="Flow_0mowt7e">
+      <bpmn:incoming>Flow_120nhsj</bpmn:incoming>
+      <bpmn:outgoing>Flow_1k9d63a</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0mowt7e</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_120nhsj" sourceRef="Activity_12royms" targetRef="Gateway_0vdxke3" />
+    <bpmn:sequenceFlow id="Flow_1k9d63a" sourceRef="Gateway_0vdxke3" targetRef="Activity_14vwsor">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${CONTACT_TEMPLATE_ID.equals('00000000-0000-0000-0000-000000000000')}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0wfkybf" sourceRef="Activity_14vwsor" targetRef="cycle_placeholders_mapping" />
+    <bpmn:sequenceFlow id="Flow_0mowt7e" sourceRef="Gateway_0vdxke3" targetRef="cycle_placeholders_mapping" />
+    <bpmn:businessRuleTask id="Activity_14vwsor" name="Map event to content" camunda:resultVariable="CONTENT" camunda:decisionRef="cycle_event_to_content_table" camunda:mapDecisionResult="singleEntry">
+      <bpmn:incoming>Flow_1k9d63a</bpmn:incoming>
+      <bpmn:outgoing>Flow_0wfkybf</bpmn:outgoing>
+    </bpmn:businessRuleTask>
     <bpmn:textAnnotation id="TextAnnotation_1ejgdx6">
       <bpmn:text>eventName: NF_BEFORE_CYCLE_START
 COLLEAGUE_UUID
@@ -104,8 +120,7 @@ TIMELINE_POINT_UUID</bpmn:text>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_14ra3lw_di" bpmnElement="Flow_14ra3lw">
         <di:waypoint x="960" y="185" />
-        <di:waypoint x="960" y="270" />
-        <di:waypoint x="1012" y="270" />
+        <di:waypoint x="960" y="272" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1wvql1s_di" bpmnElement="Flow_1wvql1s">
         <di:waypoint x="985" y="160" />
@@ -135,17 +150,32 @@ TIMELINE_POINT_UUID</bpmn:text>
         <di:waypoint x="640" y="160" />
         <di:waypoint x="670" y="160" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_08x2cmk_di" bpmnElement="Flow_08x2cmk">
-        <di:waypoint x="1430" y="160" />
-        <di:waypoint x="1472" y="160" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1btsynq_di" bpmnElement="Flow_1btsynq">
-        <di:waypoint x="1120" y="160" />
-        <di:waypoint x="1160" y="160" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0xiws4t_di" bpmnElement="Flow_0xiws4t">
-        <di:waypoint x="1260" y="160" />
-        <di:waypoint x="1330" y="160" />
+        <di:waypoint x="1510" y="160" />
+        <di:waypoint x="1580" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08x2cmk_di" bpmnElement="Flow_08x2cmk">
+        <di:waypoint x="1680" y="160" />
+        <di:waypoint x="1722" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_120nhsj_di" bpmnElement="Flow_120nhsj">
+        <di:waypoint x="1120" y="160" />
+        <di:waypoint x="1155" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1k9d63a_di" bpmnElement="Flow_1k9d63a">
+        <di:waypoint x="1180" y="185" />
+        <di:waypoint x="1180" y="250" />
+        <di:waypoint x="1240" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wfkybf_di" bpmnElement="Flow_0wfkybf">
+        <di:waypoint x="1340" y="250" />
+        <di:waypoint x="1375" y="250" />
+        <di:waypoint x="1375" y="160" />
+        <di:waypoint x="1410" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mowt7e_di" bpmnElement="Flow_0mowt7e">
+        <di:waypoint x="1205" y="160" />
+        <di:waypoint x="1410" y="160" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1df7jen_di" bpmnElement="Event_1df7jen">
         <dc:Bounds x="432" y="92" width="36" height="36" />
@@ -168,9 +198,6 @@ TIMELINE_POINT_UUID</bpmn:text>
       <bpmndi:BPMNShape id="Gateway_0qasoy9_di" bpmnElement="Gateway_0qasoy9" isMarkerVisible="true">
         <dc:Bounds x="935" y="135" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_02dmpuj_di" bpmnElement="Event_02dmpuj">
-        <dc:Bounds x="1012" y="252" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1c2rlex_di" bpmnElement="Event_1c2rlex">
         <dc:Bounds x="432" y="292" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -184,13 +211,22 @@ TIMELINE_POINT_UUID</bpmn:text>
         <dc:Bounds x="160" y="283" width="240" height="68" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0sklja6_di" bpmnElement="sendNotification">
-        <dc:Bounds x="1330" y="120" width="100" height="80" />
+        <dc:Bounds x="1580" y="120" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1ola85o_di" bpmnElement="Event_1ola85o">
-        <dc:Bounds x="1472" y="142" width="36" height="36" />
+        <dc:Bounds x="1722" y="142" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1uztutf_di" bpmnElement="cycle_placeholders_mapping">
-        <dc:Bounds x="1160" y="120" width="100" height="80" />
+        <dc:Bounds x="1410" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0vdxke3_di" bpmnElement="Gateway_0vdxke3" isMarkerVisible="true">
+        <dc:Bounds x="1155" y="135" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_02dmpuj_di" bpmnElement="Event_02dmpuj">
+        <dc:Bounds x="942" y="272" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0wjzlr5_di" bpmnElement="Activity_14vwsor">
+        <dc:Bounds x="1240" y="210" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_0enne85_di" bpmnElement="Association_0enne85">
         <di:waypoint x="400" y="110" />

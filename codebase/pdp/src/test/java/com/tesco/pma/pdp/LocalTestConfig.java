@@ -19,6 +19,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 import java.util.Properties;
 
+import static com.tesco.pma.pdp.rest.PDPEndpointTest.PDP_TEMPLATE;
 import static com.tesco.pma.pdp.rest.PDPEndpointTest.STANDARD_PDP_FORM;
 
 @Profile("test")
@@ -34,14 +35,13 @@ import static com.tesco.pma.pdp.rest.PDPEndpointTest.STANDARD_PDP_FORM;
 })
 public class LocalTestConfig {
 
-    static final String FORM_KEY = "tesco.application.pdp.form.key";
-
     @Bean
     public static PropertySourcesPlaceholderConfigurer properties() throws Exception {
         var pspc = new PropertySourcesPlaceholderConfigurer();
 
         var properties = new Properties();
-        properties.setProperty(FORM_KEY, STANDARD_PDP_FORM);
+        properties.setProperty("tesco.application.pdp.form.key", STANDARD_PDP_FORM);
+        properties.setProperty("tesco.application.pdp.template.key", PDP_TEMPLATE);
         pspc.setProperties(properties);
         return pspc;
     }

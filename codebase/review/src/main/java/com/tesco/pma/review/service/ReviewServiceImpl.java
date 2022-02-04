@@ -38,7 +38,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.tesco.pma.api.ActionType.PUBLISH;
 import static com.tesco.pma.api.ActionType.SAVE_AS_DRAFT;
@@ -62,6 +61,7 @@ import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_ALREADY_EXISTS;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_STATUS_NOT_ALLOWED;
 import static com.tesco.pma.review.exception.ErrorCodes.TIMELINE_POINT_NOT_FOUND;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Implementation of {@link ReviewService}.
@@ -378,7 +378,13 @@ public class ReviewServiceImpl implements ReviewService {
                         type,
                         null,
                         review.getNumber());
-                reviewAuditLogDAO.logReviewUpdating(actualReviews.get(0), status, reason, loggedUserUuid);
+                var actualReview = actualReviews.get(0);
+                if (review.getProperties() != null
+                        && !review.getProperties().getMapJson().isEmpty()) {
+                    actualReview.setProperties(review.getProperties());
+                    updateReview(actualReview);
+                }
+                reviewAuditLogDAO.logReviewUpdating(actualReview, status, reason, loggedUserUuid);
             } else {
                 throw notFound(REVIEW_NOT_FOUND,
                         Map.of(STATUS_PARAMETER_NAME, status,
@@ -538,7 +544,7 @@ public class ReviewServiceImpl implements ReviewService {
         var prevStatusesForChangeStatus = getPrevStatusesForChangeStatus(reviewType, newStatus);
         return allowedStatusesForUpdate.stream()
                 .filter(prevStatusesForChangeStatus::contains)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     private List<PMTimelinePointStatus> getAllowedStatusesForTLPointUpdate(PMTimelinePointStatus newStatus) {
@@ -593,10 +599,14 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private List<PMTimelinePointStatus> getStatusesForUpdate(PMReviewType reviewType) {
-        if (reviewType.equals(OBJECTIVE)) {
-            return List.of(DRAFT, DECLINED, APPROVED);
-        } else {
-            return List.of(DRAFT, DECLINED);
+        switch (reviewType) {
+            case OBJECTIVE:
+            case EYR:
+                return List.of(DRAFT, DECLINED, APPROVED);
+            case MYR:
+                return List.of(DRAFT, DECLINED);
+            default:
+                return Collections.emptyList();
         }
     }
 
@@ -728,17 +738,17 @@ public class ReviewServiceImpl implements ReviewService {
         return defaultValue;
     }
 
-    private void sendEvent(String eventName, UUID colleagueUuid){
+    private void sendEvent(String eventName, UUID colleagueUuid) {
         var event = EventSupport.create(eventName,
                 Map.of(COLLEAGUE_UUID_EVENT_PARAM, colleagueUuid));
 
         eventSender.sendEvent(event, null, true);
     }
 
-    private void sendEvent(TimelinePoint timelinePoint, UUID colleagueUuid){
+    private void sendEvent(TimelinePoint timelinePoint, UUID colleagueUuid) {
         var eventName = STATUS_TO_EVENT_NAME_MAP.get(timelinePoint.getStatus());
 
-        if(eventName == null){
+        if (eventName == null) {
             return;
         }
 

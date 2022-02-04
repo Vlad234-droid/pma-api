@@ -148,6 +148,14 @@ public abstract class AbstractEndpointTest {
                 .andReturn();
     }
 
+    protected MvcResult performDeleteWith(RequestPostProcessor postProcessor, ResultMatcher status,
+                                          String urlTemplate, Object... uriVars) throws Exception {
+        return mvc.perform(delete(urlTemplate, uriVars).with(postProcessor))
+                .andDo(print())
+                .andExpect(status)
+                .andReturn();
+    }
+
     protected MockMvc getMvc() {
         return mvc;
     }
