@@ -13,6 +13,7 @@ import com.tesco.pma.flow.FlowParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -28,24 +29,35 @@ public abstract class AbstractInitNotificationHandler extends CamundaAbstractFlo
     @Autowired
     private NamedMessageSourceAccessor messageSourceAccessor;
 
+    private final Map<FlowParameters, FlowParameters> colleaguesFlowParams = Map.of(
+            FlowParameters.COLLEAGUE_UUID, FlowParameters.COLLEAGUE_PROFILE,
+            FlowParameters.SOURCE_COLLEAGUE_UUID, FlowParameters.SOURCE_COLLEAGUE_PROFILE,
+            FlowParameters.SENDER_COLLEAGUE_UUID, FlowParameters.SENDER_COLLEAGUE_PROFILE);
+
     @Override
     protected void execute(ExecutionContext context) throws Exception {
         var event = context.getEvent();
-        var eventName = event.getEventName();
-        var colleagueUUID = getColleagueUUID(event);
-        var colleagueProfile = getColleagueProfile(colleagueUUID);
+        context.setVariable(FlowParameters.EVENT_NAME, event.getEventName());
 
-        context.setVariable(FlowParameters.EVENT_NAME, eventName);
-        context.setVariable(FlowParameters.COLLEAGUE_PROFILE, colleagueProfile);
-        context.setVariable(FlowParameters.IS_MANAGER, isManager(colleagueProfile));
+        processColleagues(event, context);
+        context.setVariable(FlowParameters.IS_MANAGER, isManager(context.getVariable(FlowParameters.COLLEAGUE_PROFILE)));
+    }
+
+    protected void processColleagues(Event event, ExecutionContext context) {
+        for(Map.Entry<FlowParameters, FlowParameters> param : colleaguesFlowParams.entrySet()){
+            var colleagueUUID = (UUID) event.getEventProperty(param.getKey().name());
+
+            if (colleagueUUID == null) {
+                continue;
+            }
+
+            var colleagueProfile = getColleagueProfile(colleagueUUID);
+            context.setVariable(param.getValue(), colleagueProfile);
+        }
     }
 
     protected boolean isManager(ColleagueProfile colleagueProfile) {
         return colleagueProfile.getColleague().getWorkRelationships().get(0).getIsManager();
-    }
-
-    protected UUID getColleagueUUID(Event event) {
-        return (UUID) event.getEventProperty(FlowParameters.COLLEAGUE_UUID.name());
     }
 
     protected ColleagueProfile getColleagueProfile(UUID colleagueUUID) {

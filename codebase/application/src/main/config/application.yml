@@ -260,6 +260,10 @@ tesco:
       NF_PM_REVIEW_SUBMITTED: com.tesco.pma.bpm.action.RunFlowByEventAction
       NF_PM_REVIEW_APPROVED: com.tesco.pma.bpm.action.RunFlowByEventAction
       NF_PM_REVIEW_DECLINED: com.tesco.pma.bpm.action.RunFlowByEventAction
+      NF_PM_REVIEW_BEFORE_START: com.tesco.pma.bpm.action.RunFlowByEventAction
+      NF_PM_REVIEW_BEFORE_END: com.tesco.pma.bpm.action.RunFlowByEventAction
+      NF_PM_REVIEW_START: com.tesco.pma.bpm.action.RunFlowByEventAction
+      NF_PM_REVIEW_END: com.tesco.pma.bpm.action.RunFlowByEventAction
     user-management:
       page:
         size: 100
