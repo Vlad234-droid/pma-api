@@ -13,7 +13,6 @@ import com.tesco.pma.flow.FlowParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -44,7 +43,7 @@ public abstract class AbstractInitNotificationHandler extends CamundaAbstractFlo
     }
 
     protected void processColleagues(Event event, ExecutionContext context) {
-        for(Map.Entry<FlowParameters, FlowParameters> param : colleaguesFlowParams.entrySet()){
+        for (Map.Entry<FlowParameters, FlowParameters> param : colleaguesFlowParams.entrySet()) {
             var colleagueUUID = (UUID) event.getEventProperty(param.getKey().name());
 
             if (colleagueUUID == null) {
