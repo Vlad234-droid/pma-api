@@ -35,7 +35,7 @@
           <text>"MYR"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0t1y2vo">
-          <text>"[Review form] was submitted by {firstName} {lastName}"</text>
+          <text>"Mid-year review was submitted by {firstName} {lastName}"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_117lcnh">
@@ -112,7 +112,7 @@
           <text>"EYR"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1sh4rp8">
-          <text>"[Review form] was submitted by {firstName} {lastName}"</text>
+          <text>"Year-end was submitted by {firstName} {lastName}"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0v5108s">

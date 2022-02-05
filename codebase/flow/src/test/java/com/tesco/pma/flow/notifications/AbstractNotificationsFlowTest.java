@@ -59,13 +59,18 @@ public abstract class AbstractNotificationsFlowTest extends AbstractCamundaSprin
     }
 
      ColleagueProfile createColleagueProfile(UUID colleagueUUID, WorkLevel wl, Map<String, String> attrs){
+        return createColleagueProfile(colleagueUUID, "Random" , "Name", wl, attrs);
+    }
+
+    ColleagueProfile createColleagueProfile(UUID colleagueUUID, String firstName, String lastName,
+                                            WorkLevel wl, Map<String, String> attrs){
         var wr = new WorkRelationship();
         wr.setWorkLevel(wl);
         wr.setIsManager(false);
 
         var profile = new Profile();
-        profile.setFirstName("Random");
-        profile.setLastName("Name");
+        profile.setFirstName(firstName);
+        profile.setLastName(lastName);
 
         var colleague = new Colleague();
         colleague.setColleagueUUID(colleagueUUID);
@@ -100,10 +105,15 @@ public abstract class AbstractNotificationsFlowTest extends AbstractCamundaSprin
         return event;
     }
 
-    void checkContent(String eventName, String eventNameExpected, String content){
+    void checkContent(String eventName, String eventNameExpected, String content) {
         if (!eventName.equals(eventNameExpected)) {
             return;
         }
+
+        checkContent(content);
+    }
+
+    void checkContent(String content) {
 
         Mockito.verify(colleagueInboxApiClient, Mockito.atLeastOnce()).sendNotification(Mockito.argThat(msg -> {
             assertEquals(content, msg.getContent());
@@ -111,11 +121,15 @@ public abstract class AbstractNotificationsFlowTest extends AbstractCamundaSprin
         }));
     }
 
-    void checkTitle(String eventName, String eventNameExpected, String title){
+    void checkTitle(String eventName, String eventNameExpected, String title) {
         if (!eventName.equals(eventNameExpected)) {
             return;
         }
 
+        checkTitle(title);
+    }
+
+    void checkTitle(String title) {
         Mockito.verify(colleagueInboxApiClient, Mockito.atLeastOnce()).sendNotification(Mockito.argThat(msg -> {
             assertEquals(title, msg.getTitle());
             return true;

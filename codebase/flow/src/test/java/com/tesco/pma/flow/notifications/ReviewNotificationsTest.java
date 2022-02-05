@@ -43,7 +43,7 @@ public class ReviewNotificationsTest extends AbstractNotificationsFlowTest {
     @BeforeEach
     void init() {
         colleagueProfile = createColleagueProfile(UUID.randomUUID(), WorkLevel.WL1, Map.of());
-        senderColleagueProfile = createColleagueProfile(UUID.randomUUID(), WorkLevel.WL4, Map.of());
+        senderColleagueProfile = createColleagueProfile(UUID.randomUUID(), "Mr", "Sender", WorkLevel.WL4, Map.of());
 
         Mockito.when(profileService.findProfileByColleagueUuid(Mockito.eq(colleagueProfile.getColleague().getColleagueUUID())))
                 .thenReturn(Optional.of(colleagueProfile));
@@ -56,11 +56,13 @@ public class ReviewNotificationsTest extends AbstractNotificationsFlowTest {
     void reviewSubmittedTest() {
         colleagueProfile.getColleague().getWorkRelationships().get(0).setIsManager(true);
 
-        var event = createEvent(NF_PM_REVIEW_SUBMITTED, PMReviewType.OBJECTIVE.getCode());
+        var event = createEvent(NF_PM_REVIEW_SUBMITTED, PMReviewType.MYR.getCode());
         event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueProfile.getColleague().getColleagueUUID());
         event.putProperty(FlowParameters.SENDER_COLLEAGUE_UUID.name(), senderColleagueProfile.getColleague().getColleagueUUID());
 
         check(REVIEW_SEND_FLOW, event);
+
+        checkContent("Mid-year review was submitted by Mr Sender");
     }
 
     @Test
@@ -73,9 +75,9 @@ public class ReviewNotificationsTest extends AbstractNotificationsFlowTest {
         event.putProperty(FlowParameters.SENDER_COLLEAGUE_UUID.name(), senderColleagueProfile.getColleague().getColleagueUUID());
 
         check(REVIEW_SEND_FLOW, event);
-        Mockito.verify(profileService).findProfileByColleagueUuid(Mockito.eq(senderColleagueProfile.getColleague().getColleagueUUID()));
-        checkTitle(NF_PM_REVIEW_APPROVED, NF_PM_REVIEW_APPROVED, "Mid-year approval");
-        checkContent(NF_PM_REVIEW_APPROVED, NF_PM_REVIEW_APPROVED, "Mid-year review was approved by Random Name");
+
+        checkTitle("Mid-year approval");
+        checkContent("Mid-year review was approved by Mr Sender");
     }
 
 //    @Test
