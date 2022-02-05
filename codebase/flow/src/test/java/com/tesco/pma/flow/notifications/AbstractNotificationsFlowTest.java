@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public abstract class AbstractNotificationsFlowTest extends AbstractCamundaSpringBootTest {
 
     @SpyBean
@@ -96,6 +98,28 @@ public abstract class AbstractNotificationsFlowTest extends AbstractCamundaSprin
         }
 
         return event;
+    }
+
+    void checkContent(String eventName, String eventNameExpected, String content){
+        if (!eventName.equals(eventNameExpected)) {
+            return;
+        }
+
+        Mockito.verify(colleagueInboxApiClient, Mockito.atLeastOnce()).sendNotification(Mockito.argThat(msg -> {
+            assertEquals(content, msg.getContent());
+            return true;
+        }));
+    }
+
+    void checkTitle(String eventName, String eventNameExpected, String title){
+        if (!eventName.equals(eventNameExpected)) {
+            return;
+        }
+
+        Mockito.verify(colleagueInboxApiClient, Mockito.atLeastOnce()).sendNotification(Mockito.argThat(msg -> {
+            assertEquals(title, msg.getTitle());
+            return true;
+        }));
     }
 
 }

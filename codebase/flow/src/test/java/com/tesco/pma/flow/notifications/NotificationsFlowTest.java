@@ -158,28 +158,6 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
     }
 
     @Test
-    void checReviewMyrApproval() throws Exception {
-        checkReviewGroup(NF_PM_REVIEW_APPROVED, PMReviewType.MYR, true, true);
-
-        checkTitle(NF_PM_REVIEW_APPROVED, NF_PM_REVIEW_APPROVED, "Mid-year approval");
-        checkContent(NF_PM_REVIEW_APPROVED, NF_PM_REVIEW_APPROVED, "Mid-year review was approved by Random Name");
-    }
-
-    @Test
-    void checkReviewEYR() throws Exception {
-        checkReviewGroup(NF_PM_REVIEW_BEFORE_START, PMReviewType.EYR, true, true);
-        checkReviewGroup(NF_PM_REVIEW_BEFORE_START, PMReviewType.EYR, false, true);
-        checkReviewGroup(NF_PM_REVIEW_SUBMITTED, PMReviewType.EYR, true, true);
-        checkReviewGroup(NF_PM_REVIEW_SUBMITTED, PMReviewType.EYR, false, false);
-        checkReviewGroup(NF_PM_REVIEW_APPROVED, PMReviewType.EYR, true, true);
-        checkReviewGroup(NF_PM_REVIEW_APPROVED, PMReviewType.EYR, false, true);
-        checkReviewGroup(NF_PM_REVIEW_DECLINED, PMReviewType.EYR, true, true);
-        checkReviewGroup(NF_PM_REVIEW_DECLINED, PMReviewType.EYR, false, true);
-        checkReviewGroup(NF_PM_REVIEW_BEFORE_END, PMReviewType.EYR, true, true);
-        checkReviewGroup(NF_PM_REVIEW_BEFORE_END, PMReviewType.EYR, false, true);
-    }
-
-    @Test
     void checkObjectives() throws Exception {
         checkObjectivesGroup(NF_ORGANISATION_OBJECTIVES, true, WorkLevel.WL1, false);
         checkObjectivesGroup(NF_ORGANISATION_OBJECTIVES,  true, WorkLevel.WL4, true);
