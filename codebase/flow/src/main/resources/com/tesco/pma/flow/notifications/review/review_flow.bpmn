@@ -78,7 +78,7 @@
             <camunda:map>
               <camunda:entry key="TIMELINE_POINT_CODE">${TIMELINE_POINT.getCode()}</camunda:entry>
               <camunda:entry key="TITLE">${TITLE}</camunda:entry>
-              <camunda:entry key="CONTENT">${CONTENT}</camunda:entry>
+              <camunda:entry key="CONTENT">${execution.hasVariable("CONTENT")? CONTENT: ""}</camunda:entry>
               <camunda:entry key="firstName">${execution.hasVariable("SENDER_COLLEAGUE_PROFILE")? SENDER_COLLEAGUE_PROFILE.getColleague().getProfile().getFirstName():""}</camunda:entry>
               <camunda:entry key="lastName">${execution.hasVariable("SENDER_COLLEAGUE_PROFILE")? SENDER_COLLEAGUE_PROFILE.getColleague().getProfile().getLastName():""}</camunda:entry>
             </camunda:map>
