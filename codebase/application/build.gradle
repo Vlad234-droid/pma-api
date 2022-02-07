@@ -29,7 +29,7 @@ dependencies {
     implementation project(':organisation')
     implementation project(':profile')
     implementation project(':review')
-    implementation project(':cep')
+    implementation project(':cep-v2')
     implementation project(':feedback')
     implementation project(':security')
     implementation project(':notes')
