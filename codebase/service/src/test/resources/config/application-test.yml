@@ -60,7 +60,8 @@ spring:
                               com.tesco.pma.tip.api,
                               com.tesco.pma.pdp.api,
                               com.tesco.pma.pdp.domain,
-                              com.tesco.pma.reports.review.domain
+                              com.tesco.pma.reports.review.domain,
+                              com.tesco.pma.cms.model,
         configuration-properties:
           base-package: com.tesco.pma.dao,
                         com.tesco.pma.colleague.profile.dao,
@@ -73,7 +74,8 @@ spring:
                         com.tesco.pma.config.dao,
                         com.tesco.pma.tip.dao,
                         com.tesco.pma.pdp.dao,
-                        com.tesco.pma.reports.review.dao
+                        com.tesco.pma.reports.review.dao,
+                        com.tesco.pma.cms.dao,
           batchSize: 100
     postgres-version: 11.11
     testdb:
