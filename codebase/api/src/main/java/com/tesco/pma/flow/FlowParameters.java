@@ -24,6 +24,7 @@ public enum FlowParameters {
     BEFORE_START_DATE,
     BEFORE_END_DATE,
     END_DATE,
+    DAYS,
     // formatted date strings
     START_DATE_S,
     BEFORE_START_DATE_S,
@@ -35,6 +36,8 @@ public enum FlowParameters {
     COLLEAGUE_WORK_LEVEL,
     SOURCE_COLLEAGUE_UUID,
     SOURCE_COLLEAGUE_PROFILE,
+    SENDER_COLLEAGUE_UUID,
+    SENDER_COLLEAGUE_PROFILE,
 
     PROFILE_ATTRIBUTE_NAME,
     TIMELINE_POINT,

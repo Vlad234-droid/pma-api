@@ -103,6 +103,7 @@ public class ReviewServiceImpl implements ReviewService {
     private static final String NF_ORGANISATION_OBJECTIVES_EVENT_NAME = "NF_ORGANISATION_OBJECTIVES";
     private static final String NF_OBJECTIVES_APPROVED_FOR_SHARING_EVENT_NAME = "NF_OBJECTIVES_APPROVED_FOR_SHARING";
     private static final String COLLEAGUE_UUID_EVENT_PARAM = "COLLEAGUE_UUID";
+    private static final String SENDER_COLLEAGUE_UUID_EVENT_PARAM = "SENDER_COLLEAGUE_UUID";
     private static final String TIMELINE_POINT_UUID_EVENT_PARAM = "TIMELINE_POINT_UUID";
 
     private static final Comparator<OrgObjective> ORG_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR =
@@ -398,7 +399,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         checkReviewStateAfterUpdate(timelinePoint);
         updateTLPointStatus(timelinePoint);
-        sendEvent(timelinePoint, loggedUserUuid);
+        sendEvent(timelinePoint, loggedUserUuid, colleagueUuid);
         return status;
     }
 
@@ -745,7 +746,7 @@ public class ReviewServiceImpl implements ReviewService {
         eventSender.sendEvent(event, null, true);
     }
 
-    private void sendEvent(TimelinePoint timelinePoint, UUID colleagueUuid) {
+    private void sendEvent(TimelinePoint timelinePoint, UUID loggedUserUUID, UUID recipientUUID) {
         var eventName = STATUS_TO_EVENT_NAME_MAP.get(timelinePoint.getStatus());
 
         if (eventName == null) {
@@ -753,7 +754,8 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         var event = EventSupport.create(eventName, Map.of(
-                COLLEAGUE_UUID_EVENT_PARAM, colleagueUuid,
+                COLLEAGUE_UUID_EVENT_PARAM, recipientUUID,
+                SENDER_COLLEAGUE_UUID_EVENT_PARAM, loggedUserUUID,
                 TIMELINE_POINT_UUID_EVENT_PARAM, timelinePoint.getUuid()));
 
         eventSender.sendEvent(event, null, true);
