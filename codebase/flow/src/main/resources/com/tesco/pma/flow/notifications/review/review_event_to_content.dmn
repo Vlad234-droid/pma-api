@@ -24,7 +24,7 @@
           <text>"MYR"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0exew74">
-          <text>"Kind reminder, a review is coming up in the next [before review selection]"</text>
+          <text>"Kind reminder, a review is coming up in the next {days} days ({startDate})"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_122xnsy">
