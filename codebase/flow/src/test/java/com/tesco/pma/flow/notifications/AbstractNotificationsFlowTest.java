@@ -1,5 +1,6 @@
 package com.tesco.pma.flow.notifications;
 
+import com.tesco.pma.api.MapJson;
 import com.tesco.pma.bpm.camunda.flow.AbstractCamundaSpringBootTest;
 import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.api.Profile;
@@ -22,14 +23,16 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractNotificationsFlowTest extends AbstractCamundaSpringBootTest {
+
+    private static final int ALLOWED_CONTENT_LENGTH = 150;
 
     @SpyBean
     SendNotificationHandler sendNotificationHandler;
@@ -91,18 +94,47 @@ public abstract class AbstractNotificationsFlowTest extends AbstractCamundaSprin
         return attr;
     }
 
+    EventSupport createEvent(String evenName){
+        return createEvent(evenName, (String) null);
+    }
+
     EventSupport createEvent(String evenName, String timelineCode) {
         var event = new EventSupport(evenName);
 
         if(timelineCode != null) {
-            var timelinePoint = new TimelinePoint();
-            timelinePoint.setUuid(UUID.randomUUID());
+            var timelinePoint = createTimelinePoint(timelineCode, null);
             Mockito.when(timelinePointDAO.getTimelineByUUID(Mockito.eq(timelinePoint.getUuid()))).thenReturn(timelinePoint);
-            timelinePoint.setCode(timelineCode);
             event.putProperty(FlowParameters.TIMELINE_POINT_UUID.name(), timelinePoint.getUuid());
         }
 
         return event;
+    }
+
+    EventSupport createEvent(String evenName, TimelinePoint timelinePoint) {
+        var event = new EventSupport(evenName);
+
+        if(timelinePoint != null) {
+            Mockito.when(timelinePointDAO.getTimelineByUUID(Mockito.eq(timelinePoint.getUuid()))).thenReturn(timelinePoint);
+            event.putProperty(FlowParameters.TIMELINE_POINT_UUID.name(), timelinePoint.getUuid());
+        }
+
+        return event;
+    }
+
+    TimelinePoint createTimelinePoint(String timelineCode, String startDateString) {
+        var timelinePoint = new TimelinePoint();
+        timelinePoint.setUuid(UUID.randomUUID());
+        timelinePoint.setCode(timelineCode);
+
+        if(startDateString != null){
+            var propsMap = new HashMap<String, String>();
+            propsMap.put(FlowParameters.START_DATE.name(), startDateString);
+            var props = new MapJson();
+            props.setMapJson(propsMap);
+            timelinePoint.setProperties(props);
+        }
+
+        return timelinePoint;
     }
 
     void checkContent(String eventName, String eventNameExpected, String content) {
@@ -117,6 +149,7 @@ public abstract class AbstractNotificationsFlowTest extends AbstractCamundaSprin
 
         Mockito.verify(colleagueInboxApiClient, Mockito.atLeastOnce()).sendNotification(Mockito.argThat(msg -> {
             assertEquals(content, msg.getContent());
+            assertTrue(content.length() <= ALLOWED_CONTENT_LENGTH);
             return true;
         }));
     }
@@ -134,6 +167,12 @@ public abstract class AbstractNotificationsFlowTest extends AbstractCamundaSprin
             assertEquals(title, msg.getTitle());
             return true;
         }));
+    }
+
+    String getDateSevenDaysAgo(String pattern) {
+        LocalDate mydate = LocalDate.now();
+        var weekAgo = mydate.minusWeeks(1);
+        return weekAgo.format(DateTimeFormatter.ofPattern(pattern));
     }
 
 }

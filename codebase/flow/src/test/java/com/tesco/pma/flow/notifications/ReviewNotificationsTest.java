@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @ActiveProfiles("test")
@@ -78,6 +79,20 @@ public class ReviewNotificationsTest extends AbstractNotificationsFlowTest {
 
         checkTitle("Mid-year approval");
         checkContent("Mid-year review was approved by Mr Sender");
+    }
+
+    @Test
+    void reviewBeforeEndTest() {
+
+        String weekAgoDate = getDateSevenDaysAgo("yyyy-MM-dd");
+        var timelinePoint = createTimelinePoint(PMReviewType.MYR.getCode(), weekAgoDate);
+        var event = createEvent(NF_PM_REVIEW_BEFORE_END, timelinePoint);
+        event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueProfile.getColleague().getColleagueUUID());
+        event.putProperty(FlowParameters.SENDER_COLLEAGUE_UUID.name(), senderColleagueProfile.getColleague().getColleagueUUID());
+
+        check(REVIEW_SEND_FLOW, event);
+
+        checkContent("Kind reminder, the review is due to be closed in 7 days ("+ getDateSevenDaysAgo("dd.MM.yyyy") +")");
     }
 
 //    @Test

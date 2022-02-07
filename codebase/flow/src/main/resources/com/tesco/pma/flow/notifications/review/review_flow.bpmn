@@ -81,6 +81,8 @@
               <camunda:entry key="CONTENT">${execution.hasVariable("CONTENT")? CONTENT: ""}</camunda:entry>
               <camunda:entry key="firstName">${execution.hasVariable("SENDER_COLLEAGUE_PROFILE")? SENDER_COLLEAGUE_PROFILE.getColleague().getProfile().getFirstName():""}</camunda:entry>
               <camunda:entry key="lastName">${execution.hasVariable("SENDER_COLLEAGUE_PROFILE")? SENDER_COLLEAGUE_PROFILE.getColleague().getProfile().getLastName():""}</camunda:entry>
+              <camunda:entry key="days">${execution.hasVariable("DAYS")? DAYS:""}</camunda:entry>
+              <camunda:entry key="startDate">${execution.hasVariable("START_DATE_S")? START_DATE_S:""}</camunda:entry>
             </camunda:map>
           </camunda:outputParameter>
         </camunda:inputOutput>

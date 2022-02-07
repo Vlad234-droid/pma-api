@@ -134,7 +134,7 @@ public class NotificationsFlowTest extends AbstractNotificationsFlowTest {
     }
 
     void checkObjectivesGroup(String evenName, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
-        var event = createEvent(evenName, null);
+        var event = createEvent(evenName);
         event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueProfile.getColleague().getColleagueUUID());
         colleagueProfile.getColleague().getWorkRelationships().get(0).setIsManager(isManager);
         colleagueProfile.getColleague().getWorkRelationships().get(0).setWorkLevel(workLevel);
@@ -152,7 +152,7 @@ public class NotificationsFlowTest extends AbstractNotificationsFlowTest {
     }
 
     void checkFeedbackGroup(String evenName){
-        var event = createEvent(evenName, null);
+        var event = createEvent(evenName);
         event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueProfile.getColleague().getColleagueUUID());
         event.putProperty(FlowParameters.SOURCE_COLLEAGUE_UUID.name(), sourceColleagueUUID);
 
@@ -173,7 +173,7 @@ public class NotificationsFlowTest extends AbstractNotificationsFlowTest {
     }
 
     void checkTipsGroup(String evenName, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
-        var event = createEvent(evenName, null);
+        var event = createEvent(evenName);
         event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueProfile.getColleague().getColleagueUUID());
         event.putProperty(FlowParameters.TIP_UUID.name(), UUID.randomUUID());
 
