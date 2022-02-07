@@ -137,10 +137,10 @@
                                     case when upper(ptp.code) = 'MYR' and pr.status_id = 3 then 1 end)       as myr_approved_cnt,
                             max(case
                                     when upper(ptp.code) = 'MYR'
-                                        then (pr.properties::json -> 'what_rating')::varchar end)            as myr_what_rating,
+                                        then (pr.properties::json ->> 'what_rating')::varchar end)            as myr_what_rating,
                             max(case
                                     when upper(ptp.code) = 'MYR'
-                                        then (pr.properties::json -> 'how_rating')::varchar end)             as myr_how_rating,
+                                        then (pr.properties::json ->> 'how_rating')::varchar end)             as myr_how_rating,
                             count(case when upper(ptp.code) = 'EYR' then 1 end)                              as eyr_cnt,
                             count(
                                     case when upper(ptp.code) = 'EYR' and pr.status_id = 2 then 1 end)       as eyr_submitted_cnt,
@@ -148,10 +148,10 @@
                                     case when upper(ptp.code) = 'EYR' and pr.status_id = 3 then 1 end)       as eyr_approved_cnt,
                             max(case
                                     when upper(ptp.code) = 'EYR'
-                                        then (pr.properties::json -> 'what_rating')::varchar end)            as eyr_what_rating,
+                                        then (pr.properties::json ->> 'what_rating')::varchar end)            as eyr_what_rating,
                             max(case
                                     when upper(ptp.code) = 'EYR'
-                                        then (pr.properties::json -> 'how_rating')::varchar end)             as eyr_how_rating
+                                        then (pr.properties::json ->> 'how_rating')::varchar end)             as eyr_how_rating
                      from filtered_colleague fc
                               left join pm_timeline_point ptp
                                         on (ptp.colleague_cycle_uuid = fc.colleague_cycle_uuid)

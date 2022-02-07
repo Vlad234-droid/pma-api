@@ -19,32 +19,32 @@ import java.util.List;
 @SuppressWarnings("PMD.TooManyFields")
 public class ReviewStatsData {
 
-    Integer objectivesSubmittedPercentage;
-    Integer objectivesApprovedPercentage;
+    int objectivesSubmittedPercentage;
+    int objectivesApprovedPercentage;
 
-    Integer myrSubmittedPercentage;
-    Integer myrApprovedPercentage;
-    Integer eyrSubmittedPercentage;
-    Integer eyrApprovedPercentage;
+    int myrSubmittedPercentage;
+    int myrApprovedPercentage;
+    int eyrSubmittedPercentage;
+    int eyrApprovedPercentage;
 
-    Integer myrRatingBreakdownBelowExpectedPercentage;
-    Long myrRatingBreakdownBelowExpectedCount;
-    Integer myrRatingBreakdownSatisfactoryPercentage;
-    Long myrRatingBreakdownSatisfactoryCount;
-    Integer myrRatingBreakdownGreatPercentage;
-    Long myrRatingBreakdownGreatCount;
-    Integer myrRatingBreakdownOutstandingPercentage;
-    Long myrRatingBreakdownOutstandingCount;
+    int myrRatingBreakdownBelowExpectedPercentage;
+    long myrRatingBreakdownBelowExpectedCount;
+    int myrRatingBreakdownSatisfactoryPercentage;
+    long myrRatingBreakdownSatisfactoryCount;
+    int myrRatingBreakdownGreatPercentage;
+    long myrRatingBreakdownGreatCount;
+    int myrRatingBreakdownOutstandingPercentage;
+    long myrRatingBreakdownOutstandingCount;
 
 
-    Integer eyrRatingBreakdownBelowExpectedPercentage;
-    Long eyrRatingBreakdownBelowExpectedCount;
-    Integer eyrRatingBreakdownSatisfactoryPercentage;
-    Long eyrRatingBreakdownSatisfactoryCount;
-    Integer eyrRatingBreakdownGreatPercentage;
-    Long eyrRatingBreakdownGreatCount;
-    Integer eyrRatingBreakdownOutstandingPercentage;
-    Long eyrRatingBreakdownOutstandingCount;
+    int eyrRatingBreakdownBelowExpectedPercentage;
+    long eyrRatingBreakdownBelowExpectedCount;
+    int eyrRatingBreakdownSatisfactoryPercentage;
+    long eyrRatingBreakdownSatisfactoryCount;
+    int eyrRatingBreakdownGreatPercentage;
+    long eyrRatingBreakdownGreatCount;
+    int eyrRatingBreakdownOutstandingPercentage;
+    long eyrRatingBreakdownOutstandingCount;
 
 
     public List<Object> toList() {

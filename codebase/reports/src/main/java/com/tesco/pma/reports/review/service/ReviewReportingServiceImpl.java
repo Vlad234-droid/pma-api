@@ -64,50 +64,53 @@ public class ReviewReportingServiceImpl implements ReviewReportingService {
         var statsReportProvider = new ReviewStatsReportProvider();
         statsReportProvider.setData(findReviewStatsData(targetingColleagues));
 
-        return new ReviewStatsReportProvider().getReport();
+        return statsReportProvider.getReport();
     }
 
     private List<ReviewStatsData> findReviewStatsData(List<ColleagueReportTargeting> colleagues) {
         var reviewStatsData = new ReviewStatsData();
-
         // objectives
         final var objectivesToSubmitCount = getCountWithTag(colleagues, "must_create_objective");
-        var objectivesSubmittedPercentage = 100 * (int) (getCountWithTag(colleagues, "has_objective_submitted") / objectivesToSubmitCount);
-        reviewStatsData.setObjectivesSubmittedPercentage(objectivesSubmittedPercentage);
+        if (objectivesToSubmitCount != 0) {
+            var objectivesSubmittedPercentage =
+                    (int) (100 * getCountWithTag(colleagues, "has_objective_submitted") / objectivesToSubmitCount);
+            reviewStatsData.setObjectivesSubmittedPercentage(objectivesSubmittedPercentage);
 
-        var objectivesApprovedPercentage = 100 * (int) (getCountWithTag(colleagues, "has_objective_approved") / objectivesToSubmitCount);
-        reviewStatsData.setObjectivesApprovedPercentage(objectivesApprovedPercentage);
-
+            var objectivesApprovedPercentage =
+                    (int) (100 * getCountWithTag(colleagues, "has_objective_approved") / objectivesToSubmitCount);
+            reviewStatsData.setObjectivesApprovedPercentage(objectivesApprovedPercentage);
+        }
         // myr forms submitted, approved
         final var myrToSubmitCount = getCountWithTag(colleagues, "must_create_myr");
-
-        var myrSubmittedPercentage = 100 * (int) (getCountWithTag(colleagues, "has_myr_submitted") / myrToSubmitCount);
-        reviewStatsData.setMyrSubmittedPercentage(myrSubmittedPercentage);
-
         final var myrApprovedCount = getCountWithTag(colleagues, "has_myr_approved");
+        if (myrToSubmitCount != 0) {
+            var myrSubmittedPercentage = (int) (100 * getCountWithTag(colleagues, "has_myr_submitted") / myrToSubmitCount);
+            reviewStatsData.setMyrSubmittedPercentage(myrSubmittedPercentage);
 
-        var myrApprovedPercentage = 100 * (int) (myrApprovedCount / myrToSubmitCount);
-        reviewStatsData.setMyrSubmittedPercentage(myrApprovedPercentage);
-
+            var myrApprovedPercentage = (int) (100 * myrApprovedCount / myrToSubmitCount);
+            reviewStatsData.setMyrSubmittedPercentage(myrApprovedPercentage);
+        }
         // eyr forms submitted, approved
         final var eyrToSubmitCount = getCountWithTag(colleagues, "must_create_eyr");
-        var eyrSubmittedPercentage = 100 * (int) (getCountWithTag(colleagues, "has_eyr_submitted") / eyrToSubmitCount);
-        reviewStatsData.setEyrSubmittedPercentage(eyrSubmittedPercentage);
-
         final var eyrApprovedCount = getCountWithTag(colleagues, "has_eyr_approved");
+        if (eyrToSubmitCount != 0) {
+            var eyrSubmittedPercentage = (int) (100 * getCountWithTag(colleagues, "has_eyr_submitted") / eyrToSubmitCount);
+            reviewStatsData.setEyrSubmittedPercentage(eyrSubmittedPercentage);
 
-        var eyrApprovedPercentage = 100 * (int) (eyrApprovedCount / eyrToSubmitCount);
-        reviewStatsData.setEyrApprovedPercentage(eyrApprovedPercentage);
-
+            var eyrApprovedPercentage = (int) (100 * eyrApprovedCount / eyrToSubmitCount);
+            reviewStatsData.setEyrApprovedPercentage(eyrApprovedPercentage);
+        }
         // ratings
-        fillRatings(reviewStatsData, colleagues, myrApprovedCount, eyrApprovedCount);
-
+        if (myrApprovedCount != 0) {
+            fillMyrRatings(reviewStatsData, colleagues, myrApprovedCount);
+        }
+        if (eyrApprovedCount != 0) {
+            fillEyrRatings(reviewStatsData, colleagues, eyrApprovedCount);
+        }
         return List.of(reviewStatsData);
     }
 
-    private void fillRatings(ReviewStatsData reviewStatsData, List<ColleagueReportTargeting> colleagues,
-                             long myrApprovedCount, long eyrApprovedCount) {
-        // myr ratings
+    private void fillMyrRatings(ReviewStatsData reviewStatsData, List<ColleagueReportTargeting> colleagues, long myrApprovedCount) {
         var myrRatingBelowExpected = getMyrRatingTypeStats(colleagues, BELOW_EXPECTED, myrApprovedCount);
         reviewStatsData.setMyrRatingBreakdownBelowExpectedPercentage(myrRatingBelowExpected.getRatingPercentage());
         reviewStatsData.setMyrRatingBreakdownBelowExpectedCount(myrRatingBelowExpected.getRatingCount());
@@ -123,8 +126,9 @@ public class ReviewReportingServiceImpl implements ReviewReportingService {
         var myrRatingOutstanding = getMyrRatingTypeStats(colleagues, OUTSTANDING, myrApprovedCount);
         reviewStatsData.setMyrRatingBreakdownOutstandingPercentage(myrRatingOutstanding.getRatingPercentage());
         reviewStatsData.setMyrRatingBreakdownOutstandingCount(myrRatingOutstanding.getRatingCount());
+    }
 
-        // eyr ratings
+    private void fillEyrRatings(ReviewStatsData reviewStatsData, List<ColleagueReportTargeting> colleagues, long eyrApprovedCount) {
         var eyrRatingBelowExpected = getEyrRatingTypeStats(colleagues, BELOW_EXPECTED, eyrApprovedCount);
         reviewStatsData.setEyrRatingBreakdownBelowExpectedPercentage(eyrRatingBelowExpected.getRatingPercentage());
         reviewStatsData.setEyrRatingBreakdownBelowExpectedCount(eyrRatingBelowExpected.getRatingCount());
@@ -159,7 +163,7 @@ public class ReviewReportingServiceImpl implements ReviewReportingService {
                                                OverallRating ratingType, long ratingToSubmitCount) {
         var ratingStats = new RatingStatsData();
         var ratingTypeCount = getRatingCountWithTag(colleagues, ratingType.getDescription(), whatRatingTag, howRatingTag);
-        var ratingTypePercentage = 100 * (int) (ratingTypeCount / ratingToSubmitCount);
+        var ratingTypePercentage = (int) (100 * ratingTypeCount / ratingToSubmitCount);
 
         ratingStats.setRatingPercentage(ratingTypePercentage);
         ratingStats.setRatingCount(ratingTypeCount);
