@@ -258,6 +258,15 @@ public class PMCycleServiceImpl implements PMCycleService {
         //TODO update rt process
     }
 
+    @Override
+    public void updateForm(UUID cycleUuid, UUID formUuid, UUID updatedFormUuid) {
+        log.debug("Updating form:{} for cycle:{}, new form uuid:{}", formUuid, cycleUuid, updatedFormUuid);
+        if (1 != cycleDAO.updateForm(cycleUuid, formUuid, updatedFormUuid)) {
+            throw notFound(PM_CYCLE_NOT_FOUND,
+                    Map.of(CYCLE_UUID_PARAMETER_NAME, cycleUuid));
+        }
+    }
+
     private void cycleFailed(String processKey, UUID uuid, Exception ex) {
         log.error("Performance cycle publish error, cause: ", ex);
         try {
@@ -445,7 +454,7 @@ public class PMCycleServiceImpl implements PMCycleService {
 
         query.setFilters(List.of(
                 new Condition(ENTRY_CONFIG_KEY_CONDITION, EQUALS, cycle.getEntryConfigKey()),
-                new Condition(STATUS_CONDITION, EQUALS, ACTIVE.getId()),
+                new Condition(STATUS_CONDITION, EQUALS, STARTED.getId()),
                 new Condition(TEMPLATE_UUID_CONDITION, EQUALS, cycle.getTemplate().getUuid())
         ));
 

@@ -240,6 +240,19 @@ public class PMCycleEndpoint {
         return RestResponse.success();
     }
 
+    @Operation(summary = "Update form",
+            description = "Update performance cycle form",
+            tags = {"performance-cycle"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle form updated")
+    @PutMapping(value = "/pm-cycles/{cycleUuid}/forms/{formUuid}")
+    public RestResponse<?> updateForm(@PathVariable("cycleUuid") final UUID cycleUuid,
+                                      @PathVariable("formUuid") final UUID formUuid,
+                                      @RequestParam UUID updatedFormUuid) {
+        service.updateForm(cycleUuid, formUuid, updatedFormUuid);
+        return success();
+    }
+
+
     private UUID resolveUserUuid() {
         return auditorAware.getCurrentAuditor();
     }

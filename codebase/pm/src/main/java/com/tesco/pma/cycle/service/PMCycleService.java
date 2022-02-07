@@ -123,5 +123,7 @@ public interface PMCycleService {
     void start(UUID uuid);
 
     void completeCycle(UUID cycleUUID);
+
+    void updateForm(UUID cycleUuid, UUID formUuid, UUID updatedFormUuid);
 }
 
