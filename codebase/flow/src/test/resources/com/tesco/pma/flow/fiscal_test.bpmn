@@ -372,16 +372,11 @@
       <bpmn:incoming>Flow_1qhm8xl</bpmn:incoming>
       <bpmn:outgoing>Flow_0072lv2</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:startEvent id="REPEAT_CYCLE_ID">
-      <bpmn:outgoing>Flow_00uz1ju</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_1yu05a0" messageRef="Message_1l9x4m5" />
-    </bpmn:startEvent>
     <bpmn:serviceTask id="processRepeatCycle" name="Repeat Cycle" camunda:class="com.tesco.pma.flow.handlers.PMCycleRepeatHandler">
-      <bpmn:incoming>Flow_00uz1ju</bpmn:incoming>
+      <bpmn:incoming>Flow_047vx07</bpmn:incoming>
       <bpmn:outgoing>Flow_1ugeh68</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1ugeh68" sourceRef="processRepeatCycle" targetRef="processColleagueCycles" />
-    <bpmn:sequenceFlow id="Flow_00uz1ju" sourceRef="REPEAT_CYCLE_ID" targetRef="processRepeatCycle" />
     <bpmn:exclusiveGateway id="Gateway_0zfodqv" default="Flow_0l6r4v3">
       <bpmn:incoming>Flow_1fzv8d3</bpmn:incoming>
       <bpmn:outgoing>Flow_0l6r4v3</bpmn:outgoing>
@@ -413,6 +408,11 @@
       <bpmn:outgoing>Flow_1dfum2m</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1dfum2m" sourceRef="Activity_17d3n8i" targetRef="Event_0v9jvii" />
+    <bpmn:startEvent id="Event_1bopa98">
+      <bpmn:outgoing>Flow_047vx07</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1xt42tk" messageRef="Message_05285he" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_047vx07" sourceRef="Event_1bopa98" targetRef="processRepeatCycle" />
     <bpmn:textAnnotation id="TextAnnotation_0iq783w">
       <bpmn:text>Event: IMPORT_NEW_COLLEAGUE Params: colleagueUuid</bpmn:text>
     </bpmn:textAnnotation>
@@ -432,15 +432,19 @@
     <bpmn:textAnnotation id="TextAnnotation_03s2kp7">
       <bpmn:text>Event: PM_CYCLE_REPEAT Params: pmCycleUuid, pmCycleRepeatCount</bpmn:text>
     </bpmn:textAnnotation>
-    <bpmn:association id="Association_1uyi4mx" sourceRef="REPEAT_CYCLE_ID" targetRef="TextAnnotation_03s2kp7" />
+    <bpmn:association id="Association_1qczx60" sourceRef="TextAnnotation_03s2kp7" targetRef="Event_1bopa98" />
   </bpmn:process>
-  <bpmn:message id="Message_1l9x4m5" name="PM_CYCLE_REPEAT" />
+  <bpmn:message id="Message_1l9x4m5" name="IMPORT_NEW_COLLEAGUE_1" />
   <bpmn:message id="Message_13qq9wf" name="CEP_COLLEAGUE_ADDED_1" />
   <bpmn:message id="Message_15jak7p" name="CEP_COLLEAGUE_UPDATED_1" />
   <bpmn:message id="Message_0p5u9hh" name="CEP_COLLEAGUE_LEFT_1" />
   <bpmn:message id="Message_1n5q26q" />
+  <bpmn:message id="Message_05285he" name="PM_CYCLE_REPEAT" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="fiscal_test">
+      <bpmndi:BPMNShape id="TextAnnotation_03s2kp7_di" bpmnElement="TextAnnotation_03s2kp7">
+        <dc:Bounds x="260" y="676" width="150" height="68" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1dfum2m_di" bpmnElement="Flow_1dfum2m">
         <di:waypoint x="1930" y="670" />
         <di:waypoint x="1930" y="618" />
@@ -460,10 +464,6 @@
       <bpmndi:BPMNEdge id="Flow_1fzv8d3_di" bpmnElement="Flow_1fzv8d3">
         <di:waypoint x="1740" y="600" />
         <di:waypoint x="1785" y="600" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_00uz1ju_di" bpmnElement="Flow_00uz1ju">
-        <di:waypoint x="478" y="715" />
-        <di:waypoint x="540" y="715" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ugeh68_di" bpmnElement="Flow_1ugeh68">
         <di:waypoint x="590" y="675" />
@@ -567,6 +567,13 @@
         <di:waypoint x="640" y="600" />
         <di:waypoint x="725" y="600" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_047vx07_di" bpmnElement="Flow_047vx07">
+        <di:waypoint x="478" y="715" />
+        <di:waypoint x="540" y="715" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1lootg3_di" bpmnElement="Event_1bopa98">
+        <dc:Bounds x="442" y="697" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1bu82ro_di" bpmnElement="objective" isExpanded="true">
         <dc:Bounds x="901" y="920" width="619" height="190" />
       </bpmndi:BPMNShape>
@@ -877,9 +884,6 @@
       <bpmndi:BPMNShape id="Gateway_1qc864e_di" bpmnElement="Gateway_0a3kzk4" isMarkerVisible="true">
         <dc:Bounds x="725" y="575" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0hha9zo_di" bpmnElement="REPEAT_CYCLE_ID">
-        <dc:Bounds x="442" y="697" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0x63nll_di" bpmnElement="processRepeatCycle">
         <dc:Bounds x="540" y="675" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -901,9 +905,6 @@
       <bpmndi:BPMNShape id="TextAnnotation_1vc474z_di" bpmnElement="TextAnnotation_1vc474z">
         <dc:Bounds x="160" y="765" width="230" height="45" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_03s2kp7_di" bpmnElement="TextAnnotation_03s2kp7">
-        <dc:Bounds x="261" y="695" width="150" height="68" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_1posd06_di" bpmnElement="Association_1posd06">
         <di:waypoint x="521" y="170" />
         <di:waypoint x="490" y="169" />
@@ -920,9 +921,9 @@
         <di:waypoint x="442" y="780" />
         <di:waypoint x="390" y="780" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_1uyi4mx_di" bpmnElement="Association_1uyi4mx">
-        <di:waypoint x="442" y="715" />
-        <di:waypoint x="411" y="714" />
+      <bpmndi:BPMNEdge id="Association_1qczx60_di" bpmnElement="Association_1qczx60">
+        <di:waypoint x="410" y="713" />
+        <di:waypoint x="442" y="714" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

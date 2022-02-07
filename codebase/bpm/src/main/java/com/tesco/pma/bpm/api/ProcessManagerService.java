@@ -96,8 +96,6 @@ public interface ProcessManagerService {
      */
     String runProcess(String processName, Map<String, ?> varMap) throws ProcessExecutionException;
 
-    String runProcessByResourceName(String resourceName, Map<String, ?> varMap) throws ProcessExecutionException;
-
     /**
      * Run latest process version
      *
@@ -146,6 +144,8 @@ public interface ProcessManagerService {
      * @throws ProcessExecutionException runtime exception
      */
     String runProcessByEvent(String eventName) throws ProcessExecutionException;
+
+    String runProcessByResourceName(String resourceName, Map<String, ?> varMap) throws ProcessExecutionException;
 
     /**
      * Notifies the process engine that a message event with name 'messageName' has

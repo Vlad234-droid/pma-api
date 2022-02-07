@@ -122,6 +122,11 @@ public interface PMCycleService {
      */
     void start(UUID uuid);
 
+    /**
+     * Start performance cycle
+     *
+     * @param cycle performance cycle
+     */
     void start(PMCycle cycle);
 
     void completeCycle(UUID cycleUUID);

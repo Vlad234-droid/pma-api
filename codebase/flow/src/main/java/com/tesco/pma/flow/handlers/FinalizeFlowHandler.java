@@ -28,8 +28,8 @@ public class FinalizeFlowHandler extends CamundaAbstractFlowHandler {
             repeatCount = Integer.parseInt(cycle.getProperties().getMapJson().getOrDefault(FlowParameters.PM_CYCLE_REPEAT_COUNT.name(),
                     "0")) - 1;
         }
-        if (repeatCount < 0 && cycle.getMetadata() != null && cycle.getMetadata().getCycle() != null &&
-                cycle.getMetadata().getCycle().getProperties() != null) {
+        if (repeatCount < 0 && cycle.getMetadata() != null && cycle.getMetadata().getCycle() != null
+                && cycle.getMetadata().getCycle().getProperties() != null) {
             repeatCount =
                     Integer.parseInt(cycle.getMetadata().getCycle().getProperties().getOrDefault(PMCycleElement.PM_CYCLE_MAX, "0")) - 1;
         }

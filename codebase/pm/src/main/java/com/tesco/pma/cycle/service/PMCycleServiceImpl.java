@@ -252,6 +252,18 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     @Override
     @Transactional
+    public void start(PMCycle cycle) {
+        log.debug("Request to start performance cycle : {}", cycle);
+        try {
+            var processId = processManagerService.runProcessByResourceName(cycle.getTemplate().getFileName(), prepareFlowProperties(cycle));
+            log.debug("Started process: {}", processId);
+        } catch (ProcessExecutionException e) {
+            cycleFailed(cycle.getTemplate().getFileName(), cycle.getUuid(), e);
+        }
+    }
+
+    @Override
+    @Transactional
     public void completeCycle(UUID cycleUUID) {
         intUpdateStatus(cycleUUID, COMPLETED, null); // todo move status map to BPMN or DMN
         //TODO update rt process
@@ -349,18 +361,6 @@ public class PMCycleServiceImpl implements PMCycleService {
                     PM_CYCLE_ALREADY_EXISTS,
                     Map.of(ORG_KEY_PARAMETER_NAME, cycle.getEntryConfigKey(),
                             TEMPLATE_UUID_PARAMETER_NAME, cycle.getTemplate().getUuid()), e);
-        }
-    }
-
-    @Override
-    @Transactional
-    public void start(PMCycle cycle) {
-        log.debug("Request to start performance cycle : {}", cycle);
-        try {
-            var processId = processManagerService.runProcessByResourceName(cycle.getTemplate().getFileName(), prepareFlowProperties(cycle));
-            log.debug("Started process: {}", processId);
-        } catch (ProcessExecutionException e) {
-            cycleFailed(cycle.getTemplate().getFileName(), cycle.getUuid(), e);
         }
     }
 
