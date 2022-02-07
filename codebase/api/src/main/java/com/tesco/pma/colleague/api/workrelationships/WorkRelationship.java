@@ -26,7 +26,7 @@ public class WorkRelationship implements Serializable {
         PRIMARY
     }
 
-    UUID locationUUID;
+    String locationUUID;
     ContractType contractType;
     ColleagueType colleagueType;
     WorkingStatus workingStatus;
