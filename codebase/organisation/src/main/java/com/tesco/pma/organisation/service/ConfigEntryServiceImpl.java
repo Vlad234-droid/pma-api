@@ -197,8 +197,10 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
         var colleagues = this.findColleaguesByCompositeKey(compositeKey);
 
         colleagues.stream()
-                .map(ColleagueEntity::getUuid)
-                .peek(uuid -> eventParams.put("COLLEAGUE_UUID", uuid))
+                .map(colleague -> {
+                    eventParams.put("COLLEAGUE_UUID", colleague.getUuid());
+                    return colleague.getUuid();
+                })
                 .map(uuid -> EventSupport.create(eventName, eventParams))
                 .forEach(e -> eventSender.sendEvent(e, null, true));
 

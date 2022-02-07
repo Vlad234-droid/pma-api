@@ -25,7 +25,6 @@ import static com.tesco.pma.pdp.api.PDPGoalStatus.PUBLISHED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -98,20 +97,18 @@ public class PDPServiceImplTest {
 
     @Test
     void deleteGoals() {
-        var goals = List.of(GOAL_UUID_1, GOAL_UUID_2);
-        when(pdpDao.deleteGoalByUuidAndColleague(eq(COLLEAGUE_UUID), any())).thenReturn(1);
+        when(pdpDao.deleteGoalByUuidAndColleague(COLLEAGUE_UUID, GOAL_UUID_1)).thenReturn(1);
 
-        pdpService.deleteGoals(COLLEAGUE_UUID, goals);
+        pdpService.deleteGoal(COLLEAGUE_UUID, GOAL_UUID_1);
 
-        verify(pdpDao, times(goals.size())).deleteGoalByUuidAndColleague(eq(COLLEAGUE_UUID), any());
+        verify(pdpDao, times(1)).deleteGoalByUuidAndColleague(COLLEAGUE_UUID, GOAL_UUID_1);
     }
 
     @Test
     void deleteGoalsThrowsNotFoundExceptionWhenDaoReturnsNotOne() {
-        when(pdpDao.deleteGoalByUuidAndColleague(eq(COLLEAGUE_UUID), any())).thenReturn(0);
+        when(pdpDao.deleteGoalByUuidAndColleague(COLLEAGUE_UUID, GOAL_UUID_1)).thenReturn(0);
 
-        assertThrows(NotFoundException.class, () ->
-                pdpService.deleteGoals(COLLEAGUE_UUID, List.of(GOAL_UUID_1, GOAL_UUID_2)));
+        assertThrows(NotFoundException.class, () -> pdpService.deleteGoal(COLLEAGUE_UUID, GOAL_UUID_1));
     }
 
     @Test

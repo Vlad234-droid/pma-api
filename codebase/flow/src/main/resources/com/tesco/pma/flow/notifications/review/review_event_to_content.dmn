@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="review_event_to_content" name="Review Notifications" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
+  <decision id="review_event_to_content_table" name="Map event to content">
+    <informationRequirement id="InformationRequirement_0w0zust">
+      <requiredInput href="#InputData_1g0u5hf" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_1dpms3v" hitPolicy="FIRST">
+      <input id="InputClause_0anirp2" label="Event Name" biodi:width="254">
+        <inputExpression id="LiteralExpression_0jpa5sp" typeRef="string">
+          <text>EVENT_NAME</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0165gnz" label="Timeline point Code" biodi:width="196">
+        <inputExpression id="LiteralExpression_168f57s" typeRef="string">
+          <text>TIMELINE_POINT.getCode()</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="Content" name="CONTENT" typeRef="string" biodi:width="461" />
+      <rule id="DecisionRule_0elotx5">
+        <inputEntry id="UnaryTests_0puabg3">
+          <text>"NF_PM_REVIEW_BEFORE_START"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1i4tjw3">
+          <text>"MYR"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0exew74">
+          <text>"Kind reminder, a review is coming up in the next {days} days ({startDate})"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_122xnsy">
+        <inputEntry id="UnaryTests_08p0h32">
+          <text>"NF_PM_REVIEW_SUBMITTED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_135h9gi">
+          <text>"MYR"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0t1y2vo">
+          <text>"Mid-year review was submitted by {firstName} {lastName}"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_117lcnh">
+        <inputEntry id="UnaryTests_15zqaq3">
+          <text>"NF_PM_REVIEW_APPROVED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1nk1zbq">
+          <text>"MYR"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0jj9zf9">
+          <text>"Mid-year review was approved by {firstName} {lastName}"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0eawc4x">
+        <inputEntry id="UnaryTests_0tammby">
+          <text>"NF_PM_REVIEW_DECLINED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_06m3d5i">
+          <text>"MYR"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_01p0tho">
+          <text>"Mid-year review was declined by {firstName} {lastName}"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0d9dsnr">
+        <inputEntry id="UnaryTests_1aejvad">
+          <text>"NF_PM_REVIEW_BEFORE_END"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0fkphmm">
+          <text>"MYR"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ogco7w">
+          <text>"Kind reminder, the review is due to be closed in {days} days ({startDate})"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1mtluc9">
+        <inputEntry id="UnaryTests_0dx7xf3">
+          <text>"NF_PM_REVIEW_START"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0a9tf6w">
+          <text>"MYR"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_13qimka">
+          <text>"Mid-year review starts"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_03amscn">
+        <inputEntry id="UnaryTests_07u03kn">
+          <text>"NF_PM_REVIEW_END"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_15e04kp">
+          <text>"MYR"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_09mq9kw">
+          <text>"Mid-year review ends"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1ulk2bx">
+        <inputEntry id="UnaryTests_0nno71t">
+          <text>"NF_PM_REVIEW_BEFORE_START"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0c5wksc">
+          <text>"EYR"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0eziy99">
+          <text>"Kind reminder, a review is coming up in the next in {days} ({startDate})"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0htd5ki">
+        <inputEntry id="UnaryTests_0jhgh9x">
+          <text>"NF_PM_REVIEW_SUBMITTED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_11alljx">
+          <text>"EYR"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1sh4rp8">
+          <text>"Year-end was submitted by {firstName} {lastName}"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0v5108s">
+        <inputEntry id="UnaryTests_1cilzkb">
+          <text>"NF_PM_REVIEW_APPROVED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0tpcpyr">
+          <text>"EYR"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1mx1hxi">
+          <text>"Year-end review was approved by {firstName} {lastName}"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_01ol67b">
+        <inputEntry id="UnaryTests_19frjxy">
+          <text>"NF_PM_REVIEW_DECLINED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0hmj3c0">
+          <text>"EYR"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1bqyzn8">
+          <text>"Year-end review was declined by {firstName} {lastName}"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1xbw130">
+        <inputEntry id="UnaryTests_0aaf1by">
+          <text>"NF_PM_REVIEW_BEFORE_END"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0p8h424">
+          <text>"EYR"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0agwr1g">
+          <text>"Kind reminder, the review is due to be closed in {days} ({startDate})"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0u7erel">
+        <inputEntry id="UnaryTests_1x0wiuq">
+          <text>"NF_PM_REVIEW_START"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ov4exd">
+          <text>"EYR"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0h67okp">
+          <text>"Year-end review starts"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1g5diuz">
+        <inputEntry id="UnaryTests_01bo15c">
+          <text>"NF_PM_REVIEW_END"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1tzcz17">
+          <text>"EYR"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_01vt0nd">
+          <text>"Year-end review ends"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1n9rprq">
+        <inputEntry id="UnaryTests_0h6z98a">
+          <text>"NF_PM_REVIEW_SUBMITTED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_09krgrr">
+          <text>"OBJECTIVE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_110qg59">
+          <text>"Objective was submitted by {firstName} {lastName}"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_15x3tsr">
+        <inputEntry id="UnaryTests_0h260de">
+          <text>"NF_PM_REVIEW_APPROVED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0990r3n">
+          <text>"OBJECTIVE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0srrk3g">
+          <text>"Objective was approved by {firstName} {lastName}"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_169ja8y">
+        <inputEntry id="UnaryTests_04xdait">
+          <text>"NF_PM_REVIEW_DECLINED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0dvrmm2">
+          <text>"OBJECTIVE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_164d8zp">
+          <text>"Objective was declined by {firstName} {lastName}"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_052arhu">
+        <inputEntry id="UnaryTests_1evw3jv">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1gwf7oy">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_14bd62q">
+          <text>"--"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <inputData id="InputData_1g0u5hf" name="Event Name" />
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="review_event_to_content_table">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_0jl626x" dmnElementRef="InputData_1g0u5hf">
+        <dc:Bounds height="45" width="125" x="187" y="227" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_0domkdg" dmnElementRef="InformationRequirement_0w0zust">
+        <di:waypoint x="250" y="227" />
+        <di:waypoint x="250" y="200" />
+        <di:waypoint x="250" y="180" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

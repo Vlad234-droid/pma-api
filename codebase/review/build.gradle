@@ -8,6 +8,7 @@ dependencies {
     implementation project(':pm')
     implementation project(':profile')
     implementation project(':event')
+    implementation project(':fs')
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
@@ -35,6 +36,7 @@ dependencies {
         exclude group: 'junit' // excluding junit 4
     }
     testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("commons-io:commons-io:${commonsIoVersion}")
 
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"

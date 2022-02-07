@@ -205,7 +205,7 @@ and attr.getValue() = "true",
           <text>"EYR"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1qhctv6">
-          <text></text>
+          <text>true</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1vj5y2z">
           <text>true</text>

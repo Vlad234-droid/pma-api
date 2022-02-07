@@ -1,24 +1,17 @@
 package com.tesco.pma.flow.notifications;
 
-import com.tesco.pma.bpm.camunda.flow.AbstractCamundaSpringBootTest;
 import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
-import com.tesco.pma.colleague.api.Colleague;
-import com.tesco.pma.colleague.api.Profile;
 import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
-import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
-import com.tesco.pma.colleague.profile.domain.TypedAttribute;
-import com.tesco.pma.colleague.profile.service.ProfileService;
-import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMReviewType;
-import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.event.Event;
-import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.flow.FlowParameters;
-import com.tesco.pma.flow.notifications.handlers.*;
-import com.tesco.pma.review.dao.TimelinePointDAO;
-import com.tesco.pma.review.domain.TimelinePoint;
-import com.tesco.pma.service.contact.client.ContactApiClient;
+import com.tesco.pma.flow.notifications.handlers.DefaultInitNotificationHandler;
+import com.tesco.pma.flow.notifications.handlers.InitTimelinePointNotificationHandler;
+import com.tesco.pma.flow.notifications.handlers.InitFeedbacksNotificationHandler;
+import com.tesco.pma.flow.notifications.handlers.InitTipsNotificationHandler;
+import com.tesco.pma.tip.api.Tip;
+import com.tesco.pma.tip.service.TipService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -28,7 +21,11 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.*;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.HashMap;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:vadim.shatokhin1@tesco.com">vadim.shatokhin1@tesco.com</a>
@@ -37,13 +34,7 @@ import java.util.*;
 @ActiveProfiles("test")
 @SpringBootTest(classes = {CamundaSpringBootTestConfig.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
-
-    private static final String NF_PM_REVIEW_SUBMITTED = "NF_PM_REVIEW_SUBMITTED";
-    private static final String NF_PM_REVIEW_APPROVED = "NF_PM_REVIEW_APPROVED";
-    private static final String NF_PM_REVIEW_DECLINED = "NF_PM_REVIEW_DECLINED";
-    private static final String NF_PM_REVIEW_BEFORE_START = "NF_PM_REVIEW_BEFORE_START";
-    private static final String NF_PM_REVIEW_BEFORE_END = "NF_PM_REVIEW_BEFORE_END";
+public class NotificationsFlowTest extends AbstractNotificationsFlowTest {
 
     private static final String NF_ORGANISATION_OBJECTIVES = "NF_ORGANISATION_OBJECTIVES";
     private static final String NF_OBJECTIVES_APPROVED_FOR_SHARING = "NF_OBJECTIVES_APPROVED_FOR_SHARING";
@@ -74,78 +65,21 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
     @SpyBean
     private InitTipsNotificationHandler initTipsNotificationHandler;
 
-    @MockBean(name = "sendNotification")
-    private SendNotificationHandler sendNotification;
-
     @MockBean
-    private ContactApiClient contactApiClient;
+    private TipService tipService;
 
-    @MockBean
-    private ProfileService profileService;
-
-    @MockBean
-    private NamedMessageSourceAccessor messageSourceAccessor;
-
-    @MockBean
-    private TimelinePointDAO timelinePointDAO;
-
-    private final UUID colleagueUUID = UUID.randomUUID();
     private final UUID sourceColleagueUUID = UUID.randomUUID();
     private ColleagueProfile colleagueProfile;
-    private final TimelinePoint timelinePoint = new TimelinePoint();
 
     @BeforeEach
-    public void init(){
-        colleagueProfile = createColleagueProfile(colleagueUUID, WorkLevel.WL1, Map.of());
+    public void init() throws Exception {
+        colleagueProfile = createColleagueProfile(UUID.randomUUID(), WorkLevel.WL1, Map.of());
 
-        Mockito.when(profileService.findProfileByColleagueUuid(Mockito.eq(colleagueUUID)))
+        Mockito.when(profileService.findProfileByColleagueUuid(Mockito.eq(colleagueProfile.getColleague().getColleagueUUID())))
                 .thenReturn(Optional.of(colleagueProfile));
 
         Mockito.when(profileService.findProfileByColleagueUuid(Mockito.eq(sourceColleagueUUID)))
                 .thenReturn(Optional.of(createColleagueProfile(sourceColleagueUUID, WorkLevel.WL1, new HashMap<>())));
-
-        timelinePoint.setUuid(UUID.randomUUID());
-
-        Mockito.when(timelinePointDAO.getTimelineByUUID(Mockito.eq(timelinePoint.getUuid())))
-                .thenReturn(timelinePoint);
-    }
-
-    @Test
-    void checkReviewObjectives() throws Exception {
-        checkReviewGroup(NF_PM_REVIEW_SUBMITTED, PMReviewType.OBJECTIVE, true, true);
-        checkReviewGroup(NF_PM_REVIEW_SUBMITTED, PMReviewType.OBJECTIVE, false, false);
-        checkReviewGroup(NF_PM_REVIEW_APPROVED, PMReviewType.OBJECTIVE, true, true);
-        checkReviewGroup(NF_PM_REVIEW_APPROVED, PMReviewType.OBJECTIVE, false, true);
-        checkReviewGroup(NF_PM_REVIEW_DECLINED, PMReviewType.OBJECTIVE, true, true);
-        checkReviewGroup(NF_PM_REVIEW_DECLINED, PMReviewType.OBJECTIVE, false, true);
-    }
-
-    @Test
-    void checReviewMYR() throws Exception {
-        checkReviewGroup(NF_PM_REVIEW_BEFORE_START, PMReviewType.MYR, true, true);
-        checkReviewGroup(NF_PM_REVIEW_BEFORE_START, PMReviewType.MYR, false, true);
-        checkReviewGroup(NF_PM_REVIEW_SUBMITTED, PMReviewType.MYR, true, true);
-        checkReviewGroup(NF_PM_REVIEW_SUBMITTED, PMReviewType.MYR, false, false);
-        checkReviewGroup(NF_PM_REVIEW_APPROVED, PMReviewType.MYR, true, true);
-        checkReviewGroup(NF_PM_REVIEW_APPROVED, PMReviewType.MYR, false, false);
-        checkReviewGroup(NF_PM_REVIEW_DECLINED, PMReviewType.MYR, true, true);
-        checkReviewGroup(NF_PM_REVIEW_DECLINED, PMReviewType.MYR, false, true);
-        checkReviewGroup(NF_PM_REVIEW_BEFORE_END, PMReviewType.MYR, true, true);
-        checkReviewGroup(NF_PM_REVIEW_BEFORE_END, PMReviewType.MYR, false, true);
-    }
-
-    @Test
-    void checkReviewEYR() throws Exception {
-        checkReviewGroup(NF_PM_REVIEW_BEFORE_START, PMReviewType.EYR, true, true);
-        checkReviewGroup(NF_PM_REVIEW_BEFORE_START, PMReviewType.EYR, false, true);
-        checkReviewGroup(NF_PM_REVIEW_SUBMITTED, PMReviewType.EYR, true, true);
-        checkReviewGroup(NF_PM_REVIEW_SUBMITTED, PMReviewType.EYR, false, false);
-        checkReviewGroup(NF_PM_REVIEW_APPROVED, PMReviewType.EYR, true, true);
-        checkReviewGroup(NF_PM_REVIEW_APPROVED, PMReviewType.EYR, false, true);
-        checkReviewGroup(NF_PM_REVIEW_DECLINED, PMReviewType.EYR, true, true);
-        checkReviewGroup(NF_PM_REVIEW_DECLINED, PMReviewType.EYR, false, true);
-        checkReviewGroup(NF_PM_REVIEW_BEFORE_END, PMReviewType.EYR, true, true);
-        checkReviewGroup(NF_PM_REVIEW_BEFORE_END, PMReviewType.EYR, false, true);
     }
 
     @Test
@@ -175,12 +109,23 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
     }
 
     @Test
-    void beforeCycleTest() throws Exception {
-        checkCycleGroup(NF_BEFORE_CYCLE_START, PMReviewType.EYR, false, WorkLevel.WL1, true);
-        checkCycleGroup(NF_BEFORE_CYCLE_END, PMReviewType.EYR, false, WorkLevel.WL1, true);
+    void beforeCycleStartTest() throws Exception {
+        var initCycleNotifications = "InitCycleNotifications";
+        var cycleDmn = "cycle_decision_table";
+        check(initCycleNotifications, cycleDmn, NF_BEFORE_CYCLE_START, PMReviewType.EYR, false, WorkLevel.WL1, true);
+        check(initCycleNotifications, cycleDmn, NF_BEFORE_CYCLE_START, PMReviewType.EYR, true, WorkLevel.WL1, true);
 
-        checkCycleGroup(NF_BEFORE_CYCLE_START, PMReviewType.EYR, true, WorkLevel.WL1, true);
-        checkCycleGroup(NF_BEFORE_CYCLE_END, PMReviewType.EYR, true, WorkLevel.WL1, true);
+        checkContent(NF_BEFORE_CYCLE_START, NF_BEFORE_CYCLE_START, "Next performance cycle starts tomorrow!");
+    }
+
+    @Test
+    void beforeCycleEndTest() throws Exception {
+        var initCycleNotifications = "InitCycleNotifications";
+        var cycleDmn = "cycle_decision_table";
+        check(initCycleNotifications, cycleDmn, NF_BEFORE_CYCLE_END, PMReviewType.EYR, false, WorkLevel.WL1, true);
+        check(initCycleNotifications, cycleDmn, NF_BEFORE_CYCLE_END, PMReviewType.EYR, true, WorkLevel.WL1, true);
+
+        checkContent(NF_BEFORE_CYCLE_END, NF_BEFORE_CYCLE_END, "Current performance cycle ends tomorrow!");
     }
 
     @Test
@@ -188,12 +133,9 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
         checkTipsGroup(NF_RECEIVE_TIPS, false, WorkLevel.WL1, true);
     }
 
-    void checkReviewGroup(String evenName, PMReviewType reviewType, Boolean isManager, boolean send) throws Exception {
-        check("initReviewNotification", "review_decision_table", evenName, reviewType, isManager, null, send);
-    }
-
     void checkObjectivesGroup(String evenName, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
-        var event = createEvent(evenName, null);
+        var event = createEvent(evenName);
+        event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueProfile.getColleague().getColleagueUUID());
         colleagueProfile.getColleague().getWorkRelationships().get(0).setIsManager(isManager);
         colleagueProfile.getColleague().getWorkRelationships().get(0).setWorkLevel(workLevel);
 
@@ -203,10 +145,15 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
                 SEND_NOTIFICATION_HANDLER_ID, send? 1: 0
         ), event);
 
+        if (send) {
+            checkContent(evenName, NF_ORGANISATION_OBJECTIVES, "Please check the organisation objectives for the year");
+        }
+
     }
 
     void checkFeedbackGroup(String evenName){
-        var event = createEvent(evenName, null);
+        var event = createEvent(evenName);
+        event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueProfile.getColleague().getColleagueUUID());
         event.putProperty(FlowParameters.SOURCE_COLLEAGUE_UUID.name(), sourceColleagueUUID);
 
         check(Map.of(
@@ -216,25 +163,36 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
                 SEND_NOTIFICATION_HANDLER_ID, 1
         ), event);
 
+        checkContent(evenName, NF_FEEDBACK_GIVEN, "You have feedback from Random Name");
     }
 
     void checkTimelineNotifications(String evenName, String quarter, boolean send) throws Exception {
         var event = createEvent(evenName, quarter);
+        event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueProfile.getColleague().getColleagueUUID());
         check("InitCycleNotifications", "cycle_decision_table", event, false, null, send);
     }
 
-    void checkCycleGroup(String evenName, PMReviewType reviewType, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
-        check("InitCycleNotifications", "cycle_decision_table", evenName, reviewType, isManager, workLevel, send);
-    }
-
     void checkTipsGroup(String evenName, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
-        var event = createEvent(evenName, null);
-        event.putProperty(FlowParameters.TIP_UUID.name(), UUID.randomUUID().toString());
-        check("InitTipsNotifications", "tips_decision_table", event, isManager, workLevel, send);
+        var event = createEvent(evenName);
+        event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueProfile.getColleague().getColleagueUUID());
+        event.putProperty(FlowParameters.TIP_UUID.name(), UUID.randomUUID());
+
+        var tip = new Tip();
+        var tipTitle = "test title";
+        tip.setTitle(tipTitle);
+
+        Mockito.when(tipService.findOne(Mockito.any())).thenReturn(tip);
+
+        check(Map.of("InitTipsNotifications", 1, "tips_decision_table", 1, "sendTipsNotification", 1), event);
+
+        Mockito.verify(colleagueInboxNotificationSender).send(Mockito.any(), Mockito.any(), Mockito.argThat(placeholders ->
+            tipTitle.equals(placeholders.get("CONTENT"))
+        ));
     }
 
     void check(String initHandlerName, String decisionTable, String evenName, PMReviewType reviewType, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
         var event = createEvent(evenName, reviewType != null? reviewType.getCode(): null);
+        event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueProfile.getColleague().getColleagueUUID());
         check(initHandlerName, decisionTable, event, isManager, workLevel, send);
     }
 
@@ -246,63 +204,7 @@ public class NotificationsFlowTest extends AbstractCamundaSpringBootTest {
             colleagueProfile.getColleague().getWorkRelationships().get(0).setWorkLevel(workLevel);
         }
 
-        assertThatForProcess(runProcessByEvent(event))
-                .activity(initHandlerName).executedOnce()
-                .activity(decisionTable).executedOnce()
-                .activity("sendNotification").executedTimes(send ? 1 : 0);
+        check(Map.of(initHandlerName, 1, decisionTable, 1, "sendNotification", send ? 1 : 0), event);
     }
 
-    void check(Map<String, Integer> execBlocks, Event event) {
-        var assertion = assertThatForProcess(runProcessByEvent(event));
-        execBlocks.forEach((block, execTimes) -> assertion.activity(block).executedTimes(execTimes));
-    }
-
-    EventSupport createEvent(String evenName, String timelineCode) {
-        var event = new EventSupport(evenName);
-
-        if(timelineCode != null) {
-            timelinePoint.setCode(timelineCode);
-            event.putProperty(FlowParameters.TIMELINE_POINT_UUID.name(), timelinePoint.getUuid());
-        }
-
-        event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueUUID);
-        return event;
-    }
-
-
-
-    private ColleagueProfile createColleagueProfile(UUID colleagueUUID, WorkLevel wl, Map<String, String> attrs){
-        var wr = new WorkRelationship();
-        wr.setWorkLevel(wl);
-        wr.setIsManager(false);
-
-        var profile = new Profile();
-        profile.setFirstName("Random");
-        profile.setLastName("Name");
-
-        var colleague = new Colleague();
-        colleague.setColleagueUUID(colleagueUUID);
-        colleague.setWorkRelationships(List.of(wr));
-        colleague.setProfile(profile);
-
-        ColleagueProfile colleagueProfile = new ColleagueProfile();
-        colleagueProfile.setColleague(colleague);
-        colleagueProfile.setProfileAttributes(new ArrayList<>());
-        attrs.forEach((k, v) -> colleagueProfile.getProfileAttributes().add(createAttr(k, v)));
-        return colleagueProfile;
-    }
-
-    private TypedAttribute createAttr(String name, String value) {
-        var attr = new TypedAttribute();
-        attr.setName(name);
-        attr.setValue(value);
-        return attr;
-    }
-
-    private TimelinePoint createTimelinePoint(String code){
-        TimelinePoint tp = new TimelinePoint();
-        tp.setType(PMElementType.TIMELINE_POINT);
-        tp.setCode(code);
-        return tp;
-    }
 }

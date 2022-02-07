@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "data": [
+    {
+      "path": "/home/dev",
+      "fileName": "test.pdf",
+      "type": {
+        "id": 3,
+        "code": "PDF",
+        "description": "Portable document format file"
+      },
+      "status": "ACTIVE",
+      "description": "other file",
+      "fileDate": 1619081408.000000000,
+      "uuid": "d3b0f689-ccce-4e80-9012-89f1ee39468d",
+      "version": 1,
+      "fileLength": 23,
+      "createdBy": "6d37262f-3a00-4706-a74b-6bf98be65765",
+      "createdTime": 1635979094.000000000,
+      "fileContent": "SGVs"
+    }
+  ]
+}

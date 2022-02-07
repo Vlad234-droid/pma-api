@@ -41,10 +41,10 @@ public interface PDPService {
      * Delete PDP Goal from Plan by its uuid
      *
      * @param colleagueUuid is colleague identifier
-     * @param goalUuids     are goal identifiers
+     * @param goalUuid      is goal identifier
      * @throws NotFoundException if goal by uuid is not found
      */
-    void deleteGoals(@NotNull UUID colleagueUuid, @NotEmpty List<UUID> goalUuids);
+    void deleteGoal(@NotNull UUID colleagueUuid, @NotNull UUID goalUuid);
 
     /**
      * Get a PDP Goal by its colleague and number
