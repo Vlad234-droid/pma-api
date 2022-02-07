@@ -66,7 +66,7 @@ public class ColleagueChangeEventPayload implements Identified<UUID> {
      * In case of some Future* events, see the description of the given event type.
      * see Colleague Revision data example below for the structure
      */
-    List<Colleague> previous;
+    Colleague previous;
 
     /**
      * In case of events which represent the immediate change of the Colleague (e.g. Modification),
@@ -74,7 +74,7 @@ public class ColleagueChangeEventPayload implements Identified<UUID> {
      * In case of Future* events, it refers to the state of the colleague as of some date in future (effectivity.from).
      * see Colleague Revision data example below for the structure.
      */
-    List<Colleague> current;
+    Colleague current;
 
     @Override
     public UUID getId() {
