@@ -4,6 +4,7 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
+import com.tesco.pma.reports.rating.service.RatingService;
 import com.tesco.pma.reports.review.LocalServiceTestConfig;
 import com.tesco.pma.reports.review.dao.ReviewReportingDAO;
 import com.tesco.pma.reports.review.domain.ObjectiveLinkedReviewData;
@@ -49,6 +50,9 @@ class ReviewReportingServiceImplTest {
 
     @MockBean
     private ReviewReportingDAO reviewReportingDAO;
+
+    @MockBean
+    private RatingService ratingService;
 
     @Autowired
     private ReviewReportingServiceImpl reviewReportingService;
