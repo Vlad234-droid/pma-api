@@ -141,7 +141,7 @@ class ReviewServiceImplTest {
         when(mockReviewDAO.getByParams(any(), any(), any(), any()))
                 .thenReturn(List.of(beforeReview));
 
-        final var res = reviewService.updateReview(expectedReview, randomUUID, randomUUID);
+        final var res = reviewService.updateReview(expectedReview, randomUUID, randomUUID, randomUUID);
 
         assertThat(res)
                 .returns(expectedReview.getProperties(), from(Review::getProperties));

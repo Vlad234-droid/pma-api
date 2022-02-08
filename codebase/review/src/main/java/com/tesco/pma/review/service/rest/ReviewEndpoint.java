@@ -98,7 +98,8 @@ public class ReviewEndpoint {
                 getPMCycleUuid(colleagueUuid, cycleUuid),
                 colleagueUuid,
                 type,
-                reviews));
+                reviews,
+                resolveUserUuid()));
     }
 
     /**
@@ -234,7 +235,9 @@ public class ReviewEndpoint {
                                              @RequestBody Review review) {
         review.setType(type);
         review.setNumber(number);
-        return success(reviewService.updateReview(review, getPMCycleUuid(colleagueUuid, cycleUuid), colleagueUuid));
+
+        return success(reviewService.updateReview(review, getPMCycleUuid(colleagueUuid, cycleUuid), colleagueUuid,
+                resolveUserUuid()));
     }
 
     /**
