@@ -153,4 +153,14 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
                 () -> assertEquals("0", tags.get("has_eyr_approved_3_quarter")),
                 () -> assertEquals("1", tags.get("has_eyr_approved_4_quarter")));
     }
+
+    @Test
+    void getColleagueTargetingAnniversaryDataNotExist() {
+        final var requestQuery = new RequestQuery();
+        requestQuery.setFilters(List.of(new Condition(YEAR_PROPERTY, EQUALS, 2022)));
+
+        final var result = instance.getColleagueTargetingAnniversary(requestQuery);
+
+        assertTrue(result.isEmpty());
+    }
 }
