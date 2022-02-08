@@ -91,10 +91,10 @@
         c2.first_name||' '||c2.last_name as "line_manager",
         pr.number as "objective_number",
         pr.status_id as "status",
-        pr.properties::json->'strategic_priority' as "strategic_priority",
-        pr.properties::json->'title' as "objective",
-        pr.properties::json->'how_achieved' as "how_achieved",
-        pr.properties::json->'how_over_achieved' as "how_over_achieved"
+        pr.properties::json ->> 'strategic_priority' as "strategic_priority",
+        pr.properties::json ->> 'title' as "objective",
+        pr.properties::json ->> 'how_achieved' as "how_achieved",
+        pr.properties::json ->> 'how_over_achieved' as "how_over_achieved"
         FROM colleague c1
         LEFT JOIN job j ON c1.job_id = j.id
         LEFT JOIN colleague c2 ON c1.manager_uuid = c2.uuid

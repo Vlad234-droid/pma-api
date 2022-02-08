@@ -67,10 +67,10 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
                 () -> assertEquals("first_name last_name", result.get(1).getLineManager()),
                 () -> assertEquals(1, result.get(1).getObjectiveNumber()),
                 () -> assertEquals(APPROVED, result.get(1).getStatus()),
-                () -> assertEquals("\"Title init\"", result.get(1).getObjectiveTitle()),
-                () -> assertEquals("\"Strategic Priority\"", result.get(1).getStrategicPriority()),
-                () -> assertEquals("\"How achieved objective\"", result.get(1).getHowAchieved()),
-                () -> assertEquals("\"How overachieved objective\"", result.get(1).getHowOverAchieved()));
+                () -> assertEquals("Title init", result.get(1).getObjectiveTitle()),
+                () -> assertEquals("Strategic Priority", result.get(1).getStrategicPriority()),
+                () -> assertEquals("How achieved objective", result.get(1).getHowAchieved()),
+                () -> assertEquals("How overachieved objective", result.get(1).getHowOverAchieved()));
     }
 
     @Test
