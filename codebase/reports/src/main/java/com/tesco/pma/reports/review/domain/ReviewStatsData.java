@@ -57,7 +57,7 @@ public class ReviewStatsData {
     int anniversaryReviewPerQuarter4Percentage;
     long anniversaryReviewPerQuarter4Count;
 
-
+    @SuppressWarnings("PMD.NcssCount")
     public List<Object> toList() {
         var statistics = new ArrayList<>();
 
