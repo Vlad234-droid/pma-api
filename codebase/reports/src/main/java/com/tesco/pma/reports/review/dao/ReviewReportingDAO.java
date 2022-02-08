@@ -18,4 +18,6 @@ public interface ReviewReportingDAO {
     List<ObjectiveLinkedReviewData> getLinkedObjectivesData(@Param("requestQuery") RequestQuery requestQuery);
 
     List<ColleagueReportTargeting> getColleagueTargeting(@Param("requestQuery") RequestQuery requestQuery);
+
+    List<ColleagueReportTargeting> getColleagueTargetingAnniversary(@Param("requestQuery") RequestQuery requestQuery);
 }
