@@ -1,6 +1,7 @@
 package com.tesco.pma.review.service;
 
 import com.tesco.pma.api.MapJson;
+import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
@@ -84,6 +85,9 @@ class ReviewServiceImplTest {
     @MockBean
     private EventSender eventSender;
 
+    @MockBean
+    private ProfileService profileService;
+
     @Test
     void getReviewByUuidShouldReturnReview() {
         final var randomUUID = UUID.randomUUID();
@@ -121,6 +125,7 @@ class ReviewServiceImplTest {
                 .build();
         final var expectedColleagueCycle = PMColleagueCycle.builder().build();
         final var expectedTimelinePoint = TimelinePoint.builder()
+                .status(DRAFT)
                 .properties(TIMELINE_POINT_PROPERTIES_INIT)
                 .build();
         final var expectedReviewStats = ReviewStats.builder()
@@ -141,7 +146,7 @@ class ReviewServiceImplTest {
         when(mockReviewDAO.getByParams(any(), any(), any(), any()))
                 .thenReturn(List.of(beforeReview));
 
-        final var res = reviewService.updateReview(expectedReview, randomUUID, randomUUID, randomUUID);
+        final var res = reviewService.updateReview(expectedReview, randomUUID, randomUUID, null);
 
         assertThat(res)
                 .returns(expectedReview.getProperties(), from(Review::getProperties));
