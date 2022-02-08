@@ -16,6 +16,7 @@ import com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider;
 import com.tesco.pma.reports.review.domain.RatingStatsData.OverallRating;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
@@ -62,12 +63,12 @@ public class ReviewReportingServiceImpl implements ReviewReportingService {
     public Report getReviewStatsReport(RequestQuery requestQuery) {
         var targetingColleagues = getReviewReportColleagues(requestQuery);
         var statsReportProvider = new ReviewStatsReportProvider();
-        statsReportProvider.setData(findReviewStatsData(targetingColleagues));
+        statsReportProvider.setData(findReviewStatsData(targetingColleagues, requestQuery));
 
         return statsReportProvider.getReport();
     }
 
-    private List<ReviewStatsData> findReviewStatsData(List<ColleagueReportTargeting> colleagues) {
+    private List<ReviewStatsData> findReviewStatsData(List<ColleagueReportTargeting> colleagues, RequestQuery requestQuery) {
         var reviewStatsData = new ReviewStatsData();
         // objectives
         final var objectivesToSubmitCount = getCountWithTag(colleagues, "must_create_objective");
@@ -107,7 +108,35 @@ public class ReviewReportingServiceImpl implements ReviewReportingService {
         if (eyrApprovedCount != 0) {
             fillEyrRatings(reviewStatsData, colleagues, eyrApprovedCount);
         }
+        // new to business
+        reviewStatsData.setNewToBusinessCount(getCountWithTag(colleagues, "is_new_to_business"));
+        // anniversary reviews completed per quarter
+        var colleaguesAnniversary = reviewReportingDAO.getColleagueTargetingAnniversary(requestQuery);
+        if (!CollectionUtils.isEmpty(colleaguesAnniversary)) {
+            fillAnniversaryReviewPerQuarters(reviewStatsData, colleaguesAnniversary);
+        }
+
         return List.of(reviewStatsData);
+    }
+
+    private void fillAnniversaryReviewPerQuarters(ReviewStatsData reviewStatsData, List<ColleagueReportTargeting> colleaguesAnniversary) {
+        final var anniversaryCount = colleaguesAnniversary.size();
+
+        final var anniversaryReviewPerQuarter1Count = getCountWithTag(colleaguesAnniversary, "has_eyr_approved_1_quarter");
+        reviewStatsData.setAnniversaryReviewPerQuarter1Count(anniversaryReviewPerQuarter1Count);
+        reviewStatsData.setAnniversaryReviewPerQuarter1Percentage((int) (100 * anniversaryReviewPerQuarter1Count / anniversaryCount));
+
+        final var anniversaryReviewPerQuarter2Count = getCountWithTag(colleaguesAnniversary, "has_eyr_approved_2_quarter");
+        reviewStatsData.setAnniversaryReviewPerQuarter2Count(anniversaryReviewPerQuarter2Count);
+        reviewStatsData.setAnniversaryReviewPerQuarter2Percentage((int) (100 * anniversaryReviewPerQuarter2Count / anniversaryCount));
+
+        final var anniversaryReviewPerQuarter3Count = getCountWithTag(colleaguesAnniversary, "has_eyr_approved_3_quarter");
+        reviewStatsData.setAnniversaryReviewPerQuarter3Count(anniversaryReviewPerQuarter3Count);
+        reviewStatsData.setAnniversaryReviewPerQuarter3Percentage((int) (100 * anniversaryReviewPerQuarter3Count / anniversaryCount));
+
+        final var anniversaryReviewPerQuarter4Count = getCountWithTag(colleaguesAnniversary, "has_eyr_approved_4_quarter");
+        reviewStatsData.setAnniversaryReviewPerQuarter4Count(anniversaryReviewPerQuarter4Count);
+        reviewStatsData.setAnniversaryReviewPerQuarter4Percentage((int) (100 * anniversaryReviewPerQuarter4Count / anniversaryCount));
     }
 
     private void fillMyrRatings(ReviewStatsData reviewStatsData, List<ColleagueReportTargeting> colleagues, long myrApprovedCount) {

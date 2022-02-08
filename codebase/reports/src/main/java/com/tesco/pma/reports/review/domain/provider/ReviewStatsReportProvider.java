@@ -37,6 +37,15 @@ import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProv
 import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.EYR_RATING_BREAKDOWN_GREAT_COUNT;
 import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.EYR_RATING_BREAKDOWN_OUTSTANDING_PERCENTAGE;
 import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.EYR_RATING_BREAKDOWN_OUTSTANDING_COUNT;
+import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.NEW_TO_BUSINESS_COUNT;
+import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_1_PERCENTAGE;
+import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_1_COUNT;
+import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_2_PERCENTAGE;
+import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_2_COUNT;
+import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_3_PERCENTAGE;
+import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_3_COUNT;
+import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_4_PERCENTAGE;
+import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_4_COUNT;
 
 /**
  * Review Statistics Report with data, metadata
@@ -131,7 +140,43 @@ public class ReviewStatsReportProvider implements Reportable {
                 "Number of individuals with approved overall rating 'Outstanding'/all individuals with approved end-year reviews"),
         EYR_RATING_BREAKDOWN_OUTSTANDING_COUNT("EyrRatingBreakdownOutstandingCount",
                 "EyrRatingBreakdownOutstandingCount", INTEGER,
-                "Number of individuals with approved overall rating 'Outstanding' individuals count");
+                "Number of individuals with approved overall rating 'Outstanding' individuals count"),
+
+        NEW_TO_BUSINESS_COUNT("NewToBusinessCount",
+                "NewToBusinessCount", INTEGER,
+                "Number of individuals who have joined the business in the last 90 days"),
+
+        ANNIVERSARY_REVIEW_PER_QUARTER_1_PERCENTAGE("AnniversaryReviewPerQuarter1Percentage",
+                "AnniversaryReviewPerQuarter1Percentage", INTEGER,
+                "Number of individuals with approved anniversary reviews in Quarter 1/all individuals with approved anniversary reviews"),
+
+        ANNIVERSARY_REVIEW_PER_QUARTER_1_COUNT("AnniversaryReviewPerQuarter1Count",
+                "AnniversaryReviewPerQuarter1Count", INTEGER,
+                "Number of individuals with approved anniversary reviews in Quarter 1"),
+
+        ANNIVERSARY_REVIEW_PER_QUARTER_2_PERCENTAGE("AnniversaryReviewPerQuarter2Percentage",
+                "AnniversaryReviewPerQuarter2Percentage", INTEGER,
+                "Number of individuals with approved anniversary reviews in Quarter 2/all individuals with approved anniversary reviews"),
+
+        ANNIVERSARY_REVIEW_PER_QUARTER_2_COUNT("AnniversaryReviewPerQuarter2Count",
+                "AnniversaryReviewPerQuarter2Count", INTEGER,
+                "Number of individuals with approved anniversary reviews in Quarter 2"),
+
+        ANNIVERSARY_REVIEW_PER_QUARTER_3_PERCENTAGE("AnniversaryReviewPerQuarter3Percentage",
+                "AnniversaryReviewPerQuarter3Percentage", INTEGER,
+                "Number of individuals with approved anniversary reviews in Quarter 3/all individuals with approved anniversary reviews"),
+
+        ANNIVERSARY_REVIEW_PER_QUARTER_3_COUNT("AnniversaryReviewPerQuarter3Count",
+                "AnniversaryReviewPerQuarter3Count", INTEGER,
+                "Number of individuals with approved anniversary reviews in Quarter 3"),
+
+        ANNIVERSARY_REVIEW_PER_QUARTER_4_PERCENTAGE("AnniversaryReviewPerQuarter4Percentage",
+                "AnniversaryReviewPerQuarter4Percentage", INTEGER,
+                "Number of individuals with approved anniversary reviews in Quarter 4/all individuals with approved anniversary reviews"),
+
+        ANNIVERSARY_REVIEW_PER_QUARTER_4_COUNT("AnniversaryReviewPerQuarter4Count",
+                "AnniversaryReviewPerQuarter4Count", INTEGER,
+                "Number of individuals with approved anniversary reviews in Quarter 4");
 
 
         private final ColumnMetadata columnMetadata;
@@ -198,7 +243,18 @@ public class ReviewStatsReportProvider implements Reportable {
                 EYR_RATING_BREAKDOWN_GREAT_PERCENTAGE.getColumnMetadata(),
                 EYR_RATING_BREAKDOWN_GREAT_COUNT.getColumnMetadata(),
                 EYR_RATING_BREAKDOWN_OUTSTANDING_PERCENTAGE.getColumnMetadata(),
-                EYR_RATING_BREAKDOWN_OUTSTANDING_COUNT.getColumnMetadata()
+                EYR_RATING_BREAKDOWN_OUTSTANDING_COUNT.getColumnMetadata(),
+
+                NEW_TO_BUSINESS_COUNT.getColumnMetadata(),
+
+                ANNIVERSARY_REVIEW_PER_QUARTER_1_PERCENTAGE.getColumnMetadata(),
+                ANNIVERSARY_REVIEW_PER_QUARTER_1_COUNT.getColumnMetadata(),
+                ANNIVERSARY_REVIEW_PER_QUARTER_2_PERCENTAGE.getColumnMetadata(),
+                ANNIVERSARY_REVIEW_PER_QUARTER_2_COUNT.getColumnMetadata(),
+                ANNIVERSARY_REVIEW_PER_QUARTER_3_PERCENTAGE.getColumnMetadata(),
+                ANNIVERSARY_REVIEW_PER_QUARTER_3_COUNT.getColumnMetadata(),
+                ANNIVERSARY_REVIEW_PER_QUARTER_4_PERCENTAGE.getColumnMetadata(),
+                ANNIVERSARY_REVIEW_PER_QUARTER_4_COUNT.getColumnMetadata()
         );
     }
 }

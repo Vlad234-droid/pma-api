@@ -19,6 +19,7 @@ import static com.tesco.pma.pagination.Condition.Operand.IN;
 import static com.tesco.pma.reports.review.dao.ReviewReportingDAOTest.BASE_PATH_TO_DATA_SET;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -94,6 +95,8 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
         assertNotNull(result);
 
         assertEquals(1, result.size());
+        var tags = result.get(0).getTags();
+        assertFalse(tags.isEmpty());
 
         assertAll("colleagueTargeting",
                 () -> assertEquals("10000000-0000-0000-0000-000000000000", result.get(0).getUuid().toString()),
@@ -106,18 +109,19 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
                 () -> assertEquals("Team lead", result.get(0).getJobName()),
                 () -> assertEquals("Bank", result.get(0).getBusinessType()),
 
-                () -> assertEquals("1", result.get(0).getTags().get("has_objective_approved")),
-                () -> assertEquals("0", result.get(0).getTags().get("has_objective_submitted")),
-                () -> assertEquals("1", result.get(0).getTags().get("has_myr_approved")),
-                () -> assertEquals("0", result.get(0).getTags().get("has_eyr_approved")),
-                () -> assertEquals("0", result.get(0).getTags().get("myr_how_rating")),
-                () -> assertEquals("0", result.get(0).getTags().get("myr_what_rating")),
-                () -> assertEquals("0", result.get(0).getTags().get("eyr_how_rating")),
-                () -> assertEquals("0", result.get(0).getTags().get("eyr_what_rating")),
-                () -> assertEquals("0", result.get(0).getTags().get("has_myr_submitted")),
-                () -> assertEquals("0", result.get(0).getTags().get("has_eyr_submitted")),
-                () -> assertEquals("0", result.get(0).getTags().get("must_create_eyr")),
-                () -> assertEquals("1", result.get(0).getTags().get("must_create_objective")),
-                () -> assertEquals("1", result.get(0).getTags().get("must_create_myr")));
+                () -> assertEquals("1", tags.get("has_objective_approved")),
+                () -> assertEquals("0", tags.get("has_objective_submitted")),
+                () -> assertEquals("1", tags.get("has_myr_approved")),
+                () -> assertEquals("0", tags.get("has_eyr_approved")),
+                () -> assertEquals("0", tags.get("myr_how_rating")),
+                () -> assertEquals("0", tags.get("myr_what_rating")),
+                () -> assertEquals("0", tags.get("eyr_how_rating")),
+                () -> assertEquals("0", tags.get("eyr_what_rating")),
+                () -> assertEquals("0", tags.get("has_myr_submitted")),
+                () -> assertEquals("0", tags.get("has_eyr_submitted")),
+                () -> assertEquals("0", tags.get("must_create_eyr")),
+                () -> assertEquals("1", tags.get("must_create_objective")),
+                () -> assertEquals("1", tags.get("must_create_myr")),
+                () -> assertEquals("0", tags.get("is_new_to_business")));
     }
 }

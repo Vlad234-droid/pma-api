@@ -46,6 +46,17 @@ public class ReviewStatsData {
     int eyrRatingBreakdownOutstandingPercentage;
     long eyrRatingBreakdownOutstandingCount;
 
+    long newToBusinessCount;
+
+    int anniversaryReviewPerQuarter1Percentage;
+    long anniversaryReviewPerQuarter1Count;
+    int anniversaryReviewPerQuarter2Percentage;
+    long anniversaryReviewPerQuarter2Count;
+    int anniversaryReviewPerQuarter3Percentage;
+    long anniversaryReviewPerQuarter3Count;
+    int anniversaryReviewPerQuarter4Percentage;
+    long anniversaryReviewPerQuarter4Count;
+
 
     public List<Object> toList() {
         var statistics = new ArrayList<>();
@@ -75,6 +86,17 @@ public class ReviewStatsData {
         statistics.add(eyrRatingBreakdownGreatCount);
         statistics.add(eyrRatingBreakdownOutstandingPercentage);
         statistics.add(eyrRatingBreakdownOutstandingCount);
+
+        statistics.add(newToBusinessCount);
+
+        statistics.add(anniversaryReviewPerQuarter1Percentage);
+        statistics.add(anniversaryReviewPerQuarter1Count);
+        statistics.add(anniversaryReviewPerQuarter2Percentage);
+        statistics.add(anniversaryReviewPerQuarter2Count);
+        statistics.add(anniversaryReviewPerQuarter3Percentage);
+        statistics.add(anniversaryReviewPerQuarter3Count);
+        statistics.add(anniversaryReviewPerQuarter4Percentage);
+        statistics.add(anniversaryReviewPerQuarter4Count);
 
         return statistics;
     }
