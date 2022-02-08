@@ -45,6 +45,9 @@ class ReviewReportingServiceImplTest {
             "Condition(property=year, operand=" + EQUALS + ", value=" + YEAR + "), " +
             "Condition(property=statuses, operand=" + IN + ", value=[" + APPROVED + "])], search=null)}";
 
+    private static final String REVIEW_REPORT_NOT_FOUND_MESSAGE_EMPTY_QUERY = "Review report not found for: {" +
+            QUERY_PARAMS + "=RequestQuery(offset=null, limit=null, sort=[], filters=[], search=null)}";
+
     @Autowired
     private NamedMessageSourceAccessor messageSourceAccessor;
 
@@ -84,6 +87,32 @@ class ReviewReportingServiceImplTest {
 
         assertEquals(REVIEW_REPORT_NOT_FOUND.getCode(), exception.getCode());
         assertEquals(REVIEW_REPORT_NOT_FOUND_MESSAGE, exception.getMessage());
+    }
+
+    @Test
+    void getReviewReportColleaguesDataNotExists() {
+        final var requestQuery = new RequestQuery();
+
+        when(reviewReportingDAO.getColleagueTargeting(requestQuery)).thenReturn(null);
+
+        final var exception = assertThrows(NotFoundException.class,
+                () -> reviewReportingService.getReviewReportColleagues(requestQuery));
+
+        assertEquals(REVIEW_REPORT_NOT_FOUND.getCode(), exception.getCode());
+        assertEquals(REVIEW_REPORT_NOT_FOUND_MESSAGE_EMPTY_QUERY, exception.getMessage());
+    }
+
+    @Test
+    void getReviewStatsReportNotExists() {
+        final var requestQuery = new RequestQuery();
+
+        when(reviewReportingDAO.getColleagueTargeting(requestQuery)).thenReturn(null);
+
+        final var exception = assertThrows(NotFoundException.class,
+                () -> reviewReportingService.getReviewStatsReport(requestQuery));
+
+        assertEquals(REVIEW_REPORT_NOT_FOUND.getCode(), exception.getCode());
+        assertEquals(REVIEW_REPORT_NOT_FOUND_MESSAGE_EMPTY_QUERY, exception.getMessage());
     }
 
     private List<List<Object>> getExpectedReportData(List<ObjectiveLinkedReviewData> reportData) {
