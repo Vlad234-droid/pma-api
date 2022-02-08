@@ -745,14 +745,14 @@ public class ReviewServiceImpl implements ReviewService {
 
     private void sendEventToManager(String eventName, UUID colleagueUuid) {
         var colleague = profileService.findColleagueByColleagueUuid(colleagueUuid);
-        var managerUuid = colleague.getWorkRelationships().get(0).getManager().getColleagueUUID();
+        var manager = colleague.getWorkRelationships().get(0).getManager();
 
-        if (managerUuid == null) {
+        if (manager == null) {
             log.info("User {} has no manager", colleagueUuid);
             return;
         }
 
-        sendEvent(eventName, managerUuid);
+        sendEvent(eventName, manager.getColleagueUUID());
     }
 
     private void sendEvent(String eventName, UUID colleagueUuid) {
