@@ -59,20 +59,31 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
             }
         }
 
+        processColleagueChangeEvent(colleagueChangeEventPayload);
+    }
+
+    private void processColleagueChangeEvent(ColleagueChangeEventPayload colleagueChangeEventPayload) {
         var updated = 0;
 
         switch (colleagueChangeEventPayload.getEventType()) {
             case JOINER:
+            case FUTURE_JOINER:
                 updated = processJoinerEventType(colleagueChangeEventPayload);
                 break;
             case LEAVER:
+            case FUTURE_LEAVER:
+            case FUTURE_LEAVER_CANCELLED:
                 updated = processLeaverEventType(colleagueChangeEventPayload);
                 break;
-            case MOVER:
-                updated = processMoverEventType(colleagueChangeEventPayload);
+            case MODIFICATION:
+            case FUTURE_MODIFICATION:
+                updated = processModificationEventType(colleagueChangeEventPayload);
                 break;
-            case REINSTATEMENT:
-                updated = processReinstatementEventType(colleagueChangeEventPayload);
+            case DELETION:
+                updated = processDeletionEventType(colleagueChangeEventPayload);
+                break;
+            case SOURCE_SYSTEM_MODIFICATION:
+                updated = 1;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid event type " + colleagueChangeEventPayload.getEventType());
@@ -83,7 +94,6 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
                     colleagueChangeEventPayload.getColleagueUuid());
 
         }
-
     }
 
     private int processJoinerEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
@@ -113,7 +123,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     }
 
     // TODO If logic different from main flow
-    private int processMoverEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
+    private int processModificationEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
         var updated = profileService.updateColleague(colleagueChangeEventPayload.getColleagueUuid(),
                 colleagueChangeEventPayload.getChangedAttributes());
 
@@ -125,8 +135,8 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         return updated;
     }
 
-    // TODO If logic different from main flow
-    private int processReinstatementEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
+    // TODO Implement logic
+    private int processDeletionEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
         return profileService.updateColleague(colleagueChangeEventPayload.getColleagueUuid(),
                 colleagueChangeEventPayload.getChangedAttributes());
     }

@@ -26,7 +26,7 @@ public enum EventType {
      * <li>If a colleague started working for Tesco before and is just new for CF such a colleague will also be treated
      * as joiner but can be differentiated using sub-category. For such colleagues sub-Category will be importedInCF.</li>
      * <li>When a colleague was previously a leaver and joins again, he is treated as a joiner and distinguished
-     * by the rehire subcategory.</li>
+     * by the reinstatement subcategory.</li>
      * </ul>
      */
     @JsonProperty("Joiner")
@@ -76,20 +76,7 @@ public enum EventType {
     /**
      *
      */
-    DELETION("Deletion"),
-
-    /**
-     * Mover (all other changes) - established for HCM flow
-     */
-    @JsonProperty("Mover")
-    MOVER("Mover"),
-
-    /**
-     * But for IAM we also recognize one more:
-     *   Reinstatement (when resigning from leaving Tesco and coming back to work)
-     */
-    @JsonProperty("Reinstatement")
-    REINSTATEMENT("Reinstatement");
+    DELETION("Deletion");
 
     private final String value;
 

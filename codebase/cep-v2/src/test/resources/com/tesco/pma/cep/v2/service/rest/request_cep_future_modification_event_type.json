@@ -1,16 +1,16 @@
 {
-  "eventType": "Leaver",
-  "colleagueUUID": "c6b5c241-82b7-4122-9775-0d7202fd5823",
+  "eventType": "FutureModification",
+  "colleagueUUID": "b0a2ba8a-c0ce-11ea-b3de-0242ac130004",
   "effectiveFrom": "2021-03-01",
   "effectiveTo": null,
+  "subcategories": [
+    "workRelationshipUpdate"
+  ],
   "changedAttributes": [
-    "effectivity.from",
-    "effectivity.to",
-    "serviceDates.leavingDate",
-    "workRelationships.workingStatus"
+    "workRelationships.grade.code"
   ],
   "previous": {
-    "colleagueUUID": "c6b5c241-82b7-4122-9775-0d7202fd5823",
+    "colleagueUUID": "b0a2ba8a-c0ce-11ea-b3de-0242ac130004",
     "employeeId": "12345561",
     "countryCode": "GB",
     "effectivity": {
@@ -109,7 +109,7 @@
         },
         "grade": {
           "id": "300000002503024",
-          "code": "some grade"
+          "code": "B"
         },
         "position": {
           "id": "300002947054468",
@@ -145,7 +145,7 @@
     ]
   },
   "current": {
-    "colleagueUUID": "c6b5c241-82b7-4122-9775-0d7202fd5823",
+    "colleagueUUID": "b0a2ba8a-c0ce-11ea-b3de-0242ac130004",
     "employeeId": "12345561",
     "countryCode": "GB",
     "effectivity": {
@@ -194,7 +194,7 @@
     },
     "serviceDates": {
       "hireDate": "2019-04-20",
-      "leavingDate": "2021-02-28"
+      "leavingDate": null
     },
     "workRelationships": [
       {
@@ -206,7 +206,7 @@
           "endDate": "2020-12-29"
         },
         "colleagueType": "EMPLOYEE",
-        "workingStatus": "INACTIVE",
+        "workingStatus": "ACTIVE",
         "type": "PRIMARY",
         "departmentId": 300000026390802,
         "jobId": 300000026327530,
@@ -244,7 +244,7 @@
         },
         "grade": {
           "id": "300000002503024",
-          "code": "some grade"
+          "code": "C"
         },
         "position": {
           "id": "300002947054468",

@@ -102,8 +102,8 @@ class ColleagueChangesServiceTests {
             "jit, colleagues-jit-v1",
             "immediate, colleagues-immediate-v1"
     })
-    void processColleagueChangeEventWithMoverEventType(String feedCode, String feedId) {
-        processColleagueChangeEvent(feedCode, feedId, EventType.MOVER);
+    void processColleagueChangeEventWithModificationEventType(String feedCode, String feedId) {
+        processColleagueChangeEvent(feedCode, feedId, EventType.MODIFICATION);
     }
 
     @ParameterizedTest
@@ -111,8 +111,8 @@ class ColleagueChangesServiceTests {
             "jit, colleagues-jit-v1",
             "immediate, colleagues-immediate-v1"
     })
-    void processColleagueChangeEventWithReinstatementEventType(String feedCode, String feedId) {
-        processColleagueChangeEvent(feedCode, feedId, EventType.REINSTATEMENT);
+    void processColleagueChangeEventWithDeletionEventType(String feedCode, String feedId) {
+        processColleagueChangeEvent(feedCode, feedId, EventType.DELETION);
     }
 
     private void processColleagueChangeEvent(String feedCode, String feedId, EventType eventType) {

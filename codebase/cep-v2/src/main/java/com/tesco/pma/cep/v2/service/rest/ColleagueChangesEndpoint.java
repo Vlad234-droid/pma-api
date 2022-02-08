@@ -27,7 +27,7 @@ import java.util.concurrent.Executor;
 import static com.tesco.pma.cep.v2.exception.ErrorCodes.EVENT_FEED_ID_ERROR;
 
 @RestController
-@RequestMapping(path = "/colleagues")
+@RequestMapping(path = "/colleagues/v2")
 @Validated
 @Slf4j
 public class ColleagueChangesEndpoint {

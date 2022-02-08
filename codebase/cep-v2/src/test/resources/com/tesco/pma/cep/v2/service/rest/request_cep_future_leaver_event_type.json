@@ -1,10 +1,8 @@
 {
-  "eventType": "Joiner",
+  "eventType": "FutureLeaver",
   "colleagueUUID": "b0a2ba8a-c0ce-11ea-b3de-0242ac130004",
   "effectiveFrom": "2021-02-01",
-  "subcategories": [
-    "newJoiner"
-  ],
+  "effectiveTo": null,
   "current": {
     "colleagueUUID": "b0a2ba8a-c0ce-11ea-b3de-0242ac130004",
     "employeeId": "12345561",
@@ -39,21 +37,23 @@
     "contact": {
       "email": "william.smith1@tesco.com",
       "workPhoneNumber": "7567123321",
-      "addresses": {
-        "lines": [
-          "Station",
-          "Road",
-          "London"
-        ],
-        "countryCode": "GB",
-        "postcode": "OX26 1DE",
-        "city": "Bicester",
-        "county": "Oxfordshire"
-      }
+      "addresses": [
+        {
+          "lines": [
+            "Station",
+            "Road",
+            "London"
+          ],
+          "countryCode": "GB",
+          "postcode": "OX26 1DE",
+          "city": "Bicester",
+          "county": "Oxfordshire"
+        }
+      ]
     },
     "serviceDates": {
-      "hireDate": "2021-02-01",
-      "leavingDate": null
+      "hireDate": "2019-04-20",
+      "leavingDate": "2021-01-31"
     },
     "workRelationships": [
       {
@@ -65,7 +65,7 @@
           "endDate": "2020-12-29"
         },
         "colleagueType": "EMPLOYEE",
-        "workingStatus": "ACTIVE",
+        "workingStatus": "INACTIVE",
         "type": "PRIMARY",
         "departmentId": 300000026390802,
         "jobId": 300000026327530,
@@ -103,7 +103,7 @@
         },
         "grade": {
           "id": "300000002503024",
-          "code": "C"
+          "code": "some grade"
         },
         "position": {
           "id": "300002947054468",

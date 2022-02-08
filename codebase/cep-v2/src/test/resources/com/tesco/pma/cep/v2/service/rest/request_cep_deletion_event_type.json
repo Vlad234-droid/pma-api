@@ -1,0 +1,30 @@
+{
+  "eventType": "Deletion",
+  "colleagueUUID": "d158ebc0-d97d-4b2e-9e34-4bbb6099fdc6",
+  "current": {
+    "colleagueUUID": "d158ebc0-d97d-4b2e-9e34-4bbb6099fdc6",
+    "externalSystems": {
+      "sourceSystem": "OPS",
+      "iam": {
+        "id": "UKE1234567",
+        "name": "IAM",
+        "source": "OracleHCM"
+      },
+      "hcm": {
+        "id": 300000001234567,
+        "name": "Work & Pay",
+        "type": "SKINNY",
+        "migrationStatus": null
+      }
+    },
+    "profile": {
+      "title": "MR.",
+      "firstName": "William",
+      "middleName": "Jeffrey",
+      "lastName": "Smith",
+      "preferredName": "Will",
+      "dateOfBirth": "1979-12-29",
+      "gender": "M"
+    }
+  }
+}

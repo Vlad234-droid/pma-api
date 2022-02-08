@@ -10,9 +10,6 @@ public enum Subcategory {
     @JsonProperty("importedInCF")
     IMPORTED_IN_CF("importedInCF"),
 
-    @JsonProperty("rehire")
-    REHIRE("rehire"),
-
     @JsonProperty("reinstatement")
     REINSTATEMENT("reinstatement"),
 
