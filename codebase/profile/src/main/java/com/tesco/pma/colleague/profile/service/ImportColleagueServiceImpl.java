@@ -88,7 +88,7 @@ public class ImportColleagueServiceImpl implements ImportColleagueService {
         var importReport = importReportBuilder.build();
         updateRequestStatus(request, ImportRequestStatus.PROCESSED);
         saveErrors(importReport.getSkipped());
-//        sendEvents(importReport);
+        sendEvents(importReport);
 
         return importReport;
     }
