@@ -1,6 +1,8 @@
 package com.tesco.pma.review.service;
 
 import com.tesco.pma.api.MapJson;
+import com.tesco.pma.colleague.profile.service.ProfileService;
+import com.tesco.pma.configuration.MessageSourceConfig;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
@@ -92,6 +94,9 @@ class ReviewServiceImplTest {
 
     @MockBean
     private EventSender eventSender;
+
+    @MockBean
+    private ProfileService profileService;
 
     @Profile("test")
     @Configuration
