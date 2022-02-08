@@ -1,14 +1,13 @@
 package com.tesco.pma.review.service;
 
 import com.tesco.pma.api.MapJson;
-import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.cycle.service.PMCycleService;
+import com.tesco.pma.error.ApiExceptionHandler;
 import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.review.LocalTestConfig;
 import com.tesco.pma.review.dao.OrgObjectiveDAO;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
 import com.tesco.pma.review.dao.ReviewDAO;
@@ -21,9 +20,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration;
+import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Collections;
@@ -44,7 +49,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
-@SpringBootTest(classes = LocalTestConfig.class)
+@SpringBootTest(classes = ReviewServiceImplTest.LocalTestConfig.class)
 @ExtendWith(MockitoExtension.class)
 class ReviewServiceImplTest {
 
@@ -54,6 +59,9 @@ class ReviewServiceImplTest {
             Map.of(PM_REVIEW_MIN, "3",
                     PM_REVIEW_MAX, "5"
             ));
+
+    private static final UUID COLLEAGUE_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
+    private static final UUID CURRENT_USER_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0014");
 
     final static String REVIEW_NOT_FOUND_MESSAGE =
             "Review not found for: {allowedStatuses=[DRAFT, DECLINED, APPROVED], number=1, operation=DELETE, tlPointUuid=ddb9ab0b-f50f-4442-8900-b03777ee0010}";
@@ -85,8 +93,16 @@ class ReviewServiceImplTest {
     @MockBean
     private EventSender eventSender;
 
-    @MockBean
-    private ProfileService profileService;
+    @Profile("test")
+    @Configuration
+    @Import({MessageSourceAutoConfiguration.class,
+            MessageSourceConfig.class,
+            HttpMessageConvertersAutoConfiguration.class,
+            ApiExceptionHandler.class,
+            JacksonAutoConfiguration.class
+    })
+    static class LocalTestConfig {
+    }
 
     @Test
     void getReviewByUuidShouldReturnReview() {
@@ -191,7 +207,6 @@ class ReviewServiceImplTest {
     @Test
     void deleteReviewNotExists() {
         final var tlPointUUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0010");
-        final var colleagueUuid = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
         final var performanceCycleUuid = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0012");
 
         final var expectedColleagueCycle = PMColleagueCycle.builder().build();
@@ -219,7 +234,7 @@ class ReviewServiceImplTest {
         final var exception = assertThrows(NotFoundException.class,
                 () -> reviewService.deleteReview(
                         performanceCycleUuid,
-                        colleagueUuid,
+                        COLLEAGUE_UUID,
                         OBJECTIVE,
                         1));
 
@@ -227,4 +242,5 @@ class ReviewServiceImplTest {
         assertEquals(REVIEW_NOT_FOUND_MESSAGE, exception.getMessage());
 
     }
+
 }

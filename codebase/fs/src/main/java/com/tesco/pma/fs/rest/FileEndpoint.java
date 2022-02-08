@@ -31,6 +31,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -230,6 +231,44 @@ public class FileEndpoint {
 
         }
         return success(uploadedFiles);
+    }
+
+    /**
+     * DELETE call to delete file by its uuid.
+     *
+     * @param fileUuid file identifier
+     * @return a Void RestResponse
+     */
+    @Operation(summary = "Delete existing File by its uuid", description = "Delete existing file", tags = {"file"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "File deleted")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File not found", content = @Content)
+    @DeleteMapping(path = "/{fileUuid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
+    public RestResponse<Void> delete(@PathVariable("fileUuid") UUID fileUuid,
+                                     @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+        fileService.delete(fileUuid, resolveColleagueUuid(authentication));
+        return RestResponse.success();
+    }
+
+    /**
+     * POST call to delete files by its path, name and versions.
+     *
+     * @param path      file path
+     * @param fileName  file name
+     * @param versions  file versions
+     * @return a Void RestResponse
+     */
+    @Operation(summary = "Delete existing Files by its path, name and versions", description = "Delete existing files", tags = {"file"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Files deleted")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Files not found", content = @Content)
+    @DeleteMapping(path = "/versions", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isColleague()")
+    public RestResponse<Void> delete(@RequestParam("path") String path,
+                                     @RequestParam("fileName") String fileName,
+                                     @RequestParam("versions") @NotEmpty List<@NotNull Integer> versions,
+                                     @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+        fileService.deleteVersions(path, fileName, versions, resolveColleagueUuid(authentication));
+        return RestResponse.success();
     }
 
     private UUID resolveColleagueUuid(Authentication authentication) {

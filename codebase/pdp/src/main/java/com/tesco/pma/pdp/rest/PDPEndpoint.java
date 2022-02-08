@@ -3,23 +3,29 @@ package com.tesco.pma.pdp.rest;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMForm;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.file.api.File;
-import com.tesco.pma.util.ResourceProvider;
+import com.tesco.pma.pdp.domain.PDPGoal;
 import com.tesco.pma.pdp.domain.PDPResponse;
 import com.tesco.pma.pdp.service.PDPService;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
-import com.tesco.pma.pdp.domain.PDPGoal;
+import com.tesco.pma.util.ResourceProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,14 +41,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.io.FilenameUtils;
-
 import static com.tesco.pma.exception.ErrorCodes.ERROR_FILE_NOT_FOUND;
 import static com.tesco.pma.rest.RestResponse.success;
 import static com.tesco.pma.util.FileUtils.getFormName;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static com.tesco.pma.util.SecurityUtils.getColleagueUuid;
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
 @RestController
 @RequestMapping(path = "/pdp")
@@ -52,9 +55,11 @@ public class PDPEndpoint {
 
     private final PDPService pdpService;
     private final ResourceProvider resourceProvider;
+    private final NamedMessageSourceAccessor messages;
+    @Value("${tesco.application.pdp.template.key}")
+    private String templateKey;
     @Value("${tesco.application.pdp.form.key}")
     private String formKey;
-    private final NamedMessageSourceAccessor messages;
 
     /**
      * POST call to create a PDP with its Goals.
@@ -90,18 +95,18 @@ public class PDPEndpoint {
     }
 
     /**
-     * DELETE call to delete PDP Goals by its uuids.
+     * DELETE call to delete PDP Goal by its uuid.
      *
-     * @param goalUuids an identifier of goals
+     * @param goalUuid an identifier of goal
      * @return a Void RestResponse
      */
-    @Operation(summary = "Delete existing PDP Goals from a Plan by its uuids", description = "Delete existing PDP Goal", tags = {"pdp"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "PDP Goals deleted")
-    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PDP Goals not found", content = @Content)
-    @PostMapping(path = "/goals/delete", produces = MediaType.APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-    public RestResponse<Void> deleteGoals(@RequestBody List<UUID> goalUuids,
-                                          @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        pdpService.deleteGoals(getColleagueUuid(authentication), goalUuids);
+    @Operation(summary = "Delete existing PDP Goal from a Plan by its uuid", description = "Delete existing PDP Goal", tags = {"pdp"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "PDP Goal deleted")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PDP Goal not found", content = @Content)
+    @DeleteMapping(path = "/goals/{goalUuid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public RestResponse<Void> deleteGoal(@PathVariable("goalUuid") UUID goalUuid,
+                                         @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+        pdpService.deleteGoal(getColleagueUuid(authentication), goalUuid);
         return RestResponse.success();
     }
 
@@ -151,21 +156,51 @@ public class PDPEndpoint {
         return success(new PDPResponse(goals, getPMForm()));
     }
 
+    /**
+     * Returns PDP template's file
+     *
+     * @return response with downloaded file
+     * @throws NotFoundException if the template is not found
+     */
+    @Operation(summary = "Download PDP template file",
+            description = "Download PDP template file",
+            tags = "pdp")
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "File downloaded")
+    @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Invalid id supplied", content = @Content)
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File not found",
+            content = @Content(mediaType = APPLICATION_OCTET_STREAM_VALUE))
+    @ApiResponse(responseCode = HttpStatusCodes.UNAUTHORIZED, description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = HttpStatusCodes.FORBIDDEN, description = "Forbidden", content = @Content)
+    @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Internal Server Error", content = @Content)
+    @GetMapping("/template")
+    @PreAuthorize("isColleague()")
+    public ResponseEntity<Resource> downloadTemplate() {
+        try {
+            var path = FilenameUtils.getFullPathNoEndSeparator(templateKey);
+            var fileName = FilenameUtils.getName(templateKey);
+            var file = resourceProvider.readFile(path, fileName);
+            var content = file.getFileContent();
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .contentLength(content.length)
+                    .body(new ByteArrayResource(content));
+        } catch (IOException e) {
+            throw new NotFoundException(ERROR_FILE_NOT_FOUND.name(), "PDP template was not found", templateKey, e);
+        }
+    }
+
     private UUID getColleagueUuid(Authentication authentication) {
         return UUID.fromString(authentication.getName());
     }
 
     private PMForm getPMForm() {
-        File formFile;
-
-        var formName = FilenameUtils.getName(getFormName(formKey));
-        var formPath = FilenameUtils.getFullPathNoEndSeparator(formKey);
         try {
-            formFile = resourceProvider.readFile(formPath, formName);
+            var formName = FilenameUtils.getName(getFormName(formKey));
+            var formPath = FilenameUtils.getFullPathNoEndSeparator(formKey);
+            var formFile = resourceProvider.readFile(formPath, formName);
+            return new PMForm(formFile.getUuid().toString(), formKey, formKey, new String(formFile.getFileContent(), UTF_8));
         } catch (IOException e) {
-            throw new NotFoundException(ERROR_FILE_NOT_FOUND.name(), "Form was not found", formName, e);
+            throw new NotFoundException(ERROR_FILE_NOT_FOUND.name(), "Form was not found", formKey, e);
         }
-
-        return new PMForm(formFile.getUuid().toString(), formKey, formKey, new String(formFile.getFileContent(), UTF_8));
     }
 }

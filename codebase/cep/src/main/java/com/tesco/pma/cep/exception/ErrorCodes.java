@@ -7,7 +7,12 @@ public enum ErrorCodes implements ErrorCodeAware {
     /**
      * Colleague not found
      */
-    COLLEAGUE_NOT_FOUND;
+    COLLEAGUE_NOT_FOUND,
+
+    /**
+     * Invalid feed Id
+     */
+    EVENT_FEED_ID_ERROR;
 
     @Override
     public String getCode() {

@@ -269,8 +269,10 @@ tesco:
         size: 100
       subject: ${IAM_INTEGRATION_SUBJECT}
     pdp:
+      template:
+        key: pdp/templates/Personal Development Plan Template.pptx
       form:
-        key: forms/standard_pdp.form
+        key: pdp/forms/standard_pdp.form
 
 camunda:
   bpm:
