@@ -40,4 +40,20 @@
                manager_uuid="10000000-0000-0000-0000-000000000001"
                is_manager="false"
     />
+    <colleague uuid="40000000-0000-0000-0000-000000000000"
+               first_name="first_name_2"
+               middle_name="middle_name_2"
+               last_name="last_name_2"
+               email="test@test"
+               primary_entity="Tesco Bank"
+               salary_frequency="ANNUAL"
+               iam_source="Test"
+               iam_id="string 3"
+               job_id="1"
+               country_code="GB"
+               work_level="WL4"
+               department_id="1"
+               manager_uuid="10000000-0000-0000-0000-000000000001"
+               is_manager="false"
+    />
 </dataset>

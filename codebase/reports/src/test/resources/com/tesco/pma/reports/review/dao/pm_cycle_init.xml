@@ -12,4 +12,17 @@
             end_time="2021-09-21 10:45:12.448057"
             metadata="{}"
     />
+    <pm_cycle
+            uuid="20000000-1000-0000-0000-000000000000"
+            entry_config_key="entry_config_key_2"
+            template_uuid="d1810821-d1a9-48b5-9745-d0841151911f"
+            name="name"
+            status_id="1"
+            type_id="2"
+            created_by="d0e1e77c-37f2-4260-9440-bbe98ae76112"
+            creation_time="2021-09-20 10:45:12.448057"
+            start_time="2021-09-20 10:45:12.448057"
+            end_time="2021-09-21 10:45:12.448057"
+            metadata="{}"
+    />
 </dataset>

@@ -35,6 +35,8 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
 
     private static final String COLLEAGUE_UUID = "10000000-0000-0000-0000-000000000000";
     private static final Integer YEAR = 2021;
+    private static final String YEAR_PROPERTY = "year";
+    private static final String STATUSES_PROPERTY = "statuses";
 
     @Autowired
     private ReviewReportingDAO instance;
@@ -49,36 +51,36 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
     @Test
     void getLinkedObjectivesData() {
         final var requestQuery = new RequestQuery();
-        requestQuery.setFilters(List.of(new Condition("year", EQUALS, YEAR),
-                                        new Condition("statuses", IN, List.of(APPROVED.getCode(), DRAFT.getCode()))));
+        requestQuery.setFilters(List.of(new Condition(YEAR_PROPERTY, EQUALS, YEAR),
+                                        new Condition(STATUSES_PROPERTY, IN, List.of(APPROVED.getCode(), DRAFT.getCode()))));
 
         final var result = instance.getLinkedObjectivesData(requestQuery);
 
         assertNotNull(result);
 
         assertEquals(2, result.size());
-
+        final var data = result.get(1);
         assertAll("report",
-                () -> assertEquals(COLLEAGUE_UUID, result.get(1).getColleagueUUID()),
-                () -> assertEquals("string 2", result.get(1).getIamId()),
-                () -> assertEquals("first_name", result.get(1).getFirstName()),
-                () -> assertEquals("last_name", result.get(1).getLastName()),
-                () -> assertEquals("WL4", result.get(1).getWorkLevel()),
-                () -> assertEquals("Team lead", result.get(1).getJobTitle()),
-                () -> assertEquals("first_name last_name", result.get(1).getLineManager()),
-                () -> assertEquals(1, result.get(1).getObjectiveNumber()),
-                () -> assertEquals(APPROVED, result.get(1).getStatus()),
-                () -> assertEquals("Title init", result.get(1).getObjectiveTitle()),
-                () -> assertEquals("Strategic Priority", result.get(1).getStrategicPriority()),
-                () -> assertEquals("How achieved objective", result.get(1).getHowAchieved()),
-                () -> assertEquals("How overachieved objective", result.get(1).getHowOverAchieved()));
+                () -> assertEquals(COLLEAGUE_UUID, data.getColleagueUUID()),
+                () -> assertEquals("string 2", data.getIamId()),
+                () -> assertEquals("first_name", data.getFirstName()),
+                () -> assertEquals("last_name", data.getLastName()),
+                () -> assertEquals("WL4", data.getWorkLevel()),
+                () -> assertEquals("Team lead", data.getJobTitle()),
+                () -> assertEquals("first_name last_name", data.getLineManager()),
+                () -> assertEquals(1, data.getObjectiveNumber()),
+                () -> assertEquals(APPROVED, data.getStatus()),
+                () -> assertEquals("Title init", data.getObjectiveTitle()),
+                () -> assertEquals("Strategic Priority", data.getStrategicPriority()),
+                () -> assertEquals("How achieved objective", data.getHowAchieved()),
+                () -> assertEquals("How overachieved objective", data.getHowOverAchieved()));
     }
 
     @Test
     void getLinkedObjectivesDataNotExist() {
         final var requestQuery = new RequestQuery();
-        requestQuery.setFilters(List.of(new Condition("year", EQUALS, YEAR),
-                                        new Condition("statuses", IN, List.of(DECLINED.getCode()))));
+        requestQuery.setFilters(List.of(new Condition(YEAR_PROPERTY, EQUALS, YEAR),
+                                        new Condition(STATUSES_PROPERTY, IN, List.of(DECLINED.getCode()))));
         final var result = instance.getLinkedObjectivesData(requestQuery);
 
         assertTrue(result.isEmpty());
@@ -87,27 +89,26 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
     @Test
     void getColleagueTargeting() {
         final var requestQuery = new RequestQuery();
-        requestQuery.setFilters(List.of(new Condition("year", EQUALS, YEAR),
-                new Condition("statuses", IN, List.of(APPROVED.getCode(), DRAFT.getCode()))));
+        requestQuery.setFilters(List.of(new Condition(YEAR_PROPERTY, EQUALS, YEAR),
+                new Condition(STATUSES_PROPERTY, IN, List.of(APPROVED.getCode(), DRAFT.getCode()))));
 
         final var result = instance.getColleagueTargeting(requestQuery);
 
         assertNotNull(result);
 
         assertEquals(1, result.size());
-        var tags = result.get(0).getTags();
+        final var data = result.get(0);
+        var tags = data.getTags();
         assertFalse(tags.isEmpty());
 
         assertAll("colleagueTargeting",
-                () -> assertEquals("10000000-0000-0000-0000-000000000000", result.get(0).getUuid().toString()),
-                () -> assertEquals("first_name", result.get(0).getFirstName()),
-                () -> assertEquals("last_name", result.get(0).getLastName()),
-                () -> assertNull(result.get(0).getMiddleName()),
-                () -> assertNull(result.get(0).getLineManager()),
-                () -> assertEquals("first_name", result.get(0).getFirstName()),
-                () -> assertEquals("last_name", result.get(0).getLastName()),
-                () -> assertEquals("Team lead", result.get(0).getJobName()),
-                () -> assertEquals("Bank", result.get(0).getBusinessType()),
+                () -> assertEquals("10000000-0000-0000-0000-000000000000", data.getUuid().toString()),
+                () -> assertEquals("first_name", data.getFirstName()),
+                () -> assertEquals("last_name", data.getLastName()),
+                () -> assertNull(data.getMiddleName()),
+                () -> assertNull(data.getLineManager()),
+                () -> assertEquals("Team lead", data.getJobName()),
+                () -> assertEquals("Bank", data.getBusinessType()),
 
                 () -> assertEquals("1", tags.get("has_objective_approved")),
                 () -> assertEquals("0", tags.get("has_objective_submitted")),
@@ -123,5 +124,33 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
                 () -> assertEquals("1", tags.get("must_create_objective")),
                 () -> assertEquals("1", tags.get("must_create_myr")),
                 () -> assertEquals("0", tags.get("is_new_to_business")));
+    }
+
+    @Test
+    void getColleagueTargetingAnniversary() {
+        final var requestQuery = new RequestQuery();
+        requestQuery.setFilters(List.of(new Condition(YEAR_PROPERTY, EQUALS, YEAR)));
+
+        final var result = instance.getColleagueTargetingAnniversary(requestQuery);
+
+        assertNotNull(result);
+
+        assertEquals(1, result.size());
+        final var data = result.get(0);
+        var tags = data.getTags();
+        assertFalse(tags.isEmpty());
+
+        assertAll("colleagueTargetingAnniversary",
+                () -> assertEquals("40000000-0000-0000-0000-000000000000", data.getUuid().toString()),
+                () -> assertEquals("first_name_2", data.getFirstName()),
+                () -> assertEquals("last_name_2", data.getLastName()),
+                () -> assertNull(data.getLineManager()),
+                () -> assertEquals("Team lead", data.getJobName()),
+                () -> assertEquals("Bank", data.getBusinessType()),
+
+                () -> assertEquals("1", tags.get("has_eyr_approved_1_quarter")),
+                () -> assertEquals("0", tags.get("has_eyr_approved_2_quarter")),
+                () -> assertEquals("0", tags.get("has_eyr_approved_3_quarter")),
+                () -> assertEquals("1", tags.get("has_eyr_approved_4_quarter")));
     }
 }
