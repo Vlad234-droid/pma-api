@@ -127,6 +127,17 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
     }
 
     @Test
+    void getColleagueTargetingNotExist() {
+        final var requestQuery = new RequestQuery();
+        requestQuery.setFilters(List.of(new Condition(YEAR_PROPERTY, EQUALS, 2022),
+                new Condition(STATUSES_PROPERTY, IN, List.of(APPROVED.getCode(), DRAFT.getCode()))));
+
+        final var result = instance.getColleagueTargeting(requestQuery);
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
     void getColleagueTargetingAnniversary() {
         final var requestQuery = new RequestQuery();
         requestQuery.setFilters(List.of(new Condition(YEAR_PROPERTY, EQUALS, YEAR)));
