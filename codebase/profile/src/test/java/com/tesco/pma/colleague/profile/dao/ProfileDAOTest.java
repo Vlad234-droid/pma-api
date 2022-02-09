@@ -28,6 +28,8 @@ public class ProfileDAOTest extends AbstractDAOTest {
     public static final UUID COLLEAGUE_UUID = UUID.fromString("c409869b-2acf-45cd-8cc6-e13af2e6f935");
     private static final UUID COLLEAGUE_UUID_1 = UUID.fromString("119e0d2b-1dc2-409f-8198-ecd66e59d47a");
     private static final UUID MANAGER_UUID_1 = UUID.fromString("c409869b-2acf-45cd-8cc6-e13af2e6f935");
+    public static final String LEGAL_ENTITY = "Tesco Stores Limited";
+    public static final String LOCATION_ID = "INDH000001";
 
     @Autowired
     private ProfileDAO dao;
@@ -105,6 +107,8 @@ public class ProfileDAOTest extends AbstractDAOTest {
 
         assertNotNull(colleague);
         assertEquals(COLLEAGUE_UUID, colleague.getUuid());
+        assertEquals(LEGAL_ENTITY, colleague.getLegalEntity());
+        assertEquals(LOCATION_ID, colleague.getLocationId());
         assertNotNull(colleague.getCountry());
         assertNotNull(colleague.getDepartment());
         assertNotNull(colleague.getJob());
@@ -215,6 +219,8 @@ public class ProfileDAOTest extends AbstractDAOTest {
         colleague.setIamId("IAM_ID");
         colleague.setManager(true);
         colleague.setEmploymentType("ET");
+        colleague.setLocationId(LOCATION_ID);
+        colleague.setLegalEntity(LEGAL_ENTITY);
 
         dao.updateCountry(country);
         dao.updateDepartment(dep);
@@ -239,6 +245,8 @@ public class ProfileDAOTest extends AbstractDAOTest {
         assertEquals("IAM_S", saved.getIamSource());
         assertEquals("IAM_ID", saved.getIamId());
         assertEquals("ET", saved.getEmploymentType());
+        assertEquals(LEGAL_ENTITY, saved.getLegalEntity());
+        assertEquals(LOCATION_ID, saved.getLocationId());
         assertTrue(saved.isManager());
 
         colleague.setFirstName("FN_1");

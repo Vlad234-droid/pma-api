@@ -54,6 +54,8 @@ public class ColleagueEntityMapper {
                     colleague.setIamSource(getValueNullSafe(fs, "iam_source"));
                     colleague.setManagerUuid(getUuidValueNullSafe(fs, "manager_uuid"));
                     colleague.setEmploymentType(getValueNullSafe(fs, "employment_type"));
+                    colleague.setLegalEntity(getValueNullSafe(fs, "legal_employer_name"));
+                    colleague.setLocationId(getValueNullSafe(fs, "location_uuid"));
                     colleague.setHireDate(getISODate(getValueNullSafe(fs, "hire_date")));
                     colleague.setLeavingDate(getISODate(getValueNullSafe(fs, "leaving_date")));
                     colleague.setManager(getBooleanValueNullSafe(fs, "is_manager", "1"));

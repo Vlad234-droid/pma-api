@@ -1,6 +1,7 @@
 package com.tesco.pma.review.service;
 
 import com.tesco.pma.api.OrgObjectiveStatus;
+import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
@@ -79,6 +80,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final PMCycleService pmCycleService;
     private final EventSender eventSender;
+    private final ProfileService profileService;
 
     private static final String REVIEW_UUID_PARAMETER_NAME = "reviewUuid";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
@@ -263,7 +265,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public Review updateReview(Review review, UUID performanceCycleUuid, UUID colleagueUuid) {
+    public Review updateReview(Review review, UUID performanceCycleUuid, UUID colleagueUuid, UUID loggedUserUuid) {
         var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, review.getType());
         review.setTlPointUuid(timelinePoint.getUuid());
         var reviews = reviewDAO.getByParams(
@@ -281,11 +283,11 @@ public class ReviewServiceImpl implements ReviewService {
         var reviewBefore = reviews.get(0);
         review.setUuid(reviewBefore.getUuid());
         review.setNumber(reviewBefore.getNumber());
-        var updatedReview = updateReview(review);
-
+        updateReview(review);
         checkReviewStateAfterUpdate(timelinePoint);
         updateTLPointStatus(timelinePoint);
-        return updatedReview;
+        sendEvent(timelinePoint, loggedUserUuid, colleagueUuid);
+        return review;
     }
 
     private Review updateReview(Review review) {
@@ -312,7 +314,8 @@ public class ReviewServiceImpl implements ReviewService {
     public List<Review> updateReviews(UUID performanceCycleUuid,
                                       UUID colleagueUuid,
                                       PMReviewType type,
-                                      List<Review> reviews) {
+                                      List<Review> reviews,
+                                      UUID loggedUserUuid) {
         var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, type);
         List<Review> results = new ArrayList<>();
 
@@ -349,6 +352,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         checkReviewStateAfterUpdate(timelinePoint);
         updateTLPointStatus(timelinePoint);
+        sendEvent(timelinePoint, loggedUserUuid, colleagueUuid);
         return results;
     }
 
@@ -591,7 +595,7 @@ public class ReviewServiceImpl implements ReviewService {
             throw notFound(ORG_OBJECTIVES_NOT_FOUND, Map.of());
         }
         reviewAuditLogDAO.logOrgObjectiveAction(PUBLISH, loggedUserUuid);
-        sendEvent(NF_OBJECTIVES_APPROVED_FOR_SHARING_EVENT_NAME, loggedUserUuid);
+        sendEventToManager(NF_OBJECTIVES_APPROVED_FOR_SHARING_EVENT_NAME, loggedUserUuid);
         return getPublishedOrgObjectives();
     }
 
@@ -737,6 +741,18 @@ public class ReviewServiceImpl implements ReviewService {
             }
         }
         return defaultValue;
+    }
+
+    private void sendEventToManager(String eventName, UUID colleagueUuid) {
+        var colleague = profileService.findColleagueByColleagueUuid(colleagueUuid);
+        var manager = colleague.getWorkRelationships().get(0).getManager();
+
+        if (manager == null) {
+            log.info("User {} has no manager", colleagueUuid);
+            return;
+        }
+
+        sendEvent(eventName, manager.getColleagueUUID());
     }
 
     private void sendEvent(String eventName, UUID colleagueUuid) {
