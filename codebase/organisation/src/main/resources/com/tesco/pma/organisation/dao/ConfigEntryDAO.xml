@@ -27,6 +27,8 @@
         <result column="hire_date" property="hireDate"/>
         <result column="leaving_date" property="leavingDate"/>
         <result column="is_manager" property="manager"/>
+        <result column="location_id" property="locationId"/>
+        <result column="legal_entity" property="legalEntity"/>
         <association property="job" autoMapping="true" columnPrefix="j_"/>
         <association property="country" autoMapping="true" columnPrefix="co_"/>
         <association property="workLevel" autoMapping="true" columnPrefix="wl_"/>
@@ -105,6 +107,8 @@
         c.hire_date,
         c.leaving_date,
         c.is_manager,
+        c.location_id,
+        c.legal_entity,
         j.id as j_id,
         j.code as j_code,
         j.name as j_name,
