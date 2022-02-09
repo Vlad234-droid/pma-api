@@ -1,6 +1,7 @@
 package com.tesco.pma.colleague.profile.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.dao.AbstractDAOTest;
@@ -13,6 +14,7 @@ import org.springframework.test.context.DynamicPropertySource;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -109,6 +111,43 @@ public class ProfileDAOTest extends AbstractDAOTest {
         assertNotNull(colleague.getDepartment());
         assertNotNull(colleague.getJob());
         assertNotNull(colleague.getWorkLevel());
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
+    void getColleagueByWL() {
+        var colleagues = dao.getColleagueByWL(WorkLevel.WL1.name());
+
+        assertEquals(5, colleagues.size());
+
+        var colleaguesIds = colleagues.stream()
+                .map(Colleague::getColleagueUUID)
+                .map(UUID::toString)
+                .collect(Collectors.toSet());
+
+        assertTrue(colleaguesIds.contains(COLLEAGUE_UUID_1.toString()));
+        assertTrue(colleaguesIds.contains("45fd1870-9745-41c0-90b5-a902cfca6961"));
+        assertTrue(colleaguesIds.contains("b5c74f42-665d-4c9e-9b00-2682eaabe592"));
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
+    void getSubordinatesTest() {
+
+        dao.updateColleagueManager(COLLEAGUE_UUID_1, MANAGER_UUID_1);
+        dao.updateColleagueManager(UUID.fromString("03121555-7246-4b03-b2ed-718cf81d4d31"), MANAGER_UUID_1);
+
+        var colleagues = dao.getSubordinates(COLLEAGUE_UUID);
+
+        assertEquals(2, colleagues.size());
+
+        var colleaguesIds = colleagues.stream()
+                .map(Colleague::getColleagueUUID)
+                .map(UUID::toString)
+                .collect(Collectors.toSet());
+
+        assertTrue(colleaguesIds.contains(COLLEAGUE_UUID_1.toString()));
+        assertTrue(colleaguesIds.contains("03121555-7246-4b03-b2ed-718cf81d4d31"));
     }
 
     @Test
@@ -328,10 +367,7 @@ public class ProfileDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
     void findColleagueSuggestionsByFullName() {
 
-        var managerUUID = "c409869b-2acf-45cd-8cc6-e13af2e6f935";
-
-        dao.updateColleagueManager(UUID.fromString("119e0d2b-1dc2-409f-8198-ecd66e59d47a"),
-                UUID.fromString(managerUUID));
+        dao.updateColleagueManager(COLLEAGUE_UUID_1, MANAGER_UUID_1);
 
         assertEquals(8, dao.findColleagueSuggestionsByFullName(
                 createRQ(Map.of("first-name_like", "fiRst"))).size());
@@ -339,7 +375,7 @@ public class ProfileDAOTest extends AbstractDAOTest {
         var colleagues = dao.findColleagueSuggestionsByFullName(
                 createRQ(Map.of(
                         "last-name_like", "Dow",
-                        "manager-uuid_eq", managerUUID)));
+                        "manager-uuid_eq", MANAGER_UUID_1.toString())));
 
         assertEquals(1, colleagues.size());
         assertEquals(1, dao.findColleagueSuggestionsByFullName(createRQ(Map.of("first-name_like","ohn"))).size());
@@ -348,7 +384,7 @@ public class ProfileDAOTest extends AbstractDAOTest {
         var colleague = dao.findColleagueSuggestionsByFullName(createRQ(Map.of(
                 "first-name_eq", "John",
                 "last-name_eq", "Dow"
-        ))).stream().filter(col -> "119e0d2b-1dc2-409f-8198-ecd66e59d47a".equals(col.getColleagueUUID().toString())).findFirst().get();
+        ))).stream().filter(col -> COLLEAGUE_UUID_1.toString().equals(col.getColleagueUUID().toString())).findFirst().get();
 
         assertNotNull(colleague);
         assertEquals("Tesco Bank", colleague.getWorkRelationships().get(0).getPrimaryEntity());
@@ -356,7 +392,7 @@ public class ProfileDAOTest extends AbstractDAOTest {
         assertEquals("2", colleague.getWorkRelationships().get(0).getJob().getId());
         assertEquals("ANNUAL", colleague.getWorkRelationships().get(0).getSalaryFrequency());
         assertEquals("ET", colleague.getWorkRelationships().get(0).getEmploymentType());
-        assertEquals(managerUUID, colleague.getWorkRelationships().get(0).getManagerUUID().toString());
+        assertEquals(MANAGER_UUID_1.toString(), colleague.getWorkRelationships().get(0).getManagerUUID().toString());
         assertEquals("4", colleague.getWorkRelationships().get(0).getDepartment().getId());
         assertEquals("John", colleague.getProfile().getFirstName());
         assertEquals("Dow", colleague.getProfile().getLastName());

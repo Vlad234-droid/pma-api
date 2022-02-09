@@ -1,7 +1,6 @@
 package com.tesco.pma.colleague.profile.service;
 
 import com.tesco.pma.colleague.api.Colleague;
-import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
 import com.tesco.pma.colleague.profile.dao.ProfileAttributeDAO;
 import com.tesco.pma.colleague.profile.dao.ProfileDAO;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
@@ -162,8 +161,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<Colleague> getColleagueByWL(WorkLevel wl) {
-        return profileDAO.getColleagueByWL(wl);
+    public List<Colleague> getColleagueByWL(String wlCode) {
+        return profileDAO.getColleagueByWL(wlCode);
     }
 
     @Override

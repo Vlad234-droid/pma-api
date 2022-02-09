@@ -1,12 +1,10 @@
 package com.tesco.pma.colleague.profile.service;
 
 import com.tesco.pma.colleague.api.Colleague;
-import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.pagination.RequestQuery;
-import org.apache.ibatis.annotations.Param;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
@@ -105,10 +103,10 @@ public interface ProfileService {
     /**
      * Get colleague by work level
      *
-     * @param wl work level
+     * @param wlCode work level
      * @return List of colleagues
      */
-    List<Colleague> getColleagueByWL(@Param("wl") WorkLevel wl);
+    List<Colleague> getColleagueByWL(String wlCode);
 
     /**
      * Get colleague by manager id

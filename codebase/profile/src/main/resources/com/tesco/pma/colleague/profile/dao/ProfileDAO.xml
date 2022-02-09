@@ -97,7 +97,7 @@
 
     <select id="getColleagueByWL" resultMap="colleagueApiMap">
         <include refid="select"/>
-        WHERE wl_name = #{wl.name()}
+        WHERE wl.code = #{wlCode}
     </select>
 
     <select id="getSubordinates" resultMap="colleagueApiMap">
