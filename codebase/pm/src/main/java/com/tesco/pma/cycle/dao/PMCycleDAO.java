@@ -89,8 +89,4 @@ public interface PMCycleDAO {
 
     int intCreate(@Param("cycle") PMCycle cycle,
                   @Param("now") Instant now);
-
-    int updateForm(@Param("cycleUuid") UUID cycleUuid,
-                   @Param("formUuid") UUID formUuid,
-                   @Param("updatedFormUuid") UUID updatedFormUuid);
 }

@@ -6,6 +6,7 @@ import com.tesco.pma.cycle.api.CompositePMCycleMetadataResponse;
 import com.tesco.pma.cycle.api.CompositePMCycleResponse;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
+import com.tesco.pma.cycle.api.request.PMCycleUpdateFormRequest;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.exception.InvalidPayloadException;
@@ -244,12 +245,13 @@ public class PMCycleEndpoint {
             description = "Update performance cycle form",
             tags = {"performance-cycle"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle form updated")
-    @PutMapping(value = "/pm-cycles/{cycleUuid}/forms/{formUuid}")
-    public RestResponse<?> updateForm(@PathVariable("cycleUuid") final UUID cycleUuid,
-                                      @PathVariable("formUuid") final UUID formUuid,
-                                      @RequestParam UUID updatedFormUuid) {
-        service.updateForm(cycleUuid, formUuid, updatedFormUuid);
-        return success();
+    @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
+    @PutMapping(value = "/pm-cycles/{cycleUuid}/forms", produces = APPLICATION_JSON_VALUE,
+            consumes = APPLICATION_JSON_VALUE )
+    public RestResponse<PMCycle> updateForm(@PathVariable("cycleUuid") final UUID cycleUuid,
+                                      @RequestBody PMCycleUpdateFormRequest updateFormRequest) {
+
+        return success(service.updateForm(cycleUuid, updateFormRequest));
     }
 
 

@@ -275,10 +275,4 @@
         from file
         where uuid = #{uuid}
     </select>
-
-    <update id="updateForm">
-        UPDATE pm_cycle
-        SET metadata = replace(metadata::text, #{formUuid}::text, #{updatedFormUuid}::text)::jsonb
-        WHERE uuid = #{cycleUuid}
-    </update>
 </mapper>

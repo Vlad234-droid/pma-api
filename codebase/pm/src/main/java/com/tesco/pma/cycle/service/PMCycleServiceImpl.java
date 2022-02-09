@@ -13,6 +13,7 @@ import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import com.tesco.pma.cycle.api.PMForm;
 import com.tesco.pma.cycle.api.model.PMReviewElement;
+import com.tesco.pma.cycle.api.request.PMCycleUpdateFormRequest;
 import com.tesco.pma.cycle.dao.PMCycleDAO;
 import com.tesco.pma.cycle.exception.ErrorCodes;
 import com.tesco.pma.cycle.exception.PMCycleException;
@@ -32,6 +33,7 @@ import com.tesco.pma.process.api.PMRuntimeProcess;
 import com.tesco.pma.process.service.PMProcessService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -62,9 +64,11 @@ import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_BY_UUI
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_BY_UUID_AND_STATUS;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_COLLEAGUE;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_FOR_STATUS_UPDATE;
+import static com.tesco.pma.exception.ErrorCodes.ERROR_FILE_NOT_FOUND;
 import static com.tesco.pma.logging.TraceId.TRACE_ID_HEADER;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.process.api.PMProcessStatus.STARTED;
+import static com.tesco.pma.util.FileUtils.getFormName;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Set.of;
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -259,12 +263,30 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
     @Override
-    public void updateForm(UUID cycleUuid, UUID formUuid, UUID updatedFormUuid) {
-        log.debug("Updating form:{} for cycle:{}, new form uuid:{}", formUuid, cycleUuid, updatedFormUuid);
-        if (1 != cycleDAO.updateForm(cycleUuid, formUuid, updatedFormUuid)) {
+    @Transactional
+    public PMCycle updateForm(UUID cycleUuid, PMCycleUpdateFormRequest updateFormRequest) {
+        log.debug("Updating form for cycle:{}, updateFormRequest:{}", cycleUuid, updateFormRequest);
+
+        PMCycle cycle = cycleDAO.read(cycleUuid, null);
+        if (null == cycle) {
             throw notFound(PM_CYCLE_NOT_FOUND,
                     Map.of(CYCLE_UUID_PARAMETER_NAME, cycleUuid));
         }
+
+        PMForm pmFormFrom = getPMForm(updateFormRequest.getChangeFrom());
+        PMForm pmFormTo = getPMForm(updateFormRequest.getChangeTo());
+
+        cycle.getMetadata().getCycle().getTimelinePoints().stream()
+                .filter(tpe -> tpe.getType() == REVIEW)
+                .map(review -> (PMReviewElement) review)
+                .filter(rw -> rw.getForm() != null && rw.getForm().getId().equals(pmFormFrom.getId()))
+                .findAny()
+                .orElseThrow(() -> new NotFoundException(ERROR_FILE_NOT_FOUND.name(),
+                        "Form was not found for changing", pmFormFrom.getKey()))
+                .setForm(pmFormTo);
+
+        cycleDAO.update(cycle, null);
+        return cycle;
     }
 
     private void cycleFailed(String processKey, UUID uuid, Exception ex) {
@@ -480,6 +502,37 @@ public class PMCycleServiceImpl implements PMCycleService {
             return form;
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    private PMForm getPMForm(String formKey) {
+        try {
+            var formName = FilenameUtils.getName(getFormName(formKey));
+            var formPath = FilenameUtils.getFullPathNoEndSeparator(formKey);
+            var formFile = fileService.get(formPath, formName, false, null);
+            return new PMForm(formFile.getUuid().toString(), formKey, formKey, null);
+        } catch (Exception e) {
+            throw new NotFoundException(ERROR_FILE_NOT_FOUND.name(), "Form was not found", formKey, e);
+        }
+    }
+
+    private PMForm getPMForm(UUID formUuid) {
+        try {
+            var formFile = fileService.get(formUuid, false);
+            var formKey = FilenameUtils.concat(formFile.getPath(), formFile.getFileName());
+
+            return new PMForm(formFile.getUuid().toString(), formKey, formKey, null);
+        } catch (Exception e) {
+            throw new NotFoundException(ERROR_FILE_NOT_FOUND.name(), "Form was not found", formUuid.toString(), e);
+        }
+    }
+
+    private PMForm getPMForm(PMForm formRequest) {
+        try {
+            return getPMForm(UUID.fromString(formRequest.getId()));
+        } catch (Exception e) {
+            String formKey = formRequest.getKey() != null ? formRequest.getKey() : formRequest.getCode();
+            return getPMForm(formKey);
         }
     }
 }
