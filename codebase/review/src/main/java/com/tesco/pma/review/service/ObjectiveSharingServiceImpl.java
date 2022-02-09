@@ -58,7 +58,7 @@ public class ObjectiveSharingServiceImpl implements ObjectiveSharingService {
 
         }
 
-        sendEvent(NF_OBJECTIVE_SHARING_START, colleagueUuid);
+        sendEventToSubordinates(NF_OBJECTIVE_SHARING_START, colleagueUuid);
 
     }
 
@@ -72,7 +72,7 @@ public class ObjectiveSharingServiceImpl implements ObjectiveSharingService {
                                     PERFORMANCE_CYCLE_UUID_PARAMETER_NAME, cycleUuid)));
         }
 
-        sendEvent(NF_OBJECTIVE_SHARING_END, colleagueUuid);
+        sendEventToSubordinates(NF_OBJECTIVE_SHARING_END, colleagueUuid);
     }
 
     @Override
@@ -95,6 +95,11 @@ public class ObjectiveSharingServiceImpl implements ObjectiveSharingService {
             return Collections.emptyList();
         }
         return reviewService.getReviews(cycle.getUuid(), managerUuid, PMReviewType.OBJECTIVE, PMTimelinePointStatus.APPROVED);
+    }
+
+    private void sendEventToSubordinates(String eventName, UUID managerUuid) {
+        profileService.getSubordinates(managerUuid)
+                .forEach(colleague -> sendEvent(eventName, colleague.getColleagueUUID()));
     }
 
     private void sendEvent(String eventName, UUID colleagueUuid) {

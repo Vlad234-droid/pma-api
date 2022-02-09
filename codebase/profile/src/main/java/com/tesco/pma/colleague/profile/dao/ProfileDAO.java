@@ -1,6 +1,7 @@
 package com.tesco.pma.colleague.profile.dao;
 
 import com.tesco.pma.colleague.api.Colleague;
+import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.pagination.RequestQuery;
 import org.apache.ibatis.annotations.Param;
@@ -28,6 +29,23 @@ public interface ProfileDAO {
      * @return colleague object
      */
     ColleagueEntity getColleagueByIamId(@Param("iamId") String iamId);
+
+    /**
+     * Get colleague by work level
+     *
+     * @param wl work level
+     * @return List of colleagues
+     */
+    List<Colleague> getColleagueByWL(@Param("wl") WorkLevel wl);
+
+
+    /**
+     * Get colleague by manager id
+     *
+     * @param managerUuid manager identifier
+     * @return List of colleagues
+     */
+    List<Colleague> getSubordinates(@Param("uuid") UUID managerUuid);
 
     /**
      * Save work level into DB, if object already exists update it

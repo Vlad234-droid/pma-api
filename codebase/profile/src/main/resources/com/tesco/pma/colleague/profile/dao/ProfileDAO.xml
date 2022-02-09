@@ -95,6 +95,16 @@
         WHERE c.iam_id = #{iamId}
     </select>
 
+    <select id="getColleagueByWL" resultMap="colleagueApiMap">
+        <include refid="select"/>
+        WHERE wl_name = #{wl.name()}
+    </select>
+
+    <select id="getSubordinates" resultMap="colleagueApiMap">
+        <include refid="select"/>
+        WHERE c.manager_uuid = #{uuid}
+    </select>
+
     <insert id="updateWorkLevel" flushCache="true">
         INSERT INTO work_level (code, name)
         VALUES (#{workLevel.code}, #{workLevel.name}) ON CONFLICT (code) DO
