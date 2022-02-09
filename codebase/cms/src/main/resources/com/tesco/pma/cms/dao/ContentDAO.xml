@@ -29,14 +29,16 @@
                 javaType=com.tesco.pma.cms.model.ContentStatus})
     </insert>
 
+    <delete id="delete">
+        DELETE FROM cms_content WHERE id = #{id}
+    </delete>
+
 <!--    <update id="update" flushCache="true">-->
 <!--        UPDATE note_folders-->
 <!--        SET title = (#{folder.title}), owner_uuid = (#{folder.ownerColleagueUuid}), parent_uuid = (#{folder.parentFolderUuid})-->
 <!--        WHERE id = #{folder.id}-->
 <!--    </update>-->
 
-<!--    <delete id="delete">-->
-<!--        DELETE FROM note_folders WHERE id = #{id}-->
-<!--    </delete>-->
+
 
 </mapper>
