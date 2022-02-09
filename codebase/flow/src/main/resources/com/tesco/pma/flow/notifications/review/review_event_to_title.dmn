@@ -24,7 +24,7 @@
           <text>"MYR"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0exew74">
-          <text>"Mid-year before review start"</text>
+          <text>"Mid-year review is coming soon"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_122xnsy">
@@ -35,7 +35,7 @@
           <text>"MYR"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0t1y2vo">
-          <text>"Mid-year submission"</text>
+          <text>"Mid-year review submission"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_117lcnh">
@@ -46,7 +46,7 @@
           <text>"MYR"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0jj9zf9">
-          <text>"Mid-year approval"</text>
+          <text>"Mid-year review approval"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0eawc4x">
@@ -57,7 +57,7 @@
           <text>"MYR"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_01p0tho">
-          <text>"Mid-year declined"</text>
+          <text>"Mid-year review declined"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0d9dsnr">
@@ -68,7 +68,7 @@
           <text>"MYR"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1ogco7w">
-          <text>"Mid-year before review end"</text>
+          <text>"Mid-year review will be closed soon"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1mtluc9">
@@ -101,7 +101,7 @@
           <text>"EYR"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0eziy99">
-          <text>"Before year-end start"</text>
+          <text>"Year-end review is coming soon"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0htd5ki">
@@ -112,7 +112,7 @@
           <text>"EYR"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1sh4rp8">
-          <text>"Year-end submission"</text>
+          <text>"Year-end review submission"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0v5108s">
@@ -123,7 +123,7 @@
           <text>"EYR"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1mx1hxi">
-          <text>"Year-end approval"</text>
+          <text>"Year-end review approval"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_01ol67b">
@@ -134,7 +134,7 @@
           <text>"EYR"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1bqyzn8">
-          <text>"Year-end declined"</text>
+          <text>"Year-end review declined"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1xbw130">
@@ -145,7 +145,7 @@
           <text>"EYR"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0agwr1g">
-          <text>"Year-end before review end"</text>
+          <text>"Year-End review will be closed soon"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0u7erel">
@@ -178,7 +178,7 @@
           <text>"OBJECTIVE"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_110qg59">
-          <text>"Review notification"</text>
+          <text>"Objectives notification"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_15x3tsr">
@@ -189,7 +189,7 @@
           <text>"OBJECTIVE"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0srrk3g">
-          <text>"Review notification"</text>
+          <text>"Objectives notification"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_169ja8y">
@@ -200,7 +200,7 @@
           <text>"OBJECTIVE"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_164d8zp">
-          <text>"Review notification"</text>
+          <text>"Objectives notification"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_052arhu">
