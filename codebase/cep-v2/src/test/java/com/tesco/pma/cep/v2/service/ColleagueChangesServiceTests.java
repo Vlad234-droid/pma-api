@@ -103,21 +103,8 @@ class ColleagueChangesServiceTests {
             "immediate, colleagues-immediate-v1"
     })
     void processColleagueChangeEventWithModificationEventType(String feedCode, String feedId) {
-        processColleagueChangeEvent(feedCode, feedId, EventType.MODIFICATION);
-    }
 
-    @ParameterizedTest
-    @CsvSource({
-            "jit, colleagues-jit-v1",
-            "immediate, colleagues-immediate-v1"
-    })
-    void processColleagueChangeEventWithDeletionEventType(String feedCode, String feedId) {
-        processColleagueChangeEvent(feedCode, feedId, EventType.DELETION);
-    }
-
-    private void processColleagueChangeEvent(String feedCode, String feedId, EventType eventType) {
-
-        var colleagueChangeEventPayload = colleagueChangeEventPayload(eventType);
+        var colleagueChangeEventPayload = colleagueChangeEventPayload(EventType.MODIFICATION);
 
         when(mockCepSubscribeProperties.getFeeds())
                 .thenReturn(Map.of(feedCode, feedId));
@@ -132,6 +119,22 @@ class ColleagueChangesServiceTests {
         verify(mockProfileService, times(1)).findProfileByColleagueUuid(COLLEAGUE_UUID);
         verify(mockProfileService, times(1)).updateColleague(COLLEAGUE_UUID,
                 colleagueChangeEventPayload.getChangedAttributes());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "jit, colleagues-jit-v1",
+            "immediate, colleagues-immediate-v1"
+    })
+    void processColleagueChangeEventWithDeletionEventType(String feedCode, String feedId) {
+        var colleagueChangeEventPayload = colleagueChangeEventPayload(EventType.DELETION);
+
+        when(mockCepSubscribeProperties.getFeeds())
+                .thenReturn(Map.of(feedCode, feedId));
+
+        colleagueChangesService.processColleagueChangeEvent(feedId, colleagueChangeEventPayload);
+
+        verify(mockCepSubscribeProperties, times(1)).getFeeds();
     }
 
     private ColleagueChangeEventPayload colleagueChangeEventPayload(EventType eventType) {

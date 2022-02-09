@@ -20,12 +20,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.tesco.pma.cep.v2.domain.EventType.DELETION;
+import static com.tesco.pma.cep.v2.domain.EventType.SOURCE_SYSTEM_MODIFICATION;
 import static com.tesco.pma.cep.v2.exception.ErrorCodes.COLLEAGUE_NOT_FOUND;
 
 @Service
@@ -63,6 +66,11 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     }
 
     private void processColleagueChangeEvent(ColleagueChangeEventPayload colleagueChangeEventPayload) {
+
+        if (EnumSet.of(SOURCE_SYSTEM_MODIFICATION, DELETION).contains(colleagueChangeEventPayload.getEventType())) {
+            return;
+        }
+
         var updated = 0;
 
         switch (colleagueChangeEventPayload.getEventType()) {
@@ -78,12 +86,6 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
             case MODIFICATION:
             case FUTURE_MODIFICATION:
                 updated = processModificationEventType(colleagueChangeEventPayload);
-                break;
-            case DELETION:
-                updated = processDeletionEventType(colleagueChangeEventPayload);
-                break;
-            case SOURCE_SYSTEM_MODIFICATION:
-                updated = 1;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid event type " + colleagueChangeEventPayload.getEventType());
@@ -133,12 +135,6 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         }
 
         return updated;
-    }
-
-    // TODO Implement logic
-    private int processDeletionEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
-        return profileService.updateColleague(colleagueChangeEventPayload.getColleagueUuid(),
-                colleagueChangeEventPayload.getChangedAttributes());
     }
 
     private DeliveryMode resolveDeliveryModeByFeedId(String feedId) {
