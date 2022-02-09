@@ -39,14 +39,16 @@ public class CamundaExecutionContext implements ExecutionContext {
         return (T) getRawVariable(name);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <E extends Enum<E>, T> T getNullableVariable(E enu, Class<T> cls) {
-        return getNullableVariable(enu);
+        return (T) getRawVariable(enu.name());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T getNullableVariable(String name, Class<T> cls) {
-        return getNullableVariable(name);
+        return (T) getRawVariable(name);
     }
 
     @Override
