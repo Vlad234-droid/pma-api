@@ -57,6 +57,10 @@ public enum ErrorCodes implements ErrorCodeAware {
      */
     PM_COLLEAGUE_CYCLE_ALREADY_EXISTS,
     /**
+     * There are more than one colleague cycles with the same status
+     */
+    PM_COLLEAGUE_CYCLE_MORE_THAN_ONE_IN_STATUS,
+    /**
      * PM colleague does not cycle exist
      */
     PM_COLLEAGUE_CYCLE_NOT_EXIST,

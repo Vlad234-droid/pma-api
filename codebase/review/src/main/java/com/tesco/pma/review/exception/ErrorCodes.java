@@ -17,6 +17,10 @@ public enum ErrorCodes implements ErrorCodeAware {
      */
     TIMELINE_POINT_NOT_FOUND,
     /**
+     * Timeline point already exists
+     */
+    TIMELINE_POINT_ALREADY_EXISTS,
+    /**
      * Review already exists
      */
     REVIEW_ALREADY_EXISTS,
