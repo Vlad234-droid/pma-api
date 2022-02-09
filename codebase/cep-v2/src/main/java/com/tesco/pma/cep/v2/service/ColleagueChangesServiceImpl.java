@@ -2,7 +2,6 @@ package com.tesco.pma.cep.v2.service;
 
 import com.tesco.pma.cep.v2.domain.ColleagueChangeEventPayload;
 import com.tesco.pma.cep.v2.domain.DeliveryMode;
-import com.tesco.pma.cep.v2.domain.EventType;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
@@ -27,8 +26,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.tesco.pma.cep.v2.domain.EventType.DELETION;
-import static com.tesco.pma.cep.v2.domain.EventType.SOURCE_SYSTEM_MODIFICATION;
+import static com.tesco.pma.cep.v2.domain.EventType.JOINER;
+import static com.tesco.pma.cep.v2.domain.EventType.LEAVER;
+import static com.tesco.pma.cep.v2.domain.EventType.MODIFICATION;
 import static com.tesco.pma.cep.v2.exception.ErrorCodes.COLLEAGUE_NOT_FOUND;
 
 @Service
@@ -51,8 +51,13 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         log.info(String.format("Processing colleague change event %s for feed delivery mode %s",
                 colleagueChangeEventPayload, feedDeliveryMode));
 
+        // Now support only Joiner, Leaver, Modification event types
+        if (!EnumSet.of(JOINER, LEAVER, MODIFICATION).contains(colleagueChangeEventPayload.getEventType())) {
+            return;
+        }
+
         // For all event types except for Joiner profile must be existing
-        if (!EventType.JOINER.equals(colleagueChangeEventPayload.getEventType())) {
+        if (!JOINER.equals(colleagueChangeEventPayload.getEventType())) {
             Optional<ColleagueProfile> optionalColleagueProfile = profileService.findProfileByColleagueUuid(
                     colleagueChangeEventPayload.getColleagueUuid());
             if (optionalColleagueProfile.isEmpty()) {
@@ -66,25 +71,16 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     }
 
     private void processColleagueChangeEvent(ColleagueChangeEventPayload colleagueChangeEventPayload) {
-
-        if (EnumSet.of(SOURCE_SYSTEM_MODIFICATION, DELETION).contains(colleagueChangeEventPayload.getEventType())) {
-            return;
-        }
-
         var updated = 0;
 
         switch (colleagueChangeEventPayload.getEventType()) {
             case JOINER:
-            case FUTURE_JOINER:
                 updated = processJoinerEventType(colleagueChangeEventPayload);
                 break;
             case LEAVER:
-            case FUTURE_LEAVER:
-            case FUTURE_LEAVER_CANCELLED:
                 updated = processLeaverEventType(colleagueChangeEventPayload);
                 break;
             case MODIFICATION:
-            case FUTURE_MODIFICATION:
                 updated = processModificationEventType(colleagueChangeEventPayload);
                 break;
             default:
