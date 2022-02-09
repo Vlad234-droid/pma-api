@@ -45,6 +45,11 @@ spec:
             - name: http-identity
               containerPort: 8084
               protocol: TCP
+            {{- if .Values.serviceManagement.enabled }}
+            - name: http-management
+              containerPort: 8090
+              protocol: TCP
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
