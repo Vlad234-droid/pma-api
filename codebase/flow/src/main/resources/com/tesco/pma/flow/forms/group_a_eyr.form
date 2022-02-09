@@ -7,7 +7,7 @@
       "id": "Field_0hu83pj"
     },
     {
-      "text": "Have you achieved your objectives?\n\n**Strategic objectives**",
+      "text": "**Strategic objectives**\n\nHave you achieved your objectives?",
       "type": "text",
       "id": "Field_1s4fms4"
     },
@@ -37,7 +37,7 @@
     },
     {
       "key": "day_job",
-      "label": "**Day Job**",
+      "label": "**Day job**",
       "type": "textfield",
       "id": "Field_17nyw6d",
       "validate": {
@@ -165,7 +165,7 @@
       }
     },
     {
-      "text": "{auth.role:LineManager}**Line Manager**",
+      "text": "{auth.permission.read:Colleague,LineManager;auth.permission.write:LineManager}**Line Manager**",
       "type": "text",
       "id": "Field_0s73vfz"
     },
@@ -175,11 +175,10 @@
       "type": "textfield",
       "id": "Field_07w2uk5",
       "validate": {
-        "required": true,
-        "minLength": 10,
+        "required": false,
         "maxLength": 500
       },
-      "description": "{auth.role:LineManager}"
+      "description": "{auth.permission.read:Colleague,LineManager;auth.permission.write:LineManager}"
     }
   ],
   "exporter": {
