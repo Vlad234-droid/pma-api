@@ -215,7 +215,11 @@
         where 1 = 1
           and pc.type_id = 1
           and pcc.start_time between make_date(<include refid="getYear"/>, 3, 1) and (make_date(<include refid="getYear"/> + 1, 3, 1) - interval '1 day')::date
---     filters
+          <if test="!requestQuery.filters.isEmpty()">
+              <foreach collection="requestQuery.filters" item="filter" index="index" open=" AND " separator=" AND ">
+                  <include refid="getExpressionGeneral"/>
+              </foreach>
+          </if>
     </sql>
 
     <sql id="getYear">
@@ -250,7 +254,11 @@
                                on (d.id = c.department_id)
             where 1 = 1
               and pc.type_id = 2
---     filters
+              <if test="!requestQuery.filters.isEmpty()">
+                  <foreach collection="requestQuery.filters" item="filter" index="index" open=" AND " separator=" AND ">
+                      <include refid="getExpressionGeneral"/>
+                  </foreach>
+              </if>
         ),
              enriched_colleagues as
                  (
@@ -296,4 +304,90 @@
                case when ec.cnt_eyr_approved_4_quarter > 0 then '1' else '0' end as has_eyr_approved_4_quarter
         from enriched_colleagues ec;
     </select>
+
+    <sql id="prepareValuesGeneral">
+        <foreach item="value" collection="filter.value" separator="," open="(" close=")">
+            <choose>
+                <when test="filter.property == 'manager-uuid'">
+                    #{value}::uuid
+                </when>
+                <otherwise>
+                    UPPER(#{value})
+                </otherwise>
+            </choose>
+        </foreach>
+    </sql>
+
+    <sql id="prepareValueGeneral">
+        <choose>
+            <when test="filter.property == 'manager-uuid'">
+                '${filter.value}'::uuid
+            </when>
+            <otherwise>
+                UPPER('${filter.value}')
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="getExpressionGeneral">
+        <choose>
+            <when test="filter.operand.name == 'EQUALS'">
+                <include refid="getFilterFieldGeneral"/>
+                = <include refid="prepareValueGeneral"/>
+            </when>
+            <when test="filter.operand.name == 'NOT_EQUALS'">
+                <include refid="getFilterFieldGeneral"/>
+                != <include refid="prepareValueGeneral"/>
+            </when>
+            <when test="filter.operand.name == 'CONTAINS' and filter.property != 'manager-uuid'">
+                <include refid="getFilterFieldGeneral"/>
+                LIKE '%'||<include refid="prepareValueGeneral"/>||'%'
+            </when>
+            <when test="filter.operand.name == 'NOT_CONTAINS' and filter.property != 'manager-uuid'">
+                <include refid="getFilterFieldGeneral"/>
+                NOT LIKE '%'||<include refid="prepareValueGeneral"/>||'%'
+            </when>
+            <when test="filter.operand.name == 'IN'">
+                <include refid="getFilterFieldGeneral"/>
+                IN
+                <include refid="prepareValuesGeneral"/>
+            </when>
+            <when test="filter.operand.name == 'NOT_IN'">
+                <include refid="getFilterFieldGeneral"/>
+                NOT IN
+                <include refid="prepareValuesGeneral"/>
+            </when>
+            <when test="filter.operand.name == 'NULL'">
+                <if test="filter.value == 'true'">
+                    <include refid="getFilterFieldGeneral"/>
+                    IS NULL
+                </if>
+                <if test="filter.value == 'false'">
+                    <include refid="getFilterFieldGeneral"/>
+                    IS NOT NULL
+                </if>
+            </when>
+        </choose>
+    </sql>
+
+    <sql id="getFilterFieldGeneral">
+        <choose>
+            <when test="filter.property == 'work-level'">
+                UPPER(work_level)
+            </when>
+            <when test="filter.property == 'manager-uuid'">
+                manager_uuid
+            </when>
+            <when test="filter.property == 'department-id'">
+                department_id
+            </when>
+            <when test="filter.property == 'job-id'">
+                job_id
+            </when>
+            <when test="filter.property == 'year'">
+                EXTRACT(YEAR FROM pc.start_time)::varchar(10)
+            </when>
+        </choose>
+    </sql>
+
 </mapper>

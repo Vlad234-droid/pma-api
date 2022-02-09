@@ -16,6 +16,7 @@ import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DECLINED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Condition.Operand.IN;
+import static com.tesco.pma.pagination.Condition.Operand.NOT_CONTAINS;
 import static com.tesco.pma.reports.review.dao.ReviewReportingDAOTest.BASE_PATH_TO_DATA_SET;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,6 +38,7 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
     private static final Integer YEAR = 2021;
     private static final String YEAR_PROPERTY = "year";
     private static final String STATUSES_PROPERTY = "statuses";
+    private static final String MANAGER_UUID = "10000000-0000-0000-0000-00000000000a";
 
     @Autowired
     private ReviewReportingDAO instance;
@@ -66,7 +68,7 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
                 () -> assertEquals("first_name", data.getFirstName()),
                 () -> assertEquals("last_name", data.getLastName()),
                 () -> assertEquals("WL4", data.getWorkLevel()),
-                () -> assertEquals("Team lead", data.getJobTitle()),
+                () -> assertEquals("Team lead2", data.getJobTitle()),
                 () -> assertEquals("first_name last_name", data.getLineManager()),
                 () -> assertEquals(1, data.getObjectiveNumber()),
                 () -> assertEquals(APPROVED, data.getStatus()),
@@ -90,7 +92,11 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
     void getColleagueTargeting() {
         final var requestQuery = new RequestQuery();
         requestQuery.setFilters(List.of(new Condition(YEAR_PROPERTY, EQUALS, YEAR),
-                new Condition(STATUSES_PROPERTY, IN, List.of(APPROVED.getCode(), DRAFT.getCode()))));
+                new Condition("manager-uuid", EQUALS, MANAGER_UUID),
+                new Condition("work-level", IN, List.of("WL4", "WL5")),
+                new Condition("department-id", EQUALS, 2),
+                new Condition("work-level", NOT_CONTAINS, "3"),
+                new Condition("job-id", EQUALS, 2)));
 
         final var result = instance.getColleagueTargeting(requestQuery);
 
@@ -102,12 +108,12 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
         assertFalse(tags.isEmpty());
 
         assertAll("colleagueTargeting",
-                () -> assertEquals("10000000-0000-0000-0000-000000000000", data.getUuid().toString()),
+                () -> assertEquals(COLLEAGUE_UUID, data.getUuid().toString()),
                 () -> assertEquals("first_name", data.getFirstName()),
                 () -> assertEquals("last_name", data.getLastName()),
                 () -> assertNull(data.getMiddleName()),
                 () -> assertNull(data.getLineManager()),
-                () -> assertEquals("Team lead", data.getJobName()),
+                () -> assertEquals("Team lead2", data.getJobName()),
                 () -> assertEquals("Bank", data.getBusinessType()),
 
                 () -> assertEquals("1", tags.get("has_objective_approved")),
@@ -129,8 +135,7 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
     @Test
     void getColleagueTargetingNotExist() {
         final var requestQuery = new RequestQuery();
-        requestQuery.setFilters(List.of(new Condition(YEAR_PROPERTY, EQUALS, 2022),
-                new Condition(STATUSES_PROPERTY, IN, List.of(APPROVED.getCode(), DRAFT.getCode()))));
+        requestQuery.setFilters(List.of(new Condition(YEAR_PROPERTY, EQUALS, 2022)));
 
         final var result = instance.getColleagueTargeting(requestQuery);
 
@@ -140,7 +145,11 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
     @Test
     void getColleagueTargetingAnniversary() {
         final var requestQuery = new RequestQuery();
-        requestQuery.setFilters(List.of(new Condition(YEAR_PROPERTY, EQUALS, YEAR)));
+        requestQuery.setFilters(List.of(new Condition(YEAR_PROPERTY, EQUALS, YEAR),
+                new Condition("manager-uuid", IN, List.of(MANAGER_UUID)),
+                new Condition("work-level", IN, List.of("WL4", "WL5")),
+                new Condition("department-id", EQUALS, 1),
+                new Condition("job-id", EQUALS, 1)));
 
         final var result = instance.getColleagueTargetingAnniversary(requestQuery);
 
