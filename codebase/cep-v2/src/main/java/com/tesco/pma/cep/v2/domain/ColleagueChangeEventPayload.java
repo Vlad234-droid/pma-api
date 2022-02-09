@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tesco.pma.api.Identified;
-import com.tesco.pma.colleague.api.Colleague;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -66,7 +65,7 @@ public class ColleagueChangeEventPayload implements Identified<UUID> {
      * In case of some Future* events, see the description of the given event type.
      * see Colleague Revision data example below for the structure
      */
-    Colleague previous;
+    ColleagueRevision previous;
 
     /**
      * In case of events which represent the immediate change of the Colleague (e.g. Modification),
@@ -74,7 +73,7 @@ public class ColleagueChangeEventPayload implements Identified<UUID> {
      * In case of Future* events, it refers to the state of the colleague as of some date in future (effectivity.from).
      * see Colleague Revision data example below for the structure.
      */
-    Colleague current;
+    ColleagueRevision current;
 
     @Override
     public UUID getId() {
