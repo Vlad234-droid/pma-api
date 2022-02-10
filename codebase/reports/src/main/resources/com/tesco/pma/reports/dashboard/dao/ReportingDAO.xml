@@ -39,6 +39,8 @@
         <result column="has_eyr_approved_2_quarter" property="has_eyr_approved_2_quarter"/>
         <result column="has_eyr_approved_3_quarter" property="has_eyr_approved_3_quarter"/>
         <result column="has_eyr_approved_4_quarter" property="has_eyr_approved_4_quarter"/>
+        <result column="has_feedback_requested" property="has_feedback_requested"/>
+        <result column="has_feedback_given" property="has_feedback_given"/>
     </resultMap>
 
     <resultMap id="colleagueReportTargetingResultMap" type="com.tesco.pma.reports.dashboard.domain.ColleagueReportTargeting">
@@ -157,12 +159,28 @@
                                         then (pr.properties::json ->> 'what_rating')::varchar end)            as eyr_what_rating,
                             max(case
                                     when upper(ptp.code) = 'EYR'
-                                        then (pr.properties::json ->> 'how_rating')::varchar end)             as eyr_how_rating
+                                        then (pr.properties::json ->> 'how_rating')::varchar end)             as eyr_how_rating,
+                            count(
+                                     case when fr.uuid is not null then 1 end)                                as feedback_requested_cnt,
+                            count(
+                                     case when fg.uuid is not null then 1 end)                                as feedback_given_cnt
                      from filtered_colleague fc
                               left join pm_timeline_point ptp
                                         on (ptp.colleague_cycle_uuid = fc.colleague_cycle_uuid)
                               left join pm_review pr
                                         on (pr.tl_point_uuid = ptp.uuid)
+                              left join feedback fr
+                                        on (fr.target_colleague_uuid = fc.uuid
+                                            and fr.status_id in (3, 4)
+                                            and fr.created_time
+                                                between make_date(<include refid="getYear"/>, 3, 1)
+                                                    and (make_date(<include refid="getYear"/> + 1, 3, 1) - interval '1 day')::date)
+                              left join feedback fg
+                                        on (fg.target_colleague_uuid = fc.uuid
+                                            and fg.status_id in (2, 4)
+                                            and fg.updated_time
+                                                between make_date(<include refid="getYear"/>, 3, 1)
+                                                    and (make_date(<include refid="getYear"/> + 1, 3, 1) - interval '1 day')::date)
                      group by fc.uuid,
                               fc.first_name,
                               fc.last_name,
@@ -187,7 +205,9 @@
                case when ec.eyr_submitted_cnt > 0 then '1' else '0' end as has_eyr_submitted,
                case when ec.eyr_approved_cnt > 0 then '1' else '0' end as has_eyr_approved,
                coalesce(ec.eyr_what_rating,'0') as eyr_what_rating,
-               coalesce(ec.eyr_how_rating,'0') as eyr_how_rating
+               coalesce(ec.eyr_how_rating,'0') as eyr_how_rating,
+               case when ec.feedback_requested_cnt > 0 then '1' else '0' end as has_feedback_requested,
+               case when ec.feedback_given_cnt > 0 then '1' else '0' end as has_feedback_given
         from enriched_colleagues ec
     </select>
 
