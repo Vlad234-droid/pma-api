@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.tesco.pma.api.ValueType.INTEGER;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.COLLEAGUES_COUNT;
 import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.OBJECTIVES_SUBMITTED_PERCENTAGE;
 import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.OBJECTIVES_APPROVED_PERCENTAGE;
 import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.MYR_SUBMITTED_PERCENTAGE;
@@ -61,6 +62,9 @@ public class StatsReportProvider implements Reportable {
     public static final String REPORT_SHEET_NAME = "Report";
 
     enum ColumnMetadataEnum {
+        COLLEAGUES_COUNT("ColleaguesCount",
+                "ColleaguesCount", INTEGER,
+                "Total number of individuals"),
         OBJECTIVES_SUBMITTED_PERCENTAGE("ObjectivesSubmittedPercentage",
                 "ObjectivesSubmittedPercentage", INTEGER,
                 "Number of individuals with submitted objectives/all individuals with objectives to submit"),
@@ -220,6 +224,8 @@ public class StatsReportProvider implements Reportable {
 
     private List<ColumnMetadata> getColumnMetadata() {
         return List.of(
+                COLLEAGUES_COUNT.getColumnMetadata(),
+
                 OBJECTIVES_SUBMITTED_PERCENTAGE.getColumnMetadata(),
                 OBJECTIVES_APPROVED_PERCENTAGE.getColumnMetadata(),
                 MYR_SUBMITTED_PERCENTAGE.getColumnMetadata(),

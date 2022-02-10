@@ -240,6 +240,7 @@ class ReportingEndpointTest extends AbstractEndpointTest {
     private Report buildReport() {
         var reportProvider = new StatsReportProvider();
         var data = new StatsData();
+        data.setColleaguesCount(2);
         data.setObjectivesSubmittedPercentage(50);
         data.setObjectivesApprovedPercentage(100);
         data.setMyrApprovedPercentage(100);

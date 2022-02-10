@@ -19,6 +19,8 @@ import java.util.List;
 @SuppressWarnings("PMD.TooManyFields")
 public class StatsData {
 
+    int colleaguesCount;
+
     int objectivesSubmittedPercentage;
     int objectivesApprovedPercentage;
 
@@ -61,6 +63,7 @@ public class StatsData {
     public List<Object> toList() {
         var statistics = new ArrayList<>();
 
+        statistics.add(colleaguesCount);
         statistics.add(objectivesSubmittedPercentage);
         statistics.add(objectivesApprovedPercentage);
 

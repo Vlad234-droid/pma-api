@@ -75,60 +75,65 @@ public class ReportingServiceImpl implements ReportingService {
     public Report getStatsReport(RequestQuery requestQuery) {
         var targetingColleagues = getReportColleagues(requestQuery);
         var statsReportProvider = new StatsReportProvider();
-        statsReportProvider.setData(findReviewStatsData(targetingColleagues, requestQuery));
+        statsReportProvider.setData(findStatsData(targetingColleagues, requestQuery));
 
         return statsReportProvider.getReport();
     }
 
-    private List<StatsData> findReviewStatsData(List<ColleagueReportTargeting> colleagues, RequestQuery requestQuery) {
-        var reviewStatsData = new StatsData();
+    private List<StatsData> findStatsData(List<ColleagueReportTargeting> colleagues, RequestQuery requestQuery) {
+        var statsData = new StatsData();
+        statsData.setColleaguesCount(colleagues.size());
         // objectives
-        final var objectivesToSubmitCount = getCountWithTag(colleagues, MUST_CREATE_OBJECTIVE);
-        if (objectivesToSubmitCount != 0) {
-            var objectivesSubmittedPercentage =
-                    (int) (100 * getCountWithTag(colleagues, HAS_OBJECTIVE_SUBMITTED) / objectivesToSubmitCount);
-            reviewStatsData.setObjectivesSubmittedPercentage(objectivesSubmittedPercentage);
-
-            var objectivesApprovedPercentage =
-                    (int) (100 * getCountWithTag(colleagues, HAS_OBJECTIVE_APPROVED) / objectivesToSubmitCount);
-            reviewStatsData.setObjectivesApprovedPercentage(objectivesApprovedPercentage);
-        }
+        fillObjectives(statsData, colleagues);
         // myr forms submitted, approved
         final var myrToSubmitCount = getCountWithTag(colleagues, MUST_CREATE_MYR);
         final var myrApprovedCount = getCountWithTag(colleagues, HAS_MYR_APPROVED);
         if (myrToSubmitCount != 0) {
             var myrSubmittedPercentage = (int) (100 * getCountWithTag(colleagues, HAS_MYR_SUBMITTED) / myrToSubmitCount);
-            reviewStatsData.setMyrSubmittedPercentage(myrSubmittedPercentage);
+            statsData.setMyrSubmittedPercentage(myrSubmittedPercentage);
 
             var myrApprovedPercentage = (int) (100 * myrApprovedCount / myrToSubmitCount);
-            reviewStatsData.setMyrApprovedPercentage(myrApprovedPercentage);
+            statsData.setMyrApprovedPercentage(myrApprovedPercentage);
         }
         // eyr forms submitted, approved
         final var eyrToSubmitCount = getCountWithTag(colleagues, MUST_CREATE_EYR);
         final var eyrApprovedCount = getCountWithTag(colleagues, HAS_EYR_APPROVED);
         if (eyrToSubmitCount != 0) {
             var eyrSubmittedPercentage = (int) (100 * getCountWithTag(colleagues, HAS_EYR_SUBMITTED) / eyrToSubmitCount);
-            reviewStatsData.setEyrSubmittedPercentage(eyrSubmittedPercentage);
+            statsData.setEyrSubmittedPercentage(eyrSubmittedPercentage);
 
             var eyrApprovedPercentage = (int) (100 * eyrApprovedCount / eyrToSubmitCount);
-            reviewStatsData.setEyrApprovedPercentage(eyrApprovedPercentage);
+            statsData.setEyrApprovedPercentage(eyrApprovedPercentage);
         }
         // ratings
         if (myrApprovedCount != 0) {
-            fillMyrRatings(reviewStatsData, colleagues, myrApprovedCount);
+            fillMyrRatings(statsData, colleagues, myrApprovedCount);
         }
         if (eyrApprovedCount != 0) {
-            fillEyrRatings(reviewStatsData, colleagues, eyrApprovedCount);
+            fillEyrRatings(statsData, colleagues, eyrApprovedCount);
         }
         // new to business
-        reviewStatsData.setNewToBusinessCount(getCountWithTag(colleagues, IS_NEW_TO_BUSINESS));
+        statsData.setNewToBusinessCount(getCountWithTag(colleagues, IS_NEW_TO_BUSINESS));
         // anniversary reviews completed per quarter
         var colleaguesAnniversary = reportingDAO.getColleagueTargetingAnniversary(requestQuery);
         if (!CollectionUtils.isEmpty(colleaguesAnniversary)) {
-            fillAnniversaryReviewPerQuarters(reviewStatsData, colleaguesAnniversary);
+            fillAnniversaryReviewPerQuarters(statsData, colleaguesAnniversary);
         }
 
-        return List.of(reviewStatsData);
+        return List.of(statsData);
+    }
+
+    private void fillObjectives(StatsData statsData, List<ColleagueReportTargeting> colleagues) {
+        final var objectivesToSubmitCount = getCountWithTag(colleagues, MUST_CREATE_OBJECTIVE);
+        if (objectivesToSubmitCount != 0) {
+            var objectivesSubmittedPercentage =
+                    (int) (100 * getCountWithTag(colleagues, HAS_OBJECTIVE_SUBMITTED) / objectivesToSubmitCount);
+            statsData.setObjectivesSubmittedPercentage(objectivesSubmittedPercentage);
+
+            var objectivesApprovedPercentage =
+                    (int) (100 * getCountWithTag(colleagues, HAS_OBJECTIVE_APPROVED) / objectivesToSubmitCount);
+            statsData.setObjectivesApprovedPercentage(objectivesApprovedPercentage);
+        }
     }
 
     private void fillAnniversaryReviewPerQuarters(StatsData statsData, List<ColleagueReportTargeting> colleaguesAnniversary) {

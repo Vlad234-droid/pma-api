@@ -4,6 +4,13 @@
     "metadata": {
       "columnMetadata": [
         {
+          "id": "ColleaguesCount",
+          "name": "ColleaguesCount",
+          "type": "INTEGER",
+          "description": "Total number of individuals",
+          "code": "ColleaguesCount"
+        },
+        {
           "id": "ObjectivesSubmittedPercentage",
           "name": "ObjectivesSubmittedPercentage",
           "type": "INTEGER",
@@ -230,6 +237,7 @@
     },
     "data": [
       [
+        2,
         50,
         100,
         50,

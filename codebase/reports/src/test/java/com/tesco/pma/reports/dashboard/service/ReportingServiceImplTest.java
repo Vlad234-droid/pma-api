@@ -146,7 +146,8 @@ class ReportingServiceImplTest {
     @Test
     void getStatsReport() {
         final var requestQuery = new RequestQuery();
-        when(reportingDAO.getColleagueTargeting(requestQuery)).thenReturn(buildColleagueTargeting());
+        final var colleagues = buildColleagueTargeting();
+        when(reportingDAO.getColleagueTargeting(requestQuery)).thenReturn(colleagues);
         when(reportingDAO.getColleagueTargetingAnniversary(requestQuery)).thenReturn(buildColleagueTargetingAnniversary());
         when(ratingService.getOverallRating(GREAT.getDescription(), GREAT.getDescription()))
                 .thenReturn(GREAT.getDescription());
@@ -159,7 +160,7 @@ class ReportingServiceImplTest {
 
         final var res = reportingService.getStatsReport(requestQuery);
 
-        assertEquals(getReport(), res);
+        assertEquals(getReport(colleagues.size()), res);
     }
 
     @Test
@@ -180,9 +181,10 @@ class ReportingServiceImplTest {
                 .collect(Collectors.toList());
     }
 
-    private Report getReport() {
+    private Report getReport(int colleaguesCount) {
         var reportProvider = new StatsReportProvider();
         var data = new StatsData();
+        data.setColleaguesCount(colleaguesCount);
         data.setObjectivesSubmittedPercentage(50);
         data.setObjectivesApprovedPercentage(100);
         data.setMyrApprovedPercentage(100);
