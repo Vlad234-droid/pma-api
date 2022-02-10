@@ -1,5 +1,6 @@
 package com.tesco.pma.cms.dao;
 
+import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.cms.model.Content;
 import com.tesco.pma.cms.model.ContentStatus;
 import com.tesco.pma.dao.AbstractDAOTest;
@@ -14,6 +15,8 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ContentDAOTest extends AbstractDAOTest {
+
+    private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/cms/dao/";
 
     @Autowired
     private ContentDAO contentDAO;
@@ -39,4 +42,19 @@ public class ContentDAOTest extends AbstractDAOTest {
 
         assertEquals(1, contentDAO.create(content));
     }
+
+    @Test
+    void deleteTest(){
+        contentDAO.delete(UUID.fromString("d9d819fc-c1ee-4df8-a87b-d88f1c006c11"));
+
+        assertEquals(0, contentDAO.findByKey("knowledge-library/gb/content").size());
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "contents.xml"})
+    void findByKeyTest() {
+        assertEquals(1, contentDAO.findByKey("knowledge-library/gb/content").size());
+    }
+
+
 }
