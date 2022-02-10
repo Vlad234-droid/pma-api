@@ -253,7 +253,7 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Reviews not found", content = @Content)
     @GetMapping(path = "/managers/{managerUuid}/full-team-reviews",
             produces = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isColleague()")
+    @PreAuthorize("isExecutive()")
     public RestResponse<List<ColleagueView>> getFullTeamView(@PathVariable("managerUuid") UUID managerUuid) {
         return success(reviewService.getTeamView(managerUuid, 2));
     }
