@@ -1,0 +1,267 @@
+{
+  "success": true,
+  "data": {
+    "metadata": {
+      "columnMetadata": [
+        {
+          "id": "ObjectivesSubmittedPercentage",
+          "name": "ObjectivesSubmittedPercentage",
+          "type": "INTEGER",
+          "description": "Number of individuals with submitted objectives/all individuals with objectives to submit",
+          "code": "ObjectivesSubmittedPercentage"
+        },
+        {
+          "id": "ObjectivesApprovedPercentage",
+          "name": "ObjectivesApprovedPercentage",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved objectives/all individuals with objectives to submit",
+          "code": "ObjectivesApprovedPercentage"
+        },
+        {
+          "id": "MyrSubmittedPercentage",
+          "name": "MyrSubmittedPercentage",
+          "type": "INTEGER",
+          "description": "Number of individuals with submitted mid-year reviews/all individuals with reviews to submit",
+          "code": "MyrSubmittedPercentage"
+        },
+        {
+          "id": "MyrApprovedPercentage",
+          "name": "MyrApprovedPercentage",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved mid-year reviews/all individuals with reviews to submit",
+          "code": "MyrApprovedPercentage"
+        },
+        {
+          "id": "EyrSubmittedPercentage",
+          "name": "EyrSubmittedPercentage",
+          "type": "INTEGER",
+          "description": "Number of individuals with submitted end-year reviews/all individuals with reviews to submit",
+          "code": "EyrSubmittedPercentage"
+        },
+        {
+          "id": "EyrApprovedPercentage",
+          "name": "EyrApprovedPercentage",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved end-year reviews/all individuals with reviews to submit",
+          "code": "EyrApprovedPercentage"
+        },
+        {
+          "id": "MyrRatingBreakdownBelowExpectedPercentage",
+          "name": "MyrRatingBreakdownBelowExpectedPercentage",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved overall rating 'Below expected'/all individuals with approved mid-year reviews",
+          "code": "MyrRatingBreakdownBelowExpectedPercentage"
+        },
+        {
+          "id": "MyrRatingBreakdownBelowExpectedCount",
+          "name": "MyrRatingBreakdownBelowExpectedCount",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved overall rating 'Below expected' individuals count",
+          "code": "MyrRatingBreakdownBelowExpectedCount"
+        },
+        {
+          "id": "MyrRatingBreakdownSatisfactoryPercentage",
+          "name": "MyrRatingBreakdownSatisfactoryPercentage",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved overall rating 'Satisfactory'/all individuals with approved mid-year reviews",
+          "code": "MyrRatingBreakdownSatisfactoryPercentage"
+        },
+        {
+          "id": "MyrRatingBreakdownSatisfactoryCount",
+          "name": "MyrRatingBreakdownSatisfactoryCount",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved overall rating 'Satisfactory' individuals count",
+          "code": "MyrRatingBreakdownSatisfactoryCount"
+        },
+        {
+          "id": "MyrRatingBreakdownGreatPercentage",
+          "name": "MyrRatingBreakdownGreatPercentage",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved overall rating 'Great'/all individuals with approved mid-year reviews",
+          "code": "MyrRatingBreakdownGreatPercentage"
+        },
+        {
+          "id": "MyrRatingBreakdownGreatCount",
+          "name": "MyrRatingBreakdownGreatCount",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved overall rating 'Great' individuals count",
+          "code": "MyrRatingBreakdownGreatCount"
+        },
+        {
+          "id": "MyrRatingBreakdownOutstandingPercentage",
+          "name": "MyrRatingBreakdownOutstandingPercentage",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved overall rating 'Outstanding'/all individuals with approved mid-year reviews",
+          "code": "MyrRatingBreakdownOutstandingPercentage"
+        },
+        {
+          "id": "MyrRatingBreakdownOutstandingCount",
+          "name": "MyrRatingBreakdownOutstandingCount",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved overall rating 'Outstanding' individuals count",
+          "code": "MyrRatingBreakdownOutstandingCount"
+        },
+        {
+          "id": "EyrRatingBreakdownBelowExpectedPercentage",
+          "name": "EyrRatingBreakdownBelowExpectedPercentage",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved overall rating 'Below expected'/all individuals with approved end-year reviews",
+          "code": "EyrRatingBreakdownBelowExpectedPercentage"
+        },
+        {
+          "id": "EyrRatingBreakdownBelowExpectedCount",
+          "name": "EyrRatingBreakdownBelowExpectedCount",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved overall rating 'Below expected' individuals count",
+          "code": "EyrRatingBreakdownBelowExpectedCount"
+        },
+        {
+          "id": "EyrRatingBreakdownSatisfactoryPercentage",
+          "name": "EyrRatingBreakdownSatisfactoryPercentage",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved overall rating 'Satisfactory'/all individuals with approved end-year reviews",
+          "code": "EyrRatingBreakdownSatisfactoryPercentage"
+        },
+        {
+          "id": "EyrRatingBreakdownSatisfactoryCount",
+          "name": "EyrRatingBreakdownSatisfactoryCount",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved overall rating 'Satisfactory' individuals count",
+          "code": "EyrRatingBreakdownSatisfactoryCount"
+        },
+        {
+          "id": "EyrRatingBreakdownGreatPercentage",
+          "name": "EyrRatingBreakdownGreatPercentage",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved overall rating 'Great'/all individuals with approved end-year reviews",
+          "code": "EyrRatingBreakdownGreatPercentage"
+        },
+        {
+          "id": "EyrRatingBreakdownGreatCount",
+          "name": "EyrRatingBreakdownGreatCount",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved overall rating 'Great' individuals count",
+          "code": "EyrRatingBreakdownGreatCount"
+        },
+        {
+          "id": "EyrRatingBreakdownOutstandingPercentage",
+          "name": "EyrRatingBreakdownOutstandingPercentage",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved overall rating 'Outstanding'/all individuals with approved end-year reviews",
+          "code": "EyrRatingBreakdownOutstandingPercentage"
+        },
+        {
+          "id": "EyrRatingBreakdownOutstandingCount",
+          "name": "EyrRatingBreakdownOutstandingCount",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved overall rating 'Outstanding' individuals count",
+          "code": "EyrRatingBreakdownOutstandingCount"
+        },
+        {
+          "id": "NewToBusinessCount",
+          "name": "NewToBusinessCount",
+          "type": "INTEGER",
+          "description": "Number of individuals who have joined the business in the last 90 days",
+          "code": "NewToBusinessCount"
+        },
+        {
+          "id": "AnniversaryReviewPerQuarter1Percentage",
+          "name": "AnniversaryReviewPerQuarter1Percentage",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved anniversary reviews in Quarter 1/all individuals with approved anniversary reviews",
+          "code": "AnniversaryReviewPerQuarter1Percentage"
+        },
+        {
+          "id": "AnniversaryReviewPerQuarter1Count",
+          "name": "AnniversaryReviewPerQuarter1Count",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved anniversary reviews in Quarter 1",
+          "code": "AnniversaryReviewPerQuarter1Count"
+        },
+        {
+          "id": "AnniversaryReviewPerQuarter2Percentage",
+          "name": "AnniversaryReviewPerQuarter2Percentage",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved anniversary reviews in Quarter 2/all individuals with approved anniversary reviews",
+          "code": "AnniversaryReviewPerQuarter2Percentage"
+        },
+        {
+          "id": "AnniversaryReviewPerQuarter2Count",
+          "name": "AnniversaryReviewPerQuarter2Count",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved anniversary reviews in Quarter 2",
+          "code": "AnniversaryReviewPerQuarter2Count"
+        },
+        {
+          "id": "AnniversaryReviewPerQuarter3Percentage",
+          "name": "AnniversaryReviewPerQuarter3Percentage",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved anniversary reviews in Quarter 3/all individuals with approved anniversary reviews",
+          "code": "AnniversaryReviewPerQuarter3Percentage"
+        },
+        {
+          "id": "AnniversaryReviewPerQuarter3Count",
+          "name": "AnniversaryReviewPerQuarter3Count",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved anniversary reviews in Quarter 3",
+          "code": "AnniversaryReviewPerQuarter3Count"
+        },
+        {
+          "id": "AnniversaryReviewPerQuarter4Percentage",
+          "name": "AnniversaryReviewPerQuarter4Percentage",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved anniversary reviews in Quarter 4/all individuals with approved anniversary reviews",
+          "code": "AnniversaryReviewPerQuarter4Percentage"
+        },
+        {
+          "id": "AnniversaryReviewPerQuarter4Count",
+          "name": "AnniversaryReviewPerQuarter4Count",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved anniversary reviews in Quarter 4",
+          "code": "AnniversaryReviewPerQuarter4Count"
+        }
+      ],
+      "id": "review-statistics-report",
+      "code": "review-statistics-report",
+      "description": "Review Statistics Report",
+      "fileName": "ReviewStatisticsReport.xlsx",
+      "sheetName": "Report",
+      "name": "review-statistics-report"
+    },
+    "data": [
+      [
+        50,
+        100,
+        50,
+        100,
+        100,
+        100,
+        0,
+        0,
+        50,
+        1,
+        50,
+        1,
+        0,
+        0,
+        100,
+        1,
+        0,
+        0,
+        0,
+        0,
+        100,
+        1,
+        2,
+        33,
+        1,
+        66,
+        2,
+        100,
+        3,
+        33,
+        1
+      ]
+    ]
+  }
+}

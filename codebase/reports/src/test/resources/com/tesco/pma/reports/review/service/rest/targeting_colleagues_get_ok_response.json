@@ -1,0 +1,63 @@
+{
+  "success": true,
+  "data": [
+    {
+      "uuid": "10000000-0000-0000-0000-000000000000",
+      "firstName": "first_name",
+      "middleName": null,
+      "lastName": null,
+      "jobName": null,
+      "businessType": null,
+      "lineManager": null,
+      "tags": {
+        "must_create_eyr": "0",
+        "has_eyr_approved_2_quarter": "1",
+        "has_eyr_approved": "0",
+        "has_eyr_approved_3_quarter": "1",
+        "must_create_myr": "1",
+        "eyr_how_rating": "Outstanding",
+        "myr_how_rating": "Great",
+        "has_myr_approved": "1",
+        "must_create_objective": "1",
+        "eyr_what_rating": "Outstanding",
+        "has_objective_approved": "1",
+        "has_eyr_submitted": "0",
+        "has_eyr_approved_1_quarter": "1",
+        "has_objective_submitted": "0",
+        "myr_what_rating": "Great",
+        "has_myr_submitted": "0",
+        "is_new_to_business": "1",
+        "has_eyr_approved_4_quarter": "0"
+      }
+    },
+    {
+      "uuid": "20000000-0000-0000-0000-000000000000",
+      "firstName": "first_name_2",
+      "middleName": null,
+      "lastName": null,
+      "jobName": null,
+      "businessType": null,
+      "lineManager": null,
+      "tags": {
+        "must_create_eyr": "1",
+        "has_eyr_approved_2_quarter": "1",
+        "has_eyr_approved": "1",
+        "has_eyr_approved_3_quarter": "1",
+        "must_create_myr": "1",
+        "eyr_how_rating": "Below expected",
+        "myr_how_rating": "Satisfactory",
+        "has_myr_approved": "1",
+        "must_create_objective": "1",
+        "eyr_what_rating": "Below expected",
+        "has_objective_approved": "1",
+        "has_eyr_submitted": "1",
+        "has_eyr_approved_1_quarter": "0",
+        "has_objective_submitted": "1",
+        "myr_what_rating": "Satisfactory",
+        "has_myr_submitted": "1",
+        "is_new_to_business": "1",
+        "has_eyr_approved_4_quarter": "1"
+      }
+    }
+  ]
+}
