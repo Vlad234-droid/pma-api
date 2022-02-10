@@ -1,4 +1,4 @@
-package com.tesco.pma.reports.review;
+package com.tesco.pma.reports.dashboard;
 
 import com.tesco.pma.configuration.MessageSourceConfig;
 import com.tesco.pma.error.ApiExceptionHandler;

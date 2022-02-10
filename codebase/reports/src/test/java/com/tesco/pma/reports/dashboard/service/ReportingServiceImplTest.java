@@ -1,17 +1,17 @@
-package com.tesco.pma.reports.review.service;
+package com.tesco.pma.reports.dashboard.service;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.reporting.Report;
-import com.tesco.pma.reports.domain.ColleagueReportTargeting;
+import com.tesco.pma.reports.dashboard.domain.ColleagueReportTargeting;
 import com.tesco.pma.reports.rating.service.RatingService;
-import com.tesco.pma.reports.review.LocalServiceTestConfig;
-import com.tesco.pma.reports.review.dao.ReviewReportingDAO;
+import com.tesco.pma.reports.dashboard.LocalServiceTestConfig;
+import com.tesco.pma.reports.dashboard.dao.ReportingDAO;
 import com.tesco.pma.reports.review.domain.ObjectiveLinkedReviewData;
-import com.tesco.pma.reports.review.domain.ReviewStatsData;
-import com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider;
+import com.tesco.pma.reports.dashboard.domain.StatsData;
+import com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -30,47 +30,66 @@ import java.util.stream.Collectors;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Condition.Operand.IN;
-import static com.tesco.pma.reports.exception.ErrorCodes.REVIEW_REPORT_NOT_FOUND;
+import static com.tesco.pma.reports.exception.ErrorCodes.REPORT_NOT_FOUND;
 
-import static com.tesco.pma.reports.review.domain.RatingStatsData.OverallRating.GREAT;
-import static com.tesco.pma.reports.review.domain.RatingStatsData.OverallRating.OUTSTANDING;
-import static com.tesco.pma.reports.review.domain.RatingStatsData.OverallRating.SATISFACTORY;
-import static com.tesco.pma.reports.review.domain.RatingStatsData.OverallRating.BELOW_EXPECTED;
-import static com.tesco.pma.reports.review.service.ReviewReportingServiceImpl.QUERY_PARAMS;
+import static com.tesco.pma.reports.ReportingConstants.EYR_HOW_RATING;
+import static com.tesco.pma.reports.ReportingConstants.EYR_WHAT_RATING;
+import static com.tesco.pma.reports.ReportingConstants.HAS_EYR_APPROVED;
+import static com.tesco.pma.reports.ReportingConstants.HAS_EYR_APPROVED_1_QUARTER;
+import static com.tesco.pma.reports.ReportingConstants.HAS_EYR_APPROVED_2_QUARTER;
+import static com.tesco.pma.reports.ReportingConstants.HAS_EYR_APPROVED_3_QUARTER;
+import static com.tesco.pma.reports.ReportingConstants.HAS_EYR_APPROVED_4_QUARTER;
+import static com.tesco.pma.reports.ReportingConstants.HAS_EYR_SUBMITTED;
+import static com.tesco.pma.reports.ReportingConstants.HAS_MYR_APPROVED;
+import static com.tesco.pma.reports.ReportingConstants.HAS_MYR_SUBMITTED;
+import static com.tesco.pma.reports.ReportingConstants.HAS_OBJECTIVE_APPROVED;
+import static com.tesco.pma.reports.ReportingConstants.HAS_OBJECTIVE_SUBMITTED;
+import static com.tesco.pma.reports.ReportingConstants.IS_NEW_TO_BUSINESS;
+import static com.tesco.pma.reports.ReportingConstants.MUST_CREATE_EYR;
+import static com.tesco.pma.reports.ReportingConstants.MUST_CREATE_MYR;
+import static com.tesco.pma.reports.ReportingConstants.MUST_CREATE_OBJECTIVE;
+import static com.tesco.pma.reports.ReportingConstants.MYR_HOW_RATING;
+import static com.tesco.pma.reports.ReportingConstants.MYR_WHAT_RATING;
+
+import static com.tesco.pma.reports.dashboard.domain.RatingStatsData.OverallRating.GREAT;
+import static com.tesco.pma.reports.dashboard.domain.RatingStatsData.OverallRating.OUTSTANDING;
+import static com.tesco.pma.reports.dashboard.domain.RatingStatsData.OverallRating.SATISFACTORY;
+import static com.tesco.pma.reports.dashboard.domain.RatingStatsData.OverallRating.BELOW_EXPECTED;
+import static com.tesco.pma.reports.ReportingConstants.QUERY_PARAMS;
 import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
-@SpringBootTest(classes = {ReviewReportingServiceImpl.class, LocalServiceTestConfig.class})
+@SpringBootTest(classes = {ReportingServiceImpl.class, LocalServiceTestConfig.class})
 @ExtendWith(MockitoExtension.class)
-class ReviewReportingServiceImplTest {
+class ReportingServiceImplTest {
 
     private static final String COLLEAGUE_UUID = "10000000-0000-0000-0000-000000000000";
     private static final String COLLEAGUE_UUID_2 = "20000000-0000-0000-0000-000000000000";
     private static final String LINE_MANAGER_UUID = "10000000-0000-0000-0000-000000000002";
     private static final Integer YEAR = 2021;
 
-    private static final String REVIEW_REPORT_NOT_FOUND_MESSAGE = "Review report not found for: {" +
+    private static final String REPORT_NOT_FOUND_MESSAGE = "Report not found for: {" +
             QUERY_PARAMS + "=RequestQuery(offset=null, limit=null, sort=[], filters=[" +
             "Condition(property=year, operand=" + EQUALS + ", value=" + YEAR + "), " +
             "Condition(property=statuses, operand=" + IN + ", value=[" + APPROVED + "])], search=null)}";
 
-    private static final String REVIEW_REPORT_NOT_FOUND_MESSAGE_EMPTY_QUERY = "Review report not found for: {" +
+    private static final String REPORT_NOT_FOUND_MESSAGE_EMPTY_QUERY = "Report not found for: {" +
             QUERY_PARAMS + "=RequestQuery(offset=null, limit=null, sort=[], filters=[], search=null)}";
 
     @Autowired
     private NamedMessageSourceAccessor messageSourceAccessor;
 
     @MockBean
-    private ReviewReportingDAO reviewReportingDAO;
+    private ReportingDAO reportingDAO;
 
     @MockBean
     private RatingService ratingService;
 
     @Autowired
-    private ReviewReportingServiceImpl reviewReportingService;
+    private ReportingServiceImpl reportingService;
 
     @Test
     void getLinkedObjectivesData() {
@@ -80,9 +99,9 @@ class ReviewReportingServiceImplTest {
         requestQuery.setFilters(new ArrayList<>(Arrays.asList(new Condition("year", EQUALS, YEAR),
                                                               new Condition("statuses", IN, List.of(APPROVED.getCode())))));
 
-        when(reviewReportingDAO.getLinkedObjectivesData(requestQuery)).thenReturn(reportData);
+        when(reportingDAO.getLinkedObjectivesData(requestQuery)).thenReturn(reportData);
 
-        final var res = reviewReportingService.getLinkedObjectivesReport(requestQuery);
+        final var res = reportingService.getLinkedObjectivesReport(requestQuery);
 
         assertEquals(getExpectedReportData(reportData), res.getData());
     }
@@ -92,43 +111,43 @@ class ReviewReportingServiceImplTest {
         final var requestQuery = new RequestQuery();
         requestQuery.setFilters(new ArrayList<>(Arrays.asList(new Condition("year", EQUALS, YEAR),
                                                               new Condition("statuses", IN, List.of(APPROVED.getCode())))));
-        when(reviewReportingDAO.getLinkedObjectivesData(requestQuery)).thenReturn(null);
+        when(reportingDAO.getLinkedObjectivesData(requestQuery)).thenReturn(null);
 
         final var exception = assertThrows(NotFoundException.class,
-                () -> reviewReportingService.getLinkedObjectivesReport(requestQuery));
+                () -> reportingService.getLinkedObjectivesReport(requestQuery));
 
-        assertEquals(REVIEW_REPORT_NOT_FOUND.getCode(), exception.getCode());
-        assertEquals(REVIEW_REPORT_NOT_FOUND_MESSAGE, exception.getMessage());
+        assertEquals(REPORT_NOT_FOUND.getCode(), exception.getCode());
+        assertEquals(REPORT_NOT_FOUND_MESSAGE, exception.getMessage());
     }
 
     @Test
-    void getReviewReportColleaguesData() {
+    void getReportColleaguesData() {
         final var requestQuery = new RequestQuery();
         var colleagues = buildColleagueTargeting();
-        when(reviewReportingDAO.getColleagueTargeting(requestQuery)).thenReturn(colleagues);
+        when(reportingDAO.getColleagueTargeting(requestQuery)).thenReturn(colleagues);
 
-        final var res = reviewReportingService.getReviewReportColleagues(requestQuery);
+        final var res = reportingService.getReportColleagues(requestQuery);
 
         assertEquals(colleagues, res);
     }
 
     @Test
-    void getReviewReportColleaguesDataNotExists() {
+    void getReportColleaguesDataNotExists() {
         final var requestQuery = new RequestQuery();
-        when(reviewReportingDAO.getColleagueTargeting(requestQuery)).thenReturn(null);
+        when(reportingDAO.getColleagueTargeting(requestQuery)).thenReturn(null);
 
         final var exception = assertThrows(NotFoundException.class,
-                () -> reviewReportingService.getReviewReportColleagues(requestQuery));
+                () -> reportingService.getReportColleagues(requestQuery));
 
-        assertEquals(REVIEW_REPORT_NOT_FOUND.getCode(), exception.getCode());
-        assertEquals(REVIEW_REPORT_NOT_FOUND_MESSAGE_EMPTY_QUERY, exception.getMessage());
+        assertEquals(REPORT_NOT_FOUND.getCode(), exception.getCode());
+        assertEquals(REPORT_NOT_FOUND_MESSAGE_EMPTY_QUERY, exception.getMessage());
     }
 
     @Test
-    void getReviewStatsReport() {
+    void getStatsReport() {
         final var requestQuery = new RequestQuery();
-        when(reviewReportingDAO.getColleagueTargeting(requestQuery)).thenReturn(buildColleagueTargeting());
-        when(reviewReportingDAO.getColleagueTargetingAnniversary(requestQuery)).thenReturn(buildColleagueTargetingAnniversary());
+        when(reportingDAO.getColleagueTargeting(requestQuery)).thenReturn(buildColleagueTargeting());
+        when(reportingDAO.getColleagueTargetingAnniversary(requestQuery)).thenReturn(buildColleagueTargetingAnniversary());
         when(ratingService.getOverallRating(GREAT.getDescription(), GREAT.getDescription()))
                 .thenReturn(GREAT.getDescription());
         when(ratingService.getOverallRating(OUTSTANDING.getDescription(), OUTSTANDING.getDescription()))
@@ -138,21 +157,21 @@ class ReviewReportingServiceImplTest {
         when(ratingService.getOverallRating(BELOW_EXPECTED.getDescription(), BELOW_EXPECTED.getDescription()))
                 .thenReturn(BELOW_EXPECTED.getDescription());
 
-        final var res = reviewReportingService.getReviewStatsReport(requestQuery);
+        final var res = reportingService.getStatsReport(requestQuery);
 
         assertEquals(getReport(), res);
     }
 
     @Test
-    void getReviewStatsReportNotExists() {
+    void getStatsReportNotExists() {
         final var requestQuery = new RequestQuery();
-        when(reviewReportingDAO.getColleagueTargeting(requestQuery)).thenReturn(null);
+        when(reportingDAO.getColleagueTargeting(requestQuery)).thenReturn(null);
 
         final var exception = assertThrows(NotFoundException.class,
-                () -> reviewReportingService.getReviewStatsReport(requestQuery));
+                () -> reportingService.getStatsReport(requestQuery));
 
-        assertEquals(REVIEW_REPORT_NOT_FOUND.getCode(), exception.getCode());
-        assertEquals(REVIEW_REPORT_NOT_FOUND_MESSAGE_EMPTY_QUERY, exception.getMessage());
+        assertEquals(REPORT_NOT_FOUND.getCode(), exception.getCode());
+        assertEquals(REPORT_NOT_FOUND_MESSAGE_EMPTY_QUERY, exception.getMessage());
     }
 
     private List<List<Object>> getExpectedReportData(List<ObjectiveLinkedReviewData> reportData) {
@@ -162,8 +181,8 @@ class ReviewReportingServiceImplTest {
     }
 
     private Report getReport() {
-        var reportProvider = new ReviewStatsReportProvider();
-        var data = new ReviewStatsData();
+        var reportProvider = new StatsReportProvider();
+        var data = new StatsData();
         data.setObjectivesSubmittedPercentage(50);
         data.setObjectivesApprovedPercentage(100);
         data.setMyrApprovedPercentage(100);
@@ -197,39 +216,39 @@ class ReviewReportingServiceImplTest {
         colleague1.setUuid(UUID.fromString(COLLEAGUE_UUID));
         colleague1.setFirstName("first_name");
         colleague1.setTags(Map.ofEntries(
-                entry("has_objective_approved", "1"),
-                entry("has_objective_submitted", "0"),
-                entry("has_myr_approved", "1"),
-                entry("has_eyr_approved", "0"),
-                entry("myr_how_rating", GREAT.getDescription()),
-                entry("myr_what_rating", GREAT.getDescription()),
-                entry("eyr_how_rating", OUTSTANDING.getDescription()),
-                entry("eyr_what_rating", OUTSTANDING.getDescription()),
-                entry("has_myr_submitted", "0"),
-                entry("has_eyr_submitted", "0"),
-                entry("must_create_objective", "1"),
-                entry("must_create_myr", "1"),
-                entry("must_create_eyr", "0"),
-                entry("is_new_to_business", "1")));
+                entry(HAS_OBJECTIVE_APPROVED, "1"),
+                entry(HAS_OBJECTIVE_SUBMITTED, "0"),
+                entry(HAS_MYR_APPROVED, "1"),
+                entry(HAS_EYR_APPROVED, "0"),
+                entry(MYR_HOW_RATING, GREAT.getDescription()),
+                entry(MYR_WHAT_RATING, GREAT.getDescription()),
+                entry(EYR_HOW_RATING, OUTSTANDING.getDescription()),
+                entry(EYR_WHAT_RATING, OUTSTANDING.getDescription()),
+                entry(HAS_MYR_SUBMITTED, "0"),
+                entry(HAS_EYR_SUBMITTED, "0"),
+                entry(MUST_CREATE_OBJECTIVE, "1"),
+                entry(MUST_CREATE_MYR, "1"),
+                entry(MUST_CREATE_EYR, "0"),
+                entry(IS_NEW_TO_BUSINESS, "1")));
 
         var colleague2 = new ColleagueReportTargeting();
         colleague2.setUuid(UUID.fromString(LINE_MANAGER_UUID));
         colleague2.setFirstName("first_name_2");
         colleague2.setTags(Map.ofEntries(
-                entry("has_objective_approved", "1"),
-                entry("has_objective_submitted", "1"),
-                entry("has_myr_approved", "1"),
-                entry("has_eyr_approved", "1"),
-                entry("myr_how_rating", SATISFACTORY.getDescription()),
-                entry("myr_what_rating", SATISFACTORY.getDescription()),
-                entry("eyr_how_rating", BELOW_EXPECTED.getDescription()),
-                entry("eyr_what_rating", BELOW_EXPECTED.getDescription()),
-                entry("has_myr_submitted", "1"),
-                entry("has_eyr_submitted", "1"),
-                entry("must_create_objective", "1"),
-                entry("must_create_myr", "1"),
-                entry("must_create_eyr", "1"),
-                entry("is_new_to_business", "1")));
+                entry(HAS_OBJECTIVE_APPROVED, "1"),
+                entry(HAS_OBJECTIVE_SUBMITTED, "1"),
+                entry(HAS_MYR_APPROVED, "1"),
+                entry(HAS_EYR_APPROVED, "1"),
+                entry(MYR_HOW_RATING, SATISFACTORY.getDescription()),
+                entry(MYR_WHAT_RATING, SATISFACTORY.getDescription()),
+                entry(EYR_HOW_RATING, BELOW_EXPECTED.getDescription()),
+                entry(EYR_WHAT_RATING, BELOW_EXPECTED.getDescription()),
+                entry(HAS_MYR_SUBMITTED, "1"),
+                entry(HAS_EYR_SUBMITTED, "1"),
+                entry(MUST_CREATE_OBJECTIVE, "1"),
+                entry(MUST_CREATE_MYR, "1"),
+                entry(MUST_CREATE_EYR, "1"),
+                entry(IS_NEW_TO_BUSINESS, "1")));
 
         return List.of(colleague1, colleague2);
     }
@@ -239,28 +258,28 @@ class ReviewReportingServiceImplTest {
         colleague1.setUuid(UUID.fromString(COLLEAGUE_UUID));
         colleague1.setFirstName("first_name");
         colleague1.setTags(Map.ofEntries(
-                entry("has_eyr_approved_1_quarter", "0"),
-                entry("has_eyr_approved_2_quarter", "1"),
-                entry("has_eyr_approved_3_quarter", "1"),
-                entry("has_eyr_approved_4_quarter", "0")));
+                entry(HAS_EYR_APPROVED_1_QUARTER, "0"),
+                entry(HAS_EYR_APPROVED_2_QUARTER, "1"),
+                entry(HAS_EYR_APPROVED_3_QUARTER, "1"),
+                entry(HAS_EYR_APPROVED_4_QUARTER, "0")));
 
         var colleague2 = new ColleagueReportTargeting();
         colleague2.setUuid(UUID.fromString(COLLEAGUE_UUID_2));
         colleague2.setFirstName("first_name_2");
         colleague2.setTags(Map.ofEntries(
-                entry("has_eyr_approved_1_quarter", "0"),
-                entry("has_eyr_approved_2_quarter", "1"),
-                entry("has_eyr_approved_3_quarter", "1"),
-                entry("has_eyr_approved_4_quarter", "0")));
+                entry(HAS_EYR_APPROVED_1_QUARTER, "0"),
+                entry(HAS_EYR_APPROVED_2_QUARTER, "1"),
+                entry(HAS_EYR_APPROVED_3_QUARTER, "1"),
+                entry(HAS_EYR_APPROVED_4_QUARTER, "0")));
 
         var colleague3 = new ColleagueReportTargeting();
         colleague3.setUuid(UUID.fromString(LINE_MANAGER_UUID));
         colleague3.setFirstName("first_name_3");
         colleague3.setTags(Map.ofEntries(
-                entry("has_eyr_approved_1_quarter", "1"),
-                entry("has_eyr_approved_2_quarter", "0"),
-                entry("has_eyr_approved_3_quarter", "1"),
-                entry("has_eyr_approved_4_quarter", "1")));
+                entry(HAS_EYR_APPROVED_1_QUARTER, "1"),
+                entry(HAS_EYR_APPROVED_2_QUARTER, "0"),
+                entry(HAS_EYR_APPROVED_3_QUARTER, "1"),
+                entry(HAS_EYR_APPROVED_4_QUARTER, "1")));
 
         return List.of(colleague1, colleague2, colleague3);
     }

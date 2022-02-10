@@ -1,4 +1,4 @@
-package com.tesco.pma.reports.review.domain;
+package com.tesco.pma.reports.dashboard.domain;
 
 import com.tesco.pma.api.DictionaryItem;
 import lombok.AccessLevel;

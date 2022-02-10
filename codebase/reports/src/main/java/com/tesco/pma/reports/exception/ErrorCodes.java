@@ -10,9 +10,9 @@ public enum ErrorCodes implements ErrorCodeAware {
     INTERNAL_DOWNLOAD_ERROR,
 
     /**
-     * Review not found
+     * Report not found
      */
-    REVIEW_REPORT_NOT_FOUND;
+    REPORT_NOT_FOUND;
 
     @Override
     public String getCode() {

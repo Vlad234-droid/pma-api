@@ -221,12 +221,12 @@
           "code": "AnniversaryReviewPerQuarter4Count"
         }
       ],
-      "id": "review-statistics-report",
-      "code": "review-statistics-report",
-      "description": "Review Statistics Report",
-      "fileName": "ReviewStatisticsReport.xlsx",
+      "id": "statistics-report",
+      "code": "statistics-report",
+      "description": "Statistics Report",
+      "fileName": "StatisticsReport.xlsx",
       "sheetName": "Report",
-      "name": "review-statistics-report"
+      "name": "statistics-report"
     },
     "data": [
       [

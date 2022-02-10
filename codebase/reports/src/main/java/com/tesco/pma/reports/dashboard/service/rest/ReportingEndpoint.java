@@ -1,14 +1,14 @@
-package com.tesco.pma.reports.review.service.rest;
+package com.tesco.pma.reports.dashboard.service.rest;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DownloadException;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.reporting.Report;
-import com.tesco.pma.reports.domain.ColleagueReportTargeting;
+import com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider;
+import com.tesco.pma.reports.dashboard.domain.ColleagueReportTargeting;
 import com.tesco.pma.reports.exception.ErrorCodes;
 import com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider;
-import com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider;
-import com.tesco.pma.reports.review.service.ReviewReportingService;
+import com.tesco.pma.reports.dashboard.service.ReportingService;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,11 +38,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping(path = "/reports/")
 @Validated
-public class ReviewReportingEndpoint {
+public class ReportingEndpoint {
 
     static final MediaType APPLICATION_FORCE_DOWNLOAD_VALUE = new MediaType("application", "force-download");
 
-    private final ReviewReportingService reviewReportingService;
+    private final ReportingService reportingService;
     private final NamedMessageSourceAccessor messages;
 
     /**
@@ -57,7 +57,7 @@ public class ReviewReportingEndpoint {
     @GetMapping(path = ObjectiveLinkedReviewReportProvider.REPORT_NAME + "/formats/excel", produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
     public ResponseEntity<Resource> getLinkedObjectivesReportFile(RequestQuery requestQuery) {
-        var report = reviewReportingService.getLinkedObjectivesReport(requestQuery);
+        var report = reportingService.getLinkedObjectivesReport(requestQuery);
 
         var reportData = report.getData();
         var reportMetadata = report.getMetadata().getColumnMetadata();
@@ -90,7 +90,7 @@ public class ReviewReportingEndpoint {
     @GetMapping(path = ObjectiveLinkedReviewReportProvider.REPORT_NAME, produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
     public RestResponse<Report> getLinkedObjectivesReportData(RequestQuery requestQuery) {
-        return success(reviewReportingService.getLinkedObjectivesReport(requestQuery));
+        return success(reportingService.getLinkedObjectivesReport(requestQuery));
     }
 
     /**
@@ -105,7 +105,7 @@ public class ReviewReportingEndpoint {
     @GetMapping(path = "targeting-colleagues", produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
     public RestResponse<List<ColleagueReportTargeting>> getReviewReportColleagues(RequestQuery requestQuery) {
-        return success(reviewReportingService.getReviewReportColleagues(requestQuery));
+        return success(reportingService.getReportColleagues(requestQuery));
     }
 
     /**
@@ -114,12 +114,12 @@ public class ReviewReportingEndpoint {
      * @param requestQuery -  filters
      * @return a RestResponse parameterized with review statistics report data
      */
-    @Operation(summary = "Get Review Statistics Report Data by year of cycle and statuses of review", tags = {"report"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the Review Statistics Report data")
-    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Review Statistics Report data not found", content = @Content)
-    @GetMapping(path = ReviewStatsReportProvider.REPORT_NAME, produces = APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get Statistics Report Data with filters", tags = {"report"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the Statistics Report data")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Statistics Report data not found", content = @Content)
+    @GetMapping(path = StatsReportProvider.REPORT_NAME, produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
-    public RestResponse<Report> getReviewStatsReport(RequestQuery requestQuery) {
-        return success(reviewReportingService.getReviewStatsReport(requestQuery));
+    public RestResponse<Report> getStatsReport(RequestQuery requestQuery) {
+        return success(reportingService.getStatsReport(requestQuery));
     }
 }

@@ -1,13 +1,13 @@
-package com.tesco.pma.reports.review.dao;
+package com.tesco.pma.reports.dashboard.dao;
 
 import com.tesco.pma.pagination.RequestQuery;
-import com.tesco.pma.reports.domain.ColleagueReportTargeting;
+import com.tesco.pma.reports.dashboard.domain.ColleagueReportTargeting;
 import com.tesco.pma.reports.review.domain.ObjectiveLinkedReviewData;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface ReviewReportingDAO {
+public interface ReportingDAO {
 
     /**
      * Find Objectives linked with reviews

@@ -1,4 +1,4 @@
-package com.tesco.pma.reports.review.domain;
+package com.tesco.pma.reports.dashboard.domain;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Review report statistics data
+ * Report statistics data
  */
 @EqualsAndHashCode
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @SuppressWarnings("PMD.TooManyFields")
-public class ReviewStatsData {
+public class StatsData {
 
     int objectivesSubmittedPercentage;
     int objectivesApprovedPercentage;

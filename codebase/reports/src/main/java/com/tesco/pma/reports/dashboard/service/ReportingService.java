@@ -1,17 +1,17 @@
-package com.tesco.pma.reports.review.service;
+package com.tesco.pma.reports.dashboard.service;
 
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.reporting.Report;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.reports.domain.ColleagueReportTargeting;
+import com.tesco.pma.reports.dashboard.domain.ColleagueReportTargeting;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * Service for mapping data management
+ * Service for reporting data
  */
-public interface ReviewReportingService {
+public interface ReportingService {
 
     /**
      * Find Objectives linked with reviews
@@ -28,13 +28,13 @@ public interface ReviewReportingService {
      * @return colleagues with tags
      * @throws NotFoundException if colleagues don't exist.
      */
-    List<ColleagueReportTargeting> getReviewReportColleagues(@NotNull RequestQuery requestQuery);
+    List<ColleagueReportTargeting> getReportColleagues(@NotNull RequestQuery requestQuery);
 
     /**
-     * Get review statistics report
+     * Get statistics report
      * @param requestQuery - parameters for filters
-     * @return review statistics report data
+     * @return statistics report data
      * @throws NotFoundException if colleagues with tags don't exist.
      */
-    Report getReviewStatsReport(@NotNull RequestQuery requestQuery);
+    Report getStatsReport(@NotNull RequestQuery requestQuery);
 }

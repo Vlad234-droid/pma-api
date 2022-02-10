@@ -1,4 +1,4 @@
-package com.tesco.pma.reports.domain;
+package com.tesco.pma.reports.dashboard.domain;
 
 import com.tesco.pma.colleague.api.ColleagueSimple;
 import lombok.AccessLevel;

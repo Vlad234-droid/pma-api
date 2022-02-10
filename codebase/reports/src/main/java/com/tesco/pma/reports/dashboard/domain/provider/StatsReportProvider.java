@@ -1,10 +1,10 @@
-package com.tesco.pma.reports.review.domain.provider;
+package com.tesco.pma.reports.dashboard.domain.provider;
 
 import com.tesco.pma.api.ValueType;
 import com.tesco.pma.reporting.ReportMetadata;
 import com.tesco.pma.reporting.Reportable;
 import com.tesco.pma.reporting.metadata.ColumnMetadata;
-import com.tesco.pma.reports.review.domain.ReviewStatsData;
+import com.tesco.pma.reports.dashboard.domain.StatsData;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,50 +14,50 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.tesco.pma.api.ValueType.INTEGER;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.OBJECTIVES_SUBMITTED_PERCENTAGE;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.OBJECTIVES_APPROVED_PERCENTAGE;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.MYR_SUBMITTED_PERCENTAGE;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.MYR_APPROVED_PERCENTAGE;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.EYR_SUBMITTED_PERCENTAGE;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.EYR_APPROVED_PERCENTAGE;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.MYR_RATING_BREAKDOWN_BELOW_EXPECTED_PERCENTAGE;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.MYR_RATING_BREAKDOWN_BELOW_EXPECTED_COUNT;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.MYR_RATING_BREAKDOWN_SATISFACTORY_PERCENTAGE;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.MYR_RATING_BREAKDOWN_SATISFACTORY_COUNT;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.MYR_RATING_BREAKDOWN_GREAT_PERCENTAGE;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.MYR_RATING_BREAKDOWN_GREAT_COUNT;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.MYR_RATING_BREAKDOWN_OUTSTANDING_PERCENTAGE;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.MYR_RATING_BREAKDOWN_OUTSTANDING_COUNT;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.OBJECTIVES_SUBMITTED_PERCENTAGE;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.OBJECTIVES_APPROVED_PERCENTAGE;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.MYR_SUBMITTED_PERCENTAGE;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.MYR_APPROVED_PERCENTAGE;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.EYR_SUBMITTED_PERCENTAGE;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.EYR_APPROVED_PERCENTAGE;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.MYR_RATING_BREAKDOWN_BELOW_EXPECTED_PERCENTAGE;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.MYR_RATING_BREAKDOWN_BELOW_EXPECTED_COUNT;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.MYR_RATING_BREAKDOWN_SATISFACTORY_PERCENTAGE;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.MYR_RATING_BREAKDOWN_SATISFACTORY_COUNT;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.MYR_RATING_BREAKDOWN_GREAT_PERCENTAGE;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.MYR_RATING_BREAKDOWN_GREAT_COUNT;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.MYR_RATING_BREAKDOWN_OUTSTANDING_PERCENTAGE;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.MYR_RATING_BREAKDOWN_OUTSTANDING_COUNT;
 
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.EYR_RATING_BREAKDOWN_BELOW_EXPECTED_PERCENTAGE;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.EYR_RATING_BREAKDOWN_BELOW_EXPECTED_COUNT;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.EYR_RATING_BREAKDOWN_SATISFACTORY_PERCENTAGE;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.EYR_RATING_BREAKDOWN_SATISFACTORY_COUNT;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.EYR_RATING_BREAKDOWN_GREAT_PERCENTAGE;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.EYR_RATING_BREAKDOWN_GREAT_COUNT;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.EYR_RATING_BREAKDOWN_OUTSTANDING_PERCENTAGE;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.EYR_RATING_BREAKDOWN_OUTSTANDING_COUNT;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.NEW_TO_BUSINESS_COUNT;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_1_PERCENTAGE;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_1_COUNT;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_2_PERCENTAGE;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_2_COUNT;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_3_PERCENTAGE;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_3_COUNT;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_4_PERCENTAGE;
-import static com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_4_COUNT;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.EYR_RATING_BREAKDOWN_BELOW_EXPECTED_PERCENTAGE;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.EYR_RATING_BREAKDOWN_BELOW_EXPECTED_COUNT;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.EYR_RATING_BREAKDOWN_SATISFACTORY_PERCENTAGE;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.EYR_RATING_BREAKDOWN_SATISFACTORY_COUNT;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.EYR_RATING_BREAKDOWN_GREAT_PERCENTAGE;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.EYR_RATING_BREAKDOWN_GREAT_COUNT;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.EYR_RATING_BREAKDOWN_OUTSTANDING_PERCENTAGE;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.EYR_RATING_BREAKDOWN_OUTSTANDING_COUNT;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.NEW_TO_BUSINESS_COUNT;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_1_PERCENTAGE;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_1_COUNT;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_2_PERCENTAGE;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_2_COUNT;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_3_PERCENTAGE;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_3_COUNT;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_4_PERCENTAGE;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_4_COUNT;
 
 /**
- * Review Statistics Report with data, metadata
+ * Statistics Report with data, metadata
  */
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ReviewStatsReportProvider implements Reportable {
+public class StatsReportProvider implements Reportable {
 
-    public static final String REPORT_NAME = "review-statistics-report";
-    public static final String REPORT_DESCRIPTION = "Review Statistics Report";
-    public static final String REPORT_FILE_NAME = "ReviewStatisticsReport.xlsx";
+    public static final String REPORT_NAME = "statistics-report";
+    public static final String REPORT_DESCRIPTION = "Statistics Report";
+    public static final String REPORT_FILE_NAME = "StatisticsReport.xlsx";
     public static final String REPORT_SHEET_NAME = "Report";
 
     enum ColumnMetadataEnum {
@@ -197,7 +197,7 @@ public class ReviewStatsReportProvider implements Reportable {
         }
     }
 
-    List<ReviewStatsData> data;
+    List<StatsData> data;
 
     @Override
     public List<List<Object>> getReportData() {

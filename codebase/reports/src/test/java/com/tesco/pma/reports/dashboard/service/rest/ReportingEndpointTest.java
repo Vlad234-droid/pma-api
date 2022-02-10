@@ -1,15 +1,15 @@
-package com.tesco.pma.reports.review.service.rest;
+package com.tesco.pma.reports.dashboard.service.rest;
 
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.reporting.Report;
-import com.tesco.pma.reports.domain.ColleagueReportTargeting;
-import com.tesco.pma.reports.review.LocalTestConfig;
-import com.tesco.pma.reports.review.domain.ReviewStatsData;
+import com.tesco.pma.reports.dashboard.domain.ColleagueReportTargeting;
+import com.tesco.pma.reports.dashboard.LocalTestConfig;
+import com.tesco.pma.reports.dashboard.domain.StatsData;
 import com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider;
-import com.tesco.pma.reports.review.domain.provider.ReviewStatsReportProvider;
-import com.tesco.pma.reports.review.service.ReviewReportingService;
+import com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider;
+import com.tesco.pma.reports.dashboard.service.ReportingService;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -23,11 +23,31 @@ import java.util.UUID;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Condition.Operand.IN;
-import static com.tesco.pma.reports.review.domain.RatingStatsData.OverallRating.BELOW_EXPECTED;
-import static com.tesco.pma.reports.review.domain.RatingStatsData.OverallRating.GREAT;
-import static com.tesco.pma.reports.review.domain.RatingStatsData.OverallRating.OUTSTANDING;
-import static com.tesco.pma.reports.review.domain.RatingStatsData.OverallRating.SATISFACTORY;
-import static com.tesco.pma.reports.review.service.rest.ReviewReportingEndpoint.APPLICATION_FORCE_DOWNLOAD_VALUE;
+
+import static com.tesco.pma.reports.ReportingConstants.EYR_HOW_RATING;
+import static com.tesco.pma.reports.ReportingConstants.EYR_WHAT_RATING;
+import static com.tesco.pma.reports.ReportingConstants.HAS_EYR_APPROVED;
+import static com.tesco.pma.reports.ReportingConstants.HAS_EYR_APPROVED_1_QUARTER;
+import static com.tesco.pma.reports.ReportingConstants.HAS_EYR_APPROVED_2_QUARTER;
+import static com.tesco.pma.reports.ReportingConstants.HAS_EYR_APPROVED_3_QUARTER;
+import static com.tesco.pma.reports.ReportingConstants.HAS_EYR_APPROVED_4_QUARTER;
+import static com.tesco.pma.reports.ReportingConstants.HAS_EYR_SUBMITTED;
+import static com.tesco.pma.reports.ReportingConstants.HAS_MYR_APPROVED;
+import static com.tesco.pma.reports.ReportingConstants.HAS_MYR_SUBMITTED;
+import static com.tesco.pma.reports.ReportingConstants.HAS_OBJECTIVE_APPROVED;
+import static com.tesco.pma.reports.ReportingConstants.HAS_OBJECTIVE_SUBMITTED;
+import static com.tesco.pma.reports.ReportingConstants.IS_NEW_TO_BUSINESS;
+import static com.tesco.pma.reports.ReportingConstants.MUST_CREATE_EYR;
+import static com.tesco.pma.reports.ReportingConstants.MUST_CREATE_MYR;
+import static com.tesco.pma.reports.ReportingConstants.MUST_CREATE_OBJECTIVE;
+import static com.tesco.pma.reports.ReportingConstants.MYR_HOW_RATING;
+import static com.tesco.pma.reports.ReportingConstants.MYR_WHAT_RATING;
+
+import static com.tesco.pma.reports.dashboard.domain.RatingStatsData.OverallRating.BELOW_EXPECTED;
+import static com.tesco.pma.reports.dashboard.domain.RatingStatsData.OverallRating.GREAT;
+import static com.tesco.pma.reports.dashboard.domain.RatingStatsData.OverallRating.OUTSTANDING;
+import static com.tesco.pma.reports.dashboard.domain.RatingStatsData.OverallRating.SATISFACTORY;
+import static com.tesco.pma.reports.dashboard.service.rest.ReportingEndpoint.APPLICATION_FORCE_DOWNLOAD_VALUE;
 
 import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -39,9 +59,9 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = ReviewReportingEndpoint.class)
-@ContextConfiguration(classes = {LocalTestConfig.class, ReviewReportingEndpoint.class})
-class ReviewReportingEndpointTest extends AbstractEndpointTest {
+@WebMvcTest(controllers = ReportingEndpoint.class)
+@ContextConfiguration(classes = {LocalTestConfig.class, ReportingEndpoint.class})
+class ReportingEndpointTest extends AbstractEndpointTest {
 
     private static final String COLLEAGUE_UUID_STR = "10000000-0000-0000-0000-000000000000";
     private static final String COLLEAGUE_UUID_STR_2 = "20000000-0000-0000-0000-000000000000";
@@ -50,13 +70,13 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
     private static final String LINKED_OBJECTIVE_REVIEW_REPORT_URL = REPORTS_URL + "linked-objective-report/formats/excel";
     private static final String LINKED_OBJECTIVE_REVIEW_REPORT_DATA_URL = REPORTS_URL + ObjectiveLinkedReviewReportProvider.REPORT_NAME;
     private static final String LINKED_OBJECTIVES_REPORT_GET_RESPONSE_JSON_FILE_NAME = "linked_objectives_report_get_ok_response.json";
-    private static final String REVIEW_STATS_REPORT_GET_RESPONSE_JSON_FILE_NAME = "review_stats_report_get_ok_response.json";
+    private static final String STATS_REPORT_GET_RESPONSE_JSON_FILE_NAME = "stats_report_get_ok_response.json";
     private static final String TARGETING_COLLEAGUES_GET_RESPONSE_JSON_FILE_NAME = "targeting_colleagues_get_ok_response.json";
     private static final String TARGETING_COLLEAGUES_DATA_URL = REPORTS_URL + "targeting-colleagues";
-    private static final String REVIEW_STATS_REPORT_DATA_URL = REPORTS_URL + ReviewStatsReportProvider.REPORT_NAME;
+    private static final String STATS_REPORT_DATA_URL = REPORTS_URL + StatsReportProvider.REPORT_NAME;
 
     @MockBean
-    private ReviewReportingService service;
+    private ReportingService service;
 
     @Test
     void getLinkedObjectivesReport() throws Exception {
@@ -115,9 +135,9 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getReviewReportColleagues() throws Exception {
+    void getReportColleagues() throws Exception {
         var requestQuery = buildRequestQuery();
-        when(service.getReviewReportColleagues(any())).thenReturn(buildColleagueTargeting());
+        when(service.getReportColleagues(any())).thenReturn(buildColleagueTargeting());
 
         var result = performGetWith(talentAdmin(), status().isOk(), TARGETING_COLLEAGUES_DATA_URL, requestQuery);
 
@@ -125,14 +145,14 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getReviewReportColleaguesIfNotFound() throws Exception {
-        when(service.getReviewReportColleagues(any())).thenThrow(NotFoundException.class);
+    void getReportColleaguesIfNotFound() throws Exception {
+        when(service.getReportColleagues(any())).thenThrow(NotFoundException.class);
 
         performGetWith(admin(), status().isNotFound(), TARGETING_COLLEAGUES_DATA_URL, new RequestQuery());
     }
 
     @Test
-    void getReviewReportColleaguesIfUnauthorized() throws Exception {
+    void getReportColleaguesIfUnauthorized() throws Exception {
         mvc.perform(get(TARGETING_COLLEAGUES_DATA_URL, new RequestQuery())
                         .with(anonymous())
                         .accept(APPLICATION_JSON))
@@ -142,24 +162,24 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getReviewStatsReport() throws Exception {
-        when(service.getReviewStatsReport(any())).thenReturn(buildReport());
+    void getStatsReport() throws Exception {
+        when(service.getStatsReport(any())).thenReturn(buildReport());
 
-        var result = performGetWith(talentAdmin(), status().isOk(), REVIEW_STATS_REPORT_DATA_URL);
+        var result = performGetWith(talentAdmin(), status().isOk(), STATS_REPORT_DATA_URL);
 
-        assertResponseContent(result.getResponse(), REVIEW_STATS_REPORT_GET_RESPONSE_JSON_FILE_NAME);
+        assertResponseContent(result.getResponse(), STATS_REPORT_GET_RESPONSE_JSON_FILE_NAME);
     }
 
     @Test
-    void getReviewStatsReportIfNotFound() throws Exception {
-        when(service.getReviewStatsReport(any())).thenThrow(NotFoundException.class);
+    void getStatsReportIfNotFound() throws Exception {
+        when(service.getStatsReport(any())).thenThrow(NotFoundException.class);
 
-        performGetWith(admin(), status().isNotFound(), REVIEW_STATS_REPORT_DATA_URL, new RequestQuery());
+        performGetWith(admin(), status().isNotFound(), STATS_REPORT_DATA_URL, new RequestQuery());
     }
 
     @Test
-    void getReviewStatsReportIfUnauthorized() throws Exception {
-        mvc.perform(get(REVIEW_STATS_REPORT_DATA_URL, new RequestQuery())
+    void getStatsReportIfUnauthorized() throws Exception {
+        mvc.perform(get(STATS_REPORT_DATA_URL, new RequestQuery())
                         .with(anonymous())
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
@@ -172,54 +192,54 @@ class ReviewReportingEndpointTest extends AbstractEndpointTest {
         colleague1.setUuid(UUID.fromString(COLLEAGUE_UUID_STR));
         colleague1.setFirstName("first_name");
         colleague1.setTags(Map.ofEntries(
-                entry("has_objective_approved", "1"),
-                entry("has_objective_submitted", "0"),
-                entry("has_myr_approved", "1"),
-                entry("has_eyr_approved", "0"),
-                entry("myr_how_rating", GREAT.getDescription()),
-                entry("myr_what_rating", GREAT.getDescription()),
-                entry("eyr_how_rating", OUTSTANDING.getDescription()),
-                entry("eyr_what_rating", OUTSTANDING.getDescription()),
-                entry("has_myr_submitted", "0"),
-                entry("has_eyr_submitted", "0"),
-                entry("must_create_objective", "1"),
-                entry("must_create_myr", "1"),
-                entry("must_create_eyr", "0"),
-                entry("is_new_to_business", "1"),
-                entry("has_eyr_approved_1_quarter", "1"),
-                entry("has_eyr_approved_2_quarter", "1"),
-                entry("has_eyr_approved_3_quarter", "1"),
-                entry("has_eyr_approved_4_quarter", "0")));
+                entry(HAS_OBJECTIVE_APPROVED, "1"),
+                entry(HAS_OBJECTIVE_SUBMITTED, "0"),
+                entry(HAS_MYR_APPROVED, "1"),
+                entry(HAS_EYR_APPROVED, "0"),
+                entry(MYR_HOW_RATING, GREAT.getDescription()),
+                entry(MYR_WHAT_RATING, GREAT.getDescription()),
+                entry(EYR_HOW_RATING, OUTSTANDING.getDescription()),
+                entry(EYR_WHAT_RATING, OUTSTANDING.getDescription()),
+                entry(HAS_MYR_SUBMITTED, "0"),
+                entry(HAS_EYR_SUBMITTED, "0"),
+                entry(MUST_CREATE_OBJECTIVE, "1"),
+                entry(MUST_CREATE_MYR, "1"),
+                entry(MUST_CREATE_EYR, "0"),
+                entry(IS_NEW_TO_BUSINESS, "1"),
+                entry(HAS_EYR_APPROVED_1_QUARTER, "1"),
+                entry(HAS_EYR_APPROVED_2_QUARTER, "1"),
+                entry(HAS_EYR_APPROVED_3_QUARTER, "1"),
+                entry(HAS_EYR_APPROVED_4_QUARTER, "0")));
 
         var colleague2 = new ColleagueReportTargeting();
         colleague2.setUuid(UUID.fromString(COLLEAGUE_UUID_STR_2));
         colleague2.setFirstName("first_name_2");
         colleague2.setTags(Map.ofEntries(
-                entry("has_objective_approved", "1"),
-                entry("has_objective_submitted", "1"),
-                entry("has_myr_approved", "1"),
-                entry("has_eyr_approved", "1"),
-                entry("myr_how_rating", SATISFACTORY.getDescription()),
-                entry("myr_what_rating", SATISFACTORY.getDescription()),
-                entry("eyr_how_rating", BELOW_EXPECTED.getDescription()),
-                entry("eyr_what_rating", BELOW_EXPECTED.getDescription()),
-                entry("has_myr_submitted", "1"),
-                entry("has_eyr_submitted", "1"),
-                entry("must_create_objective", "1"),
-                entry("must_create_myr", "1"),
-                entry("must_create_eyr", "1"),
-                entry("is_new_to_business", "1"),
-                entry("has_eyr_approved_1_quarter", "0"),
-                entry("has_eyr_approved_2_quarter", "1"),
-                entry("has_eyr_approved_3_quarter", "1"),
-                entry("has_eyr_approved_4_quarter", "1")));
+                entry(HAS_OBJECTIVE_APPROVED, "1"),
+                entry(HAS_OBJECTIVE_SUBMITTED, "1"),
+                entry(HAS_MYR_APPROVED, "1"),
+                entry(HAS_EYR_APPROVED, "1"),
+                entry(MYR_HOW_RATING, SATISFACTORY.getDescription()),
+                entry(MYR_WHAT_RATING, SATISFACTORY.getDescription()),
+                entry(EYR_HOW_RATING, BELOW_EXPECTED.getDescription()),
+                entry(EYR_WHAT_RATING, BELOW_EXPECTED.getDescription()),
+                entry(HAS_MYR_SUBMITTED, "1"),
+                entry(HAS_EYR_SUBMITTED, "1"),
+                entry(MUST_CREATE_OBJECTIVE, "1"),
+                entry(MUST_CREATE_MYR, "1"),
+                entry(MUST_CREATE_EYR, "1"),
+                entry(IS_NEW_TO_BUSINESS, "1"),
+                entry(HAS_EYR_APPROVED_1_QUARTER, "0"),
+                entry(HAS_EYR_APPROVED_2_QUARTER, "1"),
+                entry(HAS_EYR_APPROVED_3_QUARTER, "1"),
+                entry(HAS_EYR_APPROVED_4_QUARTER, "1")));
 
         return List.of(colleague1, colleague2);
     }
 
     private Report buildReport() {
-        var reportProvider = new ReviewStatsReportProvider();
-        var data = new ReviewStatsData();
+        var reportProvider = new StatsReportProvider();
+        var data = new StatsData();
         data.setObjectivesSubmittedPercentage(50);
         data.setObjectivesApprovedPercentage(100);
         data.setMyrApprovedPercentage(100);

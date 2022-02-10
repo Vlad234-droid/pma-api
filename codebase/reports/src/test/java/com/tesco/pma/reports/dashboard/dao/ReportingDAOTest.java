@@ -1,4 +1,4 @@
-package com.tesco.pma.reports.review.dao;
+package com.tesco.pma.reports.dashboard.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.dao.AbstractDAOTest;
@@ -17,7 +17,27 @@ import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Condition.Operand.IN;
 import static com.tesco.pma.pagination.Condition.Operand.NOT_CONTAINS;
-import static com.tesco.pma.reports.review.dao.ReviewReportingDAOTest.BASE_PATH_TO_DATA_SET;
+import static com.tesco.pma.reports.dashboard.dao.ReportingDAOTest.BASE_PATH_TO_DATA_SET;
+
+import static com.tesco.pma.reports.ReportingConstants.EYR_HOW_RATING;
+import static com.tesco.pma.reports.ReportingConstants.EYR_WHAT_RATING;
+import static com.tesco.pma.reports.ReportingConstants.HAS_EYR_APPROVED;
+import static com.tesco.pma.reports.ReportingConstants.HAS_EYR_APPROVED_1_QUARTER;
+import static com.tesco.pma.reports.ReportingConstants.HAS_EYR_APPROVED_2_QUARTER;
+import static com.tesco.pma.reports.ReportingConstants.HAS_EYR_APPROVED_3_QUARTER;
+import static com.tesco.pma.reports.ReportingConstants.HAS_EYR_APPROVED_4_QUARTER;
+import static com.tesco.pma.reports.ReportingConstants.HAS_EYR_SUBMITTED;
+import static com.tesco.pma.reports.ReportingConstants.HAS_MYR_APPROVED;
+import static com.tesco.pma.reports.ReportingConstants.HAS_MYR_SUBMITTED;
+import static com.tesco.pma.reports.ReportingConstants.HAS_OBJECTIVE_APPROVED;
+import static com.tesco.pma.reports.ReportingConstants.HAS_OBJECTIVE_SUBMITTED;
+import static com.tesco.pma.reports.ReportingConstants.IS_NEW_TO_BUSINESS;
+import static com.tesco.pma.reports.ReportingConstants.MUST_CREATE_EYR;
+import static com.tesco.pma.reports.ReportingConstants.MUST_CREATE_MYR;
+import static com.tesco.pma.reports.ReportingConstants.MUST_CREATE_OBJECTIVE;
+import static com.tesco.pma.reports.ReportingConstants.MYR_HOW_RATING;
+import static com.tesco.pma.reports.ReportingConstants.MYR_WHAT_RATING;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -30,9 +50,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
           BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml",
           BASE_PATH_TO_DATA_SET + "pm_timeline_point_init.xml",
           BASE_PATH_TO_DATA_SET + "pm_review_init.xml"})
-class ReviewReportingDAOTest extends AbstractDAOTest {
+class ReportingDAOTest extends AbstractDAOTest {
 
-    static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/reports/review/dao/";
+    static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/reports/dashboard/dao/";
 
     private static final String COLLEAGUE_UUID = "10000000-0000-0000-0000-000000000000";
     private static final Integer YEAR = 2021;
@@ -41,7 +61,7 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
     private static final String MANAGER_UUID = "10000000-0000-0000-0000-00000000000a";
 
     @Autowired
-    private ReviewReportingDAO instance;
+    private ReportingDAO instance;
 
     @DynamicPropertySource
     static void postgresqlProperties(DynamicPropertyRegistry registry) {
@@ -116,20 +136,20 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
                 () -> assertEquals("Team lead2", data.getJobName()),
                 () -> assertEquals("Bank", data.getBusinessType()),
 
-                () -> assertEquals("1", tags.get("has_objective_approved")),
-                () -> assertEquals("0", tags.get("has_objective_submitted")),
-                () -> assertEquals("1", tags.get("has_myr_approved")),
-                () -> assertEquals("0", tags.get("has_eyr_approved")),
-                () -> assertEquals("0", tags.get("myr_how_rating")),
-                () -> assertEquals("0", tags.get("myr_what_rating")),
-                () -> assertEquals("0", tags.get("eyr_how_rating")),
-                () -> assertEquals("0", tags.get("eyr_what_rating")),
-                () -> assertEquals("0", tags.get("has_myr_submitted")),
-                () -> assertEquals("0", tags.get("has_eyr_submitted")),
-                () -> assertEquals("0", tags.get("must_create_eyr")),
-                () -> assertEquals("1", tags.get("must_create_objective")),
-                () -> assertEquals("1", tags.get("must_create_myr")),
-                () -> assertEquals("0", tags.get("is_new_to_business")));
+                () -> assertEquals("1", tags.get(HAS_OBJECTIVE_APPROVED)),
+                () -> assertEquals("0", tags.get(HAS_OBJECTIVE_SUBMITTED)),
+                () -> assertEquals("1", tags.get(HAS_MYR_APPROVED)),
+                () -> assertEquals("0", tags.get(HAS_EYR_APPROVED)),
+                () -> assertEquals("0", tags.get(MYR_HOW_RATING)),
+                () -> assertEquals("0", tags.get(MYR_WHAT_RATING)),
+                () -> assertEquals("0", tags.get(EYR_HOW_RATING)),
+                () -> assertEquals("0", tags.get(EYR_WHAT_RATING)),
+                () -> assertEquals("0", tags.get(HAS_MYR_SUBMITTED)),
+                () -> assertEquals("0", tags.get(HAS_EYR_SUBMITTED)),
+                () -> assertEquals("0", tags.get(MUST_CREATE_EYR)),
+                () -> assertEquals("1", tags.get(MUST_CREATE_OBJECTIVE)),
+                () -> assertEquals("1", tags.get(MUST_CREATE_MYR)),
+                () -> assertEquals("0", tags.get(IS_NEW_TO_BUSINESS)));
     }
 
     @Test
@@ -168,10 +188,10 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
                 () -> assertEquals("Team lead", data.getJobName()),
                 () -> assertEquals("Bank", data.getBusinessType()),
 
-                () -> assertEquals("1", tags.get("has_eyr_approved_1_quarter")),
-                () -> assertEquals("0", tags.get("has_eyr_approved_2_quarter")),
-                () -> assertEquals("0", tags.get("has_eyr_approved_3_quarter")),
-                () -> assertEquals("1", tags.get("has_eyr_approved_4_quarter")));
+                () -> assertEquals("1", tags.get(HAS_EYR_APPROVED_1_QUARTER)),
+                () -> assertEquals("0", tags.get(HAS_EYR_APPROVED_2_QUARTER)),
+                () -> assertEquals("0", tags.get(HAS_EYR_APPROVED_3_QUARTER)),
+                () -> assertEquals("1", tags.get(HAS_EYR_APPROVED_4_QUARTER)));
     }
 
     @Test
