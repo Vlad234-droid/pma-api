@@ -99,23 +99,6 @@ public interface ProfileService {
      */
     ColleagueEntity getColleague(UUID colleagueUuid);
 
-
-    /**
-     * Get colleague by work level
-     *
-     * @param wlCode work level
-     * @return List of colleagues
-     */
-    List<Colleague> getColleagueByWL(String wlCode);
-
-    /**
-     * Get colleague by manager id
-     *
-     * @param managerUuid manager identifier
-     * @return List of colleagues
-     */
-    List<Colleague> getSubordinates(UUID managerUuid);
-
     /**
      * Search colleagues
      *

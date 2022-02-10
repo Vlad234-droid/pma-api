@@ -161,16 +161,6 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<Colleague> getColleagueByWL(String wlCode) {
-        return profileDAO.getColleagueByWL(wlCode);
-    }
-
-    @Override
-    public List<Colleague> getSubordinates(UUID managerUuid) {
-        return profileDAO.getSubordinates(managerUuid);
-    }
-
-    @Override
     public List<ColleagueProfile> getSuggestions(RequestQuery requestQuery) {
 
         return profileDAO.findColleagueSuggestionsByFullName(requestQuery).stream()

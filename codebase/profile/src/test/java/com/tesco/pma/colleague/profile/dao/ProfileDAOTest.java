@@ -120,7 +120,10 @@ public class ProfileDAOTest extends AbstractDAOTest {
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
     void getColleagueByWL() {
-        var colleagues = dao.getColleagueByWL(WorkLevel.WL1.name());
+        var rq = new RequestQuery();
+        rq.addFilters("work-level_eq", WorkLevel.WL1.name());
+
+        var colleagues = dao.findColleagueSuggestionsByFullName(rq);
 
         assertEquals(5, colleagues.size());
 
@@ -141,7 +144,10 @@ public class ProfileDAOTest extends AbstractDAOTest {
         dao.updateColleagueManager(COLLEAGUE_UUID_1, MANAGER_UUID_1);
         dao.updateColleagueManager(UUID.fromString("03121555-7246-4b03-b2ed-718cf81d4d31"), MANAGER_UUID_1);
 
-        var colleagues = dao.getSubordinates(COLLEAGUE_UUID);
+        var rq = new RequestQuery();
+        rq.addFilters("manager-uuid_eq", MANAGER_UUID_1);
+
+        var colleagues = dao.findColleagueSuggestionsByFullName(rq);
 
         assertEquals(2, colleagues.size());
 

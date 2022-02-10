@@ -747,8 +747,11 @@ public class ReviewServiceImpl implements ReviewService {
 
     private void sendEvent(String eventName, WorkLevel... wls) {
         for (WorkLevel wl : wls) {
-            profileService.getColleagueByWL(wl.name())
-                    .forEach(colleague -> sendEvent(eventName, colleague.getColleagueUUID()));
+            var rq = new RequestQuery();
+            rq.addFilters("work-level_eq", wl.name());
+
+            profileService.getSuggestions(rq)
+                    .forEach(colleague -> sendEvent(eventName, colleague.getColleague().getColleagueUUID()));
         }
     }
 

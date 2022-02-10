@@ -30,23 +30,6 @@ public interface ProfileDAO {
     ColleagueEntity getColleagueByIamId(@Param("iamId") String iamId);
 
     /**
-     * Get colleague by work level
-     *
-     * @param wlCode work level
-     * @return List of colleagues
-     */
-    List<Colleague> getColleagueByWL(@Param("wlCode") String wlCode);
-
-
-    /**
-     * Get colleague by manager id
-     *
-     * @param managerUuid manager identifier
-     * @return List of colleagues
-     */
-    List<Colleague> getSubordinates(@Param("uuid") UUID managerUuid);
-
-    /**
      * Save work level into DB, if object already exists update it
      *
      * @param workLevel - object to be saved
