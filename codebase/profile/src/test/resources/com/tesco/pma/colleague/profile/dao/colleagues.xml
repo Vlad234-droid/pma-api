@@ -35,7 +35,9 @@
                leaving_date="2021-02-01"
                country_code="UK"
                work_level="WL2"
-               department_id="4"/>
+               department_id="4"
+               location_id="INDH000001"
+               legal_entity="Tesco Stores Limited"/>
 
     <colleague uuid="119e0d2b-1dc2-409f-8198-ecd66e59d47a"
                first_name="John"

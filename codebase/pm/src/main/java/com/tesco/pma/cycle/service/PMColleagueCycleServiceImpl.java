@@ -7,7 +7,7 @@ import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.dao.PMColleagueCycleDAO;
 import com.tesco.pma.error.ErrorCodeAware;
-import com.tesco.pma.exception.DatabaseConstraintViolationException;
+import com.tesco.pma.exception.AlreadyExistsException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.service.BatchService;
 import lombok.RequiredArgsConstructor;
@@ -63,9 +63,10 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
             pmColleagueCycle.setUuid(UUID.randomUUID());
             dao.create(pmColleagueCycle);
         } catch (DuplicateKeyException ex) {
-            throw new DatabaseConstraintViolationException(PM_COLLEAGUE_CYCLE_ALREADY_EXISTS.getCode(),
+            throw new AlreadyExistsException(PM_COLLEAGUE_CYCLE_ALREADY_EXISTS.getCode(),
                     messageSourceAccessor.getMessage(PM_COLLEAGUE_CYCLE_ALREADY_EXISTS,
-                            Map.of(COLLEAGUE_CYCLE_UUID, pmColleagueCycle.getUuid())), null, ex);
+                            Map.of("cycleUuid", pmColleagueCycle.getCycleUuid(),
+                                   "colleagueUuid", pmColleagueCycle.getColleagueUuid())), ex);
         }
         return pmColleagueCycle;
     }
