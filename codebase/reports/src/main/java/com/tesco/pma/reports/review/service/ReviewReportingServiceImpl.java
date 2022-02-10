@@ -89,7 +89,7 @@ public class ReviewReportingServiceImpl implements ReviewReportingService {
             reviewStatsData.setMyrSubmittedPercentage(myrSubmittedPercentage);
 
             var myrApprovedPercentage = (int) (100 * myrApprovedCount / myrToSubmitCount);
-            reviewStatsData.setMyrSubmittedPercentage(myrApprovedPercentage);
+            reviewStatsData.setMyrApprovedPercentage(myrApprovedPercentage);
         }
         // eyr forms submitted, approved
         final var eyrToSubmitCount = getCountWithTag(colleagues, "must_create_eyr");
