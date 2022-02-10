@@ -2,7 +2,10 @@ package com.tesco.pma.cms.service;
 
 
 import com.tesco.pma.cms.dao.ContentDAO;
+import com.tesco.pma.cms.exception.ContentException;
+import com.tesco.pma.cms.exception.ErrorCodes;
 import com.tesco.pma.cms.model.Content;
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +20,7 @@ public class ContentServiceImpl implements ContentService {
 
     private final ContentDAO contentDAO;
     private final AuditorAware<UUID> auditorAware;
-
+    private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Override
     @Transactional
@@ -25,8 +28,10 @@ public class ContentServiceImpl implements ContentService {
         content.setId(UUID.randomUUID());
         content.setCreatedBy(auditorAware.getCurrentAuditor());
 
-        if(1 != contentDAO.create(content)) {
-            throw new RuntimeException();
+        if (1 != contentDAO.create(content)) {
+
+            throw new ContentException(ErrorCodes.CONTENT_CREATE_ERROR.name(),
+                    messageSourceAccessor.getMessage(ErrorCodes.CONTENT_CREATE_ERROR));
         }
 
         return content;
@@ -41,8 +46,10 @@ public class ContentServiceImpl implements ContentService {
     @Transactional
     public void delete(UUID deleteUuid) {
 
-        if(1 != contentDAO.delete(deleteUuid)) {
-            throw new RuntimeException();
+        if (1 != contentDAO.delete(deleteUuid)) {
+
+            throw new ContentException(ErrorCodes.CONTENT_DELETE_ERROR.name(),
+                    messageSourceAccessor.getMessage(ErrorCodes.CONTENT_DELETE_ERROR));
         }
     }
 }
