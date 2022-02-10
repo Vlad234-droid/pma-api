@@ -384,9 +384,6 @@
             <when test="filter.property == 'job-id'">
                 job_id
             </when>
-            <when test="filter.property == 'year'">
-                EXTRACT(YEAR FROM pc.start_time)::varchar(10)
-            </when>
         </choose>
     </sql>
 
