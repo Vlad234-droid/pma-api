@@ -106,6 +106,7 @@ public class ReviewServiceImpl implements ReviewService {
     private static final String NF_ORGANISATION_OBJECTIVES_EVENT_NAME = "NF_ORGANISATION_OBJECTIVES";
     private static final String NF_OBJECTIVES_APPROVED_FOR_SHARING_EVENT_NAME = "NF_OBJECTIVES_APPROVED_FOR_SHARING";
     private static final String NF_PM_REVIEW_SUBMITTED_EVENT_NAME = "NF_PM_REVIEW_SUBMITTED";
+    private static final String NF_PM_REVIEW_APPROVED_EVENT_NAME = "NF_PM_REVIEW_APPROVED";
     private static final String COLLEAGUE_UUID_EVENT_PARAM = "COLLEAGUE_UUID";
     private static final String SENDER_COLLEAGUE_UUID_EVENT_PARAM = "SENDER_COLLEAGUE_UUID";
     private static final String TIMELINE_POINT_UUID_EVENT_PARAM = "TIMELINE_POINT_UUID";
@@ -121,7 +122,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     private static final Map<PMTimelinePointStatus, String> STATUS_TO_EVENT_NAME_MAP = Map.of(
             WAITING_FOR_APPROVAL, NF_PM_REVIEW_SUBMITTED_EVENT_NAME,
-            APPROVED, "NF_PM_REVIEW_APPROVED",
+            APPROVED, NF_PM_REVIEW_APPROVED_EVENT_NAME,
             DECLINED, "NF_PM_REVIEW_DECLINED");
 
     @Override
@@ -587,7 +588,6 @@ public class ReviewServiceImpl implements ReviewService {
 
         });
         reviewAuditLogDAO.logOrgObjectiveAction(SAVE_AS_DRAFT, loggedUserUuid);
-        sendEvent(NF_ORGANISATION_OBJECTIVES_EVENT_NAME, WorkLevel.WL4, WorkLevel.WL5);
         return results;
     }
 
@@ -597,7 +597,7 @@ public class ReviewServiceImpl implements ReviewService {
             throw notFound(ORG_OBJECTIVES_NOT_FOUND, Map.of());
         }
         reviewAuditLogDAO.logOrgObjectiveAction(PUBLISH, loggedUserUuid);
-        sendEvent(NF_OBJECTIVES_APPROVED_FOR_SHARING_EVENT_NAME, WorkLevel.WL4, WorkLevel.WL5);
+        sendEvent(NF_ORGANISATION_OBJECTIVES_EVENT_NAME, WorkLevel.WL4, WorkLevel.WL5);
         return getPublishedOrgObjectives();
     }
 
@@ -776,6 +776,23 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         var event = EventSupport.create(eventName, Map.of(
+                COLLEAGUE_UUID_EVENT_PARAM, recipientUUID,
+                SENDER_COLLEAGUE_UUID_EVENT_PARAM, loggedUserUUID,
+                TIMELINE_POINT_UUID_EVENT_PARAM, timelinePoint.getUuid()));
+
+        eventSender.sendEvent(event, null, true);
+
+        if (!NF_PM_REVIEW_APPROVED_EVENT_NAME.equals(eventName)) {
+            return;
+        }
+
+        var colleague = profileService.findColleagueByColleagueUuid(colleagueUuid);
+
+        if (!colleague.getWorkRelationships().get(0).getIsManager()) {
+            return;
+        }
+
+        event = EventSupport.create(NF_OBJECTIVES_APPROVED_FOR_SHARING_EVENT_NAME, Map.of(
                 COLLEAGUE_UUID_EVENT_PARAM, recipientUUID,
                 SENDER_COLLEAGUE_UUID_EVENT_PARAM, loggedUserUUID,
                 TIMELINE_POINT_UUID_EVENT_PARAM, timelinePoint.getUuid()));
