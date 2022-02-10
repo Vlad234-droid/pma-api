@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,6 +28,11 @@ public class ContentServiceImpl implements ContentService {
     public Content create(Content content) {
         content.setId(UUID.randomUUID());
         content.setCreatedBy(auditorAware.getCurrentAuditor());
+        content.setCreatedTime(Instant.now());
+
+        if (content.getVersion() < 1) {
+            content.setVersion(1);
+        }
 
         if (1 != contentDAO.create(content)) {
 

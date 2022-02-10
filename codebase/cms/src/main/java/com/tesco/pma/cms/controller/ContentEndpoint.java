@@ -1,5 +1,6 @@
 package com.tesco.pma.cms.controller;
 
+import com.tesco.pma.cms.controller.dto.Key;
 import com.tesco.pma.cms.model.Content;
 import com.tesco.pma.cms.service.ContentService;
 import com.tesco.pma.rest.HttpStatusCodes;
@@ -51,7 +52,16 @@ public class ContentEndpoint {
     public RestResponse<List<Content>> findByCountryIamContent(@PathVariable String countryCode,
                                                                @PathVariable String iam,
                                                                @PathVariable String content) {
-        return RestResponse.success(contentService.findByKey(createKey(KNOWLEDGE_LIBRARY, countryCode, iam, content)));
+        return RestResponse.success(contentService.findByKey(Key.createKey(KNOWLEDGE_LIBRARY, countryCode, iam, content)));
+    }
+
+    @Operation(summary = "Find Content by key in path", tags = {"CMS"})
+    @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Find contents")
+    @GetMapping(path = "/" + KNOWLEDGE_LIBRARY + "/{countryCode}/{role}/{iam}/{content}", produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isColleague()")
+    public RestResponse<List<Content>> findByCountryRoleIamContent(Key key) {
+        return RestResponse.success(contentService.findByKey(Key.createKey(KNOWLEDGE_LIBRARY, key.toString())));
     }
 
     @Operation(summary = "Create a Content", tags = {"CMS"})
@@ -71,19 +81,6 @@ public class ContentEndpoint {
     public RestResponse<?> delete(@PathVariable UUID uuid) {
         contentService.delete(uuid);
         return RestResponse.success();
-    }
-
-    private String createKey(String... elements) {
-        var sb = new StringBuilder();
-        var divisor = "";
-
-        for (String el : elements) {
-            sb.append(divisor);
-            divisor = "/";
-            sb.append(el);
-        }
-
-        return sb.toString();
     }
 
 }
