@@ -47,6 +47,8 @@ import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvide
 import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_3_COUNT;
 import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_4_PERCENTAGE;
 import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.ANNIVERSARY_REVIEW_PER_QUARTER_4_COUNT;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.FEEDBACK_REQUESTED_PERCENTAGE;
+import static com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider.ColumnMetadataEnum.FEEDBACK_GIVEN_PERCENTAGE;
 
 /**
  * Statistics Report with data, metadata
@@ -268,7 +270,10 @@ public class StatsReportProvider implements Reportable {
                 ANNIVERSARY_REVIEW_PER_QUARTER_3_PERCENTAGE.getColumnMetadata(),
                 ANNIVERSARY_REVIEW_PER_QUARTER_3_COUNT.getColumnMetadata(),
                 ANNIVERSARY_REVIEW_PER_QUARTER_4_PERCENTAGE.getColumnMetadata(),
-                ANNIVERSARY_REVIEW_PER_QUARTER_4_COUNT.getColumnMetadata()
+                ANNIVERSARY_REVIEW_PER_QUARTER_4_COUNT.getColumnMetadata(),
+
+                FEEDBACK_REQUESTED_PERCENTAGE.getColumnMetadata(),
+                FEEDBACK_GIVEN_PERCENTAGE.getColumnMetadata()
         );
     }
 }
