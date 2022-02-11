@@ -22,7 +22,7 @@
     <decisionTable id="DecisionTable_1iuc214">
       <input id="Input_1" label="Legal Employer Name">
         <inputExpression id="InputExpression_1" typeRef="string" expressionLanguage="juel">
-          <text>${COLLEAGUE.workRelationships[0].legalEmployer == null ? "null" : COLLEAGUE.workRelationships[0].legalEmployer.name.toLowerCase()}</text>
+          <text>${COLLEAGUE.workRelationships[0].legalEmployer == null ? "_null" : COLLEAGUE.workRelationships[0].legalEmployer.name.toLowerCase()}</text>
         </inputExpression>
         <inputValues id="UnaryTests_1jft2tn">
           <text>"tesco stores limited"</text>
@@ -30,7 +30,7 @@
       </input>
       <input id="InputClause_0jm3c6v" label="Business type">
         <inputExpression id="LiteralExpression_0ssvlok" typeRef="string" expressionLanguage="juel">
-          <text>${COLLEAGUE.workRelationships[0].department == null ? "null" : COLLEAGUE.workRelationships[0].department.businessType.toLowerCase()}</text>
+          <text>${COLLEAGUE.workRelationships[0].department == null ? "_null" : COLLEAGUE.workRelationships[0].department.businessType.toLowerCase()}</text>
         </inputExpression>
         <inputValues id="UnaryTests_0daj6jw">
           <text>"office"</text>
@@ -38,7 +38,7 @@
       </input>
       <input id="InputClause_08r453q" label="Work level">
         <inputExpression id="LiteralExpression_009wlb2" typeRef="string" expressionLanguage="juel">
-          <text>${COLLEAGUE.workRelationships[0].workLevel == null ? "null" : COLLEAGUE.workRelationships[0].workLevel.name().toLowerCase()}</text>
+          <text>${COLLEAGUE.workRelationships[0].workLevel == null ? "_null" : COLLEAGUE.workRelationships[0].workLevel.name().toLowerCase()}</text>
         </inputExpression>
         <inputValues id="UnaryTests_0mi6w53">
           <text></text>
@@ -46,7 +46,7 @@
       </input>
       <input id="InputClause_0xc3ti3" label="Salary frequency">
         <inputExpression id="LiteralExpression_1svejzs" typeRef="string" expressionLanguage="juel">
-          <text>${COLLEAGUE.workRelationships[0].salaryFrequency == null ? "null" : COLLEAGUE.workRelationships[0].salaryFrequency.toLowerCase()}</text>
+          <text>${COLLEAGUE.workRelationships[0].salaryFrequency == null ? "_null" : COLLEAGUE.workRelationships[0].salaryFrequency.toLowerCase()}</text>
         </inputExpression>
         <inputValues id="UnaryTests_1o1odgp">
           <text>"annual"</text>
@@ -54,12 +54,12 @@
       </input>
       <input id="InputClause_1ck6fhz" label="Job name">
         <inputExpression id="LiteralExpression_0r3if05" typeRef="string" expressionLanguage="juel">
-          <text>${COLLEAGUE.workRelationships[0].job == null ? "null" : COLLEAGUE.workRelationships[0].job.name.toLowerCase()}</text>
+          <text>${COLLEAGUE.workRelationships[0].job == null ? "_null" : COLLEAGUE.workRelationships[0].job.name.toLowerCase()}</text>
         </inputExpression>
       </input>
       <input id="InputClause_0tyi0oo" label="IAM source" biodi:width="150">
         <inputExpression id="LiteralExpression_048rjmt" typeRef="string" expressionLanguage="juel">
-          <text>${COLLEAGUE.externalSystems.iam == null ? "null" : COLLEAGUE.externalSystems.iam.source.toLowerCase()}</text>
+          <text>${COLLEAGUE.externalSystems.iam == null ? "_null" : COLLEAGUE.externalSystems.iam.source.toLowerCase()}</text>
         </inputExpression>
       </input>
       <output id="Output_1" label="Cycle key" name="PM_CYCLE_KEY" typeRef="string" biodi:width="198">
@@ -158,10 +158,10 @@
           <text>"office"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1nyhogx">
-          <text>"null"</text>
+          <text>"_null"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0b8b8ph">
-          <text>"null"</text>
+          <text>"_null"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0ibkiv6">
           <text></text>

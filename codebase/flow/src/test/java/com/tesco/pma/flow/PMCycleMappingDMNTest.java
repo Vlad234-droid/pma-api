@@ -30,10 +30,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * 2022-02-09 21:40
  */
 class PMCycleMappingDMNTest {
+    private static final String TESCO_STORES_LIMITED = "tesco stores limited";
     private static final String PATH = "com/tesco/pma/flow/pm_cycle_mapping.dmn";
     private static final String DMN_ID = "pm_cycle_mapping";
     private static final String COLLEAGUE_UUID = "efdbd43a-2436-4173-b4e2-6782c99a95ad";
     private static final String NULL_VALUE = "__null__";
+    private static final String OFFICE = "Office";
 
     private enum KEYS {
         COLLEAGUE,
@@ -51,8 +53,8 @@ class PMCycleMappingDMNTest {
         GROUP_C_V2
     }
 
-    private DmnEngine dmnEngine = null;
-    private DmnDecision decision = null;
+    private DmnEngine dmnEngine;
+    private DmnDecision decision;
 
     @BeforeEach
     void init() throws IOException {
@@ -70,12 +72,12 @@ class PMCycleMappingDMNTest {
     void groupAWl45() {
         assertSuccessRule(Map.of(
                 KEYS.LEGAL_EMPLOYER_NAME, "Tesco",
-                KEYS.BUSINESS_TYPE, "Office",
+                KEYS.BUSINESS_TYPE, OFFICE,
                 KEYS.WORK_LEVEL, WorkLevel.WL4
         ), KEYS.GROUP_A_V2);
         assertSuccessRule(Map.of(
                 KEYS.LEGAL_EMPLOYER_NAME, "Tesco",
-                KEYS.BUSINESS_TYPE, "Office",
+                KEYS.BUSINESS_TYPE, OFFICE,
                 KEYS.WORK_LEVEL, WorkLevel.WL5
         ), KEYS.GROUP_A_V2);
     }
@@ -84,7 +86,7 @@ class PMCycleMappingDMNTest {
     void groupAWl45Except() {
         assertExceptRule(Map.of(
                 KEYS.LEGAL_EMPLOYER_NAME, "tesco underwriting limited",
-                KEYS.BUSINESS_TYPE, "Office",
+                KEYS.BUSINESS_TYPE, OFFICE,
                 KEYS.WORK_LEVEL, WorkLevel.WL5
         ));
     }
@@ -93,7 +95,7 @@ class PMCycleMappingDMNTest {
     void groupAWl3() {
         assertSuccessRule(Map.of(
                 KEYS.LEGAL_EMPLOYER_NAME, "Tesco",
-                KEYS.BUSINESS_TYPE, "Office",
+                KEYS.BUSINESS_TYPE, OFFICE,
                 KEYS.WORK_LEVEL, WorkLevel.WL3
         ), KEYS.GROUP_A_V2);
     }
@@ -102,7 +104,7 @@ class PMCycleMappingDMNTest {
     void groupAWl3Except() {
         assertExceptRule(Map.of(
                 KEYS.LEGAL_EMPLOYER_NAME, "tesco underwriting limited",
-                KEYS.BUSINESS_TYPE, "Office",
+                KEYS.BUSINESS_TYPE, OFFICE,
                 KEYS.WORK_LEVEL, WorkLevel.WL3,
                 KEYS.IAM_SOURCE, "Tesco Mobile"
         ));
@@ -111,8 +113,8 @@ class PMCycleMappingDMNTest {
     @Test
     void groupAWl2Annual() {
         assertSuccessRule(Map.of(
-                KEYS.LEGAL_EMPLOYER_NAME, "tesco stores limited",
-                KEYS.BUSINESS_TYPE, "Office",
+                KEYS.LEGAL_EMPLOYER_NAME, TESCO_STORES_LIMITED,
+                KEYS.BUSINESS_TYPE, OFFICE,
                 KEYS.WORK_LEVEL, WorkLevel.WL2,
                 KEYS.SALARY_FREQUENCY, "Annual"
         ), KEYS.GROUP_A_V2);
@@ -121,16 +123,16 @@ class PMCycleMappingDMNTest {
     @Test
     void groupBOffice() {
         assertSuccessRule(Map.of(
-                KEYS.LEGAL_EMPLOYER_NAME, "tesco stores limited",
-                KEYS.BUSINESS_TYPE, "Office"
+                KEYS.LEGAL_EMPLOYER_NAME, TESCO_STORES_LIMITED,
+                KEYS.BUSINESS_TYPE, OFFICE
         ), KEYS.GROUP_B_V2);
     }
 
     @Test
     void groupBExcept() {
         assertExceptRule(Map.of(
-                KEYS.LEGAL_EMPLOYER_NAME, "tesco stores limited",
-                KEYS.BUSINESS_TYPE, "Office",
+                KEYS.LEGAL_EMPLOYER_NAME, TESCO_STORES_LIMITED,
+                KEYS.BUSINESS_TYPE, OFFICE,
                 KEYS.WORK_LEVEL, WorkLevel.WL1
         ));
     }
@@ -149,7 +151,7 @@ class PMCycleMappingDMNTest {
 
     private VariableMap buildVariables(Map<KEYS, Object> params) {
         var variables = new VariableMapImpl();
-        params.forEach((keys, v) -> variables.putValue(keys.name(), (v.equals(NULL_VALUE) ? null : v)));
+        params.forEach((keys, v) -> variables.putValue(keys.name(), (v.equals(NULL_VALUE) ? null : v))); // NOPMD
         return variables;
     }
 
