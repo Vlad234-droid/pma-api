@@ -3,10 +3,13 @@ package com.tesco.pma.colleague.security.service;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.LocalTestConfig;
 import com.tesco.pma.colleague.security.dao.AccountManagementDAO;
+import com.tesco.pma.colleague.security.domain.AccountStatus;
+import com.tesco.pma.colleague.security.domain.AccountType;
 import com.tesco.pma.colleague.security.exception.ErrorCodes;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.AlreadyExistsException;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.pagination.RequestQuery;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,6 +23,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.tesco.pma.colleague.security.TestDataUtils.buildAccount;
+import static com.tesco.pma.colleague.security.TestDataUtils.buildAccounts;
+import static com.tesco.pma.colleague.security.TestDataUtils.buildCreateAccountRequest;
 import static com.tesco.pma.colleague.security.TestDataUtils.buildRoleRequest;
 import static com.tesco.pma.colleague.security.TestDataUtils.buildRoles;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -70,11 +75,34 @@ class UserManagementServiceImplTest {
     }
 
     @Test
-    void getAccounts() {
+    void getAccountsSuccessfully() {
+
+        when(mockAccountManagementDAO.get(any(RequestQuery.class)))
+                .thenReturn(buildAccounts(3));
+
+        var accounts = userManagementService.getAccounts(1);
+
+        assertEquals(3, accounts.size());
+
+        verify(mockAccountManagementDAO, times(1)).get(any(RequestQuery.class));
     }
 
     @Test
-    void createAccount() {
+    void createAccountSuccessfully() {
+
+        when(mockAccountManagementDAO.findAccountByName(anyString()))
+                .thenReturn(null)
+                .thenReturn(buildAccount());
+        when(mockAccountManagementDAO.assignRole(any(UUID.class), anyInt()))
+                .thenReturn(1);
+
+        var createAccountRequest = buildCreateAccountRequest(3);
+        userManagementService.createAccount(createAccountRequest);
+
+        verify(mockAccountManagementDAO, times(2)).findAccountByName(anyString());
+        verify(mockAccountManagementDAO, times(1)).create(anyString(), anyString(),
+                any(AccountStatus.class), any(AccountType.class));
+        verify(mockAccountManagementDAO, times(1)).assignRole(any(UUID.class), anyInt());
     }
 
     @Test

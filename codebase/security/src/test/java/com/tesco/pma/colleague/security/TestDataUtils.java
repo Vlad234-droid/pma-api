@@ -3,7 +3,9 @@ package com.tesco.pma.colleague.security;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.security.domain.Account;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
+import com.tesco.pma.colleague.security.domain.AccountType;
 import com.tesco.pma.colleague.security.domain.Role;
+import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
 import com.tesco.pma.colleague.security.domain.request.RoleRequest;
 import lombok.experimental.UtilityClass;
 
@@ -24,6 +26,31 @@ public class TestDataUtils {
         account.setStatus(AccountStatus.ENABLED);
         account.setId(UUID.randomUUID());
         return account;
+    }
+
+    public static List<Account> buildAccounts(int size) {
+        return IntStream.rangeClosed(1, size)
+                .mapToObj(TestDataUtils::buildAccount)
+                .collect(toList());
+    }
+
+    private static Account buildAccount(int index) {
+        var account = buildAccount();
+        account.setName("UKE1111" + index);
+        if (index > 1) {
+            account.setRoles(buildRoles(index));
+        }
+        return account;
+    }
+
+    public static CreateAccountRequest buildCreateAccountRequest(Object roleId) {
+        var createAccountRequest = new CreateAccountRequest();
+        createAccountRequest.setName("UKE11111");
+        createAccountRequest.setIamId("UKE11111");
+        createAccountRequest.setStatus(AccountStatus.ENABLED);
+        createAccountRequest.setType(AccountType.USER);
+        createAccountRequest.setRoleId(roleId);
+        return createAccountRequest;
     }
 
     public static ColleagueEntity buildColleagueEntity(UUID uuid) {
