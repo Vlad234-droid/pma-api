@@ -59,6 +59,9 @@ public class StatsData {
     int anniversaryReviewPerQuarter4Percentage;
     long anniversaryReviewPerQuarter4Count;
 
+    int feedbackRequestedPercentage;
+    int feedbackGivenPercentage;
+
     @SuppressWarnings("PMD.NcssCount")
     public List<Object> toList() {
         var statistics = new ArrayList<>();
@@ -100,6 +103,9 @@ public class StatsData {
         statistics.add(anniversaryReviewPerQuarter3Count);
         statistics.add(anniversaryReviewPerQuarter4Percentage);
         statistics.add(anniversaryReviewPerQuarter4Count);
+
+        statistics.add(feedbackRequestedPercentage);
+        statistics.add(feedbackGivenPercentage);
 
         return statistics;
     }

@@ -29,6 +29,8 @@ public class ReportingConstants {
     public static final String HAS_EYR_APPROVED_3_QUARTER = "has_eyr_approved_3_quarter";
     public static final String HAS_EYR_APPROVED_4_QUARTER = "has_eyr_approved_4_quarter";
     public static final String IS_NEW_TO_BUSINESS = "is_new_to_business";
+    public static final String HAS_FEEDBACK_REQUESTED = "has_feedback_requested";
+    public static final String HAS_FEEDBACK_GIVEN = "has_feedback_given";
     // Ratings
     public static final String BELOW_EXPECTED_RATING = "Below expected";
     public static final String SATISFACTORY_RATING = "Satisfactory";

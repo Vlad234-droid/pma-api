@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.tesco.pma.reports.ReportingConstants.HAS_FEEDBACK_GIVEN;
+import static com.tesco.pma.reports.ReportingConstants.HAS_FEEDBACK_REQUESTED;
 import static com.tesco.pma.reports.exception.ErrorCodes.REPORT_NOT_FOUND;
 
 import static com.tesco.pma.reports.ReportingConstants.BELOW_EXPECTED_RATING;
@@ -155,6 +157,8 @@ class ReportingServiceImplTest {
         data.setAnniversaryReviewPerQuarter4Percentage(33);
         data.setAnniversaryReviewPerQuarter4Count(1);
         data.setNewToBusinessCount(2);
+        data.setFeedbackGivenPercentage(100);
+        data.setFeedbackRequestedPercentage(50);
         reportProvider.setData(List.of(data));
 
         return reportProvider.getReport();
@@ -178,7 +182,9 @@ class ReportingServiceImplTest {
                 entry(MUST_CREATE_OBJECTIVE, "1"),
                 entry(MUST_CREATE_MYR, "1"),
                 entry(MUST_CREATE_EYR, "0"),
-                entry(IS_NEW_TO_BUSINESS, "1")));
+                entry(IS_NEW_TO_BUSINESS, "1"),
+                entry(HAS_FEEDBACK_REQUESTED, "1"),
+                entry(HAS_FEEDBACK_GIVEN, "1")));
 
         var colleague2 = new ColleagueReportTargeting();
         colleague2.setUuid(UUID.fromString(LINE_MANAGER_UUID));
@@ -197,7 +203,9 @@ class ReportingServiceImplTest {
                 entry(MUST_CREATE_OBJECTIVE, "1"),
                 entry(MUST_CREATE_MYR, "1"),
                 entry(MUST_CREATE_EYR, "1"),
-                entry(IS_NEW_TO_BUSINESS, "1")));
+                entry(IS_NEW_TO_BUSINESS, "1"),
+                entry(HAS_FEEDBACK_REQUESTED, "0"),
+                entry(HAS_FEEDBACK_GIVEN, "1")));
 
         return List.of(colleague1, colleague2);
     }

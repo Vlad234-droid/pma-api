@@ -180,7 +180,15 @@ public class StatsReportProvider implements Reportable {
 
         ANNIVERSARY_REVIEW_PER_QUARTER_4_COUNT("AnniversaryReviewPerQuarter4Count",
                 "AnniversaryReviewPerQuarter4Count", INTEGER,
-                "Number of individuals with approved anniversary reviews in Quarter 4");
+                "Number of individuals with approved anniversary reviews in Quarter 4"),
+
+        FEEDBACK_REQUESTED_PERCENTAGE("FeedbackRequestedPercentage",
+                "FeedbackRequestedPercentage", INTEGER,
+                "Number of individuals requesting feedback/all individuals"),
+
+        FEEDBACK_GIVEN_PERCENTAGE("FeedbackGivenPercentage",
+                "FeedbackGivenPercentage", INTEGER,
+                "Number of individuals giving feedback/all individuals");
 
 
         private final ColumnMetadata columnMetadata;

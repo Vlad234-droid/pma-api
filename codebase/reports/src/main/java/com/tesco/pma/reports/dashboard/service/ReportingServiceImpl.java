@@ -43,6 +43,8 @@ import static com.tesco.pma.reports.ReportingConstants.MUST_CREATE_MYR;
 import static com.tesco.pma.reports.ReportingConstants.MUST_CREATE_OBJECTIVE;
 import static com.tesco.pma.reports.ReportingConstants.MYR_HOW_RATING;
 import static com.tesco.pma.reports.ReportingConstants.MYR_WHAT_RATING;
+import static com.tesco.pma.reports.ReportingConstants.HAS_FEEDBACK_REQUESTED;
+import static com.tesco.pma.reports.ReportingConstants.HAS_FEEDBACK_GIVEN;
 import static com.tesco.pma.reports.exception.ErrorCodes.REPORT_NOT_FOUND;
 
 /**
@@ -95,7 +97,17 @@ public class ReportingServiceImpl implements ReportingService {
             fillAnniversaryReviewPerQuarters(statsData, colleaguesAnniversary);
         }
 
+        fillFeedbacks(statsData, colleagues);
+
         return List.of(statsData);
+    }
+
+    private void fillFeedbacks(StatsData statsData, List<ColleagueReportTargeting> colleagues) {
+        var feedbackRequestedPercentage = (int) (100 * getCountWithTag(colleagues, HAS_FEEDBACK_REQUESTED) / colleagues.size());
+        statsData.setFeedbackRequestedPercentage(feedbackRequestedPercentage);
+
+        var feedbackGivenPercentage = (int) (100 * getCountWithTag(colleagues, HAS_FEEDBACK_GIVEN) / colleagues.size());
+        statsData.setFeedbackGivenPercentage(feedbackGivenPercentage);
     }
 
     private void fillObjectives(StatsData statsData, List<ColleagueReportTargeting> colleagues) {

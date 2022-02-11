@@ -27,6 +27,8 @@ import static com.tesco.pma.pagination.Condition.Operand.IN;
 
 import static com.tesco.pma.reports.ReportingConstants.BELOW_EXPECTED_RATING;
 import static com.tesco.pma.reports.ReportingConstants.GREAT_RATING;
+import static com.tesco.pma.reports.ReportingConstants.HAS_FEEDBACK_GIVEN;
+import static com.tesco.pma.reports.ReportingConstants.HAS_FEEDBACK_REQUESTED;
 import static com.tesco.pma.reports.ReportingConstants.OUTSTANDING_RATING;
 import static com.tesco.pma.reports.ReportingConstants.SATISFACTORY_RATING;
 import static com.tesco.pma.reports.ReportingConstants.EYR_HOW_RATING;
@@ -213,7 +215,9 @@ class ReportingEndpointTest extends AbstractEndpointTest {
                 entry(HAS_EYR_APPROVED_1_QUARTER, "1"),
                 entry(HAS_EYR_APPROVED_2_QUARTER, "1"),
                 entry(HAS_EYR_APPROVED_3_QUARTER, "1"),
-                entry(HAS_EYR_APPROVED_4_QUARTER, "0")));
+                entry(HAS_EYR_APPROVED_4_QUARTER, "0"),
+                entry(HAS_FEEDBACK_REQUESTED, "1"),
+                entry(HAS_FEEDBACK_GIVEN, "1")));
 
         var colleague2 = new ColleagueReportTargeting();
         colleague2.setUuid(UUID.fromString(COLLEAGUE_UUID_STR_2));
@@ -236,7 +240,9 @@ class ReportingEndpointTest extends AbstractEndpointTest {
                 entry(HAS_EYR_APPROVED_1_QUARTER, "0"),
                 entry(HAS_EYR_APPROVED_2_QUARTER, "1"),
                 entry(HAS_EYR_APPROVED_3_QUARTER, "1"),
-                entry(HAS_EYR_APPROVED_4_QUARTER, "1")));
+                entry(HAS_EYR_APPROVED_4_QUARTER, "1"),
+                entry(HAS_FEEDBACK_REQUESTED, "0"),
+                entry(HAS_FEEDBACK_GIVEN, "1")));
 
         return List.of(colleague1, colleague2);
     }
@@ -268,6 +274,8 @@ class ReportingEndpointTest extends AbstractEndpointTest {
         data.setAnniversaryReviewPerQuarter4Percentage(33);
         data.setAnniversaryReviewPerQuarter4Count(1);
         data.setNewToBusinessCount(2);
+        data.setFeedbackGivenPercentage(100);
+        data.setFeedbackRequestedPercentage(50);
         reportProvider.setData(List.of(data));
 
         return reportProvider.getReport();
