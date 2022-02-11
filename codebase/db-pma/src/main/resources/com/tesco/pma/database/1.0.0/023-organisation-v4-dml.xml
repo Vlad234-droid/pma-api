@@ -45,7 +45,7 @@
         </insert>
         <rollback>
             <delete tableName="working_config_entry">
-                <where>uuid IN ('10000000-0000-0000-0005-000000000001', '10000000-0000-0000-0005-000000000002')
+                <where>config_entry_uuid IN ('10000000-0000-0000-0005-000000000001', '10000000-0000-0000-0005-000000000002')
                 </where>
             </delete>
         </rollback>
