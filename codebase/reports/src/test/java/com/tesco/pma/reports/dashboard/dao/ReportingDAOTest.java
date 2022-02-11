@@ -14,6 +14,8 @@ import java.util.List;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Condition.Operand.IN;
 import static com.tesco.pma.pagination.Condition.Operand.NOT_CONTAINS;
+import static com.tesco.pma.reports.ReportingConstants.HAS_FEEDBACK_GIVEN;
+import static com.tesco.pma.reports.ReportingConstants.HAS_FEEDBACK_REQUESTED;
 import static com.tesco.pma.reports.dashboard.dao.ReportingDAOTest.BASE_PATH_TO_DATA_SET;
 
 import static com.tesco.pma.reports.ReportingConstants.EYR_HOW_RATING;
@@ -46,7 +48,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
           BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
           BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml",
           BASE_PATH_TO_DATA_SET + "pm_timeline_point_init.xml",
-          BASE_PATH_TO_DATA_SET + "pm_review_init.xml"})
+          BASE_PATH_TO_DATA_SET + "pm_review_init.xml",
+          BASE_PATH_TO_DATA_SET + "feedback_init.xml"})
 class ReportingDAOTest extends AbstractDAOTest {
 
     static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/reports/dashboard/dao/";
@@ -107,7 +110,9 @@ class ReportingDAOTest extends AbstractDAOTest {
                 () -> assertEquals("0", tags.get(MUST_CREATE_EYR)),
                 () -> assertEquals("1", tags.get(MUST_CREATE_OBJECTIVE)),
                 () -> assertEquals("1", tags.get(MUST_CREATE_MYR)),
-                () -> assertEquals("0", tags.get(IS_NEW_TO_BUSINESS)));
+                () -> assertEquals("0", tags.get(IS_NEW_TO_BUSINESS)),
+                () -> assertEquals("1", tags.get(HAS_FEEDBACK_REQUESTED)),
+                () -> assertEquals("1", tags.get(HAS_FEEDBACK_GIVEN)));
     }
 
     @Test
