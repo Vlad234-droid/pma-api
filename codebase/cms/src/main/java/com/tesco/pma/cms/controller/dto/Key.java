@@ -1,6 +1,7 @@
 package com.tesco.pma.cms.controller.dto;
 
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 @Data
 public class Key {
@@ -14,7 +15,7 @@ public class Key {
 
     @Override
     public String toString() {
-        return createKey(countryCode, iam, role, content);
+        return createKey(countryCode, role, iam, content);
     }
 
 
@@ -33,6 +34,6 @@ public class Key {
             sb.append(el);
         }
 
-        return sb.toString();
+        return StringUtils.trim(sb.toString());
     }
 }

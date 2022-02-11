@@ -8,6 +8,7 @@ import com.tesco.pma.rest.RestResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,7 @@ import java.util.UUID;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/cms")
@@ -61,7 +63,8 @@ public class ContentEndpoint {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isColleague()")
     public RestResponse<List<Content>> findByCountryRoleIamContent(Key key) {
-        return RestResponse.success(contentService.findByKey(Key.createKey(KNOWLEDGE_LIBRARY, key.toString())));
+        var keyString = Key.createKey(KNOWLEDGE_LIBRARY, key.toString());
+        return RestResponse.success(contentService.findByKey(keyString));
     }
 
     @Operation(summary = "Create a Content", tags = {"CMS"})

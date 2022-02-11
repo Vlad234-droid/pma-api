@@ -5,6 +5,7 @@ import com.tesco.pma.cms.dao.ContentDAO;
 import com.tesco.pma.cms.exception.ContentException;
 import com.tesco.pma.cms.exception.ErrorCodes;
 import com.tesco.pma.cms.model.Content;
+import com.tesco.pma.cms.model.ContentStatus;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +31,12 @@ public class ContentServiceImpl implements ContentService {
         content.setCreatedBy(auditorAware.getCurrentAuditor());
         content.setCreatedTime(Instant.now());
 
-        if (content.getVersion() < 1) {
+        if (content.getVersion() == null) {
             content.setVersion(1);
+        }
+
+        if (content.getStatus() == null) {
+            content.setStatus(ContentStatus.DRAFT);
         }
 
         if (1 != contentDAO.create(content)) {

@@ -1,6 +1,7 @@
 package com.tesco.pma.cms.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.tesco.pma.cms.controller.dto.Key;
 import com.tesco.pma.cms.model.Content;
 import com.tesco.pma.cms.model.ContentStatus;
 import com.tesco.pma.dao.AbstractDAOTest;
