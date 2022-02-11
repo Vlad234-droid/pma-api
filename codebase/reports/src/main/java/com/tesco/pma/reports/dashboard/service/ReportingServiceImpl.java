@@ -22,6 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.tesco.pma.reports.ReportingConstants.BELOW_EXPECTED_RATING;
+import static com.tesco.pma.reports.ReportingConstants.GREAT_RATING;
+import static com.tesco.pma.reports.ReportingConstants.OUTSTANDING_RATING;
+import static com.tesco.pma.reports.ReportingConstants.SATISFACTORY_RATING;
 import static com.tesco.pma.reports.ReportingConstants.QUERY_PARAMS;
 import static com.tesco.pma.reports.ReportingConstants.EYR_HOW_RATING;
 import static com.tesco.pma.reports.ReportingConstants.EYR_WHAT_RATING;
@@ -157,58 +161,58 @@ public class ReportingServiceImpl implements ReportingService {
     }
 
     private void fillMyrRatings(StatsData statsData, List<ColleagueReportTargeting> colleagues, long myrApprovedCount) {
-        var myrRatingBelowExpected = getMyrRatingTypeStats(colleagues, RatingStatsData.OverallRating.BELOW_EXPECTED, myrApprovedCount);
+        var myrRatingBelowExpected = getMyrRatingTypeStats(colleagues, BELOW_EXPECTED_RATING, myrApprovedCount);
         statsData.setMyrRatingBreakdownBelowExpectedPercentage(myrRatingBelowExpected.getRatingPercentage());
         statsData.setMyrRatingBreakdownBelowExpectedCount(myrRatingBelowExpected.getRatingCount());
 
-        var myrRatingSatisfactory = getMyrRatingTypeStats(colleagues, RatingStatsData.OverallRating.SATISFACTORY, myrApprovedCount);
+        var myrRatingSatisfactory = getMyrRatingTypeStats(colleagues, SATISFACTORY_RATING, myrApprovedCount);
         statsData.setMyrRatingBreakdownSatisfactoryPercentage(myrRatingSatisfactory.getRatingPercentage());
         statsData.setMyrRatingBreakdownSatisfactoryCount(myrRatingSatisfactory.getRatingCount());
 
-        var myrRatingGreat = getMyrRatingTypeStats(colleagues, RatingStatsData.OverallRating.GREAT, myrApprovedCount);
+        var myrRatingGreat = getMyrRatingTypeStats(colleagues, GREAT_RATING, myrApprovedCount);
         statsData.setMyrRatingBreakdownGreatPercentage(myrRatingGreat.getRatingPercentage());
         statsData.setMyrRatingBreakdownGreatCount(myrRatingGreat.getRatingCount());
 
-        var myrRatingOutstanding = getMyrRatingTypeStats(colleagues, RatingStatsData.OverallRating.OUTSTANDING, myrApprovedCount);
+        var myrRatingOutstanding = getMyrRatingTypeStats(colleagues, OUTSTANDING_RATING, myrApprovedCount);
         statsData.setMyrRatingBreakdownOutstandingPercentage(myrRatingOutstanding.getRatingPercentage());
         statsData.setMyrRatingBreakdownOutstandingCount(myrRatingOutstanding.getRatingCount());
     }
 
     private void fillEyrRatings(StatsData statsData, List<ColleagueReportTargeting> colleagues, long eyrApprovedCount) {
-        var eyrRatingBelowExpected = getEyrRatingTypeStats(colleagues, RatingStatsData.OverallRating.BELOW_EXPECTED, eyrApprovedCount);
+        var eyrRatingBelowExpected = getEyrRatingTypeStats(colleagues, BELOW_EXPECTED_RATING, eyrApprovedCount);
         statsData.setEyrRatingBreakdownBelowExpectedPercentage(eyrRatingBelowExpected.getRatingPercentage());
         statsData.setEyrRatingBreakdownBelowExpectedCount(eyrRatingBelowExpected.getRatingCount());
 
-        var eyrRatingSatisfactory = getEyrRatingTypeStats(colleagues, RatingStatsData.OverallRating.SATISFACTORY, eyrApprovedCount);
+        var eyrRatingSatisfactory = getEyrRatingTypeStats(colleagues, SATISFACTORY_RATING, eyrApprovedCount);
         statsData.setEyrRatingBreakdownSatisfactoryPercentage(eyrRatingSatisfactory.getRatingPercentage());
         statsData.setEyrRatingBreakdownSatisfactoryCount(eyrRatingSatisfactory.getRatingCount());
 
-        var eyrRatingGreat = getEyrRatingTypeStats(colleagues, RatingStatsData.OverallRating.GREAT, eyrApprovedCount);
+        var eyrRatingGreat = getEyrRatingTypeStats(colleagues, GREAT_RATING, eyrApprovedCount);
         statsData.setEyrRatingBreakdownGreatPercentage(eyrRatingGreat.getRatingPercentage());
         statsData.setEyrRatingBreakdownGreatCount(eyrRatingGreat.getRatingCount());
 
-        var eyrRatingOutstanding = getEyrRatingTypeStats(colleagues, RatingStatsData.OverallRating.OUTSTANDING, eyrApprovedCount);
+        var eyrRatingOutstanding = getEyrRatingTypeStats(colleagues, OUTSTANDING_RATING, eyrApprovedCount);
         statsData.setEyrRatingBreakdownOutstandingPercentage(eyrRatingOutstanding.getRatingPercentage());
         statsData.setEyrRatingBreakdownOutstandingCount(eyrRatingOutstanding.getRatingCount());
     }
 
     private RatingStatsData getMyrRatingTypeStats(List<ColleagueReportTargeting> colleagues,
-                                                  RatingStatsData.OverallRating ratingType, long myrRatingToSubmitCount) {
+                                                  String ratingType, long myrRatingToSubmitCount) {
         return getRatingTypeStats(colleagues, MYR_WHAT_RATING, MYR_HOW_RATING,
                 ratingType, myrRatingToSubmitCount);
     }
 
     private RatingStatsData getEyrRatingTypeStats(List<ColleagueReportTargeting> colleagues,
-                                                  RatingStatsData.OverallRating ratingType, long eyrRatingToSubmitCount) {
+                                                  String ratingType, long eyrRatingToSubmitCount) {
         return getRatingTypeStats(colleagues, EYR_WHAT_RATING, EYR_HOW_RATING,
                 ratingType, eyrRatingToSubmitCount);
     }
 
     private RatingStatsData getRatingTypeStats(List<ColleagueReportTargeting> colleagues,
                                                String whatRatingTag, String howRatingTag,
-                                               RatingStatsData.OverallRating ratingType, long ratingToSubmitCount) {
+                                               String ratingType, long ratingToSubmitCount) {
         var ratingStats = new RatingStatsData();
-        var ratingTypeCount = getRatingCountWithTag(colleagues, ratingType.getDescription(), whatRatingTag, howRatingTag);
+        var ratingTypeCount = getRatingCountWithTag(colleagues, ratingType, whatRatingTag, howRatingTag);
         var ratingTypePercentage = (int) (100 * ratingTypeCount / ratingToSubmitCount);
 
         ratingStats.setRatingPercentage(ratingTypePercentage);

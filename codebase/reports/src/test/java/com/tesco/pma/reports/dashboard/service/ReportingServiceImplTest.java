@@ -32,6 +32,10 @@ import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Condition.Operand.IN;
 import static com.tesco.pma.reports.exception.ErrorCodes.REPORT_NOT_FOUND;
 
+import static com.tesco.pma.reports.ReportingConstants.BELOW_EXPECTED_RATING;
+import static com.tesco.pma.reports.ReportingConstants.GREAT_RATING;
+import static com.tesco.pma.reports.ReportingConstants.OUTSTANDING_RATING;
+import static com.tesco.pma.reports.ReportingConstants.SATISFACTORY_RATING;
 import static com.tesco.pma.reports.ReportingConstants.EYR_HOW_RATING;
 import static com.tesco.pma.reports.ReportingConstants.EYR_WHAT_RATING;
 import static com.tesco.pma.reports.ReportingConstants.HAS_EYR_APPROVED;
@@ -51,10 +55,6 @@ import static com.tesco.pma.reports.ReportingConstants.MUST_CREATE_OBJECTIVE;
 import static com.tesco.pma.reports.ReportingConstants.MYR_HOW_RATING;
 import static com.tesco.pma.reports.ReportingConstants.MYR_WHAT_RATING;
 
-import static com.tesco.pma.reports.dashboard.domain.RatingStatsData.OverallRating.GREAT;
-import static com.tesco.pma.reports.dashboard.domain.RatingStatsData.OverallRating.OUTSTANDING;
-import static com.tesco.pma.reports.dashboard.domain.RatingStatsData.OverallRating.SATISFACTORY;
-import static com.tesco.pma.reports.dashboard.domain.RatingStatsData.OverallRating.BELOW_EXPECTED;
 import static com.tesco.pma.reports.ReportingConstants.QUERY_PARAMS;
 import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -149,14 +149,10 @@ class ReportingServiceImplTest {
         final var colleagues = buildColleagueTargeting();
         when(reportingDAO.getColleagueTargeting(requestQuery)).thenReturn(colleagues);
         when(reportingDAO.getColleagueTargetingAnniversary(requestQuery)).thenReturn(buildColleagueTargetingAnniversary());
-        when(ratingService.getOverallRating(GREAT.getDescription(), GREAT.getDescription()))
-                .thenReturn(GREAT.getDescription());
-        when(ratingService.getOverallRating(OUTSTANDING.getDescription(), OUTSTANDING.getDescription()))
-                .thenReturn(OUTSTANDING.getDescription());
-        when(ratingService.getOverallRating(SATISFACTORY.getDescription(), SATISFACTORY.getDescription()))
-                .thenReturn(SATISFACTORY.getDescription());
-        when(ratingService.getOverallRating(BELOW_EXPECTED.getDescription(), BELOW_EXPECTED.getDescription()))
-                .thenReturn(BELOW_EXPECTED.getDescription());
+        when(ratingService.getOverallRating(GREAT_RATING, GREAT_RATING)).thenReturn(GREAT_RATING);
+        when(ratingService.getOverallRating(OUTSTANDING_RATING, OUTSTANDING_RATING)).thenReturn(OUTSTANDING_RATING);
+        when(ratingService.getOverallRating(SATISFACTORY_RATING, SATISFACTORY_RATING)).thenReturn(SATISFACTORY_RATING);
+        when(ratingService.getOverallRating(BELOW_EXPECTED_RATING, BELOW_EXPECTED_RATING)).thenReturn(BELOW_EXPECTED_RATING);
 
         final var res = reportingService.getStatsReport(requestQuery);
 
@@ -222,10 +218,10 @@ class ReportingServiceImplTest {
                 entry(HAS_OBJECTIVE_SUBMITTED, "0"),
                 entry(HAS_MYR_APPROVED, "1"),
                 entry(HAS_EYR_APPROVED, "0"),
-                entry(MYR_HOW_RATING, GREAT.getDescription()),
-                entry(MYR_WHAT_RATING, GREAT.getDescription()),
-                entry(EYR_HOW_RATING, OUTSTANDING.getDescription()),
-                entry(EYR_WHAT_RATING, OUTSTANDING.getDescription()),
+                entry(MYR_HOW_RATING, GREAT_RATING),
+                entry(MYR_WHAT_RATING, GREAT_RATING),
+                entry(EYR_HOW_RATING, OUTSTANDING_RATING),
+                entry(EYR_WHAT_RATING, OUTSTANDING_RATING),
                 entry(HAS_MYR_SUBMITTED, "0"),
                 entry(HAS_EYR_SUBMITTED, "0"),
                 entry(MUST_CREATE_OBJECTIVE, "1"),
@@ -241,10 +237,10 @@ class ReportingServiceImplTest {
                 entry(HAS_OBJECTIVE_SUBMITTED, "1"),
                 entry(HAS_MYR_APPROVED, "1"),
                 entry(HAS_EYR_APPROVED, "1"),
-                entry(MYR_HOW_RATING, SATISFACTORY.getDescription()),
-                entry(MYR_WHAT_RATING, SATISFACTORY.getDescription()),
-                entry(EYR_HOW_RATING, BELOW_EXPECTED.getDescription()),
-                entry(EYR_WHAT_RATING, BELOW_EXPECTED.getDescription()),
+                entry(MYR_HOW_RATING, SATISFACTORY_RATING),
+                entry(MYR_WHAT_RATING, SATISFACTORY_RATING),
+                entry(EYR_HOW_RATING, BELOW_EXPECTED_RATING),
+                entry(EYR_WHAT_RATING, BELOW_EXPECTED_RATING),
                 entry(HAS_MYR_SUBMITTED, "1"),
                 entry(HAS_EYR_SUBMITTED, "1"),
                 entry(MUST_CREATE_OBJECTIVE, "1"),

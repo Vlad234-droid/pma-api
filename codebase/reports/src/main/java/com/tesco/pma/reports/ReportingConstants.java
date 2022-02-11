@@ -1,8 +1,11 @@
 package com.tesco.pma.reports;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * Constants used in reporting: tags, ratings, etc
  */
+@UtilityClass
 @SuppressWarnings("PMD.ClassNamingConventions")
 public class ReportingConstants {
     // Parameters
@@ -27,5 +30,8 @@ public class ReportingConstants {
     public static final String HAS_EYR_APPROVED_4_QUARTER = "has_eyr_approved_4_quarter";
     public static final String IS_NEW_TO_BUSINESS = "is_new_to_business";
     // Ratings
-
+    public static final String BELOW_EXPECTED_RATING = "Below expected";
+    public static final String SATISFACTORY_RATING = "Satisfactory";
+    public static final String GREAT_RATING = "Great";
+    public static final String OUTSTANDING_RATING = "Outstanding";
 }
