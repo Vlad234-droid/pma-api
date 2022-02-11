@@ -74,38 +74,22 @@ public class ReportingServiceImpl implements ReportingService {
     private List<StatsData> findStatsData(List<ColleagueReportTargeting> colleagues, RequestQuery requestQuery) {
         var statsData = new StatsData();
         statsData.setColleaguesCount(colleagues.size());
-        // objectives
-        fillObjectives(statsData, colleagues);
-        // myr forms submitted, approved
-        final var myrToSubmitCount = getCountWithTag(colleagues, MUST_CREATE_MYR);
         final var myrApprovedCount = getCountWithTag(colleagues, HAS_MYR_APPROVED);
-        if (myrToSubmitCount != 0) {
-            var myrSubmittedPercentage = (int) (100 * getCountWithTag(colleagues, HAS_MYR_SUBMITTED) / myrToSubmitCount);
-            statsData.setMyrSubmittedPercentage(myrSubmittedPercentage);
-
-            var myrApprovedPercentage = (int) (100 * myrApprovedCount / myrToSubmitCount);
-            statsData.setMyrApprovedPercentage(myrApprovedPercentage);
-        }
-        // eyr forms submitted, approved
-        final var eyrToSubmitCount = getCountWithTag(colleagues, MUST_CREATE_EYR);
         final var eyrApprovedCount = getCountWithTag(colleagues, HAS_EYR_APPROVED);
-        if (eyrToSubmitCount != 0) {
-            var eyrSubmittedPercentage = (int) (100 * getCountWithTag(colleagues, HAS_EYR_SUBMITTED) / eyrToSubmitCount);
-            statsData.setEyrSubmittedPercentage(eyrSubmittedPercentage);
 
-            var eyrApprovedPercentage = (int) (100 * eyrApprovedCount / eyrToSubmitCount);
-            statsData.setEyrApprovedPercentage(eyrApprovedPercentage);
-        }
-        // ratings
+        fillObjectives(statsData, colleagues);
+        fillMyrForms(statsData, colleagues, myrApprovedCount);
+        fillEyrForms(statsData, colleagues, eyrApprovedCount);
+
         if (myrApprovedCount != 0) {
             fillMyrRatings(statsData, colleagues, myrApprovedCount);
         }
         if (eyrApprovedCount != 0) {
             fillEyrRatings(statsData, colleagues, eyrApprovedCount);
         }
-        // new to business
+
         statsData.setNewToBusinessCount(getCountWithTag(colleagues, IS_NEW_TO_BUSINESS));
-        // anniversary reviews completed per quarter
+
         var colleaguesAnniversary = reportingDAO.getColleagueTargetingAnniversary(requestQuery);
         if (!CollectionUtils.isEmpty(colleaguesAnniversary)) {
             fillAnniversaryReviewPerQuarters(statsData, colleaguesAnniversary);
@@ -124,6 +108,28 @@ public class ReportingServiceImpl implements ReportingService {
             var objectivesApprovedPercentage =
                     (int) (100 * getCountWithTag(colleagues, HAS_OBJECTIVE_APPROVED) / objectivesToSubmitCount);
             statsData.setObjectivesApprovedPercentage(objectivesApprovedPercentage);
+        }
+    }
+
+    private void fillMyrForms(StatsData statsData, List<ColleagueReportTargeting> colleagues, long myrApprovedCount) {
+        final var myrToSubmitCount = getCountWithTag(colleagues, MUST_CREATE_MYR);
+        if (myrToSubmitCount != 0) {
+            var myrSubmittedPercentage = (int) (100 * getCountWithTag(colleagues, HAS_MYR_SUBMITTED) / myrToSubmitCount);
+            statsData.setMyrSubmittedPercentage(myrSubmittedPercentage);
+
+            var myrApprovedPercentage = (int) (100 * myrApprovedCount / myrToSubmitCount);
+            statsData.setMyrApprovedPercentage(myrApprovedPercentage);
+        }
+    }
+
+    private void fillEyrForms(StatsData statsData, List<ColleagueReportTargeting> colleagues, long eyrApprovedCount) {
+        final var eyrToSubmitCount = getCountWithTag(colleagues, MUST_CREATE_EYR);
+        if (eyrToSubmitCount != 0) {
+            var eyrSubmittedPercentage = (int) (100 * getCountWithTag(colleagues, HAS_EYR_SUBMITTED) / eyrToSubmitCount);
+            statsData.setEyrSubmittedPercentage(eyrSubmittedPercentage);
+
+            var eyrApprovedPercentage = (int) (100 * eyrApprovedCount / eyrToSubmitCount);
+            statsData.setEyrApprovedPercentage(eyrApprovedPercentage);
         }
     }
 
