@@ -8,6 +8,7 @@ import com.tesco.pma.colleague.api.Profile;
 import com.tesco.pma.colleague.api.service.ServiceDates;
 import com.tesco.pma.colleague.api.workrelationships.Department;
 import com.tesco.pma.colleague.api.workrelationships.Job;
+import com.tesco.pma.colleague.api.workrelationships.LegalEmployer;
 import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
 import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
 import com.tesco.pma.colleague.profile.dao.ProfileDAO;
@@ -94,6 +95,12 @@ public class ColleagueFactsApiLocalMapper {
         wr.setDepartment(getDepartment(oc));
         wr.setJob(getJob(oc));
         wr.setManagerUUID(oc.getManagerUuid());
+        wr.setLocationUUID(oc.getLocationId());
+        if (oc.getLegalEntity() != null) {
+            var legalEmployer = new LegalEmployer();
+            legalEmployer.setName(oc.getLegalEntity());
+            wr.setLegalEmployer(legalEmployer);
+        }
         if (wr.getManagerUUID() != null) {
             var mng = profileDAO.getColleague(wr.getManagerUUID());
             if (mng != null) {
@@ -168,8 +175,7 @@ public class ColleagueFactsApiLocalMapper {
         return destination;
     }
 
-    private void mappingWorkRelationshipProperties(Colleague source,
-                                                          ColleagueEntity destination) {
+    private void mappingWorkRelationshipProperties(Colleague source, ColleagueEntity destination) {
         if (Objects.nonNull(source.getWorkRelationships())) {
             Optional<WorkRelationship> optionalWorkRelationship = source.getWorkRelationships().stream().findFirst();
 
@@ -197,6 +203,12 @@ public class ColleagueFactsApiLocalMapper {
                 ColleagueEntity.Job job = new ColleagueEntity.Job();
                 BeanUtils.copyProperties(workRelationship.getJob(), job);
                 destination.setJob(job);
+
+                destination.setLocationId(workRelationship.getLocationUUID());
+
+                if (workRelationship.getLegalEmployer() != null) {
+                    destination.setLegalEntity(workRelationship.getLegalEmployer().getName());
+                }
             }
         }
 

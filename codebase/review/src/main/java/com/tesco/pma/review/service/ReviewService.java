@@ -112,7 +112,8 @@ public interface ReviewService {
      * @return updated review.
      * @throws NotFoundException if review doesn't exist.
      */
-    Review updateReview(@NotNull Review review, @NotNull UUID performanceCycleUuid, @NotNull UUID colleagueUuid);
+    Review updateReview(@NotNull Review review, @NotNull UUID performanceCycleUuid,
+                        @NotNull UUID colleagueUuid, @NotNull UUID loggedUserUuid);
 
     /**
      * Create/update reviews.
@@ -127,7 +128,7 @@ public interface ReviewService {
     List<Review> updateReviews(@NotNull UUID performanceCycleUuid,
                                @NotNull UUID colleagueUuid,
                                @NotNull PMReviewType type,
-                               List<Review> reviews);
+                               List<Review> reviews, UUID loggedUserUuid);
 
     /**
      * Updates reviews status.

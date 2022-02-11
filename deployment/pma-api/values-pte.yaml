@@ -37,6 +37,10 @@ service:
 serviceIdentity:
     port: 8084
 
+serviceManagement:
+    enabled: true
+    port: 8090
+
 ingress:
     enabled: false
     className: ""

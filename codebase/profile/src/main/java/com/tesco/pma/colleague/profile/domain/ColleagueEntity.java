@@ -25,6 +25,8 @@ public class ColleagueEntity { //NOPMD
     private LocalDate hireDate;
     private LocalDate leavingDate;
     private boolean manager;
+    private String locationId;
+    private String legalEntity;
 
     @Data
     public static class Job { //NOPMD
