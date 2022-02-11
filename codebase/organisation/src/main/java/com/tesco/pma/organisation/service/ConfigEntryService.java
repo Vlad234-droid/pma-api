@@ -1,6 +1,8 @@
 package com.tesco.pma.organisation.service;
 
+import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
+import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.ConfigEntryResponse;
 
@@ -92,6 +94,15 @@ public interface ConfigEntryService {
      * @return list of colleagues
      */
     List<ColleagueEntity> findColleaguesByCompositeKey(String compositeKey);
+
+    /**
+     * Gets list of colleagues by composite key filtered by status
+     *
+     * @param compositeKey - key
+     * @param statusFilter - status filter
+     * @return list of colleagues
+     */
+    List<ColleagueEntity> findColleaguesByCompositeKey(String compositeKey, DictionaryFilter<PMCycleStatus> statusFilter);
 
     /**
      * Get all published roots
