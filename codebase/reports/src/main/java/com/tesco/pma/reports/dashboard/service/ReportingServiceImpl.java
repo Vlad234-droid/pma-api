@@ -8,11 +8,9 @@ import com.tesco.pma.reporting.Report;
 import com.tesco.pma.reports.dashboard.dao.ReportingDAO;
 import com.tesco.pma.reports.dashboard.domain.RatingStatsData;
 import com.tesco.pma.reports.dashboard.domain.StatsData;
-import com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider;
 import com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider;
 import com.tesco.pma.reports.dashboard.domain.ColleagueReportTargeting;
 import com.tesco.pma.reports.rating.service.RatingService;
-import com.tesco.pma.reports.exception.ErrorCodes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -45,7 +43,7 @@ import static com.tesco.pma.reports.ReportingConstants.MUST_CREATE_MYR;
 import static com.tesco.pma.reports.ReportingConstants.MUST_CREATE_OBJECTIVE;
 import static com.tesco.pma.reports.ReportingConstants.MYR_HOW_RATING;
 import static com.tesco.pma.reports.ReportingConstants.MYR_WHAT_RATING;
-import static org.springframework.util.CollectionUtils.isEmpty;
+import static com.tesco.pma.reports.exception.ErrorCodes.REPORT_NOT_FOUND;
 
 /**
  * Service for reporting data
@@ -59,20 +57,9 @@ public class ReportingServiceImpl implements ReportingService {
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Override
-    public Report getLinkedObjectivesReport(RequestQuery requestQuery) {
-        var reportProvider = new ObjectiveLinkedReviewReportProvider();
-        reportProvider.setObjectives(reportingDAO.getLinkedObjectivesData(requestQuery));
-
-        if (isEmpty(reportProvider.getObjectives())) {
-            throw notFound(ErrorCodes.REPORT_NOT_FOUND, Map.of(QUERY_PARAMS, requestQuery));
-        }
-        return reportProvider.getReport();
-    }
-
-    @Override
     public List<ColleagueReportTargeting> getReportColleagues(RequestQuery requestQuery) {
         return Optional.ofNullable(reportingDAO.getColleagueTargeting(requestQuery))
-                .orElseThrow(() -> notFound(ErrorCodes.REPORT_NOT_FOUND, Map.of(QUERY_PARAMS, requestQuery)));
+                .orElseThrow(() -> notFound(REPORT_NOT_FOUND, Map.of(QUERY_PARAMS, requestQuery)));
     }
 
     @Override

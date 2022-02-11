@@ -6,6 +6,7 @@ import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.reporting.Report;
 import com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider;
 import com.tesco.pma.reports.dashboard.domain.ColleagueReportTargeting;
+import com.tesco.pma.reports.review.service.ReviewReportingService;
 import com.tesco.pma.reports.exception.ErrorCodes;
 import com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider;
 import com.tesco.pma.reports.dashboard.service.ReportingService;
@@ -43,6 +44,7 @@ public class ReportingEndpoint {
     static final MediaType APPLICATION_FORCE_DOWNLOAD_VALUE = new MediaType("application", "force-download");
 
     private final ReportingService reportingService;
+    private final ReviewReportingService reviewReportingService;
     private final NamedMessageSourceAccessor messages;
 
     /**
@@ -57,7 +59,7 @@ public class ReportingEndpoint {
     @GetMapping(path = ObjectiveLinkedReviewReportProvider.REPORT_NAME + "/formats/excel", produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
     public ResponseEntity<Resource> getLinkedObjectivesReportFile(RequestQuery requestQuery) {
-        var report = reportingService.getLinkedObjectivesReport(requestQuery);
+        var report = reviewReportingService.getLinkedObjectivesReport(requestQuery);
 
         var reportData = report.getData();
         var reportMetadata = report.getMetadata().getColumnMetadata();
@@ -90,7 +92,7 @@ public class ReportingEndpoint {
     @GetMapping(path = ObjectiveLinkedReviewReportProvider.REPORT_NAME, produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
     public RestResponse<Report> getLinkedObjectivesReportData(RequestQuery requestQuery) {
-        return success(reportingService.getLinkedObjectivesReport(requestQuery));
+        return success(reviewReportingService.getLinkedObjectivesReport(requestQuery));
     }
 
     /**

@@ -14,15 +14,6 @@ import java.util.List;
 public interface ReportingService {
 
     /**
-     * Find Objectives linked with reviews
-     *
-     * @param requestQuery - parameters for filters by year of colleague cycle, statuses of review, etc
-     * @return linked Objectives report
-     * @throws NotFoundException if review report data doesn't exist.
-     */
-    Report getLinkedObjectivesReport(@NotNull RequestQuery requestQuery);
-
-    /**
      * Find colleagues marked with tags
      * @param requestQuery - parameters for filters
      * @return colleagues with tags

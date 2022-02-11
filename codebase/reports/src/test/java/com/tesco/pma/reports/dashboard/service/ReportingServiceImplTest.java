@@ -2,14 +2,12 @@ package com.tesco.pma.reports.dashboard.service;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.reporting.Report;
 import com.tesco.pma.reports.dashboard.domain.ColleagueReportTargeting;
 import com.tesco.pma.reports.rating.service.RatingService;
 import com.tesco.pma.reports.dashboard.LocalServiceTestConfig;
 import com.tesco.pma.reports.dashboard.dao.ReportingDAO;
-import com.tesco.pma.reports.review.domain.ObjectiveLinkedReviewData;
 import com.tesco.pma.reports.dashboard.domain.StatsData;
 import com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider;
 import org.junit.jupiter.api.Test;
@@ -20,16 +18,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
-import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
-import static com.tesco.pma.pagination.Condition.Operand.IN;
 import static com.tesco.pma.reports.exception.ErrorCodes.REPORT_NOT_FOUND;
 
 import static com.tesco.pma.reports.ReportingConstants.BELOW_EXPECTED_RATING;
@@ -69,14 +61,8 @@ class ReportingServiceImplTest {
     private static final String COLLEAGUE_UUID = "10000000-0000-0000-0000-000000000000";
     private static final String COLLEAGUE_UUID_2 = "20000000-0000-0000-0000-000000000000";
     private static final String LINE_MANAGER_UUID = "10000000-0000-0000-0000-000000000002";
-    private static final Integer YEAR = 2021;
 
     private static final String REPORT_NOT_FOUND_MESSAGE = "Report not found for: {" +
-            QUERY_PARAMS + "=RequestQuery(offset=null, limit=null, sort=[], filters=[" +
-            "Condition(property=year, operand=" + EQUALS + ", value=" + YEAR + "), " +
-            "Condition(property=statuses, operand=" + IN + ", value=[" + APPROVED + "])], search=null)}";
-
-    private static final String REPORT_NOT_FOUND_MESSAGE_EMPTY_QUERY = "Report not found for: {" +
             QUERY_PARAMS + "=RequestQuery(offset=null, limit=null, sort=[], filters=[], search=null)}";
 
     @Autowired
@@ -90,35 +76,6 @@ class ReportingServiceImplTest {
 
     @Autowired
     private ReportingServiceImpl reportingService;
-
-    @Test
-    void getLinkedObjectivesData() {
-        var reportData = List.of(buildObjectiveLinkedReviewData(1),
-                                                            buildObjectiveLinkedReviewData(2));
-        final var requestQuery = new RequestQuery();
-        requestQuery.setFilters(new ArrayList<>(Arrays.asList(new Condition("year", EQUALS, YEAR),
-                                                              new Condition("statuses", IN, List.of(APPROVED.getCode())))));
-
-        when(reportingDAO.getLinkedObjectivesData(requestQuery)).thenReturn(reportData);
-
-        final var res = reportingService.getLinkedObjectivesReport(requestQuery);
-
-        assertEquals(getExpectedReportData(reportData), res.getData());
-    }
-
-    @Test
-    void getLinkedObjectivesDataNotExists() {
-        final var requestQuery = new RequestQuery();
-        requestQuery.setFilters(new ArrayList<>(Arrays.asList(new Condition("year", EQUALS, YEAR),
-                                                              new Condition("statuses", IN, List.of(APPROVED.getCode())))));
-        when(reportingDAO.getLinkedObjectivesData(requestQuery)).thenReturn(null);
-
-        final var exception = assertThrows(NotFoundException.class,
-                () -> reportingService.getLinkedObjectivesReport(requestQuery));
-
-        assertEquals(REPORT_NOT_FOUND.getCode(), exception.getCode());
-        assertEquals(REPORT_NOT_FOUND_MESSAGE, exception.getMessage());
-    }
 
     @Test
     void getReportColleaguesData() {
@@ -140,7 +97,7 @@ class ReportingServiceImplTest {
                 () -> reportingService.getReportColleagues(requestQuery));
 
         assertEquals(REPORT_NOT_FOUND.getCode(), exception.getCode());
-        assertEquals(REPORT_NOT_FOUND_MESSAGE_EMPTY_QUERY, exception.getMessage());
+        assertEquals(REPORT_NOT_FOUND_MESSAGE, exception.getMessage());
     }
 
     @Test
@@ -168,13 +125,7 @@ class ReportingServiceImplTest {
                 () -> reportingService.getStatsReport(requestQuery));
 
         assertEquals(REPORT_NOT_FOUND.getCode(), exception.getCode());
-        assertEquals(REPORT_NOT_FOUND_MESSAGE_EMPTY_QUERY, exception.getMessage());
-    }
-
-    private List<List<Object>> getExpectedReportData(List<ObjectiveLinkedReviewData> reportData) {
-        return reportData.stream()
-                .map(ObjectiveLinkedReviewData::toList)
-                .collect(Collectors.toList());
+        assertEquals(REPORT_NOT_FOUND_MESSAGE, exception.getMessage());
     }
 
     private Report getReport(int colleaguesCount) {
@@ -280,24 +231,5 @@ class ReportingServiceImplTest {
                 entry(HAS_EYR_APPROVED_4_QUARTER, "1")));
 
         return List.of(colleague1, colleague2, colleague3);
-    }
-
-    private ObjectiveLinkedReviewData buildObjectiveLinkedReviewData(Integer objectiveNumber) {
-        var reportData = new ObjectiveLinkedReviewData();
-        reportData.setIamId("UKE12375189");
-        reportData.setColleagueUUID(COLLEAGUE_UUID);
-        reportData.setFirstName("Name");
-        reportData.setLastName("Surname");
-        reportData.setWorkLevel("WL5");
-        reportData.setJobTitle("JobTitle");
-        reportData.setLineManager(LINE_MANAGER_UUID);
-        reportData.setObjectiveNumber(objectiveNumber);
-        reportData.setStatus(APPROVED);
-        reportData.setStrategicPriority("Priority");
-        reportData.setObjectiveTitle("Title");
-        reportData.setHowAchieved("HowAchieved");
-        reportData.setHowOverAchieved("HowOverAchieved");
-
-        return reportData;
     }
 }

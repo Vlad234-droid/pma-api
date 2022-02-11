@@ -7,6 +7,7 @@ import com.tesco.pma.reporting.Report;
 import com.tesco.pma.reports.dashboard.domain.ColleagueReportTargeting;
 import com.tesco.pma.reports.dashboard.LocalTestConfig;
 import com.tesco.pma.reports.dashboard.domain.StatsData;
+import com.tesco.pma.reports.review.service.ReviewReportingService;
 import com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider;
 import com.tesco.pma.reports.dashboard.domain.provider.StatsReportProvider;
 import com.tesco.pma.reports.dashboard.service.ReportingService;
@@ -76,12 +77,15 @@ class ReportingEndpointTest extends AbstractEndpointTest {
     private static final String STATS_REPORT_DATA_URL = REPORTS_URL + StatsReportProvider.REPORT_NAME;
 
     @MockBean
-    private ReportingService service;
+    private ReportingService reportingService;
+
+    @MockBean
+    private ReviewReportingService reviewReportingService;
 
     @Test
     void getLinkedObjectivesReport() throws Exception {
         var requestQuery = buildRequestQuery();
-        when(service.getLinkedObjectivesReport(any())).thenReturn(buildObjectiveLinkedReviewReport());
+        when(reviewReportingService.getLinkedObjectivesReport(any())).thenReturn(buildObjectiveLinkedReviewReport());
 
         var result = performGetWith(admin(), status().isCreated(),
                 APPLICATION_FORCE_DOWNLOAD_VALUE, LINKED_OBJECTIVE_REVIEW_REPORT_URL, requestQuery);
@@ -96,12 +100,12 @@ class ReportingEndpointTest extends AbstractEndpointTest {
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
 
-        verifyNoInteractions(service);
+        verifyNoInteractions(reviewReportingService);
     }
 
     @Test
     void getLinkedObjectivesReportIfNotFound() throws Exception {
-        when(service.getLinkedObjectivesReport(any())).thenThrow(NotFoundException.class);
+        when(reviewReportingService.getLinkedObjectivesReport(any())).thenThrow(NotFoundException.class);
 
         performGetWith(talentAdmin(), status().isNotFound(),
                 LINKED_OBJECTIVE_REVIEW_REPORT_URL, new RequestQuery());
@@ -110,7 +114,7 @@ class ReportingEndpointTest extends AbstractEndpointTest {
     @Test
     void getLinkedObjectivesReportData() throws Exception {
         var requestQuery = buildRequestQuery();
-        when(service.getLinkedObjectivesReport(any())).thenReturn(buildObjectiveLinkedReviewReport());
+        when(reviewReportingService.getLinkedObjectivesReport(any())).thenReturn(buildObjectiveLinkedReviewReport());
 
         var result = performGetWith(talentAdmin(), status().isOk(), LINKED_OBJECTIVE_REVIEW_REPORT_DATA_URL, requestQuery);
 
@@ -124,12 +128,12 @@ class ReportingEndpointTest extends AbstractEndpointTest {
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
 
-        verifyNoInteractions(service);
+        verifyNoInteractions(reviewReportingService);
     }
 
     @Test
     void getLinkedObjectivesReportDataIfNotFound() throws Exception {
-        when(service.getLinkedObjectivesReport(any())).thenThrow(NotFoundException.class);
+        when(reviewReportingService.getLinkedObjectivesReport(any())).thenThrow(NotFoundException.class);
 
         performGetWith(admin(), status().isNotFound(), LINKED_OBJECTIVE_REVIEW_REPORT_DATA_URL, new RequestQuery());
     }
@@ -137,7 +141,7 @@ class ReportingEndpointTest extends AbstractEndpointTest {
     @Test
     void getReportColleagues() throws Exception {
         var requestQuery = buildRequestQuery();
-        when(service.getReportColleagues(any())).thenReturn(buildColleagueTargeting());
+        when(reportingService.getReportColleagues(any())).thenReturn(buildColleagueTargeting());
 
         var result = performGetWith(talentAdmin(), status().isOk(), TARGETING_COLLEAGUES_DATA_URL, requestQuery);
 
@@ -146,7 +150,7 @@ class ReportingEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getReportColleaguesIfNotFound() throws Exception {
-        when(service.getReportColleagues(any())).thenThrow(NotFoundException.class);
+        when(reportingService.getReportColleagues(any())).thenThrow(NotFoundException.class);
 
         performGetWith(admin(), status().isNotFound(), TARGETING_COLLEAGUES_DATA_URL, new RequestQuery());
     }
@@ -158,12 +162,12 @@ class ReportingEndpointTest extends AbstractEndpointTest {
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
 
-        verifyNoInteractions(service);
+        verifyNoInteractions(reportingService);
     }
 
     @Test
     void getStatsReport() throws Exception {
-        when(service.getStatsReport(any())).thenReturn(buildReport());
+        when(reportingService.getStatsReport(any())).thenReturn(buildReport());
 
         var result = performGetWith(talentAdmin(), status().isOk(), STATS_REPORT_DATA_URL);
 
@@ -172,7 +176,7 @@ class ReportingEndpointTest extends AbstractEndpointTest {
 
     @Test
     void getStatsReportIfNotFound() throws Exception {
-        when(service.getStatsReport(any())).thenThrow(NotFoundException.class);
+        when(reportingService.getStatsReport(any())).thenThrow(NotFoundException.class);
 
         performGetWith(admin(), status().isNotFound(), STATS_REPORT_DATA_URL, new RequestQuery());
     }
@@ -184,7 +188,7 @@ class ReportingEndpointTest extends AbstractEndpointTest {
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
 
-        verifyNoInteractions(service);
+        verifyNoInteractions(reportingService);
     }
 
     private List<ColleagueReportTargeting> buildColleagueTargeting() {
