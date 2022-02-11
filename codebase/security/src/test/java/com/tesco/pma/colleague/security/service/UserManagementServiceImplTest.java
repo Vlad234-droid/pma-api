@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(classes = LocalTestConfig.class)
 @ExtendWith(MockitoExtension.class)
 // TODO Implement all tests
-class UserManagementServiceTest {
+class UserManagementServiceImplTest {
 
     @MockBean
     private AccountManagementDAO mockAccountManagementDAO;
