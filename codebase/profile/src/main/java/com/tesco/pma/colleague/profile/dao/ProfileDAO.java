@@ -6,6 +6,7 @@ import com.tesco.pma.pagination.RequestQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -93,6 +94,13 @@ public interface ProfileDAO {
      * @return true/false
      */
     boolean isColleagueExists(@Param("uuid") UUID colleagueUuid);
+
+    /**
+     * Gets all colleague uuids
+     *
+     * @return set of uuids
+     */
+    Set<UUID> getAllColleaguesUuids();
 
     /**
      * Get colleague suggestions by full name

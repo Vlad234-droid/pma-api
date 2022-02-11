@@ -96,6 +96,10 @@
         WHERE c.uuid = #{colleagueUuid}
     </select>
 
+    <select id="getAllColleaguesUuids" resultType="java.util.UUID">
+        SELECT DISTINCT uuid FROM colleague
+    </select>
+
     <select id="getColleagueByIamId" resultMap="colleagueMap">
         <include refid="select"/>
         WHERE c.iam_id = #{iamId}

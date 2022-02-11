@@ -117,6 +117,16 @@ public class ProfileDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
+    void getAllColleaguesUuids() {
+        var uuids = dao.getAllColleaguesUuids();
+
+        assertEquals(15, uuids.size());
+        assertTrue(uuids.contains(COLLEAGUE_UUID));
+        assertTrue(uuids.contains(COLLEAGUE_UUID_1));
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
     void getColleagueWithNullWorkLevel() {
         var colleagueUuid = UUID.fromString("10000000-0000-0000-0000-000000000001");
 
@@ -350,8 +360,8 @@ public class ProfileDAOTest extends AbstractDAOTest {
                         "manager-uuid_eq", managerUUID)));
 
         assertEquals(1, colleagues.size());
-        assertEquals(1, dao.findColleagueSuggestionsByFullName(createRQ(Map.of("first-name_like","ohn"))).size());
-        assertEquals(1, dao.findColleagueSuggestionsByFullName(createRQ(Map.of("last-name_like","Smith"))).size());
+        assertEquals(1, dao.findColleagueSuggestionsByFullName(createRQ(Map.of("first-name_like", "ohn"))).size());
+        assertEquals(1, dao.findColleagueSuggestionsByFullName(createRQ(Map.of("last-name_like", "Smith"))).size());
 
         var colleague = dao.findColleagueSuggestionsByFullName(createRQ(Map.of(
                 "first-name_eq", "John",
@@ -377,7 +387,7 @@ public class ProfileDAOTest extends AbstractDAOTest {
 
     }
 
-    private RequestQuery createRQ(Map<String, Object> filters){
+    private RequestQuery createRQ(Map<String, Object> filters) {
         var result = new RequestQuery();
         filters.forEach(result::addFilters);
         return result;
