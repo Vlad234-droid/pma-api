@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ConfigEntryServiceTest {
+class ConfigEntryServiceTest {
 
     private static final UUID ROOT_UUID = UUID.randomUUID();
     private static final UUID CHILD_UUID_1 = UUID.randomUUID();
@@ -37,6 +37,8 @@ public class ConfigEntryServiceTest {
     private static final String CHILD_NAME_1 = "child_1";
     private static final String CHILD_NAME_2 = "child_2";
     private static final String CHILD_NAME_1_1 = "child_1_1";
+    private static final String BU_ROOT_BU_CHILD_1 = "BU/root/BU/child_1";
+    private static final String BU_ROOT_BU_CHILD_1_V_4 = "BU/root/BU/child_1/#v4";
 
     private final ConfigEntryDAO dao = Mockito.mock(ConfigEntryDAO.class);
     private final ConfigEntryTypeDAO configEntryTypeDAO = Mockito.mock(ConfigEntryTypeDAO.class);
@@ -56,7 +58,7 @@ public class ConfigEntryServiceTest {
 
         assertEquals(ROOT_UUID, structure.getUuid());
         var children = structure.getChildren();
-        assertEquals(children.size(), 2);
+        assertEquals(2, children.size());
         var uuids = children.stream().map(ConfigEntryResponse::getUuid).collect(Collectors.toList());
         assertTrue(uuids.contains(CHILD_UUID_1));
         assertTrue(uuids.contains(CHILD_UUID_2));
@@ -83,13 +85,13 @@ public class ConfigEntryServiceTest {
                         getConfigEntry(CHILD_UUID_2, CHILD_NAME_2, ROOT_UUID),
                         getConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, CHILD_UUID_1))));
 
-        var structure = service.getPublishedChildStructureByCompositeKey("BU/root/BU/child_1/#v4");
+        var structure = service.getPublishedChildStructureByCompositeKey(BU_ROOT_BU_CHILD_1_V_4);
 
         assertEquals(1, structure.size());
         var element = structure.get(0);
         assertEquals(ROOT_UUID, element.getUuid());
         var children = element.getChildren();
-        assertEquals(children.size(), 2);
+        assertEquals(2, children.size());
         var uuids = children.stream().map(ConfigEntryResponse::getUuid).collect(Collectors.toList());
         assertTrue(uuids.contains(CHILD_UUID_1));
         assertTrue(uuids.contains(CHILD_UUID_2));
@@ -123,7 +125,7 @@ public class ConfigEntryServiceTest {
         service.publishConfigEntry(CHILD_UUID_1);
 
         Mockito.verify(dao).unpublishConfigEntries("BU/root/BU/child_1%");
-        Mockito.verify(dao).publishConfigEntry(getWorkingConfigEntry(CHILD_UUID_1, CHILD_NAME_1, "BU/root/BU/child_1/#v4"));
+        Mockito.verify(dao).publishConfigEntry(getWorkingConfigEntry(CHILD_UUID_1, CHILD_NAME_1, BU_ROOT_BU_CHILD_1_V_4));
         Mockito.verify(dao).publishConfigEntry(getWorkingConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, "BU/root/BU/child_1/BU/child_1_1/#v4"));
     }
 
@@ -228,7 +230,7 @@ public class ConfigEntryServiceTest {
 
     @Test
     void findColleaguesByCompositeKey() {
-        service.findColleaguesByCompositeKey("BU/root/BU/child_1/BU/child_2/BU/child_3/#v1");
+        service.findColleaguesByCompositeKey("root/child_1/child_2/child_3");
 
         Mockito.verify(dao).findColleaguesByCompositeKey("root/child_1/child_2/child_3", null);
     }
@@ -240,7 +242,7 @@ public class ConfigEntryServiceTest {
 
         var structure = service.getUnpublishedRoots();
 
-        assertEquals(structure.size(), 2);
+        assertEquals(2, structure.size());
         var uuids = structure.stream().map(ConfigEntryResponse::getUuid).collect(Collectors.toList());
         assertTrue(uuids.contains(ROOT_UUID));
         assertTrue(uuids.contains(CHILD_UUID_1));
@@ -255,17 +257,27 @@ public class ConfigEntryServiceTest {
                         getConfigEntry(CHILD_UUID_2, CHILD_NAME_2, ROOT_UUID),
                         getConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, CHILD_UUID_1))));
 
-        var structure = service.getUnpublishedChildStructureByCompositeKey("BU/root/BU/child_1/#v4");
+        var structure = service.getUnpublishedChildStructureByCompositeKey(BU_ROOT_BU_CHILD_1_V_4);
 
         assertEquals(1, structure.size());
         var element = structure.get(0);
         assertEquals(ROOT_UUID, element.getUuid());
         var children = element.getChildren();
-        assertEquals(children.size(), 2);
+        assertEquals(2, children.size());
         var uuids = children.stream().map(ConfigEntryResponse::getUuid).collect(Collectors.toList());
         assertTrue(uuids.contains(CHILD_UUID_1));
         assertTrue(uuids.contains(CHILD_UUID_2));
         assertEquals(CHILD_UUID_1_1, children.stream().filter(s -> s.getUuid().equals(CHILD_UUID_1)).findFirst().get().getChildren().get(0).getUuid());
+    }
+
+    @Test
+    void getSearchKey() {
+        assertEquals(BU_ROOT_BU_CHILD_1, ConfigEntryServiceImpl.getSearchKey(BU_ROOT_BU_CHILD_1_V_4));
+        assertEquals(BU_ROOT_BU_CHILD_1, ConfigEntryServiceImpl.getSearchKey(BU_ROOT_BU_CHILD_1));
+        assertEquals("", ConfigEntryServiceImpl.getSearchKey("/#v4"));
+        assertTrue(ConfigEntryServiceImpl.getSearchKey(null).isBlank());
+        assertTrue(ConfigEntryServiceImpl.getSearchKey(" ").isBlank());
+        assertTrue(ConfigEntryServiceImpl.getSearchKey("").isBlank());
     }
 
     private static ConfigEntry getConfigEntry(UUID uuid, String name, UUID parentUuid) {

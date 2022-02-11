@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="pm_cycle_mapping_file" name="PM cycle mapping" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
+  <decision id="pm_cycle_mapping" name="Performance Cycles&#10;mapping">
+    <informationRequirement id="InformationRequirement_1u88j6o">
+      <requiredInput href="#InputData_014boi4" />
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_08obfe0">
+      <requiredInput href="#InputData_0ff6adv" />
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_1wmfthc">
+      <requiredInput href="#InputData_0tsbk84" />
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_0kxz312">
+      <requiredInput href="#InputData_0b0iorx" />
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_1lgd8hs">
+      <requiredInput href="#InputData_0of03jn" />
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_16sy9p6">
+      <requiredInput href="#InputData_0wmr70w" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_1iuc214">
+      <input id="Input_1" label="Legal Employer Name">
+        <inputExpression id="InputExpression_1" typeRef="string" expressionLanguage="juel">
+          <text>${COLLEAGUE.workRelationships[0].legalEmployer == null ? "_null" : COLLEAGUE.workRelationships[0].legalEmployer.name.toLowerCase()}</text>
+        </inputExpression>
+        <inputValues id="UnaryTests_1jft2tn">
+          <text>"tesco stores limited"</text>
+        </inputValues>
+      </input>
+      <input id="InputClause_0jm3c6v" label="Business type">
+        <inputExpression id="LiteralExpression_0ssvlok" typeRef="string" expressionLanguage="juel">
+          <text>${COLLEAGUE.workRelationships[0].department == null ? "_null" : COLLEAGUE.workRelationships[0].department.businessType.toLowerCase()}</text>
+        </inputExpression>
+        <inputValues id="UnaryTests_0daj6jw">
+          <text>"office"</text>
+        </inputValues>
+      </input>
+      <input id="InputClause_08r453q" label="Work level">
+        <inputExpression id="LiteralExpression_009wlb2" typeRef="string" expressionLanguage="juel">
+          <text>${COLLEAGUE.workRelationships[0].workLevel == null ? "_null" : COLLEAGUE.workRelationships[0].workLevel.name().toLowerCase()}</text>
+        </inputExpression>
+        <inputValues id="UnaryTests_0mi6w53">
+          <text></text>
+        </inputValues>
+      </input>
+      <input id="InputClause_0xc3ti3" label="Salary frequency">
+        <inputExpression id="LiteralExpression_1svejzs" typeRef="string" expressionLanguage="juel">
+          <text>${COLLEAGUE.workRelationships[0].salaryFrequency == null ? "_null" : COLLEAGUE.workRelationships[0].salaryFrequency.toLowerCase()}</text>
+        </inputExpression>
+        <inputValues id="UnaryTests_1o1odgp">
+          <text>"annual"</text>
+        </inputValues>
+      </input>
+      <input id="InputClause_1ck6fhz" label="Job name">
+        <inputExpression id="LiteralExpression_0r3if05" typeRef="string" expressionLanguage="juel">
+          <text>${COLLEAGUE.workRelationships[0].job == null ? "_null" : COLLEAGUE.workRelationships[0].job.name.toLowerCase()}</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0tyi0oo" label="IAM source" biodi:width="150">
+        <inputExpression id="LiteralExpression_048rjmt" typeRef="string" expressionLanguage="juel">
+          <text>${COLLEAGUE.externalSystems.iam == null ? "_null" : COLLEAGUE.externalSystems.iam.source.toLowerCase()}</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="Cycle key" name="PM_CYCLE_KEY" typeRef="string" biodi:width="198">
+        <outputValues id="UnaryTests_1ag4cbh">
+          <text></text>
+        </outputValues>
+      </output>
+      <rule id="DecisionRule_1hld651">
+        <description>Overall Leadership (Full Annual Cycle, with objectives, mid-year review, q1, q3, year-end review)</description>
+        <inputEntry id="UnaryTests_0v31duk">
+          <text>not("tesco (polska) sp. z o.o.","tesco underwriting limited","tesco-global stores privately held co. ltd","tesco pension investment limited","tesco stores čr a.s.","tesco personal finance plc")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_048dfff">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_144mway">
+          <text>"wl4","wl5"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0w4krjs">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0gp15v0">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_01b8g3w">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0n3ibp7">
+          <text>"group_a_v2"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_05b6t5m">
+        <description>Overall Leadership (Full Annual Cycle, with objectives, mid-year review, q1, q3, year-end review)</description>
+        <inputEntry id="UnaryTests_1h4yflo">
+          <text>not("tesco (polska) sp. z o.o.",
+"tesco underwriting limited",
+"tesco-global stores privately held co. ltd",
+"tesco pension investment limited",
+"tesco stores čr a.s.",
+"tesco personal finance plc",
+"tesco international sourcing limited",
+"tesco sourcing india private ltd",
+"tesco international sourcing limited hong kong ‚äì sucursala bucuresti",
+"tesco joint buying service (shanghai) co."
+)</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0aw9t1d">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0p9hup2">
+          <text>"wl3"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1bq7uiu">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0bq74yb">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1tdkilo">
+          <text>not("tesco mobile")</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1hafakf">
+          <text>"group_a_v2"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0ll7b7f">
+        <description>UK_office (Full Annual Cycle, with objectives, mid-year review, q1, q3, year-end review)</description>
+        <inputEntry id="UnaryTests_15y5zq4">
+          <text>"tesco stores limited"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0bdi3g8">
+          <text>"office"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0v38apk">
+          <text>"wl2"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1gokt3v">
+          <text>"annual"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1tf4pye">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0wmmhdu">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ixk5sl">
+          <text>"group_a_v2"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0y3qgt4">
+        <description>UK_office (Full Annual Cycle, without objectives, with mid-year review, year-end review)</description>
+        <inputEntry id="UnaryTests_0pcxk9v">
+          <text>"tesco stores limited"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_034in7r">
+          <text>"office"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1nyhogx">
+          <text>"_null"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0b8b8ph">
+          <text>"_null"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ibkiv6">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0c524nc">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_12mb0ev">
+          <text>"group_b_v2"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <inputData id="InputData_014boi4" name="legal_employer_name" />
+  <inputData id="InputData_0ff6adv" name="business_type" />
+  <inputData id="InputData_0tsbk84" name="work_level" />
+  <inputData id="InputData_0b0iorx" name="salary_frequency" />
+  <inputData id="InputData_0of03jn" name="job_name" />
+  <inputData id="InputData_0wmr70w" name="iam_source" />
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="pm_cycle_mapping">
+        <dc:Bounds height="80" width="180" x="380" y="100" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_0vnvuad" dmnElementRef="InputData_014boi4">
+        <dc:Bounds height="45" width="125" x="157" y="218" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_0w9atph" dmnElementRef="InformationRequirement_1u88j6o">
+        <di:waypoint x="220" y="218" />
+        <di:waypoint x="406" y="200" />
+        <di:waypoint x="406" y="180" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DMNShape_065zy33" dmnElementRef="InputData_0ff6adv">
+        <dc:Bounds height="45" width="125" x="207" y="277" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_0zisv04" dmnElementRef="InformationRequirement_08obfe0">
+        <di:waypoint x="270" y="277" />
+        <di:waypoint x="431" y="200" />
+        <di:waypoint x="431" y="180" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DMNShape_1vvxfdj" dmnElementRef="InputData_0tsbk84">
+        <dc:Bounds height="45" width="125" x="347" y="277" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_1pt6khb" dmnElementRef="InformationRequirement_1wmfthc">
+        <di:waypoint x="410" y="277" />
+        <di:waypoint x="457" y="200" />
+        <di:waypoint x="457" y="180" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DMNShape_0jjz98q" dmnElementRef="InputData_0b0iorx">
+        <dc:Bounds height="45" width="125" x="487" y="277" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_0nitif9" dmnElementRef="InformationRequirement_0kxz312">
+        <di:waypoint x="550" y="277" />
+        <di:waypoint x="483" y="200" />
+        <di:waypoint x="483" y="180" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DMNShape_154yjwg" dmnElementRef="InputData_0of03jn">
+        <dc:Bounds height="45" width="125" x="627" y="277" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_179n9yz" dmnElementRef="InformationRequirement_1lgd8hs">
+        <di:waypoint x="690" y="277" />
+        <di:waypoint x="509" y="200" />
+        <di:waypoint x="509" y="180" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DMNShape_0rg3dnj" dmnElementRef="InputData_0wmr70w">
+        <dc:Bounds height="45" width="125" x="687" y="218" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_137hwww" dmnElementRef="InformationRequirement_16sy9p6">
+        <di:waypoint x="750" y="218" />
+        <di:waypoint x="534" y="200" />
+        <di:waypoint x="534" y="180" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
