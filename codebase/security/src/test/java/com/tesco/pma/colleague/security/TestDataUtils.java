@@ -4,6 +4,7 @@ import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.security.domain.Account;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.Role;
+import com.tesco.pma.colleague.security.domain.request.RoleRequest;
 import lombok.experimental.UtilityClass;
 
 import java.util.Collection;
@@ -21,6 +22,7 @@ public class TestDataUtils {
     public static Account buildAccount() {
         var account = new Account();
         account.setStatus(AccountStatus.ENABLED);
+        account.setId(UUID.randomUUID());
         return account;
     }
 
@@ -59,6 +61,13 @@ public class TestDataUtils {
         role.setCode("code" + index);
         role.setDescription("description" + index);
         return role;
+    }
+
+    public static RoleRequest buildRoleRequest(Object role) {
+        var roleRequest = new RoleRequest();
+        roleRequest.setAccountName("UKE11111");
+        roleRequest.setRole(role);
+        return roleRequest;
     }
 
 }
