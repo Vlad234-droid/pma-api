@@ -1,0 +1,53 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet id="1" author="Stanislav.Eurich">
+        <insert tableName="config_entry">
+            <column name="uuid">10000000-0000-0000-0005-000000000001</column>
+            <column name="name">Overall Leadership</column>
+            <column name="type_id">4</column>
+            <column name="version">1</column>
+            <column name="parent_uuid">null</column>
+            <column name="composite_key">overall_leadership/group_a/wl4_wl5/#v4</column>
+        </insert>
+        <insert tableName="config_entry">
+            <column name="uuid">10000000-0000-0000-0005-000000000002</column>
+            <column name="name">Overall Leadership</column>
+            <column name="type_id">3</column>
+            <column name="version">1</column>
+            <column name="parent_uuid">null</column>
+            <column name="composite_key">overall_leadership/group_a/wl3/#v4</column>
+        </insert>
+        <rollback>
+            <delete tableName="config_entry">
+                <where>uuid IN ('10000000-0000-0000-0005-000000000001', '10000000-0000-0000-0005-000000000002')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2" author="Stanislav.Eurich">
+        <insert tableName="working_config_entry">
+            <column name="config_entry_uuid">10000000-0000-0000-0005-000000000001</column>
+            <column name="name">Overall Leadership</column>
+            <column name="type_id">4</column>
+            <column name="version">1</column>
+            <column name="composite_key">overall_leadership/group_a/wl4_wl5/#v4</column>
+        </insert>
+        <insert tableName="working_config_entry">
+            <column name="config_entry_uuid">10000000-0000-0000-0005-000000000002</column>
+            <column name="name">Overall Leadership</column>
+            <column name="type_id">3</column>
+            <column name="version">1</column>
+            <column name="composite_key">overall_leadership/group_a/wl3/#v4</column>
+        </insert>
+        <rollback>
+            <delete tableName="working_config_entry">
+                <where>uuid IN ('10000000-0000-0000-0005-000000000001', '10000000-0000-0000-0005-000000000002')
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

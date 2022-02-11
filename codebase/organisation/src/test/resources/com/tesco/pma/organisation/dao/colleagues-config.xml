@@ -35,7 +35,9 @@
                leaving_date="2021-02-01"
                country_code="GB"
                work_level="WL2"
-               department_id="4"/>
+               department_id="4"
+               location_id="1"
+               legal_entity="Tesco Stores Limited"/>
 
     <colleague uuid="119e0d2b-1dc2-409f-8198-ecd66e59d47a"
                first_name="John"
@@ -62,11 +64,11 @@
                email="test@test"
                primary_entity="Tesco Bank"
                salary_frequency="HOURLY"
-               iam_source="Test"
+               iam_source="Tesco Mobile"
                iam_id="TPX3"
                job_id="2"
                country_code="GB"
-               work_level="WL1"
+               work_level="WL3"
                department_id="4"/>
 
     <colleague uuid="b919b9f4-7a25-42e0-805d-e351c4e33ff9"
@@ -80,6 +82,7 @@
                iam_id="TPX4"
                job_id="2"
                country_code="GB"
+               legal_entity="Tesco Underwriting Limited"
                work_level="WL3"
                department_id="3"/>
 
@@ -94,7 +97,8 @@
                iam_id="TPX5"
                job_id="2"
                country_code="GB"
-               work_level="WL4"
+               legal_entity="Tesco Family Dining Limited"
+               work_level="WL3"
                department_id="3"/>
 
     <colleague uuid="1efbf78b-d413-4dbb-990d-b05affb4d11e"
@@ -108,7 +112,8 @@
                iam_id="TPX6"
                job_id="2"
                country_code="GB"
-               work_level="WL5"
+               legal_entity="Tesco Stores ČR a.s."
+               work_level="WL4"
                department_id="3"/>
 
     <colleague uuid="b5c74f42-665d-4c9e-9b00-2682eaabe592"
@@ -122,7 +127,8 @@
                iam_id="TPX7"
                job_id="2"
                country_code="GB"
-               work_level="WL1"
+               legal_entity="Tesco Family Dining Limited"
+               work_level="WL4"
                department_id="2"/>
 
     <colleague uuid="71eb5890-4f41-4d70-a3a0-0071fcfd2edb"
@@ -136,113 +142,6 @@
                iam_id="TPX8"
                job_id="2"
                country_code="GB"
-               work_level="WL2"
-               department_id="2"/>
-
-    <colleague uuid="b5f79bef-7905-400f-8cb6-d0ebe41b961c"
-               first_name="first_name"
-               middle_name="middle_name"
-               last_name="last_name"
-               email="test@test"
-               primary_entity="Tesco Bank"
-               salary_frequency="ANNUAL"
-               iam_source="Test"
-               iam_id="TPX9"
-               job_id="2"
-               country_code="IE"
-               work_level="WL1"
-               department_id="2"/>
-
-    <colleague uuid="1e0f2f8a-5d8f-428b-a7c1-9bc0fe214a85"
-               first_name="first_name"
-               middle_name="middle_name"
-               last_name="last_name"
-               email="test@test"
-               primary_entity="Tesco Bank"
-               salary_frequency="ANNUAL"
-               iam_source="Test"
-               iam_id="TPX10"
-               job_id="2"
-               country_code="IE"
-               work_level="WL2"
-               department_id="2"/>
-
-    <colleague uuid="3ca4807c-b08b-4d53-b3a4-0c3d26868720"
-               first_name="first_name"
-               middle_name="middle_name"
-               last_name="last_name"
-               email="test@test"
-               primary_entity="Tesco Bank"
-               salary_frequency="ANNUAL"
-               iam_source="UKMaintenance"
-               iam_id="TPX11"
-               job_id="2"
-               country_code="IN"
-               work_level="WL1"
-               department_id="2"/>
-
-    <colleague uuid="2c8ba89a-2756-42cc-9504-e136cdb94782"
-               first_name="first_name"
-               middle_name="middle_name"
-               last_name="last_name"
-               email="test@test"
-               primary_entity="Tesco Bank"
-               salary_frequency="ANNUAL"
-               iam_source="UKMaintenance"
-               iam_id="TPX12"
-               job_id="2"
-               country_code="IN"
-               work_level="WL2"
-               department_id="2"/>
-
-    <colleague uuid="9927a7bc-5362-45fd-8730-2ff4321e74b6"
-               first_name="Ron"
-               middle_name="Peterson"
-               last_name="Rodgers"
-               email="test@test"
-               primary_entity="Tesco Mobile"
-               salary_frequency="ANNUAL"
-               iam_source="Test"
-               iam_id="TPX1435435"
-               job_id="2"
-               employment_type="ET"
-               hire_date="2019-01-02"
-               leaving_date="2021-02-01"
-               country_code="UA"
-               work_level="WL1"
-               department_id="2"/>
-
-    <colleague uuid="70c047ab-3b5a-4113-863e-20f29c824455"
-               first_name="Andrew"
-               middle_name="Johnson"
-               last_name="Rodgers"
-               email="test@test"
-               primary_entity="Tesco Mobile"
-               salary_frequency="ANNUAL"
-               iam_source="Test"
-               iam_id="TPX2431"
-               job_id="2"
-               employment_type="ET"
-               hire_date="2019-01-02"
-               leaving_date="2021-02-01"
-               country_code="UA"
-               work_level="WL2"
-               department_id="2"/>
-
-    <colleague uuid="c86d10ab-fd26-4f9b-b4ff-87e4f5afea53"
-               first_name="Fedor"
-               middle_name="Johnson"
-               last_name="Ivanov"
-               email="test@test"
-               primary_entity="Tesco Mobile"
-               salary_frequency="ANNUAL"
-               iam_source="Test"
-               iam_id="TPX165342"
-               job_id="2"
-               employment_type="ET"
-               hire_date="2019-01-02"
-               leaving_date="2021-02-01"
-               country_code="UA"
-               work_level="WL3"
+               work_level="WL5"
                department_id="2"/>
 </dataset>
