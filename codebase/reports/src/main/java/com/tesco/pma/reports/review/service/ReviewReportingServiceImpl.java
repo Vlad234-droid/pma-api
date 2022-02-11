@@ -5,7 +5,7 @@ import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.reporting.Report;
-import com.tesco.pma.reports.dashboard.dao.ReportingDAO;
+import com.tesco.pma.reports.review.dao.ReviewReportingDAO;
 import com.tesco.pma.reports.review.domain.provider.ObjectiveLinkedReviewReportProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,13 +24,13 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 @Validated
 @RequiredArgsConstructor
 public class ReviewReportingServiceImpl implements ReviewReportingService {
-    private final ReportingDAO reportingDAO;
+    private final ReviewReportingDAO reviewReportingDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Override
     public Report getLinkedObjectivesReport(RequestQuery requestQuery) {
         var reportProvider = new ObjectiveLinkedReviewReportProvider();
-        reportProvider.setObjectives(reportingDAO.getLinkedObjectivesData(requestQuery));
+        reportProvider.setObjectives(reviewReportingDAO.getLinkedObjectivesData(requestQuery));
 
         if (isEmpty(reportProvider.getObjectives())) {
             throw notFound(REPORT_NOT_FOUND, Map.of(QUERY_PARAMS, requestQuery));

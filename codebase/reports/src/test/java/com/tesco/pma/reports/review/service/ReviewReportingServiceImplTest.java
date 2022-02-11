@@ -5,7 +5,7 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.reports.dashboard.LocalServiceTestConfig;
-import com.tesco.pma.reports.dashboard.dao.ReportingDAO;
+import com.tesco.pma.reports.review.dao.ReviewReportingDAO;
 import com.tesco.pma.reports.review.domain.ObjectiveLinkedReviewData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,7 +47,7 @@ class ReviewReportingServiceImplTest {
     private NamedMessageSourceAccessor messageSourceAccessor;
 
     @MockBean
-    private ReportingDAO reportingDAO;
+    private ReviewReportingDAO reviewReportingDAO;
 
     @Autowired
     private ReviewReportingServiceImpl reviewReportingService;
@@ -60,7 +60,7 @@ class ReviewReportingServiceImplTest {
         requestQuery.setFilters(new ArrayList<>(Arrays.asList(new Condition("year", EQUALS, YEAR),
                                                               new Condition("statuses", IN, List.of(APPROVED.getCode())))));
 
-        when(reportingDAO.getLinkedObjectivesData(requestQuery)).thenReturn(reportData);
+        when(reviewReportingDAO.getLinkedObjectivesData(requestQuery)).thenReturn(reportData);
 
         final var res = reviewReportingService.getLinkedObjectivesReport(requestQuery);
 
@@ -72,7 +72,7 @@ class ReviewReportingServiceImplTest {
         final var requestQuery = new RequestQuery();
         requestQuery.setFilters(new ArrayList<>(Arrays.asList(new Condition("year", EQUALS, YEAR),
                                                               new Condition("statuses", IN, List.of(APPROVED.getCode())))));
-        when(reportingDAO.getLinkedObjectivesData(requestQuery)).thenReturn(null);
+        when(reviewReportingDAO.getLinkedObjectivesData(requestQuery)).thenReturn(null);
 
         final var exception = assertThrows(NotFoundException.class,
                 () -> reviewReportingService.getLinkedObjectivesReport(requestQuery));

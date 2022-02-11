@@ -2,7 +2,6 @@ package com.tesco.pma.reports.dashboard.dao;
 
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.reports.dashboard.domain.ColleagueReportTargeting;
-import com.tesco.pma.reports.review.domain.ObjectiveLinkedReviewData;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -10,14 +9,18 @@ import java.util.List;
 public interface ReportingDAO {
 
     /**
-     * Find Objectives linked with reviews
+     * Find colleagues marked with tags
      *
-     * @param requestQuery - parameters for filters by year of colleague cycle, statuses of review, etc
-     * @return linked Objectives report data
+     * @param requestQuery - parameters for filters
+     * @return colleagues with tags
      */
-    List<ObjectiveLinkedReviewData> getLinkedObjectivesData(@Param("requestQuery") RequestQuery requestQuery);
-
     List<ColleagueReportTargeting> getColleagueTargeting(@Param("requestQuery") RequestQuery requestQuery);
 
+    /**
+     * Find colleagues anniversary reviews marked with tags
+     *
+     * @param requestQuery - parameters for filters
+     * @return colleagues with tags
+     */
     List<ColleagueReportTargeting> getColleagueTargetingAnniversary(@Param("requestQuery") RequestQuery requestQuery);
 }

@@ -79,7 +79,8 @@ spring:
                         com.tesco.pma.config.dao,
                         com.tesco.pma.tip.dao,
                         com.tesco.pma.pdp.dao,
-                        com.tesco.pma.reports.dashboard.dao
+                        com.tesco.pma.reports.dashboard.dao,
+                        com.tesco.pma.reports.review.dao
           batchSize: 500
     camunda:
       # Camunda database config
