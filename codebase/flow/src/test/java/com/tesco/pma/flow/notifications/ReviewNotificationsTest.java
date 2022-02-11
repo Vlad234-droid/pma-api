@@ -77,7 +77,7 @@ public class ReviewNotificationsTest extends AbstractNotificationsFlowTest {
 
         check(REVIEW_SEND_FLOW, event);
 
-        checkTitle("Mid-year approval");
+        checkTitle("Mid-year review approval");
         checkContent("Mid-year review was approved by Mr Sender");
     }
 
