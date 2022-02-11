@@ -143,7 +143,7 @@ class RoleFetchServiceImplTest {
     @Test
     void findRolesForColleagueWithTwoAccountRolesShouldReturnThreeRoles() {
         var account = buildAccount();
-        account.setRoles(buildRoles());
+        account.setRoles(buildRoles("PeopleTeam", "TalentAdmin"));
 
         var colleagueEntity = buildColleagueEntity(COLLEAGUE_UUID);
 
