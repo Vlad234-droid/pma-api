@@ -241,8 +241,8 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues-config.xml"})
     void isColleagueExistsForCompositeKey() {
-        var colleagueUuid = UUID.fromString("1efbf78b-d413-4dbb-990d-b05affb4d11e");
-        var key = "group/ho_c/salaried/wl5";
+        var colleagueUuid = UUID.fromString("b5c74f42-665d-4c9e-9b00-2682eaabe592");
+        var key = "overall_leadership/group_a/wl4_wl5";
 
         var exists = dao.isColleagueExistsForCompositeKey(colleagueUuid, key);
 
