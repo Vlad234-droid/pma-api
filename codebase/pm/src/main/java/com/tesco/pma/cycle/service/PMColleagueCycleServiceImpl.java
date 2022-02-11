@@ -1,13 +1,12 @@
 package com.tesco.pma.cycle.service;
 
 import com.tesco.pma.api.DictionaryFilter;
-import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.dao.PMColleagueCycleDAO;
 import com.tesco.pma.error.ErrorCodeAware;
-import com.tesco.pma.exception.DatabaseConstraintViolationException;
+import com.tesco.pma.exception.AlreadyExistsException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.service.BatchService;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +17,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_COLLEAGUE_CYCLE_ALREADY_EXISTS;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_COLLEAGUE_CYCLE_NOT_EXIST;
@@ -63,9 +60,10 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
             pmColleagueCycle.setUuid(UUID.randomUUID());
             dao.create(pmColleagueCycle);
         } catch (DuplicateKeyException ex) {
-            throw new DatabaseConstraintViolationException(PM_COLLEAGUE_CYCLE_ALREADY_EXISTS.getCode(),
+            throw new AlreadyExistsException(PM_COLLEAGUE_CYCLE_ALREADY_EXISTS.getCode(),
                     messageSourceAccessor.getMessage(PM_COLLEAGUE_CYCLE_ALREADY_EXISTS,
-                            Map.of(COLLEAGUE_CYCLE_UUID, pmColleagueCycle.getUuid())), null, ex);
+                            Map.of("cycleUuid", pmColleagueCycle.getCycleUuid(),
+                                   "colleagueUuid", pmColleagueCycle.getColleagueUuid())), ex);
         }
         return pmColleagueCycle;
     }
@@ -100,15 +98,4 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
         throw new NotFoundException(codeAware.getCode(), messageSourceAccessor.getMessage(codeAware.getCode(), params));
     }
 
-    @Override
-    public List<ColleagueEntity> findColleagues(String compositeKey, DictionaryFilter<PMCycleStatus> statusFilter) {
-        String searchKey = getSearchKey(compositeKey);
-        return dao.findColleagues(searchKey, statusFilter);
-    }
-
-    private String getSearchKey(String compositeKey) {
-        var parts = compositeKey.split("/");
-        return IntStream.range(0, parts.length)
-                .filter(i -> i % 2 == 1).mapToObj(i -> parts[i]).collect(Collectors.joining("/"));
-    }
 }

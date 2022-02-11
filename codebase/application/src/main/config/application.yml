@@ -262,6 +262,10 @@ tesco:
       NF_PM_REVIEW_SUBMITTED: com.tesco.pma.bpm.action.RunFlowByEventAction
       NF_PM_REVIEW_APPROVED: com.tesco.pma.bpm.action.RunFlowByEventAction
       NF_PM_REVIEW_DECLINED: com.tesco.pma.bpm.action.RunFlowByEventAction
+      NF_PM_REVIEW_BEFORE_START: com.tesco.pma.bpm.action.RunFlowByEventAction
+      NF_PM_REVIEW_BEFORE_END: com.tesco.pma.bpm.action.RunFlowByEventAction
+      NF_PM_REVIEW_START: com.tesco.pma.bpm.action.RunFlowByEventAction
+      NF_PM_REVIEW_END: com.tesco.pma.bpm.action.RunFlowByEventAction
     user-management:
       page:
         size: 100
@@ -297,6 +301,7 @@ camunda:
                                            com/tesco/pma/flow/notifications/objectives/objectives_notification_decisions.dmn,
                                            com/tesco/pma/flow/notifications/objectives/objectives_event_to_template_id.dmn,
                                            com/tesco/pma/flow/notifications/objectives/objectives_event_to_content.dmn,
+                                           com/tesco/pma/flow/notifications/objectives/objectives_event_to_title.dmn,
                                            com/tesco/pma/flow/notifications/feedback/feedback_flow.bpmn,
                                            com/tesco/pma/flow/notifications/feedback/feedback_event_to_attribute.dmn,
                                            com/tesco/pma/flow/notifications/feedback/feedback_notification_decisions.dmn,

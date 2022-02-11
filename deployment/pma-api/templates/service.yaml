@@ -15,5 +15,11 @@ spec:
       targetPort: http-identity
       protocol: TCP
       name: http-identity
+    {{- if .Values.serviceManagement.enabled }}
+    - port: {{ .Values.serviceManagement.port }}
+      targetPort: http-management
+      protocol: TCP
+      name: http-management
+    {{- end }}
   selector:
     {{- include "pma-api.selectorLabels" . | nindent 4 }}

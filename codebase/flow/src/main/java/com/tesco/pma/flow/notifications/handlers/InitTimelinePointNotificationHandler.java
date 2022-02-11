@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 
@@ -14,6 +17,9 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class InitTimelinePointNotificationHandler extends AbstractInitNotificationHandler {
+
+    private static final DateTimeFormatter TIMELINE_DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter MESSAGE_DTF = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     private final TimelinePointDAO timelinePointDAO;
 
@@ -24,6 +30,17 @@ public class InitTimelinePointNotificationHandler extends AbstractInitNotificati
         var timelineUUID = (UUID) context.getEvent().getEventProperty(FlowParameters.TIMELINE_POINT_UUID.name());
         var timelinePoint = timelinePointDAO.getTimelineByUUID(timelineUUID);
         context.setVariable(FlowParameters.TIMELINE_POINT, timelinePoint);
+
+        if (timelinePoint.getProperties() == null) {
+            return;
+        }
+
+        var dateString = (String) timelinePoint.getProperties().getMapJson().get(FlowParameters.START_DATE.name());
+        var date = LocalDate.parse(dateString, TIMELINE_DTF).atStartOfDay();
+        var today = LocalDate.now().atStartOfDay();
+        long daysBetween = Duration.between(date, today).toDays();
+        context.setVariable(FlowParameters.DAYS, daysBetween);
+        context.setVariable(FlowParameters.START_DATE_S, date.format(MESSAGE_DTF));
     }
 
 }

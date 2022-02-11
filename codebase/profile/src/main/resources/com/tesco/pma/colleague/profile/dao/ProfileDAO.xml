@@ -217,27 +217,36 @@
             LEFT JOIN work_level wl ON wl.code = c.work_level
             LEFT JOIN department d ON d.id = c.department_id
 
-        WHERE
-        <if test="!requestQuery.filters.isEmpty()">
-            <foreach collection="requestQuery.filters" item="filter" index="index" open="(" separator=" OR " close=")">
-                <if test="filter.property == 'first-name' or filter.property == 'middle-name' or filter.property == 'last-name'">
-                    <choose>
-                        <when test="filter.operand.name == 'LIKE'">
-                            UPPER(<include refid="getFilterField"/>) like UPPER('%${filter.value}%')
-                        </when>
-                        <when test="filter.operand.name == 'EQUALS'">
-                            UPPER(<include refid="getFilterField"/>) = UPPER(#{filter.value})
-                        </when>
-                    </choose>
-                </if>
-            </foreach>
+        <where>
+            <if test="!requestQuery.filters.isEmpty()">
 
-            <foreach collection="requestQuery.filters" item="filter" index="index">
-                <if test="filter.operand.name == 'EQUALS' and filter.property == 'manager-uuid'">
-                    AND <include refid="getFilterField"/> = uuid(#{filter.value})
-                </if>
-            </foreach>
-        </if>
+                <foreach collection="requestQuery.filters" item="filter" index="index">
+                    <if test="filter.operand.name == 'EQUALS' and filter.property == 'manager-uuid'">
+                        AND <include refid="getFilterField"/> = uuid(#{filter.value})
+                    </if>
+                    <if test="filter.operand.name == 'EQUALS' and filter.property == 'work-level'">
+                        AND <include refid="getFilterField"/> = #{filter.value}
+                    </if>
+                </foreach>
+
+                <include refid="putIfNamesExist"><property name="alias" value="AND ("/></include>
+
+                <foreach collection="requestQuery.filters" item="filter" index="index" separator=" OR ">
+                    <if test="filter.property == 'first-name' or filter.property == 'middle-name' or filter.property == 'last-name'">
+                        <choose>
+                            <when test="filter.operand.name == 'LIKE'">
+                                UPPER(<include refid="getFilterField"/>) like UPPER('%${filter.value}%')
+                            </when>
+                            <when test="filter.operand.name == 'EQUALS'">
+                                UPPER(<include refid="getFilterField"/>) = UPPER(#{filter.value})
+                            </when>
+                        </choose>
+                    </if>
+                </foreach>
+
+                <include refid="putIfNamesExist"><property name="alias" value=")"/></include>
+            </if>
+        </where>
 
         LIMIT #{requestQuery.limit}
 
@@ -260,7 +269,18 @@
             <when test="filter.property == 'manager-uuid'">
                 c.manager_uuid
             </when>
+            <when test="filter.property == 'work-level'">
+                wl.code
+            </when>
         </choose>
+    </sql>
+
+    <sql id="putIfNamesExist">
+        <if test="requestQuery.getFiltersProperties().contains('first-name')
+            or requestQuery.getFiltersProperties().contains('middle-name')
+            or requestQuery.getFiltersProperties().contains('last-name')">
+            ${alias}
+        </if>
     </sql>
 
 </mapper>

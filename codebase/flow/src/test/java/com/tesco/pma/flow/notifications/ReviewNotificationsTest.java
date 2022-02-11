@@ -1,129 +1,112 @@
 package com.tesco.pma.flow.notifications;
 
-import com.tesco.pma.colleague.api.Colleague;
+import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
 import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
-import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
-import com.tesco.pma.colleague.profile.domain.TypedAttribute;
+import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.flow.FlowParameters;
-import com.tesco.pma.review.domain.TimelinePoint;
-import org.camunda.bpm.dmn.engine.DmnDecision;
-import org.camunda.bpm.dmn.engine.DmnEngine;
-import org.camunda.bpm.dmn.engine.DmnEngineConfiguration;
-import org.camunda.bpm.engine.variable.VariableMap;
-import org.camunda.bpm.engine.variable.impl.VariableMapImpl;
+import com.tesco.pma.flow.notifications.handlers.InitTimelinePointNotificationHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+@ActiveProfiles("test")
+@SpringBootTest(classes = {CamundaSpringBootTestConfig.class})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+public class ReviewNotificationsTest extends AbstractNotificationsFlowTest {
 
-
-public class ReviewNotificationsTest {
-
-    private static final String PATH = "com/tesco/pma/flow/notifications/review/review_notifications_decisions.dmn";
-    private static final String DMN_ID = "review_notifications_decisions_table";
     private static final String NF_PM_REVIEW_SUBMITTED = "NF_PM_REVIEW_SUBMITTED";
+    private static final String NF_PM_REVIEW_APPROVED = "NF_PM_REVIEW_APPROVED";
+    private static final String NF_PM_REVIEW_DECLINED = "NF_PM_REVIEW_DECLINED";
+    private static final String NF_PM_REVIEW_BEFORE_START = "NF_PM_REVIEW_BEFORE_START";
+    private static final String NF_PM_REVIEW_BEFORE_END = "NF_PM_REVIEW_BEFORE_END";
 
-    private DmnEngine dmnEngine;
-    private DmnDecision decision;
-    private TimelinePoint timelinePoint;
+    private static final Map<String, Integer> REVIEW_SEND_FLOW = Map.of(
+            "initReviewNotification", 1,
+            "review_decision_table", 1,
+            "sendNotification", 1);
+
+    @SpyBean
+    private InitTimelinePointNotificationHandler reviewInitHandler;
+
+
+    private ColleagueProfile colleagueProfile;
+    private ColleagueProfile senderColleagueProfile;
+
 
     @BeforeEach
-    void init() throws IOException {
-        dmnEngine = DmnEngineConfiguration
-                .createDefaultDmnEngineConfiguration()
-                .buildEngine();
+    void init() {
+        colleagueProfile = createColleagueProfile(UUID.randomUUID(), WorkLevel.WL1, Map.of());
+        senderColleagueProfile = createColleagueProfile(UUID.randomUUID(), "Mr", "Sender", WorkLevel.WL4, Map.of());
 
-        try(InputStream inputStream = getClass().getClassLoader().getResourceAsStream(PATH)) {
-            decision = dmnEngine.parseDecision(DMN_ID, inputStream);
-        }
+        Mockito.when(profileService.findProfileByColleagueUuid(Mockito.eq(colleagueProfile.getColleague().getColleagueUUID())))
+                .thenReturn(Optional.of(colleagueProfile));
 
-        timelinePoint = new TimelinePoint();
-        timelinePoint.setCode("MYR");
+        Mockito.when(profileService.findProfileByColleagueUuid(Mockito.eq(senderColleagueProfile.getColleague().getColleagueUUID())))
+                .thenReturn(Optional.of(senderColleagueProfile));
     }
 
     @Test
-    void sendTest() {
+    void reviewSubmittedTest() {
+        colleagueProfile.getColleague().getWorkRelationships().get(0).setIsManager(true);
 
-        var attrName = "Attr name";
-        var colleagueProfile = createColleagueProfile(null, WorkLevel.WL1, Map.of(attrName, "true"));
+        var event = createEvent(NF_PM_REVIEW_SUBMITTED, PMReviewType.MYR.getCode());
+        event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueProfile.getColleague().getColleagueUUID());
+        event.putProperty(FlowParameters.SENDER_COLLEAGUE_UUID.name(), senderColleagueProfile.getColleague().getColleagueUUID());
 
-        var variables = new VariableMapImpl();
-        variables.putValue(FlowParameters.EVENT_NAME.name(), NF_PM_REVIEW_SUBMITTED);
-        variables.putValue(FlowParameters.TIMELINE_POINT.name(), timelinePoint);
-        variables.putValue(FlowParameters.IS_MANAGER.name(), true);
-        variables.putValue(FlowParameters.PROFILE_ATTRIBUTE_NAME.name(), attrName);
-        variables.putValue(FlowParameters.COLLEAGUE_PROFILE.name(), colleagueProfile);
+        check(REVIEW_SEND_FLOW, event);
 
-        var result = dmnEngine.evaluateDecisionTable(decision, (VariableMap) variables);
-
-        assertTrue((Boolean) result.getFirstResult().getEntry(FlowParameters.SEND.name()));
+        checkContent("Mid-year review was submitted by Mr Sender");
     }
 
     @Test
-    void sendTestWhenAttrNotExist() {
-        var colleagueProfile = createColleagueProfile(null, WorkLevel.WL1, Map.of("Some attr name", "false"));
+    void checReviewMyrApprovalTest() {
 
-        var timelinePoint = new TimelinePoint();
-        timelinePoint.setCode("MYR");
+        colleagueProfile.getColleague().getWorkRelationships().get(0).setIsManager(true);
 
-        var variables = new VariableMapImpl();
-        variables.putValue(FlowParameters.EVENT_NAME.name(), NF_PM_REVIEW_SUBMITTED);
-        variables.putValue(FlowParameters.TIMELINE_POINT.name(), timelinePoint);
-        variables.putValue(FlowParameters.IS_MANAGER.name(), true);
-        variables.putValue(FlowParameters.PROFILE_ATTRIBUTE_NAME.name(), "Attr name");
-        variables.putValue(FlowParameters.COLLEAGUE_PROFILE.name(), colleagueProfile);
+        var event = createEvent(NF_PM_REVIEW_APPROVED, PMReviewType.MYR.getCode());
+        event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueProfile.getColleague().getColleagueUUID());
+        event.putProperty(FlowParameters.SENDER_COLLEAGUE_UUID.name(), senderColleagueProfile.getColleague().getColleagueUUID());
 
-        var result = dmnEngine.evaluateDecisionTable(decision, (VariableMap) variables);
+        check(REVIEW_SEND_FLOW, event);
 
-        assertTrue((Boolean) result.getFirstResult().getEntry(FlowParameters.SEND.name()));
+        checkTitle("Mid-year review approval");
+        checkContent("Mid-year review was approved by Mr Sender");
     }
 
     @Test
-    void sendTestWhenAttrsNull() {
+    void reviewBeforeEndTest() {
 
-        var colleagueProfile = new ColleagueProfile();
+        String weekAgoDate = getDateSevenDaysAgo("yyyy-MM-dd");
+        var timelinePoint = createTimelinePoint(PMReviewType.MYR.getCode(), weekAgoDate);
+        var event = createEvent(NF_PM_REVIEW_BEFORE_END, timelinePoint);
+        event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueProfile.getColleague().getColleagueUUID());
+        event.putProperty(FlowParameters.SENDER_COLLEAGUE_UUID.name(), senderColleagueProfile.getColleague().getColleagueUUID());
 
-        var variables = new VariableMapImpl();
-        variables.putValue(FlowParameters.EVENT_NAME.name(), NF_PM_REVIEW_SUBMITTED);
-        variables.putValue(FlowParameters.TIMELINE_POINT.name(), timelinePoint);
-        variables.putValue(FlowParameters.IS_MANAGER.name(), true);
-        variables.putValue(FlowParameters.PROFILE_ATTRIBUTE_NAME.name(), "Attr name");
-        variables.putValue(FlowParameters.COLLEAGUE_PROFILE.name(), colleagueProfile);
-        variables.putValue(FlowParameters.COLLEAGUE_WORK_LEVEL.name(), WorkLevel.WL1.name());
+        check(REVIEW_SEND_FLOW, event);
 
-        var result = dmnEngine.evaluateDecisionTable(decision, (VariableMap) variables);
-
-        assertTrue((Boolean) result.getFirstResult().getEntry(FlowParameters.SEND.name()));
+        checkContent("Kind reminder, the review is due to be closed in 7 days ("+ getDateSevenDaysAgo("dd.MM.yyyy") +")");
     }
 
-    private ColleagueProfile createColleagueProfile(UUID colleagueUUID, WorkLevel wl, Map<String, String> attrs){
-        var wr = new WorkRelationship();
-        wr.setWorkLevel(wl);
-
-        var colleague = new Colleague();
-        colleague.setColleagueUUID(colleagueUUID);
-        colleague.setWorkRelationships(List.of(wr));
-
-        var colleagueProfile = new ColleagueProfile();
-        colleagueProfile.setColleague(colleague);
-        colleagueProfile.setProfileAttributes(new ArrayList<>());
-        attrs.forEach((k, v) -> colleagueProfile.getProfileAttributes().add(createAttr(k, v)));
-        return colleagueProfile;
-    }
-
-    private TypedAttribute createAttr(String name, String value) {
-        var attr = new TypedAttribute();
-        attr.setName(name);
-        attr.setValue(value);
-        return attr;
-    }
+//    @Test
+//    void checkReviewEYR() throws Exception {
+//        checkReviewGroup(NF_PM_REVIEW_BEFORE_START, PMReviewType.EYR, true, true);
+//        checkReviewGroup(NF_PM_REVIEW_BEFORE_START, PMReviewType.EYR, false, true);
+//        checkReviewGroup(NF_PM_REVIEW_SUBMITTED, PMReviewType.EYR, true, true);
+//        checkReviewGroup(NF_PM_REVIEW_SUBMITTED, PMReviewType.EYR, false, false);
+//        checkReviewGroup(NF_PM_REVIEW_APPROVED, PMReviewType.EYR, true, true);
+//        checkReviewGroup(NF_PM_REVIEW_APPROVED, PMReviewType.EYR, false, true);
+//        checkReviewGroup(NF_PM_REVIEW_DECLINED, PMReviewType.EYR, true, true);
+//        checkReviewGroup(NF_PM_REVIEW_DECLINED, PMReviewType.EYR, false, true);
+//        checkReviewGroup(NF_PM_REVIEW_BEFORE_END, PMReviewType.EYR, true, true);
+//        checkReviewGroup(NF_PM_REVIEW_BEFORE_END, PMReviewType.EYR, false, true);
+//    }
 
 }

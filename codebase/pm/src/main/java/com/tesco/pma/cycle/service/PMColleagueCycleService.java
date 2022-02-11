@@ -1,7 +1,6 @@
 package com.tesco.pma.cycle.service;
 
 import com.tesco.pma.api.DictionaryFilter;
-import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 
@@ -37,14 +36,6 @@ public interface PMColleagueCycleService {
      * @return - collection of PM colleague cycles
      */
     List<PMColleagueCycle> getByCycleUuidWithoutTimelinePoint(UUID cycleUuid, DictionaryFilter<PMCycleStatus> statusFilter);
-
-    /**
-     * Gets list of colleagues by types key and hire date
-     *
-     * @param compositeKey          - key
-     * @return list of colleagues
-     */
-    List<ColleagueEntity> findColleagues(String compositeKey, DictionaryFilter<PMCycleStatus> statusFilter);
 
     /**
      * Stores batched collection of PM colleague cycles

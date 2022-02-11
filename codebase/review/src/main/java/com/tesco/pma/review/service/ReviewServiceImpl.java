@@ -1,6 +1,8 @@
 package com.tesco.pma.review.service;
 
 import com.tesco.pma.api.OrgObjectiveStatus;
+import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
+import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
@@ -79,6 +81,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final PMCycleService pmCycleService;
     private final EventSender eventSender;
+    private final ProfileService profileService;
 
     private static final String REVIEW_UUID_PARAMETER_NAME = "reviewUuid";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
@@ -102,7 +105,10 @@ public class ReviewServiceImpl implements ReviewService {
     private static final String CHANGE_STATUS_OPERATION_NAME = "CHANGE STATUS";
     private static final String NF_ORGANISATION_OBJECTIVES_EVENT_NAME = "NF_ORGANISATION_OBJECTIVES";
     private static final String NF_OBJECTIVES_APPROVED_FOR_SHARING_EVENT_NAME = "NF_OBJECTIVES_APPROVED_FOR_SHARING";
+    private static final String NF_PM_REVIEW_SUBMITTED_EVENT_NAME = "NF_PM_REVIEW_SUBMITTED";
+    private static final String NF_PM_REVIEW_APPROVED_EVENT_NAME = "NF_PM_REVIEW_APPROVED";
     private static final String COLLEAGUE_UUID_EVENT_PARAM = "COLLEAGUE_UUID";
+    private static final String SENDER_COLLEAGUE_UUID_EVENT_PARAM = "SENDER_COLLEAGUE_UUID";
     private static final String TIMELINE_POINT_UUID_EVENT_PARAM = "TIMELINE_POINT_UUID";
 
     private static final Comparator<OrgObjective> ORG_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR =
@@ -115,8 +121,8 @@ public class ReviewServiceImpl implements ReviewService {
             DECLINED);
 
     private static final Map<PMTimelinePointStatus, String> STATUS_TO_EVENT_NAME_MAP = Map.of(
-            WAITING_FOR_APPROVAL, "NF_PM_REVIEW_SUBMITTED",
-            APPROVED, "NF_PM_REVIEW_APPROVED",
+            WAITING_FOR_APPROVAL, NF_PM_REVIEW_SUBMITTED_EVENT_NAME,
+            APPROVED, NF_PM_REVIEW_APPROVED_EVENT_NAME,
             DECLINED, "NF_PM_REVIEW_DECLINED");
 
     @Override
@@ -262,7 +268,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public Review updateReview(Review review, UUID performanceCycleUuid, UUID colleagueUuid) {
+    public Review updateReview(Review review, UUID performanceCycleUuid, UUID colleagueUuid, UUID loggedUserUuid) {
         var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, review.getType());
         review.setTlPointUuid(timelinePoint.getUuid());
         var reviews = reviewDAO.getByParams(
@@ -280,11 +286,11 @@ public class ReviewServiceImpl implements ReviewService {
         var reviewBefore = reviews.get(0);
         review.setUuid(reviewBefore.getUuid());
         review.setNumber(reviewBefore.getNumber());
-        var updatedReview = updateReview(review);
-
+        updateReview(review);
         checkReviewStateAfterUpdate(timelinePoint);
         updateTLPointStatus(timelinePoint);
-        return updatedReview;
+        sendEvent(timelinePoint, loggedUserUuid, colleagueUuid);
+        return review;
     }
 
     private Review updateReview(Review review) {
@@ -311,7 +317,8 @@ public class ReviewServiceImpl implements ReviewService {
     public List<Review> updateReviews(UUID performanceCycleUuid,
                                       UUID colleagueUuid,
                                       PMReviewType type,
-                                      List<Review> reviews) {
+                                      List<Review> reviews,
+                                      UUID loggedUserUuid) {
         var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, type);
         List<Review> results = new ArrayList<>();
 
@@ -348,6 +355,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         checkReviewStateAfterUpdate(timelinePoint);
         updateTLPointStatus(timelinePoint);
+        sendEvent(timelinePoint, loggedUserUuid, colleagueUuid);
         return results;
     }
 
@@ -398,7 +406,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         checkReviewStateAfterUpdate(timelinePoint);
         updateTLPointStatus(timelinePoint);
-        sendEvent(timelinePoint, loggedUserUuid);
+        sendEvent(timelinePoint, loggedUserUuid, colleagueUuid);
         return status;
     }
 
@@ -580,7 +588,6 @@ public class ReviewServiceImpl implements ReviewService {
 
         });
         reviewAuditLogDAO.logOrgObjectiveAction(SAVE_AS_DRAFT, loggedUserUuid);
-        sendEvent(NF_ORGANISATION_OBJECTIVES_EVENT_NAME, loggedUserUuid);
         return results;
     }
 
@@ -590,7 +597,7 @@ public class ReviewServiceImpl implements ReviewService {
             throw notFound(ORG_OBJECTIVES_NOT_FOUND, Map.of());
         }
         reviewAuditLogDAO.logOrgObjectiveAction(PUBLISH, loggedUserUuid);
-        sendEvent(NF_OBJECTIVES_APPROVED_FOR_SHARING_EVENT_NAME, loggedUserUuid);
+        sendEvent(NF_ORGANISATION_OBJECTIVES_EVENT_NAME, WorkLevel.WL4, WorkLevel.WL5);
         return getPublishedOrgObjectives();
     }
 
@@ -738,6 +745,16 @@ public class ReviewServiceImpl implements ReviewService {
         return defaultValue;
     }
 
+    private void sendEvent(String eventName, WorkLevel... wls) {
+        for (WorkLevel wl : wls) {
+            var rq = new RequestQuery();
+            rq.addFilters("work-level_eq", wl.name());
+
+            profileService.getSuggestions(rq)
+                    .forEach(colleague -> sendEvent(eventName, colleague.getColleague().getColleagueUUID()));
+        }
+    }
+
     private void sendEvent(String eventName, UUID colleagueUuid) {
         var event = EventSupport.create(eventName,
                 Map.of(COLLEAGUE_UUID_EVENT_PARAM, colleagueUuid));
@@ -745,17 +762,53 @@ public class ReviewServiceImpl implements ReviewService {
         eventSender.sendEvent(event, null, true);
     }
 
-    private void sendEvent(TimelinePoint timelinePoint, UUID colleagueUuid) {
+    private void sendEvent(TimelinePoint timelinePoint, UUID loggedUserUUID, UUID colleagueUuid) {
         var eventName = STATUS_TO_EVENT_NAME_MAP.get(timelinePoint.getStatus());
 
         if (eventName == null) {
             return;
         }
 
+        var recipientUUID = colleagueUuid;
+
+        if (NF_PM_REVIEW_SUBMITTED_EVENT_NAME.equals(eventName)) {
+            recipientUUID = getManagerUuid(colleagueUuid);
+        }
+
         var event = EventSupport.create(eventName, Map.of(
-                COLLEAGUE_UUID_EVENT_PARAM, colleagueUuid,
+                COLLEAGUE_UUID_EVENT_PARAM, recipientUUID,
+                SENDER_COLLEAGUE_UUID_EVENT_PARAM, loggedUserUUID,
                 TIMELINE_POINT_UUID_EVENT_PARAM, timelinePoint.getUuid()));
 
         eventSender.sendEvent(event, null, true);
+
+        if (!NF_PM_REVIEW_APPROVED_EVENT_NAME.equals(eventName)) {
+            return;
+        }
+
+        var colleague = profileService.findColleagueByColleagueUuid(colleagueUuid);
+
+        if (!colleague.getWorkRelationships().get(0).getIsManager()) {
+            return;
+        }
+
+        event = EventSupport.create(NF_OBJECTIVES_APPROVED_FOR_SHARING_EVENT_NAME, Map.of(
+                COLLEAGUE_UUID_EVENT_PARAM, recipientUUID,
+                SENDER_COLLEAGUE_UUID_EVENT_PARAM, loggedUserUUID,
+                TIMELINE_POINT_UUID_EVENT_PARAM, timelinePoint.getUuid()));
+
+        eventSender.sendEvent(event, null, true);
+    }
+
+    private UUID getManagerUuid(UUID colleagueUuid) {
+        var colleague = profileService.findColleagueByColleagueUuid(colleagueUuid);
+        var manager = colleague.getWorkRelationships().get(0).getManager();
+
+        if (manager == null) {
+            log.info("User {} has no manager", colleagueUuid);
+            return null;
+        }
+
+        return manager.getColleagueUUID();
     }
 }
