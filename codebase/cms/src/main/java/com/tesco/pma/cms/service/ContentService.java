@@ -11,6 +11,9 @@ public interface ContentService {
 
     List<Content> findByKey(String key);
 
+    Content findById(UUID uuid);
+
     void delete(UUID deleteUuid);
 
+    Content update(Content content);
 }

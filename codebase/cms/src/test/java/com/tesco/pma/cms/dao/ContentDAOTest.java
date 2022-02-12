@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ContentDAOTest extends AbstractDAOTest {
 
     private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/cms/dao/";
+    private static final String TEST_CONTENT_UUID = "d9d819fc-c1ee-4df8-a87b-d88f1c006c11";
 
     @Autowired
     private ContentDAO contentDAO;
@@ -46,7 +47,7 @@ public class ContentDAOTest extends AbstractDAOTest {
 
     @Test
     void deleteTest(){
-        contentDAO.delete(UUID.fromString("d9d819fc-c1ee-4df8-a87b-d88f1c006c11"));
+        contentDAO.delete(UUID.fromString(TEST_CONTENT_UUID));
 
         assertEquals(0, contentDAO.findByKey("knowledge-library/gb/content").size());
     }
@@ -57,5 +58,15 @@ public class ContentDAOTest extends AbstractDAOTest {
         assertEquals(1, contentDAO.findByKey("knowledge-library/gb/content").size());
     }
 
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "contents.xml"})
+    void updateTest() {
+        var content = contentDAO.findById(UUID.fromString(TEST_CONTENT_UUID));
+        content.setStatus(ContentStatus.UNPUBLISHED);
+
+        contentDAO.update(content);
+
+        assertEquals(ContentStatus.UNPUBLISHED, contentDAO.findById(UUID.fromString(TEST_CONTENT_UUID)).getStatus());
+    }
 
 }

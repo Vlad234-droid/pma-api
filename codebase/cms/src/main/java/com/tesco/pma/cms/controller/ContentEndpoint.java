@@ -11,15 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
@@ -32,8 +24,6 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping(path = "/cms")
 public class ContentEndpoint {
-
-    private static final String KNOWLEDGE_LIBRARY = "knowledge-library";
 
     private final ContentService contentService;
 
@@ -48,23 +38,20 @@ public class ContentEndpoint {
 
     @Operation(summary = "Find Content by key in path", tags = {"CMS"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Find contents")
-    @GetMapping(path = "/" + KNOWLEDGE_LIBRARY + "/{countryCode}/{iam}/{content}", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/{type}/{countryCode}/{iam}/{content}", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isColleague()")
-    public RestResponse<List<Content>> findByCountryIamContent(@PathVariable String countryCode,
-                                                               @PathVariable String iam,
-                                                               @PathVariable String content) {
-        return RestResponse.success(contentService.findByKey(Key.createKey(KNOWLEDGE_LIBRARY, countryCode, iam, content)));
+    public RestResponse<List<Content>> findByCountryIamContent(Key key) {
+        return RestResponse.success(contentService.findByKey(key.toString()));
     }
 
     @Operation(summary = "Find Content by key in path", tags = {"CMS"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Find contents")
-    @GetMapping(path = "/" + KNOWLEDGE_LIBRARY + "/{countryCode}/{role}/{iam}/{content}", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/{type}/{countryCode}/{role}/{iam}/{content}", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isColleague()")
     public RestResponse<List<Content>> findByCountryRoleIamContent(Key key) {
-        var keyString = Key.createKey(KNOWLEDGE_LIBRARY, key.toString());
-        return RestResponse.success(contentService.findByKey(keyString));
+        return RestResponse.success(contentService.findByKey(key.toString()));
     }
 
     @Operation(summary = "Create a Content", tags = {"CMS"})
@@ -72,12 +59,21 @@ public class ContentEndpoint {
     @PostMapping(path = "/content", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isColleague()")
-    public RestResponse<Content> create(@RequestBody Content note) {
-        return RestResponse.success(contentService.create(note));
+    public RestResponse<Content> create(@RequestBody Content content) {
+        return RestResponse.success(contentService.create(content));
+    }
+
+    @Operation(summary = "Update a Content", tags = {"CMS"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Update a Content")
+    @PutMapping(path = "/content", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isColleague()")
+    public RestResponse<Content> update(@RequestBody Content content) {
+        return RestResponse.success(contentService.update(content));
     }
 
     @Operation(summary = "Delete a Content", tags = {"CMS"})
-    @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Delete a Content")
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Delete a Content")
     @DeleteMapping(path = "/content/{uuid}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isColleague()")

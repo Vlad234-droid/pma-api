@@ -18,7 +18,11 @@
     </resultMap>
 
     <select id="findByKey" resultMap="contentStruct">
-        SELECT * FROM cms_content cc WHERE cc.key = #{key}
+        SELECT * FROM cms_content cc WHERE cc.key = #{key} and status_id = 2
+    </select>
+
+    <select id="findById" resultMap="contentStruct">
+        SELECT * FROM cms_content cc WHERE cc.id = #{uuid}
     </select>
 
     <insert id="create" flushCache="true" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -33,11 +37,14 @@
         DELETE FROM cms_content WHERE id = #{id}
     </delete>
 
-<!--    <update id="update" flushCache="true">-->
-<!--        UPDATE note_folders-->
-<!--        SET title = (#{folder.title}), owner_uuid = (#{folder.ownerColleagueUuid}), parent_uuid = (#{folder.parentFolderUuid})-->
-<!--        WHERE id = #{folder.id}-->
-<!--    </update>-->
+    <update id="update" flushCache="true">
+        UPDATE cms_content
+        SET key = #{content.key}, title = #{content.title}, description = #{content.description},
+            image_link = #{content.imageLink}, created_by = #{content.createdBy}, created_time = #{content.createdTime},
+            version = #{content.version},
+            status_id = #{content.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler}
+        WHERE id = #{content.id}
+    </update>
 
 
 

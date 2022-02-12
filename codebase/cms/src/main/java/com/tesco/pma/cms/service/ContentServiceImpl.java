@@ -36,13 +36,11 @@ public class ContentServiceImpl implements ContentService {
         }
 
         if (content.getStatus() == null) {
-            content.setStatus(ContentStatus.DRAFT);
+            content.setStatus(ContentStatus.PUBLISHED);
         }
 
         if (1 != contentDAO.create(content)) {
-
-            throw new ContentException(ErrorCodes.CONTENT_CREATE_ERROR.name(),
-                    messageSourceAccessor.getMessage(ErrorCodes.CONTENT_CREATE_ERROR));
+            throw contentException(ErrorCodes.CONTENT_CREATE_ERROR);
         }
 
         return content;
@@ -54,13 +52,36 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
+    public Content findById(UUID uuid) {
+        var content = contentDAO.findById(uuid);
+
+        if (content == null) {
+            throw contentException(ErrorCodes.CONTENT_NOT_FOUND_ERROR);
+        }
+
+        return content;
+    }
+
+    @Override
     @Transactional
     public void delete(UUID deleteUuid) {
 
         if (1 != contentDAO.delete(deleteUuid)) {
-
-            throw new ContentException(ErrorCodes.CONTENT_DELETE_ERROR.name(),
-                    messageSourceAccessor.getMessage(ErrorCodes.CONTENT_DELETE_ERROR));
+            throw contentException(ErrorCodes.CONTENT_DELETE_ERROR);
         }
+    }
+
+    @Override
+    @Transactional
+    public Content update(Content content) {
+        if(1 != contentDAO.update(content)) {
+            throw contentException(ErrorCodes.CONTENT_UPDATE_ERROR);
+        }
+
+        return content;
+    }
+
+    private ContentException contentException(ErrorCodes errorCode) {
+        return new ContentException(errorCode.name(), messageSourceAccessor.getMessage(errorCode));
     }
 }

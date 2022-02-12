@@ -6,8 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 @Data
 public class Key {
 
-    private String divisor = "/";
-
+    private String type;
     private String countryCode;
     private String iam;
     private String role;
@@ -15,7 +14,7 @@ public class Key {
 
     @Override
     public String toString() {
-        return createKey(countryCode, role, iam, content);
+        return createKey(type, countryCode, role, iam, content);
     }
 
 
