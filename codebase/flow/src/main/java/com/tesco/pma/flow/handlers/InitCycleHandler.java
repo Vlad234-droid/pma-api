@@ -9,8 +9,6 @@ import com.tesco.pma.event.Event;
 import com.tesco.pma.flow.FlowParameters;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.BpmnError;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -25,7 +23,6 @@ import static com.tesco.pma.flow.exception.ErrorCodes.PARAMETER_CANNOT_BE_READ;
  */
 @Component
 @RequiredArgsConstructor
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class InitCycleHandler extends CamundaAbstractFlowHandler {
     private static final String INIT_ERROR = "init_error";
     private static final String P_PARAMETER_NAME = "property";
