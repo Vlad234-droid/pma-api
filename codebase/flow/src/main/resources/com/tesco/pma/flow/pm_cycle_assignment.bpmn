@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1l93sjq" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="pm_cycle_assignment" isExecutable="true">
+    <bpmn:sequenceFlow id="Flow_15635sa" sourceRef="StartEvent_1" targetRef="read_colleagues" />
+    <bpmn:exclusiveGateway id="Gateway_1tan81w" default="Flow_0xu53rm">
+      <bpmn:incoming>Flow_0x082xc</bpmn:incoming>
+      <bpmn:incoming>Flow_0zg4uzh</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nmfae0</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0xu53rm</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0nmfae0" name="index&#62;= 0" sourceRef="Gateway_1tan81w" targetRef="calculate_cycle">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${INDEX&gt;=0}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:businessRuleTask id="calculate_cycle" name="Calculate&#10;cycle" camunda:resultVariable="PM_CYCLE_KEY" camunda:decisionRef="pm_cycle_mapping" camunda:mapDecisionResult="singleEntry">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="COLLEAGUE">${COLLEAGUES.get(INDEX)}</camunda:inputParameter>
+          <camunda:outputParameter name="COLLEAGUE">${COLLEAGUE}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0nmfae0</bpmn:incoming>
+      <bpmn:outgoing>Flow_0qspkka</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:endEvent id="Event_0wbcq88">
+      <bpmn:incoming>Flow_0xu53rm</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0xu53rm" sourceRef="Gateway_1tan81w" targetRef="Event_0wbcq88" />
+    <bpmn:task id="find_cycle" name="Find cycle">
+      <bpmn:incoming>Flow_0qspkka</bpmn:incoming>
+      <bpmn:outgoing>Flow_1pwrscg</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_0qspkka" sourceRef="calculate_cycle" targetRef="find_cycle" />
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_15635sa</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1pwrscg" sourceRef="find_cycle" targetRef="send_event" />
+    <bpmn:serviceTask id="read_colleagues" name="Read&#10;Colleagues" camunda:class="com.tesco.pma.flow.handlers.ReadColleaguesHandler">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="INDEX">${COLLEAGUES.isEmpty()?-1:COLLEAGUES.size()-1}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_15635sa</bpmn:incoming>
+      <bpmn:incoming>Flow_09d6b3d</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zg4uzh</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:scriptTask id="send_event" name="Send event" scriptFormat="groovy">
+      <bpmn:incoming>Flow_1pwrscg</bpmn:incoming>
+      <bpmn:outgoing>Flow_0u2i8fq</bpmn:outgoing>
+      <bpmn:script>println "\nPM_CYCLE_KEY: ${PM_CYCLE_KEY}; " + "COLLEAGUE: ${COLLEAGUE}"</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_0u2i8fq" name="next" sourceRef="send_event" targetRef="count_down" />
+    <bpmn:startEvent id="PM_COLLEAGUE_CYCLE_ASSIGNMENT_ID">
+      <bpmn:outgoing>Flow_09d6b3d</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1dik7ue" messageRef="Message_03v6y3h" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_09d6b3d" sourceRef="PM_COLLEAGUE_CYCLE_ASSIGNMENT_ID" targetRef="read_colleagues" />
+    <bpmn:sequenceFlow id="Flow_0x082xc" sourceRef="count_down" targetRef="Gateway_1tan81w" />
+    <bpmn:sequenceFlow id="Flow_0zg4uzh" sourceRef="read_colleagues" targetRef="Gateway_1tan81w" />
+    <bpmn:task id="count_down" name="Count&#10;down">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="INDEX">${INDEX}</camunda:inputParameter>
+          <camunda:outputParameter name="INDEX">${INDEX-1}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0u2i8fq</bpmn:incoming>
+      <bpmn:outgoing>Flow_0x082xc</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:textAnnotation id="TextAnnotation_1om5661">
+      <bpmn:text>List of colleague_uuid identifiers</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_187l81e" sourceRef="StartEvent_1" targetRef="TextAnnotation_1om5661" />
+    <bpmn:textAnnotation id="TextAnnotation_071i9e8">
+      <bpmn:text>Absent are skipped</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_06v4uua" sourceRef="read_colleagues" targetRef="TextAnnotation_071i9e8" />
+    <bpmn:textAnnotation id="TextAnnotation_06v4573">
+      <bpmn:text>Event Name:
+PM_COLLEAGUE_CYCLE_CREATE
+Parameters:
+PM_CYCLE_UUID
+COLLEAGUE_UUID</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0cdbodu" sourceRef="send_event" targetRef="TextAnnotation_06v4573" />
+    <bpmn:textAnnotation id="TextAnnotation_0l0wo1c">
+      <bpmn:text>Event Name:
+PM_COLLEAGUE_CYCLE_ASSIGNMENT
+Parameters:
+COLLEAGUE_UUIDS</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_09ld78l" sourceRef="PM_COLLEAGUE_CYCLE_ASSIGNMENT_ID" targetRef="TextAnnotation_0l0wo1c" />
+    <bpmn:textAnnotation id="TextAnnotation_04isjt2">
+      <bpmn:text>PM_CYCLE_KEY
+ -&gt;
+PM_CYCLE</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0o0mxx1" sourceRef="find_cycle" targetRef="TextAnnotation_04isjt2" />
+    <bpmn:textAnnotation id="TextAnnotation_04x845v">
+      <bpmn:text>COLLEAGUE
+ -&gt;
+PM_CYCLE_KEY</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1bpcj21" sourceRef="TextAnnotation_04x845v" targetRef="calculate_cycle" />
+  </bpmn:process>
+  <bpmn:message id="Message_03v6y3h" name="PM_COLLEAGUE_CYCLE_ASSIGNMENT" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="pm_cycle_assignment">
+      <bpmndi:BPMNEdge id="Flow_0zg4uzh_di" bpmnElement="Flow_0zg4uzh">
+        <di:waypoint x="400" y="227" />
+        <di:waypoint x="445" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0x082xc_di" bpmnElement="Flow_0x082xc">
+        <di:waypoint x="470" y="290" />
+        <di:waypoint x="470" y="252" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09d6b3d_di" bpmnElement="Flow_09d6b3d">
+        <di:waypoint x="238" y="300" />
+        <di:waypoint x="270" y="300" />
+        <di:waypoint x="270" y="227" />
+        <di:waypoint x="300" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0u2i8fq_di" bpmnElement="Flow_0u2i8fq">
+        <di:waypoint x="880" y="267" />
+        <di:waypoint x="880" y="330" />
+        <di:waypoint x="520" y="330" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="884" y="283" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1pwrscg_di" bpmnElement="Flow_1pwrscg">
+        <di:waypoint x="790" y="227" />
+        <di:waypoint x="830" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qspkka_di" bpmnElement="Flow_0qspkka">
+        <di:waypoint x="650" y="227" />
+        <di:waypoint x="690" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xu53rm_di" bpmnElement="Flow_0xu53rm">
+        <di:waypoint x="470" y="202" />
+        <di:waypoint x="470" y="158" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nmfae0_di" bpmnElement="Flow_0nmfae0">
+        <di:waypoint x="495" y="227" />
+        <di:waypoint x="550" y="227" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="496" y="210" width="49" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15635sa_di" bpmnElement="Flow_15635sa">
+        <di:waypoint x="238" y="227" />
+        <di:waypoint x="300" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Gateway_1tan81w_di" bpmnElement="Gateway_1tan81w" isMarkerVisible="true">
+        <dc:Bounds x="445" y="202" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1hrua4y_di" bpmnElement="calculate_cycle">
+        <dc:Bounds x="550" y="187" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0wbcq88_di" bpmnElement="Event_0wbcq88">
+        <dc:Bounds x="452" y="122" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0gj86vu_di" bpmnElement="find_cycle">
+        <dc:Bounds x="690" y="187" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1dm92gb_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="202" y="209" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_16kaxh0_di" bpmnElement="read_colleagues">
+        <dc:Bounds x="300" y="187" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02zirbn_di" bpmnElement="send_event">
+        <dc:Bounds x="830" y="187" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1iol3ns_di" bpmnElement="PM_COLLEAGUE_CYCLE_ASSIGNMENT_ID">
+        <dc:Bounds x="202" y="282" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1td62ll_di" bpmnElement="count_down">
+        <dc:Bounds x="420" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1om5661_di" bpmnElement="TextAnnotation_1om5661">
+        <dc:Bounds x="174" y="135" width="150" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_071i9e8_di" bpmnElement="TextAnnotation_071i9e8">
+        <dc:Bounds x="290" y="80" width="120" height="30" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_06v4573_di" bpmnElement="TextAnnotation_06v4573">
+        <dc:Bounds x="830" y="80" width="236" height="79" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0l0wo1c_di" bpmnElement="TextAnnotation_0l0wo1c">
+        <dc:Bounds x="174" y="350" width="256" height="68" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_04isjt2_di" bpmnElement="TextAnnotation_04isjt2">
+        <dc:Bounds x="689" y="80" width="111" height="54" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_04x845v_di" bpmnElement="TextAnnotation_04x845v">
+        <dc:Bounds x="545" y="80" width="111" height="54" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_187l81e_di" bpmnElement="Association_187l81e">
+        <di:waypoint x="220" y="209" />
+        <di:waypoint x="220" y="175" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_06v4uua_di" bpmnElement="Association_06v4uua">
+        <di:waypoint x="350" y="187" />
+        <di:waypoint x="350" y="110" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0cdbodu_di" bpmnElement="Association_0cdbodu">
+        <di:waypoint x="880" y="187" />
+        <di:waypoint x="880" y="159" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_09ld78l_di" bpmnElement="Association_09ld78l">
+        <di:waypoint x="220" y="318" />
+        <di:waypoint x="220" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0o0mxx1_di" bpmnElement="Association_0o0mxx1">
+        <di:waypoint x="740" y="187" />
+        <di:waypoint x="740" y="134" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1bpcj21_di" bpmnElement="Association_1bpcj21">
+        <di:waypoint x="601" y="134" />
+        <di:waypoint x="600" y="187" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

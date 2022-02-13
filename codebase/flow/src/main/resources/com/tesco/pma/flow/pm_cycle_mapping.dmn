@@ -4,21 +4,6 @@
     <informationRequirement id="InformationRequirement_1u88j6o">
       <requiredInput href="#InputData_014boi4" />
     </informationRequirement>
-    <informationRequirement id="InformationRequirement_08obfe0">
-      <requiredInput href="#InputData_0ff6adv" />
-    </informationRequirement>
-    <informationRequirement id="InformationRequirement_1wmfthc">
-      <requiredInput href="#InputData_0tsbk84" />
-    </informationRequirement>
-    <informationRequirement id="InformationRequirement_0kxz312">
-      <requiredInput href="#InputData_0b0iorx" />
-    </informationRequirement>
-    <informationRequirement id="InformationRequirement_1lgd8hs">
-      <requiredInput href="#InputData_0of03jn" />
-    </informationRequirement>
-    <informationRequirement id="InformationRequirement_16sy9p6">
-      <requiredInput href="#InputData_0wmr70w" />
-    </informationRequirement>
     <decisionTable id="DecisionTable_1iuc214">
       <input id="Input_1" label="Legal Employer Name">
         <inputExpression id="InputExpression_1" typeRef="string" expressionLanguage="juel">
@@ -175,64 +160,19 @@
       </rule>
     </decisionTable>
   </decision>
-  <inputData id="InputData_014boi4" name="legal_employer_name" />
-  <inputData id="InputData_0ff6adv" name="business_type" />
-  <inputData id="InputData_0tsbk84" name="work_level" />
-  <inputData id="InputData_0b0iorx" name="salary_frequency" />
-  <inputData id="InputData_0of03jn" name="job_name" />
-  <inputData id="InputData_0wmr70w" name="iam_source" />
+  <inputData id="InputData_014boi4" name="COLLEAGUE" />
   <dmndi:DMNDI>
     <dmndi:DMNDiagram>
       <dmndi:DMNShape dmnElementRef="pm_cycle_mapping">
-        <dc:Bounds height="80" width="180" x="380" y="100" />
+        <dc:Bounds height="80" width="180" x="160" y="100" />
       </dmndi:DMNShape>
       <dmndi:DMNShape id="DMNShape_0vnvuad" dmnElementRef="InputData_014boi4">
-        <dc:Bounds height="45" width="125" x="157" y="218" />
+        <dc:Bounds height="45" width="125" x="187" y="227" />
       </dmndi:DMNShape>
       <dmndi:DMNEdge id="DMNEdge_0w9atph" dmnElementRef="InformationRequirement_1u88j6o">
-        <di:waypoint x="220" y="218" />
-        <di:waypoint x="406" y="200" />
-        <di:waypoint x="406" y="180" />
-      </dmndi:DMNEdge>
-      <dmndi:DMNShape id="DMNShape_065zy33" dmnElementRef="InputData_0ff6adv">
-        <dc:Bounds height="45" width="125" x="207" y="277" />
-      </dmndi:DMNShape>
-      <dmndi:DMNEdge id="DMNEdge_0zisv04" dmnElementRef="InformationRequirement_08obfe0">
-        <di:waypoint x="270" y="277" />
-        <di:waypoint x="431" y="200" />
-        <di:waypoint x="431" y="180" />
-      </dmndi:DMNEdge>
-      <dmndi:DMNShape id="DMNShape_1vvxfdj" dmnElementRef="InputData_0tsbk84">
-        <dc:Bounds height="45" width="125" x="347" y="277" />
-      </dmndi:DMNShape>
-      <dmndi:DMNEdge id="DMNEdge_1pt6khb" dmnElementRef="InformationRequirement_1wmfthc">
-        <di:waypoint x="410" y="277" />
-        <di:waypoint x="457" y="200" />
-        <di:waypoint x="457" y="180" />
-      </dmndi:DMNEdge>
-      <dmndi:DMNShape id="DMNShape_0jjz98q" dmnElementRef="InputData_0b0iorx">
-        <dc:Bounds height="45" width="125" x="487" y="277" />
-      </dmndi:DMNShape>
-      <dmndi:DMNEdge id="DMNEdge_0nitif9" dmnElementRef="InformationRequirement_0kxz312">
-        <di:waypoint x="550" y="277" />
-        <di:waypoint x="483" y="200" />
-        <di:waypoint x="483" y="180" />
-      </dmndi:DMNEdge>
-      <dmndi:DMNShape id="DMNShape_154yjwg" dmnElementRef="InputData_0of03jn">
-        <dc:Bounds height="45" width="125" x="627" y="277" />
-      </dmndi:DMNShape>
-      <dmndi:DMNEdge id="DMNEdge_179n9yz" dmnElementRef="InformationRequirement_1lgd8hs">
-        <di:waypoint x="690" y="277" />
-        <di:waypoint x="509" y="200" />
-        <di:waypoint x="509" y="180" />
-      </dmndi:DMNEdge>
-      <dmndi:DMNShape id="DMNShape_0rg3dnj" dmnElementRef="InputData_0wmr70w">
-        <dc:Bounds height="45" width="125" x="687" y="218" />
-      </dmndi:DMNShape>
-      <dmndi:DMNEdge id="DMNEdge_137hwww" dmnElementRef="InformationRequirement_16sy9p6">
-        <di:waypoint x="750" y="218" />
-        <di:waypoint x="534" y="200" />
-        <di:waypoint x="534" y="180" />
+        <di:waypoint x="250" y="227" />
+        <di:waypoint x="250" y="200" />
+        <di:waypoint x="250" y="180" />
       </dmndi:DMNEdge>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>
