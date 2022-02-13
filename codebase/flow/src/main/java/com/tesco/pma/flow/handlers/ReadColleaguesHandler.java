@@ -21,7 +21,7 @@ import static com.tesco.pma.flow.exception.ErrorCodes.EVENT_INVALID_COLLEAGUE_UU
 
 /**
  * Reads colleagues by list of colleague uuids
- * Output variable COLLEAGUE_UUIDS: List&lt;UUID&gt;
+ * Output variable COLLEAGUES: List&lt;Colleague&gt;
  *
  * @author Vadim Shatokhin <a href="mailto:vadim.shatokhin1@tesco.com">vadim.shatokhin1@tesco.com</a>
  * 2022-02-12 19:55
