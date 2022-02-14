@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +59,7 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
     public PMColleagueCycle create(PMColleagueCycle pmColleagueCycle) {
         try {
             pmColleagueCycle.setUuid(UUID.randomUUID());
+            pmColleagueCycle.setCreationTime(Instant.now());
             dao.create(pmColleagueCycle);
         } catch (DuplicateKeyException ex) {
             throw new AlreadyExistsException(PM_COLLEAGUE_CYCLE_ALREADY_EXISTS.getCode(),

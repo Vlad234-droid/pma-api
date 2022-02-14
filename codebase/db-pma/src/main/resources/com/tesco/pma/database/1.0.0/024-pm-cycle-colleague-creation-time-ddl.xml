@@ -1,0 +1,40 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet author="Stanislav.Eurich" id="1">
+        <addColumn tableName="pm_colleague_cycle">
+            <column name="creation_time" type="TIMESTAMPTZ"
+                    remarks="Timestamp with zone when record created"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="pm_colleague_cycle" columnName="creation_time"/>
+        </rollback>
+    </changeSet>
+    <changeSet author="Stanislav.Eurich" id="2">
+        <update tableName="pm_colleague_cycle">
+            <column name="creation_time" valueComputed="now()"/>
+            <where>creation_time is null</where>
+        </update>
+        <rollback>
+            <update tableName="pm_colleague_cycle">
+                <column name="creation_time" value="null"/>
+            </update>
+        </rollback>
+    </changeSet>
+    <changeSet author="Stanislav.Eurich" id="3">
+        <addNotNullConstraint
+                tableName="pm_colleague_cycle"
+                columnName="creation_time"
+                columnDataType="TIMESTAMPTZ"
+                validate="true"/>
+        <rollback>
+            <dropNotNullConstraint
+                    tableName="pm_colleague_cycle"
+                    columnName="creation_time"
+                    columnDataType="TIMESTAMPTZ"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
