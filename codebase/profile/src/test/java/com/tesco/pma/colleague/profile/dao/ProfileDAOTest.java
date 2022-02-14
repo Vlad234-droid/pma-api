@@ -13,6 +13,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -120,9 +121,9 @@ public class ProfileDAOTest extends AbstractDAOTest {
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
     void getAllColleaguesUuids() {
-        var uuids = dao.getAllColleaguesUuids();
+        var uuids = dao.getAllColleaguesUuids(Set.of(COLLEAGUE_UUID, COLLEAGUE_UUID_1, UUID.randomUUID()));
 
-        assertEquals(15, uuids.size());
+        assertEquals(2, uuids.size());
         assertTrue(uuids.contains(COLLEAGUE_UUID));
         assertTrue(uuids.contains(COLLEAGUE_UUID_1));
     }

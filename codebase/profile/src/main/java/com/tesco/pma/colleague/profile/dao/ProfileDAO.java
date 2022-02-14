@@ -5,6 +5,7 @@ import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.pagination.RequestQuery;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -96,11 +97,12 @@ public interface ProfileDAO {
     boolean isColleagueExists(@Param("uuid") UUID colleagueUuid);
 
     /**
-     * Gets all colleague uuids
+     * Check if uuid from set is present into db
      *
-     * @return set of uuids
+     * @param colleagueUuids - set of colleague uuid to check
+     * @return uuid if present in DB, otherwise skip it
      */
-    Set<UUID> getAllColleaguesUuids();
+    Set<UUID> getAllColleaguesUuids(@Param("colleagueUuids") Collection<UUID> colleagueUuids);
 
     /**
      * Get colleague suggestions by full name

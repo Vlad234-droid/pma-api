@@ -38,7 +38,8 @@
             <association property="iam" autoMapping="true" columnPrefix="iam_"/>
         </association>
 
-        <collection property="workRelationships" ofType="com.tesco.pma.colleague.api.workrelationships.WorkRelationship">
+        <collection property="workRelationships"
+                    ofType="com.tesco.pma.colleague.api.workrelationships.WorkRelationship">
             <result column="primary_entity" property="primaryEntity"/>
             <result column="salary_frequency" property="salaryFrequency"/>
             <result column="is_manager" property="isManager"/>
@@ -46,7 +47,7 @@
             <result column="employment_type" property="employmentType"/>
             <result column="location_id" property="locationUUID"/>
 
-            <result column="wl_code"  javaType="com.tesco.pma.colleague.api.workrelationships.WorkLevel"
+            <result column="wl_code" javaType="com.tesco.pma.colleague.api.workrelationships.WorkLevel"
                     typeHandler="com.tesco.pma.colleague.api.workrelationships.WorkLevelHandler"
                     property="workLevel"/>
 
@@ -97,7 +98,10 @@
     </select>
 
     <select id="getAllColleaguesUuids" resultType="java.util.UUID">
-        SELECT DISTINCT uuid FROM colleague
+        SELECT DISTINCT uuid FROM colleague WHERE uuid IN
+        <foreach item="value" collection="colleagueUuids" separator="," open="(" close=")">
+            #{value}
+        </foreach>
     </select>
 
     <select id="getColleagueByIamId" resultMap="colleagueMap">
@@ -138,7 +142,8 @@
                 #{colleague.email}, #{colleague.primaryEntity}, #{colleague.salaryFrequency}, #{colleague.iamSource},
                 #{colleague.iamId}, #{colleague.managerUuid}, #{colleague.employmentType}, #{colleague.hireDate},
                 #{colleague.leavingDate}, #{colleague.manager}, #{colleague.job.id}, #{colleague.country.code},
-                #{colleague.workLevel.code}, #{colleague.department.id}, #{colleague.locationId}, #{colleague.legalEntity})
+                #{colleague.workLevel.code}, #{colleague.department.id}, #{colleague.locationId},
+                #{colleague.legalEntity})
     </insert>
 
     <insert id="updateColleague" flushCache="true">
@@ -199,37 +204,43 @@
         c.is_manager,
         c.location_id,
         c.legal_entity as le_name,
-        j.id            as j_id,
-        j.code          as j_code,
-        j.name          as j_name,
+        j.id as j_id,
+        j.code as j_code,
+        j.name as j_name,
         j.cost_category as j_costCategory,
-        co.code         as co_code,
-        co.name         as co_name,
-        wl.code         as wl_code,
-        wl.name         as wl_name,
-        d.id            as d_id,
-        d.name          as d_name,
+        co.code as co_code,
+        co.name as co_name,
+        wl.code as wl_code,
+        wl.name as wl_name,
+        d.id as d_id,
+        d.name as d_name,
         d.business_type as d_businessType
 
         FROM colleague c
-            LEFT JOIN job j ON j.id = c.job_id
-            JOIN country co ON co.code = c.country_code
-            LEFT JOIN work_level wl ON wl.code = c.work_level
-            LEFT JOIN department d ON d.id = c.department_id
+        LEFT JOIN job j ON j.id = c.job_id
+        JOIN country co ON co.code = c.country_code
+        LEFT JOIN work_level wl ON wl.code = c.work_level
+        LEFT JOIN department d ON d.id = c.department_id
 
         <where>
             <if test="!requestQuery.filters.isEmpty()">
 
                 <foreach collection="requestQuery.filters" item="filter" index="index">
                     <if test="filter.operand.name == 'EQUALS' and filter.property == 'manager-uuid'">
-                        AND <include refid="getFilterField"/> = uuid(#{filter.value})
+                        AND
+                        <include refid="getFilterField"/>
+                        = uuid(#{filter.value})
                     </if>
                     <if test="filter.operand.name == 'EQUALS' and filter.property == 'work-level'">
-                        AND <include refid="getFilterField"/> = #{filter.value}
+                        AND
+                        <include refid="getFilterField"/>
+                        = #{filter.value}
                     </if>
                 </foreach>
 
-                <include refid="putIfNamesExist"><property name="alias" value="AND ("/></include>
+                <include refid="putIfNamesExist">
+                    <property name="alias" value="AND ("/>
+                </include>
 
                 <foreach collection="requestQuery.filters" item="filter" index="index" separator=" OR ">
                     <if test="filter.property == 'first-name' or filter.property == 'middle-name' or filter.property == 'last-name'">
@@ -244,7 +255,9 @@
                     </if>
                 </foreach>
 
-                <include refid="putIfNamesExist"><property name="alias" value=")"/></include>
+                <include refid="putIfNamesExist">
+                    <property name="alias" value=")"/>
+                </include>
             </if>
         </where>
 
