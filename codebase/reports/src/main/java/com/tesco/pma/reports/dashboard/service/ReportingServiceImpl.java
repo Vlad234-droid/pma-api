@@ -103,11 +103,14 @@ public class ReportingServiceImpl implements ReportingService {
     }
 
     private void fillFeedbacks(StatsData statsData, List<ColleagueReportTargeting> colleagues) {
-        var feedbackRequestedPercentage = (int) (100 * getCountWithTag(colleagues, HAS_FEEDBACK_REQUESTED) / colleagues.size());
-        statsData.setFeedbackRequestedPercentage(feedbackRequestedPercentage);
+        var colleaguesCount = colleagues.size();
+        if (colleaguesCount != 0) {
+            var feedbackRequestedPercentage = (int) (100 * getCountWithTag(colleagues, HAS_FEEDBACK_REQUESTED) / colleaguesCount);
+            statsData.setFeedbackRequestedPercentage(feedbackRequestedPercentage);
 
-        var feedbackGivenPercentage = (int) (100 * getCountWithTag(colleagues, HAS_FEEDBACK_GIVEN) / colleagues.size());
-        statsData.setFeedbackGivenPercentage(feedbackGivenPercentage);
+            var feedbackGivenPercentage = (int) (100 * getCountWithTag(colleagues, HAS_FEEDBACK_GIVEN) / colleaguesCount);
+            statsData.setFeedbackGivenPercentage(feedbackGivenPercentage);
+        }
     }
 
     private void fillObjectives(StatsData statsData, List<ColleagueReportTargeting> colleagues) {
@@ -148,21 +151,23 @@ public class ReportingServiceImpl implements ReportingService {
     private void fillAnniversaryReviewPerQuarters(StatsData statsData, List<ColleagueReportTargeting> colleaguesAnniversary) {
         final var anniversaryCount = colleaguesAnniversary.size();
 
-        final var anniversaryReviewPerQuarter1Count = getCountWithTag(colleaguesAnniversary, HAS_EYR_APPROVED_1_QUARTER);
-        statsData.setAnniversaryReviewPerQuarter1Count(anniversaryReviewPerQuarter1Count);
-        statsData.setAnniversaryReviewPerQuarter1Percentage((int) (100 * anniversaryReviewPerQuarter1Count / anniversaryCount));
+        if (anniversaryCount != 0) {
+            final var anniversaryReviewPerQuarter1Count = getCountWithTag(colleaguesAnniversary, HAS_EYR_APPROVED_1_QUARTER);
+            statsData.setAnniversaryReviewPerQuarter1Count(anniversaryReviewPerQuarter1Count);
+            statsData.setAnniversaryReviewPerQuarter1Percentage((int) (100 * anniversaryReviewPerQuarter1Count / anniversaryCount));
 
-        final var anniversaryReviewPerQuarter2Count = getCountWithTag(colleaguesAnniversary, HAS_EYR_APPROVED_2_QUARTER);
-        statsData.setAnniversaryReviewPerQuarter2Count(anniversaryReviewPerQuarter2Count);
-        statsData.setAnniversaryReviewPerQuarter2Percentage((int) (100 * anniversaryReviewPerQuarter2Count / anniversaryCount));
+            final var anniversaryReviewPerQuarter2Count = getCountWithTag(colleaguesAnniversary, HAS_EYR_APPROVED_2_QUARTER);
+            statsData.setAnniversaryReviewPerQuarter2Count(anniversaryReviewPerQuarter2Count);
+            statsData.setAnniversaryReviewPerQuarter2Percentage((int) (100 * anniversaryReviewPerQuarter2Count / anniversaryCount));
 
-        final var anniversaryReviewPerQuarter3Count = getCountWithTag(colleaguesAnniversary, HAS_EYR_APPROVED_3_QUARTER);
-        statsData.setAnniversaryReviewPerQuarter3Count(anniversaryReviewPerQuarter3Count);
-        statsData.setAnniversaryReviewPerQuarter3Percentage((int) (100 * anniversaryReviewPerQuarter3Count / anniversaryCount));
+            final var anniversaryReviewPerQuarter3Count = getCountWithTag(colleaguesAnniversary, HAS_EYR_APPROVED_3_QUARTER);
+            statsData.setAnniversaryReviewPerQuarter3Count(anniversaryReviewPerQuarter3Count);
+            statsData.setAnniversaryReviewPerQuarter3Percentage((int) (100 * anniversaryReviewPerQuarter3Count / anniversaryCount));
 
-        final var anniversaryReviewPerQuarter4Count = getCountWithTag(colleaguesAnniversary, HAS_EYR_APPROVED_4_QUARTER);
-        statsData.setAnniversaryReviewPerQuarter4Count(anniversaryReviewPerQuarter4Count);
-        statsData.setAnniversaryReviewPerQuarter4Percentage((int) (100 * anniversaryReviewPerQuarter4Count / anniversaryCount));
+            final var anniversaryReviewPerQuarter4Count = getCountWithTag(colleaguesAnniversary, HAS_EYR_APPROVED_4_QUARTER);
+            statsData.setAnniversaryReviewPerQuarter4Count(anniversaryReviewPerQuarter4Count);
+            statsData.setAnniversaryReviewPerQuarter4Percentage((int) (100 * anniversaryReviewPerQuarter4Count / anniversaryCount));
+        }
     }
 
     private void fillMyrRatings(StatsData statsData, List<ColleagueReportTargeting> colleagues, long myrApprovedCount) {
