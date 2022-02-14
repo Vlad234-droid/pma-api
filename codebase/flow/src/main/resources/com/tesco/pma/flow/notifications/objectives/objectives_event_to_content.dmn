@@ -32,7 +32,7 @@
           <text>"NF_OBJECTIVE_SHARING_START"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1i2rk6i">
-          <text>"Your Line Manager has shared his objectives with you"</text>
+          <text>"Your Line Manager has shared their objectives with you"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_05v936u">
@@ -40,7 +40,7 @@
           <text>"NF_OBJECTIVE_SHARING_END"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0g4jlcb">
-          <text>"Your Line Manager has stopped sharing his objectives with you"</text>
+          <text>"Your Line Manager has stopped sharing their objectives with you"</text>
         </outputEntry>
       </rule>
     </decisionTable>
