@@ -1,8 +1,8 @@
 package com.tesco.pma.cms.controller;
 
-import com.tesco.pma.cms.controller.dto.Key;
 import com.tesco.pma.cms.model.Content;
 import com.tesco.pma.cms.service.ContentService;
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,31 +27,13 @@ public class ContentEndpoint {
 
     private final ContentService contentService;
 
-    @Operation(summary = "Find Content by key", tags = {"CMS"})
+    @Operation(summary = "Find Content by key in path", tags = {"CMS"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Find contents")
     @GetMapping(path = "/content", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isColleague()")
-    public RestResponse<List<Content>> findByKey(@RequestParam("key") String key) {
-        return RestResponse.success(contentService.findByKey(key));
-    }
-
-    @Operation(summary = "Find Content by key in path", tags = {"CMS"})
-    @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Find contents")
-    @GetMapping(path = "/{type}/{countryCode}/{iam}/{content}", produces = APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isColleague()")
-    public RestResponse<List<Content>> findByCountryIamContent(Key key) {
-        return RestResponse.success(contentService.findByKey(key.toString()));
-    }
-
-    @Operation(summary = "Find Content by key in path", tags = {"CMS"})
-    @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Find contents")
-    @GetMapping(path = "/{type}/{countryCode}/{role}/{iam}/{content}", produces = APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isColleague()")
-    public RestResponse<List<Content>> findByCountryRoleIamContent(Key key) {
-        return RestResponse.success(contentService.findByKey(key.toString()));
+    public RestResponse<List<Content>> findByRequestQuery(RequestQuery rq) {
+        return RestResponse.success(contentService.findByRequestQuery(rq));
     }
 
     @Operation(summary = "Create a Content", tags = {"CMS"})

@@ -8,6 +8,8 @@ import com.tesco.pma.cms.model.Content;
 import com.tesco.pma.cms.model.ContentStatus;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.configuration.audit.AuditorAware;
+import com.tesco.pma.pagination.Condition;
+import com.tesco.pma.pagination.RequestQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,6 +51,12 @@ public class ContentServiceImpl implements ContentService {
 
     @Override
     public List<Content> findByKey(String key) {
+        return contentDAO.findByKey(key);
+    }
+
+    @Override
+    public List<Content> findByRequestQuery(RequestQuery rq) {
+        var key = rq.getFilters().stream().map(cond -> (String) cond.getValue()).collect(Collectors.joining("/"));
         return contentDAO.findByKey(key);
     }
 

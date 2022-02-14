@@ -1,10 +1,10 @@
 package com.tesco.pma.cms.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
-import com.tesco.pma.cms.controller.dto.Key;
 import com.tesco.pma.cms.model.Content;
 import com.tesco.pma.cms.model.ContentStatus;
 import com.tesco.pma.dao.AbstractDAOTest;
+import com.tesco.pma.pagination.RequestQuery;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -67,6 +67,18 @@ public class ContentDAOTest extends AbstractDAOTest {
         contentDAO.update(content);
 
         assertEquals(ContentStatus.UNPUBLISHED, contentDAO.findById(UUID.fromString(TEST_CONTENT_UUID)).getStatus());
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "contents.xml"})
+    void findTest() {
+        var rq = new RequestQuery();
+        rq.addFilters("status_eq", "PUBLISHED");
+        rq.addFilters("key_eq", "knowledge-library/gb/content");
+
+        assertEquals(1, contentDAO.find(rq).size());
+        //assertEquals(1, contentDAO.findByKey("knowledge-library/gb/content").size());
+
     }
 
 }
