@@ -12,9 +12,6 @@ import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.review.domain.TimelinePoint;
 import com.tesco.pma.review.service.TimelinePointService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -33,10 +30,8 @@ import static com.tesco.pma.cycle.api.model.PMTimelinePointElement.PM_TIMELINE_P
  * @author Vadim Shatokhin <a href="mailto:vadim.shatokhin1@tesco.com">vadim.shatokhin1@tesco.com</a>
  * 2022-02-07 17:24
  */
-@Slf4j
 @Component
 @RequiredArgsConstructor
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class CreateColleagueTimelinePointHandler extends CamundaAbstractFlowHandler {
 
     private final TimelinePointService timelinePointService;

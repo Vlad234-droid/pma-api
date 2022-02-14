@@ -782,7 +782,8 @@ public class ReviewServiceImpl implements ReviewService {
 
         eventSender.sendEvent(event, null, true);
 
-        if (!NF_PM_REVIEW_APPROVED_EVENT_NAME.equals(eventName)) {
+        if (!(NF_PM_REVIEW_APPROVED_EVENT_NAME.equals(eventName)
+                && PMReviewType.OBJECTIVE.name().equals(timelinePoint.getCode()))) {
             return;
         }
 
