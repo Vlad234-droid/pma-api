@@ -6,16 +6,11 @@ import com.tesco.pma.event.Event;
 import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.review.service.TimelinePointService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-@Slf4j
 @Component
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @RequiredArgsConstructor
 public class UpdateTimelinePointStatusHandler extends AbstractUpdateEnumStatusHandler<PMTimelinePointStatus> {
 
