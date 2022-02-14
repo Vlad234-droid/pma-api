@@ -5,6 +5,7 @@ import com.tesco.pma.colleague.security.LocalTestConfig;
 import com.tesco.pma.colleague.security.dao.AccountManagementDAO;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.AccountType;
+import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
 import com.tesco.pma.colleague.security.exception.ErrorCodes;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.AlreadyExistsException;
@@ -39,7 +40,6 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 @SpringBootTest(classes = LocalTestConfig.class)
 @ExtendWith(MockitoExtension.class)
-// TODO Implement all tests
 class UserManagementServiceImplTest {
 
     @MockBean
@@ -194,19 +194,61 @@ class UserManagementServiceImplTest {
     }
 
     @Test
-    void changeAccountStatus() {
+    void changeAccountStatusToEnabledSuccessfully() {
+        var request = new ChangeAccountStatusRequest();
+        request.setName("UKE11111");
+        request.setStatus(AccountStatus.ENABLED);
+
+        when(mockAccountManagementDAO.enableAccount(anyString(), any(AccountStatus.class)))
+                .thenReturn(1);
+
+        userManagementService.changeAccountStatus(request);
+
+        verify(mockAccountManagementDAO, times(1)).enableAccount(anyString(), any(AccountStatus.class));
     }
 
     @Test
-    void getNextPageToken() {
+    void changeAccountStatusToDisabledSuccessfully() {
+        var request = new ChangeAccountStatusRequest();
+        request.setName("UKE11111");
+        request.setStatus(AccountStatus.DISABLED);
+
+        when(mockAccountManagementDAO.disableAccount(anyString(), any(AccountStatus.class)))
+                .thenReturn(1);
+
+        userManagementService.changeAccountStatus(request);
+
+        verify(mockAccountManagementDAO, times(1)).disableAccount(anyString(), any(AccountStatus.class));
     }
 
     @Test
-    void findAccountByIamId() {
+    void getNextPageTokenSuccessfully() {
+        var nextPageToken = userManagementService.getNextPageToken(1, 50);
+        assertEquals(2, nextPageToken);
+
+        nextPageToken = userManagementService.getNextPageToken(0, 10);
+        assertEquals(0, nextPageToken);
     }
 
     @Test
-    void findAccountByColleagueUuid() {
+    void findAccountByIamIdSuccessfully() {
+        when(mockAccountManagementDAO.findAccountByIamId(anyString()))
+                .thenReturn(buildAccount());
+
+        userManagementService.findAccountByIamId("UKE11111");
+
+        verify(mockAccountManagementDAO, times(1)).findAccountByIamId(anyString());
+    }
+
+    @Test
+    void findAccountByColleagueUuidSuccessfully() {
+        when(mockAccountManagementDAO.findAccountByColleagueUuid(any(UUID.class)))
+                .thenReturn(buildAccount());
+
+        userManagementService.findAccountByColleagueUuid(UUID.randomUUID());
+
+        verify(mockAccountManagementDAO, times(1)).findAccountByColleagueUuid(any(UUID.class));
+
     }
 
 }
