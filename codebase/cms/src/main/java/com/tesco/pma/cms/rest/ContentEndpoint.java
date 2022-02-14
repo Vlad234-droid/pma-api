@@ -1,6 +1,6 @@
-package com.tesco.pma.cms.controller;
+package com.tesco.pma.cms.rest;
 
-import com.tesco.pma.cms.model.Content;
+import com.tesco.pma.cms.model.ContentEntry;
 import com.tesco.pma.cms.service.ContentService;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
@@ -40,7 +40,7 @@ public class ContentEndpoint {
     @GetMapping(path = "/content", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isColleague()")
-    public RestResponse<List<Content>> findByRequestQuery(RequestQuery rq) {
+    public RestResponse<List<ContentEntry>> findByRequestQuery(RequestQuery rq) {
         return RestResponse.success(contentService.findByRequestQuery(rq));
     }
 
@@ -49,8 +49,8 @@ public class ContentEndpoint {
     @PostMapping(path = "/content", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isColleague()")
-    public RestResponse<Content> create(@RequestBody Content content) {
-        return RestResponse.success(contentService.create(content));
+    public RestResponse<ContentEntry> create(@RequestBody ContentEntry contentEntry) {
+        return RestResponse.success(contentService.create(contentEntry));
     }
 
     @Operation(summary = "Update a Content", tags = {"CMS"})
@@ -58,8 +58,8 @@ public class ContentEndpoint {
     @PutMapping(path = "/content", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isColleague()")
-    public RestResponse<Content> update(@RequestBody Content content) {
-        return RestResponse.success(contentService.update(content));
+    public RestResponse<ContentEntry> update(@RequestBody ContentEntry contentEntry) {
+        return RestResponse.success(contentService.update(contentEntry));
     }
 
     @Operation(summary = "Delete a Content", tags = {"CMS"})

@@ -1,10 +1,10 @@
 package com.tesco.pma.cms.service;
 
 
-import com.tesco.pma.cms.dao.ContentDAO;
+import com.tesco.pma.cms.dao.ContentEntryDAO;
 import com.tesco.pma.cms.exception.ContentException;
 import com.tesco.pma.cms.exception.ErrorCodes;
-import com.tesco.pma.cms.model.Content;
+import com.tesco.pma.cms.model.ContentEntry;
 import com.tesco.pma.cms.model.ContentStatus;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.configuration.audit.AuditorAware;
@@ -21,45 +21,45 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ContentServiceImpl implements ContentService {
 
-    private final ContentDAO contentDAO;
+    private final ContentEntryDAO contentEntryDAO;
     private final AuditorAware<UUID> auditorAware;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Override
     @Transactional
-    public Content create(Content content) {
-        content.setId(UUID.randomUUID());
-        content.setCreatedBy(auditorAware.getCurrentAuditor());
-        content.setCreatedTime(Instant.now());
+    public ContentEntry create(ContentEntry contentEntry) {
+        contentEntry.setId(UUID.randomUUID());
+        contentEntry.setCreatedBy(auditorAware.getCurrentAuditor());
+        contentEntry.setCreatedTime(Instant.now());
 
-        if (content.getVersion() == null) {
-            content.setVersion(1);
+        if (contentEntry.getVersion() == null) {
+            contentEntry.setVersion(1);
         }
 
-        if (content.getStatus() == null) {
-            content.setStatus(ContentStatus.PUBLISHED);
+        if (contentEntry.getStatus() == null) {
+            contentEntry.setStatus(ContentStatus.PUBLISHED);
         }
 
-        if (1 != contentDAO.create(content)) {
+        if (1 != contentEntryDAO.create(contentEntry)) {
             throw contentException(ErrorCodes.CONTENT_CREATE_ERROR);
         }
 
-        return content;
+        return contentEntry;
     }
 
     @Override
-    public List<Content> findByKey(String key) {
-        return contentDAO.findByKey(key);
+    public List<ContentEntry> findByKey(String key) {
+        return contentEntryDAO.findByKey(key);
     }
 
     @Override
-    public List<Content> findByRequestQuery(RequestQuery rq) {
-        return contentDAO.find(rq);
+    public List<ContentEntry> findByRequestQuery(RequestQuery rq) {
+        return contentEntryDAO.find(rq);
     }
 
     @Override
-    public Content findById(UUID uuid) {
-        var content = contentDAO.findById(uuid);
+    public ContentEntry findById(UUID uuid) {
+        var content = contentEntryDAO.findById(uuid);
 
         if (content == null) {
             throw contentException(ErrorCodes.CONTENT_NOT_FOUND_ERROR);
@@ -72,19 +72,19 @@ public class ContentServiceImpl implements ContentService {
     @Transactional
     public void delete(UUID deleteUuid) {
 
-        if (1 != contentDAO.delete(deleteUuid)) {
+        if (1 != contentEntryDAO.delete(deleteUuid)) {
             throw contentException(ErrorCodes.CONTENT_DELETE_ERROR);
         }
     }
 
     @Override
     @Transactional
-    public Content update(Content content) {
-        if (1 != contentDAO.update(content)) {
+    public ContentEntry update(ContentEntry contentEntry) {
+        if (1 != contentEntryDAO.update(contentEntry)) {
             throw contentException(ErrorCodes.CONTENT_UPDATE_ERROR);
         }
 
-        return content;
+        return contentEntry;
     }
 
     private ContentException contentException(ErrorCodes errorCode) {
