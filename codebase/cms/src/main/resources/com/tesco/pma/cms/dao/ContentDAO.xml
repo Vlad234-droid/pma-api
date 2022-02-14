@@ -34,7 +34,7 @@
                     AND <include refid="getFilterField"/> = '${filter.value}'
                 </if>
                 <if test="filter.operand.name == 'EQUALS' and filter.property == 'status'">
-                    AND <include refid="getFilterField"/> = ${@com.tesco.pma.cms.model.ContentStatus@valueOf(filter.value).getId()}
+                    AND <include refid="getFilterField"/> = ${@com.tesco.pma.cms.model.ContentStatus@valueOf(filter.value.toUpperCase()).getId()}
                 </if>
             </foreach>
         </where>

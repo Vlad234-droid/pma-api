@@ -73,11 +73,10 @@ public class ContentDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "contents.xml"})
     void findTest() {
         var rq = new RequestQuery();
-        rq.addFilters("status_eq", "PUBLISHED");
+        rq.addFilters("status_eq", "pUbLished");
         rq.addFilters("key_eq", "knowledge-library/gb/content");
 
         assertEquals(1, contentDAO.find(rq).size());
-        //assertEquals(1, contentDAO.findByKey("knowledge-library/gb/content").size());
 
     }
 
