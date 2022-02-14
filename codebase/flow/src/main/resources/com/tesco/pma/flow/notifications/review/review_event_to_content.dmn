@@ -112,7 +112,7 @@
           <text>"EYR"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1sh4rp8">
-          <text>"Year-end was submitted by {firstName} {lastName}"</text>
+          <text>"Year-end review was submitted by {firstName} {lastName}"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0v5108s">
@@ -178,7 +178,7 @@
           <text>"OBJECTIVE"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_110qg59">
-          <text>"Objective was submitted by {firstName} {lastName}"</text>
+          <text>"Objectives were submitted by {firstName} {lastName}"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_15x3tsr">
@@ -189,7 +189,7 @@
           <text>"OBJECTIVE"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0srrk3g">
-          <text>"Objective was approved by {firstName} {lastName}"</text>
+          <text>"Objectives were approved by {firstName} {lastName}"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_169ja8y">
@@ -200,7 +200,7 @@
           <text>"OBJECTIVE"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_164d8zp">
-          <text>"Objective was declined by {firstName} {lastName}"</text>
+          <text>"Objectives were declined by {firstName} {lastName}"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_052arhu">

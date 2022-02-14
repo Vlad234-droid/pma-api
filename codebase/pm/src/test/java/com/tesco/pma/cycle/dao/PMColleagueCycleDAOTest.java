@@ -146,6 +146,7 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
                 .colleagueUuid(COLLEAGUE_UUID_2)
                 .startTime(Instant.now())
                 .endTime(Instant.now())
+                .creationTime(Instant.now())
                 .build();
     }
 }

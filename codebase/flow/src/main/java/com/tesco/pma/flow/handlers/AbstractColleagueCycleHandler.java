@@ -28,7 +28,7 @@ public abstract class AbstractColleagueCycleHandler extends CamundaAbstractFlowH
         cc.setStartTime(startTime);
         cc.setEndTime(endTime);
         cc.setProperties(cycle.getProperties());
-
+        cc.setCreationTime(Instant.now());
         return cc;
     }
 }

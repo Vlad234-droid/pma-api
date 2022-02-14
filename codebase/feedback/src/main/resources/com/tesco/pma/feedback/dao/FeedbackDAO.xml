@@ -241,7 +241,7 @@
         </choose>
     </sql>
 
-    <sql id="select">
+    <select id="getByUuid" flushCache="true" resultMap="feedbackMap">
         SELECT f.uuid,
                f.colleague_uuid,
                f.target_colleague_uuid,
@@ -281,15 +281,75 @@
                  LEFT JOIN job tcj on tc.job_id = tcj.id
                  LEFT JOIN department tcd on tc.department_id = tcd.id
                  LEFT JOIN profile_attributes tcpa ON f.target_colleague_uuid = tcpa.colleague_uuid
-    </sql>
-
-    <select id="getByUuid" flushCache="true" resultMap="feedbackMap">
-        <include refid="select"/>
         WHERE f.uuid = #{uuid}
     </select>
 
     <select id="findAll" flushCache="true" resultMap="feedbackMap">
-        <include refid="select"/>
+        SELECT
+        ff.uuid,
+        ff.colleague_uuid,
+        ff.target_colleague_uuid,
+        ff.target_type_id,
+        ff.target_id,
+        ff.read,
+        ff.status_id,
+        ff.created_time,
+        ff.updated_time,
+        fi.uuid as fi_uuid,
+        fi.code as fi_code,
+        fi.content as fi_content,
+        fi.feedback_uuid as fi_feedbackUuid,
+        c_uuid,
+        c_firstName,
+        c_middleName,
+        c_lastName,
+        c_job,
+        c_department,
+        cpa_name,
+        cpa_value,
+        tc_uuid,
+        tc_firstName,
+        tc_middleName,
+        tc_lastName,
+        tc_job,
+        tc_department,
+        tcpa_name,
+        tcpa_value
+        FROM (SELECT
+        f.uuid,
+        f.colleague_uuid,
+        f.target_colleague_uuid,
+        f.target_type_id,
+        f.target_id,
+        f.read,
+        f.status_id,
+        f.created_time,
+        f.updated_time,
+        c.uuid as c_uuid,
+        c.first_name as c_firstName,
+        c.middle_name as c_middleName,
+        c.last_name as c_lastName,
+        cj.name as c_job,
+        cd.name as c_department,
+        cpa.name as cpa_name,
+        cpa.value as cpa_value,
+        tc.uuid as tc_uuid,
+        tc.first_name as tc_firstName,
+        tc.middle_name as tc_middleName,
+        tc.last_name as tc_lastName,
+        tcj.name as tc_job,
+        tcd.name as tc_department,
+        tcpa.name as tcpa_name,
+        tcpa.value as tcpa_value
+        FROM feedback f
+        JOIN colleague c ON f.colleague_uuid = c.uuid
+        LEFT JOIN job cj on c.job_id = cj.id
+        LEFT JOIN department cd on c.department_id = cd.id
+        LEFT JOIN profile_attributes cpa ON f.target_colleague_uuid = cpa.colleague_uuid
+        JOIN colleague tc ON f.target_colleague_uuid = tc.uuid
+        LEFT JOIN job tcj on tc.job_id = tcj.id
+        LEFT JOIN department tcd on tc.department_id = tcd.id
+        LEFT JOIN profile_attributes tcpa ON f.target_colleague_uuid = tcpa.colleague_uuid
         WHERE 1 = 1
         <if test="!requestQuery.filters.isEmpty()">
             <foreach collection="requestQuery.filters" item="filter" index="index" open=" AND " separator=" AND ">
@@ -298,8 +358,8 @@
         </if>
         <if test="requestQuery.search != null and requestQuery.search != ''">
             AND (UPPER(tc.first_name) LIKE '%'||UPPER(#{requestQuery.search})||'%' OR
-                UPPER(tc.middle_name) LIKE '%'||UPPER(#{requestQuery.search})||'%' OR
-                UPPER(tc.last_name) LIKE '%'||UPPER(#{requestQuery.search})||'%')
+            UPPER(tc.middle_name) LIKE '%'||UPPER(#{requestQuery.search})||'%' OR
+            UPPER(tc.last_name) LIKE '%'||UPPER(#{requestQuery.search})||'%')
         </if>
 
         <if test="requestQuery.sort.isEmpty()">
@@ -316,7 +376,8 @@
         LIMIT #{requestQuery.limit}
         <if test="requestQuery.offset != null">
             OFFSET #{requestQuery.offset}
-        </if>
+        </if>) ff
+        LEFT JOIN feedback_item fi ON ff.uuid = fi.feedback_uuid
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="uuid" keyColumn="uuid" flushCache="true">

@@ -11,9 +11,6 @@ import com.tesco.pma.logging.LogFormatter;
 import com.tesco.pma.organisation.service.ConfigEntryService;
 import com.tesco.pma.pagination.RequestQuery;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -23,10 +20,8 @@ import static com.tesco.pma.flow.exception.ErrorCodes.EVENT_COLLEAGUE_UUID_ABSEN
 import static com.tesco.pma.flow.exception.ErrorCodes.EVENT_INVALID_COLLEAGUE_UUID_FORMAT;
 import static com.tesco.pma.flow.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_FOR_COLLEAGUE;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PMNewColleagueEventHandler extends AbstractColleagueCycleHandler {
 
     private static final String COLLEAGUE_UUID_PARAMETER = "colleagueUuid";

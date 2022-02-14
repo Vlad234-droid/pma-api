@@ -146,7 +146,8 @@ public class NotificationsFlowTest extends AbstractNotificationsFlowTest {
         ), event);
 
         if (send) {
-            checkContent(evenName, NF_ORGANISATION_OBJECTIVES, "Please check the organisation objectives for the year");
+            checkTitle(evenName, NF_ORGANISATION_OBJECTIVES, "Strategic drivers");
+            checkContent(evenName, NF_ORGANISATION_OBJECTIVES, "Please check the strategic drivers for the year");
         }
 
     }

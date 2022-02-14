@@ -18,6 +18,8 @@
         <result column="hire_date" property="hireDate"/>
         <result column="leaving_date" property="leavingDate"/>
         <result column="is_manager" property="manager"/>
+        <result column="location_id" property="locationId"/>
+        <result column="legal_entity" property="legalEntity"/>
         <association property="job" autoMapping="true" columnPrefix="j_"/>
         <association property="country" autoMapping="true" columnPrefix="co_"/>
         <association property="workLevel" autoMapping="true" columnPrefix="wl_"/>
@@ -42,6 +44,7 @@
             <result column="is_manager" property="isManager"/>
             <result column="manager_uuid" property="managerUUID"/>
             <result column="employment_type" property="employmentType"/>
+            <result column="location_id" property="locationUUID"/>
 
             <result column="wl_code"  javaType="com.tesco.pma.colleague.api.workrelationships.WorkLevel"
                     typeHandler="com.tesco.pma.colleague.api.workrelationships.WorkLevelHandler"
@@ -49,6 +52,7 @@
 
             <association property="job" autoMapping="true" columnPrefix="j_"/>
             <association property="department" autoMapping="true" columnPrefix="d_"/>
+            <association property="legalEmployer" autoMapping="true" columnPrefix="le_"/>
         </collection>
     </resultMap>
 
@@ -67,6 +71,8 @@
                c.hire_date,
                c.leaving_date,
                c.is_manager,
+               c.location_id,
+               c.legal_entity,
                j.id            as j_id,
                j.code          as j_code,
                j.name          as j_name,
@@ -122,22 +128,36 @@
     <insert id="saveColleague" flushCache="true">
         INSERT INTO colleague(uuid, first_name, middle_name, last_name, email, primary_entity,
                               salary_frequency, iam_source, iam_id, manager_uuid, employment_type,
-                              hire_date, leaving_date, is_manager, job_id, country_code, work_level, department_id)
+                              hire_date, leaving_date, is_manager, job_id, country_code, work_level, department_id,
+                              location_id, legal_entity)
         VALUES (#{colleague.uuid}, #{colleague.firstName}, #{colleague.middleName}, #{colleague.lastName},
                 #{colleague.email}, #{colleague.primaryEntity}, #{colleague.salaryFrequency}, #{colleague.iamSource},
                 #{colleague.iamId}, #{colleague.managerUuid}, #{colleague.employmentType}, #{colleague.hireDate},
                 #{colleague.leavingDate}, #{colleague.manager}, #{colleague.job.id}, #{colleague.country.code},
-                #{colleague.workLevel.code}, #{colleague.department.id})
+                #{colleague.workLevel.code}, #{colleague.department.id}, #{colleague.locationId}, #{colleague.legalEntity})
     </insert>
 
     <insert id="updateColleague" flushCache="true">
         UPDATE colleague
-            SET first_name = #{colleague.firstName}, middle_name = #{colleague.middleName}, last_name = #{colleague.lastName},
-            email = #{colleague.email}, primary_entity = #{colleague.primaryEntity}, salary_frequency = #{colleague.salaryFrequency},
-            iam_source = #{colleague.iamSource}, iam_id = #{colleague.iamId}, manager_uuid = #{colleague.managerUuid},
-            employment_type = #{colleague.employmentType}, hire_date = #{colleague.hireDate}, leaving_date = #{colleague.leavingDate},
-            is_manager = #{colleague.manager}, job_id = #{colleague.job.id}, country_code = #{colleague.country.code},
-            work_level = #{colleague.workLevel.code}, department_id = #{colleague.department.id}
+        SET first_name       = #{colleague.firstName},
+            middle_name      = #{colleague.middleName},
+            last_name        = #{colleague.lastName},
+            email            = #{colleague.email},
+            primary_entity   = #{colleague.primaryEntity},
+            salary_frequency = #{colleague.salaryFrequency},
+            iam_source       = #{colleague.iamSource},
+            iam_id           = #{colleague.iamId},
+            manager_uuid     = #{colleague.managerUuid},
+            employment_type  = #{colleague.employmentType},
+            hire_date        = #{colleague.hireDate},
+            leaving_date     = #{colleague.leavingDate},
+            is_manager       = #{colleague.manager},
+            job_id           = #{colleague.job.id},
+            country_code     = #{colleague.country.code},
+            work_level       = #{colleague.workLevel.code},
+            department_id    = #{colleague.department.id},
+            location_id      = #{colleague.locationId},
+            legal_entity     = #{colleague.legalEntity}
         WHERE uuid = #{colleague.uuid}
     </insert>
 
@@ -173,6 +193,8 @@
         c.hire_date as sd_hireDate,
         c.leaving_date as sd_leavingDate,
         c.is_manager,
+        c.location_id,
+        c.legal_entity as le_name,
         j.id            as j_id,
         j.code          as j_code,
         j.name          as j_name,
@@ -191,27 +213,36 @@
             LEFT JOIN work_level wl ON wl.code = c.work_level
             LEFT JOIN department d ON d.id = c.department_id
 
-        WHERE
-        <if test="!requestQuery.filters.isEmpty()">
-            <foreach collection="requestQuery.filters" item="filter" index="index" open="(" separator=" OR " close=")">
-                <if test="filter.property == 'first-name' or filter.property == 'middle-name' or filter.property == 'last-name'">
-                    <choose>
-                        <when test="filter.operand.name == 'LIKE'">
-                            UPPER(<include refid="getFilterField"/>) like UPPER('%${filter.value}%')
-                        </when>
-                        <when test="filter.operand.name == 'EQUALS'">
-                            UPPER(<include refid="getFilterField"/>) = UPPER(#{filter.value})
-                        </when>
-                    </choose>
-                </if>
-            </foreach>
+        <where>
+            <if test="!requestQuery.filters.isEmpty()">
 
-            <foreach collection="requestQuery.filters" item="filter" index="index">
-                <if test="filter.operand.name == 'EQUALS' and filter.property == 'manager-uuid'">
-                    AND <include refid="getFilterField"/> = uuid(#{filter.value})
-                </if>
-            </foreach>
-        </if>
+                <foreach collection="requestQuery.filters" item="filter" index="index">
+                    <if test="filter.operand.name == 'EQUALS' and filter.property == 'manager-uuid'">
+                        AND <include refid="getFilterField"/> = uuid(#{filter.value})
+                    </if>
+                    <if test="filter.operand.name == 'EQUALS' and filter.property == 'work-level'">
+                        AND <include refid="getFilterField"/> = #{filter.value}
+                    </if>
+                </foreach>
+
+                <include refid="putIfNamesExist"><property name="alias" value="AND ("/></include>
+
+                <foreach collection="requestQuery.filters" item="filter" index="index" separator=" OR ">
+                    <if test="filter.property == 'first-name' or filter.property == 'middle-name' or filter.property == 'last-name'">
+                        <choose>
+                            <when test="filter.operand.name == 'LIKE'">
+                                UPPER(<include refid="getFilterField"/>) like UPPER('%${filter.value}%')
+                            </when>
+                            <when test="filter.operand.name == 'EQUALS'">
+                                UPPER(<include refid="getFilterField"/>) = UPPER(#{filter.value})
+                            </when>
+                        </choose>
+                    </if>
+                </foreach>
+
+                <include refid="putIfNamesExist"><property name="alias" value=")"/></include>
+            </if>
+        </where>
 
         LIMIT #{requestQuery.limit}
 
@@ -234,7 +265,18 @@
             <when test="filter.property == 'manager-uuid'">
                 c.manager_uuid
             </when>
+            <when test="filter.property == 'work-level'">
+                wl.code
+            </when>
         </choose>
+    </sql>
+
+    <sql id="putIfNamesExist">
+        <if test="requestQuery.getFiltersProperties().contains('first-name')
+            or requestQuery.getFiltersProperties().contains('middle-name')
+            or requestQuery.getFiltersProperties().contains('last-name')">
+            ${alias}
+        </if>
     </sql>
 
 </mapper>

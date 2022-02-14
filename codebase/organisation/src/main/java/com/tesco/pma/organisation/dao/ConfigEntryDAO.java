@@ -1,6 +1,8 @@
 package com.tesco.pma.organisation.dao;
 
+import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
+import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.organisation.api.ConfigEntry;
 import com.tesco.pma.organisation.api.WorkingConfigEntry;
 import org.apache.ibatis.annotations.Param;
@@ -116,10 +118,12 @@ public interface ConfigEntryDAO {
     /**
      * Gets list of colleagues by types key
      *
-     * @param key - types
+     * @param key          - types
+     * @param statusFilter - status filter
      * @return list of colleagues
      */
-    List<ColleagueEntity> findColleaguesByCompositeKey(@Param("key") String key);
+    List<ColleagueEntity> findColleaguesByCompositeKey(@Param("key") String key,
+                                                       @Param("statusFilter") DictionaryFilter<PMCycleStatus> statusFilter);
 
     /**
      * Check if colleague exist by composite key

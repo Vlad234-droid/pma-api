@@ -16,7 +16,7 @@
           <text>"NF_ORGANISATION_OBJECTIVES"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1ouiawh">
-          <text>"Please check the organisation objectives for the year"</text>
+          <text>"Please check the strategic drivers for the year"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0p1xqy1">
@@ -32,7 +32,7 @@
           <text>"NF_OBJECTIVE_SHARING_START"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1i2rk6i">
-          <text>"Your Line Manager has shared his objectives with you"</text>
+          <text>"Your Line Manager has shared their objectives with you"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_05v936u">
@@ -40,7 +40,7 @@
           <text>"NF_OBJECTIVE_SHARING_END"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0g4jlcb">
-          <text>"Your Line Manager has stopped sharing his objectives with you"</text>
+          <text>"Your Line Manager has stopped sharing their objectives with you"</text>
         </outputEntry>
       </rule>
     </decisionTable>
