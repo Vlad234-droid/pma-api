@@ -80,7 +80,7 @@ public class ContentServiceImpl implements ContentService {
     @Override
     @Transactional
     public Content update(Content content) {
-        if(1 != contentDAO.update(content)) {
+        if (1 != contentDAO.update(content)) {
             throw contentException(ErrorCodes.CONTENT_UPDATE_ERROR);
         }
 
