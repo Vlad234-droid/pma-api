@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -49,7 +50,7 @@ public class ContentServiceImpl implements ContentService {
 
     @Override
     public List<ContentEntry> findByKey(String key) {
-        return contentEntryDAO.findByKey(key);
+        return contentEntryDAO.find(RequestQuery.create(Map.of("key_eq", key)));
     }
 
     @Override
@@ -59,7 +60,8 @@ public class ContentServiceImpl implements ContentService {
 
     @Override
     public ContentEntry findById(UUID uuid) {
-        var content = contentEntryDAO.findById(uuid);
+
+        var content = contentEntryDAO.find(RequestQuery.create(Map.of("uuid_eq", uuid))).get(0);
 
         if (content == null) {
             throw contentException(ErrorCodes.CONTENT_NOT_FOUND_ERROR);

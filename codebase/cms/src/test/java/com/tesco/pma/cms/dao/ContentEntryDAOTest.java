@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ContentEntryDAOTest extends AbstractDAOTest {
 
@@ -23,6 +22,7 @@ public class ContentEntryDAOTest extends AbstractDAOTest {
     private static final String TEST_CONTENT_UUID = "d9d819fc-c1ee-4df8-a87b-d88f1c006c11";
     private static final String TEST_CONTENT_UUID_2 = "a49bee82-71bb-4cad-b698-24422fb2fb29";
     private static final String KEY = "knowledge-library/gb/content";
+    private static final String KEY_EQ = "key_eq";
 
     @Autowired
     private ContentEntryDAO contentEntryDAO;
@@ -54,24 +54,25 @@ public class ContentEntryDAOTest extends AbstractDAOTest {
     void deleteTest(){
         contentEntryDAO.delete(UUID.fromString(TEST_CONTENT_UUID));
 
-        assertNull(contentEntryDAO.findById(UUID.fromString(TEST_CONTENT_UUID)));
+        assertEquals(0,
+                contentEntryDAO.find(RequestQuery.create("uuid_eq", UUID.fromString(TEST_CONTENT_UUID))).size());
     }
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "contents.xml"})
     void findByKeyTest() {
-        assertEquals(3, contentEntryDAO.findByKey(KEY).size());
+        assertEquals(3, contentEntryDAO.find(RequestQuery.create(KEY_EQ, KEY)).size());
     }
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "contents.xml"})
     void updateTest() {
-        var content = contentEntryDAO.findById(UUID.fromString(TEST_CONTENT_UUID));
+        var content = contentEntryDAO.find(RequestQuery.create("uuid_eq", UUID.fromString(TEST_CONTENT_UUID))).get(0);
         content.setStatus(ContentStatus.UNPUBLISHED);
 
         contentEntryDAO.update(content);
 
-        content = contentEntryDAO.findById(UUID.fromString(TEST_CONTENT_UUID));
+        content = contentEntryDAO.find(RequestQuery.create("uuid_eq", UUID.fromString(TEST_CONTENT_UUID))).get(0);
         assertEquals(ContentStatus.UNPUBLISHED, content.getStatus());
         assertEquals(3, content.getVersion());
     }
@@ -81,7 +82,7 @@ public class ContentEntryDAOTest extends AbstractDAOTest {
     void findTest() {
         var rq = new RequestQuery();
         rq.addFilters("status_eq", "pUbLished");
-        rq.addFilters("key_eq", KEY);
+        rq.addFilters(KEY_EQ, KEY);
 
         assertEquals(3, contentEntryDAO.find(rq).size());
 
@@ -92,7 +93,7 @@ public class ContentEntryDAOTest extends AbstractDAOTest {
     void findLatestVersionTest() {
         var rq = new RequestQuery();
         rq.addFilters("title_eq", "test");
-        rq.addFilters("key_eq", KEY);
+        rq.addFilters(KEY_EQ, KEY);
         rq.addFilters("version_eq", -1);
 
         List<ContentEntry> contentList = contentEntryDAO.find(rq);
@@ -106,7 +107,7 @@ public class ContentEntryDAOTest extends AbstractDAOTest {
     void findByVersionTest() {
         var rq = new RequestQuery();
         rq.addFilters("title_eq", "test");
-        rq.addFilters("key_eq", KEY);
+        rq.addFilters(KEY_EQ, KEY);
         rq.addFilters("version_eq", 1);
 
         assertEquals(1, contentEntryDAO.find(rq).size());

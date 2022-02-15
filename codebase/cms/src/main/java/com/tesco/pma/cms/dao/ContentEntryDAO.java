@@ -9,10 +9,6 @@ import java.util.UUID;
 
 public interface ContentEntryDAO {
 
-    List<ContentEntry> findByKey(@Param("key") String key);
-
-    ContentEntry findById(@Param("uuid") UUID uuid);
-
     List<ContentEntry> find(@Param("requestQuery") RequestQuery requestQuery);
 
     int create(@Param("content") ContentEntry contentEntry);

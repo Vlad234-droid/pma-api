@@ -7,11 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Set;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -69,5 +65,22 @@ public class RequestQuery {
         }
 
         return filters.stream().map(Condition::getProperty).collect(Collectors.toSet());
+    }
+
+    @JsonIgnore
+    public static RequestQuery create(Map<String, Object> filters) {
+        var rq = new RequestQuery();
+
+        if(filters == null){
+            return rq;
+        }
+
+        filters.forEach(rq::addFilters);
+        return rq;
+    }
+
+    @JsonIgnore
+    public static RequestQuery create(String name, Object value) {
+        return create(Map.of(name, value));
     }
 }

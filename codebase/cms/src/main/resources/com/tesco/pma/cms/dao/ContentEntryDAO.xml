@@ -17,19 +17,14 @@
                 javaType="com.tesco.pma.cms.model.ContentStatus"/>
     </resultMap>
 
-    <select id="findByKey" resultMap="contentStruct">
-        SELECT * FROM cms_content cc WHERE cc.key = #{key} and status_id = ${@com.tesco.pma.cms.model.ContentStatus@PUBLISHED.getId()}
-    </select>
-
-    <select id="findById" resultMap="contentStruct">
-        SELECT * FROM cms_content cc WHERE cc.uuid = #{uuid}
-    </select>
-
     <select id="find" resultMap="contentStruct">
         SELECT * FROM cms_content cc
 
         <where>
             <foreach collection="requestQuery.filters" item="filter" index="index">
+                <if test="filter.operand.name == 'EQUALS' and filter.property == 'uuid'">
+                    AND <include refid="getFilterField"/> = #{filter.value}
+                </if>
                 <if test="filter.operand.name == 'EQUALS' and filter.property == 'title'">
                     AND <include refid="getFilterField"/> = '${filter.value}'
                 </if>
@@ -54,6 +49,9 @@
 
     <sql id="getFilterField">
         <choose>
+            <when test="filter.property == 'uuid'">
+                cc.uuid
+            </when>
             <when test="filter.property == 'title'">
                 cc.title
             </when>
