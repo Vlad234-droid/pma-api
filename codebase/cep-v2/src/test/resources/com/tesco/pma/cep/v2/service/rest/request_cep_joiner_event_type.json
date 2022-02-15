@@ -39,19 +39,17 @@
     "contact": {
       "email": "william.smith1@tesco.com",
       "workPhoneNumber": "7567123321",
-      "addresses": [
-        {
-          "lines": [
-            "Station",
-            "Road",
-            "London"
-          ],
-          "countryCode": "GB",
-          "postcode": "OX26 1DE",
-          "city": "Bicester",
-          "county": "Oxfordshire"
-        }
-      ]
+      "addresses": {
+        "lines": [
+          "Station",
+          "Road",
+          "London"
+        ],
+        "countryCode": "GB",
+        "postcode": "OX26 1DE",
+        "city": "Bicester",
+        "county": "Oxfordshire"
+      }
     },
     "serviceDates": {
       "hireDate": "2021-02-01",
