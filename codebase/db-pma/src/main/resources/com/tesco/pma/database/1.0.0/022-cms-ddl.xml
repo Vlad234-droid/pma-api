@@ -14,11 +14,11 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="key" type="VARCHAR(150)">
+            <column name="key" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="title" type="VARCHAR(100)">
+            <column name="title" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
 
@@ -26,7 +26,7 @@
                 <constraints nullable="true"/>
             </column>
 
-            <column name="image_link" type="VARCHAR(100)">
+            <column name="image_link" type="VARCHAR(500)">
                 <constraints nullable="false"/>
             </column>
 

@@ -6,7 +6,7 @@ import com.tesco.pma.pagination.RequestQuery;
 import java.util.List;
 import java.util.UUID;
 
-public interface ContentService {
+public interface ContentEntryService {
 
     ContentEntry create(ContentEntry contentEntry);
 

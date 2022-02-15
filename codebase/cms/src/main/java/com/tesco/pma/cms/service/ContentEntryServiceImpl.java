@@ -20,7 +20,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class ContentServiceImpl implements ContentService {
+public class ContentEntryServiceImpl implements ContentEntryService {
 
     private final ContentEntryDAO contentEntryDAO;
     private final AuditorAware<UUID> auditorAware;

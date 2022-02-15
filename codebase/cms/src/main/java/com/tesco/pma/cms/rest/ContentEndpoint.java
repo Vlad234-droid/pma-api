@@ -1,7 +1,7 @@
 package com.tesco.pma.cms.rest;
 
 import com.tesco.pma.cms.model.ContentEntry;
-import com.tesco.pma.cms.service.ContentService;
+import com.tesco.pma.cms.service.ContentEntryService;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
@@ -33,42 +33,42 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RequestMapping(path = "/cms")
 public class ContentEndpoint {
 
-    private final ContentService contentService;
+    private final ContentEntryService contentEntryService;
 
     @Operation(summary = "Find Content by key in path", tags = {"CMS"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Find contents")
-    @GetMapping(path = "/content", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/content-entries", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isColleague()")
     public RestResponse<List<ContentEntry>> findByRequestQuery(RequestQuery rq) {
-        return RestResponse.success(contentService.findByRequestQuery(rq));
+        return RestResponse.success(contentEntryService.findByRequestQuery(rq));
     }
 
     @Operation(summary = "Create a Content", tags = {"CMS"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Create a new Content")
-    @PostMapping(path = "/content", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/content-entries", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isColleague()")
     public RestResponse<ContentEntry> create(@RequestBody ContentEntry contentEntry) {
-        return RestResponse.success(contentService.create(contentEntry));
+        return RestResponse.success(contentEntryService.create(contentEntry));
     }
 
     @Operation(summary = "Update a Content", tags = {"CMS"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Update a Content")
-    @PutMapping(path = "/content", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/content-entries", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isColleague()")
     public RestResponse<ContentEntry> update(@RequestBody ContentEntry contentEntry) {
-        return RestResponse.success(contentService.update(contentEntry));
+        return RestResponse.success(contentEntryService.update(contentEntry));
     }
 
     @Operation(summary = "Delete a Content", tags = {"CMS"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Delete a Content")
-    @DeleteMapping(path = "/content/{uuid}")
+    @DeleteMapping(path = "/content-entries/{uuid}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isColleague()")
     public RestResponse<?> delete(@PathVariable UUID uuid) {
-        contentService.delete(uuid);
+        contentEntryService.delete(uuid);
         return RestResponse.success();
     }
 
