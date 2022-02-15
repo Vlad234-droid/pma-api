@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -191,7 +190,7 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
     @Override
     public boolean isColleagueExistsForCompositeKey(UUID colleagueUuid, String compositeKey) {
         String searchKey = getSearchKey(compositeKey);
-        return dao.isColleagueExistsForCompositeKey(colleagueUuid, searchKey);
+        return !searchKey.isBlank() && dao.isColleagueExistsForCompositeKey(colleagueUuid, searchKey);
     }
 
     @Override
@@ -217,20 +216,24 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
 
     @Override
     public List<ColleagueEntity> findColleaguesByCompositeKey(String compositeKey) {
-        String searchKey = getSearchKey(compositeKey);
-        return dao.findColleaguesByCompositeKey(searchKey, null);
+        return findColleaguesByCompositeKey(compositeKey, null);
     }
 
     @Override
     public List<ColleagueEntity> findColleaguesByCompositeKey(String compositeKey, DictionaryFilter<PMCycleStatus> statusFilter) {
         String searchKey = getSearchKey(compositeKey);
-        return dao.findColleaguesByCompositeKey(searchKey, statusFilter);
+        return searchKey.isBlank() ? Collections.emptyList() : dao.findColleaguesByCompositeKey(searchKey, statusFilter);
     }
 
-    private String getSearchKey(String compositeKey) {
-        var parts = compositeKey.split("/");
-        return IntStream.range(0, parts.length)
-                .filter(i -> i % 2 == 1).mapToObj(i -> parts[i]).collect(Collectors.joining("/"));
+    static String getSearchKey(String compositeKey) {
+        if (compositeKey != null && !compositeKey.isBlank()) {
+            var versionPosition = compositeKey.indexOf("/#v");
+            if (versionPosition > -1) {
+                return compositeKey.substring(0, versionPosition);
+            }
+            return compositeKey;
+        }
+        return "";
     }
 
     private String buildCompositeKeySearchTerm(String key) {

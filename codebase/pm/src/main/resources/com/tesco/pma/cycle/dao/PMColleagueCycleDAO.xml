@@ -14,16 +14,17 @@
         <result property="properties" column="properties"
                 typeHandler="com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler"
                 javaType="com.tesco.pma.api.MapJson"/>
+        <result property="creationTime" column="creation_time"/>
     </resultMap>
 
     <select id="read" resultMap="colleagueCycleResultMap">
-        SELECT uuid, colleague_uuid, cycle_uuid, status_id, start_time, end_time, properties
+        SELECT uuid, colleague_uuid, cycle_uuid, status_id, start_time, end_time, properties, creation_time
         FROM pm_colleague_cycle
         WHERE uuid = #{uuid}
     </select>
 
     <select id="getByParams" resultMap="colleagueCycleResultMap">
-        SELECT uuid, colleague_uuid, cycle_uuid, status_id, start_time, end_time, properties
+        SELECT uuid, colleague_uuid, cycle_uuid, status_id, start_time, end_time, properties, creation_time
         FROM pm_colleague_cycle
         WHERE 1=1
         <if test="cycleUuid != null">
@@ -47,7 +48,7 @@
     </sql>
 
     <select id="getByCycleUuidWithoutTimelinePoint" resultMap="colleagueCycleResultMap">
-        SELECT cc.uuid, cc.colleague_uuid, cc.cycle_uuid, cc.status_id, cc.start_time, cc.end_time, cc.properties
+        SELECT cc.uuid, cc.colleague_uuid, cc.cycle_uuid, cc.status_id, cc.start_time, cc.end_time, cc.properties, cc.creation_time
         FROM pm_colleague_cycle cc
         WHERE cc.cycle_uuid = #{cycleUuid}
         <include refid="addStatusIdCondition" />
@@ -57,7 +58,7 @@
     </select>
 
     <insert id="saveAll" flushCache="true" parameterType="java.util.Collection">
-        INSERT INTO pm_colleague_cycle (uuid, colleague_uuid, cycle_uuid, status_id, start_time, end_time, properties)
+        INSERT INTO pm_colleague_cycle (uuid, colleague_uuid, cycle_uuid, status_id, start_time, end_time, properties, creation_time)
         VALUES
         <foreach collection="colleagueCycles" item="cc" index="index" separator=",">
             (
@@ -67,7 +68,8 @@
             #{cc.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus},
             #{cc.startTime},
             #{cc.endTime},
-            #{cc.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler}
+            #{cc.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+            #{cc.creationTime}
             )
         </foreach>
     </insert>
@@ -82,14 +84,15 @@
     </update>
 
     <insert id="create" flushCache="true">
-        INSERT INTO pm_colleague_cycle (uuid, colleague_uuid, cycle_uuid, status_id, start_time, end_time, properties)
+        INSERT INTO pm_colleague_cycle (uuid, colleague_uuid, cycle_uuid, status_id, start_time, end_time, properties, creation_time)
         VALUES (#{cc.uuid},
                 #{cc.colleagueUuid},
                 #{cc.cycleUuid},
                 #{cc.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus},
                 #{cc.startTime},
                 #{cc.endTime},
-                #{cc.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler})
+                #{cc.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+                #{cc.creationTime})
         ON CONFLICT(colleague_uuid, cycle_uuid, status_id)
         WHERE status_id = 1
         DO NOTHING
