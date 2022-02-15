@@ -126,15 +126,6 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
         assertNull(dao.read(COLLEAGUE_CYCLE_UUID_2));
     }
 
-    @Test
-    @DataSet({BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
-            BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml"})
-    void findColleagues() {
-        var cc = dao.findColleagues("uk", null);
-        assertEquals(1, cc.size());
-        assertEquals(COLLEAGUE_UUID, cc.get(0).getUuid());
-    }
-
     private void assertColleagueCycle(UUID uuid, UUID colleagueUuid, PMCycleStatus status, PMColleagueCycle colleagueCycle) {
         assertNotNull(colleagueCycle);
         assertEquals(uuid, colleagueCycle.getUuid());
@@ -155,6 +146,7 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
                 .colleagueUuid(COLLEAGUE_UUID_2)
                 .startTime(Instant.now())
                 .endTime(Instant.now())
+                .creationTime(Instant.now())
                 .build();
     }
 }

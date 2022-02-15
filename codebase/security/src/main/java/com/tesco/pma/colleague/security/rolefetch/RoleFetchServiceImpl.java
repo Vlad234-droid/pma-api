@@ -1,5 +1,7 @@
 package com.tesco.pma.colleague.security.rolefetch;
 
+import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.profile.exception.ErrorCodes;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.Account;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -47,8 +50,13 @@ public class RoleFetchServiceImpl implements RoleFetchService {
 
             try {
                 var colleague = profileService.getColleague(colleagueUuid);
+                // Add Line Manager role
                 if (colleague.isManager()) {
                     roleIds.add(ROLE_PREFIX + UserRoleNames.LINE_MANAGER);
+                }
+                // Add Executive role
+                if (hasColleagueExecutiveRole(colleague.getWorkLevel())) {
+                    roleIds.add(ROLE_PREFIX + UserRoleNames.EXECUTIVE);
                 }
             } catch (NotFoundException exception) {
                 log.error(LogFormatter.formatMessage(ErrorCodes.COLLEAGUE_NOT_FOUND,
@@ -58,6 +66,17 @@ public class RoleFetchServiceImpl implements RoleFetchService {
             return roleIds;
         }
         return Collections.emptySet();
+    }
+
+    private boolean hasColleagueExecutiveRole(ColleagueEntity.WorkLevel workLevel) {
+        if (workLevel == null) {
+            return false;
+        }
+
+        var executiveWorkLevels = EnumSet.of(WorkLevel.WL3, WorkLevel.WL4, WorkLevel.WL5);
+        var colleagueWorkLevel = WorkLevel.getByCode(workLevel.getCode());
+
+        return executiveWorkLevels.contains(colleagueWorkLevel);
     }
 
 }

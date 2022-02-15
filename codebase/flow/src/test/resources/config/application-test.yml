@@ -92,6 +92,7 @@ camunda:
                                           com/tesco/pma/flow/notifications/objectives/objectives_notification_decisions.dmn,
                                           com/tesco/pma/flow/notifications/objectives/objectives_event_to_template_id.dmn,
                                           com/tesco/pma/flow/notifications/objectives/objectives_event_to_content.dmn,
+                                          com/tesco/pma/flow/notifications/objectives/objectives_event_to_title.dmn,
                                           com/tesco/pma/flow/notifications/feedback/feedback_flow.bpmn,
                                           com/tesco/pma/flow/notifications/feedback/feedback_event_to_attribute.dmn,
                                           com/tesco/pma/flow/notifications/feedback/feedback_notification_decisions.dmn,
@@ -111,5 +112,7 @@ camunda:
                                           com/tesco/pma/flow/tl_point_overdue_status.bpmn,
                                           com/tesco/pma/flow/group_a.bpmn,
                                           com/tesco/pma/flow/standard_init_timeline_point.bpmn,
-                                          com/tesco/pma/flow/colleague_events_send_test.bpmn
+                                          com/tesco/pma/flow/colleague_events_send_test.bpmn,
+                                          com/tesco/pma/flow/pm_cycle_assignment.bpmn,
+                                          com/tesco/pma/flow/pm_cycle_mapping.dmn
 

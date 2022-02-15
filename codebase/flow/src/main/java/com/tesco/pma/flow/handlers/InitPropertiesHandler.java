@@ -4,7 +4,6 @@ import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
 import com.tesco.pma.cycle.api.model.PMElement;
 import com.tesco.pma.flow.FlowParameters;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Stream;
@@ -22,7 +21,6 @@ import static com.tesco.pma.cycle.api.model.PMTimelinePointElement.PM_TIMELINE_P
  * Calculates all required properties for timeline handlers
  **/
 
-@Slf4j
 @Component
 public class InitPropertiesHandler extends CamundaAbstractFlowHandler {
 

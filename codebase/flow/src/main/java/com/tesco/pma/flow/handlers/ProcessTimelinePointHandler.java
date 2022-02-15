@@ -14,7 +14,6 @@ import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.review.domain.TimelinePoint;
 import com.tesco.pma.review.service.TimelinePointService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -36,7 +35,6 @@ import static com.tesco.pma.cycle.api.model.PMTimelinePointElement.PM_TIMELINE_P
  * @author Vadim Shatokhin <a href="mailto:vadim.shatokhin1@tesco.com">vadim.shatokhin1@tesco.com</a>
  * 2021-11-22 12:25
  */
-@Slf4j
 @Component
 public class ProcessTimelinePointHandler extends AbstractUpdateEnumStatusHandler<PMCycleStatus> {
 

@@ -27,6 +27,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Collections;
@@ -111,6 +112,7 @@ class ProcessTimelinePointHandlerTest {
                 .uuid(ccUuid)
                 .startTime(pmCycle.getStartTime())
                 .endTime(pmCycle.getEndTime())
+                .creationTime(Instant.now())
                 .build();
 
         Mockito.doReturn(Collections.singletonList(colleagueCycle))
