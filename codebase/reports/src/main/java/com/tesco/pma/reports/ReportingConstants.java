@@ -20,8 +20,10 @@ public class ReportingConstants {
     public static final String MUST_CREATE_EYR = "must_create_eyr";
     public static final String HAS_EYR_APPROVED = "has_eyr_approved";
     public static final String HAS_EYR_SUBMITTED = "has_eyr_submitted";
+    public static final String MYR_OVERALL_RATING = "myr_overall_rating";
     public static final String MYR_WHAT_RATING = "myr_what_rating";
     public static final String MYR_HOW_RATING = "myr_how_rating";
+    public static final String EYR_OVERALL_RATING = "eyr_overall_rating";
     public static final String EYR_WHAT_RATING = "eyr_what_rating";
     public static final String EYR_HOW_RATING = "eyr_how_rating";
     public static final String HAS_EYR_APPROVED_1_QUARTER = "has_eyr_approved_1_quarter";

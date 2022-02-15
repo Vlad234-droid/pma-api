@@ -18,12 +18,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.tesco.pma.reports.ReportingConstants.EYR_OVERALL_RATING;
 import static com.tesco.pma.reports.ReportingConstants.HAS_FEEDBACK_GIVEN;
 import static com.tesco.pma.reports.ReportingConstants.HAS_FEEDBACK_REQUESTED;
+import static com.tesco.pma.reports.ReportingConstants.MYR_OVERALL_RATING;
 import static com.tesco.pma.reports.exception.ErrorCodes.REPORT_NOT_FOUND;
 
 import static com.tesco.pma.reports.ReportingConstants.BELOW_EXPECTED_RATING;
@@ -82,12 +85,20 @@ class ReportingServiceImplTest {
     @Test
     void getReportColleaguesData() {
         final var requestQuery = new RequestQuery();
-        var colleagues = buildColleagueTargeting();
-        when(reportingDAO.getColleagueTargeting(requestQuery)).thenReturn(colleagues);
+        when(reportingDAO.getColleagueTargeting(requestQuery)).thenReturn(buildColleagueTargeting());
+        when(ratingService.getOverallRating(GREAT_RATING, GREAT_RATING)).thenReturn(GREAT_RATING);
+        when(ratingService.getOverallRating(OUTSTANDING_RATING, OUTSTANDING_RATING)).thenReturn(OUTSTANDING_RATING);
+        when(ratingService.getOverallRating(SATISFACTORY_RATING, SATISFACTORY_RATING)).thenReturn(SATISFACTORY_RATING);
+        when(ratingService.getOverallRating(BELOW_EXPECTED_RATING, BELOW_EXPECTED_RATING)).thenReturn(BELOW_EXPECTED_RATING);
 
         final var res = reportingService.getReportColleagues(requestQuery);
 
-        assertEquals(colleagues, res);
+        var expected = buildColleagueTargeting();
+        expected.get(0).getTags().put(MYR_OVERALL_RATING, GREAT_RATING);
+        expected.get(0).getTags().put(EYR_OVERALL_RATING, OUTSTANDING_RATING);
+        expected.get(1).getTags().put(MYR_OVERALL_RATING, SATISFACTORY_RATING);
+        expected.get(1).getTags().put(EYR_OVERALL_RATING, BELOW_EXPECTED_RATING);
+        assertEquals(expected, res);
     }
 
     @Test
@@ -168,7 +179,7 @@ class ReportingServiceImplTest {
         var colleague1 = new ColleagueReportTargeting();
         colleague1.setUuid(UUID.fromString(COLLEAGUE_UUID));
         colleague1.setFirstName("first_name");
-        colleague1.setTags(Map.ofEntries(
+        colleague1.setTags(new HashMap<>(Map.ofEntries(
                 entry(HAS_OBJECTIVE_APPROVED, "1"),
                 entry(HAS_OBJECTIVE_SUBMITTED, "0"),
                 entry(HAS_MYR_APPROVED, "1"),
@@ -184,12 +195,12 @@ class ReportingServiceImplTest {
                 entry(MUST_CREATE_EYR, "0"),
                 entry(IS_NEW_TO_BUSINESS, "1"),
                 entry(HAS_FEEDBACK_REQUESTED, "1"),
-                entry(HAS_FEEDBACK_GIVEN, "1")));
+                entry(HAS_FEEDBACK_GIVEN, "1"))));
 
         var colleague2 = new ColleagueReportTargeting();
         colleague2.setUuid(UUID.fromString(LINE_MANAGER_UUID));
         colleague2.setFirstName("first_name_2");
-        colleague2.setTags(Map.ofEntries(
+        colleague2.setTags(new HashMap<>(Map.ofEntries(
                 entry(HAS_OBJECTIVE_APPROVED, "1"),
                 entry(HAS_OBJECTIVE_SUBMITTED, "1"),
                 entry(HAS_MYR_APPROVED, "1"),
@@ -205,7 +216,7 @@ class ReportingServiceImplTest {
                 entry(MUST_CREATE_EYR, "1"),
                 entry(IS_NEW_TO_BUSINESS, "1"),
                 entry(HAS_FEEDBACK_REQUESTED, "0"),
-                entry(HAS_FEEDBACK_GIVEN, "1")));
+                entry(HAS_FEEDBACK_GIVEN, "1"))));
 
         return List.of(colleague1, colleague2);
     }

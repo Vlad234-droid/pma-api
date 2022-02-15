@@ -21,7 +21,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.tesco.pma.reports.ReportingConstants.BELOW_EXPECTED_RATING;
+import static com.tesco.pma.reports.ReportingConstants.EYR_OVERALL_RATING;
 import static com.tesco.pma.reports.ReportingConstants.GREAT_RATING;
+import static com.tesco.pma.reports.ReportingConstants.MYR_OVERALL_RATING;
 import static com.tesco.pma.reports.ReportingConstants.OUTSTANDING_RATING;
 import static com.tesco.pma.reports.ReportingConstants.SATISFACTORY_RATING;
 import static com.tesco.pma.reports.ReportingConstants.QUERY_PARAMS;
@@ -60,8 +62,14 @@ public class ReportingServiceImpl implements ReportingService {
 
     @Override
     public List<ColleagueReportTargeting> getReportColleagues(RequestQuery requestQuery) {
-        return Optional.ofNullable(reportingDAO.getColleagueTargeting(requestQuery))
+        var targetingColleagues = Optional.ofNullable(reportingDAO.getColleagueTargeting(requestQuery))
                 .orElseThrow(() -> notFound(REPORT_NOT_FOUND, Map.of(QUERY_PARAMS, requestQuery)));
+
+        targetingColleagues.forEach(c -> {
+            c.getTags().put(MYR_OVERALL_RATING, getOverallRating(c, MYR_WHAT_RATING, MYR_HOW_RATING));
+            c.getTags().put(EYR_OVERALL_RATING, getOverallRating(c, EYR_WHAT_RATING, EYR_HOW_RATING));
+        });
+        return targetingColleagues;
     }
 
     @Override
@@ -71,6 +79,10 @@ public class ReportingServiceImpl implements ReportingService {
         statsReportProvider.setData(findStatsData(targetingColleagues, requestQuery));
 
         return statsReportProvider.getReport();
+    }
+
+    private String getOverallRating(ColleagueReportTargeting colleague, String whatRatingTag, String howRatingTag) {
+        return ratingService.getOverallRating(colleague.getTags().get(whatRatingTag), colleague.getTags().get(howRatingTag));
     }
 
     private List<StatsData> findStatsData(List<ColleagueReportTargeting> colleagues, RequestQuery requestQuery) {
@@ -208,21 +220,18 @@ public class ReportingServiceImpl implements ReportingService {
 
     private RatingStatsData getMyrRatingTypeStats(List<ColleagueReportTargeting> colleagues,
                                                   String ratingType, long myrRatingToSubmitCount) {
-        return getRatingTypeStats(colleagues, MYR_WHAT_RATING, MYR_HOW_RATING,
-                ratingType, myrRatingToSubmitCount);
+        return getRatingTypeStats(colleagues, MYR_OVERALL_RATING, ratingType, myrRatingToSubmitCount);
     }
 
     private RatingStatsData getEyrRatingTypeStats(List<ColleagueReportTargeting> colleagues,
                                                   String ratingType, long eyrRatingToSubmitCount) {
-        return getRatingTypeStats(colleagues, EYR_WHAT_RATING, EYR_HOW_RATING,
-                ratingType, eyrRatingToSubmitCount);
+        return getRatingTypeStats(colleagues, EYR_OVERALL_RATING, ratingType, eyrRatingToSubmitCount);
     }
 
     private RatingStatsData getRatingTypeStats(List<ColleagueReportTargeting> colleagues,
-                                               String whatRatingTag, String howRatingTag,
-                                               String ratingType, long ratingToSubmitCount) {
+                                               String ratingTag, String ratingType, long ratingToSubmitCount) {
         var ratingStats = new RatingStatsData();
-        var ratingTypeCount = getRatingCountWithTag(colleagues, ratingType, whatRatingTag, howRatingTag);
+        var ratingTypeCount = getRatingCountWithTag(colleagues, ratingType, ratingTag);
         var ratingTypePercentage = (int) (100 * ratingTypeCount / ratingToSubmitCount);
 
         ratingStats.setRatingPercentage(ratingTypePercentage);
@@ -231,15 +240,10 @@ public class ReportingServiceImpl implements ReportingService {
         return ratingStats;
     }
 
-    private long getRatingCountWithTag(List<ColleagueReportTargeting> colleagues, String rating,
-                                       String whatRatingTag, String howRatingTag) {
+    private long getRatingCountWithTag(List<ColleagueReportTargeting> colleagues, String rating, String ratingTag) {
         return colleagues.stream()
-                .filter(c -> rating.equalsIgnoreCase(getOverallRating(c, whatRatingTag, howRatingTag)))
+                .filter(c -> rating.equalsIgnoreCase(c.getTags().get(ratingTag)))
                 .count();
-    }
-
-    private String getOverallRating(ColleagueReportTargeting colleague, String whatRatingTag, String howRatingTag) {
-        return ratingService.getOverallRating(colleague.getTags().get(whatRatingTag), colleague.getTags().get(howRatingTag));
     }
 
     private long getCountWithTag(List<ColleagueReportTargeting> colleagues, String tag) {

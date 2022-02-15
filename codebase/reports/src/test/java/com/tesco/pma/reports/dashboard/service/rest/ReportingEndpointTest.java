@@ -26,9 +26,11 @@ import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Condition.Operand.IN;
 
 import static com.tesco.pma.reports.ReportingConstants.BELOW_EXPECTED_RATING;
+import static com.tesco.pma.reports.ReportingConstants.EYR_OVERALL_RATING;
 import static com.tesco.pma.reports.ReportingConstants.GREAT_RATING;
 import static com.tesco.pma.reports.ReportingConstants.HAS_FEEDBACK_GIVEN;
 import static com.tesco.pma.reports.ReportingConstants.HAS_FEEDBACK_REQUESTED;
+import static com.tesco.pma.reports.ReportingConstants.MYR_OVERALL_RATING;
 import static com.tesco.pma.reports.ReportingConstants.OUTSTANDING_RATING;
 import static com.tesco.pma.reports.ReportingConstants.SATISFACTORY_RATING;
 import static com.tesco.pma.reports.ReportingConstants.EYR_HOW_RATING;
@@ -202,8 +204,10 @@ class ReportingEndpointTest extends AbstractEndpointTest {
                 entry(HAS_OBJECTIVE_SUBMITTED, "0"),
                 entry(HAS_MYR_APPROVED, "1"),
                 entry(HAS_EYR_APPROVED, "0"),
+                entry(MYR_OVERALL_RATING, GREAT_RATING),
                 entry(MYR_HOW_RATING, GREAT_RATING),
                 entry(MYR_WHAT_RATING, GREAT_RATING),
+                entry(EYR_OVERALL_RATING, OUTSTANDING_RATING),
                 entry(EYR_HOW_RATING, OUTSTANDING_RATING),
                 entry(EYR_WHAT_RATING, OUTSTANDING_RATING),
                 entry(HAS_MYR_SUBMITTED, "0"),
@@ -227,8 +231,10 @@ class ReportingEndpointTest extends AbstractEndpointTest {
                 entry(HAS_OBJECTIVE_SUBMITTED, "1"),
                 entry(HAS_MYR_APPROVED, "1"),
                 entry(HAS_EYR_APPROVED, "1"),
+                entry(MYR_OVERALL_RATING, SATISFACTORY_RATING),
                 entry(MYR_HOW_RATING, SATISFACTORY_RATING),
                 entry(MYR_WHAT_RATING, SATISFACTORY_RATING),
+                entry(EYR_OVERALL_RATING, BELOW_EXPECTED_RATING),
                 entry(EYR_HOW_RATING, BELOW_EXPECTED_RATING),
                 entry(EYR_WHAT_RATING, BELOW_EXPECTED_RATING),
                 entry(HAS_MYR_SUBMITTED, "1"),
