@@ -13,12 +13,13 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import static com.tesco.pma.security.UserRoleNames.ADMIN;
+import static com.tesco.pma.security.UserRoleNames.ALL;
 import static com.tesco.pma.security.UserRoleNames.COLLEAGUE;
+import static com.tesco.pma.security.UserRoleNames.EXECUTIVE;
 import static com.tesco.pma.security.UserRoleNames.LINE_MANAGER;
 import static com.tesco.pma.security.UserRoleNames.PEOPLE_TEAM;
 import static com.tesco.pma.security.UserRoleNames.PROCESS_MANAGER;
 import static com.tesco.pma.security.UserRoleNames.TALENT_ADMIN;
-import static com.tesco.pma.security.UserRoleNames.ALL;
 
 /**
  * Pma specific {@link MethodSecurityExpressionOperations}.
@@ -41,6 +42,8 @@ import static com.tesco.pma.security.UserRoleNames.ALL;
  * <p>{@link #isTalentAdmin()}
  *
  * <p>{@link #isProcessManager()}
+ *
+ * <p>{@link #isExecutive()}
  *
  * <p>Example: @PreAuthorize("isAdmin() or isColleague() or isLineManager()")
  */
@@ -122,6 +125,15 @@ public class PmaMethodSecurityExpressionOperations implements MethodSecurityExpr
      */
     public boolean isProcessManager() {
         return hasRole(PROCESS_MANAGER);
+    }
+
+    /**
+     * Check if user has {@link UserRoleNames#EXECUTIVE} role.
+     *
+     * @return true - if user is a Executive, false otherwise.
+     */
+    public boolean isExecutive() {
+        return hasRole(EXECUTIVE);
     }
 
     /**

@@ -6,21 +6,18 @@ import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.flow.notifications.service.SendNotificationService;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:vadim.shatokhin1@tesco.com">vadim.shatokhin1@tesco.com</a>
  * 2021-11-20 00:10
  */
-@Slf4j
 @Component
 @AllArgsConstructor
-//@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SendNotificationHandler extends CamundaAbstractFlowHandler {
 
     private final List<SendNotificationService> senders;

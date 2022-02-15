@@ -83,12 +83,12 @@
           "value": "Outstanding"
         },
         {
-          "label": "Satisfactory",
-          "value": "Satisfactory"
-        },
-        {
           "label": "Great",
           "value": "Great"
+        },
+        {
+          "label": "Satisfactory",
+          "value": "Satisfactory"
         },
         {
           "label": "Below expected",
@@ -111,12 +111,12 @@
           "value": "Outstanding"
         },
         {
-          "label": "Satisfactory",
-          "value": "Satisfactory"
-        },
-        {
           "label": "Great",
           "value": "Great"
+        },
+        {
+          "label": "Satisfactory",
+          "value": "Satisfactory"
         },
         {
           "label": "Below expected",
