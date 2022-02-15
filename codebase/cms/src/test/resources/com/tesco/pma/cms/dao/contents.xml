@@ -1,7 +1,7 @@
 <dataset>
 
     <cms_content
-            id="d9d819fc-c1ee-4df8-a87b-d88f1c006c11"
+            uuid="d9d819fc-c1ee-4df8-a87b-d88f1c006c11"
             title="test"
             status_id="2"
             key="knowledge-library/gb/content"
@@ -12,7 +12,7 @@
     />
 
     <cms_content
-            id="a49bee82-71bb-4cad-b698-24422fb2fb29"
+            uuid="a49bee82-71bb-4cad-b698-24422fb2fb29"
             title="test"
             status_id="2"
             key="knowledge-library/gb/content"
@@ -23,7 +23,7 @@
     />
 
     <cms_content
-            id="75265e54-733c-4291-b32a-7d962da48973"
+            uuid="75265e54-733c-4291-b32a-7d962da48973"
             title="test2"
             status_id="2"
             key="knowledge-library/gb/content"

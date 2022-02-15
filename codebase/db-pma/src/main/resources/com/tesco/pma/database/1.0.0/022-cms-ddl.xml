@@ -6,7 +6,7 @@
     <changeSet author="adublyanin" id="1">
         <createTable remarks="Content entity" tableName="cms_content">
 
-            <column name="id" type="${uuid_type}">
+            <column name="uuid" type="${uuid_type}">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="cms_content_pk"/>
             </column>
 

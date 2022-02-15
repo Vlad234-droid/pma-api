@@ -4,7 +4,7 @@
 <mapper namespace="com.tesco.pma.cms.dao.ContentEntryDAO">
 
     <resultMap id="contentStruct" type="com.tesco.pma.cms.model.ContentEntry">
-        <id column="id" property="id"/>
+        <id column="uuid" property="uuid"/>
         <result column="key" property="key"/>
         <result column="title" property="title"/>
         <result column="description" property="description"/>
@@ -22,7 +22,7 @@
     </select>
 
     <select id="findById" resultMap="contentStruct">
-        SELECT * FROM cms_content cc WHERE cc.id = #{uuid}
+        SELECT * FROM cms_content cc WHERE cc.uuid = #{uuid}
     </select>
 
     <select id="find" resultMap="contentStruct">
@@ -84,16 +84,16 @@
         (SELECT version FROM cms_content cc2 WHERE cc2.title = cc.title ORDER BY version DESC LIMIT 1)
     </sql>
 
-    <insert id="create" flushCache="true" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
-        INSERT INTO cms_content (id, key, title, description, image_link, created_by, created_time, version, status_id)
-        VALUES (#{content.id}, #{content.key}, #{content.title}, #{content.description},
+    <insert id="create" flushCache="true" useGeneratedKeys="true" keyProperty="uuid" keyColumn="uuid">
+        INSERT INTO cms_content (uuid, key, title, description, image_link, created_by, created_time, version, status_id)
+        VALUES (#{content.uuid}, #{content.key}, #{content.title}, #{content.description},
             #{content.imageLink}, #{content.createdBy}, #{content.createdTime}, #{content.version},
             #{content.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler,
                 javaType=com.tesco.pma.cms.model.ContentStatus})
     </insert>
 
     <delete id="delete">
-        DELETE FROM cms_content WHERE id = #{id}
+        DELETE FROM cms_content WHERE uuid = #{uuid}
     </delete>
 
     <update id="update" flushCache="true">
@@ -102,7 +102,7 @@
             image_link = #{content.imageLink}, created_by = #{content.createdBy}, created_time = #{content.createdTime},
             version = <include refid="maxVersion"/> + 1,
             status_id = #{content.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler}
-        WHERE id = #{content.id}
+        WHERE uuid = #{content.uuid}
     </update>
 
 

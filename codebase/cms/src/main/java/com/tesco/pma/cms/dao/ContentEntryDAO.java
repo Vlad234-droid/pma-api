@@ -17,7 +17,7 @@ public interface ContentEntryDAO {
 
     int create(@Param("content") ContentEntry contentEntry);
 
-    int delete(@Param("id") UUID uuid);
+    int delete(@Param("uuid") UUID uuid);
 
     int update(@Param("content") ContentEntry contentEntry);
 

@@ -8,7 +8,7 @@ import java.util.UUID;
 @Data
 public class ContentEntry {
 
-    private UUID id;
+    private UUID uuid;
     private String key;
     private Integer version;
     private ContentStatus status;

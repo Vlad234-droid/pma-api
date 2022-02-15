@@ -22,6 +22,7 @@ public class ContentEntryDAOTest extends AbstractDAOTest {
     private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/cms/dao/";
     private static final String TEST_CONTENT_UUID = "d9d819fc-c1ee-4df8-a87b-d88f1c006c11";
     private static final String TEST_CONTENT_UUID_2 = "a49bee82-71bb-4cad-b698-24422fb2fb29";
+    private static final String KEY = "knowledge-library/gb/content";
 
     @Autowired
     private ContentEntryDAO contentEntryDAO;
@@ -37,7 +38,7 @@ public class ContentEntryDAOTest extends AbstractDAOTest {
     @Test
     void createTest(){
         var content = new ContentEntry();
-        content.setId(UUID.randomUUID());
+        content.setUuid(UUID.randomUUID());
         content.setStatus(ContentStatus.DRAFT);
         content.setTitle("test3");
         content.setKey("some/key");
@@ -59,7 +60,7 @@ public class ContentEntryDAOTest extends AbstractDAOTest {
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "contents.xml"})
     void findByKeyTest() {
-        assertEquals(3, contentEntryDAO.findByKey("knowledge-library/gb/content").size());
+        assertEquals(3, contentEntryDAO.findByKey(KEY).size());
     }
 
     @Test
@@ -80,7 +81,7 @@ public class ContentEntryDAOTest extends AbstractDAOTest {
     void findTest() {
         var rq = new RequestQuery();
         rq.addFilters("status_eq", "pUbLished");
-        rq.addFilters("key_eq", "knowledge-library/gb/content");
+        rq.addFilters("key_eq", KEY);
 
         assertEquals(3, contentEntryDAO.find(rq).size());
 
@@ -91,12 +92,12 @@ public class ContentEntryDAOTest extends AbstractDAOTest {
     void findLatestVersionTest() {
         var rq = new RequestQuery();
         rq.addFilters("title_eq", "test");
-        rq.addFilters("key_eq", "knowledge-library/gb/content");
+        rq.addFilters("key_eq", KEY);
         rq.addFilters("version_eq", -1);
 
         List<ContentEntry> contentList = contentEntryDAO.find(rq);
         assertEquals(1, contentList.size());
-        assertEquals(TEST_CONTENT_UUID_2, contentEntryDAO.find(rq).get(0).getId().toString());
+        assertEquals(TEST_CONTENT_UUID_2, contentEntryDAO.find(rq).get(0).getUuid().toString());
 
     }
 
@@ -105,11 +106,11 @@ public class ContentEntryDAOTest extends AbstractDAOTest {
     void findByVersionTest() {
         var rq = new RequestQuery();
         rq.addFilters("title_eq", "test");
-        rq.addFilters("key_eq", "knowledge-library/gb/content");
+        rq.addFilters("key_eq", KEY);
         rq.addFilters("version_eq", 1);
 
         assertEquals(1, contentEntryDAO.find(rq).size());
-        assertEquals(TEST_CONTENT_UUID, contentEntryDAO.find(rq).get(0).getId().toString());
+        assertEquals(TEST_CONTENT_UUID, contentEntryDAO.find(rq).get(0).getUuid().toString());
 
     }
 

@@ -28,7 +28,7 @@ public class ContentServiceImpl implements ContentService {
     @Override
     @Transactional
     public ContentEntry create(ContentEntry contentEntry) {
-        contentEntry.setId(UUID.randomUUID());
+        contentEntry.setUuid(UUID.randomUUID());
         contentEntry.setCreatedBy(auditorAware.getCurrentAuditor());
         contentEntry.setCreatedTime(Instant.now());
 
