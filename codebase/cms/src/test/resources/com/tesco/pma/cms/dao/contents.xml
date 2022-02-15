@@ -2,9 +2,32 @@
 
     <cms_content
             id="d9d819fc-c1ee-4df8-a87b-d88f1c006c11"
+            title="test"
             status_id="2"
             key="knowledge-library/gb/content"
             image_link="image/link"
+            created_by="2d651ab5-638a-438c-a39c-339b8d226bac"
+            created_time="2019-01-02"
+            version="1"
+    />
+
+    <cms_content
+            id="a49bee82-71bb-4cad-b698-24422fb2fb29"
+            title="test"
+            status_id="2"
+            key="knowledge-library/gb/content"
+            image_link="image/link/2"
+            created_by="2d651ab5-638a-438c-a39c-339b8d226bac"
+            created_time="2019-01-02"
+            version="2"
+    />
+
+    <cms_content
+            id="75265e54-733c-4291-b32a-7d962da48973"
+            title="test2"
+            status_id="2"
+            key="knowledge-library/gb/content"
+            image_link="image/link/2"
             created_by="2d651ab5-638a-438c-a39c-339b8d226bac"
             created_time="2019-01-02"
             version="1"

@@ -19,7 +19,7 @@
             </column>
 
             <column name="title" type="VARCHAR(100)">
-                <constraints nullable="true"/>
+                <constraints nullable="false"/>
             </column>
 
             <column name="description" type="VARCHAR(500)">

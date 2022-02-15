@@ -30,11 +30,17 @@
 
         <where>
             <foreach collection="requestQuery.filters" item="filter" index="index">
+                <if test="filter.operand.name == 'EQUALS' and filter.property == 'title'">
+                    AND <include refid="getFilterField"/> = '${filter.value}'
+                </if>
                 <if test="filter.operand.name == 'EQUALS' and filter.property == 'key'">
                     AND <include refid="getFilterField"/> = '${filter.value}'
                 </if>
                 <if test="filter.operand.name == 'EQUALS' and filter.property == 'status'">
                     AND <include refid="getFilterField"/> = ${@com.tesco.pma.cms.model.ContentStatus@valueOf(filter.value.toUpperCase()).getId()}
+                </if>
+                <if test="filter.operand.name == 'EQUALS' and filter.property == 'version'">
+                    AND <include refid="versionCondition"/>
                 </if>
             </foreach>
         </where>
@@ -48,6 +54,9 @@
 
     <sql id="getFilterField">
         <choose>
+            <when test="filter.property == 'title'">
+                cc.title
+            </when>
             <when test="filter.property == 'status'">
                 cc.status_id
             </when>
@@ -58,6 +67,21 @@
                 #{filter.property}
             </otherwise>
         </choose>
+    </sql>
+
+    <sql id="versionCondition">
+        <choose>
+            <when test="filter.value == -1">
+                cc.version = <include refid="maxVersion"/>
+            </when>
+            <otherwise>
+                cc.version = #{filter.value}
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="maxVersion">
+        (SELECT version FROM cms_content cc2 WHERE cc2.title = cc.title ORDER BY version DESC LIMIT 1)
     </sql>
 
     <insert id="create" flushCache="true" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -73,10 +97,10 @@
     </delete>
 
     <update id="update" flushCache="true">
-        UPDATE cms_content
+        UPDATE cms_content cc
         SET key = #{content.key}, title = #{content.title}, description = #{content.description},
             image_link = #{content.imageLink}, created_by = #{content.createdBy}, created_time = #{content.createdTime},
-            version = #{content.version},
+            version = <include refid="maxVersion"/> + 1,
             status_id = #{content.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler}
         WHERE id = #{content.id}
     </update>
