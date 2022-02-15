@@ -212,8 +212,6 @@ tesco:
           url: ${TESCO_API_BASE_URL}/colleague/_status
           description: Colleague Facts API
           beanName: restHealthIndicator
-    endpoints:
-      default-attributes: ${PMA_API_URL}/config/default/attributes/colleagues/{uuid}
     external-endpoints:
       cep:
         subject: ${CEP_SUBJECT}
