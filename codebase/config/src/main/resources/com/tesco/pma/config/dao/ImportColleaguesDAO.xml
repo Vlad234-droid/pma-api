@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.tesco.pma.colleague.profile.dao.ImportColleaguesDAO">
+<mapper namespace="com.tesco.pma.config.dao.ImportColleaguesDAO">
 
-    <resultMap id="importRequestMap" type="com.tesco.pma.colleague.profile.domain.ImportRequest">
+    <resultMap id="importRequestMap" type="com.tesco.pma.config.domain.ImportRequest">
         <id column="uuid" property="uuid"/>
         <result column="file_name" property="fileName"/>
         <result column="status_id" property="status" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.colleague.profile.domain.ImportRequestStatus"/>
+                javaType="com.tesco.pma.config.domain.ImportRequestStatus"/>
         <result column="created_by" property="createdBy"/>
         <result column="creation_time" property="creationTime"/>
         <result column="last_update_time" property="lastUpdateTime"/>
@@ -37,7 +37,7 @@
     </select>
 
 
-    <select id="getRequestErrors" resultType="com.tesco.pma.colleague.profile.domain.ImportError">
+    <select id="getRequestErrors" resultType="com.tesco.pma.config.domain.ImportError">
         SELECT request_uuid   as requestUuid,
                colleague_uuid as colleagueUuid,
                code,

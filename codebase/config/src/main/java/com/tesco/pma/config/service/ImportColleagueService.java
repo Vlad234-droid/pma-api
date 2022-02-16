@@ -1,8 +1,8 @@
-package com.tesco.pma.colleague.profile.service;
+package com.tesco.pma.config.service;
 
-import com.tesco.pma.colleague.profile.domain.ImportError;
-import com.tesco.pma.colleague.profile.domain.ImportReport;
-import com.tesco.pma.colleague.profile.domain.ImportRequest;
+import com.tesco.pma.config.domain.ImportError;
+import com.tesco.pma.config.domain.ImportReport;
+import com.tesco.pma.config.domain.ImportRequest;
 
 import java.io.InputStream;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.tesco.pma.colleague.profile.parser;
+package com.tesco.pma.config.parser;
 
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * 2022-01-28 11:56
  */
 class XlsxParserTest {
-    private static final String PACKAGE_PATH = "/com/tesco/pma/colleague/profile/parser/";
+    private static final String PACKAGE_PATH = "/com/tesco/pma/config/parser/";
     private static final int LINE_COUNT = 7;
 
     @Test

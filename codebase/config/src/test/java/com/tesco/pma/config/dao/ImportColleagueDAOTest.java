@@ -1,9 +1,9 @@
-package com.tesco.pma.colleague.profile.dao;
+package com.tesco.pma.config.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
-import com.tesco.pma.colleague.profile.domain.ImportError;
-import com.tesco.pma.colleague.profile.domain.ImportRequest;
-import com.tesco.pma.colleague.profile.domain.ImportRequestStatus;
+import com.tesco.pma.config.domain.ImportError;
+import com.tesco.pma.config.domain.ImportRequest;
+import com.tesco.pma.config.domain.ImportRequestStatus;
 import com.tesco.pma.dao.AbstractDAOTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ImportColleagueDAOTest extends AbstractDAOTest {
 
-    private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/colleague/profile/dao/";
+    private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/config/dao/";
     public static final UUID REQUEST_UUID = UUID.fromString("c409869b-2acf-45cd-8cc6-e13af2e6f935");
     public static final UUID REQUEST_UUID_2 = UUID.fromString("a019869b-2acf-45cd-8cc6-e13af2e6a218");
 

@@ -5,7 +5,6 @@ import com.tesco.pma.TestConfig;
 import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
-import com.tesco.pma.colleague.profile.service.ImportColleagueService;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import org.jeasy.random.EasyRandom;
@@ -55,9 +54,6 @@ class ProfileEndpointTest extends AbstractEndpointTest {
     @MockBean
     private ProfileService mockProfileService;
 
-    @MockBean
-    private ImportColleagueService importColleagueService;
-
     private final UUID colleagueUuid = randomUUID();
 
     @BeforeEach
@@ -77,8 +73,8 @@ class ProfileEndpointTest extends AbstractEndpointTest {
                 .thenReturn(Optional.of(randomProfileResponse()));
 
         mvc.perform(get("/colleagues/{colleagueUuid}", colleagueUuid)
-                        .with(allRoles(colleagueUuid.toString()))
-                        .accept(APPLICATION_JSON))
+                .with(allRoles(colleagueUuid.toString()))
+                .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON));
 
@@ -156,7 +152,7 @@ class ProfileEndpointTest extends AbstractEndpointTest {
 
     private List<TypedAttribute> profileAttributes(int size) {
         return IntStream.rangeClosed(1, size)
-                .mapToObj(value ->  profileAttribute())
+                .mapToObj(value -> profileAttribute())
                 .collect(Collectors.toList());
     }
 

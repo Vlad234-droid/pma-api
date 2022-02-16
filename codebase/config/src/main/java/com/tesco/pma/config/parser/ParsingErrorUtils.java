@@ -1,14 +1,14 @@
-package com.tesco.pma.colleague.profile.parser;
+package com.tesco.pma.config.parser;
 
-import com.tesco.pma.colleague.profile.parser.model.ParsingError;
+import com.tesco.pma.config.parser.model.ParsingError;
 import lombok.experimental.UtilityClass;
 import org.apache.poi.ss.usermodel.CellType;
 
 import java.util.List;
 
-import static com.tesco.pma.colleague.profile.parser.ParsingErrorCode.PARSE_CELL_UNKNOWN_TYPE;
-import static com.tesco.pma.colleague.profile.parser.ParsingErrorCode.PARSE_ERROR_CELL;
-import static com.tesco.pma.colleague.profile.parser.ParsingErrorCode.PARSE_MULTI_PROPERTIES;
+import static com.tesco.pma.config.parser.ParsingErrorCode.PARSE_CELL_UNKNOWN_TYPE;
+import static com.tesco.pma.config.parser.ParsingErrorCode.PARSE_ERROR_CELL;
+import static com.tesco.pma.config.parser.ParsingErrorCode.PARSE_MULTI_PROPERTIES;
 
 @UtilityClass
 public class ParsingErrorUtils {

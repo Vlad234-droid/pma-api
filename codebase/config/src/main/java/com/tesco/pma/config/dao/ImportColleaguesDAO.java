@@ -1,7 +1,8 @@
-package com.tesco.pma.colleague.profile.dao;
+package com.tesco.pma.config.dao;
 
-import com.tesco.pma.colleague.profile.domain.ImportError;
-import com.tesco.pma.colleague.profile.domain.ImportRequest;
+
+import com.tesco.pma.config.domain.ImportError;
+import com.tesco.pma.config.domain.ImportRequest;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.Instant;
