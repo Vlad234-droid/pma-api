@@ -1,7 +1,6 @@
 package com.tesco.pma.cep.v2.service;
 
 import com.tesco.pma.cep.v2.domain.ColleagueChangeEventPayload;
-import com.tesco.pma.cep.v2.domain.DeliveryMode;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
@@ -11,8 +10,6 @@ import com.tesco.pma.event.EventNames;
 import com.tesco.pma.event.EventParams;
 import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.event.service.EventSender;
-import com.tesco.pma.exception.ErrorCodes;
-import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.logging.LogFormatter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,10 +21,10 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.tesco.pma.cep.v2.domain.EventType.DELETION;
 import static com.tesco.pma.cep.v2.domain.EventType.JOINER;
 import static com.tesco.pma.cep.v2.domain.EventType.LEAVER;
 import static com.tesco.pma.cep.v2.domain.EventType.MODIFICATION;
@@ -45,17 +42,11 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     private final EventSender eventSender;
 
     @Override
-    public void processColleagueChangeEvent(String feedId,
-                                            ColleagueChangeEventPayload colleagueChangeEventPayload) {
+    public void processColleagueChangeEvent(ColleagueChangeEventPayload colleagueChangeEventPayload) {
         // TODO Implement a logic related with invalidation caches of Profile API, Organisation API, PM API, ...
 
-        DeliveryMode feedDeliveryMode = resolveDeliveryModeByFeedId(feedId);
-
-        log.info(String.format("Processing colleague change event %s for feed delivery mode %s",
-                colleagueChangeEventPayload, feedDeliveryMode));
-
-        // Now support only Joiner, Leaver, Modification event types
-        if (!EnumSet.of(JOINER, LEAVER, MODIFICATION).contains(colleagueChangeEventPayload.getEventType())) {
+        // Now support only Joiner, Leaver, Modification, Deletion event types
+        if (!EnumSet.of(JOINER, LEAVER, MODIFICATION, DELETION).contains(colleagueChangeEventPayload.getEventType())) {
             return;
         }
 
@@ -70,10 +61,10 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
             }
         }
 
-        processColleagueChangeEvent(colleagueChangeEventPayload);
+        startProcessColleagueChangeEvent(colleagueChangeEventPayload);
     }
 
-    private void processColleagueChangeEvent(ColleagueChangeEventPayload colleagueChangeEventPayload) {
+    private void startProcessColleagueChangeEvent(ColleagueChangeEventPayload colleagueChangeEventPayload) {
         var updated = 0;
 
         switch (colleagueChangeEventPayload.getEventType()) {
@@ -85,6 +76,9 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
                 break;
             case MODIFICATION:
                 updated = processModificationEventType(colleagueChangeEventPayload);
+                break;
+            case DELETION:
+                updated = processDeletionEventType(colleagueChangeEventPayload);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid event type " + colleagueChangeEventPayload.getEventType());
@@ -152,6 +146,10 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         return updated;
     }
 
+    private int processDeletionEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
+        return processLeaverEventType(colleagueChangeEventPayload);
+    }
+
     private Collection<String> filteringChangedAttributes(ColleagueChangeEventPayload colleagueChangeEventPayload) {
          var colleague =  profileService.findColleagueByColleagueUuid(
                 colleagueChangeEventPayload.getColleagueUuid());
@@ -160,22 +158,6 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
          }
 
         return List.of("1");
-    }
-
-    private DeliveryMode resolveDeliveryModeByFeedId(String feedId) {
-        String key = cepSubscribeProperties.getFeeds().entrySet().stream()
-                .filter(entry -> entry.getValue().equals(feedId))
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .orElse(null);
-
-        if (Objects.isNull(key)) {
-            String message = String.format("Invalid feedId = '%s' was received from CEP", feedId);
-            log.warn(message);
-            throw new InvalidPayloadException(ErrorCodes.EVENT_PAYLOAD_ERROR.getCode(), message, "feedId");
-        } else {
-            return DeliveryMode.valueOf(key.toUpperCase());
-        }
     }
 
     private void sendEvent(UUID colleagueUuid, EventNames eventName) {

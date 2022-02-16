@@ -7,17 +7,14 @@ import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusReques
 import com.tesco.pma.colleague.security.service.UserManagementService;
 import com.tesco.pma.event.Event;
 import com.tesco.pma.event.service.EventSender;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-
-import java.util.Map;
 
 import static com.tesco.pma.cep.v2.service.TestDataUtils.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -41,87 +38,60 @@ class ColleagueChangesServiceTests {
     @SpyBean
     private ColleagueChangesServiceImpl colleagueChangesService;
 
-    @ParameterizedTest
-    @CsvSource({
-            "jit, colleagues-jit-v1",
-            "immediate, colleagues-immediate-v1"
-    })
-    void processColleagueChangeEventWithJoinerEventTypeWithForceMode(String feedCode, String feedId) {
+    @Test
+    void processColleagueChangeEventWithJoinerEventTypeAndForceMode() {
         var colleagueChangeEventPayload = buildColleagueChangeEventPayload(EventType.JOINER);
 
-        when(mockCepSubscribeProperties.getFeeds())
-                .thenReturn(Map.of(feedCode, feedId));
         when(mockCepSubscribeProperties.isForce())
                 .thenReturn(true);
         when(mockProfileService.create(COLLEAGUE_UUID))
                 .thenReturn(1);
 
-        colleagueChangesService.processColleagueChangeEvent(feedId, colleagueChangeEventPayload);
+        colleagueChangesService.processColleagueChangeEvent(colleagueChangeEventPayload);
 
-        verify(mockCepSubscribeProperties, times(1)).getFeeds();
         verify(mockCepSubscribeProperties, times(1)).isForce();
         verify(mockProfileService, times(1)).create(COLLEAGUE_UUID);
         verify(eventSender, times(2)).sendEvent(any(Event.class));
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "jit, colleagues-jit-v1",
-            "immediate, colleagues-immediate-v1"
-    })
-    void processColleagueChangeEventWithJoinerEventType(String feedCode, String feedId) {
+    @Test
+    void processColleagueChangeEventWithJoinerEventType() {
         var colleagueChangeEventPayload = buildColleagueChangeEventPayload(EventType.JOINER);
 
-        when(mockCepSubscribeProperties.getFeeds())
-                .thenReturn(Map.of(feedCode, feedId));
         when(mockCepSubscribeProperties.isForce())
                 .thenReturn(false);
         when(mockProfileService.create(any(Colleague.class)))
                 .thenReturn(1);
 
-        colleagueChangesService.processColleagueChangeEvent(feedId, colleagueChangeEventPayload);
+        colleagueChangesService.processColleagueChangeEvent(colleagueChangeEventPayload);
 
-        verify(mockCepSubscribeProperties, times(1)).getFeeds();
         verify(mockCepSubscribeProperties, times(1)).isForce();
         verify(mockProfileService, times(1)).create(any(Colleague.class));
         verify(eventSender, times(2)).sendEvent(any(Event.class));
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "jit, colleagues-jit-v1",
-            "immediate, colleagues-immediate-v1"
-    })
-    void processColleagueChangeEventWithLeaverEventType(String feedCode, String feedId) {
+    @Test
+    void processColleagueChangeEventWithLeaverEventType() {
 
         var colleagueChangeEventPayload = buildColleagueChangeEventPayload(EventType.LEAVER);
 
-        when(mockCepSubscribeProperties.getFeeds())
-                .thenReturn(Map.of(feedCode, feedId));
         when(mockProfileService.findProfileByColleagueUuid(COLLEAGUE_UUID))
                 .thenReturn(buildColleagueProfile(COLLEAGUE_UUID));
         when(mockUserManagementService.findAccountByColleagueUuid(COLLEAGUE_UUID))
                 .thenReturn(buildAccount(COLLEAGUE_UUID));
 
-        colleagueChangesService.processColleagueChangeEvent(feedId, colleagueChangeEventPayload);
+        colleagueChangesService.processColleagueChangeEvent(colleagueChangeEventPayload);
 
-        verify(mockCepSubscribeProperties, times(1)).getFeeds();
         verify(mockProfileService, times(1)).findProfileByColleagueUuid(COLLEAGUE_UUID);
         verify(mockUserManagementService, times(1)).findAccountByColleagueUuid(COLLEAGUE_UUID);
         verify(mockUserManagementService, times(1))
                 .changeAccountStatus(any(ChangeAccountStatusRequest.class));
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "jit, colleagues-jit-v1",
-            "immediate, colleagues-immediate-v1"
-    })
-    void processColleagueChangeEventWithModificationEventTypeWithForceMode(String feedCode, String feedId) {
+    @Test
+    void processColleagueChangeEventWithModificationEventTypeAndForceMode() {
         var colleagueChangeEventPayload = buildColleagueChangeEventPayload(EventType.MODIFICATION);
 
-        when(mockCepSubscribeProperties.getFeeds())
-                .thenReturn(Map.of(feedCode, feedId));
         when(mockCepSubscribeProperties.isForce())
                 .thenReturn(true);
         when(mockProfileService.findProfileByColleagueUuid(COLLEAGUE_UUID))
@@ -131,9 +101,8 @@ class ColleagueChangesServiceTests {
         when(mockProfileService.updateColleague(COLLEAGUE_UUID, colleagueChangeEventPayload.getChangedAttributes()))
                 .thenReturn(1);
 
-        colleagueChangesService.processColleagueChangeEvent(feedId, colleagueChangeEventPayload);
+        colleagueChangesService.processColleagueChangeEvent(colleagueChangeEventPayload);
 
-        verify(mockCepSubscribeProperties, times(1)).getFeeds();
         verify(mockCepSubscribeProperties, times(1)).isForce();
         verify(mockProfileService, times(1)).findProfileByColleagueUuid(COLLEAGUE_UUID);
         verify(mockProfileService, times(1)).findColleagueByColleagueUuid(COLLEAGUE_UUID);
@@ -141,16 +110,10 @@ class ColleagueChangesServiceTests {
                 colleagueChangeEventPayload.getChangedAttributes());
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "jit, colleagues-jit-v1",
-            "immediate, colleagues-immediate-v1"
-    })
-    void processColleagueChangeEventWithModificationEventType(String feedCode, String feedId) {
+    @Test
+    void processColleagueChangeEventWithModificationEventType() {
         var colleagueChangeEventPayload = buildColleagueChangeEventPayload(EventType.MODIFICATION);
 
-        when(mockCepSubscribeProperties.getFeeds())
-                .thenReturn(Map.of(feedCode, feedId));
         when(mockCepSubscribeProperties.isForce())
                 .thenReturn(false);
         when(mockProfileService.findProfileByColleagueUuid(COLLEAGUE_UUID))
@@ -160,30 +123,30 @@ class ColleagueChangesServiceTests {
         when(mockProfileService.updateColleague(any(Colleague.class)))
                 .thenReturn(1);
 
-        colleagueChangesService.processColleagueChangeEvent(feedId, colleagueChangeEventPayload);
+        colleagueChangesService.processColleagueChangeEvent(colleagueChangeEventPayload);
 
-        verify(mockCepSubscribeProperties, times(1)).getFeeds();
         verify(mockCepSubscribeProperties, times(1)).isForce();
         verify(mockProfileService, times(1)).findProfileByColleagueUuid(COLLEAGUE_UUID);
         verify(mockProfileService, times(1)).findColleagueByColleagueUuid(COLLEAGUE_UUID);
         verify(mockProfileService, times(1)).updateColleague(any(Colleague.class));
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "jit, colleagues-jit-v1",
-            "immediate, colleagues-immediate-v1"
-    })
-    void processColleagueChangeEventWithDeletionEventType(String feedCode, String feedId) {
+    @Test
+    void processColleagueChangeEventWithDeletionEventType() {
+
         var colleagueChangeEventPayload = buildColleagueChangeEventPayload(EventType.DELETION);
 
-        when(mockCepSubscribeProperties.getFeeds())
-                .thenReturn(Map.of(feedCode, feedId));
+        when(mockProfileService.findProfileByColleagueUuid(COLLEAGUE_UUID))
+                .thenReturn(buildColleagueProfile(COLLEAGUE_UUID));
+        when(mockUserManagementService.findAccountByColleagueUuid(COLLEAGUE_UUID))
+                .thenReturn(buildAccount(COLLEAGUE_UUID));
 
-        colleagueChangesService.processColleagueChangeEvent(feedId, colleagueChangeEventPayload);
+        colleagueChangesService.processColleagueChangeEvent(colleagueChangeEventPayload);
 
-        verify(mockCepSubscribeProperties, times(1)).getFeeds();
+        verify(mockProfileService, times(1)).findProfileByColleagueUuid(COLLEAGUE_UUID);
+        verify(mockUserManagementService, times(1)).findAccountByColleagueUuid(COLLEAGUE_UUID);
+        verify(mockUserManagementService, times(1))
+                .changeAccountStatus(any(ChangeAccountStatusRequest.class));
     }
-
 
 }

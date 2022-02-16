@@ -9,10 +9,8 @@ public interface ColleagueChangesService {
 
     /**
      * Consuming colleague changes events
-     *  @param feedId
      * @param colleagueChangeEventPayload
      */
-    void processColleagueChangeEvent(String feedId,
-                                     ColleagueChangeEventPayload colleagueChangeEventPayload);
+    void processColleagueChangeEvent(ColleagueChangeEventPayload colleagueChangeEventPayload);
 
 }

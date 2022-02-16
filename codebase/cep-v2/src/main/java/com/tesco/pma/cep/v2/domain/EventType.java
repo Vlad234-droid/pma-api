@@ -35,6 +35,7 @@ public enum EventType {
     /**
      *
      */
+    @JsonProperty("FutureJoiner")
     FUTURE_JOINER("FutureJoiner"),
 
     /**
@@ -48,34 +49,40 @@ public enum EventType {
      * FutureLeaver is always generated on change in CF
      * and Leaver event if the change has taken place or become effective.
      */
+    @JsonProperty("FutureLeaver")
     FUTURE_LEAVER("FutureLeaver"),
 
     /**
      * FutureLeaverCancelled is always generated on change in CF
      * and Leaver event if the change has taken place or become effective.
      */
+    @JsonProperty("FutureLeaverCancelled")
     FUTURE_LEAVER_CANCELLED("FutureLeaverCancelled"),
 
     /**
      * Modification event will be generated when CF receives any changes for a colleague from the source system.
      * There can be two Modification events - Modification or FutureModification.
      */
+    @JsonProperty("Modification")
     MODIFICATION("Modification"),
 
     /**
      * FutureModification is always generated for future revisions on change in CF and Modification event is generated
      * if the change has taken place or became effective.
      */
+    @JsonProperty("FutureModification")
     FUTURE_MODIFICATION("FutureModification"),
 
     /**
      *
      */
+    @JsonProperty("SourceSystemModification")
     SOURCE_SYSTEM_MODIFICATION("SourceSystemModification"),
 
     /**
      *
      */
+    @JsonProperty("Deletion")
     DELETION("Deletion");
 
     private final String value;

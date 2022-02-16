@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -23,8 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
 import java.util.concurrent.Executor;
-
-import static com.tesco.pma.cep.v2.exception.ErrorCodes.EVENT_FEED_ID_ERROR;
 
 @RestController
 @RequestMapping(path = "/colleagues/v2")
@@ -52,12 +51,15 @@ public class ColleagueChangesEndpoint {
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping("/events")
     @PreAuthorize("isAdmin() or authentication.name == @cepProperties.subject")
-    public void processColleagueChangeEvent(@RequestHeader("FeedId") String feedId,
+    public void processColleagueChangeEvent(@RequestHeader HttpHeaders headers,
                                             @RequestBody ColleagueChangeEventPayload colleagueChangeEventPayload) {
-        if (feedId == null) {
-            log.warn(LogFormatter.formatMessage(EVENT_FEED_ID_ERROR, "Invalid feedId header was received from CEP"));
-            log.debug(String.format("Tried to process a event request %s", colleagueChangeEventPayload));
-            return;
+
+        if (headers != null) {
+            var eventId = headers.getFirst("EventId");
+            var feedId = headers.getFirst("FeedId");
+            var traceId = headers.getFirst("TraceId");
+            log.debug(String.format("Tried to process a event request for eventId = %s, feedId = %s, traceId = %s",
+                    eventId, feedId, traceId));
         }
 
         if (Objects.isNull(colleagueChangeEventPayload) || Objects.isNull(colleagueChangeEventPayload.getEventType())) {
@@ -66,17 +68,16 @@ public class ColleagueChangesEndpoint {
             return;
         }
 
-        startProcessingColleagueChangeEvent(feedId, colleagueChangeEventPayload);
+        startProcessingColleagueChangeEvent(colleagueChangeEventPayload);
 
     }
 
-    private void startProcessingColleagueChangeEvent(String feedId,
-                                                     ColleagueChangeEventPayload colleagueChangeEventPayload) {
+    private void startProcessingColleagueChangeEvent(ColleagueChangeEventPayload colleagueChangeEventPayload) {
         var traceId = TraceUtils.getTraceId();
 
         executor.execute(() -> {
             TraceUtils.setTraceId(traceId);
-            colleagueChangesService.processColleagueChangeEvent(feedId, colleagueChangeEventPayload);
+            colleagueChangesService.processColleagueChangeEvent(colleagueChangeEventPayload);
         });
 
     }
