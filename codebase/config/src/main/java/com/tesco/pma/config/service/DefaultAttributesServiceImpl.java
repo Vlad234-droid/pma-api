@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class DefaultAttributesServiceImp implements DefaultAttributesService {
+public class DefaultAttributesServiceImpl implements DefaultAttributesService {
 
     private static final String Q1_CODE_VALUE = "Q1";
     private static final String Q3_CODE_VALUE = "Q3";

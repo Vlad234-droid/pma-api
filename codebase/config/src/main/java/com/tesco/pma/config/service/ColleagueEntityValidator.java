@@ -1,7 +1,7 @@
-package com.tesco.pma.colleague.profile.service;
+package com.tesco.pma.config.service;
 
-import com.tesco.pma.colleague.profile.parser.model.FieldSet;
-import com.tesco.pma.colleague.profile.parser.model.Value;
+import com.tesco.pma.config.parser.model.FieldSet;
+import com.tesco.pma.config.parser.model.Value;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

@@ -1,8 +1,8 @@
-package com.tesco.pma.colleague.profile.service;
+package com.tesco.pma.config.service;
 
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
-import com.tesco.pma.colleague.profile.parser.model.FieldSet;
-import com.tesco.pma.colleague.profile.parser.model.Value;
+import com.tesco.pma.config.parser.model.FieldSet;
+import com.tesco.pma.config.parser.model.Value;
 import com.tesco.pma.api.ValueType;
 import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.logging.LogFormatter;
