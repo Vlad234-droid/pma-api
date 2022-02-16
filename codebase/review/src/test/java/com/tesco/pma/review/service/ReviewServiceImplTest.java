@@ -98,6 +98,9 @@ class ReviewServiceImplTest {
     @MockBean
     private ProfileService profileService;
 
+    @MockBean
+    private ReviewDmnService mockReviewDmnService;
+
     @Profile("test")
     @Configuration
     @Import({MessageSourceAutoConfiguration.class,
@@ -203,6 +206,9 @@ class ReviewServiceImplTest {
 
         when(mockReviewDAO.create(any(Review.class)))
                 .thenReturn(1);
+
+        when(mockReviewDmnService.getReviewAllowedStatuses(any(),any()))
+                .thenReturn(List.of(DRAFT.getCode()));
 
         final var res = reviewService.createReview(expectedReview, randomUUID, randomUUID);
 

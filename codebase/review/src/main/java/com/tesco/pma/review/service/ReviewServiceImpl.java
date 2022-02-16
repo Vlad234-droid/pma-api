@@ -82,6 +82,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final PMCycleService pmCycleService;
     private final EventSender eventSender;
     private final ProfileService profileService;
+    private final ReviewDmnService reviewDmnService;
 
     private static final String REVIEW_UUID_PARAMETER_NAME = "reviewUuid";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
@@ -241,12 +242,12 @@ public class ReviewServiceImpl implements ReviewService {
             );
         }
         try {
-            var allowedStatuses = getStatusesForCreate();
+            var allowedStatuses = reviewDmnService.getReviewAllowedStatuses(review.getType(), CREATE_OPERATION_NAME);
             if (allowedStatuses.isEmpty()) {
                 throw notFound(ALLOWED_STATUSES_NOT_FOUND,
                         Map.of(OPERATION_PARAMETER_NAME, CREATE_OPERATION_NAME));
             }
-            if (allowedStatuses.contains(review.getStatus())) {
+            if (allowedStatuses.contains(review.getStatus().getCode())) {
                 reviewDAO.create(review);
                 return review;
             } else {
