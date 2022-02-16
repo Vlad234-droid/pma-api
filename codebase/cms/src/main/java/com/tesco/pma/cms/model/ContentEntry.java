@@ -1,5 +1,6 @@
 package com.tesco.pma.cms.model;
 
+import com.tesco.pma.api.MapJson;
 import lombok.Data;
 
 import java.time.Instant;
@@ -14,8 +15,8 @@ public class ContentEntry {
     private ContentStatus status;
     private String title;
     private String description;
-    private String imageLink;
     private UUID createdBy;
     private Instant createdTime;
+    private MapJson properties;
 
 }

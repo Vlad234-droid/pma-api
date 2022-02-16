@@ -8,10 +8,13 @@
         <result column="key" property="key"/>
         <result column="title" property="title"/>
         <result column="description" property="description"/>
-        <result column="image_link" property="imageLink"/>
         <result column="created_by" property="createdBy"/>
         <result column="created_time" property="createdTime"/>
         <result column="version" property="version"/>
+
+        <result property="properties" column="properties"
+                typeHandler="com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler"
+                javaType="com.tesco.pma.api.MapJson"/>
 
         <result property="status" column="status_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.cms.model.ContentStatus"/>
@@ -83,9 +86,10 @@
     </sql>
 
     <insert id="create" flushCache="true" useGeneratedKeys="true" keyProperty="uuid" keyColumn="uuid">
-        INSERT INTO cms_content (uuid, key, title, description, image_link, created_by, created_time, version, status_id)
+        INSERT INTO cms_content (uuid, key, title, description, properties, created_by, created_time, version, status_id)
         VALUES (#{content.uuid}, #{content.key}, #{content.title}, #{content.description},
-            #{content.imageLink}, #{content.createdBy}, #{content.createdTime}, #{content.version},
+            #{content.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+            #{content.createdBy}, #{content.createdTime}, #{content.version},
             #{content.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler,
                 javaType=com.tesco.pma.cms.model.ContentStatus})
     </insert>
@@ -97,7 +101,8 @@
     <update id="update" flushCache="true">
         UPDATE cms_content cc
         SET key = #{content.key}, title = #{content.title}, description = #{content.description},
-            image_link = #{content.imageLink}, created_by = #{content.createdBy}, created_time = #{content.createdTime},
+            properties = #{content.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+            created_by = #{content.createdBy}, created_time = #{content.createdTime},
             version = <include refid="maxVersion"/> + 1,
             status_id = #{content.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler}
         WHERE uuid = #{content.uuid}

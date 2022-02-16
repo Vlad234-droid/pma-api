@@ -42,7 +42,6 @@ public class ContentEntryDAOTest extends AbstractDAOTest {
         content.setStatus(ContentStatus.DRAFT);
         content.setTitle("test3");
         content.setKey("some/key");
-        content.setImageLink("image/link");
         content.setCreatedBy(UUID.randomUUID());
         content.setCreatedTime(Instant.now());
         content.setVersion(1);
