@@ -19,8 +19,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,6 +31,7 @@ import java.util.UUID;
 import static com.tesco.pma.cep.v2.domain.EventType.JOINER;
 import static com.tesco.pma.cep.v2.domain.EventType.LEAVER;
 import static com.tesco.pma.cep.v2.domain.EventType.MODIFICATION;
+import static com.tesco.pma.cep.v2.exception.ErrorCodes.CHANGED_ATTRIBUTES_NOT_FOUND;
 import static com.tesco.pma.cep.v2.exception.ErrorCodes.COLLEAGUE_NOT_FOUND;
 
 @Service
@@ -95,7 +98,12 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     }
 
     private int processJoinerEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
-        int updated = profileService.create(colleagueChangeEventPayload.getColleagueUuid());
+        int updated;
+        if (cepSubscribeProperties.isForce()) {
+            updated = profileService.create(colleagueChangeEventPayload.getColleagueUuid());
+        } else {
+            updated = profileService.create(colleagueChangeEventPayload.getCurrent());
+        }
         if (updated > 0) {
             // Send an event to User Management Service on creation a new account
             sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.POST_CEP_COLLEAGUE_ADDED);
@@ -120,10 +128,21 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         return 1;
     }
 
-    // TODO If logic different from main flow
     private int processModificationEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
-        var updated = profileService.updateColleague(colleagueChangeEventPayload.getColleagueUuid(),
-                colleagueChangeEventPayload.getChangedAttributes());
+        var changedAttributes = filteringChangedAttributes(colleagueChangeEventPayload);
+        if (changedAttributes.isEmpty()) {
+            log.warn(LogFormatter.formatMessage(CHANGED_ATTRIBUTES_NOT_FOUND, "For colleague '{}' was not updated records"),
+                    colleagueChangeEventPayload.getColleagueUuid());
+            return 1;
+        }
+
+        int updated;
+        if (cepSubscribeProperties.isForce()) {
+            updated = profileService.updateColleague(colleagueChangeEventPayload.getColleagueUuid(),
+                    colleagueChangeEventPayload.getChangedAttributes());
+        } else {
+            updated = profileService.updateColleague(colleagueChangeEventPayload.getCurrent());
+        }
 
         // Send event to Camunda
         if (updated > 0) {
@@ -131,6 +150,16 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         }
 
         return updated;
+    }
+
+    private Collection<String> filteringChangedAttributes(ColleagueChangeEventPayload colleagueChangeEventPayload) {
+         var colleague =  profileService.findColleagueByColleagueUuid(
+                colleagueChangeEventPayload.getColleagueUuid());
+         if (colleague == null) {
+             return List.of();
+         }
+
+        return List.of("1");
     }
 
     private DeliveryMode resolveDeliveryModeByFeedId(String feedId) {

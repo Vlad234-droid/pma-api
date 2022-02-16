@@ -59,6 +59,7 @@ public interface ProfileService {
 
     /**
      * Update colleague changed fields
+     * Colleague Facts API will be use
      *
      * @param colleagueUuid
      * @param changedFields
@@ -67,12 +68,29 @@ public interface ProfileService {
     int updateColleague(@NotNull UUID colleagueUuid, Collection<String> changedFields);
 
     /**
+     * Update an existing colleague
+     *
+     * @param colleague
+     * @return Number of updated records
+     */
+    int updateColleague(@NotNull Colleague colleague);
+
+    /**
      * Save a joiner colleague
+     * Colleague Facts API will be use
      *
      * @param colleagueUuid
      * @return Number of updated records
      */
     int create(@NotNull UUID colleagueUuid);
+
+    /**
+     * Save a joiner colleague
+     *
+     * @param colleague
+     * @return Number of updated records
+     */
+    int create(@NotNull Colleague colleague);
 
     /**
      * Find colleague by uuid

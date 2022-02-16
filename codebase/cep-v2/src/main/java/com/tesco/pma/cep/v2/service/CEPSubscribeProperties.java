@@ -11,4 +11,5 @@ import java.util.Map;
 @Data
 class CEPSubscribeProperties {
     private Map<String, String> feeds;
+    private boolean force;
 }

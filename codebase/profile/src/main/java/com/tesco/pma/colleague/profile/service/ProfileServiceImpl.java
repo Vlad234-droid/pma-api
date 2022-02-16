@@ -191,6 +191,16 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    public int updateColleague(Colleague colleague) {
+        var existingLocalColleague = profileDAO.getColleague(colleague.getColleagueUUID());
+        if (existingLocalColleague == null) {
+            return 0;
+        }
+
+        return persistColleague(colleague, existingLocalColleague);
+    }
+
+    @Override
     public int create(UUID colleagueUuid) {
         var existingLocalColleague = profileDAO.getColleague(colleagueUuid);
         if (existingLocalColleague != null) {
@@ -204,6 +214,16 @@ public class ProfileServiceImpl implements ProfileService {
 
         return persistColleague(colleague, null);
 
+    }
+
+    @Override
+    public int create(Colleague colleague) {
+        var existingLocalColleague = profileDAO.getColleague(colleague.getColleagueUUID());
+        if (existingLocalColleague != null) {
+            return 0;
+        }
+
+        return persistColleague(colleague, existingLocalColleague);
     }
 
     private int persistColleague(Colleague colleague, ColleagueEntity existingLocalColleague) {
