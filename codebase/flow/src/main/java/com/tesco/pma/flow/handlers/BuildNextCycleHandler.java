@@ -4,7 +4,6 @@ import com.tesco.pma.api.MapJson;
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
 import com.tesco.pma.cycle.api.PMCycle;
-import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.model.PMCycleElement;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.event.Event;
@@ -12,6 +11,7 @@ import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import lombok.RequiredArgsConstructor;
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -22,43 +22,36 @@ import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class PMCycleRepeatHandler extends CamundaAbstractFlowHandler {
+public class BuildNextCycleHandler extends CamundaAbstractFlowHandler {
 
+    private static final String ERROR = "build_error";
     private final PMCycleService pmCycleService;
 
     @Override
     protected void execute(ExecutionContext context) {
         Event event = context.getEvent();
         if (!validateEvent(event)) {
-            log.error("Event is null or does not contain properties to repeat cycle. Event: {}", event);
-            return;
+            throw new BpmnError(ERROR, "Event is null or does not contain properties to repeat cycle.");
+        }
+        PMCycle previousCycle = context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class);
+        if (previousCycle.getCreatedBy() == null || previousCycle.getTemplate() == null) {
+            throw new BpmnError(ERROR, "Previous cycle invalid. Template or created by is null.");
         }
         Map<String, Serializable> eventProperties = event.getEventProperties();
-        UUID cycleUuid = UUID.fromString(eventProperties.get(FlowParameters.PM_CYCLE_UUID.name()).toString());
-        PMCycle previousCycle = pmCycleService.get(cycleUuid, false).getCycle();
-        if (previousCycle.getCreatedBy() == null || previousCycle.getTemplate() == null) {
-            log.error("Previous cycle invalid. Template or created by is null. Cycle: {}", previousCycle);
-            return;
-        }
-        int left = (int) eventProperties.get(FlowParameters.PM_CYCLE_REPEAT_COUNT.name());
+        int left = (int) eventProperties.get(FlowParameters.PM_CYCLE_REPEATS_LEFT.name());
         if (!needToRepeat(previousCycle, left)) {
-            log.debug("Don't need to repeat cycle. It seems event duplicates {}", event);
-            return;
+            throw new BpmnError(ERROR, "Don't need to repeat cycle. It seems the same event sends again.");
         }
         initPropertiesMap(previousCycle);
-        previousCycle.getProperties().getMapJson().put(FlowParameters.PM_CYCLE_REPEAT_COUNT.name(), String.valueOf(left));
+        previousCycle.getProperties().getMapJson().put(FlowParameters.PM_CYCLE_REPEATS_LEFT.name(), String.valueOf(left));
         previousCycle.setStartTime(previousCycle.getStartTime().atZone(ZoneOffset.UTC).plus(Period.ofYears(1)).toInstant());
         previousCycle.setEndTime(previousCycle.getEndTime().atZone(ZoneOffset.UTC).plus(Period.ofYears(1)).toInstant());
         previousCycle.setUuid(null);
-        PMCycle nextCycle = pmCycleService.create(previousCycle, previousCycle.getCreatedBy().getUuid());
-        PMCycle updatedCycle = pmCycleService.updateStatus(nextCycle.getUuid(), PMCycleStatus.REGISTERED);
-        pmCycleService.start(updatedCycle);
-        context.setVariable(FlowParameters.PM_CYCLE, updatedCycle);
+        context.setVariable(FlowParameters.PM_CYCLE, previousCycle);
     }
 
     private void initPropertiesMap(PMCycle previousCycle) {
@@ -99,6 +92,6 @@ public class PMCycleRepeatHandler extends CamundaAbstractFlowHandler {
         }
         Map<String, Serializable> eventProperties = event.getEventProperties();
         return eventProperties.containsKey(FlowParameters.PM_CYCLE_UUID.name())
-                && eventProperties.containsKey(FlowParameters.PM_CYCLE_REPEAT_COUNT.name());
+                && eventProperties.containsKey(FlowParameters.PM_CYCLE_REPEATS_LEFT.name());
     }
 }

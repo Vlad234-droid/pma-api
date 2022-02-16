@@ -29,7 +29,6 @@ import static com.tesco.pma.cycle.api.model.PMElement.PM_TYPE;
 import static com.tesco.pma.flow.FlowParameters.BEFORE_END_DATE;
 import static com.tesco.pma.flow.FlowParameters.BEFORE_START_DATE;
 import static com.tesco.pma.flow.FlowParameters.END_DATE;
-import static com.tesco.pma.flow.FlowParameters.PM_CYCLE_REPEAT_COUNT;
 import static com.tesco.pma.flow.FlowParameters.START_DATE;
 
 /**
@@ -80,9 +79,6 @@ public class FiscalFlowTest extends AbstractCamundaSpringBootTest {
 
     @BeforeEach
     void init() throws Exception {
-        mockExecutionInHandler(finalizeFlowHandler, (context) -> {
-            context.setVariable(PM_CYCLE_REPEAT_COUNT.name(), "0");
-        });
         mockExecutionInHandler(initTimelinePointEyr, (context) -> {
             context.setVariable(BEFORE_START_DATE.name(), "2022-03-02");
             context.setVariable(START_DATE.name(), "2022-03-15");

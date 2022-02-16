@@ -23,23 +23,30 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 @ActiveProfiles("test")
 @SpringBootTest(classes = CamundaHandlerTestConfig.class)
 @ExtendWith(MockitoExtension.class)
-class PMCycleRepeatHandlerTest {
+class BuildNextCycleHandlerTest {
     private static final String ENTRY_CONFIG_KEY = "l1/group/l2/ho_c/l3/salaried/l4/wl5/#v1";
     private static final UUID COLLEAGUE_UUID = UUID.fromString("10000000-0000-0000-0000-000000000001");
     private static final UUID CYCLE_UUID = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
     private static final UUID FILE_UUID = UUID.fromString("a0c0e913-5a45-4165-86a7-2fa9d5b1c8cb");
     private static final int PM_CYCLE_REPEATS_LEFT = 1;
+    private static final Instant START_TIME =  LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC);
+    private static final Instant END_TIME =  LocalDate.now().plusYears(1).atStartOfDay().toInstant(ZoneOffset.UTC);
     @SpyBean
-    private PMCycleRepeatHandler handler;
+    private BuildNextCycleHandler handler;
     @MockBean
     private PMCycleService service;
 
@@ -51,25 +58,23 @@ class PMCycleRepeatHandlerTest {
         var cycle = buildPmCycle();
         compositeResponse.setCycle(cycle);
         event.putProperty(FlowParameters.PM_CYCLE_UUID.name(), CYCLE_UUID);
-        event.putProperty(FlowParameters.PM_CYCLE_REPEAT_COUNT.name(), PM_CYCLE_REPEATS_LEFT);
+        event.putProperty(FlowParameters.PM_CYCLE_REPEATS_LEFT.name(), PM_CYCLE_REPEATS_LEFT);
         var executionContext = FlowTestUtil.executionBuilder()
                 .withEvent(event)
+                .withVariable(FlowParameters.PM_CYCLE, cycle)
                 .build();
         Mockito.when(service.get(CYCLE_UUID, false)).thenReturn(compositeResponse);
         List<PMCycle> pmCycles = Mockito.mock(List.class);
         Mockito.when(pmCycles.size()).thenReturn(4);
         Mockito.when(service.getAll(Mockito.any(RequestQuery.class), Mockito.eq(false))).thenReturn(pmCycles);
-        var nextCycle = buildPmCycle();
-        nextCycle.setUuid(UUID.randomUUID());
-        Mockito.when(service.create(cycle, cycle.getCreatedBy().getUuid())).thenReturn(nextCycle);
-        nextCycle.setStatus(PMCycleStatus.REGISTERED);
-        Mockito.when(service.updateStatus(nextCycle.getUuid(), PMCycleStatus.REGISTERED)).thenReturn(nextCycle);
 
         //when
         handler.execute(executionContext);
 
         //then
-        Mockito.verify(service, Mockito.times(PM_CYCLE_REPEATS_LEFT)).start(Mockito.any(PMCycle.class));
+        assertNull(cycle.getUuid());
+        assertNotNull(cycle.getProperties());
+        assertNotEquals(START_TIME, cycle.getStartTime());
     }
 
     private PMCycle buildPmCycle() {
@@ -89,8 +94,8 @@ class PMCycleRepeatHandlerTest {
                 .type(PMCycleType.FISCAL)
                 .entryConfigKey(ENTRY_CONFIG_KEY)
                 .status(PMCycleStatus.COMPLETED)
-                .startTime(LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC))
-                .endTime(LocalDate.now().plusYears(1).atStartOfDay().toInstant(ZoneOffset.UTC))
+                .startTime(START_TIME)
+                .endTime(END_TIME)
                 .createdBy(colleagueSimple)
                 .template(file)
                 .metadata(metadata)
