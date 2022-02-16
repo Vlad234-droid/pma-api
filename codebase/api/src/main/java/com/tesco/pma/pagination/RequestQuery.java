@@ -7,7 +7,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 /**
@@ -71,7 +76,7 @@ public class RequestQuery {
     public static RequestQuery create(Map<String, Object> filters) {
         var rq = new RequestQuery();
 
-        if(filters == null){
+        if (filters == null) {
             return rq;
         }
 
