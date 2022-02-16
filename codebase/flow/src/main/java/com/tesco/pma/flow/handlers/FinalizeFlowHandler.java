@@ -6,15 +6,10 @@ import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.flow.FlowParameters;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class FinalizeFlowHandler extends CamundaAbstractFlowHandler {
 
     private final PMCycleService pmCycleService;

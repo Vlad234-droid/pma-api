@@ -1,0 +1,23 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet author="vadim.shatokhin" id="1">
+        <sql><![CDATA[
+            drop index if exists coll_cycle_unique;
+
+            CREATE UNIQUE INDEX if not exists colleague_cycle_ux ON pm_colleague_cycle(colleague_uuid, status_id)
+            where status_id <> 2;
+            ]]>
+        </sql>
+        <rollback>
+            <sql><![CDATA[
+            drop index if exists colleague_cycle_ux;
+
+            CREATE UNIQUE INDEX if not exists coll_cycle_unique ON pm_colleague_cycle(colleague_uuid, cycle_uuid, status_id)
+            where status_id = 1;
+            ]]></sql>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

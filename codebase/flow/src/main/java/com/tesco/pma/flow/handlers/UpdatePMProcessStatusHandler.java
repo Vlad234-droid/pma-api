@@ -5,7 +5,6 @@ import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.flow.PMProcessFlowVariables;
 import com.tesco.pma.process.api.PMProcessStatus;
 import com.tesco.pma.process.service.PMProcessService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 /**
  * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 08.10.2021 Time: 12:28
  */
-@Slf4j
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class UpdatePMProcessStatusHandler extends AbstractUpdateEnumStatusHandler<PMProcessStatus> {

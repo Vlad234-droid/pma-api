@@ -11,8 +11,6 @@ import com.tesco.pma.exception.AlreadyExistsException;
 import com.tesco.pma.flow.FlowParameters;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.BpmnError;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -20,7 +18,6 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class CreateColleagueCycleHandler extends AbstractColleagueCycleHandler {
     private static final String P_STATUS = "status";
     private static final String P_CYCLE_UUID = "cycleUuid";

@@ -12,6 +12,7 @@ import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.flow.FlowParameters;
+import com.tesco.pma.organisation.service.ConfigEntryService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -39,6 +40,8 @@ class PMColleagueCycleHandlerTest {
     @MockBean
     private PMColleagueCycleService pmColleagueCycleService;
     @MockBean
+    private ConfigEntryService configEntryService;
+    @MockBean
     private PMCycleService pmCycleService;
     @SpyBean
     private PMColleagueCycleHandler handler;
@@ -52,7 +55,7 @@ class PMColleagueCycleHandlerTest {
                 .build();
         List<ColleagueEntity> colleagues = Collections.singletonList(new ColleagueEntity());
         DictionaryFilter<PMCycleStatus> statusFilter = DictionaryFilter.excludeFilter(PMCycleStatus.ACTIVE);
-        Mockito.when(pmColleagueCycleService.findColleagues(KEY, statusFilter)).thenReturn(colleagues);
+        Mockito.when(configEntryService.findColleaguesByCompositeKey(KEY, statusFilter)).thenReturn(colleagues);
 
         var pmcr = new CompositePMCycleResponse();
         pmcr.setCycle(pmCycle);
@@ -83,7 +86,7 @@ class PMColleagueCycleHandlerTest {
         colleagueEntity.setHireDate(hiringDate);
         List<ColleagueEntity> colleagues = Collections.singletonList(colleagueEntity);
         DictionaryFilter<PMCycleStatus> statusFilter = DictionaryFilter.excludeFilter(PMCycleStatus.ACTIVE);
-        Mockito.when(pmColleagueCycleService.findColleagues(KEY, statusFilter)).thenReturn(colleagues);
+        Mockito.when(configEntryService.findColleaguesByCompositeKey(KEY, statusFilter)).thenReturn(colleagues);
 
         var pmcr = new CompositePMCycleResponse();
         pmcr.setCycle(pmCycle);

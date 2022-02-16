@@ -29,7 +29,7 @@ public class DefaultAttributesServiceTest {
     private final NamedMessageSourceAccessor messages = Mockito.mock(NamedMessageSourceAccessor.class);
 
     private final DefaultAttributesService defaultAttributesService =
-            new DefaultAttributesServiceImp(defaultAttributesDAO, profileService, reviewService, messages);
+            new DefaultAttributesServiceImpl(defaultAttributesDAO, profileService, reviewService, messages);
 
     @Test
     public void updateDefaultAttributesTest(){

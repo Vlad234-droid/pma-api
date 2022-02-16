@@ -125,7 +125,18 @@
         JOIN country co ON co.code = c.country_code
         LEFT JOIN work_level wl ON wl.code = c.work_level
         LEFT JOIN department d ON d.id = c.department_id
+        <if test="statusFilter != null and !statusFilter.isEmpty()">
+            LEFT JOIN pm_colleague_cycle pcc on c.uuid = pcc.colleague_uuid
+        </if>
         <include refid="whereClauseFindColleagueByKey"/>
+
+        <if test="statusFilter != null and !statusFilter.isEmpty()">
+            AND <if test="!statusFilter.isInclude()">NOT</if> (COALESCE(STATUS_ID, -999) = ANY(ARRAY
+            <foreach collection="statusFilter.getItems()" item="s" index="i" open="[" separator="," close="]">
+                #{s.id}
+            </foreach>
+            ))
+        </if>
     </select>
 
     <select id="isColleagueExistsForCompositeKey" resultType="boolean">
@@ -146,310 +157,32 @@
     <sql id="whereClauseFindColleagueByKey">
         <where>
             <choose>
-                <when test="key == 'group'">
-                    wl.code IN ('WL3', 'WL4', 'WL5')
-                    AND co.code IN ('GB', 'IE', 'IN')
-                    AND d.business_type != 'Bank'
+                <when test="key == 'overall_leadership/group_a/wl4_wl5'">
+                    wl.code IN ('WL4', 'WL5')
+                    AND (c.legal_entity IS NULL OR UPPER(c.legal_entity) NOT IN (
+                    UPPER('TESCO (POLSKA) sp. z o.o.'),
+                    UPPER('Tesco Underwriting Limited'),
+                    UPPER('TESCO-GLOBAL Stores Privately Held Co. Ltd'),
+                    UPPER('Tesco Pension Investment Limited'),
+                    UPPER('Tesco Stores ČR a.s.'),
+                    UPPER('Tesco Personal Finance PLC')))
                 </when>
-                <when test="key == 'group/ho_c'">
-                    wl.code IN ('WL3', 'WL4', 'WL5')
-                    AND co.code IN ('GB', 'IE', 'IN')
-                    AND d.business_type IN ('Office', 'office','Store','Distribution')
-                </when>
-                <when test="key == 'group/ho_c/salaried'">
-                    wl.code IN ('WL3', 'WL4', 'WL5')
-                    AND co.code IN ('GB', 'IE', 'IN')
-                    AND d.business_type IN ('Office', 'office','Store','Distribution')
-                    AND c.salary_frequency = 'ANNUAL'
-                </when>
-                <when test="key == 'group/ho_c/salaried/wl3'">
+                <when test="key == 'overall_leadership/group_a/wl3'">
                     wl.code = 'WL3'
-                    AND co.code IN ('GB', 'IE', 'IN')
-                    AND d.business_type IN ('Office', 'office','Store','Distribution')
-                    AND c.salary_frequency = 'ANNUAL'
+                    AND (c.legal_entity IS NULL OR UPPER(c.legal_entity) NOT IN (
+                    UPPER('TESCO (POLSKA) sp. z o.o.'),
+                    UPPER('Tesco Underwriting Limited'),
+                    UPPER('TESCO-GLOBAL Stores Privately Held Co. Ltd'),
+                    UPPER('Tesco Pension Investment Limited'),
+                    UPPER('Tesco Stores ČR a.s.'),
+                    UPPER('Tesco Personal Finance PLC'),
+                    UPPER('Tesco International Sourcing Limited'),
+                    UPPER('Tesco Sourcing India Private Ltd'),
+                    UPPER('Tesco International Sourcing Limited Hong Kong'),
+                    UPPER('Äì Sucursala Bucuresti'),
+                    UPPER('Tesco Joint Buying Service (Shanghai) Co.')))
+                    AND UPPER(c.iam_source) != UPPER('Tesco Mobile')
                 </when>
-                <when test="key == 'group/ho_c/salaried/wl4'">
-                    wl.code = 'WL4'
-                    AND co.code IN ('GB', 'IE', 'IN')
-                    AND d.business_type IN ('Office', 'office','Store','Distribution')
-                    AND c.salary_frequency = 'ANNUAL'
-                </when>
-                <when test="key == 'group/ho_c/salaried/wl5'">
-                    wl.code = 'WL5'
-                    AND co.code IN ('GB', 'IE', 'IN')
-                    AND d.business_type IN ('Office', 'office','Store','Distribution')
-                    AND c.salary_frequency = 'ANNUAL'
-                </when>
-                <when test="key == 'uk'">
-                    co.code = 'GB'
-                </when>
-                <when test="key == 'uk/ho'">
-                    co.code = 'GB'
-                    AND d.business_type IN ('Office', 'office')
-                </when>
-                <when test="key == 'uk/ho/salaried'">
-                    co.code = 'GB'
-                    AND d.business_type IN ('Office', 'office')
-                    AND c.salary_frequency = 'ANNUAL'
-                </when>
-                <when test="key == 'uk/ho/salaried/wl1'">
-                    co.code = 'GB'
-                    AND d.business_type IN ('Office', 'office')
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL1'
-                </when>
-                <when test="key == 'uk/ho/salaried/wl2'">
-                    co.code = 'GB'
-                    AND d.business_type IN ('Office', 'office')
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL2'
-                </when>
-                <when test="key == 'uk/channels'">
-                    co.code = 'GB'
-                    AND d.business_type = 'Store'
-                </when>
-                <when test="key == 'uk/channels/salaried'">
-                    co.code = 'GB'
-                    AND d.business_type = 'Store'
-                    AND c.salary_frequency = 'ANNUAL'
-                </when>
-                <when test="key == 'uk/channels/salaried/wl2_on_bonus'">
-                    co.code = 'GB'
-                    AND d.business_type = 'Store'
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL2'
-                </when>
-                <when test="key == 'uk/channels/salaried/wl2_tl'">
-                    co.code = 'GB'
-                    AND d.business_type = 'Store'
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL2'
-                    AND j.name IN ('Team Leader', 'Shift Leader')
-                </when>
-                <when test="key == 'uk/channels/salaried/wl1'">
-                    co.code = 'GB'
-                    AND d.business_type = 'Store'
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL1'
-                </when>
-                <when test="key == 'uk/channels/hp'">
-                    co.code = 'GB'
-                    AND d.business_type = 'Store'
-                    AND c.salary_frequency = 'HOURLY'
-                </when>
-                <when test="key == 'uk/channels/hp/colleague'">
-                    co.code = 'GB'
-                    AND d.business_type = 'Store'
-                    AND c.salary_frequency = 'HOURLY'
-                </when>
-                <when test="key == 'roi/ho_c'">
-                    co.code = 'IE'
-                    AND d.business_type IN ('Office', 'office', 'stores')
-                </when>
-                <when test="key == 'roi/ho_c/salaried'">
-                    co.code = 'IE'
-                    AND d.business_type IN ('Office', 'office', 'stores')
-                    AND c.salary_frequency = 'ANNUAL'
-                </when>
-                <when test="key == 'roi/ho_c/salaried/wl1'">
-                    co.code = 'IE'
-                    AND d.business_type IN ('Office', 'office', 'stores')
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL1'
-                </when>
-                <when test="key == 'roi/ho_c/salaried/wl2'">
-                    co.code = 'IE'
-                    AND d.business_type IN ('Office', 'office', 'stores')
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL2'
-                </when>
-                <when test="key == 'india'">
-                    co.code = 'IN'
-                </when>
-                <when test="key == 'india/ho'">
-                    co.code = 'IN'
-                    AND d.business_type IN ('Office', 'office')
-                </when>
-                <when test="key == 'india/ho/salaried'">
-                    co.code = 'IN'
-                    AND d.business_type IN ('Office', 'office')
-                    AND c.salary_frequency = 'ANNUAL'
-                </when>
-                <when test="key == 'india/ho/salaried/wl1'">
-                    co.code = 'IN'
-                    AND d.business_type IN ('Office', 'office')
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL1'
-                </when>
-                <when test="key == 'india/ho/salaried/wl2'">
-                    co.code = 'IN'
-                    AND d.business_type IN ('Office', 'office')
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL2'
-                </when>
-                <when test="key == 'uk_m'">
-                    c.iam_source = 'UKMaintenance'
-                </when>
-                <when test="key == 'uk_m/salaried'">
-                    c.iam_source = 'UKMaintenance'
-                    AND c.salary_frequency = 'ANNUAL'
-                </when>
-                <when test="key == 'uk_m/salaried/wl1'">
-                    c.iam_source = 'UKMaintenance'
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL1'
-                </when>
-                <when test="key == 'uk_m/salaried/wl2'">
-                    c.iam_source = 'UKMaintenance'
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL2'
-                </when>
-                <when test="key == 'uk_h_c'">
-                    c.iam_source = 'UK Hospitality'
-                </when>
-                <when test="key == 'uk_h_c/ho'">
-                    c.iam_source = 'UK Hospitality'
-                    AND d.business_type IN ('Office', 'office')
-                </when>
-                <when test="key == 'uk_h_c/ho/salaried'">
-                    c.iam_source = 'UK Hospitality'
-                    AND d.business_type IN ('Office', 'office')
-                    AND c.salary_frequency = 'ANNUAL'
-                </when>
-                <when test="key == 'uk_h_c/ho/salaried/wl1'">
-                    c.iam_source = 'UK Hospitality'
-                    AND d.business_type IN ('Office', 'office')
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL1'
-                </when>
-                <when test="key == 'uk_h_c/ho/salaried/wl2'">
-                    c.iam_source = 'UK Hospitality'
-                    AND d.business_type IN ('Office', 'office')
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL2'
-                </when>
-                <when test="key == 'uk_h_c/ho/hp'">
-                    c.iam_source = 'UK Hospitality'
-                    AND d.business_type IN ('Office', 'office')
-                    AND c.salary_frequency = 'HOURLY'
-                </when>
-                <when test="key == 'uk_h_c/ho/hp/colleague'">
-                    c.iam_source = 'UK Hospitality'
-                    AND d.business_type IN ('Office', 'office')
-                    AND c.salary_frequency = 'HOURLY'
-                </when>
-                <when test="key == 'uk_d'">
-                    d.business_type IN ('depot', 'distribution')
-                </when>
-                <when test="key == 'uk_d/salaried'">
-                    d.business_type IN ('depot', 'distribution')
-                    AND c.salary_frequency = 'ANNUAL'
-                </when>
-                <when test="key == 'uk_d/salaried/wl1'">
-                    d.business_type IN ('depot', 'distribution')
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL1'
-                </when>
-                <when test="key == 'uk_d/salaried/wl2'">
-                    d.business_type IN ('depot', 'distribution')
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL2'
-                </when>
-                <when test="key == 'uk_d/hp_none_prod'">
-                    d.business_type IN ('depot', 'distribution')
-                    AND c.salary_frequency = 'HOURLY'
-                    AND j.name IN ('Warehouse clerical', 'People advisor', 'Planning clerk', 'People safety trainer',
-                    'Warehouse service co-ordinator','Store service co-ordinator')
-                </when>
-                <when test="key == 'uk_d/hp_none_prod/colleague'">
-                    d.business_type IN ('depot', 'distribution')
-                    AND c.salary_frequency = 'HOURLY'
-                    AND j.name IN ('Warehouse clerical', 'People advisor', 'Planning clerk', 'People safety trainer',
-                    'Warehouse service co-ordinator','Store service co-ordinator')
-                </when>
-                <when test="key == 'uk_d/hp_prod'">
-                    d.business_type IN ('depot', 'distribution')
-                    AND c.salary_frequency = 'HOURLY'
-                    AND j.name = 'Warehouse operative'
-                </when>
-                <when test="key == 'uk_d/hp_prod/colleague'">
-                    d.business_type IN ('depot', 'distribution')
-                    AND c.salary_frequency = 'HOURLY'
-                    AND j.name = 'Warehouse operative'
-                </when>
-                <when test="key == 'tb'">
-                    c.primary_entity = 'Tesco Bank'
-                </when>
-                <when test="key == 'tb/ho'">
-                    c.primary_entity = 'Tesco Bank'
-                    AND d.business_type IN ('Office', 'office')
-                </when>
-                <when test="key == 'tb/ho/salaried'">
-                    c.primary_entity = 'Tesco Bank'
-                    AND d.business_type IN ('Office', 'office')
-                    AND c.salary_frequency = 'ANNUAL'
-                </when>
-                <when test="key == 'tb/ho/salaried/wl1'">
-                    c.primary_entity = 'Tesco Bank'
-                    AND d.business_type IN ('Office', 'office')
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL1'
-                </when>
-                <when test="key == 'tb/ho/salaried/wl2'">
-                    c.primary_entity = 'Tesco Bank'
-                    AND d.business_type IN ('Office', 'office')
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL2'
-                </when>
-                <when test="key == 'tb/ho/salaried/wl3'">
-                    c.primary_entity = 'Tesco Bank'
-                    AND d.business_type IN ('Office', 'office')
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL3'
-                </when>
-                <when test="key == 'tb/ho/salaried/wl4'">
-                    c.primary_entity = 'Tesco Bank'
-                    AND d.business_type IN ('Office', 'office')
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL4'
-                </when>
-                <when test="key == 'tb/ho/salaried/wl5'">
-                    c.primary_entity = 'Tesco Bank'
-                    AND d.business_type IN ('Office', 'office')
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL5'
-                </when>
-                <when test="key == 'tm'">
-                    c.primary_entity = 'Tesco Mobile'
-                </when>
-                <when test="key == 'tm/ho'">
-                    c.primary_entity = 'Tesco Mobile'
-                    AND d.business_type IN ('Office', 'office')
-                </when>
-                <when test="key == 'tm/ho/salaried'">
-                    c.primary_entity = 'Tesco Mobile'
-                    AND d.business_type IN ('Office', 'office')
-                    AND c.salary_frequency = 'ANNUAL'
-                </when>
-                <when test="key == 'tm/ho/salaried/wl1'">
-                    c.primary_entity = 'Tesco Mobile'
-                    AND d.business_type IN ('Office', 'office')
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL1'
-                </when>
-                <when test="key == 'tm/ho/salaried/wl2'">
-                    c.primary_entity = 'Tesco Mobile'
-                    AND d.business_type IN ('Office', 'office')
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL2'
-                </when>
-                <when test="key == 'tm/ho/salaried/wl3'">
-                    c.primary_entity = 'Tesco Mobile'
-                    AND d.business_type IN ('Office', 'office')
-                    AND c.salary_frequency = 'ANNUAL'
-                    AND wl.code = 'WL3'
-                </when>
-
                 <otherwise>1!=1</otherwise>
             </choose>
         </where>

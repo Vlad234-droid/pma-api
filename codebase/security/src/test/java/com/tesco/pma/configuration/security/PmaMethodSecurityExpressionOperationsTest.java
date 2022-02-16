@@ -69,4 +69,11 @@ class PmaMethodSecurityExpressionOperationsTest {
         assertThat(instance.isProcessManager()).isTrue();
     }
 
+    @Test
+    void isExecutive() {
+        when(mockMethodSecurityExpressionOperations.hasRole("Executive")).thenReturn(true);
+
+        assertThat(instance.isExecutive()).isTrue();
+    }
+
 }

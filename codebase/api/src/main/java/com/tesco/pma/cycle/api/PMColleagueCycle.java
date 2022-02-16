@@ -27,6 +27,7 @@ public class PMColleagueCycle implements Serializable {
 
     PMCycleStatus status;
 
+    Instant creationTime;
     Instant startTime;
     Instant endTime;
 

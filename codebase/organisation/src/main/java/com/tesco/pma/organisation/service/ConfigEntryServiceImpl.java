@@ -1,7 +1,9 @@
 package com.tesco.pma.organisation.service;
 
+import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
@@ -29,7 +31,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -189,7 +190,7 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
     @Override
     public boolean isColleagueExistsForCompositeKey(UUID colleagueUuid, String compositeKey) {
         String searchKey = getSearchKey(compositeKey);
-        return dao.isColleagueExistsForCompositeKey(colleagueUuid, searchKey);
+        return !searchKey.isBlank() && dao.isColleagueExistsForCompositeKey(colleagueUuid, searchKey);
     }
 
     @Override
@@ -215,14 +216,24 @@ public class ConfigEntryServiceImpl implements ConfigEntryService {
 
     @Override
     public List<ColleagueEntity> findColleaguesByCompositeKey(String compositeKey) {
-        String searchKey = getSearchKey(compositeKey);
-        return dao.findColleaguesByCompositeKey(searchKey);
+        return findColleaguesByCompositeKey(compositeKey, null);
     }
 
-    private String getSearchKey(String compositeKey) {
-        var parts = compositeKey.split("/");
-        return IntStream.range(0, parts.length)
-                .filter(i -> i % 2 == 1).mapToObj(i -> parts[i]).collect(Collectors.joining("/"));
+    @Override
+    public List<ColleagueEntity> findColleaguesByCompositeKey(String compositeKey, DictionaryFilter<PMCycleStatus> statusFilter) {
+        String searchKey = getSearchKey(compositeKey);
+        return searchKey.isBlank() ? Collections.emptyList() : dao.findColleaguesByCompositeKey(searchKey, statusFilter);
+    }
+
+    static String getSearchKey(String compositeKey) {
+        if (compositeKey != null && !compositeKey.isBlank()) {
+            var versionPosition = compositeKey.indexOf("/#v");
+            if (versionPosition > -1) {
+                return compositeKey.substring(0, versionPosition);
+            }
+            return compositeKey;
+        }
+        return "";
     }
 
     private String buildCompositeKeySearchTerm(String key) {

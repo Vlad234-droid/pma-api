@@ -9,7 +9,6 @@ import com.tesco.pma.cycle.api.PMCycleType;
 import com.tesco.pma.cycle.api.model.PMElementType;
 import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.logging.LogFormatter;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -40,7 +39,6 @@ import static com.tesco.pma.flow.handlers.InitTimelinePointHandler.PropertyNames
  * @author Vadim Shatokhin <a href="mailto:vadim.shatokhin1@tesco.com">vadim.shatokhin1@tesco.com</a>
  * 2021-11-22 12:25
  */
-@Slf4j
 @Component
 public class InitTimelinePointHandler extends CamundaAbstractFlowHandler {
 
