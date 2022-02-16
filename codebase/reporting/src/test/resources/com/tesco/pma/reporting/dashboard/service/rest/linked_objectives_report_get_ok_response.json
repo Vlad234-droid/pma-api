@@ -4,91 +4,91 @@
     "metadata": {
       "columnMetadata": [
         {
-          "id": "IamId",
+          "id": "iam_id",
           "name": "Employee No",
           "type": "STRING",
           "description": "Employee No",
           "code": "Employee No"
         },
         {
-          "id": "ColleagueUUID",
+          "id": "colleague_uuid",
           "name": "Employee UUID",
           "type": "STRING",
           "description": "Employee UUID",
           "code": "Employee UUID"
         },
         {
-          "id": "FirstName",
+          "id": "first_name",
           "name": "First Name",
           "type": "STRING",
           "description": "First Name",
           "code": "First Name"
         },
         {
-          "id": "LastName",
+          "id": "last_name",
           "name": "Surname",
           "type": "STRING",
           "description": "Surname",
           "code": "Surname"
         },
         {
-          "id": "WorkingLevel",
+          "id": "working_level",
           "name": "Working level",
           "type": "STRING",
           "description": "Working level",
           "code": "Working level"
         },
         {
-          "id": "JobTitle",
+          "id": "job_title",
           "name": "Job title",
           "type": "STRING",
           "description": "Job title",
           "code": "Job title"
         },
         {
-          "id": "LineManager",
+          "id": "line_manager",
           "name": "Line Manager",
           "type": "STRING",
           "description": "Line Manager",
           "code": "Line Manager"
         },
         {
-          "id": "ObjectiveNumber",
+          "id": "objective_number",
           "name": "Objective number",
           "type": "INTEGER",
           "description": "Objective number",
           "code": "Objective number"
         },
         {
-          "id": "ObjectiveStatus",
+          "id": "objective_status",
           "name": "Objective Status",
           "type": "STRING",
           "description": "Objective Status",
           "code": "Objective Status"
         },
         {
-          "id": "Strategic_Priority",
+          "id": "strategic_priority",
           "name": "Strategic priority",
           "type": "STRING",
           "description": "Link to Strategic priorities",
           "code": "Strategic priority"
         },
         {
-          "id": "Title",
+          "id": "title",
           "name": "Objective title",
           "type": "STRING",
           "description": "Objective title",
           "code": "Objective title"
         },
         {
-          "id": "How_Achieved",
+          "id": "how_achieved",
           "name": "How achieved",
           "type": "STRING",
           "description": "How do I know I've ACHIEVED this objective?",
           "code": "How achieved"
         },
         {
-          "id": "How_Over_Achieved",
+          "id": "how_over_achieved",
           "name": "How over-achieved",
           "type": "STRING",
           "description": "How do I know I've OVER-ACHIEVED this objective?",
