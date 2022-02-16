@@ -1,12 +1,14 @@
 package com.tesco.pma.config.service;
 
-import com.tesco.pma.config.dao.ImportColleaguesDAO;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
+import com.tesco.pma.colleague.profile.exception.ErrorCodes;
+import com.tesco.pma.config.dao.ImportColleaguesDAO;
+import com.tesco.pma.config.domain.BatchImportResult;
 import com.tesco.pma.config.domain.ImportError;
 import com.tesco.pma.config.domain.ImportReport;
 import com.tesco.pma.config.domain.ImportRequest;
 import com.tesco.pma.config.domain.ImportRequestStatus;
-import com.tesco.pma.colleague.profile.exception.ErrorCodes;
+import com.tesco.pma.config.domain.UpdateColleagueManagerResult;
 import com.tesco.pma.config.parser.XlsxParser;
 import com.tesco.pma.config.parser.model.ParsingError;
 import com.tesco.pma.config.parser.model.ParsingResult;
@@ -17,6 +19,7 @@ import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.logging.TraceUtils;
+import com.tesco.pma.service.BatchService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -31,7 +34,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.COLLEAGUES_MANAGER_NOT_FOUND;
@@ -42,13 +44,12 @@ import static com.tesco.pma.colleague.profile.exception.ErrorCodes.INVALID_COLLE
 @RequiredArgsConstructor
 public class ImportColleagueServiceImpl implements ImportColleagueService {
 
-    private static final int BATCH_SIZE = 100;
-
     private final ImportColleaguesDAO importColleaguesDAO;
     private final NamedMessageSourceAccessor messages;
     private final EventSender eventSender;
     private final ProcessColleaguesDataService processColleaguesService;
     private final DefaultAttributesService defaultAttributesService;
+    private final BatchService batchService;
 
     @Override
     public ImportReport importColleagues(InputStream inputStream, String fileName) {
@@ -85,37 +86,6 @@ public class ImportColleagueServiceImpl implements ImportColleagueService {
         return importReport;
     }
 
-    private ImportReport processColleagues(UUID requestUuid, ParsingResult result, Set<ColleagueEntity.WorkLevel> workLevels,
-                                           Set<ColleagueEntity.Country> countries, Set<ColleagueEntity.Department> departments,
-                                           Set<ColleagueEntity.Job> jobs) {
-        var validationErrors = ColleagueEntityValidator.validateColleague(result.getData());
-        var colleagues = ColleagueEntityMapper.mapColleagues(result.getData(), workLevels, countries, departments, jobs, validationErrors);
-        var importReportBuilder = ImportReport.builder();
-        saveColleagues(colleagues, requestUuid, importReportBuilder);
-        validationErrors.forEach(ve -> importReportBuilder.skipColleague(
-                buildError(requestUuid, null, INVALID_COLLEAGUE_IDENTIFIER.getCode(),
-                        Map.of("id", StringUtils.defaultString(ve, "null")))));
-        return importReportBuilder.build();
-    }
-
-    private void saveColleagues(List<ColleagueEntity> colleagues, UUID requestUuid, ImportReport.ImportReportBuilder importReportBuilder) {
-        var colleagueUuids = colleagues.stream().map(ColleagueEntity::getUuid).collect(Collectors.toSet());
-
-        importReportBuilder.requestUuid(requestUuid);
-        var results = batchifyColleagues(colleagues).stream()
-                .map(processColleaguesService::processBatchColleagues).collect(Collectors.toList());
-
-        results.stream().flatMap(r -> r.getSaved().stream()).forEach(importReportBuilder::importColleague);
-
-        var managerResult = processColleaguesService.updateColleagueManagers(colleagueUuids, results);
-
-        managerResult.getManagerIsNotPresent().forEach((k, v) ->
-                importReportBuilder.warnColleague(buildError(requestUuid, k, COLLEAGUES_MANAGER_NOT_FOUND.getCode(),
-                        Map.of("colleagueUuid", k, "managerUuid", v))));
-
-
-    }
-
     @Override
     public ImportRequest getRequest(UUID requestUuid) {
         return Optional.ofNullable(importColleaguesDAO.getRequest(requestUuid))
@@ -146,11 +116,52 @@ public class ImportColleagueServiceImpl implements ImportColleagueService {
         importColleaguesDAO.updateRequest(request);
     }
 
-    private Collection<List<ColleagueEntity>> batchifyColleagues(Collection<ColleagueEntity> colleagues) {
-        final var counter = new AtomicInteger(0);
+    private ImportReport processColleagues(UUID requestUuid, ParsingResult result, Set<ColleagueEntity.WorkLevel> workLevels,
+                                           Set<ColleagueEntity.Country> countries, Set<ColleagueEntity.Department> departments,
+                                           Set<ColleagueEntity.Job> jobs) {
+        var validationErrors = ColleagueEntityValidator.validateColleague(result.getData());
+        var colleagues = ColleagueEntityMapper.mapColleagues(result.getData(), workLevels, countries, departments, jobs, validationErrors);
+        var importReportBuilder = ImportReport.builder();
+        saveColleagues(colleagues, requestUuid, importReportBuilder);
+        validationErrors.forEach(ve -> importReportBuilder.skipColleague(
+                buildError(requestUuid, null, INVALID_COLLEAGUE_IDENTIFIER.getCode(),
+                        Map.of("id", StringUtils.defaultString(ve, "null")))));
+        return importReportBuilder.build();
+    }
 
-        return colleagues.stream()
-                .collect(Collectors.groupingBy(it -> counter.getAndIncrement() / BATCH_SIZE)).values();
+    private void saveColleagues(List<ColleagueEntity> colleagues, UUID requestUuid, ImportReport.ImportReportBuilder importReportBuilder) {
+        var colleagueUuids = colleagues.stream().map(ColleagueEntity::getUuid).collect(Collectors.toSet());
+
+        importReportBuilder.requestUuid(requestUuid);
+        var results = batchService.batchifyCollection(colleagues).stream()
+                .map(processColleaguesService::processBatchColleagues).collect(Collectors.toList());
+
+        results.stream().flatMap(r -> r.getSaved().stream()).forEach(importReportBuilder::importColleague);
+
+        var managerResult = updateColleagueManagers(colleagueUuids, results);
+
+        managerResult.getManagerIsNotPresent().forEach((k, v) ->
+                importReportBuilder.warnColleague(buildError(requestUuid, k, COLLEAGUES_MANAGER_NOT_FOUND.getCode(),
+                        Map.of("colleagueUuid", k, "managerUuid", v))));
+    }
+
+    private UpdateColleagueManagerResult updateColleagueManagers(Set<UUID> colleagueUuids, List<BatchImportResult> results) {
+        var managerToUpdate = results.stream()
+                .flatMap(r -> r.getWithoutManagers().entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+
+        var managerIsPresent = managerToUpdate.entrySet().stream()
+                .filter(es -> colleagueUuids.contains(es.getValue()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        batchService.batchifyMap(managerIsPresent)
+                .forEach(processColleaguesService::updateColleagueManagers);
+
+        return new UpdateColleagueManagerResult(managerIsPresent,
+                managerToUpdate.entrySet().stream()
+                        .filter(es -> !managerIsPresent.containsKey(es.getKey()))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
     }
 
     private void createDefaultAttributes(ImportReport importReport) {

@@ -2,16 +2,15 @@ package com.tesco.pma.config.service;
 
 import com.tesco.pma.colleague.profile.dao.ProfileDAO;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
-import com.tesco.pma.config.parser.model.ParsingResult;
 import com.tesco.pma.config.domain.BatchImportResult;
-import com.tesco.pma.config.domain.UpdateColleagueManagerResult;
-import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.config.parser.model.ParsingResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,6 @@ import java.util.stream.Collectors;
 public class ProcessColleaguesDataServiceImpl implements ProcessColleaguesDataService {
 
     private final ProfileDAO profileDAO;
-    private final NamedMessageSourceAccessor messages;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -80,22 +78,8 @@ public class ProcessColleaguesDataServiceImpl implements ProcessColleaguesDataSe
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public UpdateColleagueManagerResult updateColleagueManagers(Set<UUID> colleagueUuids, List<BatchImportResult> results) {
-        var managerToUpdate = results.stream()
-                .flatMap(r -> r.getWithoutManagers().entrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-
-        var managerIsPresent = managerToUpdate.entrySet().stream()
-                .filter(es -> colleagueUuids.contains(es.getValue()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        managerIsPresent.forEach(profileDAO::updateColleagueManager);
-
-        return new UpdateColleagueManagerResult(managerIsPresent,
-                managerToUpdate.entrySet().stream()
-                        .filter(es -> !managerIsPresent.containsKey(es.getKey()))
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+    public void updateColleagueManagers(Collection<Map.Entry<UUID, UUID>> colleagueToManagerMap) {
+        colleagueToManagerMap.forEach(es -> profileDAO.updateColleagueManager(es.getKey(), es.getValue()));
     }
 
     private Set<UUID> getExistingManagersUuids(List<ColleagueEntity> colleagues) {

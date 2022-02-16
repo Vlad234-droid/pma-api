@@ -1,11 +1,12 @@
 package com.tesco.pma.config.service;
 
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
-import com.tesco.pma.config.parser.model.ParsingResult;
 import com.tesco.pma.config.domain.BatchImportResult;
-import com.tesco.pma.config.domain.UpdateColleagueManagerResult;
+import com.tesco.pma.config.parser.model.ParsingResult;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -43,7 +44,18 @@ public interface ProcessColleaguesDataService {
      */
     Set<ColleagueEntity.WorkLevel> saveWorkLevels(ParsingResult result);
 
+    /**
+     * Validates colleague manager and saves colleagues into db
+     *
+     * @param colleagues - list of colleague
+     * @return result of storage
+     */
     BatchImportResult processBatchColleagues(List<ColleagueEntity> colleagues);
 
-    UpdateColleagueManagerResult updateColleagueManagers(Set<UUID> colleagueUuids, List<BatchImportResult> results);
+    /**
+     * Updates colleague manager
+     *
+     * @param colleagueToManagerMap set of colleague identifier and manager identifier
+     */
+    void updateColleagueManagers(Collection<Map.Entry<UUID, UUID>> colleagueToManagerMap);
 }
