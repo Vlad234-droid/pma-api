@@ -39,6 +39,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DECLINED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MAX;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MIN;
@@ -170,6 +172,9 @@ class ReviewServiceImplTest {
         when(mockReviewDAO.getByParams(any(), any(), any(), any()))
                 .thenReturn(List.of(beforeReview));
 
+        when(mockReviewDmnService.getReviewAllowedStatuses(any(),any()))
+                .thenReturn(List.of(DRAFT));
+
         final var res = reviewService.updateReview(expectedReview, randomUUID, randomUUID, null);
 
         assertThat(res)
@@ -208,7 +213,7 @@ class ReviewServiceImplTest {
                 .thenReturn(1);
 
         when(mockReviewDmnService.getReviewAllowedStatuses(any(),any()))
-                .thenReturn(List.of(DRAFT.getCode()));
+                .thenReturn(List.of(DRAFT));
 
         final var res = reviewService.createReview(expectedReview, randomUUID, randomUUID);
 
@@ -242,6 +247,9 @@ class ReviewServiceImplTest {
 
         when(mockReviewDAO.deleteByParams(any(), any(), any(), any(), any()))
                 .thenReturn(0);
+
+        when(mockReviewDmnService.getReviewAllowedStatuses(any(),any()))
+                .thenReturn(List.of(DRAFT,DECLINED,APPROVED));
         final var exception = assertThrows(NotFoundException.class,
                 () -> reviewService.deleteReview(
                         performanceCycleUuid,

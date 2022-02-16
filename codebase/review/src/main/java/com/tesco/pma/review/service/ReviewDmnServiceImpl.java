@@ -1,12 +1,14 @@
 package com.tesco.pma.review.service;
 
 import com.tesco.pma.cycle.api.PMReviewType;
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.variable.Variables;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +21,7 @@ public class ReviewDmnServiceImpl implements ReviewDmnService {
     private static final String STATUS_VAR_KEY = "STATUS";
 
     @Override
-    public List<String> getReviewAllowedStatuses(PMReviewType reviewType, String operation) {
+    public List<PMTimelinePointStatus> getReviewAllowedStatuses(PMReviewType reviewType, String operation) {
         var decisionService = processEngine.getDecisionService();
 
         var variables = Variables.createVariables()
@@ -29,6 +31,8 @@ public class ReviewDmnServiceImpl implements ReviewDmnService {
         var result =
                 decisionService.evaluateDecisionTableByKey(REVIEW_OPERATION_ALLOWED_STATUSES_TABLE_KEY, variables);
 
-        return result.collectEntries(STATUS_VAR_KEY);
+        return result.collectEntries(STATUS_VAR_KEY).stream()
+                .map(s -> PMTimelinePointStatus.valueOf((String) s))
+                .collect(Collectors.toList());
     }
 }

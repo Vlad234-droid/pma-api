@@ -247,7 +247,7 @@ public class ReviewServiceImpl implements ReviewService {
                 throw notFound(ALLOWED_STATUSES_NOT_FOUND,
                         Map.of(OPERATION_PARAMETER_NAME, CREATE_OPERATION_NAME));
             }
-            if (allowedStatuses.contains(review.getStatus().getCode())) {
+            if (allowedStatuses.contains(review.getStatus())) {
                 reviewDAO.create(review);
                 return review;
             } else {
@@ -435,7 +435,7 @@ public class ReviewServiceImpl implements ReviewService {
                     Map.of(MIN_PARAMETER_NAME, minReviews));
         }
 
-        var allowedStatuses = getStatusesForDelete(timelinePoint.getReviewType());
+        var allowedStatuses = reviewDmnService.getReviewAllowedStatuses(timelinePoint.getReviewType(), DELETE_OPERATION_NAME);
         if (allowedStatuses.isEmpty()) {
             throw notFound(ALLOWED_STATUSES_NOT_FOUND,
                     Map.of(OPERATION_PARAMETER_NAME, DELETE_OPERATION_NAME));
@@ -549,7 +549,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private List<PMTimelinePointStatus> getAllowedStatusesForUpdate(PMReviewType reviewType, PMTimelinePointStatus newStatus) {
-        var allowedStatusesForUpdate = getStatusesForUpdate(reviewType);
+        var allowedStatusesForUpdate = reviewDmnService.getReviewAllowedStatuses(reviewType, UPDATE_OPERATION_NAME);
         var prevStatusesForChangeStatus = getPrevStatusesForChangeStatus(reviewType, newStatus);
         return allowedStatusesForUpdate.stream()
                 .filter(prevStatusesForChangeStatus::contains)
@@ -600,30 +600,6 @@ public class ReviewServiceImpl implements ReviewService {
         reviewAuditLogDAO.logOrgObjectiveAction(PUBLISH, loggedUserUuid);
         sendEvent(NF_ORGANISATION_OBJECTIVES_EVENT_NAME, WorkLevel.WL4, WorkLevel.WL5);
         return getPublishedOrgObjectives();
-    }
-
-    private List<PMTimelinePointStatus> getStatusesForCreate() {
-        return List.of(DRAFT, WAITING_FOR_APPROVAL);
-    }
-
-    private List<PMTimelinePointStatus> getStatusesForUpdate(PMReviewType reviewType) {
-        switch (reviewType) {
-            case OBJECTIVE:
-            case EYR:
-                return List.of(DRAFT, DECLINED, APPROVED);
-            case MYR:
-                return List.of(DRAFT, DECLINED);
-            default:
-                return Collections.emptyList();
-        }
-    }
-
-    private List<PMTimelinePointStatus> getStatusesForDelete(PMReviewType reviewType) {
-        if (reviewType.equals(OBJECTIVE)) {
-            return List.of(DRAFT, DECLINED, APPROVED);
-        } else {
-            return Collections.emptyList();
-        }
     }
 
     private List<PMTimelinePointStatus> getPrevStatusesForChangeStatus(PMReviewType reviewType, PMTimelinePointStatus newStatus) {

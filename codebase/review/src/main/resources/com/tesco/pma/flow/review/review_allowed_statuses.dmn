@@ -41,6 +41,72 @@
           <text>"WAITING_FOR_APPROVAL"</text>
         </outputEntry>
       </rule>
+      <rule id="DecisionRule_0lw2jf6">
+        <inputEntry id="UnaryTests_19bnb3u">
+          <text>"OBJECTIVE","MYR","EYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0x2d3hh">
+          <text>"UPDATE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0oukop9">
+          <text>"DRAFT"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0fg4vtv">
+        <inputEntry id="UnaryTests_09dg6jz">
+          <text>"OBJECTIVE","MYR","EYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1nr9zq3">
+          <text>"UPDATE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_02evqtb">
+          <text>"DECLINED"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_08zu1r9">
+        <inputEntry id="UnaryTests_1nix134">
+          <text>"OBJECTIVE","EYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_129cdvh">
+          <text>"UPDATE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0cm08fz">
+          <text>"APPROVED"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0h6k0v7">
+        <inputEntry id="UnaryTests_19xx0p7">
+          <text>"OBJECTIVE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1cc4196">
+          <text>"DELETE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1xm4nq8">
+          <text>"DRAFT"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0ab8595">
+        <inputEntry id="UnaryTests_1xde2fr">
+          <text>"OBJECTIVE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0bu11w6">
+          <text>"DELETE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0gjvhff">
+          <text>"DECLINED"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_14tyeya">
+        <inputEntry id="UnaryTests_1qhzgmf">
+          <text>"OBJECTIVE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0dtuimj">
+          <text>"DELETE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0zk5vgm">
+          <text>"APPROVED"</text>
+        </outputEntry>
+      </rule>
     </decisionTable>
   </decision>
   <inputData id="InputData_1r42hau" name="Review type" />
