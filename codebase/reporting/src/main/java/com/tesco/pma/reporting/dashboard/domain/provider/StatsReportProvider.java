@@ -80,14 +80,6 @@ public class StatsReportProvider implements Reportable {
         MYR_APPROVED_PERCENTAGE("myr-approved-percentage",
                 "Mid-year forms approved percentage", INTEGER,
                 "Number of individuals with approved mid-year reviews/all individuals with reviews to submit"),
-        EYR_SUBMITTED_PERCENTAGE("eyr-submitted-percentage",
-                "End-year forms submitted percentage", INTEGER,
-                "Number of individuals with submitted end-year reviews/all individuals with reviews to submit"),
-        EYR_APPROVED_PERCENTAGE("eyr-approved-percentage",
-                "End-year forms approved percentage", INTEGER,
-                "Number of individuals with approved end-year reviews/all individuals with reviews to submit"),
-
-        // myr ratings
 
         MYR_RATING_BREAKDOWN_BELOW_EXPECTED_PERCENTAGE("myr-rating-breakdown-below-expected-percentage",
                 "Mid-year rating breakdown Below expected percentage", INTEGER,
@@ -118,7 +110,12 @@ public class StatsReportProvider implements Reportable {
                 "Number of individuals with approved overall rating 'Outstanding' individuals count"),
 
 
-        // eyr ratings
+        EYR_SUBMITTED_PERCENTAGE("eyr-submitted-percentage",
+                "End-year forms submitted percentage", INTEGER,
+                "Number of individuals with submitted end-year reviews/all individuals with reviews to submit"),
+        EYR_APPROVED_PERCENTAGE("eyr-approved-percentage",
+                "End-year forms approved percentage", INTEGER,
+                "Number of individuals with approved end-year reviews/all individuals with reviews to submit"),
 
         EYR_RATING_BREAKDOWN_BELOW_EXPECTED_PERCENTAGE("eyr-rating-breakdown-below-expected-percentage",
                 "End-year rating breakdown Below expected percentage", INTEGER,
@@ -147,6 +144,14 @@ public class StatsReportProvider implements Reportable {
         EYR_RATING_BREAKDOWN_OUTSTANDING_COUNT("eyr-rating-breakdown-outstanding-count",
                 "End-year rating breakdown Outstanding count", INTEGER,
                 "Number of individuals with approved overall rating 'Outstanding' individuals count"),
+
+        FEEDBACK_REQUESTED_PERCENTAGE("feedback-requested-percentage",
+                "In the moment Feedback requested percentage", INTEGER,
+                "Number of individuals requesting feedback/all individuals"),
+
+        FEEDBACK_GIVEN_PERCENTAGE("feedback-given-percentage",
+                "In the moment Feedback given percentage", INTEGER,
+                "Number of individuals giving feedback/all individuals"),
 
         NEW_TO_BUSINESS_COUNT("new-to-business-count",
                 "New to business count", INTEGER,
@@ -182,15 +187,7 @@ public class StatsReportProvider implements Reportable {
 
         ANNIVERSARY_REVIEW_PER_QUARTER_4_COUNT("anniversary-review-per-quarter-4-count",
                 "Anniversary reviews completed per quarter 4 count", INTEGER,
-                "Number of individuals with approved anniversary reviews in Quarter 4"),
-
-        FEEDBACK_REQUESTED_PERCENTAGE("feedback-requested-percentage",
-                "In the moment Feedback requested percentage", INTEGER,
-                "Number of individuals requesting feedback/all individuals"),
-
-        FEEDBACK_GIVEN_PERCENTAGE("feedback-given-percentage",
-                "In the moment Feedback given percentage", INTEGER,
-                "Number of individuals giving feedback/all individuals");
+                "Number of individuals with approved anniversary reviews in Quarter 4");
 
 
         private final ColumnMetadata columnMetadata;
