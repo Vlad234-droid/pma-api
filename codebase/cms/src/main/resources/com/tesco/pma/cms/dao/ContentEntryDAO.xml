@@ -26,7 +26,7 @@
         <where>
             <foreach collection="requestQuery.filters" item="filter" index="index">
                 <if test="filter.operand.name == 'EQUALS' and filter.property == 'uuid'">
-                    AND <include refid="getFilterField"/> = #{filter.value}
+                    AND <include refid="getFilterField"/> = uuid(#{filter.value})
                 </if>
                 <if test="filter.operand.name == 'EQUALS' and filter.property == 'title'">
                     AND <include refid="getFilterField"/> = '${filter.value}'
