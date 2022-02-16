@@ -1,12 +1,12 @@
-package com.tesco.pma.colleague.profile.parser;
+package com.tesco.pma.config.parser;
 
 import com.github.pjfanning.xlsx.StreamingReader;
-import com.tesco.pma.colleague.profile.parser.model.FieldDescriptor;
-import com.tesco.pma.colleague.profile.parser.model.FieldSet;
-import com.tesco.pma.colleague.profile.parser.model.Metadata;
-import com.tesco.pma.colleague.profile.parser.model.ParsingError;
-import com.tesco.pma.colleague.profile.parser.model.ParsingResult;
-import com.tesco.pma.colleague.profile.parser.model.Value;
+import com.tesco.pma.config.parser.model.FieldDescriptor;
+import com.tesco.pma.config.parser.model.FieldSet;
+import com.tesco.pma.config.parser.model.Metadata;
+import com.tesco.pma.config.parser.model.ParsingError;
+import com.tesco.pma.config.parser.model.ParsingResult;
+import com.tesco.pma.config.parser.model.Value;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -46,10 +46,10 @@ import static com.tesco.pma.api.ValueType.BOOLEAN;
 import static com.tesco.pma.api.ValueType.DATE;
 import static com.tesco.pma.api.ValueType.NUMBER;
 import static com.tesco.pma.api.ValueType.STRING;
-import static com.tesco.pma.colleague.profile.parser.ParsingErrorCode.PARSE_IO;
-import static com.tesco.pma.colleague.profile.parser.ParsingErrorCode.PARSE_NOT_OOXML;
-import static com.tesco.pma.colleague.profile.parser.ParsingErrorCode.PARSE_PASSWORD_PROTECTED;
-import static com.tesco.pma.colleague.profile.parser.ParsingErrorCode.PARSE_UNHANDLED_ERROR;
+import static com.tesco.pma.config.parser.ParsingErrorCode.PARSE_IO;
+import static com.tesco.pma.config.parser.ParsingErrorCode.PARSE_NOT_OOXML;
+import static com.tesco.pma.config.parser.ParsingErrorCode.PARSE_PASSWORD_PROTECTED;
+import static com.tesco.pma.config.parser.ParsingErrorCode.PARSE_UNHANDLED_ERROR;
 
 @Slf4j
 @Data

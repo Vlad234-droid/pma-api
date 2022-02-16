@@ -1,4 +1,4 @@
-package com.tesco.pma.colleague.profile.parser;
+package com.tesco.pma.config.parser;
 
 import com.tesco.pma.error.ErrorCodeAware;
 

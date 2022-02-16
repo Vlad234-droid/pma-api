@@ -1,4 +1,4 @@
-package com.tesco.pma.colleague.profile.parser.model;
+package com.tesco.pma.config.parser.model;
 
 import com.tesco.pma.api.Identified;
 import lombok.Builder;
