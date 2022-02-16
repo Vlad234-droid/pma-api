@@ -8,6 +8,8 @@
             created_by="2d651ab5-638a-438c-a39c-339b8d226bac"
             created_time="2019-01-02"
             version="1"
+            properties="{&quot;image_link&quot;: &quot;link/test&quot;,
+                         &quot;description&quot;: &quot;Description init&quot;}"
     />
 
     <cms_content

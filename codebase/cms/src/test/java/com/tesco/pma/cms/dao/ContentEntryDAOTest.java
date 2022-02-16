@@ -1,6 +1,7 @@
 package com.tesco.pma.cms.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.tesco.pma.api.MapJson;
 import com.tesco.pma.cms.model.ContentEntry;
 import com.tesco.pma.cms.model.ContentStatus;
 import com.tesco.pma.dao.AbstractDAOTest;
@@ -12,6 +13,7 @@ import org.springframework.test.context.DynamicPropertySource;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,8 +39,9 @@ public class ContentEntryDAOTest extends AbstractDAOTest {
 
     @Test
     void createTest(){
+        var uuid = UUID.randomUUID();
         var content = new ContentEntry();
-        content.setUuid(UUID.randomUUID());
+        content.setUuid(uuid);
         content.setStatus(ContentStatus.DRAFT);
         content.setTitle("test3");
         content.setKey("some/key");
@@ -46,7 +49,15 @@ public class ContentEntryDAOTest extends AbstractDAOTest {
         content.setCreatedTime(Instant.now());
         content.setVersion(1);
 
+        var mapJson = new MapJson();
+        mapJson.setMapJson(Map.of("test", "test_val"));
+        content.setProperties(mapJson);
+
         assertEquals(1, contentEntryDAO.create(content));
+
+        var contentFetched = contentEntryDAO.find(RequestQuery.create("uuid_eq", uuid)).get(0);
+
+        assertEquals("test_val", contentFetched.getProperties().getMapJson().get("test"));
     }
 
     @Test
@@ -84,6 +95,17 @@ public class ContentEntryDAOTest extends AbstractDAOTest {
         rq.addFilters(KEY_EQ, KEY);
 
         assertEquals(3, contentEntryDAO.find(rq).size());
+
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "contents.xml"})
+    void propertiesTest() {
+
+        var content =
+                contentEntryDAO.find(RequestQuery.create("uuid_eq", UUID.fromString(TEST_CONTENT_UUID))).get(0);
+
+        assertEquals("link/test", content.getProperties().getMapJson().get("image_link"));
 
     }
 
