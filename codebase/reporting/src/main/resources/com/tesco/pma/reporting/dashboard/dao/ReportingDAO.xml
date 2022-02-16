@@ -152,7 +152,7 @@
           <if test="!requestQuery.filters.isEmpty()">
               <foreach collection="requestQuery.filters" item="filter" index="index">
                   <if test="filter.property != 'year'">
-                      <include refid="getExpressionGeneral"/>
+                      <include refid="getExpression"/>
                   </if>
               </foreach>
           </if>
@@ -193,7 +193,7 @@
               <if test="!requestQuery.filters.isEmpty()">
                   <foreach collection="requestQuery.filters" item="filter" index="index">
                       <if test="filter.property != 'year'">
-                          <include refid="getExpressionGeneral"/>
+                          <include refid="getExpression"/>
                       </if>
                   </foreach>
               </if>
@@ -243,7 +243,7 @@
         from enriched_colleagues ec;
     </select>
 
-    <sql id="prepareValuesGeneral">
+    <sql id="prepareValues">
         <foreach item="value" collection="filter.value" separator="," open="(" close=")">
             <choose>
                 <when test="filter.property == 'manager-uuid'">
@@ -256,7 +256,7 @@
         </foreach>
     </sql>
 
-    <sql id="prepareValueGeneral">
+    <sql id="prepareValue">
         <choose>
             <when test="filter.property == 'manager-uuid'">
                 '${filter.value}'::uuid
@@ -267,48 +267,48 @@
         </choose>
     </sql>
 
-    <sql id="getExpressionGeneral">
+    <sql id="getExpression">
         <choose>
             <when test="filter.operand.name == 'EQUALS'">
-                <include refid="getFilterFieldGeneral"/>
-                = <include refid="prepareValueGeneral"/>
+                <include refid="getFilterField"/>
+                = <include refid="prepareValue"/>
             </when>
             <when test="filter.operand.name == 'NOT_EQUALS'">
-                <include refid="getFilterFieldGeneral"/>
-                != <include refid="prepareValueGeneral"/>
+                <include refid="getFilterField"/>
+                != <include refid="prepareValue"/>
             </when>
             <when test="filter.operand.name == 'CONTAINS' and filter.property != 'manager-uuid'">
-                <include refid="getFilterFieldGeneral"/>
-                LIKE '%'||<include refid="prepareValueGeneral"/>||'%'
+                <include refid="getFilterField"/>
+                LIKE '%'||<include refid="prepareValue"/>||'%'
             </when>
             <when test="filter.operand.name == 'NOT_CONTAINS' and filter.property != 'manager-uuid'">
-                <include refid="getFilterFieldGeneral"/>
-                NOT LIKE '%'||<include refid="prepareValueGeneral"/>||'%'
+                <include refid="getFilterField"/>
+                NOT LIKE '%'||<include refid="prepareValue"/>||'%'
             </when>
             <when test="filter.operand.name == 'IN'">
-                <include refid="getFilterFieldGeneral"/>
+                <include refid="getFilterField"/>
                 IN
-                <include refid="prepareValuesGeneral"/>
+                <include refid="prepareValues"/>
             </when>
             <when test="filter.operand.name == 'NOT_IN'">
-                <include refid="getFilterFieldGeneral"/>
+                <include refid="getFilterField"/>
                 NOT IN
-                <include refid="prepareValuesGeneral"/>
+                <include refid="prepareValues"/>
             </when>
             <when test="filter.operand.name == 'NULL'">
                 <if test="filter.value == 'true'">
-                    <include refid="getFilterFieldGeneral"/>
+                    <include refid="getFilterField"/>
                     IS NULL
                 </if>
                 <if test="filter.value == 'false'">
-                    <include refid="getFilterFieldGeneral"/>
+                    <include refid="getFilterField"/>
                     IS NOT NULL
                 </if>
             </when>
         </choose>
     </sql>
 
-    <sql id="getFilterFieldGeneral">
+    <sql id="getFilterField">
         AND
         <choose>
             <when test="filter.property == 'work-level'">
