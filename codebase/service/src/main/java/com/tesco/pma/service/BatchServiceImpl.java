@@ -11,6 +11,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.ToIntFunction;
@@ -60,6 +61,18 @@ public class BatchServiceImpl implements BatchService {
         final var counter = new AtomicInteger(0);
 
         return originalList.stream()
+                .collect(Collectors.groupingBy(it -> counter.getAndIncrement() / batchSize)).values();
+    }
+
+    @Override
+    public  <T, P> Collection<List<Map.Entry<T, P>>> batchifyMap(Map<T, P> original) {
+        if (CollectionUtils.isEmpty(original)) {
+            return Collections.emptyList();
+        }
+
+        final var counter = new AtomicInteger(0);
+
+        return original.entrySet().stream()
                 .collect(Collectors.groupingBy(it -> counter.getAndIncrement() / batchSize)).values();
     }
 }

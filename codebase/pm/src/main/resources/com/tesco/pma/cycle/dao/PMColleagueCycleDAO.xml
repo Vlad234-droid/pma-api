@@ -93,17 +93,17 @@
                 #{cc.endTime},
                 #{cc.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
                 #{cc.creationTime})
-        ON CONFLICT(colleague_uuid, cycle_uuid, status_id)
-        WHERE status_id = 1
-        DO NOTHING
+        ON CONFLICT(colleague_uuid, status_id)
+            WHERE status_id &lt;&gt; 2
+            DO NOTHING
     </insert>
 
     <insert id="update" flushCache="true">
         UPDATE pm_colleague_cycle
-        SET colleague_uuid =#{cc.colleagueUuid},
+        SET colleague_uuid=#{cc.colleagueUuid},
             cycle_uuid=#{cc.cycleUuid},
             status_id=#{cc.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus},
-            start_time#{cc.startTime},
+            start_time=#{cc.startTime},
             end_time=#{cc.endTime},
             properties=#{cc.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler}
         WHERE uuid = #{cc.uuid}

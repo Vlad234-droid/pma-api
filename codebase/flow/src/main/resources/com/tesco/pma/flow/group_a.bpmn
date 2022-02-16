@@ -5,10 +5,11 @@
       <camunda:properties>
         <camunda:property name="pm_type" value="cycle" />
         <camunda:property name="pm_cycle_type" value="fiscal" />
-        <camunda:property name="pm_cycle_start_time" value="2021-03-01" />
+        <camunda:property name="pm_cycle_start_time" value="2022-02-21" />
         <camunda:property name="pm_cycle_before_start" value="P2W" />
         <camunda:property name="pm_cycle_before_end" value="P1W" />
-        <camunda:property name="pm_cycle_max" value="5" />
+        <camunda:property name="pm_cycle_max" value="1" />
+        <camunda:property name="pm_cycle_end_time" value="2023-02-28" />
       </camunda:properties>
     </bpmn:extensionElements>
     <bpmn:sequenceFlow id="Flow_1qhm8xl" name="Schedule" sourceRef="processColleagueCycles" targetRef="Gateway_1msj1uv" />
@@ -103,8 +104,8 @@
           <camunda:property name="pm_review_type" value="myr" />
           <camunda:property name="pm_review_start_delay" value="P6M" />
           <camunda:property name="pm_review_before_start" value="P2W" />
-          <camunda:property name="pm_review_before_end" value="P1W" />
-          <camunda:property name="pm_review_duration" value="P2W" />
+          <camunda:property name="pm_review_before_end" value="P2W" />
+          <camunda:property name="pm_review_duration" value="P4W" />
           <camunda:property name="pm_form_key" value="forms/standard_myr.form" />
           <camunda:property name="pm_timeline_point_code" value="MYR" />
           <camunda:property name="pm_timeline_point_description" value="Mid-year review" />
@@ -136,10 +137,10 @@
         <camunda:properties>
           <camunda:property name="pm_type" value="review" />
           <camunda:property name="pm_review_type" value="eyr" />
-          <camunda:property name="pm_review_start_delay" value="P50W" />
+          <camunda:property name="pm_review_start_delay" value="P44W" />
           <camunda:property name="pm_review_before_start" value="P2W" />
-          <camunda:property name="pm_review_before_end" value="P1W" />
-          <camunda:property name="pm_review_duration" value="P2W" />
+          <camunda:property name="pm_review_before_end" value="P2W" />
+          <camunda:property name="pm_review_duration" value="P8W" />
           <camunda:property name="pm_form_key" value="forms/group_a_eyr.form" />
           <camunda:property name="pm_timeline_point_code" value="EYR" />
           <camunda:property name="pm_timeline_point_description" value="Year-end review" />
