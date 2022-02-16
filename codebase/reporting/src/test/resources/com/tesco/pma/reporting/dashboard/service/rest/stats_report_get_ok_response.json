@@ -39,20 +39,6 @@
           "code": "Mid-year forms approved percentage"
         },
         {
-          "id": "eyr-submitted-percentage",
-          "name": "End-year forms submitted percentage",
-          "type": "INTEGER",
-          "description": "Number of individuals with submitted end-year reviews/all individuals with reviews to submit",
-          "code": "End-year forms submitted percentage"
-        },
-        {
-          "id": "eyr-approved-percentage",
-          "name": "End-year forms approved percentage",
-          "type": "INTEGER",
-          "description": "Number of individuals with approved end-year reviews/all individuals with reviews to submit",
-          "code": "End-year forms approved percentage"
-        },
-        {
           "id": "myr-rating-breakdown-below-expected-percentage",
           "name": "Mid-year rating breakdown Below expected percentage",
           "type": "INTEGER",
@@ -109,6 +95,20 @@
           "code": "Mid-year rating breakdown Outstanding count"
         },
         {
+          "id": "eyr-submitted-percentage",
+          "name": "End-year forms submitted percentage",
+          "type": "INTEGER",
+          "description": "Number of individuals with submitted end-year reviews/all individuals with reviews to submit",
+          "code": "End-year forms submitted percentage"
+        },
+        {
+          "id": "eyr-approved-percentage",
+          "name": "End-year forms approved percentage",
+          "type": "INTEGER",
+          "description": "Number of individuals with approved end-year reviews/all individuals with reviews to submit",
+          "code": "End-year forms approved percentage"
+        },
+        {
           "id": "eyr-rating-breakdown-below-expected-percentage",
           "name": "End-year rating breakdown Below expected percentage",
           "type": "INTEGER",
@@ -163,6 +163,20 @@
           "type": "INTEGER",
           "description": "Number of individuals with approved overall rating 'Outstanding' individuals count",
           "code": "End-year rating breakdown Outstanding count"
+        },
+        {
+          "id": "feedback-requested-percentage",
+          "name": "In the moment Feedback requested percentage",
+          "type": "INTEGER",
+          "description": "Number of individuals requesting feedback/all individuals",
+          "code": "In the moment Feedback requested percentage"
+        },
+        {
+          "id": "feedback-given-percentage",
+          "name": "In the moment Feedback given percentage",
+          "type": "INTEGER",
+          "description": "Number of individuals giving feedback/all individuals",
+          "code": "In the moment Feedback given percentage"
         },
         {
           "id": "new-to-business-count",
@@ -226,20 +240,6 @@
           "type": "INTEGER",
           "description": "Number of individuals with approved anniversary reviews in Quarter 4",
           "code": "Anniversary reviews completed per quarter 4 count"
-        },
-        {
-          "id": "feedback-requested-percentage",
-          "name": "In the moment Feedback requested percentage",
-          "type": "INTEGER",
-          "description": "Number of individuals requesting feedback/all individuals",
-          "code": "In the moment Feedback requested percentage"
-        },
-        {
-          "id": "feedback-given-percentage",
-          "name": "In the moment Feedback given percentage",
-          "type": "INTEGER",
-          "description": "Number of individuals giving feedback/all individuals",
-          "code": "In the moment Feedback given percentage"
         }
       ],
       "id": "statistics-report",
@@ -256,8 +256,6 @@
         100,
         50,
         100,
-        100,
-        100,
         0,
         0,
         50,
@@ -267,6 +265,8 @@
         0,
         0,
         100,
+        100,
+        100,
         1,
         0,
         0,
@@ -274,17 +274,17 @@
         0,
         100,
         1,
+        50,
+        100,
         2,
         33,
         1,
         66,
         2,
         100,
-        3,
+        2,
         33,
-        1,
-        50,
-        100
+        1
       ]
     ]
   }

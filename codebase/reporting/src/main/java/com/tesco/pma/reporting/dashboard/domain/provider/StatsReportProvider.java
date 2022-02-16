@@ -235,11 +235,9 @@ public class StatsReportProvider implements Reportable {
 
                 OBJECTIVES_SUBMITTED_PERCENTAGE.getColumnMetadata(),
                 OBJECTIVES_APPROVED_PERCENTAGE.getColumnMetadata(),
+
                 MYR_SUBMITTED_PERCENTAGE.getColumnMetadata(),
                 MYR_APPROVED_PERCENTAGE.getColumnMetadata(),
-                EYR_SUBMITTED_PERCENTAGE.getColumnMetadata(),
-                EYR_APPROVED_PERCENTAGE.getColumnMetadata(),
-
                 MYR_RATING_BREAKDOWN_BELOW_EXPECTED_PERCENTAGE.getColumnMetadata(),
                 MYR_RATING_BREAKDOWN_BELOW_EXPECTED_COUNT.getColumnMetadata(),
                 MYR_RATING_BREAKDOWN_SATISFACTORY_PERCENTAGE.getColumnMetadata(),
@@ -249,6 +247,8 @@ public class StatsReportProvider implements Reportable {
                 MYR_RATING_BREAKDOWN_OUTSTANDING_PERCENTAGE.getColumnMetadata(),
                 MYR_RATING_BREAKDOWN_OUTSTANDING_COUNT.getColumnMetadata(),
 
+                EYR_SUBMITTED_PERCENTAGE.getColumnMetadata(),
+                EYR_APPROVED_PERCENTAGE.getColumnMetadata(),
                 EYR_RATING_BREAKDOWN_BELOW_EXPECTED_PERCENTAGE.getColumnMetadata(),
                 EYR_RATING_BREAKDOWN_BELOW_EXPECTED_COUNT.getColumnMetadata(),
                 EYR_RATING_BREAKDOWN_SATISFACTORY_PERCENTAGE.getColumnMetadata(),
@@ -257,6 +257,9 @@ public class StatsReportProvider implements Reportable {
                 EYR_RATING_BREAKDOWN_GREAT_COUNT.getColumnMetadata(),
                 EYR_RATING_BREAKDOWN_OUTSTANDING_PERCENTAGE.getColumnMetadata(),
                 EYR_RATING_BREAKDOWN_OUTSTANDING_COUNT.getColumnMetadata(),
+
+                FEEDBACK_REQUESTED_PERCENTAGE.getColumnMetadata(),
+                FEEDBACK_GIVEN_PERCENTAGE.getColumnMetadata(),
 
                 NEW_TO_BUSINESS_COUNT.getColumnMetadata(),
 
@@ -267,10 +270,7 @@ public class StatsReportProvider implements Reportable {
                 ANNIVERSARY_REVIEW_PER_QUARTER_3_PERCENTAGE.getColumnMetadata(),
                 ANNIVERSARY_REVIEW_PER_QUARTER_3_COUNT.getColumnMetadata(),
                 ANNIVERSARY_REVIEW_PER_QUARTER_4_PERCENTAGE.getColumnMetadata(),
-                ANNIVERSARY_REVIEW_PER_QUARTER_4_COUNT.getColumnMetadata(),
-
-                FEEDBACK_REQUESTED_PERCENTAGE.getColumnMetadata(),
-                FEEDBACK_GIVEN_PERCENTAGE.getColumnMetadata()
+                ANNIVERSARY_REVIEW_PER_QUARTER_4_COUNT.getColumnMetadata()
         );
     }
 }

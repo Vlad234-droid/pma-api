@@ -26,9 +26,6 @@ public class StatsData {
 
     int myrSubmittedPercentage;
     int myrApprovedPercentage;
-    int eyrSubmittedPercentage;
-    int eyrApprovedPercentage;
-
     int myrRatingBreakdownBelowExpectedPercentage;
     long myrRatingBreakdownBelowExpectedCount;
     int myrRatingBreakdownSatisfactoryPercentage;
@@ -38,7 +35,8 @@ public class StatsData {
     int myrRatingBreakdownOutstandingPercentage;
     long myrRatingBreakdownOutstandingCount;
 
-
+    int eyrSubmittedPercentage;
+    int eyrApprovedPercentage;
     int eyrRatingBreakdownBelowExpectedPercentage;
     long eyrRatingBreakdownBelowExpectedCount;
     int eyrRatingBreakdownSatisfactoryPercentage;
@@ -47,6 +45,9 @@ public class StatsData {
     long eyrRatingBreakdownGreatCount;
     int eyrRatingBreakdownOutstandingPercentage;
     long eyrRatingBreakdownOutstandingCount;
+
+    int feedbackRequestedPercentage;
+    int feedbackGivenPercentage;
 
     long newToBusinessCount;
 
@@ -59,9 +60,6 @@ public class StatsData {
     int anniversaryReviewPerQuarter4Percentage;
     long anniversaryReviewPerQuarter4Count;
 
-    int feedbackRequestedPercentage;
-    int feedbackGivenPercentage;
-
     @SuppressWarnings("PMD.NcssCount")
     public List<Object> toList() {
         var statistics = new ArrayList<>();
@@ -72,9 +70,6 @@ public class StatsData {
 
         statistics.add(myrSubmittedPercentage);
         statistics.add(myrApprovedPercentage);
-        statistics.add(eyrSubmittedPercentage);
-        statistics.add(eyrApprovedPercentage);
-
         statistics.add(myrRatingBreakdownBelowExpectedPercentage);
         statistics.add(myrRatingBreakdownBelowExpectedCount);
         statistics.add(myrRatingBreakdownSatisfactoryPercentage);
@@ -84,6 +79,8 @@ public class StatsData {
         statistics.add(myrRatingBreakdownOutstandingPercentage);
         statistics.add(myrRatingBreakdownOutstandingCount);
 
+        statistics.add(eyrSubmittedPercentage);
+        statistics.add(eyrApprovedPercentage);
         statistics.add(eyrRatingBreakdownBelowExpectedPercentage);
         statistics.add(eyrRatingBreakdownBelowExpectedCount);
         statistics.add(eyrRatingBreakdownSatisfactoryPercentage);
@@ -92,6 +89,9 @@ public class StatsData {
         statistics.add(eyrRatingBreakdownGreatCount);
         statistics.add(eyrRatingBreakdownOutstandingPercentage);
         statistics.add(eyrRatingBreakdownOutstandingCount);
+
+        statistics.add(feedbackRequestedPercentage);
+        statistics.add(feedbackGivenPercentage);
 
         statistics.add(newToBusinessCount);
 
@@ -103,9 +103,6 @@ public class StatsData {
         statistics.add(anniversaryReviewPerQuarter3Count);
         statistics.add(anniversaryReviewPerQuarter4Percentage);
         statistics.add(anniversaryReviewPerQuarter4Count);
-
-        statistics.add(feedbackRequestedPercentage);
-        statistics.add(feedbackGivenPercentage);
 
         return statistics;
     }

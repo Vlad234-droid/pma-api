@@ -276,7 +276,7 @@ class ReportingEndpointTest extends AbstractEndpointTest {
         data.setAnniversaryReviewPerQuarter2Percentage(66);
         data.setAnniversaryReviewPerQuarter2Count(2);
         data.setAnniversaryReviewPerQuarter3Percentage(100);
-        data.setAnniversaryReviewPerQuarter3Count(3);
+        data.setAnniversaryReviewPerQuarter3Count(2);
         data.setAnniversaryReviewPerQuarter4Percentage(33);
         data.setAnniversaryReviewPerQuarter4Count(1);
         data.setNewToBusinessCount(2);
