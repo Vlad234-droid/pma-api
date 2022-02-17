@@ -13,6 +13,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -115,6 +116,16 @@ public class ProfileDAOTest extends AbstractDAOTest {
         assertNotNull(colleague.getDepartment());
         assertNotNull(colleague.getJob());
         assertNotNull(colleague.getWorkLevel());
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
+    void getAllColleaguesUuids() {
+        var uuids = dao.getAllColleaguesUuids(Set.of(COLLEAGUE_UUID, COLLEAGUE_UUID_1, UUID.randomUUID()));
+
+        assertEquals(2, uuids.size());
+        assertTrue(uuids.contains(COLLEAGUE_UUID));
+        assertTrue(uuids.contains(COLLEAGUE_UUID_1));
     }
 
     @Test
@@ -392,8 +403,8 @@ public class ProfileDAOTest extends AbstractDAOTest {
                         "manager-uuid_eq", MANAGER_UUID_1.toString())));
 
         assertEquals(1, colleagues.size());
-        assertEquals(1, dao.findColleagueSuggestionsByFullName(createRQ(Map.of("first-name_like","ohn"))).size());
-        assertEquals(1, dao.findColleagueSuggestionsByFullName(createRQ(Map.of("last-name_like","Smith"))).size());
+        assertEquals(1, dao.findColleagueSuggestionsByFullName(createRQ(Map.of("first-name_like", "ohn"))).size());
+        assertEquals(1, dao.findColleagueSuggestionsByFullName(createRQ(Map.of("last-name_like", "Smith"))).size());
 
         var colleague = dao.findColleagueSuggestionsByFullName(createRQ(Map.of(
                 "first-name_eq", "John",
@@ -419,7 +430,7 @@ public class ProfileDAOTest extends AbstractDAOTest {
 
     }
 
-    private RequestQuery createRQ(Map<String, Object> filters){
+    private RequestQuery createRQ(Map<String, Object> filters) {
         var result = new RequestQuery();
         filters.forEach(result::addFilters);
         return result;

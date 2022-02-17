@@ -1,0 +1,1252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="help_faq_urls_file" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
+  <decision id="help_faq_urls" name="Help &#38; FAQ URLs">
+    <informationRequirement id="InformationRequirement_0jepqwb">
+      <requiredInput href="#InputData_0uiqhs7" />
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_1k53hsx">
+      <requiredInput href="#InputData_1bh43jc" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_1uq1yqf" hitPolicy="FIRST">
+      <input id="Input_1" label="Key" biodi:width="295">
+        <inputExpression id="InputExpression_1" typeRef="string" expressionLanguage="juel">
+          <text>${KEY}</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1nsojwf" label="Country" biodi:width="150">
+        <inputExpression id="LiteralExpression_036tog9" typeRef="string" expressionLanguage="juel">
+          <text>${COLLEAGUE.countryCode}</text>
+        </inputExpression>
+        <inputValues id="UnaryTests_05u9yrt">
+          <text>"IE","IN"</text>
+        </inputValues>
+      </input>
+      <input id="InputClause_121u26s" label="IAM Source" biodi:width="150">
+        <inputExpression id="LiteralExpression_10ojknf" typeRef="string" expressionLanguage="juel">
+          <text>${COLLEAGUE.externalSystems.iam == null ? "_null" : COLLEAGUE.externalSystems.iam.source.toLowerCase()}</text>
+        </inputExpression>
+        <inputValues id="UnaryTests_1m4fhu8">
+          <text>"peopledataints","uk hospitality"</text>
+        </inputValues>
+      </input>
+      <output id="Output_1" label="URL" name="URL" typeRef="string" biodi:width="645" />
+      <rule id="DecisionRule_0vqbfbt">
+        <description>Colleague</description>
+        <inputEntry id="UnaryTests_17248ni">
+          <text>"system-guidance-and-faqs"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1gfdk0q">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_009kgih">
+          <text>"peopledataints"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_15dkl10">
+          <text>"https://tesco.sharepoint.com/:u:/r/sites/TescoSourcingPeopleTeamSite/SitePages/System-Guides,-Learning-and-Help.aspx?csf=1&amp;web=1&amp;e=HUY4gs"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1gkocv6">
+        <inputEntry id="UnaryTests_06l3tkx">
+          <text>"system-guidance-and-faqs"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1w9g66d">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_19np5br">
+          <text>"uk hospitality"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1btir0u">
+          <text>"https://help.ourtesco.com/hc/en-us/sections/4419952578962-System-Guidance-and-FAQs"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1omk0i0">
+        <inputEntry id="UnaryTests_127e6zn">
+          <text>"system-guidance-and-faqs"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0rz7gpr">
+          <text>"IE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_18bn0yv">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ww05ab">
+          <text>"https://colleague-help.ourtesco.com/hc/en-us/articles/4417350843540-System-guides-learning-and-help"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0mj4bev">
+        <inputEntry id="UnaryTests_1kow1c1">
+          <text>"system-guidance-and-faqs"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0xlxnfr">
+          <text>"IN"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_00eodj1">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1hsokbr">
+          <text>"https://view.pagetiger.com/Your-ContributionBLR"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1vwpxdq">
+        <inputEntry id="UnaryTests_1fqrlo3">
+          <text>"system-guidance-and-faqs"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_02hmt3b">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1kgbmv6">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1pz2gir">
+          <text>"https://colleague-help.ourtesco.com/hc/en-us/articles/4417358220820-System-guides-learning-and-help"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1sw98ml">
+        <inputEntry id="UnaryTests_00bx8jm">
+          <text>"your-contribution"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1pbwwyh">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1nt4nw4">
+          <text>"peopledataints"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0vl7c4g">
+          <text>"https://tesco.sharepoint.com/:u:/r/sites/TescoSourcingPeopleTeamSite/SitePages/Your-Contribution.aspx?csf=1&amp;web=1&amp;e=5q7nR8"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0qifyj0">
+        <inputEntry id="UnaryTests_0u8x0hc">
+          <text>"your-contribution"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1hw6r6h">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1kgza1n">
+          <text>"uk hospitality"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0j26d0p">
+          <text>"https://help.ourtesco.com/hc/en-us/articles/4415274566930-1-Your-Contribution"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_01a5i7l">
+        <inputEntry id="UnaryTests_1com5et">
+          <text>"your-contribution"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_08akdt8">
+          <text>"IE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1yeiy7q">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0qp1lzf">
+          <text>"https://colleague-help.ourtesco.com/hc/en-us/articles/4415780139028-Introducing-Your-Contribution"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0754k13">
+        <inputEntry id="UnaryTests_054sfxw">
+          <text>"your-contribution"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0kkcvla">
+          <text>"IN"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1w9ivcu">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0tjshya">
+          <text>"https://view.pagetiger.com/Your-ContributionBLR"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0stoi9q">
+        <inputEntry id="UnaryTests_13qzx44">
+          <text>"your-contribution"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1an6pyn">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_14j8uuz">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0o9eezw">
+          <text>"https://colleague-help.ourtesco.com/hc/en-us/articles/4410479364500-Introducing-Your-Contribution"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_016q3ta">
+        <inputEntry id="UnaryTests_0m6cv91">
+          <text>"feedback-at-tesco"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_18zyog8">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0eb5x4u">
+          <text>"peopledataints"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ec3dci">
+          <text>"https://tesco.sharepoint.com/:u:/r/sites/TescoSourcingPeopleTeamSite/SitePages/Everyday-Feedback.aspx?csf=1&amp;web=1&amp;e=siHJc8"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1o56cwh">
+        <inputEntry id="UnaryTests_0hhfj84">
+          <text>"feedback-at-tesco"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_19qgnyt">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_18rgoag">
+          <text>"uk hospitality"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1lbvlvs">
+          <text>"https://help.ourtesco.com/hc/en-us/articles/4415259454354-2-Everyday-feedback"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1760za9">
+        <inputEntry id="UnaryTests_199y0op">
+          <text>"feedback-at-tesco"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0wqpmo9">
+          <text>"IE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ukoab2">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1hl9s86">
+          <text>"https://colleague-help.ourtesco.com/hc/en-us/articles/4415780149268-Everyday-feedback"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1frqk1r">
+        <inputEntry id="UnaryTests_1i6dmsa">
+          <text>"feedback-at-tesco"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1io3bga">
+          <text>"IN"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1f3ky20">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0yd3yv7">
+          <text>"https://view.pagetiger.com/Your-ContributionBLR"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1v1bh23">
+        <inputEntry id="UnaryTests_0qo4kev">
+          <text>"feedback-at-tesco"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0vcpnmq">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0nly1sm">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0b7e4v5">
+          <text>"https://colleague-help.ourtesco.com/hc/en-us/articles/4417160813844-Everyday-feedback"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1ef8zfa">
+        <inputEntry id="UnaryTests_1l0uj4l">
+          <text>"everyday-conversations"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0byfjiw">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1jdsxjz">
+          <text>"peopledataints"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1pqcp3o">
+          <text>"https://tesco.sharepoint.com/:u:/r/sites/TescoSourcingPeopleTeamSite/SitePages/Everyday-Conversations.aspx?csf=1&amp;web=1&amp;e=sH2SEb"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0ph8hc1">
+        <inputEntry id="UnaryTests_1wxd018">
+          <text>"everyday-conversations"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0w855ze">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0d9wkox">
+          <text>"uk hospitality"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_008a6m4">
+          <text>"https://help.ourtesco.com/hc/en-us/articles/4415276897042-3-Everyday-conversations"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1lo0843">
+        <inputEntry id="UnaryTests_15l1vkh">
+          <text>"everyday-conversations"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_07951bp">
+          <text>"IE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_09pfqdg">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1oojboe">
+          <text>"https://colleague-help.ourtesco.com/hc/en-us/articles/4417350830100-Everyday-conversations"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1l6na65">
+        <inputEntry id="UnaryTests_1bs3fbs">
+          <text>"everyday-conversations"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0zsyuge">
+          <text>"IN"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0mbvr5d">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1q5qudp">
+          <text>"https://view.pagetiger.com/Your-ContributionBLR"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0stxrue">
+        <inputEntry id="UnaryTests_13ljs09">
+          <text>"everyday-conversations"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_106h5ep">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0g8hrh4">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1knrfzk">
+          <text>"https://colleague-help.ourtesco.com/hc/en-us/articles/4417350618900-Everyday-conversations"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1ievz8k">
+        <inputEntry id="UnaryTests_107cf93">
+          <text>"performance-reviews"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0y8l86s">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0nkfz4o">
+          <text>"peopledataints"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_09jvsg9">
+          <text>"https://tesco.sharepoint.com/:u:/r/sites/TescoSourcingPeopleTeamSite/SitePages/Performance-Reviews.aspx?csf=1&amp;web=1&amp;e=SRzbrY"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0j4krpg">
+        <inputEntry id="UnaryTests_0y2gdh0">
+          <text>"performance-reviews"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0k2ojx3">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ha3usb">
+          <text>"uk hospitality"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1601ba4">
+          <text>"https://help.ourtesco.com/hc/en-us/articles/4419953732242-4-Performance-reviews"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0wwdx2t">
+        <inputEntry id="UnaryTests_0qbufak">
+          <text>"performance-reviews"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1iepywv">
+          <text>"IE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ff7svn">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1y81t6d">
+          <text>"https://colleague-help.ourtesco.com/hc/en-us/articles/4417338519316-Performance-reviews"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0d37er0">
+        <inputEntry id="UnaryTests_0tskqeo">
+          <text>"performance-reviews"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0y4rviv">
+          <text>"IN"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_030umst">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_07um6n4">
+          <text>"https://view.pagetiger.com/Your-ContributionBLR"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1enzjb5">
+        <inputEntry id="UnaryTests_1uc4n9z">
+          <text>"performance-reviews"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0254nbk">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0nrqcy8">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0j6ipvf">
+          <text>"https://colleague-help.ourtesco.com/hc/en-us/articles/4417350679956-Performance-reviews"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0tbs0qg">
+        <inputEntry id="UnaryTests_1kz10i0">
+          <text>"strategic-objectives"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0omii0g">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_15l9wa6">
+          <text>"peopledataints"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0ckl55i">
+          <text>"https://tesco.sharepoint.com/:u:/r/sites/TescoSourcingPeopleTeamSite/SitePages/Strategic-Objectives.aspx?csf=1&amp;web=1&amp;e=bhu4Ia"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0agwza6">
+        <inputEntry id="UnaryTests_0u2oujw">
+          <text>"strategic-objectives"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1u6byxl">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0c2cegl">
+          <text>"uk hospitality"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1d7zrn0">
+          <text>"https://help.ourtesco.com/hc/en-us/articles/4415259478546-4-Strategic-objectives"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1r3fokd">
+        <inputEntry id="UnaryTests_0bzmhk2">
+          <text>"strategic-objectives"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_08vy68o">
+          <text>"IE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1k0p8ct">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1jwpwks">
+          <text>"https://colleague-help.ourtesco.com/hc/en-us/articles/4417173239060-Strategic-objectives"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1udxska">
+        <inputEntry id="UnaryTests_15167wc">
+          <text>"strategic-objectives"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ponhsh">
+          <text>"IN"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0mdst1m">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0z55f79">
+          <text>"https://tescobengaluru.e-learningportal.com/"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0ije2go">
+        <inputEntry id="UnaryTests_0b7o9rg">
+          <text>"strategic-objectives"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1gkphcw">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1j08l9u">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0qi7jek">
+          <text>"https://colleague-help.ourtesco.com/hc/en-us/articles/4417164321428-Strategic-objectives"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1ib9u4k">
+        <inputEntry id="UnaryTests_1xeylb0">
+          <text>"opportunities-to-get-on"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0hell2f">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0cygkn4">
+          <text>"peopledataints"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0wbivay">
+          <text>"https://tesco.sharepoint.com/sites/TescoSourcingPeopleTeamSite/SitePages/Your Opportunities to Get On.aspx"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0l2qeem">
+        <inputEntry id="UnaryTests_0c29wfp">
+          <text>"opportunities-to-get-on"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_04k7se5">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0545lnh">
+          <text>"uk hospitality"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1uivj7j">
+          <text>"https://help.ourtesco.com/hc/en-us/articles/4415274688786-5-Opportunities-to-Get-On"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_18tz0gb">
+        <inputEntry id="UnaryTests_03yclfz">
+          <text>"opportunities-to-get-on"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1rhavpz">
+          <text>"IE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0tb5fwj">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_11p8oie">
+          <text>"https://colleague-help.ourtesco.com/hc/en-us/sections/4402719375892-Introduction-Opportunities-to-Get-On-Republic-of-Ireland"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0vs3kjl">
+        <inputEntry id="UnaryTests_10frjzn">
+          <text>"opportunities-to-get-on"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0fpozfr">
+          <text>"IN"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ojduws">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_03di2ch">
+          <text>"https://view.pagetiger.com/Your-ContributionBLR"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_07wg5s2">
+        <inputEntry id="UnaryTests_0hrecru">
+          <text>"opportunities-to-get-on"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_15wnwwt">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_11wx19q">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0wef7s4">
+          <text>"https://colleague-help.ourtesco.com/hc/en-us/sections/4405652305812-Opportunities-to-Get-On-UK-Colleagues-"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_09hdxx5">
+        <inputEntry id="UnaryTests_0z3dw99">
+          <text>"everyones-welcome"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_16hhpso">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1kdzz8m">
+          <text>"peopledataints"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ytof0n">
+          <text>"https://tesco.sharepoint.com/sites/TescoSourcingPeopleTeamSite/SitePages/Diversity-%26-Inclusion.aspx"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1pb38jj">
+        <inputEntry id="UnaryTests_05rzfb8">
+          <text>"everyones-welcome"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1jerlpn">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0qbeicj">
+          <text>"uk hospitality"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1dyt791">
+          <text>"https://help.ourtesco.com/hc/en-us/articles/4415276932370-6-Everyone-s-welcome"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1izgk05">
+        <inputEntry id="UnaryTests_0mpnf9n">
+          <text>"everyones-welcome"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_17o1z9w">
+          <text>"IE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1k4d386">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ir8prc">
+          <text>"https://colleague-help.ourtesco.com/hc/en-us/articles/4405691414548-Everyone-s-Welcome-Digital-Learning"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1k5wcnq">
+        <inputEntry id="UnaryTests_0ttk128">
+          <text>"everyones-welcome"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0qfcdtq">
+          <text>"IN"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1c36xcm">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1r1m76y">
+          <text>"https://www.tescobengaluru.com/careers/"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0yuq754">
+        <inputEntry id="UnaryTests_1fq71dy">
+          <text>"everyones-welcome"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1mhl4w8">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0b5pzcj">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0xl4278">
+          <text>"https://www.ourtesco.com/diversity-and-inclusion/"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0ues072">
+        <inputEntry id="UnaryTests_1cu540g">
+          <text>"our-purpose-and-strategic-pillars"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0cpulnp">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_19xy0mv">
+          <text>"peopledataints"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0140e1m">
+          <text>"https://tesco.sharepoint.com/sites/TescoSourcingCommunications/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FTescoSourcingCommunications%2FShared%20Documents%2FMaterials%20for%20sharing%2FPurpose%2FOur%20Purpose%20%5F%20Feb%202022%2Epdf&amp;parent=%2Fsites%2FTescoSourcingCommunications%2FShared%20Documents%2FMaterials%20for%20sharing%2FPurpose&amp;p=true&amp;wdLOR=c956B0EB2%2DA902%2D4701%2DBFBC%2D74B9CAB2C07A&amp;ct=1644571204296&amp;or=Outlook-Body&amp;cid=2A6457DD-2A2F-47D8-B5A0-43725452EADF"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0u267xk">
+        <inputEntry id="UnaryTests_0bp8zq4">
+          <text>"our-purpose-and-strategic-pillars"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_00fdlqo">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0gu5a33">
+          <text>"uk hospitality"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0hx78qw">
+          <text>"https://help.ourtesco.com/hc/en-us/articles/4415285103762-7-Our-purpose-"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1c18u4i">
+        <inputEntry id="UnaryTests_1ws9koq">
+          <text>"our-purpose-and-strategic-pillars"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0jw3gee">
+          <text>"IE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1dbdtm0">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0joztwo">
+          <text>"https://www.ourtesco.ie/our-purpose"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_00jbdvo">
+        <inputEntry id="UnaryTests_0p60ftc">
+          <text>"our-purpose-and-strategic-pillars"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1mdo044">
+          <text>"IN"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1y9cjdm">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ejpttm">
+          <text>"https://tesco.sharepoint.com/sites/Mission-23?OR=Teams-HL&amp;CT=1639989328664"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0acmbu5">
+        <inputEntry id="UnaryTests_0q526ys">
+          <text>"our-purpose-and-strategic-pillars"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0xx2ej4">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0nl7vuu">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0roxbcj">
+          <text>"https://www.ourtesco.com/colleague/our-purpose"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1ovxb8j">
+        <description>Manager</description>
+        <inputEntry id="UnaryTests_1argtso">
+          <text>"our-win-together-behaviours"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0e2dvjc">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0zqv720">
+          <text>"peopledataints"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_121qht3">
+          <text>""</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1qwttvm">
+        <inputEntry id="UnaryTests_0bh1nso">
+          <text>"our-win-together-behaviours"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_09mgp6d">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1k08vty">
+          <text>"uk hospitality"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1lho6wl">
+          <text>"https://help.ourtesco.com/hc/en-us/articles/4415274741266-9-Our-Win-Together-behaviours"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0cix7wn">
+        <inputEntry id="UnaryTests_0ih9r1e">
+          <text>"our-win-together-behaviours"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ebop6w">
+          <text>"IE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1btb2vn">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0u4haxy">
+          <text>"https://colleague-help.ourtesco.com/hc/en-us/articles/4417181771540-Our-Win-Together-behaviours"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1igvakf">
+        <inputEntry id="UnaryTests_0hw4duh">
+          <text>"our-win-together-behaviours"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_19ea0mq">
+          <text>"IN"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1iw1m1g">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0l7nnjn">
+          <text>"https://tescobengaluru.e-learningportal.com/"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1wedjq6">
+        <inputEntry id="UnaryTests_0cul74o">
+          <text>"our-win-together-behaviours"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_09ctz98">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0h77y55">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0zugjfi">
+          <text>"https://colleague-help.ourtesco.com/hc/en-us/articles/4417164337812-Our-Win-Together-behaviours"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_18rfpfx">
+        <inputEntry id="UnaryTests_1yb5qy0">
+          <text>"managing-a-team-at-tesco"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1vcle3p">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_06s7um9">
+          <text>"peopledataints"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1o6avkr">
+          <text>"https://tesco.e-learningportal.com/"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1erpo99">
+        <inputEntry id="UnaryTests_1u9b6xw">
+          <text>"managing-a-team-at-tesco"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1xxnuot">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_17q6o1g">
+          <text>"uk hospitality"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1bq9cpe">
+          <text>"https://help.ourtesco.com/hc/en-us/articles/4415285138450-10-Managing-a-team-at-Tesco-"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1qni968">
+        <inputEntry id="UnaryTests_03h3uda">
+          <text>"managing-a-team-at-tesco"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1tjamt1">
+          <text>"IE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ss3gjh">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1y5l963">
+          <text>"https://colleague-help.ourtesco.com/hc/en-us/articles/360044848892-Learning-at-Tesco-ROI-"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1wdhg14">
+        <inputEntry id="UnaryTests_09s27ox">
+          <text>"managing-a-team-at-tesco"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_07sukum">
+          <text>"IN"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_01qyap7">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1me4uzi">
+          <text>"https://tescobengaluru.e-learningportal.com/"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0dht19u">
+        <inputEntry id="UnaryTests_1xb5vus">
+          <text>"managing-a-team-at-tesco"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0brkdwg">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0mtywyk">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0ld3mg4">
+          <text>"https://learningattesco.learningpool.com/course/view.php?id=1212"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0igq1nt">
+        <inputEntry id="UnaryTests_164b97s">
+          <text>"creating-a-winning-performance-culture"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_14ag949">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0h91lk0">
+          <text>"peopledataints"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1dvel5s">
+          <text>"https://tesco.e-learningportal.com/"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1yfxukl">
+        <inputEntry id="UnaryTests_0nklupq">
+          <text>"creating-a-winning-performance-culture"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_065vdq0">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_01w55ek">
+          <text>"uk hospitality"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1mxxfzl">
+          <text>"https://help.ourtesco.com/hc/en-us/articles/4415285155602-11-Creating-a-winning-performance-culture"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_006lm1p">
+        <inputEntry id="UnaryTests_07d55vj">
+          <text>"creating-a-winning-performance-culture"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0rhnpvr">
+          <text>"IE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1y3gq0h">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_08danu3">
+          <text>""</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_19q8rzz">
+        <inputEntry id="UnaryTests_13j2fi4">
+          <text>"creating-a-winning-performance-culture"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1j3mm59">
+          <text>"IN"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1x93xkb">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1id4qyu">
+          <text>"https://tescobengaluru.e-learningportal.com/"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1ohjb6z">
+        <inputEntry id="UnaryTests_05px48l">
+          <text>"creating-a-winning-performance-culture"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_11ot9gb">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1emlxbv">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_15ksm9u">
+          <text>""</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_06h0r1w">
+        <inputEntry id="UnaryTests_0nr5loe">
+          <text>"being-an-inclusive-manager"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ilms4t">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0yp92d2">
+          <text>"peopledataints"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_07cz1yg">
+          <text>"https://tesco.e-learningportal.com/"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0rhhepg">
+        <inputEntry id="UnaryTests_0wgvjlb">
+          <text>"being-an-inclusive-manager"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1pa3005">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0eia6me">
+          <text>"uk hospitality"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0bl3i9p">
+          <text>"https://help.ourtesco.com/hc/en-us/articles/4415277026194-12-Being-an-inclusive-manager"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0hrqssv">
+        <inputEntry id="UnaryTests_1vbf3cl">
+          <text>"being-an-inclusive-manager"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1x8xlx2">
+          <text>"IE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0a5x2oy">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1cta5tu">
+          <text>"https://colleague-help.ourtesco.com/hc/en-us/articles/360044848892-Learning-at-Tesco-ROI-"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1mdjvoa">
+        <inputEntry id="UnaryTests_0rhe6qx">
+          <text>"being-an-inclusive-manager"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1t9yifl">
+          <text>"IN"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1h2bh6k">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_11wj9hr">
+          <text>"https://tescobengaluru.e-learningportal.com/"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1y9ujio">
+        <inputEntry id="UnaryTests_1jo6vgm">
+          <text>"being-an-inclusive-manager"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_09pf101">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_18j7o0j">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0ualqpo">
+          <text>"https://learningattesco.learningpool.com/course/view.php?id=1622"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1xlm6g4">
+        <inputEntry id="UnaryTests_1pnqqv6">
+          <text>"mastering-conversations"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1bo16pt">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1p6azcz">
+          <text>"peopledataints"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_04b56ia">
+          <text>"https://tesco.e-learningportal.com/"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0g3ubb3">
+        <inputEntry id="UnaryTests_0e9kwls">
+          <text>"mastering-conversations"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1usutu3">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0iqp026">
+          <text>"uk hospitality"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1390hb2">
+          <text>"https://help.ourtesco.com/hc/en-us/articles/4415274841234-13-Mastering-conversations-"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_03tszx4">
+        <inputEntry id="UnaryTests_0yakjj3">
+          <text>"mastering-conversations"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0dzrfyl">
+          <text>"IE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0nlr1nv">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0u058ur">
+          <text>"https://colleague-help.ourtesco.com/hc/en-us/articles/360044848892-Learning-at-Tesco-ROI-"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1wtmo6n">
+        <inputEntry id="UnaryTests_1ke28k5">
+          <text>"mastering-conversations"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0pj801x">
+          <text>"IN"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1xg4s8u">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0fz6vii">
+          <text>"https://tescobengaluru.e-learningportal.com/"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0mybq5q">
+        <inputEntry id="UnaryTests_0xm2lvh">
+          <text>"mastering-conversations"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1356rdv">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1nesh63">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1oobagp">
+          <text>"https://learningattesco.learningpool.com/course/view.php?id=1529"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_10ml8hs">
+        <inputEntry id="UnaryTests_1bcpyhw">
+          <text>"mastering-feedback"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0txyusp">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_17n2sor">
+          <text>"peopledataints"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0m05a9z">
+          <text>"https://tesco.e-learningportal.com/"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1q9a60t">
+        <inputEntry id="UnaryTests_0lwxxeg">
+          <text>"mastering-feedback"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1w0gku3">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_056jt6r">
+          <text>"uk hospitality"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_183vcuw">
+          <text>"https://help.ourtesco.com/hc/en-us/articles/4415274863122-14-Mastering-feedback"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0bydfts">
+        <inputEntry id="UnaryTests_0ab6wex">
+          <text>"mastering-feedback"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1j0txbz">
+          <text>"IE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1xothrg">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0kqb27p">
+          <text>""</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0l83yxb">
+        <inputEntry id="UnaryTests_0jn47nz">
+          <text>"mastering-feedback"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0mxmokp">
+          <text>"IN"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_19r014d">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0z7cqht">
+          <text>"https://tescobengaluru.e-learningportal.com/"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1lqo52k">
+        <inputEntry id="UnaryTests_1mg3y2d">
+          <text>"mastering-feedback"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1l1j0xo">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_16yfsyv">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_10i0rnt">
+          <text>""</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0w1murf">
+        <inputEntry id="UnaryTests_1nhno9z">
+          <text>"managing-underperformance"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1hr2k0r">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_056ebkc">
+          <text>"peopledataints"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0s1xmp7">
+          <text>"https://tesco.sharepoint.com/sites/TescoSourcingPeopleTeamSite/Shared Documents/Forms/AllItems.aspx?csf=1&amp;web=1&amp;e=KEPNoz&amp;cid=858fb2f9%2Dce61%2D4c53%2D97dd%2D3951f6c5519e&amp;RootFolder=%2Fsites%2FTescoSourcingPeopleTeamSite%2FShared%20Documents%2FInspiring%20Great%20Performance%20Every%20Day%2FSupporting%20Your%20Performance&amp;FolderCTID=0x01200038418DC5D49E8F49B420977E3665D887"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0ex74mf">
+        <inputEntry id="UnaryTests_10y24le">
+          <text>"managing-underperformance"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_17w84la">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0t5z7oj">
+          <text>"uk hospitality"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0kvk157">
+          <text>"https://help.ourtesco.com/hc/en-us/articles/4415277089682-15-Managing-underperformance"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1izdyw0">
+        <inputEntry id="UnaryTests_1d4a560">
+          <text>"managing-underperformance"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_03ayal8">
+          <text>"IE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_13emn1s">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_01p4yxv">
+          <text>"https://www.ourtesco.ie/working-at-tesco/people-policies/letters-for-managers/"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0mga6s8">
+        <inputEntry id="UnaryTests_1tzxhxs">
+          <text>"managing-underperformance"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_07v6rxu">
+          <text>"IN"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1j5ti0j">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ljq5mz">
+          <text>"https://tescobengaluru.e-learningportal.com/?t=16CCE52818AE&amp;ud=tescobengaluru&amp;s=B5FDC98C%2D0BDA%2D3250%2DAAC994F17CD6AB1F&amp;spDomainId=A6D4A2D2%2D0561%2D84B7%2D744E237B7B07F71E&amp;spInstId=A92CFB6D%2D1EC9%2DB3EF%2DC46CF99CD0787507&amp;action=page&amp;ts=202202141412&amp;spCode=Policy%2DCentral"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_04p4ll5">
+        <inputEntry id="UnaryTests_0qwzubj">
+          <text>"managing-underperformance"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0n0r53d">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1jybir4">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1i5yyqh">
+          <text>""</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0px9pjb">
+        <inputEntry id="UnaryTests_12iup25">
+          <text>"further-learning-for-managers"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0z91cem">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_19okrnv">
+          <text>"peopledataints"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_12rdep7">
+          <text>"https://tesco.sharepoint.com/:x:/s/TescoSourcingPeopleTeamSite/EYiKjSuBuSBGjgjbgoftHiIBXoDKxQm1Sf6C0ug5KMLtmg?e=ObHmEZ&amp;CID=D3A85C43-AA11-4342-88B1-DB20B45A9E3B&amp;wdLOR=c25A44C3C-09F7-4E0F-94D3-F84AF6E83B04"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_137ji1t">
+        <inputEntry id="UnaryTests_0iuuspi">
+          <text>"further-learning-for-managers"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_17t6pkn">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0d7l9gb">
+          <text>"uk hospitality"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0n2861l">
+          <text>"https://help.ourtesco.com/hc/en-us/articles/4415277107218-16-Further-learning-for-managers"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1dni6bk">
+        <inputEntry id="UnaryTests_1z05u4d">
+          <text>"further-learning-for-managers"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1g50f50">
+          <text>"IE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_06olehz">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0ehy824">
+          <text>"https://colleague-help.ourtesco.com/hc/en-us/articles/360044848892-Learning-at-Tesco-ROI-"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1tp9kbe">
+        <inputEntry id="UnaryTests_0v76956">
+          <text>"further-learning-for-managers"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0bp2cs2">
+          <text>"IN"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_045qc7p">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_15eautr">
+          <text>"https://tescobengaluru.e-learningportal.com/"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0sf0skr">
+        <inputEntry id="UnaryTests_1gqjs1x">
+          <text>"further-learning-for-managers"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1c0a5mc">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0zmzq75">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0hnnhmo">
+          <text>"https://learningattesco.learningpool.com/course/view.php?id=1252"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <inputData id="InputData_0uiqhs7" name="COLLEAGUE" />
+  <inputData id="InputData_1bh43jc" name="KEY" />
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="help_faq_urls">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_18dtzn2" dmnElementRef="InputData_0uiqhs7">
+        <dc:Bounds height="45" width="125" x="307" y="238" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_1tjaxrp" dmnElementRef="InformationRequirement_0jepqwb">
+        <di:waypoint x="370" y="238" />
+        <di:waypoint x="280" y="200" />
+        <di:waypoint x="280" y="180" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DMNShape_1v7nmb6" dmnElementRef="InputData_1bh43jc">
+        <dc:Bounds height="45" width="125" x="118" y="239" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_0s6gb4f" dmnElementRef="InformationRequirement_1k53hsx">
+        <di:waypoint x="181" y="239" />
+        <di:waypoint x="220" y="200" />
+        <di:waypoint x="220" y="180" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

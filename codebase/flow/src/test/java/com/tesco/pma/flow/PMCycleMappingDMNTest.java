@@ -1,7 +1,7 @@
 package com.tesco.pma.flow;
 
 import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
-import com.tesco.pma.flow.TestUtils.KEYS;
+import com.tesco.pma.util.TestUtils.KEYS;
 import org.camunda.bpm.dmn.engine.DmnDecision;
 import org.camunda.bpm.dmn.engine.DmnEngine;
 import org.camunda.bpm.dmn.engine.DmnEngineConfiguration;
@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.tesco.pma.flow.TestUtils.createColleague;
+import static com.tesco.pma.util.TestUtils.createColleague;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**

@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.reporting.dashboard.dao.ReportingDAO">
+
+    <resultMap id="colleagueReportTagsResultMap" type="map">
+        <result column="is_new_to_business" property="is_new_to_business"/>
+        <result column="must_create_objective" property="must_create_objective"/>
+        <result column="has_objective_submitted" property="has_objective_submitted"/>
+        <result column="has_objective_approved" property="has_objective_approved"/>
+        <result column="must_create_myr" property="must_create_myr"/>
+        <result column="has_myr_submitted" property="has_myr_submitted"/>
+        <result column="has_myr_approved" property="has_myr_approved"/>
+        <result column="myr_what_rating" property="myr_what_rating"/>
+        <result column="myr_how_rating" property="myr_how_rating"/>
+        <result column="must_create_eyr" property="must_create_eyr"/>
+        <result column="has_eyr_submitted" property="has_eyr_submitted"/>
+        <result column="has_eyr_approved" property="has_eyr_approved"/>
+        <result column="eyr_what_rating" property="eyr_what_rating"/>
+        <result column="eyr_how_rating" property="eyr_how_rating"/>
+        <result column="has_eyr_approved_1_quarter" property="has_eyr_approved_1_quarter"/>
+        <result column="has_eyr_approved_2_quarter" property="has_eyr_approved_2_quarter"/>
+        <result column="has_eyr_approved_3_quarter" property="has_eyr_approved_3_quarter"/>
+        <result column="has_eyr_approved_4_quarter" property="has_eyr_approved_4_quarter"/>
+        <result column="has_feedback_requested" property="has_feedback_requested"/>
+        <result column="has_feedback_given" property="has_feedback_given"/>
+    </resultMap>
+
+    <resultMap id="colleagueReportTargetingResultMap" type="com.tesco.pma.reporting.dashboard.domain.ColleagueReportTargeting">
+        <id property="uuid" column="uuid"/>
+        <result property="firstName" column="first_name"/>
+        <result property="lastName" column="last_name"/>
+        <result property="jobName" column="job_name"/>
+        <result property="businessType" column="business_type"/>
+        <association property="tags" resultMap="colleagueReportTagsResultMap"/>
+    </resultMap>
+
+    <select id="getColleagueTargeting" resultMap="colleagueReportTargetingResultMap">
+        with filtered_colleague as (
+        <include refid="colleagueQuery"/>
+        ),
+             enriched_colleagues as
+                 (
+                     select fc.uuid,
+                            fc.first_name,
+                            fc.last_name,
+                            fc.job_name,
+                            fc.business_type,
+                            fc.is_new_to_business,
+                            count(case when upper(ptp.code) = 'OBJECTIVE' then 1 end)                        as objective_cnt,
+                            count(
+                                    case when upper(ptp.code) = 'OBJECTIVE' and pr.status_id = 2 then 1 end) as objective_submitted_cnt,
+                            count(
+                                    case when upper(ptp.code) = 'OBJECTIVE' and pr.status_id = 3 then 1 end) as objective_approved_cnt,
+                            count(case when upper(ptp.code) = 'MYR' then 1 end)                              as myr_cnt,
+                            count(
+                                    case when upper(ptp.code) = 'MYR' and pr.status_id = 2 then 1 end)       as myr_submitted_cnt,
+                            count(
+                                    case when upper(ptp.code) = 'MYR' and pr.status_id = 3 then 1 end)       as myr_approved_cnt,
+                            max(case
+                                    when upper(ptp.code) = 'MYR'
+                                        then (pr.properties::json ->> 'what_rating')::varchar end)            as myr_what_rating,
+                            max(case
+                                    when upper(ptp.code) = 'MYR'
+                                        then (pr.properties::json ->> 'how_rating')::varchar end)             as myr_how_rating,
+                            count(case when upper(ptp.code) = 'EYR' then 1 end)                              as eyr_cnt,
+                            count(
+                                    case when upper(ptp.code) = 'EYR' and pr.status_id = 2 then 1 end)       as eyr_submitted_cnt,
+                            count(
+                                    case when upper(ptp.code) = 'EYR' and pr.status_id = 3 then 1 end)       as eyr_approved_cnt,
+                            max(case
+                                    when upper(ptp.code) = 'EYR'
+                                        then (pr.properties::json ->> 'what_rating')::varchar end)            as eyr_what_rating,
+                            max(case
+                                    when upper(ptp.code) = 'EYR'
+                                        then (pr.properties::json ->> 'how_rating')::varchar end)             as eyr_how_rating,
+                            count(
+                                     case when fr.uuid is not null then 1 end)                                as feedback_requested_cnt,
+                            count(
+                                     case when fg.uuid is not null then 1 end)                                as feedback_given_cnt
+                     from filtered_colleague fc
+                              left join pm_timeline_point ptp
+                                        on (ptp.colleague_cycle_uuid = fc.colleague_cycle_uuid)
+                              left join pm_review pr
+                                        on (pr.tl_point_uuid = ptp.uuid)
+                              left join feedback fr
+                                        on (fr.target_colleague_uuid = fc.uuid
+                                            and fr.status_id in (3, 4)
+                                            and fr.created_time
+                                                between make_date(<include refid="getYear"/>, 3, 1)
+                                                    and (make_date(<include refid="getYear"/> + 1, 3, 1) - interval '1 day')::date)
+                              left join feedback fg
+                                        on (fg.target_colleague_uuid = fc.uuid
+                                            and fg.status_id in (2, 4)
+                                            and fg.updated_time
+                                                between make_date(<include refid="getYear"/>, 3, 1)
+                                                    and (make_date(<include refid="getYear"/> + 1, 3, 1) - interval '1 day')::date)
+                     group by fc.uuid,
+                              fc.first_name,
+                              fc.last_name,
+                              fc.job_name,
+                              fc.business_type,
+                              fc.is_new_to_business)
+        select ec.uuid,
+               ec.first_name,
+               ec.last_name,
+               ec.job_name,
+               ec.business_type,
+               ec.is_new_to_business,
+               case when ec.objective_cnt > 0 then '1' else '0' end as must_create_objective,
+               case when ec.objective_submitted_cnt > 0 then '1' else '0' end as has_objective_submitted,
+               case when ec.objective_approved_cnt > 0 then '1' else '0' end as has_objective_approved,
+               case when ec.myr_cnt > 0 then '1' else '0' end as must_create_myr,
+               case when ec.myr_submitted_cnt > 0 then '1' else '0' end as has_myr_submitted,
+               case when ec.myr_approved_cnt > 0 then '1' else '0' end as has_myr_approved,
+               coalesce(ec.myr_what_rating,'0') as myr_what_rating,
+               coalesce(ec.myr_how_rating,'0') as myr_how_rating,
+               case when ec.eyr_cnt > 0 then '1' else '0' end as must_create_eyr,
+               case when ec.eyr_submitted_cnt > 0 then '1' else '0' end as has_eyr_submitted,
+               case when ec.eyr_approved_cnt > 0 then '1' else '0' end as has_eyr_approved,
+               coalesce(ec.eyr_what_rating,'0') as eyr_what_rating,
+               coalesce(ec.eyr_how_rating,'0') as eyr_how_rating,
+               case when ec.feedback_requested_cnt > 0 then '1' else '0' end as has_feedback_requested,
+               case when ec.feedback_given_cnt > 0 then '1' else '0' end as has_feedback_given
+        from enriched_colleagues ec
+    </select>
+
+    <sql id="colleagueQuery">
+        select c.uuid,
+               c.first_name,
+               c.last_name,
+               j.name          as job_name,
+               d.business_type as business_type,
+               pcc.uuid        as colleague_cycle_uuid,
+               pc.type_id      as cycle_type_id,
+               case
+                   when c.hire_date > (now() - interval '90 days')::date
+                       then '1'
+                   else '0' end as is_new_to_business
+        from colleague c
+                 inner join pm_colleague_cycle pcc
+                            on (pcc.colleague_uuid = c.uuid)
+                 inner join pm_cycle pc
+                            on (pcc.cycle_uuid = pc.uuid)
+                 left join job j
+                           on (j.id = c.job_id)
+                 left join department d
+                           on (d.id = c.department_id)
+        where 1 = 1
+          and pc.type_id = 1
+          and pcc.start_time between make_date(<include refid="getYear"/>, 3, 1) and (make_date(<include refid="getYear"/> + 1, 3, 1) - interval '1 day')::date
+          <if test="!requestQuery.filters.isEmpty()">
+              <foreach collection="requestQuery.filters" item="filter" index="index">
+                  <if test="filter.property != 'year'">
+                      <include refid="getExpression"/>
+                  </if>
+              </foreach>
+          </if>
+    </sql>
+
+    <sql id="getYear">
+        <if test="!requestQuery.filters.isEmpty()">
+            <foreach collection="requestQuery.filters" item="filter" index="index">
+                <choose>
+                    <when test="filter.operand.name == 'EQUALS' and filter.property == 'year'">
+                        '${filter.value}'::INTEGER
+                    </when>
+                </choose>
+            </foreach>
+        </if>
+    </sql>
+
+    <select id="getColleagueTargetingAnniversary" resultMap="colleagueReportTargetingResultMap">
+        with filtered_colleague as (
+            select c.uuid,
+                   c.first_name,
+                   c.last_name,
+                   j.name          as job_name,
+                   d.business_type as business_type,
+                   pcc.uuid        as colleague_cycle_uuid,
+                   pc.type_id      as cycle_type_id
+            from colleague c
+                     inner join pm_colleague_cycle pcc
+                                on (pcc.colleague_uuid = c.uuid)
+                     inner join pm_cycle pc
+                                on (pcc.cycle_uuid = pc.uuid)
+                     left join job j
+                               on (j.id = c.job_id)
+                     left join department d
+                               on (d.id = c.department_id)
+            where 1 = 1
+              and pc.type_id = 2
+              <if test="!requestQuery.filters.isEmpty()">
+                  <foreach collection="requestQuery.filters" item="filter" index="index">
+                      <if test="filter.property != 'year'">
+                          <include refid="getExpression"/>
+                      </if>
+                  </foreach>
+              </if>
+        ),
+             enriched_colleagues as
+                 (
+                     select fc.uuid,
+                            fc.first_name,
+                            fc.last_name,
+                            fc.job_name,
+                            fc.business_type,
+                            count(case
+                                      when extract(MONTH from pr.last_updated_time) in (3, 4, 5)
+                                          then 1 end) as cnt_eyr_approved_1_quarter,
+                            count(case
+                                      when extract(MONTH from pr.last_updated_time) in (6, 7, 8)
+                                          then 1 end) as cnt_eyr_approved_2_quarter,
+                            count(case
+                                      when extract(MONTH from pr.last_updated_time) in (9, 10, 11)
+                                          then 1 end) as cnt_eyr_approved_3_quarter,
+                            count(case
+                                      when extract(MONTH from pr.last_updated_time) in (12, 1, 2)
+                                          then 1 end) as cnt_eyr_approved_4_quarter
+                     from filtered_colleague fc
+                              inner join pm_timeline_point ptp
+                                         on (ptp.colleague_cycle_uuid = fc.colleague_cycle_uuid)
+                              inner join pm_review pr
+                                         on (pr.tl_point_uuid = ptp.uuid)
+                     where 1 = 1
+                       and pr.type_id = 3
+                       and pr.status_id = 3
+                       and pr.last_updated_time between make_date(<include refid="getYear"/>, 3, 1) and (make_date(<include refid="getYear"/> + 1, 3, 1) - interval '1 day')::date
+        group by fc.uuid,
+            fc.first_name,
+            fc.last_name,
+            fc.job_name,
+            fc.business_type)
+        select ec.uuid,
+               ec.first_name,
+               ec.last_name,
+               ec.job_name,
+               ec.business_type,
+               case when ec.cnt_eyr_approved_1_quarter > 0 then '1' else '0' end as has_eyr_approved_1_quarter,
+               case when ec.cnt_eyr_approved_2_quarter > 0 then '1' else '0' end as has_eyr_approved_2_quarter,
+               case when ec.cnt_eyr_approved_3_quarter > 0 then '1' else '0' end as has_eyr_approved_3_quarter,
+               case when ec.cnt_eyr_approved_4_quarter > 0 then '1' else '0' end as has_eyr_approved_4_quarter
+        from enriched_colleagues ec;
+    </select>
+
+    <sql id="prepareValues">
+        <foreach item="value" collection="filter.value" separator="," open="(" close=")">
+            <choose>
+                <when test="filter.property == 'manager-uuid'">
+                    #{value}::uuid
+                </when>
+                <otherwise>
+                    UPPER(#{value})
+                </otherwise>
+            </choose>
+        </foreach>
+    </sql>
+
+    <sql id="prepareValue">
+        <choose>
+            <when test="filter.property == 'manager-uuid'">
+                '${filter.value}'::uuid
+            </when>
+            <otherwise>
+                UPPER('${filter.value}')
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="getExpression">
+        <choose>
+            <when test="filter.operand.name == 'EQUALS'">
+                <include refid="getFilterField"/>
+                = <include refid="prepareValue"/>
+            </when>
+            <when test="filter.operand.name == 'NOT_EQUALS'">
+                <include refid="getFilterField"/>
+                != <include refid="prepareValue"/>
+            </when>
+            <when test="filter.operand.name == 'CONTAINS' and filter.property != 'manager-uuid'">
+                <include refid="getFilterField"/>
+                LIKE '%'||<include refid="prepareValue"/>||'%'
+            </when>
+            <when test="filter.operand.name == 'NOT_CONTAINS' and filter.property != 'manager-uuid'">
+                <include refid="getFilterField"/>
+                NOT LIKE '%'||<include refid="prepareValue"/>||'%'
+            </when>
+            <when test="filter.operand.name == 'IN'">
+                <include refid="getFilterField"/>
+                IN
+                <include refid="prepareValues"/>
+            </when>
+            <when test="filter.operand.name == 'NOT_IN'">
+                <include refid="getFilterField"/>
+                NOT IN
+                <include refid="prepareValues"/>
+            </when>
+            <when test="filter.operand.name == 'NULL'">
+                <if test="filter.value == 'true'">
+                    <include refid="getFilterField"/>
+                    IS NULL
+                </if>
+                <if test="filter.value == 'false'">
+                    <include refid="getFilterField"/>
+                    IS NOT NULL
+                </if>
+            </when>
+        </choose>
+    </sql>
+
+    <sql id="getFilterField">
+        AND
+        <choose>
+            <when test="filter.property == 'work-level'">
+                UPPER(work_level)
+            </when>
+            <when test="filter.property == 'manager-uuid'">
+                manager_uuid
+            </when>
+            <when test="filter.property == 'department-id'">
+                department_id
+            </when>
+            <when test="filter.property == 'job-id'">
+                job_id
+            </when>
+        </choose>
+    </sql>
+
+</mapper>

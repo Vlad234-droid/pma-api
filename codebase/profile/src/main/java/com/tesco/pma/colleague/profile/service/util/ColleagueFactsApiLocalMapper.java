@@ -87,7 +87,6 @@ public class ColleagueFactsApiLocalMapper {
 
     private WorkRelationship getWorkRelationship(ColleagueEntity oc) {
         var wr = new WorkRelationship();
-        wr.setWorkLevel(WorkLevel.getByCode(oc.getWorkLevel().getCode()));
         wr.setPrimaryEntity(oc.getPrimaryEntity());
         wr.setSalaryFrequency(oc.getSalaryFrequency());
         wr.setIsManager(oc.isManager());
@@ -96,6 +95,9 @@ public class ColleagueFactsApiLocalMapper {
         wr.setJob(getJob(oc));
         wr.setManagerUUID(oc.getManagerUuid());
         wr.setLocationUUID(oc.getLocationId());
+        if (oc.getWorkLevel() != null) {
+            wr.setWorkLevel(WorkLevel.getByCode(oc.getWorkLevel().getCode()));
+        }
         if (oc.getLegalEntity() != null) {
             var legalEmployer = new LegalEmployer();
             legalEmployer.setName(oc.getLegalEntity());
