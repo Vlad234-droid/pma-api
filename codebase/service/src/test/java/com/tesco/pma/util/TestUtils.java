@@ -1,4 +1,4 @@
-package com.tesco.pma.flow;
+package com.tesco.pma.util;
 
 import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.api.ExternalSystems;
@@ -20,11 +20,12 @@ import java.util.UUID;
  */
 @UtilityClass
 public class TestUtils {
-    enum KEYS {
+    public enum KEYS {
         COLLEAGUE,
         COLLEAGUE_UUID,
         PM_CYCLE_KEY,
 
+        COUNTRY_CODE,
         LEGAL_EMPLOYER_NAME,
         BUSINESS_TYPE,
         WORK_LEVEL,
@@ -37,7 +38,7 @@ public class TestUtils {
         GROUP_C_V2
     }
 
-    static Colleague createColleague(Map<KEYS, Object> params) {
+    public static Colleague createColleague(Map<KEYS, Object> params) {
         var wr = new WorkRelationship();
         if (params.containsKey(KEYS.WORK_LEVEL)) {
             wr.setWorkLevel((WorkLevel) params.get(KEYS.WORK_LEVEL));
@@ -63,6 +64,9 @@ public class TestUtils {
         var colleague = new Colleague();
         colleague.setColleagueUUID((UUID) params.get(KEYS.COLLEAGUE_UUID));
         colleague.setWorkRelationships(List.of(wr));
+        if (params.containsKey(KEYS.COUNTRY_CODE)) {
+            colleague.setCountryCode((String) params.get(KEYS.COUNTRY_CODE));
+        }
         if (params.containsKey(KEYS.IAM_SOURCE)) {
             var externalSystems = new ExternalSystems();
             var iamSourceSystem = new IamSourceSystem();
@@ -72,5 +76,4 @@ public class TestUtils {
         }
         return colleague;
     }
-
 }
