@@ -25,13 +25,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 class ExcelReportUtilsTest {
 
     private static final String COLLEAGUE_UUID = "10000000-0000-0000-0000-000000000000";
     private static final String LINE_MANAGER_UUID = "10000000-0000-0000-0000-000000000002";
 
-    enum ColumnMetadataEnum {
+    private enum ColumnMetadataEnum {
         IAM_ID("iam-id", "Employee No", STRING, "Employee No"),
         COLLEAGUE_UUID("colleague-uuid", "Employee UUID", STRING, "Employee UUID"),
         FIRST_NAME("first-name", "First Name", STRING, "First Name"),
@@ -59,7 +58,7 @@ class ExcelReportUtilsTest {
         }
     }
 
-    enum StatsColumnMetadataEnum {
+    private enum StatsColumnMetadataEnum {
         COLLEAGUES_COUNT("colleagues-count",
                 "Colleagues count", INTEGER,
                 "Total number of individuals"),
@@ -101,12 +100,13 @@ class ExcelReportUtilsTest {
         assertTrue(resource.exists());
         assertTrue(resource.isReadable());
         assertTrue(resource instanceof ByteArrayResource);
-        var workbook = new XSSFWorkbook(resource.getInputStream());
-        var sheet = workbook.getSheet(REPORT_SHEET_NAME);
-        assertNotNull(sheet);
-        assertEquals(reportData.size(), sheet.getLastRowNum());
-        checkHeader(sheet, columnMetadata);
-        checkData(1, sheet, reportData.get(0), columnMetadata);
+        try (var workbook = new XSSFWorkbook(resource.getInputStream())) {
+            var sheet = workbook.getSheet(REPORT_SHEET_NAME);
+            assertNotNull(sheet);
+            assertEquals(reportData.size(), sheet.getLastRowNum());
+            checkHeader(sheet, columnMetadata);
+            checkData(1, sheet, reportData.get(0), columnMetadata);
+        }
     }
 
     @Test
@@ -125,11 +125,12 @@ class ExcelReportUtilsTest {
         assertTrue(resource.exists());
         assertTrue(resource.isReadable());
         assertTrue(resource instanceof ByteArrayResource);
-        var workbook = new XSSFWorkbook(resource.getInputStream());
-        var sheet = workbook.getSheet(REPORT_SHEET_NAME);
-        assertNotNull(sheet);
-        assertEquals(statistics.size() + 1, sheet.getLastRowNum());
-        checkStatisticsData(sheet, statistics, filtersOnUI, reportData, columnMetadata);
+        try (var workbook = new XSSFWorkbook(resource.getInputStream())) {
+            var sheet = workbook.getSheet(REPORT_SHEET_NAME);
+            assertNotNull(sheet);
+            assertEquals(statistics.size() + 1, sheet.getLastRowNum());
+            checkStatisticsData(sheet, statistics, filtersOnUI, reportData, columnMetadata);
+        }
     }
 
     @Test
