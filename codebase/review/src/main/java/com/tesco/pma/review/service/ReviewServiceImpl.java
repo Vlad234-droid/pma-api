@@ -43,7 +43,6 @@ import java.util.UUID;
 
 import static com.tesco.pma.api.ActionType.PUBLISH;
 import static com.tesco.pma.api.ActionType.SAVE_AS_DRAFT;
-import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DECLINED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
@@ -371,7 +370,7 @@ public class ReviewServiceImpl implements ReviewService {
                                                      UUID loggedUserUuid) {
         var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, type);
         reviews.forEach(review -> {
-            var prevStatuses = getPrevStatusesForChangeStatus(type, status);
+            var prevStatuses = reviewDmnService.getReviewAllowedPrevStatuses(type, status);
             if (prevStatuses.isEmpty()) {
                 throw notFound(ALLOWED_STATUSES_NOT_FOUND,
                         Map.of(OPERATION_PARAMETER_NAME, CHANGE_STATUS_OPERATION_NAME));
@@ -550,7 +549,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     private List<PMTimelinePointStatus> getAllowedStatusesForUpdate(PMReviewType reviewType, PMTimelinePointStatus newStatus) {
         var allowedStatusesForUpdate = reviewDmnService.getReviewAllowedStatuses(reviewType, UPDATE_OPERATION_NAME);
-        var prevStatusesForChangeStatus = getPrevStatusesForChangeStatus(reviewType, newStatus);
+        var prevStatusesForChangeStatus = reviewDmnService.getReviewAllowedPrevStatuses(reviewType, newStatus);
         return allowedStatusesForUpdate.stream()
                 .filter(prevStatusesForChangeStatus::contains)
                 .collect(toList());
@@ -600,36 +599,6 @@ public class ReviewServiceImpl implements ReviewService {
         reviewAuditLogDAO.logOrgObjectiveAction(PUBLISH, loggedUserUuid);
         sendEvent(NF_ORGANISATION_OBJECTIVES_EVENT_NAME, WorkLevel.WL4, WorkLevel.WL5);
         return getPublishedOrgObjectives();
-    }
-
-    private List<PMTimelinePointStatus> getPrevStatusesForChangeStatus(PMReviewType reviewType, PMTimelinePointStatus newStatus) {
-        if (reviewType.equals(OBJECTIVE)) {
-            switch (newStatus) {
-                case DRAFT:
-                    return List.of(DRAFT, DECLINED);
-                case WAITING_FOR_APPROVAL:
-                    return List.of(DRAFT, WAITING_FOR_APPROVAL, DECLINED, APPROVED);
-                case APPROVED:
-                    return List.of(WAITING_FOR_APPROVAL, APPROVED);
-                case DECLINED:
-                    return List.of(WAITING_FOR_APPROVAL, DECLINED);
-                default:
-                    return Collections.emptyList();
-            }
-        } else {
-            switch (newStatus) {
-                case DRAFT:
-                    return List.of(DRAFT, DECLINED);
-                case WAITING_FOR_APPROVAL:
-                    return List.of(DRAFT, WAITING_FOR_APPROVAL, DECLINED);
-                case APPROVED:
-                    return List.of(WAITING_FOR_APPROVAL, APPROVED);
-                case DECLINED:
-                    return List.of(WAITING_FOR_APPROVAL, DECLINED);
-                default:
-                    return Collections.emptyList();
-            }
-        }
     }
 
     private TimelinePoint updateTLPointStatus(TimelinePoint timelinePoint) {

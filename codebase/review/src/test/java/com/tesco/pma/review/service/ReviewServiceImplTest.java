@@ -174,6 +174,8 @@ class ReviewServiceImplTest {
 
         when(mockReviewDmnService.getReviewAllowedStatuses(any(),any()))
                 .thenReturn(List.of(DRAFT));
+        when(mockReviewDmnService.getReviewAllowedPrevStatuses(any(),any()))
+                .thenReturn(List.of(DRAFT));
 
         final var res = reviewService.updateReview(expectedReview, randomUUID, randomUUID, null);
 
