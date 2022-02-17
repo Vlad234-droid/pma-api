@@ -42,7 +42,7 @@ spring:
     camunda:
       driver-class-name: org.h2.Driver
       jdbc-url: jdbc:h2:mem:camunda-test;MODE=Oracle;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-#      jdbc-url: jdbc:h2:tcp://localhost//opt/h2/db/demo;MODE=Oracle;DB_CLOSE_DELAY=-1
+      #      jdbc-url: jdbc:h2:tcp://localhost//opt/h2/db/demo;MODE=Oracle;DB_CLOSE_DELAY=-1
       username: sa
       password:
       type: com.zaxxer.hikari.HikariDataSource
@@ -102,7 +102,7 @@ camunda:
     history-level: activity
     database:
       schema-update: true
-#      schema-update: create-drop
+      #      schema-update: create-drop
       type: h2
     metrics:
       enabled: false

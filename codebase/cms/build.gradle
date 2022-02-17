@@ -22,6 +22,8 @@ dependencies {
     implementation ("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter:${camundaVersion}")
     implementation ("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-webapp:${camundaVersion}")
 
+    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:${springBootMybatisVersion}")
+
     implementation("org.apache.commons:commons-text:${commonsTextVersion}")
 
     testImplementation ("com.h2database:h2:${h2Version}")

@@ -7,9 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
@@ -22,8 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Vadim Shatokhin <a href="mailto:vadim.shatokhin1@tesco.com">vadim.shatokhin1@tesco.com</a>
  * 2022-02-16 10:34
  */
-@ActiveProfiles("test")
-@SpringBootTest(classes = HelpServiceTest.LocalTestConfig.class)
+@ActiveProfiles(value = {"camunda", "test"})
+@SpringBootTest(classes = {JacksonAutoConfiguration.class, CamundaSpringBootTestConfig.class})
 class HelpServiceTest extends AbstractCamundaSpringBootTest {
     private static final String KEY_SYSTEM_GUIDANCE_AND_FAQS = "system-guidance-and-faqs";
     private static final String OUTPUT_SYSTEM_GUIDANCE_AND_FAQS_PEOPLEDATAINTS = "https://tesco.sharepoint.com/:u:/r/sites/" +
@@ -44,12 +41,6 @@ class HelpServiceTest extends AbstractCamundaSpringBootTest {
 
     @SpyBean
     HelpServiceImpl helpService;
-
-    @Profile("test")
-    @Configuration
-    @Import({JacksonAutoConfiguration.class, CamundaSpringBootTestConfig.class})
-    static class LocalTestConfig {
-    }
 
     @Test
     void getExact() {
