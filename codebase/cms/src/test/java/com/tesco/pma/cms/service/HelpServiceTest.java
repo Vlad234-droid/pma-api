@@ -2,15 +2,20 @@ package com.tesco.pma.cms.service;
 
 import com.tesco.pma.bpm.camunda.flow.AbstractCamundaSpringBootTest;
 import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
+import com.tesco.pma.cms.model.ContentEntry;
 import com.tesco.pma.util.TestUtils.KEYS;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import static com.tesco.pma.util.TestUtils.createColleague;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,6 +47,9 @@ class HelpServiceTest extends AbstractCamundaSpringBootTest {
     @SpyBean
     HelpServiceImpl helpService;
 
+    @MockBean
+    ContentEntryService contentEntryService;
+
     @Test
     void getExact() {
         assertSuccessRule(Map.of(KEYS.COUNTRY_CODE, COUNTRY_GB), OUTPUT_SYSTEM_GUIDANCE_AND_FAQS_GB);
@@ -65,5 +73,25 @@ class HelpServiceTest extends AbstractCamundaSpringBootTest {
         var result = helpService.getHelpFaqUrls(createColleague(params), Set.of(KEY_SYSTEM_GUIDANCE_AND_FAQS));
 
         assertEquals(expected, result.get(KEY_SYSTEM_GUIDANCE_AND_FAQS));
+    }
+
+    @Test
+    void getHelpFaqContentEntriesTest() {
+        var compoundKey = "help-faq/iam-source/peopledataints/ids/system-guidance-and-faqs";
+        var content = createContentEntry(compoundKey);
+        var colleague = createColleague(Map.of(KEYS.IAM_SOURCE, "peopledataints"));
+
+        Mockito.when(contentEntryService.findByKey(Mockito.eq(compoundKey))).thenReturn(List.of(content));
+
+        var result = helpService.getHelpFaqContentEntries(colleague, Set.of("system-guidance-and-faqs"));
+
+        assertEquals(content.getUuid(), result.get("system-guidance-and-faqs").get(0).getUuid());
+    }
+
+    private ContentEntry createContentEntry(String key){
+        var content = new ContentEntry();
+        content.setUuid(UUID.randomUUID());
+        content.setKey(key);
+        return content;
     }
 }
