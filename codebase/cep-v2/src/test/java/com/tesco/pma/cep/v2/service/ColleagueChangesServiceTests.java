@@ -16,6 +16,8 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.List;
+
 import static com.tesco.pma.cep.v2.service.TestDataUtils.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -96,8 +98,8 @@ class ColleagueChangesServiceTests {
                 .thenReturn(true);
         when(mockProfileService.findProfileByColleagueUuid(COLLEAGUE_UUID))
                 .thenReturn(buildColleagueProfile(COLLEAGUE_UUID));
-        when(mockProfileService.findColleagueByColleagueUuid(COLLEAGUE_UUID))
-                .thenReturn(buildColleague());
+        when(mockProfileService.getColleagueFactsAPISupportedAttributes())
+                .thenReturn(List.of("attribute1", "attribute2"));
         when(mockProfileService.updateColleague(COLLEAGUE_UUID, colleagueChangeEventPayload.getChangedAttributes()))
                 .thenReturn(1);
 
@@ -105,7 +107,7 @@ class ColleagueChangesServiceTests {
 
         verify(mockCepSubscribeProperties, times(1)).isForce();
         verify(mockProfileService, times(1)).findProfileByColleagueUuid(COLLEAGUE_UUID);
-        verify(mockProfileService, times(1)).findColleagueByColleagueUuid(COLLEAGUE_UUID);
+        verify(mockProfileService, times(1)).getColleagueFactsAPISupportedAttributes();
         verify(mockProfileService, times(1)).updateColleague(COLLEAGUE_UUID,
                 colleagueChangeEventPayload.getChangedAttributes());
     }
@@ -118,8 +120,8 @@ class ColleagueChangesServiceTests {
                 .thenReturn(false);
         when(mockProfileService.findProfileByColleagueUuid(COLLEAGUE_UUID))
                 .thenReturn(buildColleagueProfile(COLLEAGUE_UUID));
-        when(mockProfileService.findColleagueByColleagueUuid(COLLEAGUE_UUID))
-                .thenReturn(buildColleague());
+        when(mockProfileService.getColleagueFactsAPISupportedAttributes())
+                .thenReturn(List.of("attribute1", "attribute2"));
         when(mockProfileService.updateColleague(any(Colleague.class)))
                 .thenReturn(1);
 
@@ -127,7 +129,7 @@ class ColleagueChangesServiceTests {
 
         verify(mockCepSubscribeProperties, times(1)).isForce();
         verify(mockProfileService, times(1)).findProfileByColleagueUuid(COLLEAGUE_UUID);
-        verify(mockProfileService, times(1)).findColleagueByColleagueUuid(COLLEAGUE_UUID);
+        verify(mockProfileService, times(1)).getColleagueFactsAPISupportedAttributes();
         verify(mockProfileService, times(1)).updateColleague(any(Colleague.class));
     }
 

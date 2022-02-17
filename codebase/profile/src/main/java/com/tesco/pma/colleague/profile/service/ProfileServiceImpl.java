@@ -173,6 +173,11 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    public Collection<String> getColleagueFactsAPISupportedAttributes() {
+        return colleagueFactsApiLocalMapper.getColleagueFactsAPISupportedAttributes();
+    }
+
+    @Override
     // TODO To optimize logic for update only changed fields
     public int updateColleague(UUID colleagueUuid, Collection<String> changedFields) {
         int updated = 0;

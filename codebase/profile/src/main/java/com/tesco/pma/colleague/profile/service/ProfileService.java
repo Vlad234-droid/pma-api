@@ -125,4 +125,11 @@ public interface ProfileService {
      */
     List<ColleagueProfile> getSuggestions(RequestQuery requestQuery);
 
+    /**
+     * Get a list supported attributes of Colleague Facts API
+     *
+     * @return list of supported attributes
+     */
+    Collection<String> getColleagueFactsAPISupportedAttributes();
+
 }

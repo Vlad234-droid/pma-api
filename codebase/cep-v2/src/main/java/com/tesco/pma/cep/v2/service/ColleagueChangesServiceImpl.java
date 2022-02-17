@@ -19,10 +19,10 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.tesco.pma.cep.v2.domain.EventType.DELETION;
 import static com.tesco.pma.cep.v2.domain.EventType.JOINER;
@@ -151,13 +151,16 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     }
 
     private Collection<String> filteringChangedAttributes(ColleagueChangeEventPayload colleagueChangeEventPayload) {
-         var colleague =  profileService.findColleagueByColleagueUuid(
-                colleagueChangeEventPayload.getColleagueUuid());
-         if (colleague == null) {
-             return List.of();
-         }
+        var changedAttributes = colleagueChangeEventPayload.getChangedAttributes();
+        if (changedAttributes.isEmpty()) {
+            return changedAttributes;
+        }
 
-        return List.of("1");
+        var supportedAttributes = profileService.getColleagueFactsAPISupportedAttributes();
+
+        return supportedAttributes.stream()
+                .filter(changedAttributes::contains)
+                .collect(Collectors.toList());
     }
 
     private void sendEvent(UUID colleagueUuid, EventNames eventName) {

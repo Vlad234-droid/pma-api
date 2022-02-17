@@ -22,8 +22,13 @@ public class TestDataUtils {
         var colleagueChangeEventPayload = new ColleagueChangeEventPayload();
         colleagueChangeEventPayload.setColleagueUuid(COLLEAGUE_UUID);
         colleagueChangeEventPayload.setEventType(eventType);
-        colleagueChangeEventPayload.setChangedAttributes(List.of("attribute1", "attribute2"));
+
+        if (EventType.MODIFICATION.equals(eventType)) {
+            colleagueChangeEventPayload.setChangedAttributes(List.of("attribute1", "attribute2"));
+        }
+
         colleagueChangeEventPayload.setCurrent(buildColleague());
+
         return colleagueChangeEventPayload;
     }
 
