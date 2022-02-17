@@ -10,7 +10,6 @@ import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.headers.Header;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
@@ -42,8 +41,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 @RequiredArgsConstructor
 @SuppressWarnings("PMD.CouplingBetweenObjects") //High amount of different objects as members denotes a high coupling
 @Configuration
-@OpenAPIDefinition(servers = @Server(url = "/", description = "Default server URL"),
-        info = @Info(title = "PMA API", version = "1.0", description = "Documentation PMA API v1.0"))
+@OpenAPIDefinition(info = @Info(title = "PMA API", version = "1.0", description = "Documentation PMA API v1.0"))
 public class SpringDocOpenApiConfiguration {
 
     public static final String BEARER_JWT_IDENTITY_SECURITY_SCHEMA_NAME = "bearer-jwt-identity";
