@@ -70,6 +70,15 @@ public class ExcelReportUtils {
         }
     }
 
+    /**
+     * Format condition of filter
+     * @param condition  - condition of filter
+     * @return formatted condition
+     */
+    public String formatCondition(Condition condition) {
+        return String.format("%s %s %s", condition.getProperty(), condition.getOperand().name(), condition.getValue());
+    }
+
     private void buildStatisticsData(List<String> statistics,
                                      String filters,
                                      List<List<Object>> reportData, List<ColumnMetadata> columnMetadata,
@@ -90,15 +99,6 @@ public class ExcelReportUtils {
                 createCell(reportData.get(0).get(i), 1, row);
             }
         }
-    }
-
-    /**
-     * Format condition of filter
-     * @param condition  - condition of filter
-     * @return formatted condition
-     */
-    public String formatCondition(Condition condition) {
-        return String.format("%s %s %s", condition.getProperty(), condition.getOperand().name(), condition.getValue());
     }
 
     private void createCell(Object value, int columnIndex, XSSFRow row) {
