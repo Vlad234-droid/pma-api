@@ -2,6 +2,7 @@ package com.tesco.pma.reporting.util;
 
 import com.tesco.pma.api.ValueType;
 import com.tesco.pma.pagination.Condition;
+import com.tesco.pma.reporting.dashboard.domain.StatsData;
 import com.tesco.pma.reporting.metadata.ColumnMetadata;
 import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewData;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ByteArrayResource;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,6 +59,38 @@ class ExcelReportUtilsTest {
         }
     }
 
+    enum StatsColumnMetadataEnum {
+        COLLEAGUES_COUNT("colleagues-count",
+                "Colleagues count", INTEGER,
+                "Total number of individuals"),
+        OBJECTIVES_SUBMITTED_PERCENTAGE("objectives-submitted-percentage",
+                "Objectives submitted percentage", INTEGER,
+                "Number of individuals with submitted objectives/all individuals with objectives to submit"),
+        OBJECTIVES_APPROVED_PERCENTAGE("objectives-approved-percentage",
+                "Objectives approved percentage", INTEGER,
+                "Number of individuals with approved objectives/all individuals with objectives to submit"),
+        NEW_TO_BUSINESS_COUNT("new-to-business-count",
+                "New to business count", INTEGER,
+                "Number of individuals who have joined the business in the last 90 days");
+
+        private final ColumnMetadata columnMetadata;
+
+        StatsColumnMetadataEnum(String id,
+                                String name,
+                                ValueType type,
+                                String description) {
+            columnMetadata = new ColumnMetadata();
+            columnMetadata.setId(id);
+            columnMetadata.setName(name);
+            columnMetadata.setType(type);
+            columnMetadata.setDescription(description);
+        }
+
+        public ColumnMetadata getColumnMetadata() {
+            return columnMetadata;
+        }
+    }
+
     @Test
     void buildResource() throws IOException {
         var columnMetadata = getColumnMetadata();
@@ -76,7 +110,26 @@ class ExcelReportUtilsTest {
     }
 
     @Test
-    void buildResourceWithStatistics() {
+    void buildResourceWithStatistics() throws IOException {
+        List<String> statistics = List.of("colleagues-count", "new-to-business-count");
+        var filters = List.of(Condition.build("year", 2021), Condition.build("status", "Approved"));
+        var filtersOnUI = filters.stream()
+                .map(ExcelReportUtils::formatCondition)
+                .collect(Collectors.toList()).toString();
+        List<List<Object>> reportData = getStatsReportData();
+        var columnMetadata = getStatsColumnMetadata();
+
+        var resource = ExcelReportUtils.buildResourceWithStatistics(statistics, REPORT_SHEET_NAME,
+                filtersOnUI, reportData, columnMetadata);
+
+        assertTrue(resource.exists());
+        assertTrue(resource.isReadable());
+        assertTrue(resource instanceof ByteArrayResource);
+        var workbook = new XSSFWorkbook(resource.getInputStream());
+        var sheet = workbook.getSheet(REPORT_SHEET_NAME);
+        assertNotNull(sheet);
+        assertEquals(statistics.size() + 1, sheet.getLastRowNum());
+        checkStatisticsData(sheet, statistics, filtersOnUI, reportData, columnMetadata);
     }
 
     @Test
@@ -88,8 +141,24 @@ class ExcelReportUtilsTest {
         assertEquals("stats IN [colleagues-count, new-to-business-count]", formatted);
     }
 
-    private void checkStatisticsData() {
+    private void checkStatisticsData(XSSFSheet sheet, List<String> statistics, String filters,
+                                     List<List<Object>> reportData, List<ColumnMetadata> columnMetadata) {
+        var rowNum = 0;
+        var rowWithDate = sheet.getRow(rowNum++);
+        assertEquals("Date:", rowWithDate.getCell(0).getStringCellValue());
+        assertTrue(rowWithDate.getCell(1).getStringCellValue().startsWith(LocalDate.now().toString()));
 
+        var rowWithFilters = sheet.getRow(rowNum++);
+        assertEquals("Filters applied:", rowWithFilters.getCell(0).getStringCellValue());
+        assertTrue(rowWithFilters.getCell(1).getStringCellValue().startsWith(filters));
+
+        for (int i = 0; i < columnMetadata.size(); i++) {
+            if (statistics.contains(columnMetadata.get(i).getId())) {
+                var rowWithStats = sheet.getRow(rowNum++);
+                assertEquals(columnMetadata.get(i).getName(), rowWithStats.getCell(0).getStringCellValue());
+                assertEquals(((Number) reportData.get(0).get(i)).intValue(), (int) rowWithStats.getCell(1).getNumericCellValue());
+            }
+        }
     }
 
     private void checkHeader(XSSFSheet sheet, List<ColumnMetadata> columnMetadata) {
@@ -119,7 +188,7 @@ class ExcelReportUtilsTest {
     }
 
     private List<List<Object>> getReportData() {
-        var reportData = List.of(buildObjectiveLinkedReviewData(1));
+        var reportData = List.of(getObjectiveLinkedReviewData());
         return reportData.stream()
                 .map(this::toList)
                 .collect(Collectors.toList());
@@ -127,7 +196,6 @@ class ExcelReportUtilsTest {
 
     private List<Object> toList(ObjectiveLinkedReviewData data) {
         var strings = new ArrayList<>();
-
         strings.add(data.getIamId());
         strings.add(data.getColleagueUUID());
         strings.add(data.getFirstName());
@@ -140,7 +208,7 @@ class ExcelReportUtilsTest {
         return strings;
     }
 
-    private ObjectiveLinkedReviewData buildObjectiveLinkedReviewData(Integer objectiveNumber) {
+    private ObjectiveLinkedReviewData getObjectiveLinkedReviewData() {
         var reportData = new ObjectiveLinkedReviewData();
         reportData.setIamId("UKE12375189");
         reportData.setColleagueUUID(COLLEAGUE_UUID);
@@ -149,7 +217,7 @@ class ExcelReportUtilsTest {
         reportData.setWorkLevel("WL5");
         reportData.setJobTitle("JobTitle");
         reportData.setLineManager(LINE_MANAGER_UUID);
-        reportData.setObjectiveNumber(objectiveNumber);
+        reportData.setObjectiveNumber(1);
 
         return reportData;
     }
@@ -164,5 +232,40 @@ class ExcelReportUtilsTest {
                 ColumnMetadataEnum.JOB_TITLE.getColumnMetadata(),
                 ColumnMetadataEnum.LINE_MANAGER.getColumnMetadata(),
                 ColumnMetadataEnum.OBJECTIVE_NUMBER.getColumnMetadata());
+    }
+
+    private List<ColumnMetadata> getStatsColumnMetadata() {
+        return List.of(
+                StatsColumnMetadataEnum.COLLEAGUES_COUNT.getColumnMetadata(),
+                StatsColumnMetadataEnum.OBJECTIVES_SUBMITTED_PERCENTAGE.getColumnMetadata(),
+                StatsColumnMetadataEnum.OBJECTIVES_APPROVED_PERCENTAGE.getColumnMetadata(),
+                StatsColumnMetadataEnum.NEW_TO_BUSINESS_COUNT.getColumnMetadata());
+    }
+
+    private List<List<Object>> getStatsReportData() {
+        var reportData = List.of(getStatsData());
+        return reportData.stream()
+                .map(this::toList)
+                .collect(Collectors.toList());
+    }
+
+    private List<Object> toList(StatsData data) {
+        var strings = new ArrayList<>();
+        strings.add(data.getColleaguesCount());
+        strings.add(data.getObjectivesSubmittedPercentage());
+        strings.add(data.getObjectivesApprovedPercentage());
+        strings.add(data.getNewToBusinessCount());
+
+        return strings;
+    }
+
+    private StatsData getStatsData() {
+        var statsData = new StatsData();
+        statsData.setColleaguesCount(5);
+        statsData.setObjectivesSubmittedPercentage(55);
+        statsData.setObjectivesApprovedPercentage(45);
+        statsData.setNewToBusinessCount(3);
+
+        return statsData;
     }
 }
