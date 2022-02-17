@@ -46,8 +46,6 @@ import static com.tesco.pma.api.ActionType.SAVE_AS_DRAFT;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DECLINED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
-import static com.tesco.pma.cycle.api.PMTimelinePointStatus.OVERDUE;
-import static com.tesco.pma.cycle.api.PMTimelinePointStatus.STARTED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.WAITING_FOR_APPROVAL;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MAX;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MIN;
@@ -555,14 +553,6 @@ public class ReviewServiceImpl implements ReviewService {
                 .collect(toList());
     }
 
-    private List<PMTimelinePointStatus> getAllowedStatusesForTLPointUpdate(PMTimelinePointStatus newStatus) {
-        if (newStatus == APPROVED) {
-            return List.of(STARTED, DRAFT, WAITING_FOR_APPROVAL, APPROVED, DECLINED, OVERDUE);
-        } else {
-            return List.of(STARTED, DRAFT, WAITING_FOR_APPROVAL, APPROVED, DECLINED);
-        }
-    }
-
     private List<OrgObjective> intCreateOrgObjectives(List<OrgObjective> orgObjectives, UUID loggedUserUuid) {
         var currentOrgObjectives = orgObjectiveDAO.getAll();
         if (listEqualsIgnoreOrder(currentOrgObjectives, orgObjectives, ORG_OBJECTIVE_SEQUENCE_NUMBER_TITLE_COMPARATOR)) {
@@ -605,7 +595,7 @@ public class ReviewServiceImpl implements ReviewService {
         var calcTlPoint = calcTlPoint(timelinePoint);
         if (1 == timelinePointDAO.update(
                 calcTlPoint,
-                getAllowedStatusesForTLPointUpdate(calcTlPoint.getStatus()))) {
+                reviewDmnService.getTlPointAllowedPrevStatuses(calcTlPoint.getStatus()))) {
             return calcTlPoint;
         } else {
             return null;

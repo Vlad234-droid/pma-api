@@ -10,4 +10,6 @@ public interface ReviewDmnService {
     List<PMTimelinePointStatus> getReviewAllowedStatuses(PMReviewType reviewType, String operation);
 
     List<PMTimelinePointStatus> getReviewAllowedPrevStatuses(PMReviewType reviewType, PMTimelinePointStatus newStatus);
+
+    List<PMTimelinePointStatus> getTlPointAllowedPrevStatuses(PMTimelinePointStatus newStatus);
 }

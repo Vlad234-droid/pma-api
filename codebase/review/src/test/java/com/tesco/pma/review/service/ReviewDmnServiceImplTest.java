@@ -12,6 +12,7 @@ import java.io.InputStream;
 
 import static com.tesco.pma.cycle.api.PMReviewType.MYR;
 import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.WAITING_FOR_APPROVAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -20,8 +21,10 @@ public class ReviewDmnServiceImplTest {
 
     private static final String REVIEW_ALLOWED_STATUSES_PATH = "com/tesco/pma/flow/review/review_allowed_statuses.dmn";
     private static final String REVIEW_ALLOWED_PREV_STATUSES_PATH = "com/tesco/pma/flow/review/review_allowed_prev_statuses.dmn";
+    private static final String TL_POINT_ALLOWED_PREV_STATUSES_PATH = "com/tesco/pma/flow/review/tl_point_allowed_prev_statuses.dmn";
     private static final String REVIEW_ALLOWED_STATUSES_DMN_ID = "review_operation_allowed_statuses_table";
     private static final String REVIEW_ALLOWED_PREV_STATUSES_DMN_ID = "review_allowed_prev_statuses_table";
+    private static final String TL_POINT_ALLOWED_PREV_STATUSES_DMN_ID = "tl_point_allowed_prev_statuses_table";
     private static final String REVIEW_TYPE_VAR_KEY = "REVIEW_TYPE";
     private static final String OPERATION_VAR_KEY = "OPERATION";
     private static final String STATUS_VAR_KEY = "STATUS";
@@ -74,4 +77,21 @@ public class ReviewDmnServiceImplTest {
         assertEquals(4, objects.size());
     }
 
+    @Test
+    void tlPointAllowedPrevStatusesTest() throws IOException {
+
+        DmnDecision decision;
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(TL_POINT_ALLOWED_PREV_STATUSES_PATH)) {
+            decision = dmnEngine.parseDecision(TL_POINT_ALLOWED_PREV_STATUSES_DMN_ID, inputStream);
+        }
+
+        var variables = Variables.createVariables()
+                .putValue(NEW_STATUS_VAR_KEY, APPROVED.getCode());
+
+        var result = dmnEngine.evaluateDecisionTable(decision, variables);
+
+        var objects = result.collectEntries(STATUS_VAR_KEY);
+
+        assertEquals(6, objects.size());
+    }
 }

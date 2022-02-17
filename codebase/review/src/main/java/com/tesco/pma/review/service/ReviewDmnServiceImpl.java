@@ -17,6 +17,7 @@ public class ReviewDmnServiceImpl implements ReviewDmnService {
 
     private static final String REVIEW_OPERATION_ALLOWED_STATUSES_TABLE_KEY = "review_operation_allowed_statuses_table";
     private static final String REVIEW_ALLOWED_PREV_STATUSES_TABLE_ID = "review_allowed_prev_statuses_table";
+    private static final String TL_POINT_ALLOWED_PREV_STATUSES_TABLE_ID = "tl_point_allowed_prev_statuses_table";
     private static final String REVIEW_TYPE_VAR_KEY = "REVIEW_TYPE";
     private static final String OPERATION_VAR_KEY = "OPERATION";
     private static final String STATUS_VAR_KEY = "STATUS";
@@ -33,9 +34,7 @@ public class ReviewDmnServiceImpl implements ReviewDmnService {
         var result =
                 decisionService.evaluateDecisionTableByKey(REVIEW_OPERATION_ALLOWED_STATUSES_TABLE_KEY, variables);
 
-        return result.collectEntries(STATUS_VAR_KEY).stream()
-                .map(s -> PMTimelinePointStatus.valueOf((String) s))
-                .collect(Collectors.toList());
+        return toList(result.collectEntries(STATUS_VAR_KEY));
     }
 
     @Override
@@ -49,7 +48,24 @@ public class ReviewDmnServiceImpl implements ReviewDmnService {
         var result =
                 decisionService.evaluateDecisionTableByKey(REVIEW_ALLOWED_PREV_STATUSES_TABLE_ID, variables);
 
-        return result.collectEntries(STATUS_VAR_KEY).stream()
+        return toList(result.collectEntries(STATUS_VAR_KEY));
+    }
+
+    @Override
+    public List<PMTimelinePointStatus> getTlPointAllowedPrevStatuses(PMTimelinePointStatus newStatus) {
+        var decisionService = processEngine.getDecisionService();
+
+        var variables = Variables.createVariables()
+                .putValue(NEW_STATUS_VAR_KEY, newStatus.getCode());
+
+        var result =
+                decisionService.evaluateDecisionTableByKey(TL_POINT_ALLOWED_PREV_STATUSES_TABLE_ID, variables);
+
+        return toList(result.collectEntries(STATUS_VAR_KEY));
+    }
+
+    private List<PMTimelinePointStatus> toList(List<Object> objectList) {
+        return objectList.stream()
                 .map(s -> PMTimelinePointStatus.valueOf((String) s))
                 .collect(Collectors.toList());
     }
