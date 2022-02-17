@@ -130,7 +130,7 @@ server:
     context-path: /v1
   trusted-port: 8084
   trusted-path-prefix: /v1/user-management
-  forward-headers-strategy: FRAMEWORK
+  forward-headers-strategy: NATIVE
 management:
   server:
     port: 8090
