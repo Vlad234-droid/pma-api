@@ -43,21 +43,21 @@ public class ObjectiveLinkedReviewReportProvider implements Reportable {
     public static final String REPORT_SHEET_NAME = "Report";
 
     enum ColumnMetadataEnum {
-       IAM_ID("iam_id", "Employee No", STRING, "Employee No"),
-       COLLEAGUE_UUID("colleague_uuid", "Employee UUID", STRING, "Employee UUID"),
-       FIRST_NAME("first_name", "First Name", STRING, "First Name"),
-       LAST_NAME("last_name", "Surname", STRING, "Surname"),
-       WORKING_LEVEL("working_level", "Working level", STRING, "Working level"),
-       JOB_TITLE("job_title", "Job title", STRING, "Job title"),
-       LINE_MANAGER("line_manager", "Line Manager", STRING, "Line Manager"),
-       OBJECTIVE_NUMBER("objective_number", "Objective number", INTEGER, "Objective number"),
-       STATUS("objective_status", "Objective Status", STRING, "Objective Status"),
-       STRATEGIC_PRIORITY("strategic_priority", "Strategic priority", STRING,
+       IAM_ID("iam-id", "Employee No", STRING, "Employee No"),
+       COLLEAGUE_UUID("colleague-uuid", "Employee UUID", STRING, "Employee UUID"),
+       FIRST_NAME("first-name", "First Name", STRING, "First Name"),
+       LAST_NAME("last-name", "Surname", STRING, "Surname"),
+       WORKING_LEVEL("working-level", "Working level", STRING, "Working level"),
+       JOB_TITLE("job-title", "Job title", STRING, "Job title"),
+       LINE_MANAGER("line-manager", "Line Manager", STRING, "Line Manager"),
+       OBJECTIVE_NUMBER("objective-number", "Objective number", INTEGER, "Objective number"),
+       STATUS("objective-status", "Objective Status", STRING, "Objective Status"),
+       STRATEGIC_PRIORITY("strategic-priority", "Strategic priority", STRING,
                "Link to Strategic priorities"),
        OBJECTIVE_TITLE("title", "Objective title", STRING, "Objective title"),
-       HOW_ACHIEVED("how_achieved", "How achieved", STRING,
+       HOW_ACHIEVED("how-achieved", "How achieved", STRING,
                "How do I know I've ACHIEVED this objective?"),
-       HOW_OVER_ACHIEVED("how_over_achieved", "How over-achieved", STRING,
+       HOW_OVER_ACHIEVED("how-over-achieved", "How over-achieved", STRING,
                "How do I know I've OVER-ACHIEVED this objective?");
 
        private final ColumnMetadata columnMetadata;
