@@ -14,6 +14,7 @@ import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import com.tesco.pma.cycle.api.PMForm;
 import com.tesco.pma.cycle.api.model.PMReviewElement;
 import com.tesco.pma.cycle.api.request.PMCycleUpdateFormRequest;
+import com.tesco.pma.cycle.api.request.PMFormRequest;
 import com.tesco.pma.cycle.dao.PMCycleDAO;
 import com.tesco.pma.cycle.exception.ErrorCodes;
 import com.tesco.pma.cycle.exception.PMCycleException;
@@ -527,7 +528,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         }
     }
 
-    private PMForm getPMForm(PMForm formRequest) {
+    private PMForm getPMForm(PMFormRequest formRequest) {
         try {
             return getPMForm(UUID.fromString(formRequest.getId()));
         } catch (Exception e) {
