@@ -29,4 +29,5 @@ include 'flow'
 include 'tip'
 include 'pdp'
 include 'reporting'
+include 'cms'
 

@@ -39,6 +39,7 @@ dependencies {
     implementation project(':pdp')
     implementation project(':reporting')
     implementation project(':config')
+    implementation project(':cms')
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-web")
