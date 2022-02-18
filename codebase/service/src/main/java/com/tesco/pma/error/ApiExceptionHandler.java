@@ -155,8 +155,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         if (ex.getRootCause() != null) {
             error.addDetails(ApiValidationError.builder()
-                    .code(ex.getRootCause().getClass().getName())
-                    .message(ex.getRootCause().getMessage())
+                    .code(ex.getRootCause().getClass().getName()) //NOSONAR ex.getRootCause() has already checked  on null
+                    .message(ex.getRootCause().getMessage()) //NOSONAR ex.getRootCause() has already checked  on null
                     .field(getFieldName(ex))
                     .build());
         }
