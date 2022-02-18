@@ -46,6 +46,8 @@ public class ReportingEndpoint {
 
     static final String STATS_PARAM_NAME = "stats";
     static final MediaType APPLICATION_FORCE_DOWNLOAD_VALUE = new MediaType("application", "force-download");
+    static final String REPORT_NAME_PARAM_NAME = "reportName";
+    static final String REQUEST_QUERY_PARAM_NAME = "requestQuery";
 
     private final ReportingService reportingService;
     private final ReviewReportingService reviewReportingService;
@@ -73,7 +75,7 @@ public class ReportingEndpoint {
             resource = buildResource(report.getMetadata().getSheetName(), reportData, reportMetadata);
         } catch (IOException e) {
             var message = messages.getMessage(ErrorCodes.INTERNAL_DOWNLOAD_ERROR,
-                    Map.of("reportName", report.getMetadata().getName(), "requestQuery", requestQuery));
+                    Map.of(REPORT_NAME_PARAM_NAME, report.getMetadata().getName(), REQUEST_QUERY_PARAM_NAME, requestQuery));
             throw new DownloadException(ErrorCodes.INTERNAL_DOWNLOAD_ERROR.getCode(), message, report.getMetadata().getName(), e);
         }
 
@@ -161,7 +163,7 @@ public class ReportingEndpoint {
             resource = buildResourceWithStatistics(stats, report.getMetadata().getSheetName(), filtersOnUI, reportData, reportMetadata);
         } catch (IOException e) {
             var message = messages.getMessage(ErrorCodes.INTERNAL_DOWNLOAD_ERROR,
-                    Map.of("reportName", report.getMetadata().getName(), "requestQuery", requestQuery));
+                    Map.of(REPORT_NAME_PARAM_NAME, report.getMetadata().getName(), REQUEST_QUERY_PARAM_NAME, requestQuery));
             throw new DownloadException(ErrorCodes.INTERNAL_DOWNLOAD_ERROR.getCode(), message, report.getMetadata().getName(), e);
         }
 
