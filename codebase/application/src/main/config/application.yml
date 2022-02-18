@@ -221,9 +221,13 @@ tesco:
           url: ${TESCO_API_BASE_URL}/colleague/v1/events
         retry-timeout: 30
         subscribe:
-          force: ${CEP_FORCE:true}
+          feeds:
+            jit: colleagues-jit-v1
+            immediate: colleagues-immediate-v1
+            capi: capi-colleague-facts-v2
       colleague-api:
         base-url: ${TESCO_API_BASE_URL}/colleague/v2/colleagues
+        force: ${CFAPI_FORCE:true}
       events-api:
         base-url: ${PMA_API_URL}/events
       contact-api:

@@ -1,5 +1,6 @@
 package com.tesco.pma.cep.v2.service;
 
+import com.tesco.pma.cep.v2.configuration.ColleagueFactsApiProperties;
 import com.tesco.pma.cep.v2.domain.EventType;
 import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.profile.service.ProfileService;
@@ -29,7 +30,7 @@ import static org.mockito.Mockito.*;
 class ColleagueChangesServiceTests {
 
     @MockBean
-    private CEPSubscribeProperties mockCepSubscribeProperties;
+    private ColleagueFactsApiProperties mockColleagueFactsApiProperties;
     @MockBean
     private ProfileService mockProfileService;
     @MockBean
@@ -44,14 +45,14 @@ class ColleagueChangesServiceTests {
     void processColleagueChangeEventWithJoinerEventTypeAndForceMode() {
         var colleagueChangeEventPayload = buildColleagueChangeEventPayload(EventType.JOINER);
 
-        when(mockCepSubscribeProperties.isForce())
+        when(mockColleagueFactsApiProperties.isForce())
                 .thenReturn(true);
         when(mockProfileService.create(COLLEAGUE_UUID))
                 .thenReturn(1);
 
         colleagueChangesService.processColleagueChangeEvent(colleagueChangeEventPayload);
 
-        verify(mockCepSubscribeProperties, times(1)).isForce();
+        verify(mockColleagueFactsApiProperties, times(1)).isForce();
         verify(mockProfileService, times(1)).create(COLLEAGUE_UUID);
         verify(eventSender, times(2)).sendEvent(any(Event.class));
     }
@@ -60,14 +61,14 @@ class ColleagueChangesServiceTests {
     void processColleagueChangeEventWithJoinerEventType() {
         var colleagueChangeEventPayload = buildColleagueChangeEventPayload(EventType.JOINER);
 
-        when(mockCepSubscribeProperties.isForce())
+        when(mockColleagueFactsApiProperties.isForce())
                 .thenReturn(false);
         when(mockProfileService.create(any(Colleague.class)))
                 .thenReturn(1);
 
         colleagueChangesService.processColleagueChangeEvent(colleagueChangeEventPayload);
 
-        verify(mockCepSubscribeProperties, times(1)).isForce();
+        verify(mockColleagueFactsApiProperties, times(1)).isForce();
         verify(mockProfileService, times(1)).create(any(Colleague.class));
         verify(eventSender, times(2)).sendEvent(any(Event.class));
     }
@@ -94,7 +95,7 @@ class ColleagueChangesServiceTests {
     void processColleagueChangeEventWithModificationEventTypeAndForceMode() {
         var colleagueChangeEventPayload = buildColleagueChangeEventPayload(EventType.MODIFICATION);
 
-        when(mockCepSubscribeProperties.isForce())
+        when(mockColleagueFactsApiProperties.isForce())
                 .thenReturn(true);
         when(mockProfileService.findProfileByColleagueUuid(COLLEAGUE_UUID))
                 .thenReturn(buildColleagueProfile(COLLEAGUE_UUID));
@@ -105,7 +106,7 @@ class ColleagueChangesServiceTests {
 
         colleagueChangesService.processColleagueChangeEvent(colleagueChangeEventPayload);
 
-        verify(mockCepSubscribeProperties, times(1)).isForce();
+        verify(mockColleagueFactsApiProperties, times(1)).isForce();
         verify(mockProfileService, times(1)).findProfileByColleagueUuid(COLLEAGUE_UUID);
         verify(mockProfileService, times(1)).getColleagueFactsAPISupportedAttributes();
         verify(mockProfileService, times(1)).updateColleague(COLLEAGUE_UUID,
@@ -116,7 +117,7 @@ class ColleagueChangesServiceTests {
     void processColleagueChangeEventWithModificationEventType() {
         var colleagueChangeEventPayload = buildColleagueChangeEventPayload(EventType.MODIFICATION);
 
-        when(mockCepSubscribeProperties.isForce())
+        when(mockColleagueFactsApiProperties.isForce())
                 .thenReturn(false);
         when(mockProfileService.findProfileByColleagueUuid(COLLEAGUE_UUID))
                 .thenReturn(buildColleagueProfile(COLLEAGUE_UUID));
@@ -127,7 +128,7 @@ class ColleagueChangesServiceTests {
 
         colleagueChangesService.processColleagueChangeEvent(colleagueChangeEventPayload);
 
-        verify(mockCepSubscribeProperties, times(1)).isForce();
+        verify(mockColleagueFactsApiProperties, times(1)).isForce();
         verify(mockProfileService, times(1)).findProfileByColleagueUuid(COLLEAGUE_UUID);
         verify(mockProfileService, times(1)).getColleagueFactsAPISupportedAttributes();
         verify(mockProfileService, times(1)).updateColleague(any(Colleague.class));

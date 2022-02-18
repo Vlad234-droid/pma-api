@@ -1,5 +1,6 @@
 package com.tesco.pma.cep.v2.service;
 
+import com.tesco.pma.cep.v2.configuration.ColleagueFactsApiProperties;
 import com.tesco.pma.cep.v2.domain.ColleagueChangeEventPayload;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
@@ -36,7 +37,7 @@ import static com.tesco.pma.cep.v2.exception.ErrorCodes.COLLEAGUE_NOT_FOUND;
 @RequiredArgsConstructor
 public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
-    private final CEPSubscribeProperties cepSubscribeProperties;
+    private final ColleagueFactsApiProperties colleagueFactsApiProperties;
     private final ProfileService profileService;
     private final UserManagementService userManagementService;
     private final EventSender eventSender;
@@ -93,7 +94,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
     private int processJoinerEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
         int updated;
-        if (cepSubscribeProperties.isForce()) {
+        if (colleagueFactsApiProperties.isForce()) {
             updated = profileService.create(colleagueChangeEventPayload.getColleagueUuid());
         } else {
             updated = profileService.create(colleagueChangeEventPayload.getCurrent());
@@ -131,7 +132,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         }
 
         int updated;
-        if (cepSubscribeProperties.isForce()) {
+        if (colleagueFactsApiProperties.isForce()) {
             updated = profileService.updateColleague(colleagueChangeEventPayload.getColleagueUuid(),
                     colleagueChangeEventPayload.getChangedAttributes());
         } else {
