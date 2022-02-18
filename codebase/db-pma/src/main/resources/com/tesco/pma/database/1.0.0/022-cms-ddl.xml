@@ -44,4 +44,17 @@
 
     </changeSet>
 
+    <changeSet author="adublyanin" id="2">
+        <insert tableName="cms_content">
+            <column name="uuid" value="c2bae9f9-800a-47c7-ace8-541115f6f3f2"/>
+            <column name="key" value="help-faq/iam-source/peopledataints/ids/system-guidance-and-faqs"/>
+            <column name="title" value="help-faq/iam-source/peopledataints/ids/system-guidance-and-faqs"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties" value='{"mapJson": {"url": "https://tesco.sharepoint.com"}}' />
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>
