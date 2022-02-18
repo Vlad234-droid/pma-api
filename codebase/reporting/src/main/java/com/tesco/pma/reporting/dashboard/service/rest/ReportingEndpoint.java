@@ -74,9 +74,7 @@ public class ReportingEndpoint {
         try {
             resource = buildResource(report.getMetadata().getSheetName(), reportData, reportMetadata);
         } catch (IOException e) {
-            var message = messages.getMessage(ErrorCodes.INTERNAL_DOWNLOAD_ERROR,
-                    Map.of(REPORT_NAME_PARAM_NAME, report.getMetadata().getName(), REQUEST_QUERY_PARAM_NAME, requestQuery));
-            throw new DownloadException(ErrorCodes.INTERNAL_DOWNLOAD_ERROR.getCode(), message, report.getMetadata().getName(), e);
+            throw downloadException(report.getMetadata().getName(), requestQuery, e);
         }
 
         var httpHeader = new HttpHeaders();
@@ -162,9 +160,7 @@ public class ReportingEndpoint {
         try {
             resource = buildResourceWithStatistics(stats, report.getMetadata().getSheetName(), filtersOnUI, reportData, reportMetadata);
         } catch (IOException e) {
-            var message = messages.getMessage(ErrorCodes.INTERNAL_DOWNLOAD_ERROR,
-                    Map.of(REPORT_NAME_PARAM_NAME, report.getMetadata().getName(), REQUEST_QUERY_PARAM_NAME, requestQuery));
-            throw new DownloadException(ErrorCodes.INTERNAL_DOWNLOAD_ERROR.getCode(), message, report.getMetadata().getName(), e);
+            throw downloadException(report.getMetadata().getName(), requestQuery, e);
         }
 
         var httpHeader = new HttpHeaders();
@@ -172,5 +168,11 @@ public class ReportingEndpoint {
         httpHeader.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + report.getMetadata().getFileName());
 
         return new ResponseEntity<>(resource, httpHeader, CREATED);
+    }
+
+    private DownloadException downloadException(String reportName, RequestQuery requestQuery, Throwable cause) {
+        var message = messages.getMessage(ErrorCodes.INTERNAL_DOWNLOAD_ERROR,
+                Map.of(REPORT_NAME_PARAM_NAME, reportName, REQUEST_QUERY_PARAM_NAME, requestQuery));
+        return new DownloadException(ErrorCodes.INTERNAL_DOWNLOAD_ERROR.getCode(), message, reportName, cause);
     }
 }
