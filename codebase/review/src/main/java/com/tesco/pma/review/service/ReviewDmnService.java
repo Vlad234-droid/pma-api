@@ -12,4 +12,6 @@ public interface ReviewDmnService {
     Collection<PMTimelinePointStatus> getReviewAllowedPrevStatuses(PMReviewType reviewType, PMTimelinePointStatus newStatus);
 
     Collection<PMTimelinePointStatus> getTlPointAllowedPrevStatuses(PMTimelinePointStatus newStatus);
+
+    String getEventName(PMTimelinePointStatus status);
 }

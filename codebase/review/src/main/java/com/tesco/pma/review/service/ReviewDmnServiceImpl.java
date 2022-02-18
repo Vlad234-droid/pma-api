@@ -22,6 +22,7 @@ public class ReviewDmnServiceImpl implements ReviewDmnService {
     private static final String REVIEW_OPERATION_ALLOWED_STATUSES_TABLE_ID = "review_operation_allowed_statuses_table";
     private static final String REVIEW_ALLOWED_PREV_STATUSES_TABLE_ID = "review_allowed_prev_statuses_table";
     private static final String TL_POINT_ALLOWED_PREV_STATUSES_TABLE_ID = "tl_point_allowed_prev_statuses_table";
+    private static final String TL_POINT_STATUS_TO_EVENT_TABLE_ID = "tl_point_status_to_event_table";
     private static final String REVIEW_TYPE_VAR_KEY = "REVIEW_TYPE";
     private static final String OPERATION_VAR_KEY = "OPERATION";
     private static final String STATUS_VAR_KEY = "STATUS";
@@ -57,6 +58,18 @@ public class ReviewDmnServiceImpl implements ReviewDmnService {
         return getTimelinePointStatus(TL_POINT_ALLOWED_PREV_STATUSES_TABLE_ID,
                 variables
         );
+    }
+
+    @Override
+    public String getEventName(PMTimelinePointStatus status) {
+        var decisionService = processEngine.getDecisionService();
+        var variables = Variables.createVariables()
+                .putValue(STATUS_VAR_KEY, status.getCode());
+
+        var result =
+                decisionService.evaluateDecisionTableByKey(TL_POINT_STATUS_TO_EVENT_TABLE_ID, variables);
+
+        return result.getSingleEntry();
     }
 
     public static Collection<PMTimelinePointStatus> toList(List<Object> objectList) {

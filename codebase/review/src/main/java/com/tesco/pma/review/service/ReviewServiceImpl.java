@@ -118,11 +118,6 @@ public class ReviewServiceImpl implements ReviewService {
             APPROVED,
             DECLINED);
 
-    private static final Map<PMTimelinePointStatus, String> STATUS_TO_EVENT_NAME_MAP = Map.of(
-            WAITING_FOR_APPROVAL, NF_PM_REVIEW_SUBMITTED_EVENT_NAME,
-            APPROVED, NF_PM_REVIEW_APPROVED_EVENT_NAME,
-            DECLINED, "NF_PM_REVIEW_DECLINED");
-
     @Override
     public Review getReview(UUID performanceCycleUuid, UUID colleagueUuid, PMReviewType type, Integer number) {
         var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, type);
@@ -700,7 +695,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private void sendEvent(TimelinePoint timelinePoint, UUID loggedUserUUID, UUID colleagueUuid) {
-        var eventName = STATUS_TO_EVENT_NAME_MAP.get(timelinePoint.getStatus());
+        var eventName = reviewDmnService.getEventName(timelinePoint.getStatus());
 
         if (eventName == null) {
             return;
