@@ -1,0 +1,61 @@
+<dataset>
+    <job id="1" code="TL" name="Team lead" cost_category="cc"/>
+    <job id="2" code="TL" name="Team lead2" cost_category="cc"/>
+
+    <country name="GB" code="GB"/>
+
+    <work_level name="WL4" code="WL4"/>
+
+    <department id="1" name="Bank" business_type="Bank"/>
+    <department id="2" name="Bank2" business_type="Bank"/>
+
+    <colleague uuid="10000000-0000-0000-0000-00000000000a"
+               first_name="first_name"
+               middle_name="middle_name"
+               last_name="last_name"
+               email="test@test"
+               primary_entity="Tesco Bank"
+               salary_frequency="ANNUAL"
+               iam_source="Test"
+               iam_id="string 1"
+               job_id="1"
+               country_code="GB"
+               work_level="WL4"
+               department_id="1"
+               manager_uuid="10000000-0000-0000-0000-00000000000a"
+               is_manager="true"
+    />
+
+    <colleague uuid="10000000-0000-0000-0000-000000000000"
+               first_name="first_name"
+               middle_name="middle_name"
+               last_name="last_name"
+               email="test@test"
+               primary_entity="Tesco Bank"
+               salary_frequency="ANNUAL"
+               iam_source="Test"
+               iam_id="string 2"
+               job_id="2"
+               country_code="GB"
+               work_level="WL4"
+               department_id="2"
+               manager_uuid="10000000-0000-0000-0000-00000000000a"
+               is_manager="false"
+    />
+    <colleague uuid="40000000-0000-0000-0000-000000000000"
+               first_name="first_name_2"
+               middle_name="middle_name_2"
+               last_name="last_name_2"
+               email="test@test"
+               primary_entity="Tesco Bank"
+               salary_frequency="ANNUAL"
+               iam_source="Test"
+               iam_id="string 3"
+               job_id="1"
+               country_code="GB"
+               work_level="WL4"
+               department_id="1"
+               manager_uuid="10000000-0000-0000-0000-00000000000a"
+               is_manager="false"
+    />
+</dataset>

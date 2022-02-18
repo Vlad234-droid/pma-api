@@ -6,9 +6,9 @@ import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
 import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
 import com.tesco.pma.cycle.api.PMCycle;
-import com.tesco.pma.flow.TestUtils.KEYS;
 import com.tesco.pma.flow.handlers.EventSendHandler;
 import com.tesco.pma.flow.handlers.FindCycleHandler;
+import com.tesco.pma.util.TestUtils.KEYS;
 import com.tesco.pma.flow.handlers.ReadColleaguesHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.tesco.pma.bpm.camunda.flow.FlowTestUtil.mockExecutionInHandler;
-import static com.tesco.pma.flow.TestUtils.createColleague;
+import static com.tesco.pma.util.TestUtils.createColleague;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:vadim.shatokhin1@tesco.com">vadim.shatokhin1@tesco.com</a>
