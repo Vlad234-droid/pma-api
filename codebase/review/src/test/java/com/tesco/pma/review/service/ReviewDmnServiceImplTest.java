@@ -1,19 +1,23 @@
 package com.tesco.pma.review.service;
 
+import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import org.camunda.bpm.dmn.engine.DmnDecision;
 import org.camunda.bpm.dmn.engine.DmnEngine;
 import org.camunda.bpm.dmn.engine.DmnEngineConfiguration;
+import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 
 import static com.tesco.pma.cycle.api.PMReviewType.MYR;
 import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.WAITING_FOR_APPROVAL;
+import static com.tesco.pma.review.service.ReviewDmnServiceImpl.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -33,7 +37,7 @@ public class ReviewDmnServiceImplTest {
     private DmnEngine dmnEngine;
 
     @BeforeEach
-    void init() throws IOException {
+    void init() {
         dmnEngine = DmnEngineConfiguration
                 .createDefaultDmnEngineConfiguration()
                 .buildEngine();
@@ -42,56 +46,52 @@ public class ReviewDmnServiceImplTest {
     @Test
     void reviewAllowedStatusesTest() throws IOException {
 
-        DmnDecision decision;
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(REVIEW_ALLOWED_STATUSES_PATH)) {
-            decision = dmnEngine.parseDecision(REVIEW_ALLOWED_STATUSES_DMN_ID, inputStream);
-        }
-
         var variables = Variables.createVariables()
                 .putValue(REVIEW_TYPE_VAR_KEY, MYR.getCode())
                 .putValue(OPERATION_VAR_KEY, "CREATE");
 
-        var result = dmnEngine.evaluateDecisionTable(decision, variables);
+        var statuses = getTimelinePointStatus(REVIEW_ALLOWED_STATUSES_PATH,
+                REVIEW_ALLOWED_STATUSES_DMN_ID,
+                variables);
 
-        var objects = result.collectEntries(STATUS_VAR_KEY);
-
-        assertEquals(2, objects.size());
+        assertEquals(2, statuses.size());
     }
 
     @Test
     void reviewAllowedPrevStatusesTest() throws IOException {
 
-        DmnDecision decision;
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(REVIEW_ALLOWED_PREV_STATUSES_PATH)) {
-            decision = dmnEngine.parseDecision(REVIEW_ALLOWED_PREV_STATUSES_DMN_ID, inputStream);
-        }
-
         var variables = Variables.createVariables()
                 .putValue(REVIEW_TYPE_VAR_KEY, OBJECTIVE.getCode())
                 .putValue(NEW_STATUS_VAR_KEY, WAITING_FOR_APPROVAL.getCode());
 
-        var result = dmnEngine.evaluateDecisionTable(decision, variables);
+        var statuses = getTimelinePointStatus(REVIEW_ALLOWED_PREV_STATUSES_PATH,
+                REVIEW_ALLOWED_PREV_STATUSES_DMN_ID,
+                variables);
 
-        var objects = result.collectEntries(STATUS_VAR_KEY);
-
-        assertEquals(4, objects.size());
+        assertEquals(4, statuses.size());
     }
 
     @Test
     void tlPointAllowedPrevStatusesTest() throws IOException {
 
-        DmnDecision decision;
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(TL_POINT_ALLOWED_PREV_STATUSES_PATH)) {
-            decision = dmnEngine.parseDecision(TL_POINT_ALLOWED_PREV_STATUSES_DMN_ID, inputStream);
-        }
-
         var variables = Variables.createVariables()
                 .putValue(NEW_STATUS_VAR_KEY, APPROVED.getCode());
 
+        var statuses = getTimelinePointStatus(TL_POINT_ALLOWED_PREV_STATUSES_PATH,
+                TL_POINT_ALLOWED_PREV_STATUSES_DMN_ID,
+                variables);
+
+        assertEquals(6, statuses.size());
+    }
+
+    private Collection<PMTimelinePointStatus> getTimelinePointStatus(String dmnPath, String dmnId, VariableMap variables) throws IOException {
+        DmnDecision decision;
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(dmnPath)) {
+            decision = dmnEngine.parseDecision(dmnId, inputStream);
+        }
+
         var result = dmnEngine.evaluateDecisionTable(decision, variables);
 
-        var objects = result.collectEntries(STATUS_VAR_KEY);
-
-        assertEquals(6, objects.size());
+        return toList(result.collectEntries(STATUS_VAR_KEY));
     }
 }

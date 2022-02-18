@@ -3,13 +3,13 @@ package com.tesco.pma.review.service;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface ReviewDmnService {
 
-    List<PMTimelinePointStatus> getReviewAllowedStatuses(PMReviewType reviewType, String operation);
+    Collection<PMTimelinePointStatus> getReviewAllowedStatuses(PMReviewType reviewType, String operation);
 
-    List<PMTimelinePointStatus> getReviewAllowedPrevStatuses(PMReviewType reviewType, PMTimelinePointStatus newStatus);
+    Collection<PMTimelinePointStatus> getReviewAllowedPrevStatuses(PMReviewType reviewType, PMTimelinePointStatus newStatus);
 
-    List<PMTimelinePointStatus> getTlPointAllowedPrevStatuses(PMTimelinePointStatus newStatus);
+    Collection<PMTimelinePointStatus> getTlPointAllowedPrevStatuses(PMTimelinePointStatus newStatus);
 }

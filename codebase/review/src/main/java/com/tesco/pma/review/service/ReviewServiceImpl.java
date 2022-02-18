@@ -366,13 +366,13 @@ public class ReviewServiceImpl implements ReviewService {
                                                      PMTimelinePointStatus status,
                                                      String reason,
                                                      UUID loggedUserUuid) {
+        var prevStatuses = reviewDmnService.getReviewAllowedPrevStatuses(type, status);
+        if (prevStatuses.isEmpty()) {
+            throw notFound(ALLOWED_STATUSES_NOT_FOUND,
+                    Map.of(OPERATION_PARAMETER_NAME, CHANGE_STATUS_OPERATION_NAME));
+        }
         var timelinePoint = getTimelinePoint(performanceCycleUuid, colleagueUuid, type);
         reviews.forEach(review -> {
-            var prevStatuses = reviewDmnService.getReviewAllowedPrevStatuses(type, status);
-            if (prevStatuses.isEmpty()) {
-                throw notFound(ALLOWED_STATUSES_NOT_FOUND,
-                        Map.of(OPERATION_PARAMETER_NAME, CHANGE_STATUS_OPERATION_NAME));
-            }
             if (1 == reviewDAO.updateStatusByParams(
                     timelinePoint.getUuid(),
                     type,
@@ -385,6 +385,7 @@ public class ReviewServiceImpl implements ReviewService {
                         null,
                         review.getNumber());
                 var actualReview = actualReviews.get(0);
+                //feedback presents in MYR
                 if (review.getProperties() != null
                         && !review.getProperties().getMapJson().isEmpty()) {
                     actualReview.setProperties(review.getProperties());
