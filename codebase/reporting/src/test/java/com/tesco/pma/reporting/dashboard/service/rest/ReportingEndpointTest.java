@@ -112,7 +112,7 @@ class ReportingEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getLinkedObjectivesReportIfNotFound() throws Exception {
+    void getLinkedObjectivesReportIfNotFound() throws Exception { //NOSONAR used MockMvc checks
         when(reviewReportingService.getLinkedObjectivesReport(any())).thenThrow(NotFoundException.class);
 
         performGetWith(talentAdmin(), status().isNotFound(),
@@ -140,7 +140,7 @@ class ReportingEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getLinkedObjectivesReportDataIfNotFound() throws Exception {
+    void getLinkedObjectivesReportDataIfNotFound() throws Exception { //NOSONAR used MockMvc checks
         when(reviewReportingService.getLinkedObjectivesReport(any())).thenThrow(NotFoundException.class);
 
         performGetWith(admin(), status().isNotFound(), LINKED_OBJECTIVE_REVIEW_REPORT_DATA_URL, new RequestQuery());
@@ -157,7 +157,7 @@ class ReportingEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getReportColleaguesIfNotFound() throws Exception {
+    void getReportColleaguesIfNotFound() throws Exception { //NOSONAR used MockMvc checks
         when(reportingService.getReportColleagues(any())).thenThrow(NotFoundException.class);
 
         performGetWith(admin(), status().isNotFound(), TARGETING_COLLEAGUES_DATA_URL, new RequestQuery());
@@ -183,7 +183,7 @@ class ReportingEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getStatsReportIfNotFound() throws Exception {
+    void getStatsReportIfNotFound() throws Exception { //NOSONAR used MockMvc checks
         when(reportingService.getStatsReport(any())).thenThrow(NotFoundException.class);
 
         performGetWith(admin(), status().isNotFound(), STATS_REPORT_DATA_URL, new RequestQuery());
@@ -223,7 +223,7 @@ class ReportingEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getStatsReportFileIfNotFound() throws Exception {
+    void getStatsReportFileIfNotFound() throws Exception { //NOSONAR used MockMvc checks
         when(reportingService.getStatsReport(any())).thenThrow(NotFoundException.class);
 
         performGetWith(talentAdmin(), status().isNotFound(), STATS_REPORT_URL, new RequestQuery());

@@ -14,7 +14,7 @@ import java.io.InputStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class RatingOverallDmnTest {
+class RatingOverallDmnTest {
 
     private static final String PATH = "com/tesco/pma/flow/reporting/rating/overall_rating.dmn";
     private static final String DMN_ID = "overall_rating_table";
