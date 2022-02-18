@@ -36,6 +36,7 @@ import org.camunda.bpm.model.bpmn.Bpmn;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.validation.constraints.NotNull;
 import java.io.ByteArrayInputStream;
@@ -216,7 +217,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     public List<PMCycle> getAll(RequestQuery requestQuery, boolean includeMetadata) {
 
         var results = cycleDAO.getAll(requestQuery, includeMetadata);
-        if (null == results) {
+        if (CollectionUtils.isEmpty(results)) {
             throw notFound(PM_CYCLE_NOT_FOUND,
                     Map.of(INCLUDE_METADATA_PARAMETER_NAME, includeMetadata));
         }
