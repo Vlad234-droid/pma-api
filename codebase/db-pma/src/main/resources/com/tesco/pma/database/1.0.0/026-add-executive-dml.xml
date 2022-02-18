@@ -1,0 +1,26 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet id="1" author="vadim.shatokhin">
+        <insert tableName="pm_role">
+            <column name="id">13</column>
+            <column name="code">GG-UK-TescoGlobal-PMA-Executive</column>
+            <column name="description">Gives access to the Executive role on PMA on TescoGlobal</column>
+            <column name="is_default">TRUE</column>
+        </insert>
+        <insert tableName="pm_role">
+            <column name="id">14</column>
+            <column name="code">GG-UK-TescoGlobal-PMA-PPE-Executive</column>
+            <column name="description">Gives access to the PPE Executive role on PMA on TescoGlobal</column>
+            <column name="is_default">TRUE</column>
+        </insert>
+        <rollback>
+            <delete tableName="pm_role">
+                <where>id IN (13, 14)
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
