@@ -144,7 +144,6 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public CompositePMCycleResponse get(UUID uuid, boolean includeForms) {
         var pmCycle = cycleDAO.read(uuid, null);
         if (null == pmCycle) {
@@ -168,7 +167,6 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public PMCycle getCurrentByColleague(UUID colleagueUuid) {
         var activeFilter = includeFilter(Set.of(ACTIVE));
         var cycles = cycleDAO.getByColleague(colleagueUuid, activeFilter);
@@ -202,7 +200,6 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<PMCycle> getByColleague(UUID colleagueUuid) {
         var cycles = cycleDAO.getByColleague(colleagueUuid);
         if (null == cycles || cycles.isEmpty()) {
