@@ -34,7 +34,7 @@ class AccountManagementDAOTest extends AbstractDAOTest {
     @Test
     void findAllRoles() {
         final var roles = dao.findAllRoles();
-        assertThat(roles.size()).isEqualTo(12);
+        assertThat(roles.size()).isEqualTo(14);
     }
 
     @Test

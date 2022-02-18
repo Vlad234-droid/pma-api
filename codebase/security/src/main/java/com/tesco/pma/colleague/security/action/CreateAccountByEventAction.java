@@ -60,7 +60,7 @@ public class CreateAccountByEventAction implements Action {
         request.setStatus(AccountStatus.ENABLED);
 
         try {
-            userManagementService.createAccount(request);
+            userManagementService.createAccount(request, colleague.getUuid());
         } catch (AlreadyExistsException e) {
             var params = Map.of(ACCOUNT_NAME_PARAMETER_NAME, request.getName());
             log.warn(LogFormatter.formatMessage(messages, SECURITY_ACCOUNT_ALREADY_EXISTS, params));

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -87,6 +88,12 @@ public class UserManagementServiceImpl implements UserManagementService {
     @Override
     @Transactional
     public void createAccount(CreateAccountRequest request) {
+        createAccount(request, null);
+    }
+
+    @Override
+    @Transactional
+    public void createAccount(CreateAccountRequest request, UUID colleagueUuid) {
 
         // TODO Waiting for qualification of requirements
         // if (findColleagueByIamIdOrAccountName(request.getName(), request.getIamId()).isEmpty()) {
@@ -99,8 +106,13 @@ public class UserManagementServiceImpl implements UserManagementService {
         }
 
         try {
-            accountManagementDAO.create(request.getName(), request.getIamId(),
-                    request.getStatus(), request.getType());
+            if (colleagueUuid == null) {
+                accountManagementDAO.create(request.getName(), request.getIamId(),
+                        request.getStatus(), request.getType());
+            } else {
+                accountManagementDAO.create(colleagueUuid, request.getName(), request.getIamId(),
+                        request.getStatus(), request.getType(), Instant.now());
+            }
         } catch (DuplicateKeyException e) {
             throw accountAlreadyExistsException(e, request.getName());
         }
