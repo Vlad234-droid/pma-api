@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_ATTRIBUTE_NOT_FOUND;
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_NOT_FOUND;
 
 /**
@@ -94,7 +95,7 @@ public class ProfileServiceImpl implements ProfileService {
             if (1 == profileAttributeDAO.update(profileAttribute)) {
                 results.add(profileAttribute);
             } else {
-                throw notFound(COLLEAGUE_UUID_PARAMETER_NAME, profileAttribute.getColleagueUuid());
+                throw profileAttributeNotFound(profileAttribute.getName(), profileAttribute.getColleagueUuid());
             }
 
         });
@@ -111,7 +112,7 @@ public class ProfileServiceImpl implements ProfileService {
                 if (1 == profileAttributeDAO.create(profileAttribute)) {
                     results.add(profileAttribute);
                 } else {
-                    throw notFound(COLLEAGUE_UUID_PARAMETER_NAME, profileAttribute.getColleagueUuid());
+                    throw profileAttributeNotFound(profileAttribute.getName(), profileAttribute.getColleagueUuid());
                 }
             } catch (DuplicateKeyException e) {
                 throw new DatabaseConstraintViolationException(ErrorCodes.PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS.name(),
@@ -133,7 +134,7 @@ public class ProfileServiceImpl implements ProfileService {
             if (1 == profileAttributeDAO.delete(profileAttribute)) {
                 results.add(profileAttribute);
             } else {
-                throw notFound(COLLEAGUE_UUID_PARAMETER_NAME, profileAttribute.getColleagueUuid());
+                throw profileAttributeNotFound(profileAttribute.getName(), profileAttribute.getColleagueUuid());
             }
         });
         return results;
@@ -155,7 +156,7 @@ public class ProfileServiceImpl implements ProfileService {
     public ColleagueEntity getColleague(UUID colleagueUuid) {
         var colleague = profileDAO.getColleague(colleagueUuid);
         if (colleague == null) {
-            throw notFound(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid);
+            throw profileNotFound(COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid);
         }
         return colleague;
     }
@@ -301,10 +302,16 @@ public class ProfileServiceImpl implements ProfileService {
         }
     }
 
-    private NotFoundException notFound(String paramName, Object paramValue) {
+    private NotFoundException profileNotFound(String paramName, Object paramValue) {
         return new NotFoundException(PROFILE_NOT_FOUND.getCode(),
                 messages.getMessage(PROFILE_NOT_FOUND,
                         Map.of("param_name", paramName, "param_value", paramValue)));
+    }
+
+    private NotFoundException profileAttributeNotFound(String profileAttributeName, UUID colleagueUuid) {
+        return new NotFoundException(PROFILE_ATTRIBUTE_NOT_FOUND.getCode(),
+                messages.getMessage(PROFILE_ATTRIBUTE_NOT_FOUND,
+                        Map.of("profileAttributeName", profileAttributeName, "colleagueUuid", colleagueUuid)));
     }
 
 }
