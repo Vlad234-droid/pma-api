@@ -1,5 +1,6 @@
 package com.tesco.pma.cms.rest;
 
+import com.tesco.pma.cms.model.ContentEntry;
 import com.tesco.pma.cms.service.HelpService;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.rest.HttpStatusCodes;
@@ -51,4 +52,19 @@ public class CMSEndpoint {
         return colleagueProfile.map(profile -> RestResponse.success(helpService.getHelpFaqUrls(profile.getColleague(), keys)))
                 .orElseGet(() -> RestResponse.success(Collections.emptyMap()));
     }
+
+    @Operation(summary = "Find Content Entries by keys", tags = {"CMS"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Find Content Entries by keys")
+    @GetMapping(path = "/help-faq-content-entries", produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isColleague()")
+    public RestResponse<Map<String, List<ContentEntry>>> getHelpFaqContentEntries(@RequestParam(required = false) List<String> keys,
+                                                                                  @CurrentSecurityContext(expression = "authentication")
+                                                                    Authentication authentication) {
+        var colleagueProfile = profileService.findProfileByColleagueUuid(SecurityUtils.getColleagueUuid(authentication));
+        return colleagueProfile.map(profile -> RestResponse.success(helpService.getHelpFaqContentEntries(profile.getColleague(), keys)))
+                .orElseGet(() -> RestResponse.success(Collections.emptyMap()));
+    }
+
+
 }
