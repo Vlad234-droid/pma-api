@@ -2,6 +2,7 @@ package com.tesco.pma.cep.v2.service;
 
 import com.tesco.pma.cep.v2.configuration.ColleagueFactsApiProperties;
 import com.tesco.pma.cep.v2.domain.ColleagueChangeEventPayload;
+import com.tesco.pma.cep.v2.domain.EventType;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -23,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.tesco.pma.cep.v2.domain.EventType.DELETION;
@@ -41,6 +44,16 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     private final ProfileService profileService;
     private final UserManagementService userManagementService;
     private final EventSender eventSender;
+
+    private static final Map<EventType, Function<ColleagueChangeEventPayload, Integer>> PROCESSORS = new HashMap<>();
+
+    @PostConstruct
+    public void init() {
+        PROCESSORS.put(JOINER, this::processJoinerEventType);
+        PROCESSORS.put(LEAVER, this::processLeaverEventType);
+        PROCESSORS.put(MODIFICATION, this::processModificationEventType);
+        PROCESSORS.put(DELETION, this::processDeletionEventType);
+    }
 
     @Override
     public void processColleagueChangeEvent(ColleagueChangeEventPayload colleagueChangeEventPayload) {
@@ -66,29 +79,15 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     }
 
     private void startProcessColleagueChangeEvent(ColleagueChangeEventPayload colleagueChangeEventPayload) {
-        var updated = 0;
-
-        switch (colleagueChangeEventPayload.getEventType()) {
-            case JOINER:
-                updated = processJoinerEventType(colleagueChangeEventPayload);
-                break;
-            case LEAVER:
-                updated = processLeaverEventType(colleagueChangeEventPayload);
-                break;
-            case MODIFICATION:
-                updated = processModificationEventType(colleagueChangeEventPayload);
-                break;
-            case DELETION:
-                updated = processDeletionEventType(colleagueChangeEventPayload);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid event type " + colleagueChangeEventPayload.getEventType());
+        var processor = PROCESSORS.get(colleagueChangeEventPayload.getEventType());
+        if (processor == null) {
+            throw new IllegalArgumentException("Invalid event type " + colleagueChangeEventPayload.getEventType());
         }
 
+        var updated = processor.apply(colleagueChangeEventPayload);
         if (updated == 0) {
             log.warn(LogFormatter.formatMessage(COLLEAGUE_NOT_FOUND, "For colleague '{}' was not updated records"),
                     colleagueChangeEventPayload.getColleagueUuid());
-
         }
     }
 
