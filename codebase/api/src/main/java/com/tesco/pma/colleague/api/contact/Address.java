@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AddressList implements Serializable {
+public class Address implements Serializable {
 
     private static final long serialVersionUID = -7976077387623366848L;
 

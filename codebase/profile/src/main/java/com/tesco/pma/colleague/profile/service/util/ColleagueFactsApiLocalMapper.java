@@ -155,9 +155,9 @@ public class ColleagueFactsApiLocalMapper {
             destination.setEmail(contact.getEmail());
 
             final var addresses = contact.getAddresses();
-            if (Objects.nonNull(addresses)) {
+            if (Objects.nonNull(addresses) && !addresses.isEmpty()) {
                 ColleagueEntity.Country country = new ColleagueEntity.Country();
-                country.setCode(addresses.getCountryCode());
+                country.setCode(addresses.get(0).getCountryCode());
                 country.setName(UNDEFINED_VALUE);
                 destination.setCountry(country);
             }
