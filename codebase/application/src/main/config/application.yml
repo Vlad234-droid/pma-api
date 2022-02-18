@@ -186,7 +186,7 @@ tesco:
         ROLE_LineManager: ${AD_ROLE_LINE_MANAGER}
         ROLE_PeopleTeam:  ${AD_ROLE_PEOPLE_TEAM}
         ROLE_TalentAdmin: ${AD_ROLE_TALENT_ADMIN}
-        ROLE_ProcessManager: ${AD_ROLE_PROCESS_MANAGER}
+        ROLE_Executive: ${AD_ROLE_EXECUTIVE}
       default-user:
         uuid: ${DEFAULT_USER_UUID:10000000-1000-1000-1000-100000000001}
     rest-template:
