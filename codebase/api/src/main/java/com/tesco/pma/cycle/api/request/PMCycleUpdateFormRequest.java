@@ -1,6 +1,5 @@
 package com.tesco.pma.cycle.api.request;
 
-import com.tesco.pma.cycle.api.PMForm;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
