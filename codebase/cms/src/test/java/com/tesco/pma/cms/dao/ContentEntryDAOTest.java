@@ -49,6 +49,7 @@ public class ContentEntryDAOTest extends AbstractDAOTest {
         content.setKey("some/key");
         content.setCreatedBy(UUID.randomUUID());
         content.setCreatedTime(Instant.now());
+        content.setVersion(10);
 
         var mapJson = new MapJson();
         mapJson.setMapJson(Map.of("test", "test_val"));

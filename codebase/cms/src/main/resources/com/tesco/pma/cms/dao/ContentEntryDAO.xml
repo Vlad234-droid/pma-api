@@ -82,18 +82,19 @@
     </sql>
 
     <sql id="maxVersion">
-        (SELECT version FROM cms_content cc2 WHERE cc2.title = ${alias}title ORDER BY version DESC LIMIT 1)
+        (SELECT COALESCE(MAX(version), 0) FROM cms_content cc2 WHERE cc2.title = ${alias}title)
     </sql>
 
     <sql id="maxVersionByTitle">
-        (SELECT version FROM cms_content cc2 WHERE cc2.title = ${title} ORDER BY version DESC LIMIT 1)
+        (SELECT COALESCE(MAX(version), 0) FROM cms_content cc2 WHERE cc2.title = ${title})
     </sql>
 
     <insert id="create" flushCache="true" useGeneratedKeys="true" keyProperty="uuid" keyColumn="uuid">
         INSERT INTO cms_content (uuid, key, title, description, properties, created_by, created_time, version, status_id)
         VALUES (#{content.uuid}, #{content.key}, #{content.title}, #{content.description},
             #{content.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-            #{content.createdBy}, #{content.createdTime}, 1,
+            #{content.createdBy}, #{content.createdTime},
+            <include refid="maxVersionByTitle"><property name="title" value="#{content.title}"/></include> + 1,
             #{content.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler,
                 javaType=com.tesco.pma.cms.model.ContentStatus})
     </insert>
