@@ -21,8 +21,6 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-web")
 
-    implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
-
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude group: 'junit' // excluding junit 4
     }

@@ -51,8 +51,8 @@ public class PMCycleJsonbCombinedSerializer {
             gen.writeFieldName(PROPERTIES);
             gen.writeStartObject();
             var cyclePropertyValues = cycle.getProperties();
-            for (var ci : cyclePropertyValues.keySet()) {
-                gen.writeObjectField(ci, cyclePropertyValues.get(ci));
+            for (var kv : cyclePropertyValues.entrySet()) {
+                gen.writeObjectField(kv.getKey(), kv.getValue());
             }
             gen.writeEndObject();
 
