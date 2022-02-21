@@ -224,7 +224,6 @@ tesco:
         retry-timeout: 30
       colleague-api:
         base-url: ${TESCO_API_BASE_URL}/colleague/v2/colleagues
-        force: ${CFAPI_FORCE:true}
       events-api:
         base-url: ${PMA_API_URL}/events
       contact-api:
