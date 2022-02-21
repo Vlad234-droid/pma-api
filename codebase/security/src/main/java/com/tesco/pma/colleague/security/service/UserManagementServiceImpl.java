@@ -7,6 +7,7 @@ import com.tesco.pma.colleague.security.domain.Account;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.Role;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
+import com.tesco.pma.colleague.security.domain.request.ColleagueAccountRequest;
 import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
 import com.tesco.pma.colleague.security.domain.request.RoleRequest;
 import com.tesco.pma.colleague.security.exception.ErrorCodes;
@@ -88,12 +89,6 @@ public class UserManagementServiceImpl implements UserManagementService {
     @Override
     @Transactional
     public void createAccount(CreateAccountRequest request) {
-        createAccount(request, null);
-    }
-
-    @Override
-    @Transactional
-    public void createAccount(CreateAccountRequest request, UUID colleagueUuid) {
 
         // TODO Waiting for qualification of requirements
         // if (findColleagueByIamIdOrAccountName(request.getName(), request.getIamId()).isEmpty()) {
@@ -105,6 +100,10 @@ public class UserManagementServiceImpl implements UserManagementService {
             throw accountAlreadyExistsException(request.getName());
         }
 
+        UUID colleagueUuid = null;
+        if (request instanceof ColleagueAccountRequest) {
+            colleagueUuid = ((ColleagueAccountRequest) request).getColleagueUuid();
+        }
         try {
             if (colleagueUuid == null) {
                 accountManagementDAO.create(request.getName(), request.getIamId(),

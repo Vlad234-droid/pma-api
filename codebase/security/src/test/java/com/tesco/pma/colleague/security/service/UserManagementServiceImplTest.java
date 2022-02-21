@@ -26,6 +26,7 @@ import java.util.UUID;
 
 import static com.tesco.pma.colleague.security.TestDataUtils.buildAccount;
 import static com.tesco.pma.colleague.security.TestDataUtils.buildAccounts;
+import static com.tesco.pma.colleague.security.TestDataUtils.buildColleagueAccountRequest;
 import static com.tesco.pma.colleague.security.TestDataUtils.buildCreateAccountRequest;
 import static com.tesco.pma.colleague.security.TestDataUtils.buildRoleRequest;
 import static com.tesco.pma.colleague.security.TestDataUtils.buildRoles;
@@ -115,8 +116,8 @@ class UserManagementServiceImplTest {
         when(mockAccountManagementDAO.assignRole(any(UUID.class), anyInt()))
                 .thenReturn(1);
 
-        var createAccountRequest = buildCreateAccountRequest(3);
-        userManagementService.createAccount(createAccountRequest, UUID.randomUUID());
+        var createAccountRequest = buildColleagueAccountRequest(3);
+        userManagementService.createAccount(createAccountRequest);
 
         verify(mockAccountManagementDAO, times(2)).findAccountByName(anyString());
         verify(mockAccountManagementDAO, times(1)).create(any(UUID.class), anyString(), anyString(),

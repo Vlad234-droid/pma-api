@@ -50,14 +50,6 @@ public interface UserManagementService {
     void createAccount(CreateAccountRequest request);
 
     /**
-     * Create account for colleague with known colleagueUuid
-     *
-     * @param request
-     * @param colleagueUuid
-     */
-    void createAccount(CreateAccountRequest request, UUID colleagueUuid);
-
-    /**
      * Add access
      *
      * @param request
