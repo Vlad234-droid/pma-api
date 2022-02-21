@@ -47,7 +47,7 @@ public class ExcelReportUtils {
     /**
      * Build Statistics Excel Report
      *
-     * @param topics          - statistics to include in report
+     * @param topics          - topics of statistics to include in report
      * @param sheetName       - name of sheet
      * @param filters         - UI filters
      * @param reportData      - data of report
