@@ -5,9 +5,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "tesco.application.external-endpoints.colleague-api.force")
+@ConfigurationProperties(prefix = "tesco.application.colleague-changes.force")
 @Data
-public class ColleagueFactsApiProperties {
+public class ColleagueChangesProperties {
     private boolean force;
 }
 
