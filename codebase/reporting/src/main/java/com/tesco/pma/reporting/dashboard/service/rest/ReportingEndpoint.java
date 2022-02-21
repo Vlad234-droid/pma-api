@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.tesco.pma.reporting.util.ExcelReportUtils.buildResource;
-import static com.tesco.pma.reporting.util.ExcelReportUtils.buildResourceWithStatistics;
+import static com.tesco.pma.reporting.util.ExcelReportUtils.buildResourceWithTopics;
 import static com.tesco.pma.rest.RestResponse.success;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -44,7 +44,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Validated
 public class ReportingEndpoint {
 
-    static final String STATS_PARAM_NAME = "stats";
+    static final String TOPICS_PARAM_NAME = "topics";
     static final MediaType APPLICATION_FORCE_DOWNLOAD_VALUE = new MediaType("application", "force-download");
     static final String REPORT_NAME_PARAM_NAME = "reportName";
     static final String REQUEST_QUERY_PARAM_NAME = "requestQuery";
@@ -144,7 +144,7 @@ public class ReportingEndpoint {
         var report = reportingService.getStatsReport(requestQuery);
         var filters = requestQuery.getFilters();
         var stats = (List<String>) filters.stream()
-                .filter(c -> STATS_PARAM_NAME.equalsIgnoreCase(c.getProperty()))
+                .filter(c -> TOPICS_PARAM_NAME.equalsIgnoreCase(c.getProperty()))
                 .findFirst()
                 .get().getValue();
 
@@ -152,13 +152,13 @@ public class ReportingEndpoint {
         var reportMetadata = report.getMetadata().getColumnMetadata();
 
         var filtersOnUI = filters.stream()
-                .filter(condition -> !STATS_PARAM_NAME.equalsIgnoreCase(condition.getProperty()))
+                .filter(condition -> !TOPICS_PARAM_NAME.equalsIgnoreCase(condition.getProperty()))
                 .map(ExcelReportUtils::formatCondition)
                 .collect(Collectors.toList()).toString();
 
         Resource resource;
         try {
-            resource = buildResourceWithStatistics(stats, report.getMetadata().getSheetName(), filtersOnUI, reportData, reportMetadata);
+            resource = buildResourceWithTopics(stats, report.getMetadata().getSheetName(), filtersOnUI, reportData, reportMetadata);
         } catch (IOException e) {
             throw downloadException(report.getMetadata().getName(), requestQuery, e);
         }

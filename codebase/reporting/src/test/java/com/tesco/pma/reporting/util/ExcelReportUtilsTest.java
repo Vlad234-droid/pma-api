@@ -119,7 +119,7 @@ class ExcelReportUtilsTest {
         List<List<Object>> reportData = getStatsReportData();
         var columnMetadata = getStatsColumnMetadata();
 
-        var resource = ExcelReportUtils.buildResourceWithStatistics(statistics, REPORT_SHEET_NAME,
+        var resource = ExcelReportUtils.buildResourceWithTopics(statistics, REPORT_SHEET_NAME,
                 filtersOnUI, reportData, columnMetadata);
 
         assertTrue(resource.exists());

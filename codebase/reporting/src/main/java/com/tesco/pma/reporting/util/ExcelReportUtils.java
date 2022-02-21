@@ -47,7 +47,7 @@ public class ExcelReportUtils {
     /**
      * Build Statistics Excel Report
      *
-     * @param statistics      - statistics to include in report
+     * @param topics          - statistics to include in report
      * @param sheetName       - name of sheet
      * @param filters         - UI filters
      * @param reportData      - data of report
@@ -55,14 +55,13 @@ public class ExcelReportUtils {
      * @return resource with Statistics Report
      * @throws IOException if the resource cannot be written
      */
-    public static Resource buildResourceWithStatistics(List<String> statistics, String sheetName,
-                                                       String filters,
-                                                       List<List<Object>> reportData,
-                                                       List<ColumnMetadata> columnMetadata) throws IOException {
+    public static Resource buildResourceWithTopics(List<String> topics, String sheetName,
+                                                   String filters, List<List<Object>> reportData,
+                                                   List<ColumnMetadata> columnMetadata) throws IOException {
         try (var outputStream = new ByteArrayOutputStream(); var workbook = new XSSFWorkbook()) {
             var sheet = workbook.createSheet(sheetName);
 
-            buildStatisticsData(statistics, filters, reportData, columnMetadata, sheet);
+            buildStatisticsData(topics, filters, reportData, columnMetadata, sheet);
 
             workbook.write(outputStream);
 

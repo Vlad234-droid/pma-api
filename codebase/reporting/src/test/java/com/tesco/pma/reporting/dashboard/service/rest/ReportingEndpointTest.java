@@ -54,7 +54,7 @@ import static com.tesco.pma.reporting.ReportingConstants.MYR_WHAT_RATING;
 
 import static com.tesco.pma.reporting.dashboard.service.rest.ReportingEndpoint.APPLICATION_FORCE_DOWNLOAD_VALUE;
 
-import static com.tesco.pma.reporting.dashboard.service.rest.ReportingEndpoint.STATS_PARAM_NAME;
+import static com.tesco.pma.reporting.dashboard.service.rest.ReportingEndpoint.TOPICS_PARAM_NAME;
 import static java.util.Arrays.asList;
 import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -203,11 +203,11 @@ class ReportingEndpointTest extends AbstractEndpointTest {
     void getStatsReportFile() throws Exception {
         var requestQuery = buildRequestQuery();
         requestQuery.setFilters(asList(new Condition("year", EQUALS, 2021),
-                                       new Condition(STATS_PARAM_NAME, IN, asList("colleagues-count"))));
+                                       new Condition(TOPICS_PARAM_NAME, IN, asList("colleagues-count"))));
         when(reportingService.getStatsReport(any())).thenReturn(buildStatsReport(2));
 
         var result = performGetWith(admin(), status().isCreated(),
-                APPLICATION_FORCE_DOWNLOAD_VALUE, STATS_REPORT_URL + "?" + STATS_PARAM_NAME + "_in[0]=colleagues-count&year=2021");
+                APPLICATION_FORCE_DOWNLOAD_VALUE, STATS_REPORT_URL + "?" + TOPICS_PARAM_NAME + "_in[0]=colleagues-count&year=2021");
 
         assertTrue(result.getResponse().getContentAsByteArray().length > 0);
     }
