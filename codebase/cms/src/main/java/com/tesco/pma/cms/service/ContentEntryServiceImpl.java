@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -39,7 +38,7 @@ public class ContentEntryServiceImpl implements ContentEntryService {
         }
 
         if (content.getStatus() == null) {
-            content.setStatus(ContentStatus.PUBLISHED);
+            content.setStatus(ContentStatus.DRAFT);
         }
 
         if (1 != contentEntryDAO.create(content)) {
