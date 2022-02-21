@@ -14,13 +14,14 @@ import java.util.List;
 import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
 import static com.tesco.pma.cycle.api.PMCycleStatus.REGISTERED;
 import static com.tesco.pma.cycle.api.PMCycleStatus.STARTED;
+import static com.tesco.pma.cycle.service.PMCycleServiceImpl.ENTRY_CONFIG_KEY_CONDITION;
+import static com.tesco.pma.cycle.service.PMCycleServiceImpl.STATUS_CONDITION;
 
 @Component
 @RequiredArgsConstructor
 public class FindCycleHandler extends CamundaAbstractFlowHandler {
 
-    private static final String STATUS_IN_CONDITION = "status_in";
-    private static final String ENTRY_CONFIG_KEY_CONDITION = "entry-config-key";
+    private static final String STATUS_IN_CONDITION = STATUS_CONDITION + "_in";
 
     private final PMCycleService pmCycleService;
 
