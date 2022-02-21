@@ -55,7 +55,7 @@ public class CMSEndpoint {
 
     @Operation(summary = "Find Content Entries by keys", tags = {"CMS"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Find Content Entries by keys")
-    @GetMapping(path = "/help-faq-content-entries", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/help-faqs", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isColleague()")
     public RestResponse<Map<String, List<ContentEntry>>> getHelpFaqContentEntries(@RequestParam(required = false) List<String> keys,
