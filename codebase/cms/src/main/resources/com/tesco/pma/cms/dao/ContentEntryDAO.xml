@@ -73,7 +73,7 @@
     <sql id="versionCondition">
         <choose>
             <when test="filter.value == -1">
-                cc.version = <include refid="maxVersion"/>
+                cc.version = <include refid="maxVersion"><property name="alias" value="cc."/></include>
             </when>
             <otherwise>
                 cc.version = #{filter.value}
@@ -82,14 +82,18 @@
     </sql>
 
     <sql id="maxVersion">
-        (SELECT version FROM cms_content cc2 WHERE cc2.title = cc.title ORDER BY version DESC LIMIT 1)
+        (SELECT version FROM cms_content cc2 WHERE cc2.title = ${alias}title ORDER BY version DESC LIMIT 1)
+    </sql>
+
+    <sql id="maxVersionByTitle">
+        (SELECT version FROM cms_content cc2 WHERE cc2.title = ${title} ORDER BY version DESC LIMIT 1)
     </sql>
 
     <insert id="create" flushCache="true" useGeneratedKeys="true" keyProperty="uuid" keyColumn="uuid">
         INSERT INTO cms_content (uuid, key, title, description, properties, created_by, created_time, version, status_id)
         VALUES (#{content.uuid}, #{content.key}, #{content.title}, #{content.description},
             #{content.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
-            #{content.createdBy}, #{content.createdTime}, #{content.version},
+            #{content.createdBy}, #{content.createdTime}, 1,
             #{content.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler,
                 javaType=com.tesco.pma.cms.model.ContentStatus})
     </insert>
@@ -103,7 +107,7 @@
         SET key = #{content.key}, title = #{content.title}, description = #{content.description},
             properties = #{content.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
             created_by = #{content.createdBy}, created_time = #{content.createdTime},
-            version = <include refid="maxVersion"/> + 1,
+            version = <include refid="maxVersionByTitle"><property name="title" value="#{content.title}"/></include> + 1,
             status_id = #{content.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler}
         WHERE uuid = #{content.uuid}
     </update>

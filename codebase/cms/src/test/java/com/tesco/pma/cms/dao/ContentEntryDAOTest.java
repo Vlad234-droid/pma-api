@@ -45,11 +45,10 @@ public class ContentEntryDAOTest extends AbstractDAOTest {
         var content = new ContentEntry();
         content.setUuid(uuid);
         content.setStatus(ContentStatus.DRAFT);
-        content.setTitle("test3");
+        content.setTitle("test_brand_new");
         content.setKey("some/key");
         content.setCreatedBy(UUID.randomUUID());
         content.setCreatedTime(Instant.now());
-        content.setVersion(1);
 
         var mapJson = new MapJson();
         mapJson.setMapJson(Map.of("test", "test_val"));
@@ -60,6 +59,7 @@ public class ContentEntryDAOTest extends AbstractDAOTest {
         var contentFetched = contentEntryDAO.find(RequestQuery.create(UUID_EQ, uuid)).get(0);
 
         assertEquals("test_val", contentFetched.getProperties().getMapJson().get("test"));
+        assertEquals(1, contentFetched.getVersion());
     }
 
     @Test

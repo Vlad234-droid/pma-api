@@ -2,7 +2,7 @@ package com.tesco.pma.cms.service;
 
 
 import com.tesco.pma.cms.dao.ContentEntryDAO;
-import com.tesco.pma.cms.exception.ContentException;
+import com.tesco.pma.cms.exception.CMSException;
 import com.tesco.pma.cms.exception.ErrorCodes;
 import com.tesco.pma.cms.model.ContentEntry;
 import com.tesco.pma.cms.model.ContentStatus;
@@ -38,8 +38,6 @@ public class ContentEntryServiceImpl implements ContentEntryService {
             throw contentException(ErrorCodes.CONTENT_NO_TITLE_ERROR);
         }
 
-        content.setVersion(getVersion(content.getTitle()));
-
         if (content.getStatus() == null) {
             content.setStatus(ContentStatus.PUBLISHED);
         }
@@ -49,16 +47,6 @@ public class ContentEntryServiceImpl implements ContentEntryService {
         }
 
         return content;
-    }
-
-    private int getVersion(String title) {
-        var contents = contentEntryDAO.find(RequestQuery.create(Map.of("title_eq", title, "version_eq", -1)));
-
-        if (contents.size() == 0) {
-            return 1;
-        }
-
-        return contents.stream().mapToInt(ContentEntry::getVersion).max().getAsInt() + 1;
     }
 
     @Override
@@ -96,9 +84,6 @@ public class ContentEntryServiceImpl implements ContentEntryService {
     @Transactional
     public ContentEntry update(ContentEntry content) {
 
-        var title = contentEntryDAO.find(RequestQuery.create("uuid_eq", content.getUuid())).get(0).getTitle();
-        content.setVersion(getVersion(title));
-
         if (1 != contentEntryDAO.update(content)) {
             throw contentException(ErrorCodes.CONTENT_UPDATE_ERROR);
         }
@@ -106,7 +91,7 @@ public class ContentEntryServiceImpl implements ContentEntryService {
         return content;
     }
 
-    private ContentException contentException(ErrorCodes errorCode) {
-        return new ContentException(errorCode.name(), messageSourceAccessor.getMessage(errorCode));
+    private CMSException contentException(ErrorCodes errorCode) {
+        return new CMSException(errorCode.name(), messageSourceAccessor.getMessage(errorCode));
     }
 }
