@@ -20,9 +20,10 @@ import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.logging.TraceUtils;
 import com.tesco.pma.service.BatchService;
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
@@ -41,7 +42,6 @@ import static com.tesco.pma.colleague.profile.exception.ErrorCodes.INVALID_COLLE
 
 @Service
 @Validated
-@RequiredArgsConstructor
 public class ImportColleagueServiceImpl implements ImportColleagueService {
 
     private final ImportColleaguesDAO importColleaguesDAO;
@@ -50,18 +50,32 @@ public class ImportColleagueServiceImpl implements ImportColleagueService {
     private final ProcessColleaguesDataService processColleaguesService;
     private final DefaultAttributesService defaultAttributesService;
     private final BatchService batchService;
+    private final ImportColleagueService self;
+
+    public ImportColleagueServiceImpl(ImportColleaguesDAO importColleaguesDAO, NamedMessageSourceAccessor messages,
+                                      EventSender eventSender, ProcessColleaguesDataService processColleaguesService,
+                                      DefaultAttributesService defaultAttributesService, BatchService batchService,
+                                      @Lazy ImportColleagueService importColleagueService) {
+        this.importColleaguesDAO = importColleaguesDAO;
+        this.messages = messages;
+        this.eventSender = eventSender;
+        this.processColleaguesService = processColleaguesService;
+        this.defaultAttributesService = defaultAttributesService;
+        this.batchService = batchService;
+        this.self = importColleagueService;
+    }
 
     @Override
     public ImportReport importColleagues(InputStream inputStream, String fileName) {
-        var request = createImportRequest(fileName);
+        var request = self.createImportRequest(fileName);
         var requestUuid = request.getUuid();
 
         var result = parseXlsx(inputStream);
         var importErrors = mapParsingErrors(requestUuid, result.getErrors());
-        saveErrors(importErrors);
+        self.saveErrors(importErrors);
 
         if (!result.isSuccess()) {
-            updateRequestStatus(request, ImportRequestStatus.FAILED);
+            self.updateRequestStatus(request, ImportRequestStatus.FAILED);
             return ImportReport.builder()
                     .requestUuid(requestUuid)
                     .skipped(importErrors)
@@ -75,9 +89,9 @@ public class ImportColleagueServiceImpl implements ImportColleagueService {
 
         var importReport = processColleagues(requestUuid, result, workLevels, countries, departments, jobs);
 
-        updateRequestStatus(request, ImportRequestStatus.PROCESSED);
-        saveErrors(importReport.getSkipped());
-        saveErrors(importReport.getWarn());
+        self.updateRequestStatus(request, ImportRequestStatus.PROCESSED);
+        self.saveErrors(importReport.getSkipped());
+        self.saveErrors(importReport.getWarn());
 
         sendEvents(importReport);
 
@@ -98,19 +112,22 @@ public class ImportColleagueServiceImpl implements ImportColleagueService {
         return importColleaguesDAO.getRequestErrors(requestUuid);
     }
 
-    @Transactional
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ImportRequest createImportRequest(String fileName) {
         var request = buildImportRequest(fileName);
         importColleaguesDAO.registerRequest(request);
         return request;
     }
 
-    @Transactional
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void saveErrors(Collection<ImportError> skipped) {
         skipped.forEach(importColleaguesDAO::saveError);
     }
 
-    @Transactional
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateRequestStatus(ImportRequest request, ImportRequestStatus status) {
         request.setStatus(status);
         importColleaguesDAO.updateRequest(request);

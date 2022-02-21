@@ -10,6 +10,7 @@ import com.tesco.pma.colleague.profile.LocalTestConfig;
 import com.tesco.pma.colleague.profile.dao.ProfileAttributeDAO;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
+import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.service.colleague.ColleagueApiService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +26,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS;
+import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_ATTRIBUTE_NOT_FOUND;
+import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -42,6 +45,12 @@ class ProfileServiceImplTest extends AbstractProfileTests {
 
     private static final String PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS_MESSAGE =
             "Profile attribute name=emergencyContact for colleagueUuid=6d37262f-3a00-4706-a74b-6bf98be65765 already exists";
+
+    private static final String PROFILE_ATTRIBUTE_NOT_FOUND_MESSAGE =
+            "Profile attribute name=emergencyContact not found for colleagueUuid=6d37262f-3a00-4706-a74b-6bf98be65765";
+
+    private static final String PROFILE_NOT_FOUND_MESSAGE =
+            "Profile not found for colleagueUuid: 6d37262f-3a00-4706-a74b-6bf98be65765";
 
     @Autowired
     private NamedMessageSourceAccessor messages;
@@ -81,6 +90,35 @@ class ProfileServiceImplTest extends AbstractProfileTests {
     }
 
     @Test
+    void getColleagueByColleagueUuidShouldReturnColleague() {
+
+        var colleague = randomColleagueEntity();
+        when(profileDAO.getColleague(any(UUID.class)))
+                .thenReturn(colleague);
+
+        var result = profileService.getColleague(colleagueUuid);
+
+        assertEquals(colleague, result);
+
+        verify(profileDAO, times(1)).getColleague(colleagueUuid);
+    }
+
+    @Test
+    void getColleagueByColleagueUuidWithNotFoundException() {
+
+        when(profileDAO.getColleague(any(UUID.class)))
+                .thenReturn(null);
+
+        var exception = assertThrows(NotFoundException.class,
+                () -> profileService.getColleague(colleagueUuid));
+
+        assertEquals(PROFILE_NOT_FOUND.name(), exception.getCode());
+        assertEquals(PROFILE_NOT_FOUND_MESSAGE, exception.getMessage());
+
+        verify(profileDAO, times(1)).getColleague(colleagueUuid);
+    }
+
+    @Test
     void updateProfileAttributesShouldReturnUpdatedProfileAttributes() {
 
         when(mockProfileDAO.update(any(TypedAttribute.class)))
@@ -96,6 +134,22 @@ class ProfileServiceImplTest extends AbstractProfileTests {
     }
 
     @Test
+    void updateProfileAttributesWithNotFoundException() {
+
+        when(mockProfileDAO.update(any(TypedAttribute.class)))
+                .thenReturn(0);
+
+        var exception = assertThrows(NotFoundException.class,
+                () -> profileService.updateProfileAttributes(colleagueUuid, profileAttributes(3)));
+
+        assertEquals(PROFILE_ATTRIBUTE_NOT_FOUND.name(), exception.getCode());
+        assertEquals(PROFILE_ATTRIBUTE_NOT_FOUND_MESSAGE, exception.getMessage());
+
+        verify(mockProfileDAO, times(1)).update(any(TypedAttribute.class));
+
+    }
+
+    @Test
     void createProfileAttributesShouldReturnInsertedProfileAttributes() {
 
         when(mockProfileDAO.create(any(TypedAttribute.class)))
@@ -107,6 +161,22 @@ class ProfileServiceImplTest extends AbstractProfileTests {
         assertEquals(3, results.size());
 
         verify(mockProfileDAO, times(3)).create(any(TypedAttribute.class));
+
+    }
+
+    @Test
+    void createProfileAttributesWithNotFoundException() {
+
+        when(mockProfileDAO.create(any(TypedAttribute.class)))
+                .thenReturn(0);
+
+        var exception = assertThrows(NotFoundException.class,
+                () -> profileService.createProfileAttributes(colleagueUuid, profileAttributes(3)));
+
+        assertEquals(PROFILE_ATTRIBUTE_NOT_FOUND.name(), exception.getCode());
+        assertEquals(PROFILE_ATTRIBUTE_NOT_FOUND_MESSAGE, exception.getMessage());
+
+        verify(mockProfileDAO, times(1)).create(any(TypedAttribute.class));
 
     }
 
@@ -139,5 +209,20 @@ class ProfileServiceImplTest extends AbstractProfileTests {
         assertEquals(3, results.size());
 
         verify(mockProfileDAO, times(3)).delete(any(TypedAttribute.class));
+    }
+
+    @Test
+    void deleteProfileAttributesWithNotFoundException() {
+
+        when(mockProfileDAO.delete(any(TypedAttribute.class)))
+                .thenReturn(0);
+
+        var exception = assertThrows(NotFoundException.class,
+                () -> profileService.deleteProfileAttributes(colleagueUuid, profileAttributes(3)));
+
+        assertEquals(PROFILE_ATTRIBUTE_NOT_FOUND.name(), exception.getCode());
+        assertEquals(PROFILE_ATTRIBUTE_NOT_FOUND_MESSAGE, exception.getMessage());
+
+        verify(mockProfileDAO, times(1)).delete(any(TypedAttribute.class));
     }
 }
