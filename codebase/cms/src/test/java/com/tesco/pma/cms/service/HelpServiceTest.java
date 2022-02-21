@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Vadim Shatokhin <a href="mailto:vadim.shatokhin1@tesco.com">vadim.shatokhin1@tesco.com</a>
  * 2022-02-16 10:34
  */
-@ActiveProfiles(value = {"camunda", "test"})
+@ActiveProfiles(value = {"test"})
 @SpringBootTest(classes = {JacksonAutoConfiguration.class, CamundaSpringBootTestConfig.class})
 class HelpServiceTest extends AbstractCamundaSpringBootTest {
     private static final String KEY_SYSTEM_GUIDANCE_AND_FAQS = "system-guidance-and-faqs";
