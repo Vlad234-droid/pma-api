@@ -29,10 +29,10 @@ import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Sort.SortOrder.DESC;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -187,7 +187,7 @@ class FileServiceImplTest {
 
         var result = service.getAllVersions(PATH, FILE_NAME, includeFileContent, CREATOR_ID);
 
-        assertThat(result).isEmpty();
+        assertTrue(result.isEmpty());
     }
 
     @Test
