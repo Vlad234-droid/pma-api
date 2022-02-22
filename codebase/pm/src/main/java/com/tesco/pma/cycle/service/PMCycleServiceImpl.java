@@ -19,6 +19,7 @@ import com.tesco.pma.cycle.dao.PMCycleDAO;
 import com.tesco.pma.cycle.exception.ErrorCodes;
 import com.tesco.pma.cycle.exception.PMCycleException;
 import com.tesco.pma.cycle.api.model.PMProcessModelParser;
+import com.tesco.pma.exception.InitializationException;
 import com.tesco.pma.util.ResourceProvider;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
@@ -57,7 +58,6 @@ import static com.tesco.pma.cycle.api.PMCycleStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMCycleStatus.FAILED;
 import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
 import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
-import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_ALREADY_EXISTS;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_METADATA_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_ALLOWED_TO_START;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND;
@@ -278,8 +278,8 @@ public class PMCycleServiceImpl implements PMCycleService {
         PMForm pmFormTo = getPMForm(updateFormRequest.getChangeTo());
 
         cycle.getMetadata().getCycle().getTimelinePoints().stream()
-                .filter(tpe -> tpe.getType() == REVIEW)
-                .map(review -> (PMReviewElement) review)
+                .filter(tpe -> REVIEW == tpe.getType())
+                .map(PMReviewElement.class::cast)
                 .filter(rw -> rw.getForm() != null && rw.getForm().getId().equals(pmFormFrom.getId()))
                 .findAny()
                 .orElseThrow(() -> new NotFoundException(ERROR_FILE_NOT_FOUND.name(),
@@ -303,19 +303,14 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     //TODO refactor to common solution (include @com.tesco.pma.review.service.ReviewServiceImpl)
     private NotFoundException notFound(ErrorCodeAware errorCode, Map<String, ?> params) {
-        return notFound(errorCode, params, null);
-    }
-
-    private NotFoundException notFound(ErrorCodeAware errorCode, Map<String, ?> params, Throwable cause) {
         return new NotFoundException(errorCode.getCode(),
-                messageSourceAccessor.getMessage(errorCode.getCode(), params), null, cause);
+                messageSourceAccessor.getMessage(errorCode.getCode(), params), null, null);
     }
 
-    private DatabaseConstraintViolationException databaseConstraintViolation(ErrorCodeAware errorCode,
-                                                                             Map<String, ?> params,
+    private DatabaseConstraintViolationException databaseConstraintViolation(Map<String, ?> params,
                                                                              Throwable cause) {
-        return new DatabaseConstraintViolationException(errorCode.getCode(),
-                messageSourceAccessor.getMessage(errorCode.getCode(), params), null, cause);
+        return new DatabaseConstraintViolationException(((ErrorCodeAware) ErrorCodes.PM_CYCLE_ALREADY_EXISTS).getCode(),
+                messageSourceAccessor.getMessage(((ErrorCodeAware) ErrorCodes.PM_CYCLE_ALREADY_EXISTS).getCode(), params), null, cause);
     }
 
 
@@ -346,7 +341,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
 
-    private String intDeployProcess(UUID templateUuid, String processName) throws Exception {
+    private String intDeployProcess(UUID templateUuid, String processName) throws InitializationException {
 
         var file = fileService.get(templateUuid, true);
         InputStream fileContent = new ByteArrayInputStream(file.getFileContent());
@@ -379,7 +374,6 @@ public class PMCycleServiceImpl implements PMCycleService {
             return cycle;
         } catch (DuplicateKeyException e) {
             throw databaseConstraintViolation(
-                    PM_CYCLE_ALREADY_EXISTS,
                     Map.of(ORG_KEY_PARAMETER_NAME, cycle.getEntryConfigKey(),
                             TEMPLATE_UUID_PARAMETER_NAME, cycle.getTemplate().getUuid()), e);
         }
