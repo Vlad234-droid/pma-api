@@ -267,7 +267,7 @@ public class PMCycleServiceImpl implements PMCycleService {
 
         PMCycle cycle = cycleDAO.read(cycleUuid, null);
         if (null == cycle) {
-            throw notFound(PM_CYCLE_NOT_FOUND,
+            throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID,
                     Map.of(CYCLE_UUID_PARAMETER_NAME, cycleUuid));
         }
 
@@ -294,7 +294,7 @@ public class PMCycleServiceImpl implements PMCycleService {
 
         PMCycle cycle = cycleDAO.read(cycleUuid, null);
         if (null == cycle) {
-            throw notFound(PM_CYCLE_NOT_FOUND,
+            throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID,
                     Map.of(CYCLE_UUID_PARAMETER_NAME, cycleUuid));
         }
 
