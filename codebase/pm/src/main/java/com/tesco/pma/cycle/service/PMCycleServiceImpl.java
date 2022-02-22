@@ -212,13 +212,7 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     @Override
     public List<PMCycle> getAll(RequestQuery requestQuery, boolean includeMetadata) {
-
-        var results = cycleDAO.getAll(requestQuery, includeMetadata);
-        if (CollectionUtils.isEmpty(results)) {
-            throw notFound(PM_CYCLE_NOT_FOUND,
-                    Map.of(INCLUDE_METADATA_PARAMETER_NAME, includeMetadata));
-        }
-        return results;
+        return cycleDAO.getAll(requestQuery, includeMetadata);
     }
 
     @Override

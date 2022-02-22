@@ -10,6 +10,7 @@ import com.tesco.pma.flow.handlers.EventSendHandler;
 import com.tesco.pma.flow.handlers.FindCycleHandler;
 import com.tesco.pma.util.TestUtils.KEYS;
 import com.tesco.pma.flow.handlers.ReadColleaguesHandler;
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
@@ -24,7 +25,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.tesco.pma.bpm.camunda.flow.FlowTestUtil.mockExecutionInHandler;
+import static com.tesco.pma.flow.exception.ErrorCodes.PM_CYCLE_MORE_THAN_ONE_IN_STATUSES;
 import static com.tesco.pma.util.TestUtils.createColleague;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:vadim.shatokhin1@tesco.com">vadim.shatokhin1@tesco.com</a>
@@ -66,8 +70,7 @@ public class PMCycleAssignmentFlowTest extends AbstractCamundaSpringBootTest {
         mockExecutionInHandler(readColleaguesHandler,
                 (context) -> context.setVariable(FlowParameters.COLLEAGUES.name(), colleagues));
 
-        mockExecutionInHandler(findCycleHandler,
-                (context) -> context.removeVariable(FlowParameters.PM_CYCLE.name()));
+        doThrow(new BpmnError(PM_CYCLE_MORE_THAN_ONE_IN_STATUSES.getCode())).when(findCycleHandler).execute(any());
 
         var pid = runProcess(PROCESS_KEY, Map.of(FlowParameters.COLLEAGUE_UUIDS.name(), uuids));
         assertThatForProcess(pid)
