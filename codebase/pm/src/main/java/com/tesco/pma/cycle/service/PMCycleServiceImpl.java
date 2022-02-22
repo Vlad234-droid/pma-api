@@ -290,6 +290,32 @@ public class PMCycleServiceImpl implements PMCycleService {
         return cycle;
     }
 
+    @Override
+    @Transactional
+    public PMCycle updateFormToLatestVersion(UUID cycleUuid, String formKey) {
+        log.debug("Updating form to the latest version for the cycle:{}, formKey:{}", cycleUuid, formKey);
+
+        PMCycle cycle = cycleDAO.read(cycleUuid, null);
+        if (null == cycle) {
+            throw notFound(PM_CYCLE_NOT_FOUND,
+                    Map.of(CYCLE_UUID_PARAMETER_NAME, cycleUuid));
+        }
+
+        PMForm latestForm = getPMForm(formKey);
+
+        cycle.getMetadata().getCycle().getTimelinePoints().stream()
+                .filter(tpe -> tpe.getType() == REVIEW)
+                .map(review -> (PMReviewElement) review)
+                .filter(rw -> rw.getForm() != null && rw.getForm().getKey().equals(formKey))
+                .findAny()
+                .orElseThrow(() -> new NotFoundException(ERROR_FILE_NOT_FOUND.name(),
+                        "Form was not found for changing", formKey))
+                .setForm(latestForm);
+
+        cycleDAO.update(cycle, null);
+        return cycle;
+    }
+
     private void cycleFailed(String processKey, UUID uuid, Exception ex) {
         log.error("Performance cycle publish error, cause: ", ex);
         try {

@@ -126,5 +126,7 @@ public interface PMCycleService {
     void completeCycle(UUID cycleUUID);
 
     PMCycle updateForm(UUID cycleUuid, PMCycleUpdateFormRequest updateFormRequest);
+
+    PMCycle updateFormToLatestVersion(UUID cycleUuid, String formKey);
 }
 
