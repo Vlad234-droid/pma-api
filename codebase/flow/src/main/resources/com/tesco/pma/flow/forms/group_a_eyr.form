@@ -133,9 +133,15 @@
       "description": "{listener.rating:overall_rating}"
     },
     {
-      "text": "**Overall:**{request.rating:overall_rating}",
-      "type": "text",
-      "id": "Field_01qd85o"
+      "key": "overall_rating",
+      "label": "**Overall:**",
+      "type": "textfield",
+      "id": "Field_15z04545454s",
+      "validate": {
+        "required": false,
+        "maxLength": 100
+      },
+      "description": "{request.rating:overall_rating;auth.permission.read:Colleague,LineManager}"
     },
     {
       "text": "## Look forward",
