@@ -6,6 +6,7 @@ import com.tesco.pma.cycle.api.CompositePMCycleMetadataResponse;
 import com.tesco.pma.cycle.api.CompositePMCycleResponse;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
+import com.tesco.pma.cycle.api.request.PMCycleUpdateFormRequest;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.exception.InvalidPayloadException;
@@ -239,6 +240,33 @@ public class PMCycleEndpoint {
         service.start(uuid);
         return RestResponse.success();
     }
+
+    @Operation(summary = "Update form",
+            description = "Update performance cycle form",
+            tags = {"performance-cycle"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle form updated")
+    @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
+    @PutMapping(value = "/pm-cycles/{cycleUuid}/forms", produces = APPLICATION_JSON_VALUE,
+            consumes = APPLICATION_JSON_VALUE)
+    public RestResponse<PMCycle> updateForm(@PathVariable("cycleUuid") final UUID cycleUuid,
+                                            @RequestBody PMCycleUpdateFormRequest updateFormRequest) {
+
+        return success(service.updateForm(cycleUuid, updateFormRequest));
+    }
+
+    @Operation(summary = "Update form to latest version",
+            description = "Update form to latest version",
+            tags = {"performance-cycle"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Form updated to the latest version")
+    @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
+    @PutMapping(value = "/pm-cycles/{cycleUuid}/forms/latest", produces = APPLICATION_JSON_VALUE,
+            consumes = APPLICATION_JSON_VALUE)
+    public RestResponse<PMCycle> updateFormLatestVersion(@PathVariable("cycleUuid") final UUID cycleUuid,
+                                                         @RequestParam(value = "formKey") String formKey) {
+
+        return success(service.updateFormToLatestVersion(cycleUuid, formKey));
+    }
+
 
     private UUID resolveUserUuid() {
         return auditorAware.getCurrentAuditor();
