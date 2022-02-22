@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.function.Supplier;
 
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
@@ -13,11 +14,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.InterceptingClientHttpRequestFactory;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 @ActiveProfiles("test")
@@ -44,9 +46,10 @@ class RestTemplateConfigurationTest {
     @MockBean(name = "pmaClientTokenSupplier")
     private Supplier<String> pmaClientTokenSupplier;
 
-    // TODO   @Test
+    @Test
     void test() {
-        assertEquals(restTemplate.getRequestFactory().getClass(), TestFactory.class);
+        assertEquals(restTemplate.getRequestFactory().getClass(), InterceptingClientHttpRequestFactory.class);
+        assertFalse(restTemplate.getInterceptors().isEmpty());
         assertEquals(expectedConnectTimeout, actualConnectTimeout);
         assertEquals(expectedReadTimeout, actualReadTimeout);
     }
