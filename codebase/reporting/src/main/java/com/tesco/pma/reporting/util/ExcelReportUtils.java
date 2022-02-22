@@ -1,6 +1,10 @@
 package com.tesco.pma.reporting.util;
 
+import com.tesco.pma.exception.WriteException;
 import com.tesco.pma.pagination.Condition;
+import com.tesco.pma.pagination.RequestQuery;
+import com.tesco.pma.reporting.Report;
+import com.tesco.pma.reporting.exception.ErrorCodes;
 import com.tesco.pma.reporting.metadata.ColumnMetadata;
 import lombok.experimental.UtilityClass;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -12,6 +16,7 @@ import org.springframework.core.io.Resource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.time.Instant.now;
 
@@ -21,43 +26,63 @@ import static java.time.Instant.now;
 @UtilityClass
 public class ExcelReportUtils {
 
+    public static final String TOPICS_PARAM_NAME = "topics";
+
     /**
      * Build Excel Report
      *
-     * @param sheetName       - name of sheet
-     * @param reportData      - data of report
-     * @param columnMetadata  - column metadata, report name, etc
+     * @param report          - report data and metadata (sheet name, column metadata, etc)
+     * @param requestQuery    - filters
      * @return resource with Report
      * @throws IOException if the resource cannot be written
      */
-    public static Resource buildResource(String sheetName,
-                                         List<List<Object>> reportData, List<ColumnMetadata> columnMetadata) throws IOException {
+    public static Resource buildResource(Report report, RequestQuery requestQuery) {
+        var reportData = report.getData();
+        var reportMetadata = report.getMetadata();
+
         try (var outputStream = new ByteArrayOutputStream(); var workbook = new XSSFWorkbook()) {
+            var sheetName = reportMetadata.getSheetName();
             var sheet = workbook.createSheet(sheetName);
 
-            buildHeader(columnMetadata, sheet);
+            buildHeader(reportMetadata.getColumnMetadata(), sheet);
             buildData(reportData, sheet);
 
             workbook.write(outputStream);
 
             return new ByteArrayResource(outputStream.toByteArray());
+        } catch (IOException e) {
+            throw new WriteException(ErrorCodes.WRITE_ERROR.getCode(), "Excel Workbook can't be written, params " + requestQuery, null, e);
         }
     }
 
     /**
      * Build Statistics Excel Report
      *
-     * @param topics          - topics of statistics to include in report
-     * @param sheetName       - name of sheet
-     * @param filters         - UI filters
-     * @param reportData      - data of report
-     * @param columnMetadata  - column metadata, report name, etc
+     * @param report          - report data and metadata (sheet name, column metadata, etc)
+     * @param requestQuery    - filters, selected topics of statistics
      * @return resource with Statistics Report
      * @throws IOException if the resource cannot be written
      */
-    public static Resource buildResourceWithTopics(List<String> topics, String sheetName,
-                                                   String filters, List<List<Object>> reportData,
-                                                   List<ColumnMetadata> columnMetadata) throws IOException {
+    public static Resource buildResourceWithStatisticTopics(Report report, RequestQuery requestQuery) {
+
+        var reportData = report.getData();
+        var reportMetadata = report.getMetadata();
+
+        var filters = requestQuery.getFilters().stream()
+                .filter(condition -> !TOPICS_PARAM_NAME.equalsIgnoreCase(condition.getProperty()))
+                .map(ExcelReportUtils::formatCondition)
+                .collect(Collectors.toList()).toString();
+
+        @SuppressWarnings("unchecked")
+        var topics = (List<String>) requestQuery.getFilters().stream() // NOSONAR presence has already checked in service
+                .filter(c -> TOPICS_PARAM_NAME.equalsIgnoreCase(c.getProperty()))
+                .findFirst()
+                .get().getValue();
+
+        var sheetName = reportMetadata.getSheetName();
+
+        var columnMetadata = reportMetadata.getColumnMetadata();
+
         try (var outputStream = new ByteArrayOutputStream(); var workbook = new XSSFWorkbook()) {
             var sheet = workbook.createSheet(sheetName);
 
@@ -66,6 +91,8 @@ public class ExcelReportUtils {
             workbook.write(outputStream);
 
             return new ByteArrayResource(outputStream.toByteArray());
+        } catch (IOException e) {
+            throw new WriteException(ErrorCodes.WRITE_ERROR.getCode(), "Excel Workbook can't be written, params " + requestQuery, null, e);
         }
     }
 

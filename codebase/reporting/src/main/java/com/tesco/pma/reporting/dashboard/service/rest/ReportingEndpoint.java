@@ -27,13 +27,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.function.BiFunction;
 
-import static com.tesco.pma.reporting.util.ExcelReportUtils.buildResource;
-import static com.tesco.pma.reporting.util.ExcelReportUtils.buildResourceWithTopics;
 import static com.tesco.pma.rest.RestResponse.success;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -44,7 +41,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Validated
 public class ReportingEndpoint {
 
-    static final String TOPICS_PARAM_NAME = "topics";
     static final MediaType APPLICATION_FORCE_DOWNLOAD_VALUE = new MediaType("application", "force-download");
     static final String REPORT_NAME_PARAM_NAME = "reportName";
     static final String REQUEST_QUERY_PARAM_NAME = "requestQuery";
@@ -66,22 +62,7 @@ public class ReportingEndpoint {
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
     public ResponseEntity<Resource> getLinkedObjectivesReportFile(RequestQuery requestQuery) {
         var report = reviewReportingService.getLinkedObjectivesReport(requestQuery);
-
-        var reportData = report.getData();
-        var reportMetadata = report.getMetadata().getColumnMetadata();
-
-        Resource resource;
-        try {
-            resource = buildResource(report.getMetadata().getSheetName(), reportData, reportMetadata);
-        } catch (IOException e) {
-            throw downloadException(report.getMetadata().getName(), requestQuery, e);
-        }
-
-        var httpHeader = new HttpHeaders();
-        httpHeader.setContentType(APPLICATION_FORCE_DOWNLOAD_VALUE);
-        httpHeader.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + report.getMetadata().getFileName());
-
-        return new ResponseEntity<>(resource, httpHeader, CREATED);
+        return buildResponseWithReport(report, requestQuery, ExcelReportUtils::buildResource);
     }
 
     /**
@@ -140,26 +121,17 @@ public class ReportingEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Statistics Report data not found", content = @Content)
     @GetMapping(path = StatsReportProvider.REPORT_NAME + "/formats/excel", produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
-    public ResponseEntity<Resource> getStatisticsReportFile(RequestQuery requestQuery) {
+    public ResponseEntity<Resource> getStatisticsReportFile(RequestQuery requestQuery)  {
         var report = reportingService.getStatsReport(requestQuery);
-        var filters = requestQuery.getFilters();
-        var stats = (List<String>) filters.stream()
-                .filter(c -> TOPICS_PARAM_NAME.equalsIgnoreCase(c.getProperty()))
-                .findFirst()
-                .get().getValue();
+        return buildResponseWithReport(report, requestQuery, ExcelReportUtils::buildResourceWithStatisticTopics);
+    }
 
-        var reportData = report.getData();
-        var reportMetadata = report.getMetadata().getColumnMetadata();
-
-        var filtersOnUI = filters.stream()
-                .filter(condition -> !TOPICS_PARAM_NAME.equalsIgnoreCase(condition.getProperty()))
-                .map(ExcelReportUtils::formatCondition)
-                .collect(Collectors.toList()).toString();
-
+    private ResponseEntity<Resource> buildResponseWithReport(Report report, RequestQuery requestQuery,
+                                                             BiFunction<Report, RequestQuery, Resource> buildReport) {
         Resource resource;
         try {
-            resource = buildResourceWithTopics(stats, report.getMetadata().getSheetName(), filtersOnUI, reportData, reportMetadata);
-        } catch (IOException e) {
+            resource = buildReport.apply(report, requestQuery);
+        } catch (Exception e) {
             throw downloadException(report.getMetadata().getName(), requestQuery, e);
         }
 
@@ -173,6 +145,6 @@ public class ReportingEndpoint {
     private DownloadException downloadException(String reportName, RequestQuery requestQuery, Throwable cause) {
         var message = messages.getMessage(ErrorCodes.INTERNAL_DOWNLOAD_ERROR,
                 Map.of(REPORT_NAME_PARAM_NAME, reportName, REQUEST_QUERY_PARAM_NAME, requestQuery));
-        return new DownloadException(ErrorCodes.INTERNAL_DOWNLOAD_ERROR.getCode(), message, reportName, cause);
+        return new DownloadException(ErrorCodes.INTERNAL_DOWNLOAD_ERROR.getCode(), message, reportName, cause.getCause());
     }
 }

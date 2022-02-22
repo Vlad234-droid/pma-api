@@ -54,7 +54,7 @@ import static com.tesco.pma.reporting.ReportingConstants.MYR_WHAT_RATING;
 
 import static com.tesco.pma.reporting.dashboard.service.rest.ReportingEndpoint.APPLICATION_FORCE_DOWNLOAD_VALUE;
 
-import static com.tesco.pma.reporting.dashboard.service.rest.ReportingEndpoint.TOPICS_PARAM_NAME;
+import static com.tesco.pma.reporting.util.ExcelReportUtils.TOPICS_PARAM_NAME;
 import static java.util.Arrays.asList;
 import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertTrue;

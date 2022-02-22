@@ -2,6 +2,9 @@ package com.tesco.pma.reporting.util;
 
 import com.tesco.pma.api.ValueType;
 import com.tesco.pma.pagination.Condition;
+import com.tesco.pma.pagination.RequestQuery;
+import com.tesco.pma.reporting.Report;
+import com.tesco.pma.reporting.ReportMetadata;
 import com.tesco.pma.reporting.dashboard.domain.StatsData;
 import com.tesco.pma.reporting.metadata.ColumnMetadata;
 import com.tesco.pma.reporting.review.domain.ObjectiveLinkedReviewData;
@@ -13,6 +16,7 @@ import org.springframework.core.io.ByteArrayResource;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +24,7 @@ import static com.tesco.pma.api.ValueType.INTEGER;
 import static com.tesco.pma.api.ValueType.STRING;
 import static com.tesco.pma.pagination.Condition.Operand.IN;
 import static com.tesco.pma.reporting.review.domain.provider.ObjectiveLinkedReviewReportProvider.REPORT_SHEET_NAME;
+import static com.tesco.pma.reporting.util.ExcelReportUtils.TOPICS_PARAM_NAME;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -92,10 +97,13 @@ class ExcelReportUtilsTest {
 
     @Test
     void buildResource() throws IOException {
-        var columnMetadata = getColumnMetadata();
         var reportData = getReportData();
+        var reportMetadata = getLinkedObjectivesReportMetadata(REPORT_SHEET_NAME);
+        var report = new Report();
+        report.setData(reportData);
+        report.setMetadata(reportMetadata);
 
-        var resource = ExcelReportUtils.buildResource(REPORT_SHEET_NAME, reportData, columnMetadata);
+        var resource = ExcelReportUtils.buildResource(report, new RequestQuery());
 
         assertTrue(resource.exists());
         assertTrue(resource.isReadable());
@@ -104,23 +112,26 @@ class ExcelReportUtilsTest {
             var sheet = workbook.getSheet(REPORT_SHEET_NAME);
             assertNotNull(sheet);
             assertEquals(reportData.size(), sheet.getLastRowNum());
-            checkHeader(sheet, columnMetadata);
-            checkData(1, sheet, reportData.get(0), columnMetadata);
+            checkHeader(sheet, reportMetadata.getColumnMetadata());
+            checkData(1, sheet, reportData.get(0), reportMetadata.getColumnMetadata());
         }
     }
 
     @Test
-    void buildResourceWithStatistics() throws IOException {
-        List<String> statistics = List.of("colleagues-count", "new-to-business-count");
-        var filters = List.of(Condition.build("year", 2021), Condition.build("status", "Approved"));
-        var filtersOnUI = filters.stream()
-                .map(ExcelReportUtils::formatCondition)
-                .collect(Collectors.toList()).toString();
-        List<List<Object>> reportData = getStatsReportData();
-        var columnMetadata = getStatsColumnMetadata();
+    void buildResourceWithTopics() throws IOException {
+        var filtersOnUI = List.of(Condition.build("year", 2021), Condition.build("status", "Approved"));
+        var requestQuery = new RequestQuery();
+        var filters = new LinkedList<>(filtersOnUI);
+        var topics = List.of("colleagues-count", "new-to-business-count");
+        filters.add(new Condition(TOPICS_PARAM_NAME, IN, topics));
+        requestQuery.setFilters(filters);
+        var reportData = getStatsReportData();
+        var reportMetadata = getStatsReportMetadata(REPORT_SHEET_NAME);
+        var report = new Report();
+        report.setData(reportData);
+        report.setMetadata(reportMetadata);
 
-        var resource = ExcelReportUtils.buildResourceWithTopics(statistics, REPORT_SHEET_NAME,
-                filtersOnUI, reportData, columnMetadata);
+        var resource = ExcelReportUtils.buildResourceWithStatisticTopics(report, requestQuery);
 
         assertTrue(resource.exists());
         assertTrue(resource.isReadable());
@@ -128,18 +139,21 @@ class ExcelReportUtilsTest {
         try (var workbook = new XSSFWorkbook(resource.getInputStream())) {
             var sheet = workbook.getSheet(REPORT_SHEET_NAME);
             assertNotNull(sheet);
-            assertEquals(statistics.size() + 1, sheet.getLastRowNum());
-            checkStatisticsData(sheet, statistics, filtersOnUI, reportData, columnMetadata);
+            assertEquals(topics.size() + 1, sheet.getLastRowNum());
+            var filtersOnUIParam = filtersOnUI.stream()
+                    .map(ExcelReportUtils::formatCondition)
+                    .collect(Collectors.toList()).toString();
+            checkStatisticsData(sheet, topics, filtersOnUIParam, reportData, reportMetadata.getColumnMetadata());
         }
     }
 
     @Test
     void formatCondition() {
-        var condition = new Condition("stats", IN, asList("colleagues-count", "new-to-business-count"));
+        var condition = new Condition(TOPICS_PARAM_NAME, IN, asList("colleagues-count", "new-to-business-count"));
 
         var formatted = ExcelReportUtils.formatCondition(condition);
 
-        assertEquals("stats IN [colleagues-count, new-to-business-count]", formatted);
+        assertEquals(TOPICS_PARAM_NAME + " IN [colleagues-count, new-to-business-count]", formatted);
     }
 
     private void checkStatisticsData(XSSFSheet sheet, List<String> statistics, String filters,
@@ -223,8 +237,10 @@ class ExcelReportUtilsTest {
         return reportData;
     }
 
-    private List<ColumnMetadata> getColumnMetadata() {
-        return List.of(
+    private ReportMetadata getLinkedObjectivesReportMetadata(String sheetName) {
+        var reportMetadata = new ReportMetadata();
+        reportMetadata.setSheetName(sheetName);
+        reportMetadata.setColumnMetadata(List.of(
                 ColumnMetadataEnum.IAM_ID.getColumnMetadata(),
                 ColumnMetadataEnum.COLLEAGUE_UUID.getColumnMetadata(),
                 ColumnMetadataEnum.FIRST_NAME.getColumnMetadata(),
@@ -232,15 +248,21 @@ class ExcelReportUtilsTest {
                 ColumnMetadataEnum.WORKING_LEVEL.getColumnMetadata(),
                 ColumnMetadataEnum.JOB_TITLE.getColumnMetadata(),
                 ColumnMetadataEnum.LINE_MANAGER.getColumnMetadata(),
-                ColumnMetadataEnum.OBJECTIVE_NUMBER.getColumnMetadata());
+                ColumnMetadataEnum.OBJECTIVE_NUMBER.getColumnMetadata()));
+
+        return reportMetadata;
     }
 
-    private List<ColumnMetadata> getStatsColumnMetadata() {
-        return List.of(
+    private ReportMetadata getStatsReportMetadata(String sheetName) {
+        var reportMetadata = new ReportMetadata();
+        reportMetadata.setSheetName(sheetName);
+        reportMetadata.setColumnMetadata(List.of(
                 StatsColumnMetadataEnum.COLLEAGUES_COUNT.getColumnMetadata(),
                 StatsColumnMetadataEnum.OBJECTIVES_SUBMITTED_PERCENTAGE.getColumnMetadata(),
                 StatsColumnMetadataEnum.OBJECTIVES_APPROVED_PERCENTAGE.getColumnMetadata(),
-                StatsColumnMetadataEnum.NEW_TO_BUSINESS_COUNT.getColumnMetadata());
+                StatsColumnMetadataEnum.NEW_TO_BUSINESS_COUNT.getColumnMetadata()));
+
+        return reportMetadata;
     }
 
     private List<List<Object>> getStatsReportData() {
