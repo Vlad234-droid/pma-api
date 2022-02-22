@@ -129,7 +129,6 @@ class ReviewServiceImplTest {
 
         final var res = reviewService.getReview(
                 randomUUID,
-                randomUUID,
                 OBJECTIVE,
                 NUMBER_1);
 
@@ -167,7 +166,7 @@ class ReviewServiceImplTest {
         when(mockReviewDAO.getByParams(any(), any(), any(), any()))
                 .thenReturn(List.of(beforeReview));
 
-        final var res = reviewService.updateReview(expectedReview, randomUUID, randomUUID, null);
+        final var res = reviewService.updateReview(expectedReview, randomUUID, null);
 
         assertThat(res)
                 .returns(expectedReview.getProperties(), from(Review::getProperties));
@@ -204,7 +203,7 @@ class ReviewServiceImplTest {
         when(mockReviewDAO.create(any(Review.class)))
                 .thenReturn(1);
 
-        final var res = reviewService.createReview(expectedReview, randomUUID, randomUUID);
+        final var res = reviewService.createReview(expectedReview, randomUUID);
 
         assertThat(res).isSameAs(expectedReview);
     }
@@ -212,7 +211,6 @@ class ReviewServiceImplTest {
     @Test
     void deleteReviewNotExists() {
         final var tlPointUUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0010");
-        final var performanceCycleUuid = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0012");
 
         final var expectedColleagueCycle = PMColleagueCycle.builder().build();
         final var expectedTimelinePoint = TimelinePoint.builder()
@@ -238,7 +236,6 @@ class ReviewServiceImplTest {
                 .thenReturn(0);
         final var exception = assertThrows(NotFoundException.class,
                 () -> reviewService.deleteReview(
-                        performanceCycleUuid,
                         COLLEAGUE_UUID,
                         OBJECTIVE,
                         1));

@@ -119,7 +119,7 @@ public class ReviewEndpoint {
                                              @RequestBody Review review) {
         review.setType(type);
         review.setNumber(number);
-        return success(reviewService.createReview(review, getPMCycleUuid(colleagueUuid, cycleUuid), colleagueUuid));
+        return success(reviewService.createReview(review, colleagueUuid));
     }
 
     /**
@@ -141,7 +141,6 @@ public class ReviewEndpoint {
                                                     @PathVariable("type") PMReviewType type,
                                                     @RequestBody List<Review> reviews) {
         return success(reviewService.updateReviews(
-                getPMCycleUuid(colleagueUuid, cycleUuid),
                 colleagueUuid,
                 type,
                 reviews,
@@ -167,7 +166,7 @@ public class ReviewEndpoint {
                                           @PathVariable("cycleUuid") String cycleUuid,
                                           @PathVariable("type") PMReviewType type,
                                           @PathVariable("number") Integer number) {
-        return success(reviewService.getReview(getPMCycleUuid(colleagueUuid, cycleUuid), colleagueUuid, type, number));
+        return success(reviewService.getReview(colleagueUuid, type, number));
     }
 
     /**
@@ -203,7 +202,7 @@ public class ReviewEndpoint {
     public RestResponse<List<Review>> getReviews(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                                  @PathVariable("cycleUuid") String cycleUuid,
                                                  @PathVariable("type") PMReviewType type) {
-        return success(reviewService.getReviews(getPMCycleUuid(colleagueUuid, cycleUuid), colleagueUuid, type));
+        return success(reviewService.getReviews(colleagueUuid, type));
     }
 
     /**
@@ -221,7 +220,7 @@ public class ReviewEndpoint {
     @PreAuthorize("isColleague()")
     public RestResponse<List<Review>> getReviewsByColleague(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                                             @PathVariable("cycleUuid") String cycleUuid) {
-        return success(reviewService.getReviewsByColleague(getPMCycleUuid(colleagueUuid, cycleUuid), colleagueUuid));
+        return success(reviewService.getReviewsByColleague(colleagueUuid));
     }
 
     /**
@@ -282,8 +281,7 @@ public class ReviewEndpoint {
         review.setType(type);
         review.setNumber(number);
 
-        return success(reviewService.updateReview(review, getPMCycleUuid(colleagueUuid, cycleUuid), colleagueUuid,
-                resolveUserUuid()));
+        return success(reviewService.updateReview(review, colleagueUuid, resolveUserUuid()));
     }
 
     /**
@@ -310,7 +308,6 @@ public class ReviewEndpoint {
                                                                    @PathVariable("status") PMTimelinePointStatus status,
                                                                    @RequestBody UpdateReviewsStatusRequest request) {
         return success(reviewService.updateReviewsStatus(
-                getPMCycleUuid(colleagueUuid, cycleUuid),
                 colleagueUuid,
                 type,
                 request.getReviews(),
@@ -339,11 +336,7 @@ public class ReviewEndpoint {
                                            @PathVariable("cycleUuid") String cycleUuid,
                                            @PathVariable("type") PMReviewType type,
                                            @PathVariable("number") Integer number) {
-        reviewService.deleteReview(
-                getPMCycleUuid(colleagueUuid, cycleUuid),
-                colleagueUuid,
-                type,
-                number);
+        reviewService.deleteReview(colleagueUuid, type, number);
         return success();
     }
 
@@ -441,7 +434,8 @@ public class ReviewEndpoint {
     @GetMapping(path = "/colleagues/{colleagueUuid}/reviews/files", produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isColleague()")
     public RestResponse<List<File>> getReviewsFilesByColleague(@PathVariable UUID colleagueUuid,
-                                @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+                                                               @CurrentSecurityContext(expression = "authentication")
+                                                                       Authentication authentication) {
 
         var currentUserUuid = UUID.fromString(authentication.getName());
 
@@ -482,7 +476,7 @@ public class ReviewEndpoint {
      * Post call to upload Review Files
      *
      * @param filesUploadMetadata files metadata
-     * @param files files data
+     * @param files               files data
      * @return uploaded files
      */
     @Operation(
