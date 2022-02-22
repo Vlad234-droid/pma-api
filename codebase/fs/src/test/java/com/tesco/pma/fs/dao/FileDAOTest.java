@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static com.tesco.pma.file.api.FileStatus.ACTIVE;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
@@ -56,7 +55,7 @@ class FileDAOTest extends AbstractDAOTest {
         final var result = instance.read(FILE_UUID_1, true, COLLEAGUE_UUID);
 
         assertNotNull(result);
-        assertSame(FILE_UUID_1, result.getUuid());
+        assertEquals(FILE_UUID_1, result.getUuid());
     }
 
     @Test
@@ -77,7 +76,7 @@ class FileDAOTest extends AbstractDAOTest {
 
         assertFalse(result.isEmpty());
         assertEquals(1, result.size());
-        assertSame(FILE_UUID_3, result.get(0).getUuid());
+        assertEquals(FILE_UUID_3, result.get(0).getUuid());
     }
 
     @Test
@@ -90,7 +89,7 @@ class FileDAOTest extends AbstractDAOTest {
 
         assertFalse(result.isEmpty());
         assertEquals(1, result.size());
-        assertSame(FILE_UUID_3, result.get(0).getUuid());
+        assertEquals(FILE_UUID_3, result.get(0).getUuid());
     }
 
     @Test
@@ -105,7 +104,7 @@ class FileDAOTest extends AbstractDAOTest {
 
         assertFalse(result.isEmpty());
         assertEquals(1, result.size());
-        assertSame(FILE_UUID_3, result.get(0).getUuid());
+        assertEquals(FILE_UUID_3, result.get(0).getUuid());
     }
 
     @Test
@@ -119,7 +118,7 @@ class FileDAOTest extends AbstractDAOTest {
 
         assertFalse(result.isEmpty());
         assertEquals(1, result.size());
-        assertSame(FILE_UUID_2, result.get(0).getUuid());
+        assertEquals(FILE_UUID_2, result.get(0).getUuid());
     }
 
     @Test
@@ -154,8 +153,8 @@ class FileDAOTest extends AbstractDAOTest {
 
         assertFalse(result.isEmpty());
         assertEquals(2, result.size());
-        assertSame(FILE_UUID_3, result.get(0).getUuid());
-        assertSame(FILE_UUID_2, result.get(1).getUuid());
+        assertEquals(FILE_UUID_3, result.get(0).getUuid());
+        assertEquals(FILE_UUID_2, result.get(1).getUuid());
     }
 
     @Test
