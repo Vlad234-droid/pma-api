@@ -28,7 +28,6 @@ import static com.tesco.pma.pagination.Condition.Operand.GREATER_THAN;
 import static com.tesco.pma.pagination.Condition.Operand.IN;
 import static java.util.Arrays.asList;
 
-
 class FileDAOTest extends AbstractDAOTest {
 
     private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/fs/dao/";
