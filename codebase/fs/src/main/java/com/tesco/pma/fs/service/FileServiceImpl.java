@@ -109,7 +109,7 @@ public class FileServiceImpl implements FileService {
         requestQuery.setFilters(Arrays.asList(new Condition("path", EQUALS, path),
                 new Condition("file-name", EQUALS, fileName)));
         requestQuery.setLimit(null);
-        requestQuery.setSort(Arrays.asList(new Sort("version", DESC)));
+        requestQuery.setSort(Arrays.asList(new Sort(FILE_VERSION, DESC)));
 
         return get(requestQuery, includeFileContent, colleagueUuid, false);
     }
