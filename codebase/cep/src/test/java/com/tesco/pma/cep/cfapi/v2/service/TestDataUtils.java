@@ -1,7 +1,7 @@
-package com.tesco.pma.cep.v2.service;
+package com.tesco.pma.cep.cfapi.v2.service;
 
-import com.tesco.pma.cep.v2.domain.ColleagueChangeEventPayload;
-import com.tesco.pma.cep.v2.domain.EventType;
+import com.tesco.pma.cep.cfapi.v2.domain.ColleagueChangeEventPayload;
+import com.tesco.pma.cep.cfapi.v2.domain.EventType;
 import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;

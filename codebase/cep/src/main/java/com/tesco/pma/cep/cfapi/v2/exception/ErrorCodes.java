@@ -1,4 +1,4 @@
-package com.tesco.pma.cep.v2.exception;
+package com.tesco.pma.cep.cfapi.v2.exception;
 
 import com.tesco.pma.error.ErrorCodeAware;
 

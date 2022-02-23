@@ -1,8 +1,8 @@
-package com.tesco.pma.cep.v2.service;
+package com.tesco.pma.cep.cfapi.v2.service;
 
-import com.tesco.pma.cep.v2.configuration.ColleagueChangesProperties;
-import com.tesco.pma.cep.v2.domain.ColleagueChangeEventPayload;
-import com.tesco.pma.cep.v2.domain.EventType;
+import com.tesco.pma.cep.cfapi.v2.configuration.ColleagueChangesProperties;
+import com.tesco.pma.cep.cfapi.v2.domain.ColleagueChangeEventPayload;
+import com.tesco.pma.cep.cfapi.v2.domain.EventType;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
@@ -27,12 +27,12 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.tesco.pma.cep.v2.domain.EventType.DELETION;
-import static com.tesco.pma.cep.v2.domain.EventType.JOINER;
-import static com.tesco.pma.cep.v2.domain.EventType.LEAVER;
-import static com.tesco.pma.cep.v2.domain.EventType.MODIFICATION;
-import static com.tesco.pma.cep.v2.exception.ErrorCodes.CHANGED_ATTRIBUTES_NOT_FOUND;
-import static com.tesco.pma.cep.v2.exception.ErrorCodes.COLLEAGUE_NOT_FOUND;
+import static com.tesco.pma.cep.cfapi.v2.domain.EventType.DELETION;
+import static com.tesco.pma.cep.cfapi.v2.domain.EventType.JOINER;
+import static com.tesco.pma.cep.cfapi.v2.domain.EventType.LEAVER;
+import static com.tesco.pma.cep.cfapi.v2.domain.EventType.MODIFICATION;
+import static com.tesco.pma.cep.cfapi.v2.exception.ErrorCodes.CHANGED_ATTRIBUTES_NOT_FOUND;
+import static com.tesco.pma.cep.cfapi.v2.exception.ErrorCodes.COLLEAGUE_NOT_FOUND;
 
 @Service
 @Slf4j

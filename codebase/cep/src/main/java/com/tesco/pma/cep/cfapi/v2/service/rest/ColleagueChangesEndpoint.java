@@ -1,7 +1,7 @@
-package com.tesco.pma.cep.v2.service.rest;
+package com.tesco.pma.cep.cfapi.v2.service.rest;
 
-import com.tesco.pma.cep.v2.domain.ColleagueChangeEventPayload;
-import com.tesco.pma.cep.v2.service.ColleagueChangesService;
+import com.tesco.pma.cep.cfapi.v2.domain.ColleagueChangeEventPayload;
+import com.tesco.pma.cep.cfapi.v2.service.ColleagueChangesService;
 import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.logging.LogFormatter;
 import com.tesco.pma.logging.TraceUtils;

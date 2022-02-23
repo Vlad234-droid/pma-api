@@ -1,7 +1,7 @@
-package com.tesco.pma.cep.v2.service;
+package com.tesco.pma.cep.cfapi.v2.service;
 
-import com.tesco.pma.cep.v2.configuration.ColleagueChangesProperties;
-import com.tesco.pma.cep.v2.domain.EventType;
+import com.tesco.pma.cep.cfapi.v2.configuration.ColleagueChangesProperties;
+import com.tesco.pma.cep.cfapi.v2.domain.EventType;
 import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
@@ -19,7 +19,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 
-import static com.tesco.pma.cep.v2.service.TestDataUtils.*;
+import static com.tesco.pma.cep.cfapi.v2.service.TestDataUtils.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 

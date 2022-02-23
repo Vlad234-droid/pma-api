@@ -1,4 +1,4 @@
-package com.tesco.pma.cep.v2.configuration;
+package com.tesco.pma.cep.cfapi.v2.configuration;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

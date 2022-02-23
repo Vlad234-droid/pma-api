@@ -1,8 +1,8 @@
-package com.tesco.pma.cep.v2.service.rest;
+package com.tesco.pma.cep.cfapi.v2.service.rest;
 
 import com.tesco.pma.TestConfig;
-import com.tesco.pma.cep.v2.domain.ColleagueChangeEventPayload;
-import com.tesco.pma.cep.v2.service.ColleagueChangesService;
+import com.tesco.pma.cep.cfapi.v2.domain.ColleagueChangeEventPayload;
+import com.tesco.pma.cep.cfapi.v2.service.ColleagueChangesService;
 import com.tesco.pma.configuration.cep.CEPProperties;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import org.junit.jupiter.api.BeforeEach;

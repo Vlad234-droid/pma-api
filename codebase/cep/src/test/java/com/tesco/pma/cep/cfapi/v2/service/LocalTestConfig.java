@@ -1,4 +1,4 @@
-package com.tesco.pma.cep.v2.service;
+package com.tesco.pma.cep.cfapi.v2.service;
 
 import com.tesco.pma.configuration.MessageSourceConfig;
 import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration;

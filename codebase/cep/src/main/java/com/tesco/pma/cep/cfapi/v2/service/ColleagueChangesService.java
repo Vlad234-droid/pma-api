@@ -1,6 +1,6 @@
-package com.tesco.pma.cep.v2.service;
+package com.tesco.pma.cep.cfapi.v2.service;
 
-import com.tesco.pma.cep.v2.domain.ColleagueChangeEventPayload;
+import com.tesco.pma.cep.cfapi.v2.domain.ColleagueChangeEventPayload;
 
 /**
  * This class used for processing events from CEP

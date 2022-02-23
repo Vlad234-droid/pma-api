@@ -1,4 +1,4 @@
-package com.tesco.pma.cep.v2.domain;
+package com.tesco.pma.cep.cfapi.v2.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
