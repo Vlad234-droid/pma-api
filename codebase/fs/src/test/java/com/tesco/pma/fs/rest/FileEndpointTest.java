@@ -27,7 +27,7 @@ import static com.tesco.pma.file.api.FileStatus.ACTIVE;
 import static com.tesco.pma.security.UserRoleNames.ADMIN;
 import static com.tesco.pma.security.UserRoleNames.COLLEAGUE;
 import static java.util.Collections.emptyList;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = FileEndpoint.class)
 @ContextConfiguration(classes = TestConfig.class)
-public class FileEndpointTest extends AbstractEndpointTest {
+class FileEndpointTest extends AbstractEndpointTest {
 
     static final String COLLEAGUE_UUID_STR = "6d37262f-3a00-4706-a74b-6bf98be65765";
 
@@ -95,7 +95,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getByUuidUnsuccess() throws Exception {
+    void getByUuidUnsuccess() throws Exception { //NOSONAR used MockMvc checks
         when(service.get(FILE_UUID_1, false, CREATOR_ID)).thenThrow(NotFoundException.class);
 
         performGetWith(colleague(COLLEAGUE_UUID_STR), status().isNotFound(), FILES_URL + "/" + FILE_UUID_1);
@@ -167,7 +167,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
         var result = performGetWith(colleague(COLLEAGUE_UUID_STR), status().isOk(),
                 MediaType.APPLICATION_OCTET_STREAM, FILES_URL + DOWNLOAD, FILE_UUID_1);
 
-        assertThat(result.getResponse().getContentAsByteArray()).isNotSameAs(CONTENT);
+        assertNotSame(CONTENT, result.getResponse().getContentAsByteArray());
     }
 
     @Test
@@ -177,11 +177,11 @@ public class FileEndpointTest extends AbstractEndpointTest {
         var result = performGetWith(roles(List.of(COLLEAGUE, ADMIN)),
                 status().isOk(), MediaType.APPLICATION_OCTET_STREAM, FILES_URL + DOWNLOAD, FILE_UUID_1);
 
-        assertThat(result.getResponse().getContentAsByteArray()).isNotSameAs(CONTENT);
+        assertNotSame(CONTENT, result.getResponse().getContentAsByteArray());
     }
 
     @Test
-    void downloadUnsuccess() throws Exception {
+    void downloadUnsuccess() throws Exception { //NOSONAR used MockMvc checks
         when(service.get(FILE_UUID_1, true, CREATOR_ID)).thenThrow(NotFoundException.class);
 
         performGetWith(colleague(COLLEAGUE_UUID_STR), status().isNotFound(), FILES_URL + DOWNLOAD, FILE_UUID_1);
@@ -235,7 +235,7 @@ public class FileEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void uploadFilesUnsuccessWithInternalServerError() throws Exception {
+    void uploadFilesUnsuccessWithInternalServerError() throws Exception { //NOSONAR used MockMvc checks
         var multipartUploadMetadataMock = getUploadMetadataMultipartFile("test_metadata.json");
         var multipartFileMock = getMultipartFileToUpload(CONTENT);
 
@@ -246,28 +246,28 @@ public class FileEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void deleteFileByUuids() throws Exception {
+    void deleteFileByUuids() throws Exception { //NOSONAR used MockMvc checks
         doNothing().when(service).delete(FILE_UUID_1, CREATOR_ID);
 
         performDeleteWith(colleague(COLLEAGUE_UUID_STR), status().isOk(), FILES_URL + "/" + FILE_UUID_1);
     }
 
     @Test
-    void deleteFileByUuidsUnsuccessIfFileIsNotFound() throws Exception {
+    void deleteFileByUuidsUnsuccessIfFileIsNotFound() throws Exception { //NOSONAR used MockMvc checks
         doThrow(NotFoundException.class).when(service).delete(FILE_UUID_1, null);
 
         performDeleteWith(roles(List.of(COLLEAGUE, ADMIN)), status().isNotFound(), FILES_URL + "/" + FILE_UUID_1);
     }
 
     @Test
-    void deleteFileByVersions() throws Exception {
+    void deleteFileByVersions() throws Exception { //NOSONAR used MockMvc checks
         doNothing().when(service).deleteVersions(PATH, FILE_NAME, List.of(VERSION_1, VERSION_2), CREATOR_ID);
 
         performDeleteWith(colleague(COLLEAGUE_UUID_STR), status().isOk(), DELETE_BY_VERSIONS_URL);
     }
 
     @Test
-    void deleteFileByVersionsUnsuccessIfFileIsNotFound() throws Exception {
+    void deleteFileByVersionsUnsuccessIfFileIsNotFound() throws Exception { //NOSONAR used MockMvc checks
         doThrow(NotFoundException.class).when(service).deleteVersions(PATH, FILE_NAME, List.of(VERSION_1, VERSION_2), null);
 
         performDeleteWith(roles(List.of(COLLEAGUE, ADMIN)), status().isNotFound(), DELETE_BY_VERSIONS_URL);
