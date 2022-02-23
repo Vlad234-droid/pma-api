@@ -220,8 +220,11 @@ tesco:
       cep:
         subject: ${CEP_SUBJECT}
         publish:
-          url: ${TESCO_API_BASE_URL}/colleague/v1/events
+          url: ${TESCO_API_BASE_URL}/colleague/v2/events
         retry-timeout: 30
+        subscribe:
+          feeds:
+            capi: capi-colleague-facts-v2
       colleague-api:
         base-url: ${TESCO_API_BASE_URL}/colleague/v2/colleagues
       events-api:
@@ -274,7 +277,7 @@ tesco:
       form:
         key: pdp/forms/standard_pdp.form
     colleague-changes:
-      force: ${CFAPI_FORCE:true}
+      force: ${CFAPI_FORCE:false}
 
 camunda:
   bpm:
