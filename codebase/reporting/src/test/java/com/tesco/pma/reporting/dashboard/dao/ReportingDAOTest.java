@@ -4,6 +4,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
+import com.tesco.pma.reporting.dashboard.domain.ColleagueReportTargeting;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -85,34 +86,9 @@ class ReportingDAOTest extends AbstractDAOTest {
 
         assertEquals(1, result.size());
         final var data = result.get(0);
-        var tags = data.getTags();
-        assertFalse(tags.isEmpty());
+        assertFalse(data.getTags().isEmpty());
 
-        assertAll("colleagueTargeting",
-                () -> assertEquals(COLLEAGUE_UUID, data.getUuid().toString()),
-                () -> assertEquals("first_name", data.getFirstName()),
-                () -> assertEquals("last_name", data.getLastName()),
-                () -> assertNull(data.getMiddleName()),
-                () -> assertNull(data.getLineManager()),
-                () -> assertEquals("Team lead2", data.getJobName()),
-                () -> assertEquals("Bank", data.getBusinessType()),
-
-                () -> assertEquals("1", tags.get(HAS_OBJECTIVE_APPROVED)),
-                () -> assertEquals("0", tags.get(HAS_OBJECTIVE_SUBMITTED)),
-                () -> assertEquals("1", tags.get(HAS_MYR_APPROVED)),
-                () -> assertEquals("0", tags.get(HAS_EYR_APPROVED)),
-                () -> assertEquals("0", tags.get(MYR_HOW_RATING)),
-                () -> assertEquals("0", tags.get(MYR_WHAT_RATING)),
-                () -> assertEquals("0", tags.get(EYR_HOW_RATING)),
-                () -> assertEquals("0", tags.get(EYR_WHAT_RATING)),
-                () -> assertEquals("0", tags.get(HAS_MYR_SUBMITTED)),
-                () -> assertEquals("0", tags.get(HAS_EYR_SUBMITTED)),
-                () -> assertEquals("0", tags.get(MUST_CREATE_EYR)),
-                () -> assertEquals("1", tags.get(MUST_CREATE_OBJECTIVE)),
-                () -> assertEquals("1", tags.get(MUST_CREATE_MYR)),
-                () -> assertEquals("0", tags.get(IS_NEW_TO_BUSINESS)),
-                () -> assertEquals("1", tags.get(HAS_FEEDBACK_REQUESTED)),
-                () -> assertEquals("1", tags.get(HAS_FEEDBACK_GIVEN)));
+        assertColleagueTargeting(data);
     }
 
     @Test
@@ -165,5 +141,34 @@ class ReportingDAOTest extends AbstractDAOTest {
         final var result = instance.getColleagueTargetingAnniversary(requestQuery);
 
         assertTrue(result.isEmpty());
+    }
+
+    private void assertColleagueTargeting(ColleagueReportTargeting data) {
+        var tags = data.getTags();
+        assertAll("colleagueTargeting",
+                () -> assertEquals(COLLEAGUE_UUID, data.getUuid().toString()),
+                () -> assertEquals("first_name", data.getFirstName()),
+                () -> assertEquals("last_name", data.getLastName()),
+                () -> assertNull(data.getMiddleName()),
+                () -> assertNull(data.getLineManager()),
+                () -> assertEquals("Team lead2", data.getJobName()),
+                () -> assertEquals("Bank", data.getBusinessType()),
+
+                () -> assertEquals("1", tags.get(HAS_OBJECTIVE_APPROVED)),
+                () -> assertEquals("0", tags.get(HAS_OBJECTIVE_SUBMITTED)),
+                () -> assertEquals("1", tags.get(HAS_MYR_APPROVED)),
+                () -> assertEquals("0", tags.get(HAS_EYR_APPROVED)),
+                () -> assertEquals("0", tags.get(MYR_HOW_RATING)),
+                () -> assertEquals("0", tags.get(MYR_WHAT_RATING)),
+                () -> assertEquals("0", tags.get(EYR_HOW_RATING)),
+                () -> assertEquals("0", tags.get(EYR_WHAT_RATING)),
+                () -> assertEquals("0", tags.get(HAS_MYR_SUBMITTED)),
+                () -> assertEquals("0", tags.get(HAS_EYR_SUBMITTED)),
+                () -> assertEquals("0", tags.get(MUST_CREATE_EYR)),
+                () -> assertEquals("1", tags.get(MUST_CREATE_OBJECTIVE)),
+                () -> assertEquals("1", tags.get(MUST_CREATE_MYR)),
+                () -> assertEquals("0", tags.get(IS_NEW_TO_BUSINESS)),
+                () -> assertEquals("1", tags.get(HAS_FEEDBACK_REQUESTED)),
+                () -> assertEquals("1", tags.get(HAS_FEEDBACK_GIVEN)));
     }
 }

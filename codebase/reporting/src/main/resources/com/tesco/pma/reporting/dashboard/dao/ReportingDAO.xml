@@ -151,7 +151,7 @@
           and pcc.start_time between make_date(<include refid="getYear"/>, 3, 1) and (make_date(<include refid="getYear"/> + 1, 3, 1) - interval '1 day')::date
           <if test="!requestQuery.filters.isEmpty()">
               <foreach collection="requestQuery.filters" item="filter" index="index">
-                  <if test="filter.property != 'year'">
+                  <if test="filter.property != 'year' and filter.property != 'topics'">
                       <include refid="getExpression"/>
                   </if>
               </foreach>
@@ -192,7 +192,7 @@
               and pc.type_id = 2
               <if test="!requestQuery.filters.isEmpty()">
                   <foreach collection="requestQuery.filters" item="filter" index="index">
-                      <if test="filter.property != 'year'">
+                      <if test="filter.property != 'year' and filter.property != 'topics'">
                           <include refid="getExpression"/>
                       </if>
                   </foreach>
