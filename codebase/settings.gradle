@@ -19,7 +19,7 @@ include 'application'
 
 include 'profile'
 include 'review'
-include 'cep-v2'
+include 'cep'
 include 'feedback'
 include 'security'
 include 'notes'
