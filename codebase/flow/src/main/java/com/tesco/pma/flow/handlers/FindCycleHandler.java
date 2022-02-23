@@ -40,7 +40,7 @@ public class FindCycleHandler extends CamundaAbstractFlowHandler {
         var statuses = getStatuses(context);
         var requestQuery = buildRequestQuery(configKey, statuses);
 
-        var pmCycles = pmCycleService.getAll(requestQuery, false);
+        var pmCycles = pmCycleService.findAll(requestQuery, false);
         if (pmCycles.size() == 1) {
             context.setVariable(FlowParameters.PM_CYCLE, pmCycles.get(0));
         } else {

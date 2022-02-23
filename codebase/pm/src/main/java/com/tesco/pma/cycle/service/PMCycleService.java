@@ -98,7 +98,7 @@ public interface PMCycleService {
      */
     List<PMCycle> getByColleague(@NotNull UUID colleagueUuid);
 
-    List<PMCycle> getAll(RequestQuery requestQuery, boolean includeMetadata);
+    List<PMCycle> findAll(RequestQuery requestQuery, boolean includeMetadata);
 
     /**
      * Get PMCycleMetadata by file UUID

@@ -212,7 +212,7 @@
         <include refid="addStatusIdCondition"/>
     </update>
 
-    <select id="getAll" resultMap="cycleResultMap">
+    <select id="findAll" resultMap="cycleResultMap">
         SELECT uuid,
         entry_config_key,
         template_uuid,
