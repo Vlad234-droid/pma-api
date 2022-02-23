@@ -429,7 +429,7 @@ public class ReviewServiceImpl implements ReviewService {
     private void deleteReview(TimelinePoint timelinePoint, Integer number) {
         var minReviews = getVariable(timelinePoint, PM_REVIEW_MIN, 1);
         var reviewCount = reviewDAO.getReviewStats(timelinePoint.getUuid()).getCountAll();
-        if (reviewCount == minReviews) {
+        if (minReviews.equals(reviewCount)) {
             throw deleteReviewException(CANNOT_DELETE_REVIEW_COUNT_CONSTRAINT,
                     Map.of(MIN_PARAMETER_NAME, minReviews));
         }

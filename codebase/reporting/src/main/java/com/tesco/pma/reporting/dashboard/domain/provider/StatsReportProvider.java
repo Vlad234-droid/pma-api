@@ -213,7 +213,7 @@ public class StatsReportProvider implements Reportable {
     @Override
     public List<List<Object>> getReportData() {
         return data.stream()
-                .map(c -> c.toList())
+                .map(StatsData::toList)
                 .collect(Collectors.toList());
     }
 

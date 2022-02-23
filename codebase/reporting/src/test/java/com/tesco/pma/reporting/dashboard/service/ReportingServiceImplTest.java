@@ -2,6 +2,7 @@ package com.tesco.pma.reporting.dashboard.service;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.reporting.Report;
 import com.tesco.pma.reporting.dashboard.domain.ColleagueReportTargeting;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.tesco.pma.pagination.Condition.Operand.IN;
 import static com.tesco.pma.reporting.ReportingConstants.EYR_OVERALL_RATING;
 import static com.tesco.pma.reporting.ReportingConstants.HAS_FEEDBACK_GIVEN;
 import static com.tesco.pma.reporting.ReportingConstants.HAS_FEEDBACK_REQUESTED;
@@ -52,10 +54,11 @@ import static com.tesco.pma.reporting.ReportingConstants.MUST_CREATE_OBJECTIVE;
 import static com.tesco.pma.reporting.ReportingConstants.MYR_HOW_RATING;
 import static com.tesco.pma.reporting.ReportingConstants.MYR_WHAT_RATING;
 
-import static com.tesco.pma.reporting.ReportingConstants.QUERY_PARAMS;
+import static com.tesco.pma.reporting.util.ExcelReportUtils.TOPICS_PARAM_NAME;
 import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
@@ -67,8 +70,7 @@ class ReportingServiceImplTest {
     private static final String COLLEAGUE_UUID_2 = "20000000-0000-0000-0000-000000000000";
     private static final String LINE_MANAGER_UUID = "10000000-0000-0000-0000-000000000002";
 
-    private static final String REPORT_NOT_FOUND_MESSAGE = "Report not found for: {" +
-            QUERY_PARAMS + "=RequestQuery(offset=null, limit=null, sort=[], filters=[], search=null)}";
+    private static final String REPORT_NOT_FOUND_MESSAGE = "Report not found for: {queryParams=%s}";
 
     @Autowired
     private NamedMessageSourceAccessor messageSourceAccessor;
@@ -110,12 +112,13 @@ class ReportingServiceImplTest {
                 () -> reportingService.getReportColleagues(requestQuery));
 
         assertEquals(REPORT_NOT_FOUND.getCode(), exception.getCode());
-        assertEquals(REPORT_NOT_FOUND_MESSAGE, exception.getMessage());
+        assertEquals(getReportNotFoundMessage(requestQuery), exception.getMessage());
     }
 
     @Test
     void getStatsReport() {
         final var requestQuery = new RequestQuery();
+        requestQuery.setFilters(List.of(new Condition(TOPICS_PARAM_NAME, IN, List.of("colleagues-count", "new-to-business-count"))));
         final var colleagues = buildColleagueTargeting();
         when(reportingDAO.getColleagueTargeting(requestQuery)).thenReturn(colleagues);
         when(reportingDAO.getColleagueTargetingAnniversary(requestQuery)).thenReturn(buildColleagueTargetingAnniversary());
@@ -132,13 +135,30 @@ class ReportingServiceImplTest {
     @Test
     void getStatsReportNotExists() {
         final var requestQuery = new RequestQuery();
+        requestQuery.setFilters(List.of(new Condition(TOPICS_PARAM_NAME, IN, List.of("colleagues-count", "new-to-business-count"))));
         when(reportingDAO.getColleagueTargeting(requestQuery)).thenReturn(null);
 
         final var exception = assertThrows(NotFoundException.class,
                 () -> reportingService.getStatsReport(requestQuery));
 
         assertEquals(REPORT_NOT_FOUND.getCode(), exception.getCode());
-        assertEquals(REPORT_NOT_FOUND_MESSAGE, exception.getMessage());
+        assertEquals(getReportNotFoundMessage(requestQuery), exception.getMessage());
+    }
+
+    @Test
+    void getStatsReportNotTopics() {
+        final var requestQuery = new RequestQuery();
+
+        final var exception = assertThrows(NotFoundException.class,
+                () -> reportingService.getStatsReport(requestQuery));
+
+        assertEquals(REPORT_NOT_FOUND.getCode(), exception.getCode());
+        assertEquals(getReportNotFoundMessage(requestQuery), exception.getMessage());
+        verifyNoInteractions(reportingDAO);
+    }
+
+    private String getReportNotFoundMessage(RequestQuery requestQuery) {
+        return String.format(REPORT_NOT_FOUND_MESSAGE, requestQuery);
     }
 
     private Report getReport(int colleaguesCount) {
