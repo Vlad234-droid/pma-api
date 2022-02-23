@@ -43,8 +43,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 public class PMCycleEndpoint {
 
-    private static final String CYCLE_UUID_PARAMETER_NAME = "cycleUuid";
-    private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     public static final String INCLUDE_METADATA = "includeMetadata";
     public static final String INCLUDE_FORMS = "includeForms";
 
@@ -246,23 +244,22 @@ public class PMCycleEndpoint {
             tags = {"performance-cycle"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle form updated")
     @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
-    @PutMapping(value = "/pm-cycles/{cycleUuid}/forms", produces = APPLICATION_JSON_VALUE,
+    @PutMapping(value = "/pm-cycles/{uuid}/forms", produces = APPLICATION_JSON_VALUE,
             consumes = APPLICATION_JSON_VALUE)
-    public RestResponse<PMCycle> updateForm(@PathVariable("cycleUuid") final UUID cycleUuid,
+    public RestResponse<PMCycle> updateForm(@PathVariable("uuid") final UUID cycleUuid,
                                             @RequestBody PMCycleUpdateFormRequest updateFormRequest) {
 
         return success(service.updateForm(cycleUuid, updateFormRequest));
     }
 
-    @Operation(summary = "Update form to latest version",
-            description = "Update form to latest version",
+    @Operation(summary = "Update form to the latest version",
+            description = "Update form to the latest version",
             tags = {"performance-cycle"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Form updated to the latest version")
     @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
-    @PutMapping(value = "/pm-cycles/{cycleUuid}/forms/latest", produces = APPLICATION_JSON_VALUE,
-            consumes = APPLICATION_JSON_VALUE)
-    public RestResponse<PMCycle> updateFormLatestVersion(@PathVariable("cycleUuid") final UUID cycleUuid,
-                                                         @RequestParam(value = "formKey") String formKey) {
+    @PutMapping(value = "/pm-cycles/{uuid}/forms/latest", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<PMCycle> updateFormLatestVersion(@PathVariable("uuid") final UUID cycleUuid,
+                                                         @RequestParam(value = "form-key") String formKey) {
 
         return success(service.updateFormToLatestVersion(cycleUuid, formKey));
     }
