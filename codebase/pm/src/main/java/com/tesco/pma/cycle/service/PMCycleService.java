@@ -5,6 +5,7 @@ import com.tesco.pma.cycle.api.CompositePMCycleMetadataResponse;
 import com.tesco.pma.cycle.api.CompositePMCycleResponse;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
+import com.tesco.pma.cycle.api.request.PMCycleUpdateFormRequest;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.pagination.RequestQuery;
@@ -123,5 +124,9 @@ public interface PMCycleService {
     void start(UUID uuid);
 
     void completeCycle(UUID cycleUUID);
+
+    PMCycle updateForm(UUID cycleUuid, PMCycleUpdateFormRequest updateFormRequest);
+
+    PMCycle updateFormToLatestVersion(UUID cycleUuid, String formKey);
 }
 

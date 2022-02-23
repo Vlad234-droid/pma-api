@@ -1,20 +1,26 @@
 package com.tesco.pma.service.colleague.client;
 
+import com.tesco.pma.TestConfig;
 import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.api.Contact;
 import com.tesco.pma.colleague.api.FindColleaguesRequest;
 import com.tesco.pma.colleague.api.Profile;
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.exception.NotFoundException;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.BasicJsonTester;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
@@ -23,11 +29,16 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static com.tesco.pma.exception.ErrorCodes.USER_NOT_FOUND;
 import static com.tesco.pma.service.colleague.client.RestTemplateBasedColleagueApiClient.EXTERNAL_SYSTEMS_IAM_ID_PARAM_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.InstanceOfAssertFactories.type;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ActiveProfiles("test")
+@SpringBootTest(classes = TestConfig.class)
 class RestTemplateBasedColleagueApiClientTest {
     private static final String COLLEAGUE_PATH = "/colleague/v2/colleagues/";
     private final BasicJsonTester jsonTester = new BasicJsonTester(RestTemplateBasedColleagueApiClientTest.class);
@@ -36,6 +47,9 @@ class RestTemplateBasedColleagueApiClientTest {
     private final String colleague2Json = jsonTester.from("colleague2.json").getJson();
     private final String colleagueMultiJson = "{\"colleagues\": [" + String.join(",", colleague1Json, colleague2Json) + "]}";
     private final UUID colleague1Uuid = UUID.fromString("f09c44ee-f879-4828-b35e-1c1585bf20f8");
+
+    @Autowired
+    private NamedMessageSourceAccessor messageSourceAccessor;
 
     @Test
     void findColleagueByColleagueUuidSucceeded() throws Exception {
@@ -47,7 +61,7 @@ class RestTemplateBasedColleagueApiClientTest {
             ));
 
             final var url = server.url(COLLEAGUE_PATH).toString();
-            final var client = new RestTemplateBasedColleagueApiClient(url, new RestTemplate());
+            final var client = new RestTemplateBasedColleagueApiClient(url, new RestTemplate(), messageSourceAccessor);
 
             final var colleague = client.findColleagueByColleagueUuid(colleague1Uuid);
 
@@ -69,7 +83,7 @@ class RestTemplateBasedColleagueApiClientTest {
                     () -> response(404, notFoundJson)
             ));
             final var url = server.url(COLLEAGUE_PATH).toString();
-            final var client = new RestTemplateBasedColleagueApiClient(url, new RestTemplate());
+            final var client = new RestTemplateBasedColleagueApiClient(url, new RestTemplate(), messageSourceAccessor);
 
             assertThatCode(() -> client.findColleagueByColleagueUuid(colleagueUuid))
                     .asInstanceOf(type(HttpClientErrorException.NotFound.class))
@@ -90,7 +104,7 @@ class RestTemplateBasedColleagueApiClientTest {
                     () -> response(400, errorJson)
             ));
             final var url = server.url(COLLEAGUE_PATH).toString();
-            final var client = new RestTemplateBasedColleagueApiClient(url, new RestTemplate());
+            final var client = new RestTemplateBasedColleagueApiClient(url, new RestTemplate(), messageSourceAccessor);
 
             assertThatCode(() -> client.findColleagues(new FindColleaguesRequest()))
                     .asInstanceOf(type(HttpClientErrorException.BadRequest.class))
@@ -109,7 +123,7 @@ class RestTemplateBasedColleagueApiClientTest {
                     () -> response(200, colleagueMultiJson)
             ));
             final var url = server.url(COLLEAGUE_PATH).toString();
-            final var client = new RestTemplateBasedColleagueApiClient(url, new RestTemplate());
+            final var client = new RestTemplateBasedColleagueApiClient(url, new RestTemplate(), messageSourceAccessor);
 
             final var colleagues = client.findColleagues(FindColleaguesRequest.builder().iamId(iamId).build());
 
@@ -125,11 +139,28 @@ class RestTemplateBasedColleagueApiClientTest {
             server.setDispatcher(dispatcher(request -> true, () -> response(200, "{\"colleagues\":[]}")));
 
             final var url = server.url(COLLEAGUE_PATH).toString();
-            final var client = new RestTemplateBasedColleagueApiClient(url, new RestTemplate());
+            final var client = new RestTemplateBasedColleagueApiClient(url, new RestTemplate(), messageSourceAccessor);
 
             final var colleagues = client.findColleagues(FindColleaguesRequest.builder().iamId(iamId).build());
 
             assertThat(colleagues).isEmpty();
+        }
+    }
+
+    @Test
+    void findColleaguesNullResult() throws Exception {
+        final var iamId = RandomStringUtils.random(10);
+        try (MockWebServer server = new MockWebServer()) {
+            server.setDispatcher(dispatcher(request -> true, () -> response(200, "")));
+
+            final var url = server.url(COLLEAGUE_PATH).toString();
+            final var client = new RestTemplateBasedColleagueApiClient(url, new RestTemplate(), messageSourceAccessor);
+            final var findColleaguesRequest = FindColleaguesRequest.builder().iamId(iamId).build();
+
+            final var exception = assertThrows(NotFoundException.class, () -> client.findColleagues(findColleaguesRequest));
+
+            assertEquals(USER_NOT_FOUND.name(), exception.getCode());
+            assertEquals(String.format("User not found for %s: %s", EXTERNAL_SYSTEMS_IAM_ID_PARAM_NAME, iamId), exception.getMessage());
         }
     }
 

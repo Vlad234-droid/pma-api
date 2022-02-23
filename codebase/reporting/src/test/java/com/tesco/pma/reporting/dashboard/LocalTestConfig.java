@@ -1,6 +1,7 @@
 package com.tesco.pma.reporting.dashboard;
 
 import com.tesco.pma.configuration.MessageSourceConfig;
+import com.tesco.pma.configuration.MvcRequestParamBeanConfiguration;
 import com.tesco.pma.error.ApiExceptionHandler;
 import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration;
@@ -21,7 +22,8 @@ import org.springframework.context.annotation.Profile;
         OAuth2ResourceServerAutoConfiguration.class,
         RestTemplateAutoConfiguration.class,
         OAuth2ClientAutoConfiguration.class,
-        ApiExceptionHandler.class
+        ApiExceptionHandler.class,
+        MvcRequestParamBeanConfiguration.class
 })
 public class LocalTestConfig {
 
