@@ -47,8 +47,8 @@
     <changeSet author="adublyanin" id="2">
         <insert tableName="cms_content">
             <column name="uuid" value="ff53e12f-0a69-4500-8e7d-bf63f993a225"/>
-            <column name="key" value="help-faq/iam-source/peopledataints/ids/your-contribution"/>
-            <column name="title" value="help-faq/iam-source/peopledataints/ids/your-contribution"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/your-contribution"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/your-contribution"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -59,8 +59,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="18e185c8-a535-48f8-8f9d-f79aae13f703"/>
-            <column name="key" value="help-faq/mastering-conversations"/>
-            <column name="title" value="help-faq/mastering-conversations"/>
+            <column name="key" value="help-faqs/mastering-conversations"/>
+            <column name="title" value="help-faqs/mastering-conversations"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -71,8 +71,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="8007de9c-943a-461a-8182-346a30198e4d"/>
-            <column name="key" value="help-faq/iam-source/peopledataints/ids/our-purpose-and-strategic-pillars"/>
-            <column name="title" value="help-faq/iam-source/peopledataints/ids/our-purpose-and-strategic-pillars"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/our-purpose-and-strategic-pillars"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/our-purpose-and-strategic-pillars"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -83,8 +83,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="ce59091e-bcdd-439b-b50a-3e83a8ca7006"/>
-            <column name="key" value="help-faq/iam-source/uk hospitality/ids/everyday-conversations"/>
-            <column name="title" value="help-faq/iam-source/uk hospitality/ids/everyday-conversations"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/everyday-conversations"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/everyday-conversations"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -95,8 +95,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="2135c799-6cf8-4033-8a14-9c70d0b461cb"/>
-            <column name="key" value="help-faq/country-code/in/ids/managing-a-team-at-tesco"/>
-            <column name="title" value="help-faq/country-code/in/ids/managing-a-team-at-tesco"/>
+            <column name="key" value="help-faqs/countries/in/ids/managing-a-team-at-tesco"/>
+            <column name="title" value="help-faqs/countries/in/ids/managing-a-team-at-tesco"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -107,8 +107,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="3c9b3df0-afac-47d8-953d-2576f20f0851"/>
-            <column name="key" value="help-faq/country-code/ie/ids/opportunities-to-get-on"/>
-            <column name="title" value="help-faq/country-code/ie/ids/opportunities-to-get-on"/>
+            <column name="key" value="help-faqs/countries/ie/ids/opportunities-to-get-on"/>
+            <column name="title" value="help-faqs/countries/ie/ids/opportunities-to-get-on"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -119,8 +119,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="a68a86ac-fcd9-4b9e-b833-e50fd7275106"/>
-            <column name="key" value="help-faq/iam-source/peopledataints/ids/our-win-together-behaviours"/>
-            <column name="title" value="help-faq/iam-source/peopledataints/ids/our-win-together-behaviours"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/our-win-together-behaviours"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/our-win-together-behaviours"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -131,8 +131,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="8988e483-5838-4bdc-b71e-b9b85d29eca8"/>
-            <column name="key" value="help-faq/iam-source/uk hospitality/ids/our-win-together-behaviours"/>
-            <column name="title" value="help-faq/iam-source/uk hospitality/ids/our-win-together-behaviours"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/our-win-together-behaviours"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/our-win-together-behaviours"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -143,8 +143,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="6bebde78-7581-4433-91fc-8c3692e940aa"/>
-            <column name="key" value="help-faq/iam-source/uk hospitality/ids/mastering-feedback"/>
-            <column name="title" value="help-faq/iam-source/uk hospitality/ids/mastering-feedback"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/mastering-feedback"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/mastering-feedback"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -155,8 +155,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="b17fc367-21a6-4255-8cc7-a19919ca8005"/>
-            <column name="key" value="help-faq/our-purpose-and-strategic-pillars"/>
-            <column name="title" value="help-faq/our-purpose-and-strategic-pillars"/>
+            <column name="key" value="help-faqs/our-purpose-and-strategic-pillars"/>
+            <column name="title" value="help-faqs/our-purpose-and-strategic-pillars"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -167,8 +167,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="bb7a4e20-4b20-452f-8567-787d8230a18b"/>
-            <column name="key" value="help-faq/country-code/ie/ids/our-win-together-behaviours"/>
-            <column name="title" value="help-faq/country-code/ie/ids/our-win-together-behaviours"/>
+            <column name="key" value="help-faqs/countries/ie/ids/our-win-together-behaviours"/>
+            <column name="title" value="help-faqs/countries/ie/ids/our-win-together-behaviours"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -179,8 +179,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="165bc0bf-d9ef-49c1-bafa-04018e98a3f4"/>
-            <column name="key" value="help-faq/country-code/ie/ids/further-learning-for-managers"/>
-            <column name="title" value="help-faq/country-code/ie/ids/further-learning-for-managers"/>
+            <column name="key" value="help-faqs/countries/ie/ids/further-learning-for-managers"/>
+            <column name="title" value="help-faqs/countries/ie/ids/further-learning-for-managers"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -191,8 +191,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="21037d9b-2b94-4737-b0f8-ece0b923a9b1"/>
-            <column name="key" value="help-faq/further-learning-for-managers"/>
-            <column name="title" value="help-faq/further-learning-for-managers"/>
+            <column name="key" value="help-faqs/further-learning-for-managers"/>
+            <column name="title" value="help-faqs/further-learning-for-managers"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -203,8 +203,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="66cde6d7-ff10-4e93-b653-4f9b5e91dbf9"/>
-            <column name="key" value="help-faq/country-code/in/ids/our-purpose-and-strategic-pillars"/>
-            <column name="title" value="help-faq/country-code/in/ids/our-purpose-and-strategic-pillars"/>
+            <column name="key" value="help-faqs/countries/in/ids/our-purpose-and-strategic-pillars"/>
+            <column name="title" value="help-faqs/countries/in/ids/our-purpose-and-strategic-pillars"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -215,8 +215,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="24346efb-bc6a-48bd-afe3-440e5d347722"/>
-            <column name="key" value="help-faq/iam-source/uk hospitality/ids/managing-a-team-at-tesco"/>
-            <column name="title" value="help-faq/iam-source/uk hospitality/ids/managing-a-team-at-tesco"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/managing-a-team-at-tesco"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/managing-a-team-at-tesco"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -227,8 +227,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="e4973c12-d1cb-4dc3-be11-f2a1149c5651"/>
-            <column name="key" value="help-faq/country-code/in/ids/creating-a-winning-performance-culture"/>
-            <column name="title" value="help-faq/country-code/in/ids/creating-a-winning-performance-culture"/>
+            <column name="key" value="help-faqs/countries/in/ids/creating-a-winning-performance-culture"/>
+            <column name="title" value="help-faqs/countries/in/ids/creating-a-winning-performance-culture"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -239,8 +239,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="20ba836b-564f-479e-a356-8e25f9beeb62"/>
-            <column name="key" value="help-faq/country-code/ie/ids/mastering-feedback"/>
-            <column name="title" value="help-faq/country-code/ie/ids/mastering-feedback"/>
+            <column name="key" value="help-faqs/countries/ie/ids/mastering-feedback"/>
+            <column name="title" value="help-faqs/countries/ie/ids/mastering-feedback"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -251,8 +251,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="c505409d-6807-45bf-83d6-7ee955f3b837"/>
-            <column name="key" value="help-faq/iam-source/peopledataints/ids/mastering-conversations"/>
-            <column name="title" value="help-faq/iam-source/peopledataints/ids/mastering-conversations"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/mastering-conversations"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/mastering-conversations"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -263,8 +263,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="fe3adc5e-8cf2-4baf-892f-d701c9399d87"/>
-            <column name="key" value="help-faq/opportunities-to-get-on"/>
-            <column name="title" value="help-faq/opportunities-to-get-on"/>
+            <column name="key" value="help-faqs/opportunities-to-get-on"/>
+            <column name="title" value="help-faqs/opportunities-to-get-on"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -275,8 +275,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="8a672159-4e90-462a-b770-826378b56c58"/>
-            <column name="key" value="help-faq/system-guidance-and-faqs"/>
-            <column name="title" value="help-faq/system-guidance-and-faqs"/>
+            <column name="key" value="help-faqs/system-guidance-and-faqs"/>
+            <column name="title" value="help-faqs/system-guidance-and-faqs"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -287,8 +287,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="baf03281-6acf-4d01-a059-6b9a8db3ec7e"/>
-            <column name="key" value="help-faq/iam-source/peopledataints/ids/further-learning-for-managers"/>
-            <column name="title" value="help-faq/iam-source/peopledataints/ids/further-learning-for-managers"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/further-learning-for-managers"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/further-learning-for-managers"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -299,8 +299,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="66ad38aa-4632-494b-86c4-c60c0c5c3579"/>
-            <column name="key" value="help-faq/country-code/in/ids/everyones-welcome"/>
-            <column name="title" value="help-faq/country-code/in/ids/everyones-welcome"/>
+            <column name="key" value="help-faqs/countries/in/ids/everyones-welcome"/>
+            <column name="title" value="help-faqs/countries/in/ids/everyones-welcome"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -311,8 +311,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="bd3afc6d-a3c7-4123-b656-dc28c1b3f73f"/>
-            <column name="key" value="help-faq/country-code/in/ids/system-guidance-and-faqs"/>
-            <column name="title" value="help-faq/country-code/in/ids/system-guidance-and-faqs"/>
+            <column name="key" value="help-faqs/countries/in/ids/system-guidance-and-faqs"/>
+            <column name="title" value="help-faqs/countries/in/ids/system-guidance-and-faqs"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -323,8 +323,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="22207e23-4126-4d2c-b80f-8ebad968cb6d"/>
-            <column name="key" value="help-faq/country-code/ie/ids/managing-a-team-at-tesco"/>
-            <column name="title" value="help-faq/country-code/ie/ids/managing-a-team-at-tesco"/>
+            <column name="key" value="help-faqs/countries/ie/ids/managing-a-team-at-tesco"/>
+            <column name="title" value="help-faqs/countries/ie/ids/managing-a-team-at-tesco"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -335,8 +335,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="991ee08d-1331-43d9-a26d-bb2fc03daa37"/>
-            <column name="key" value="help-faq/country-code/ie/ids/mastering-conversations"/>
-            <column name="title" value="help-faq/country-code/ie/ids/mastering-conversations"/>
+            <column name="key" value="help-faqs/countries/ie/ids/mastering-conversations"/>
+            <column name="title" value="help-faqs/countries/ie/ids/mastering-conversations"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -347,8 +347,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="e4ef6c4e-b7a6-4936-b53a-37830361c797"/>
-            <column name="key" value="help-faq/country-code/in/ids/managing-underperformance"/>
-            <column name="title" value="help-faq/country-code/in/ids/managing-underperformance"/>
+            <column name="key" value="help-faqs/countries/in/ids/managing-underperformance"/>
+            <column name="title" value="help-faqs/countries/in/ids/managing-underperformance"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -359,8 +359,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="0920433c-49df-420f-995e-8d200ab99191"/>
-            <column name="key" value="help-faq/country-code/in/ids/everyday-conversations"/>
-            <column name="title" value="help-faq/country-code/in/ids/everyday-conversations"/>
+            <column name="key" value="help-faqs/countries/in/ids/everyday-conversations"/>
+            <column name="title" value="help-faqs/countries/in/ids/everyday-conversations"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -371,8 +371,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="b375dc2c-d05f-4c95-8279-90022a66a94c"/>
-            <column name="key" value="help-faq/country-code/ie/ids/everyones-welcome"/>
-            <column name="title" value="help-faq/country-code/ie/ids/everyones-welcome"/>
+            <column name="key" value="help-faqs/countries/ie/ids/everyones-welcome"/>
+            <column name="title" value="help-faqs/countries/ie/ids/everyones-welcome"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -383,8 +383,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="603da24e-004a-4f45-810a-d26e723a17a3"/>
-            <column name="key" value="help-faq/iam-source/peopledataints/ids/creating-a-winning-performance-culture"/>
-            <column name="title" value="help-faq/iam-source/peopledataints/ids/creating-a-winning-performance-culture"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/creating-a-winning-performance-culture"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/creating-a-winning-performance-culture"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -395,8 +395,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="6774b9e2-6119-4570-9906-0c2b1e98b220"/>
-            <column name="key" value="help-faq/iam-source/peopledataints/ids/being-an-inclusive-manager"/>
-            <column name="title" value="help-faq/iam-source/peopledataints/ids/being-an-inclusive-manager"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/being-an-inclusive-manager"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/being-an-inclusive-manager"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -407,8 +407,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="f924d448-db9c-4a7f-94a6-40f5af4c1651"/>
-            <column name="key" value="help-faq/iam-source/uk hospitality/ids/managing-underperformance"/>
-            <column name="title" value="help-faq/iam-source/uk hospitality/ids/managing-underperformance"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/managing-underperformance"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/managing-underperformance"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -419,8 +419,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="ba52fd87-c51f-4f36-a17e-5288a5a02cbc"/>
-            <column name="key" value="help-faq/country-code/in/ids/being-an-inclusive-manager"/>
-            <column name="title" value="help-faq/country-code/in/ids/being-an-inclusive-manager"/>
+            <column name="key" value="help-faqs/countries/in/ids/being-an-inclusive-manager"/>
+            <column name="title" value="help-faqs/countries/in/ids/being-an-inclusive-manager"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -431,8 +431,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="1a0aff98-f4ee-491f-888c-10d326996bb6"/>
-            <column name="key" value="help-faq/performance-reviews"/>
-            <column name="title" value="help-faq/performance-reviews"/>
+            <column name="key" value="help-faqs/performance-reviews"/>
+            <column name="title" value="help-faqs/performance-reviews"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -443,8 +443,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="c2fbc67a-b227-499e-931c-2a169c8cfbf7"/>
-            <column name="key" value="help-faq/everyones-welcome"/>
-            <column name="title" value="help-faq/everyones-welcome"/>
+            <column name="key" value="help-faqs/everyones-welcome"/>
+            <column name="title" value="help-faqs/everyones-welcome"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -455,8 +455,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="213ef7ac-ed01-42bd-9370-184cf79cb070"/>
-            <column name="key" value="help-faq/managing-a-team-at-tesco"/>
-            <column name="title" value="help-faq/managing-a-team-at-tesco"/>
+            <column name="key" value="help-faqs/managing-a-team-at-tesco"/>
+            <column name="title" value="help-faqs/managing-a-team-at-tesco"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -467,8 +467,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="41a09456-e00f-487e-9370-0e3ca63db563"/>
-            <column name="key" value="help-faq/country-code/ie/ids/everyday-conversations"/>
-            <column name="title" value="help-faq/country-code/ie/ids/everyday-conversations"/>
+            <column name="key" value="help-faqs/countries/ie/ids/everyday-conversations"/>
+            <column name="title" value="help-faqs/countries/ie/ids/everyday-conversations"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -479,8 +479,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="cecfc5ae-3463-4419-b2af-14d33eb0c585"/>
-            <column name="key" value="help-faq/creating-a-winning-performance-culture"/>
-            <column name="title" value="help-faq/creating-a-winning-performance-culture"/>
+            <column name="key" value="help-faqs/creating-a-winning-performance-culture"/>
+            <column name="title" value="help-faqs/creating-a-winning-performance-culture"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -491,8 +491,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="2d3287e8-2b5f-42bd-80b8-c2127a592cba"/>
-            <column name="key" value="help-faq/iam-source/uk hospitality/ids/creating-a-winning-performance-culture"/>
-            <column name="title" value="help-faq/iam-source/uk hospitality/ids/creating-a-winning-performance-culture"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/creating-a-winning-performance-culture"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/creating-a-winning-performance-culture"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -503,8 +503,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="b3fd1807-44b0-4564-a583-33beac702175"/>
-            <column name="key" value="help-faq/your-contribution"/>
-            <column name="title" value="help-faq/your-contribution"/>
+            <column name="key" value="help-faqs/your-contribution"/>
+            <column name="title" value="help-faqs/your-contribution"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -515,8 +515,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="894f01a7-b232-4929-91e0-a93241914a5e"/>
-            <column name="key" value="help-faq/iam-source/peopledataints/ids/opportunities-to-get-on"/>
-            <column name="title" value="help-faq/iam-source/peopledataints/ids/opportunities-to-get-on"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/opportunities-to-get-on"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/opportunities-to-get-on"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -527,8 +527,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="ad1846ba-6181-4230-a479-75cb642774c0"/>
-            <column name="key" value="help-faq/country-code/ie/ids/performance-reviews"/>
-            <column name="title" value="help-faq/country-code/ie/ids/performance-reviews"/>
+            <column name="key" value="help-faqs/countries/ie/ids/performance-reviews"/>
+            <column name="title" value="help-faqs/countries/ie/ids/performance-reviews"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -539,8 +539,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="158ec6b7-2a2e-498e-9ca1-bc4c15616d84"/>
-            <column name="key" value="help-faq/country-code/ie/ids/being-an-inclusive-manager"/>
-            <column name="title" value="help-faq/country-code/ie/ids/being-an-inclusive-manager"/>
+            <column name="key" value="help-faqs/countries/ie/ids/being-an-inclusive-manager"/>
+            <column name="title" value="help-faqs/countries/ie/ids/being-an-inclusive-manager"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -551,8 +551,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="e0423600-e43a-49b2-a610-4f8d5b21b881"/>
-            <column name="key" value="help-faq/country-code/in/ids/further-learning-for-managers"/>
-            <column name="title" value="help-faq/country-code/in/ids/further-learning-for-managers"/>
+            <column name="key" value="help-faqs/countries/in/ids/further-learning-for-managers"/>
+            <column name="title" value="help-faqs/countries/in/ids/further-learning-for-managers"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -563,8 +563,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="3770921d-e079-4d14-8611-e5bbdfcafdb0"/>
-            <column name="key" value="help-faq/iam-source/uk hospitality/ids/strategic-objectives"/>
-            <column name="title" value="help-faq/iam-source/uk hospitality/ids/strategic-objectives"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/strategic-objectives"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/strategic-objectives"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -575,8 +575,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="dba26dce-ea1c-467c-8ac6-4210e5aee4c4"/>
-            <column name="key" value="help-faq/iam-source/peopledataints/ids/everyones-welcome"/>
-            <column name="title" value="help-faq/iam-source/peopledataints/ids/everyones-welcome"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/everyones-welcome"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/everyones-welcome"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -587,8 +587,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="03d86c10-074e-438d-b6ca-285ea272b063"/>
-            <column name="key" value="help-faq/iam-source/uk hospitality/ids/opportunities-to-get-on"/>
-            <column name="title" value="help-faq/iam-source/uk hospitality/ids/opportunities-to-get-on"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/opportunities-to-get-on"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/opportunities-to-get-on"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -599,8 +599,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="91145e1e-fbae-4b37-b3dc-2a2b5b2fc843"/>
-            <column name="key" value="help-faq/country-code/in/ids/opportunities-to-get-on"/>
-            <column name="title" value="help-faq/country-code/in/ids/opportunities-to-get-on"/>
+            <column name="key" value="help-faqs/countries/in/ids/opportunities-to-get-on"/>
+            <column name="title" value="help-faqs/countries/in/ids/opportunities-to-get-on"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -611,8 +611,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="37b76f60-e2b8-4c26-9367-b8486a2dce34"/>
-            <column name="key" value="help-faq/iam-source/peopledataints/ids/mastering-feedback"/>
-            <column name="title" value="help-faq/iam-source/peopledataints/ids/mastering-feedback"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/mastering-feedback"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/mastering-feedback"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -623,8 +623,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="2914475f-8f1d-4976-a68a-6cc52bafe90c"/>
-            <column name="key" value="help-faq/country-code/in/ids/performance-reviews"/>
-            <column name="title" value="help-faq/country-code/in/ids/performance-reviews"/>
+            <column name="key" value="help-faqs/countries/in/ids/performance-reviews"/>
+            <column name="title" value="help-faqs/countries/in/ids/performance-reviews"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -635,8 +635,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="21c25f89-d66d-43bf-94df-2338ffa580d5"/>
-            <column name="key" value="help-faq/country-code/ie/ids/your-contribution"/>
-            <column name="title" value="help-faq/country-code/ie/ids/your-contribution"/>
+            <column name="key" value="help-faqs/countries/ie/ids/your-contribution"/>
+            <column name="title" value="help-faqs/countries/ie/ids/your-contribution"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -647,8 +647,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="1f2947dd-5fef-4075-9ed4-448aea4362f7"/>
-            <column name="key" value="help-faq/iam-source/peopledataints/ids/managing-a-team-at-tesco"/>
-            <column name="title" value="help-faq/iam-source/peopledataints/ids/managing-a-team-at-tesco"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/managing-a-team-at-tesco"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/managing-a-team-at-tesco"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -659,8 +659,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="21686ef4-6826-4e9a-b1c7-19486e5edc20"/>
-            <column name="key" value="help-faq/country-code/ie/ids/managing-underperformance"/>
-            <column name="title" value="help-faq/country-code/ie/ids/managing-underperformance"/>
+            <column name="key" value="help-faqs/countries/ie/ids/managing-underperformance"/>
+            <column name="title" value="help-faqs/countries/ie/ids/managing-underperformance"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -671,8 +671,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="d4ab4dbd-074a-456e-9ab6-122e0c48f983"/>
-            <column name="key" value="help-faq/iam-source/peopledataints/ids/performance-reviews"/>
-            <column name="title" value="help-faq/iam-source/peopledataints/ids/performance-reviews"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/performance-reviews"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/performance-reviews"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -683,8 +683,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="57efa1e5-2961-4153-a83a-a052f84d8258"/>
-            <column name="key" value="help-faq/iam-source/uk hospitality/ids/our-purpose-and-strategic-pillars"/>
-            <column name="title" value="help-faq/iam-source/uk hospitality/ids/our-purpose-and-strategic-pillars"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/our-purpose-and-strategic-pillars"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/our-purpose-and-strategic-pillars"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -695,8 +695,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="1d024c04-6659-44d0-98e5-e0c570f176b9"/>
-            <column name="key" value="help-faq/country-code/in/ids/your-contribution"/>
-            <column name="title" value="help-faq/country-code/in/ids/your-contribution"/>
+            <column name="key" value="help-faqs/countries/in/ids/your-contribution"/>
+            <column name="title" value="help-faqs/countries/in/ids/your-contribution"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -707,8 +707,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="5814dc2a-28be-4fbd-b1b8-9e7fe4b183e2"/>
-            <column name="key" value="help-faq/iam-source/uk hospitality/ids/feedback-at-tesco"/>
-            <column name="title" value="help-faq/iam-source/uk hospitality/ids/feedback-at-tesco"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/feedback-at-tesco"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/feedback-at-tesco"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -719,8 +719,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="f28b9d70-9f46-4d89-8b57-4560d7960c56"/>
-            <column name="key" value="help-faq/strategic-objectives"/>
-            <column name="title" value="help-faq/strategic-objectives"/>
+            <column name="key" value="help-faqs/strategic-objectives"/>
+            <column name="title" value="help-faqs/strategic-objectives"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -731,8 +731,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="687b5acf-91ba-4054-8a4a-4cc699fa9b8a"/>
-            <column name="key" value="help-faq/country-code/in/ids/feedback-at-tesco"/>
-            <column name="title" value="help-faq/country-code/in/ids/feedback-at-tesco"/>
+            <column name="key" value="help-faqs/countries/in/ids/feedback-at-tesco"/>
+            <column name="title" value="help-faqs/countries/in/ids/feedback-at-tesco"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -743,8 +743,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="44d033b3-45c4-438c-8467-0a42dc4b8bfb"/>
-            <column name="key" value="help-faq/country-code/ie/ids/our-purpose-and-strategic-pillars"/>
-            <column name="title" value="help-faq/country-code/ie/ids/our-purpose-and-strategic-pillars"/>
+            <column name="key" value="help-faqs/countries/ie/ids/our-purpose-and-strategic-pillars"/>
+            <column name="title" value="help-faqs/countries/ie/ids/our-purpose-and-strategic-pillars"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -755,8 +755,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="60509e6b-51df-4757-bddd-1e7054b00ac8"/>
-            <column name="key" value="help-faq/iam-source/peopledataints/ids/strategic-objectives"/>
-            <column name="title" value="help-faq/iam-source/peopledataints/ids/strategic-objectives"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/strategic-objectives"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/strategic-objectives"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -767,8 +767,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="1512f372-dfcd-4473-9363-d004121970b7"/>
-            <column name="key" value="help-faq/country-code/in/ids/strategic-objectives"/>
-            <column name="title" value="help-faq/country-code/in/ids/strategic-objectives"/>
+            <column name="key" value="help-faqs/countries/in/ids/strategic-objectives"/>
+            <column name="title" value="help-faqs/countries/in/ids/strategic-objectives"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -779,8 +779,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="87c58fdc-08ab-4401-8b85-a143ea3f9709"/>
-            <column name="key" value="help-faq/iam-source/uk hospitality/ids/mastering-conversations"/>
-            <column name="title" value="help-faq/iam-source/uk hospitality/ids/mastering-conversations"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/mastering-conversations"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/mastering-conversations"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -791,8 +791,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="0599aa58-dc94-4db8-a859-788dada8840a"/>
-            <column name="key" value="help-faq/country-code/ie/ids/strategic-objectives"/>
-            <column name="title" value="help-faq/country-code/ie/ids/strategic-objectives"/>
+            <column name="key" value="help-faqs/countries/ie/ids/strategic-objectives"/>
+            <column name="title" value="help-faqs/countries/ie/ids/strategic-objectives"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -803,8 +803,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="967aa40b-f814-49b1-9d68-e9a0e5235e3b"/>
-            <column name="key" value="help-faq/managing-underperformance"/>
-            <column name="title" value="help-faq/managing-underperformance"/>
+            <column name="key" value="help-faqs/managing-underperformance"/>
+            <column name="title" value="help-faqs/managing-underperformance"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -815,8 +815,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="d9f21f24-7989-4b16-a663-3102e09deefc"/>
-            <column name="key" value="help-faq/iam-source/uk hospitality/ids/your-contribution"/>
-            <column name="title" value="help-faq/iam-source/uk hospitality/ids/your-contribution"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/your-contribution"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/your-contribution"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -827,8 +827,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="20c5f4e3-0fda-4bbb-a54f-58427f079896"/>
-            <column name="key" value="help-faq/everyday-conversations"/>
-            <column name="title" value="help-faq/everyday-conversations"/>
+            <column name="key" value="help-faqs/everyday-conversations"/>
+            <column name="title" value="help-faqs/everyday-conversations"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -839,8 +839,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="01eba837-b5bf-472e-ad63-42be6643567c"/>
-            <column name="key" value="help-faq/iam-source/uk hospitality/ids/performance-reviews"/>
-            <column name="title" value="help-faq/iam-source/uk hospitality/ids/performance-reviews"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/performance-reviews"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/performance-reviews"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -851,8 +851,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="881459e9-b8d7-4126-96d7-9764717d77ee"/>
-            <column name="key" value="help-faq/iam-source/uk hospitality/ids/further-learning-for-managers"/>
-            <column name="title" value="help-faq/iam-source/uk hospitality/ids/further-learning-for-managers"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/further-learning-for-managers"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/further-learning-for-managers"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -863,8 +863,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="e2cc4718-210e-4eb8-b942-adfa028006d1"/>
-            <column name="key" value="help-faq/country-code/ie/ids/system-guidance-and-faqs"/>
-            <column name="title" value="help-faq/country-code/ie/ids/system-guidance-and-faqs"/>
+            <column name="key" value="help-faqs/countries/ie/ids/system-guidance-and-faqs"/>
+            <column name="title" value="help-faqs/countries/ie/ids/system-guidance-and-faqs"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -875,8 +875,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="3872489f-9394-49f3-b8ba-3a16aa5c8c10"/>
-            <column name="key" value="help-faq/iam-source/peopledataints/ids/feedback-at-tesco"/>
-            <column name="title" value="help-faq/iam-source/peopledataints/ids/feedback-at-tesco"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/feedback-at-tesco"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/feedback-at-tesco"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -887,8 +887,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="19c6f87a-d30b-4e68-aa0e-e656a4d10fa7"/>
-            <column name="key" value="help-faq/country-code/in/ids/mastering-conversations"/>
-            <column name="title" value="help-faq/country-code/in/ids/mastering-conversations"/>
+            <column name="key" value="help-faqs/countries/in/ids/mastering-conversations"/>
+            <column name="title" value="help-faqs/countries/in/ids/mastering-conversations"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -899,8 +899,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="bc541c95-8423-49c4-b1f1-26eb0f8550df"/>
-            <column name="key" value="help-faq/iam-source/peopledataints/ids/system-guidance-and-faqs"/>
-            <column name="title" value="help-faq/iam-source/peopledataints/ids/system-guidance-and-faqs"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/system-guidance-and-faqs"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/system-guidance-and-faqs"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -911,8 +911,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="aa5a4b38-e3f5-481e-adc8-9306db54aba8"/>
-            <column name="key" value="help-faq/country-code/ie/ids/feedback-at-tesco"/>
-            <column name="title" value="help-faq/country-code/ie/ids/feedback-at-tesco"/>
+            <column name="key" value="help-faqs/countries/ie/ids/feedback-at-tesco"/>
+            <column name="title" value="help-faqs/countries/ie/ids/feedback-at-tesco"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -923,8 +923,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="90495483-0848-45de-83ca-c545f56a9901"/>
-            <column name="key" value="help-faq/mastering-feedback"/>
-            <column name="title" value="help-faq/mastering-feedback"/>
+            <column name="key" value="help-faqs/mastering-feedback"/>
+            <column name="title" value="help-faqs/mastering-feedback"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -935,8 +935,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="5d38b66b-ac9f-4d89-8b53-fb806a46a98c"/>
-            <column name="key" value="help-faq/iam-source/uk hospitality/ids/system-guidance-and-faqs"/>
-            <column name="title" value="help-faq/iam-source/uk hospitality/ids/system-guidance-and-faqs"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/system-guidance-and-faqs"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/system-guidance-and-faqs"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -947,8 +947,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="a5bf465e-f435-414a-882e-48eb5af76246"/>
-            <column name="key" value="help-faq/iam-source/peopledataints/ids/everyday-conversations"/>
-            <column name="title" value="help-faq/iam-source/peopledataints/ids/everyday-conversations"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/everyday-conversations"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/everyday-conversations"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -959,8 +959,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="721e5754-b559-4203-84cb-338a573d27b6"/>
-            <column name="key" value="help-faq/country-code/in/ids/our-win-together-behaviours"/>
-            <column name="title" value="help-faq/country-code/in/ids/our-win-together-behaviours"/>
+            <column name="key" value="help-faqs/countries/in/ids/our-win-together-behaviours"/>
+            <column name="title" value="help-faqs/countries/in/ids/our-win-together-behaviours"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -971,8 +971,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="cdb38e02-1a33-4f6b-9a79-5d5c78c015b6"/>
-            <column name="key" value="help-faq/iam-source/uk hospitality/ids/being-an-inclusive-manager"/>
-            <column name="title" value="help-faq/iam-source/uk hospitality/ids/being-an-inclusive-manager"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/being-an-inclusive-manager"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/being-an-inclusive-manager"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -983,8 +983,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="cbc287a5-4541-4ceb-a16e-abaaaa3c3ea1"/>
-            <column name="key" value="help-faq/country-code/ie/ids/creating-a-winning-performance-culture"/>
-            <column name="title" value="help-faq/country-code/ie/ids/creating-a-winning-performance-culture"/>
+            <column name="key" value="help-faqs/countries/ie/ids/creating-a-winning-performance-culture"/>
+            <column name="title" value="help-faqs/countries/ie/ids/creating-a-winning-performance-culture"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -995,8 +995,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="348f5a5e-58b3-4955-9645-5d9f4ba957f0"/>
-            <column name="key" value="help-faq/iam-source/uk hospitality/ids/everyones-welcome"/>
-            <column name="title" value="help-faq/iam-source/uk hospitality/ids/everyones-welcome"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/everyones-welcome"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/everyones-welcome"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -1007,8 +1007,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="12a77a61-d20f-40dd-a356-02c8202fd529"/>
-            <column name="key" value="help-faq/our-win-together-behaviours"/>
-            <column name="title" value="help-faq/our-win-together-behaviours"/>
+            <column name="key" value="help-faqs/our-win-together-behaviours"/>
+            <column name="title" value="help-faqs/our-win-together-behaviours"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -1019,8 +1019,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="d052fda4-6e4f-4902-a705-f913d34f0412"/>
-            <column name="key" value="help-faq/being-an-inclusive-manager"/>
-            <column name="title" value="help-faq/being-an-inclusive-manager"/>
+            <column name="key" value="help-faqs/being-an-inclusive-manager"/>
+            <column name="title" value="help-faqs/being-an-inclusive-manager"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -1031,8 +1031,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="2fbf7178-89da-41ed-8a8e-cedc1537fa2b"/>
-            <column name="key" value="help-faq/country-code/in/ids/mastering-feedback"/>
-            <column name="title" value="help-faq/country-code/in/ids/mastering-feedback"/>
+            <column name="key" value="help-faqs/countries/in/ids/mastering-feedback"/>
+            <column name="title" value="help-faqs/countries/in/ids/mastering-feedback"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -1043,8 +1043,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="aa53af86-09e8-4a22-8b13-d525cebc28dc"/>
-            <column name="key" value="help-faq/iam-source/peopledataints/ids/managing-underperformance"/>
-            <column name="title" value="help-faq/iam-source/peopledataints/ids/managing-underperformance"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/managing-underperformance"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/managing-underperformance"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>
@@ -1055,8 +1055,8 @@
         </insert>
         <insert tableName="cms_content">
             <column name="uuid" value="4de23d52-713d-4de9-8d13-f816177ab206"/>
-            <column name="key" value="help-faq/feedback-at-tesco"/>
-            <column name="title" value="help-faq/feedback-at-tesco"/>
+            <column name="key" value="help-faqs/feedback-at-tesco"/>
+            <column name="title" value="help-faqs/feedback-at-tesco"/>
             <column name="status_id" value="2"/>
             <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
             <column name="created_time" value="2022-02-18 17:03:23.020000"/>

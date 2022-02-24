@@ -42,7 +42,7 @@
           <text>"peopledataints"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_15dkl10">
-          <text>"help-faq/iam-source/peopledataints/ids/system-guidance-and-faqs"</text>
+          <text>"help-faqs/iam-sources/peopledataints/ids/system-guidance-and-faqs"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1gkocv6">
@@ -56,7 +56,7 @@
           <text>"uk hospitality"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1btir0u">
-          <text>"help-faq/iam-source/uk hospitality/ids/system-guidance-and-faqs"</text>
+          <text>"help-faqs/iam-sources/uk hospitality/ids/system-guidance-and-faqs"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1omk0i0">
@@ -70,7 +70,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1ww05ab">
-          <text>"help-faq/country-code/ie/ids/system-guidance-and-faqs"</text>
+          <text>"help-faqs/countries/ie/ids/system-guidance-and-faqs"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0mj4bev">
@@ -84,7 +84,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1hsokbr">
-          <text>"help-faq/country-code/in/ids/system-guidance-and-faqs"</text>
+          <text>"help-faqs/countries/in/ids/system-guidance-and-faqs"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1vwpxdq">
@@ -98,7 +98,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1pz2gir">
-          <text>"help-faq/system-guidance-and-faqs"</text>
+          <text>"help-faqs/system-guidance-and-faqs"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1sw98ml">
@@ -112,7 +112,7 @@
           <text>"peopledataints"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0vl7c4g">
-          <text>"help-faq/iam-source/peopledataints/ids/your-contribution"</text>
+          <text>"help-faqs/iam-sources/peopledataints/ids/your-contribution"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0qifyj0">
@@ -126,7 +126,7 @@
           <text>"uk hospitality"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0j26d0p">
-          <text>"help-faq/iam-source/uk hospitality/ids/your-contribution"</text>
+          <text>"help-faqs/iam-sources/uk hospitality/ids/your-contribution"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_01a5i7l">
@@ -140,7 +140,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0qp1lzf">
-          <text>"help-faq/country-code/ie/ids/your-contribution"</text>
+          <text>"help-faqs/countries/ie/ids/your-contribution"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0754k13">
@@ -154,7 +154,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0tjshya">
-          <text>"help-faq/country-code/in/ids/your-contribution"</text>
+          <text>"help-faqs/countries/in/ids/your-contribution"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0stoi9q">
@@ -168,7 +168,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0o9eezw">
-          <text>"help-faq/your-contribution"</text>
+          <text>"help-faqs/your-contribution"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_016q3ta">
@@ -182,7 +182,7 @@
           <text>"peopledataints"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1ec3dci">
-          <text>"help-faq/iam-source/peopledataints/ids/feedback-at-tesco"</text>
+          <text>"help-faqs/iam-sources/peopledataints/ids/feedback-at-tesco"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1o56cwh">
@@ -196,7 +196,7 @@
           <text>"uk hospitality"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1lbvlvs">
-          <text>"help-faq/iam-source/uk hospitality/ids/feedback-at-tesco"</text>
+          <text>"help-faqs/iam-sources/uk hospitality/ids/feedback-at-tesco"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1760za9">
@@ -210,7 +210,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1hl9s86">
-          <text>"help-faq/country-code/ie/ids/feedback-at-tesco"</text>
+          <text>"help-faqs/countries/ie/ids/feedback-at-tesco"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1frqk1r">
@@ -224,7 +224,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0yd3yv7">
-          <text>"help-faq/country-code/in/ids/feedback-at-tesco"</text>
+          <text>"help-faqs/countries/in/ids/feedback-at-tesco"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1v1bh23">
@@ -238,7 +238,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0b7e4v5">
-          <text>"help-faq/feedback-at-tesco"</text>
+          <text>"help-faqs/feedback-at-tesco"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1ef8zfa">
@@ -252,7 +252,7 @@
           <text>"peopledataints"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1pqcp3o">
-          <text>"help-faq/iam-source/peopledataints/ids/everyday-conversations"</text>
+          <text>"help-faqs/iam-sources/peopledataints/ids/everyday-conversations"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0ph8hc1">
@@ -266,7 +266,7 @@
           <text>"uk hospitality"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_008a6m4">
-          <text>"help-faq/iam-source/uk hospitality/ids/everyday-conversations"</text>
+          <text>"help-faqs/iam-sources/uk hospitality/ids/everyday-conversations"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1lo0843">
@@ -280,7 +280,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1oojboe">
-          <text>"help-faq/country-code/ie/ids/everyday-conversations"</text>
+          <text>"help-faqs/countries/ie/ids/everyday-conversations"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1l6na65">
@@ -294,7 +294,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1q5qudp">
-          <text>"help-faq/country-code/in/ids/everyday-conversations"</text>
+          <text>"help-faqs/countries/in/ids/everyday-conversations"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0stxrue">
@@ -308,7 +308,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1knrfzk">
-          <text>"help-faq/everyday-conversations"</text>
+          <text>"help-faqs/everyday-conversations"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1ievz8k">
@@ -322,7 +322,7 @@
           <text>"peopledataints"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_09jvsg9">
-          <text>"help-faq/iam-source/peopledataints/ids/performance-reviews"</text>
+          <text>"help-faqs/iam-sources/peopledataints/ids/performance-reviews"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0j4krpg">
@@ -336,7 +336,7 @@
           <text>"uk hospitality"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1601ba4">
-          <text>"help-faq/iam-source/uk hospitality/ids/performance-reviews"</text>
+          <text>"help-faqs/iam-sources/uk hospitality/ids/performance-reviews"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0wwdx2t">
@@ -350,7 +350,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1y81t6d">
-          <text>"help-faq/country-code/ie/ids/performance-reviews"</text>
+          <text>"help-faqs/countries/ie/ids/performance-reviews"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0d37er0">
@@ -364,7 +364,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_07um6n4">
-          <text>"help-faq/country-code/in/ids/performance-reviews"</text>
+          <text>"help-faqs/countries/in/ids/performance-reviews"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1enzjb5">
@@ -378,7 +378,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0j6ipvf">
-          <text>"help-faq/performance-reviews"</text>
+          <text>"help-faqs/performance-reviews"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0tbs0qg">
@@ -392,7 +392,7 @@
           <text>"peopledataints"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0ckl55i">
-          <text>"help-faq/iam-source/peopledataints/ids/strategic-objectives"</text>
+          <text>"help-faqs/iam-sources/peopledataints/ids/strategic-objectives"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0agwza6">
@@ -406,7 +406,7 @@
           <text>"uk hospitality"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1d7zrn0">
-          <text>"help-faq/iam-source/uk hospitality/ids/strategic-objectives"</text>
+          <text>"help-faqs/iam-sources/uk hospitality/ids/strategic-objectives"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1r3fokd">
@@ -420,7 +420,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1jwpwks">
-          <text>"help-faq/country-code/ie/ids/strategic-objectives"</text>
+          <text>"help-faqs/countries/ie/ids/strategic-objectives"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1udxska">
@@ -434,7 +434,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0z55f79">
-          <text>"help-faq/country-code/in/ids/strategic-objectives"</text>
+          <text>"help-faqs/countries/in/ids/strategic-objectives"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0ije2go">
@@ -448,7 +448,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0qi7jek">
-          <text>"help-faq/strategic-objectives"</text>
+          <text>"help-faqs/strategic-objectives"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1ib9u4k">
@@ -462,7 +462,7 @@
           <text>"peopledataints"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0wbivay">
-          <text>"help-faq/iam-source/peopledataints/ids/opportunities-to-get-on"</text>
+          <text>"help-faqs/iam-sources/peopledataints/ids/opportunities-to-get-on"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0l2qeem">
@@ -476,7 +476,7 @@
           <text>"uk hospitality"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1uivj7j">
-          <text>"help-faq/iam-source/uk hospitality/ids/opportunities-to-get-on"</text>
+          <text>"help-faqs/iam-sources/uk hospitality/ids/opportunities-to-get-on"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_18tz0gb">
@@ -490,7 +490,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_11p8oie">
-          <text>"help-faq/country-code/ie/ids/opportunities-to-get-on"</text>
+          <text>"help-faqs/countries/ie/ids/opportunities-to-get-on"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0vs3kjl">
@@ -504,7 +504,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_03di2ch">
-          <text>"help-faq/country-code/in/ids/opportunities-to-get-on"</text>
+          <text>"help-faqs/countries/in/ids/opportunities-to-get-on"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_07wg5s2">
@@ -518,7 +518,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0wef7s4">
-          <text>"help-faq/opportunities-to-get-on"</text>
+          <text>"help-faqs/opportunities-to-get-on"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_09hdxx5">
@@ -532,7 +532,7 @@
           <text>"peopledataints"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1ytof0n">
-          <text>"help-faq/iam-source/peopledataints/ids/everyones-welcome"</text>
+          <text>"help-faqs/iam-sources/peopledataints/ids/everyones-welcome"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1pb38jj">
@@ -546,7 +546,7 @@
           <text>"uk hospitality"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1dyt791">
-          <text>"help-faq/iam-source/uk hospitality/ids/everyones-welcome"</text>
+          <text>"help-faqs/iam-sources/uk hospitality/ids/everyones-welcome"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1izgk05">
@@ -560,7 +560,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1ir8prc">
-          <text>"help-faq/country-code/ie/ids/everyones-welcome"</text>
+          <text>"help-faqs/countries/ie/ids/everyones-welcome"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1k5wcnq">
@@ -574,7 +574,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1r1m76y">
-          <text>"help-faq/country-code/in/ids/everyones-welcome"</text>
+          <text>"help-faqs/countries/in/ids/everyones-welcome"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0yuq754">
@@ -588,7 +588,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0xl4278">
-          <text>"help-faq/everyones-welcome"</text>
+          <text>"help-faqs/everyones-welcome"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0ues072">
@@ -602,7 +602,7 @@
           <text>"peopledataints"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0140e1m">
-          <text>"help-faq/iam-source/peopledataints/ids/our-purpose-and-strategic-pillars"</text>
+          <text>"help-faqs/iam-sources/peopledataints/ids/our-purpose-and-strategic-pillars"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0u267xk">
@@ -616,7 +616,7 @@
           <text>"uk hospitality"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0hx78qw">
-          <text>"help-faq/iam-source/uk hospitality/ids/our-purpose-and-strategic-pillars"</text>
+          <text>"help-faqs/iam-sources/uk hospitality/ids/our-purpose-and-strategic-pillars"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1c18u4i">
@@ -630,7 +630,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0joztwo">
-          <text>"help-faq/country-code/ie/ids/our-purpose-and-strategic-pillars"</text>
+          <text>"help-faqs/countries/ie/ids/our-purpose-and-strategic-pillars"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_00jbdvo">
@@ -644,7 +644,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1ejpttm">
-          <text>"help-faq/country-code/in/ids/our-purpose-and-strategic-pillars"</text>
+          <text>"help-faqs/countries/in/ids/our-purpose-and-strategic-pillars"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0acmbu5">
@@ -658,7 +658,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0roxbcj">
-          <text>"help-faq/our-purpose-and-strategic-pillars"</text>
+          <text>"help-faqs/our-purpose-and-strategic-pillars"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1ovxb8j">
@@ -673,7 +673,7 @@
           <text>"peopledataints"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_121qht3">
-          <text>"help-faq/iam-source/peopledataints/ids/our-win-together-behaviours"</text>
+          <text>"help-faqs/iam-sources/peopledataints/ids/our-win-together-behaviours"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1qwttvm">
@@ -687,7 +687,7 @@
           <text>"uk hospitality"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1lho6wl">
-          <text>"help-faq/iam-source/uk hospitality/ids/our-win-together-behaviours"</text>
+          <text>"help-faqs/iam-sources/uk hospitality/ids/our-win-together-behaviours"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0cix7wn">
@@ -701,7 +701,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0u4haxy">
-          <text>"help-faq/country-code/ie/ids/our-win-together-behaviours"</text>
+          <text>"help-faqs/countries/ie/ids/our-win-together-behaviours"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1igvakf">
@@ -715,7 +715,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0l7nnjn">
-          <text>"help-faq/country-code/in/ids/our-win-together-behaviours"</text>
+          <text>"help-faqs/countries/in/ids/our-win-together-behaviours"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1wedjq6">
@@ -729,7 +729,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0zugjfi">
-          <text>"help-faq/our-win-together-behaviours"</text>
+          <text>"help-faqs/our-win-together-behaviours"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_18rfpfx">
@@ -743,7 +743,7 @@
           <text>"peopledataints"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1o6avkr">
-          <text>"help-faq/iam-source/peopledataints/ids/managing-a-team-at-tesco"</text>
+          <text>"help-faqs/iam-sources/peopledataints/ids/managing-a-team-at-tesco"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1erpo99">
@@ -757,7 +757,7 @@
           <text>"uk hospitality"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1bq9cpe">
-          <text>"help-faq/iam-source/uk hospitality/ids/managing-a-team-at-tesco"</text>
+          <text>"help-faqs/iam-sources/uk hospitality/ids/managing-a-team-at-tesco"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1qni968">
@@ -771,7 +771,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1y5l963">
-          <text>"help-faq/country-code/ie/ids/managing-a-team-at-tesco"</text>
+          <text>"help-faqs/countries/ie/ids/managing-a-team-at-tesco"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1wdhg14">
@@ -785,7 +785,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1me4uzi">
-          <text>"help-faq/country-code/in/ids/managing-a-team-at-tesco"</text>
+          <text>"help-faqs/countries/in/ids/managing-a-team-at-tesco"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0dht19u">
@@ -799,7 +799,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0ld3mg4">
-          <text>"help-faq/managing-a-team-at-tesco"</text>
+          <text>"help-faqs/managing-a-team-at-tesco"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0igq1nt">
@@ -813,7 +813,7 @@
           <text>"peopledataints"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1dvel5s">
-          <text>"help-faq/iam-source/peopledataints/ids/creating-a-winning-performance-culture"</text>
+          <text>"help-faqs/iam-sources/peopledataints/ids/creating-a-winning-performance-culture"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1yfxukl">
@@ -827,7 +827,7 @@
           <text>"uk hospitality"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1mxxfzl">
-          <text>"help-faq/iam-source/uk hospitality/ids/creating-a-winning-performance-culture"</text>
+          <text>"help-faqs/iam-sources/uk hospitality/ids/creating-a-winning-performance-culture"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_006lm1p">
@@ -841,7 +841,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_08danu3">
-          <text>"help-faq/country-code/ie/ids/creating-a-winning-performance-culture"</text>
+          <text>"help-faqs/countries/ie/ids/creating-a-winning-performance-culture"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_19q8rzz">
@@ -855,7 +855,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1id4qyu">
-          <text>"help-faq/country-code/in/ids/creating-a-winning-performance-culture"</text>
+          <text>"help-faqs/countries/in/ids/creating-a-winning-performance-culture"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1ohjb6z">
@@ -869,7 +869,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_15ksm9u">
-          <text>"help-faq/creating-a-winning-performance-culture"</text>
+          <text>"help-faqs/creating-a-winning-performance-culture"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_06h0r1w">
@@ -883,7 +883,7 @@
           <text>"peopledataints"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_07cz1yg">
-          <text>"help-faq/iam-source/peopledataints/ids/being-an-inclusive-manager"</text>
+          <text>"help-faqs/iam-sources/peopledataints/ids/being-an-inclusive-manager"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0rhhepg">
@@ -897,7 +897,7 @@
           <text>"uk hospitality"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0bl3i9p">
-          <text>"help-faq/iam-source/uk hospitality/ids/being-an-inclusive-manager"</text>
+          <text>"help-faqs/iam-sources/uk hospitality/ids/being-an-inclusive-manager"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0hrqssv">
@@ -911,7 +911,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1cta5tu">
-          <text>"help-faq/country-code/ie/ids/being-an-inclusive-manager"</text>
+          <text>"help-faqs/countries/ie/ids/being-an-inclusive-manager"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1mdjvoa">
@@ -925,7 +925,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_11wj9hr">
-          <text>"help-faq/country-code/in/ids/being-an-inclusive-manager"</text>
+          <text>"help-faqs/countries/in/ids/being-an-inclusive-manager"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1y9ujio">
@@ -939,7 +939,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0ualqpo">
-          <text>"help-faq/being-an-inclusive-manager"</text>
+          <text>"help-faqs/being-an-inclusive-manager"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1xlm6g4">
@@ -953,7 +953,7 @@
           <text>"peopledataints"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_04b56ia">
-          <text>"help-faq/iam-source/peopledataints/ids/mastering-conversations"</text>
+          <text>"help-faqs/iam-sources/peopledataints/ids/mastering-conversations"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0g3ubb3">
@@ -967,7 +967,7 @@
           <text>"uk hospitality"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1390hb2">
-          <text>"help-faq/iam-source/uk hospitality/ids/mastering-conversations"</text>
+          <text>"help-faqs/iam-sources/uk hospitality/ids/mastering-conversations"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_03tszx4">
@@ -981,7 +981,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0u058ur">
-          <text>"help-faq/country-code/ie/ids/mastering-conversations"</text>
+          <text>"help-faqs/countries/ie/ids/mastering-conversations"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1wtmo6n">
@@ -995,7 +995,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0fz6vii">
-          <text>"help-faq/country-code/in/ids/mastering-conversations"</text>
+          <text>"help-faqs/countries/in/ids/mastering-conversations"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0mybq5q">
@@ -1009,7 +1009,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1oobagp">
-          <text>"help-faq/mastering-conversations"</text>
+          <text>"help-faqs/mastering-conversations"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_10ml8hs">
@@ -1023,7 +1023,7 @@
           <text>"peopledataints"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0m05a9z">
-          <text>"help-faq/iam-source/peopledataints/ids/mastering-feedback"</text>
+          <text>"help-faqs/iam-sources/peopledataints/ids/mastering-feedback"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1q9a60t">
@@ -1037,7 +1037,7 @@
           <text>"uk hospitality"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_183vcuw">
-          <text>"help-faq/iam-source/uk hospitality/ids/mastering-feedback"</text>
+          <text>"help-faqs/iam-sources/uk hospitality/ids/mastering-feedback"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0bydfts">
@@ -1051,7 +1051,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0kqb27p">
-          <text>"help-faq/country-code/ie/ids/mastering-feedback"</text>
+          <text>"help-faqs/countries/ie/ids/mastering-feedback"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0l83yxb">
@@ -1065,7 +1065,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0z7cqht">
-          <text>"help-faq/country-code/in/ids/mastering-feedback"</text>
+          <text>"help-faqs/countries/in/ids/mastering-feedback"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1lqo52k">
@@ -1079,7 +1079,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_10i0rnt">
-          <text>"help-faq/mastering-feedback"</text>
+          <text>"help-faqs/mastering-feedback"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0w1murf">
@@ -1093,7 +1093,7 @@
           <text>"peopledataints"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0s1xmp7">
-          <text>"help-faq/iam-source/peopledataints/ids/managing-underperformance"</text>
+          <text>"help-faqs/iam-sources/peopledataints/ids/managing-underperformance"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0ex74mf">
@@ -1107,7 +1107,7 @@
           <text>"uk hospitality"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0kvk157">
-          <text>"help-faq/iam-source/uk hospitality/ids/managing-underperformance"</text>
+          <text>"help-faqs/iam-sources/uk hospitality/ids/managing-underperformance"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1izdyw0">
@@ -1121,7 +1121,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_01p4yxv">
-          <text>"help-faq/country-code/ie/ids/managing-underperformance"</text>
+          <text>"help-faqs/countries/ie/ids/managing-underperformance"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0mga6s8">
@@ -1135,7 +1135,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1ljq5mz">
-          <text>"help-faq/country-code/in/ids/managing-underperformance"</text>
+          <text>"help-faqs/countries/in/ids/managing-underperformance"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_04p4ll5">
@@ -1149,7 +1149,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1i5yyqh">
-          <text>"help-faq/managing-underperformance"</text>
+          <text>"help-faqs/managing-underperformance"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0px9pjb">
@@ -1163,7 +1163,7 @@
           <text>"peopledataints"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_12rdep7">
-          <text>"help-faq/iam-source/peopledataints/ids/further-learning-for-managers"</text>
+          <text>"help-faqs/iam-sources/peopledataints/ids/further-learning-for-managers"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_137ji1t">
@@ -1177,7 +1177,7 @@
           <text>"uk hospitality"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0n2861l">
-          <text>"help-faq/iam-source/uk hospitality/ids/further-learning-for-managers"</text>
+          <text>"help-faqs/iam-sources/uk hospitality/ids/further-learning-for-managers"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1dni6bk">
@@ -1191,7 +1191,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0ehy824">
-          <text>"help-faq/country-code/ie/ids/further-learning-for-managers"</text>
+          <text>"help-faqs/countries/ie/ids/further-learning-for-managers"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1tp9kbe">
@@ -1205,7 +1205,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_15eautr">
-          <text>"help-faq/country-code/in/ids/further-learning-for-managers"</text>
+          <text>"help-faqs/countries/in/ids/further-learning-for-managers"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0sf0skr">
@@ -1219,7 +1219,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0hnnhmo">
-          <text>"help-faq/further-learning-for-managers"</text>
+          <text>"help-faqs/further-learning-for-managers"</text>
         </outputEntry>
       </rule>
     </decisionTable>

@@ -77,7 +77,7 @@ class HelpServiceTest extends AbstractCamundaSpringBootTest {
 
     @Test
     void getHelpFaqContentEntriesTest() {
-        var compoundKey = "help-faq/iam-source/peopledataints/ids/system-guidance-and-faqs";
+        var compoundKey = "help-faqs/iam-sources/peopledataints/ids/system-guidance-and-faqs";
         var content = createContentEntry(compoundKey);
         var colleague = createColleague(Map.of(KEYS.IAM_SOURCE, "peopledataints"));
 
