@@ -174,6 +174,11 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    public Collection<String> getColleagueFactsAPISupportedAttributes() {
+        return colleagueFactsApiLocalMapper.getColleagueFactsAPISupportedAttributes();
+    }
+
+    @Override
     // TODO To optimize logic for update only changed fields
     public int updateColleague(UUID colleagueUuid, Collection<String> changedFields) {
         int updated = 0;
@@ -186,6 +191,16 @@ public class ProfileServiceImpl implements ProfileService {
         Colleague colleague = colleagueApiService.findColleagueByUuid(colleagueUuid);
         if (colleague == null) {
             return updated;
+        }
+
+        return persistColleague(colleague, existingLocalColleague);
+    }
+
+    @Override
+    public int updateColleague(Colleague colleague) {
+        var existingLocalColleague = profileDAO.getColleague(colleague.getColleagueUUID());
+        if (existingLocalColleague == null) {
+            return 0;
         }
 
         return persistColleague(colleague, existingLocalColleague);
@@ -205,6 +220,16 @@ public class ProfileServiceImpl implements ProfileService {
 
         return persistColleague(colleague, null);
 
+    }
+
+    @Override
+    public int create(Colleague colleague) {
+        var existingLocalColleague = profileDAO.getColleague(colleague.getColleagueUUID());
+        if (existingLocalColleague != null) {
+            return 0;
+        }
+
+        return persistColleague(colleague, existingLocalColleague);
     }
 
     private int persistColleague(Colleague colleague, ColleagueEntity existingLocalColleague) {

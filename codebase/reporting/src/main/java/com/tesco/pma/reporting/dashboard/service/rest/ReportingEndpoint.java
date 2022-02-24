@@ -5,12 +5,12 @@ import com.tesco.pma.exception.DownloadException;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.reporting.Report;
 import com.tesco.pma.reporting.exception.ErrorCodes;
-import com.tesco.pma.reporting.util.ExcelReportUtils;
 import com.tesco.pma.reporting.dashboard.domain.provider.StatsReportProvider;
 import com.tesco.pma.reporting.dashboard.domain.ColleagueReportTargeting;
 import com.tesco.pma.reporting.review.service.ReviewReportingService;
 import com.tesco.pma.reporting.review.domain.provider.ObjectiveLinkedReviewReportProvider;
 import com.tesco.pma.reporting.dashboard.service.ReportingService;
+import com.tesco.pma.reporting.util.ExcelReportUtils;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,9 +27,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 import static com.tesco.pma.rest.RestResponse.success;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -42,6 +42,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class ReportingEndpoint {
 
     static final MediaType APPLICATION_FORCE_DOWNLOAD_VALUE = new MediaType("application", "force-download");
+    static final String REPORT_NAME_PARAM_NAME = "reportName";
+    static final String REQUEST_QUERY_PARAM_NAME = "requestQuery";
 
     private final ReportingService reportingService;
     private final ReviewReportingService reviewReportingService;
@@ -60,24 +62,7 @@ public class ReportingEndpoint {
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
     public ResponseEntity<Resource> getLinkedObjectivesReportFile(RequestQuery requestQuery) {
         var report = reviewReportingService.getLinkedObjectivesReport(requestQuery);
-
-        var reportData = report.getData();
-        var reportMetadata = report.getMetadata().getColumnMetadata();
-
-        Resource resource;
-        try {
-            resource = ExcelReportUtils.buildResource(report.getMetadata().getSheetName(), reportData, reportMetadata);
-        } catch (IOException e) {
-            var message = messages.getMessage(ErrorCodes.INTERNAL_DOWNLOAD_ERROR,
-                    Map.of("reportName", report.getMetadata().getName(), "requestQuery", requestQuery));
-            throw new DownloadException(ErrorCodes.INTERNAL_DOWNLOAD_ERROR.getCode(), message, report.getMetadata().getName(), e);
-        }
-
-        var httpHeader = new HttpHeaders();
-        httpHeader.setContentType(APPLICATION_FORCE_DOWNLOAD_VALUE);
-        httpHeader.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + report.getMetadata().getFileName());
-
-        return new ResponseEntity<>(resource, httpHeader, CREATED);
+        return buildResponseWithReport(report, requestQuery, ExcelReportUtils::buildResource);
     }
 
     /**
@@ -123,5 +108,43 @@ public class ReportingEndpoint {
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
     public RestResponse<Report> getStatsReport(RequestQuery requestQuery) {
         return success(reportingService.getStatsReport(requestQuery));
+    }
+
+    /**
+     * Get call using a Path param and return statistics data as Resource.
+     *
+     * @param requestQuery -  filters
+     * @return a RestResponse parameterized with statistics report resource
+     */
+    @Operation(summary = "Get Statistics Report as Resource", tags = {"report"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the Statistics Report data")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Statistics Report data not found", content = @Content)
+    @GetMapping(path = StatsReportProvider.REPORT_NAME + "/formats/excel", produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
+    public ResponseEntity<Resource> getStatisticsReportFile(RequestQuery requestQuery)  {
+        var report = reportingService.getStatsReport(requestQuery);
+        return buildResponseWithReport(report, requestQuery, ExcelReportUtils::buildResourceWithStatisticTopics);
+    }
+
+    private ResponseEntity<Resource> buildResponseWithReport(Report report, RequestQuery requestQuery,
+                                                             BiFunction<Report, RequestQuery, Resource> buildReport) {
+        Resource resource;
+        try {
+            resource = buildReport.apply(report, requestQuery);
+        } catch (Exception e) {
+            throw downloadException(report.getMetadata().getName(), requestQuery, e);
+        }
+
+        var httpHeader = new HttpHeaders();
+        httpHeader.setContentType(APPLICATION_FORCE_DOWNLOAD_VALUE);
+        httpHeader.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + report.getMetadata().getFileName());
+
+        return new ResponseEntity<>(resource, httpHeader, CREATED);
+    }
+
+    private DownloadException downloadException(String reportName, RequestQuery requestQuery, Throwable cause) {
+        var message = messages.getMessage(ErrorCodes.INTERNAL_DOWNLOAD_ERROR,
+                Map.of(REPORT_NAME_PARAM_NAME, reportName, REQUEST_QUERY_PARAM_NAME, requestQuery));
+        return new DownloadException(ErrorCodes.INTERNAL_DOWNLOAD_ERROR.getCode(), message, reportName, cause.getCause());
     }
 }

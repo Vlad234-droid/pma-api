@@ -15,8 +15,8 @@ public class PMFormElement extends PMElement {
 
     public static final String PM_FORM = "form";
     public static final String PM_FORM_PREFIX = PM_PREFIX + PM_FORM + "_";
-    public static final String KEY = "key";
-    public static final String PM_FORM_KEY = PM_FORM_PREFIX + KEY;
+    public static final String PM_KEY = "key";
+    public static final String PM_FORM_KEY = PM_FORM_PREFIX + PM_KEY;
     public static final String PM_FORM_CODE = PM_FORM_PREFIX + "code";
     public static final String PM_FORM_JSON = PM_FORM_PREFIX + "json";
 

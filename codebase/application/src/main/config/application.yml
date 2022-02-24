@@ -220,12 +220,11 @@ tesco:
       cep:
         subject: ${CEP_SUBJECT}
         publish:
-          url: ${TESCO_API_BASE_URL}/colleague/v1/events
+          url: ${TESCO_API_BASE_URL}/colleague/v2/events
         retry-timeout: 30
         subscribe:
           feeds:
-            jit: colleagues-jit-v1
-            immediate: colleagues-immediate-v1
+            capi: capi-colleague-facts-v2
       colleague-api:
         base-url: ${TESCO_API_BASE_URL}/colleague/v2/colleagues
       events-api:
@@ -277,6 +276,8 @@ tesco:
         key: pdp/templates/Personal Development Plan Template.pptx
       form:
         key: pdp/forms/standard_pdp.form
+    colleague-changes:
+      force: ${CFAPI_FORCE:false}
 
 camunda:
   bpm:
