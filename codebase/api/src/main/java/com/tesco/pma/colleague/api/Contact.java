@@ -1,9 +1,10 @@
 package com.tesco.pma.colleague.api;
 
-import com.tesco.pma.colleague.api.contact.AddressList;
+import com.tesco.pma.colleague.api.contact.Address;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 public class Contact implements Serializable {
@@ -12,5 +13,5 @@ public class Contact implements Serializable {
 
     private String email;
     private String workPhoneNumber;
-    private AddressList addresses;
+    private List<Address> addresses;
 }

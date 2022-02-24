@@ -17,11 +17,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Class for mapping between Colleague Facts API json format and database representation
@@ -152,9 +155,9 @@ public class ColleagueFactsApiLocalMapper {
             destination.setEmail(contact.getEmail());
 
             final var addresses = contact.getAddresses();
-            if (Objects.nonNull(addresses)) {
+            if (Objects.nonNull(addresses) && !addresses.isEmpty()) {
                 ColleagueEntity.Country country = new ColleagueEntity.Country();
-                country.setCode(addresses.getCountryCode());
+                country.setCode(addresses.get(0).getCountryCode());
                 country.setName(UNDEFINED_VALUE);
                 destination.setCountry(country);
             }
@@ -214,6 +217,39 @@ public class ColleagueFactsApiLocalMapper {
             }
         }
 
+    }
+
+    public Collection<String> getColleagueFactsAPISupportedAttributes() {
+        return Stream.of(
+                "profile.firstName",
+                "profile.middleName",
+                "profile.lastName",
+
+                "contact.email",
+                "contact.addresses.countryCode",
+
+                "externalSystems.iam.id",
+                "externalSystems.iam.source",
+
+                "serviceDates.hireDate",
+                "serviceDates.leavingDate",
+
+                "workRelationships.primaryEntity",
+                "workRelationships.salaryFrequency",
+                "workRelationships.employmentType",
+                "workRelationships.managerUUID",
+                "workRelationships.isManager",
+                "workRelationships.workLevel",
+                "workRelationships.department.id",
+                "workRelationships.department.name",
+                "workRelationships.department.businessType",
+                "workRelationships.job.id",
+                "workRelationships.job.code",
+                "workRelationships.job.name",
+                "workRelationships.job.costCategory",
+                "workRelationships.locationUUID",
+                "workRelationships.legalEmployer.name"
+        ).collect(Collectors.toList());
     }
 
 }
