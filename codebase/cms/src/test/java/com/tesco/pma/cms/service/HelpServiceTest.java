@@ -2,18 +2,20 @@ package com.tesco.pma.cms.service;
 
 import com.tesco.pma.bpm.camunda.flow.AbstractCamundaSpringBootTest;
 import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
+import com.tesco.pma.cms.api.ContentEntry;
 import com.tesco.pma.util.TestUtils.KEYS;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import static com.tesco.pma.util.TestUtils.createColleague;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,8 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Vadim Shatokhin <a href="mailto:vadim.shatokhin1@tesco.com">vadim.shatokhin1@tesco.com</a>
  * 2022-02-16 10:34
  */
-@ActiveProfiles("test")
-@SpringBootTest(classes = HelpServiceTest.LocalTestConfig.class)
+@ActiveProfiles(value = {"test"})
+@SpringBootTest(classes = {JacksonAutoConfiguration.class, CamundaSpringBootTestConfig.class})
 class HelpServiceTest extends AbstractCamundaSpringBootTest {
     private static final String KEY_SYSTEM_GUIDANCE_AND_FAQS = "system-guidance-and-faqs";
     private static final String OUTPUT_SYSTEM_GUIDANCE_AND_FAQS_PEOPLEDATAINTS = "https://tesco.sharepoint.com/:u:/r/sites/" +
@@ -45,11 +47,8 @@ class HelpServiceTest extends AbstractCamundaSpringBootTest {
     @SpyBean
     HelpServiceImpl helpService;
 
-    @Profile("test")
-    @Configuration
-    @Import({JacksonAutoConfiguration.class, CamundaSpringBootTestConfig.class})
-    static class LocalTestConfig {
-    }
+    @MockBean
+    ContentEntryService contentEntryService;
 
     @Test
     void getExact() {
@@ -74,5 +73,25 @@ class HelpServiceTest extends AbstractCamundaSpringBootTest {
         var result = helpService.getHelpFaqUrls(createColleague(params), Set.of(KEY_SYSTEM_GUIDANCE_AND_FAQS));
 
         assertEquals(expected, result.get(KEY_SYSTEM_GUIDANCE_AND_FAQS));
+    }
+
+    @Test
+    void getHelpFaqContentEntriesTest() {
+        var compoundKey = "help-faqs/iam-sources/peopledataints/ids/system-guidance-and-faqs";
+        var content = createContentEntry(compoundKey);
+        var colleague = createColleague(Map.of(KEYS.IAM_SOURCE, "peopledataints"));
+
+        Mockito.when(contentEntryService.find(Mockito.eq(compoundKey))).thenReturn(List.of(content));
+
+        var result = helpService.getHelpFaqs(colleague, Set.of("system-guidance-and-faqs"));
+
+        assertEquals(content.getUuid(), result.get("system-guidance-and-faqs").get(0).getUuid());
+    }
+
+    private ContentEntry createContentEntry(String key){
+        var content = new ContentEntry();
+        content.setUuid(UUID.randomUUID());
+        content.setKey(key);
+        return content;
     }
 }

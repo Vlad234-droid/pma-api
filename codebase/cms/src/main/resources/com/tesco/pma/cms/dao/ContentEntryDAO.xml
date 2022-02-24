@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tesco.pma.cms.dao.ContentEntryDAO">
+
+    <resultMap id="contentStruct" type="com.tesco.pma.cms.api.ContentEntry">
+        <id column="uuid" property="uuid"/>
+        <result column="key" property="key"/>
+        <result column="title" property="title"/>
+        <result column="description" property="description"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="version" property="version"/>
+
+        <result property="properties" column="properties"
+                typeHandler="com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler"
+                javaType="com.tesco.pma.api.MapJson"/>
+
+        <result property="status" column="status_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
+                javaType="com.tesco.pma.cms.api.ContentStatus"/>
+    </resultMap>
+
+    <select id="find" resultMap="contentStruct">
+        SELECT * FROM cms_content cc
+
+        <where>
+            <foreach collection="requestQuery.filters" item="filter" index="index">
+                <if test="filter.operand.name == 'EQUALS' and filter.property == 'uuid'">
+                    AND <include refid="getFilterField"/> = uuid(#{filter.value})
+                </if>
+                <if test="filter.operand.name == 'EQUALS' and filter.property == 'title'">
+                    AND <include refid="getFilterField"/> = '${filter.value}'
+                </if>
+                <if test="filter.operand.name == 'EQUALS' and filter.property == 'key'">
+                    AND <include refid="getFilterField"/> = '${filter.value}'
+                </if>
+                <if test="filter.operand.name == 'EQUALS' and filter.property == 'status'">
+                    AND <include refid="getFilterField"/> = ${@com.tesco.pma.cms.api.ContentStatus@valueOf(filter.value.toUpperCase()).getId()}
+                </if>
+                <if test="filter.operand.name == 'EQUALS' and filter.property == 'version'">
+                    AND <include refid="versionCondition"/>
+                </if>
+            </foreach>
+        </where>
+
+        LIMIT #{requestQuery.limit}
+
+        <if test="requestQuery.offset != null">
+            OFFSET #{requestQuery.offset}
+        </if>
+    </select>
+
+    <sql id="getFilterField">
+        <choose>
+            <when test="filter.property == 'uuid'">
+                cc.uuid
+            </when>
+            <when test="filter.property == 'title'">
+                cc.title
+            </when>
+            <when test="filter.property == 'status'">
+                cc.status_id
+            </when>
+            <when test="filter.property == 'key'">
+                cc.key
+            </when>
+            <otherwise>
+                #{filter.property}
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="versionCondition">
+        <choose>
+            <when test="filter.value == -1">
+                cc.version = <include refid="maxVersion"><property name="alias" value="cc."/></include>
+            </when>
+            <otherwise>
+                cc.version = #{filter.value}
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="maxVersion">
+        (SELECT COALESCE(MAX(version), 0) FROM cms_content cc2 WHERE cc2.title = ${alias}title)
+    </sql>
+
+    <sql id="maxVersionByTitle">
+        (SELECT COALESCE(MAX(version), 0) FROM cms_content cc2 WHERE cc2.title = ${title})
+    </sql>
+
+    <insert id="create" flushCache="true" useGeneratedKeys="true" keyProperty="uuid" keyColumn="uuid">
+        INSERT INTO cms_content (uuid, key, title, description, properties, created_by, created_time, version, status_id)
+        VALUES (#{content.uuid}, #{content.key}, #{content.title}, #{content.description},
+            #{content.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+            #{content.createdBy}, #{content.createdTime},
+            <include refid="maxVersionByTitle"><property name="title" value="#{content.title}"/></include> + 1,
+            #{content.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler,
+                javaType=com.tesco.pma.cms.api.ContentStatus})
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM cms_content WHERE uuid = #{uuid}
+    </delete>
+
+    <update id="update" flushCache="true">
+        UPDATE cms_content cc
+        SET key = #{content.key}, title = #{content.title}, description = #{content.description},
+            properties = #{content.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
+            created_by = #{content.createdBy}, created_time = #{content.createdTime},
+            version = <include refid="maxVersionByTitle"><property name="title" value="#{content.title}"/></include> + 1,
+            status_id = #{content.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler}
+        WHERE uuid = #{content.uuid}
+    </update>
+
+
+
+</mapper>

@@ -1,6 +1,5 @@
 package com.tesco.pma.cms.rest;
 
-import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
 import com.tesco.pma.cms.service.HelpService;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
@@ -15,10 +14,7 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.O
 import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Map;
@@ -37,10 +33,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 2022-02-16 15:18
  */
 @WebMvcTest(controllers = CMSEndpoint.class)
-@ContextConfiguration(classes = CMSEndpointTest.LocalTestConfig.class)
+@ContextConfiguration(classes = {JacksonAutoConfiguration.class,
+        // for security
+        HttpMessageConvertersAutoConfiguration.class,
+        OAuth2ResourceServerAutoConfiguration.class,
+        RestTemplateAutoConfiguration.class,
+        OAuth2ClientAutoConfiguration.class})
 class CMSEndpointTest extends AbstractEndpointTest {
     private static final String HELP_FAQ_URLS = "/cms/help-faq-urls";
     private static final String COLLEAGUE_UUID_1 = "10000000-1000-1000-1000-100000000001";
+
+    @SpyBean
+    private CMSEndpoint cmsEndpoint;
 
     @MockBean
     private ProfileService profileService;
@@ -50,18 +54,6 @@ class CMSEndpointTest extends AbstractEndpointTest {
 
     @MockBean
     private AuditorAware<UUID> auditorAware;
-
-    @Profile("test")
-    @Configuration
-    @ComponentScan(basePackages = "com.tesco.pma.cms")
-    @Import({JacksonAutoConfiguration.class, CamundaSpringBootTestConfig.class,
-            // for security
-            HttpMessageConvertersAutoConfiguration.class,
-            OAuth2ResourceServerAutoConfiguration.class,
-            RestTemplateAutoConfiguration.class,
-            OAuth2ClientAutoConfiguration.class})
-    static class LocalTestConfig {
-    }
 
     @Test
     void getAll() throws Exception {
