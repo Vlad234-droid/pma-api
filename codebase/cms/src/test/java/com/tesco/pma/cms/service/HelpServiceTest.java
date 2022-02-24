@@ -81,9 +81,9 @@ class HelpServiceTest extends AbstractCamundaSpringBootTest {
         var content = createContentEntry(compoundKey);
         var colleague = createColleague(Map.of(KEYS.IAM_SOURCE, "peopledataints"));
 
-        Mockito.when(contentEntryService.findByKey(Mockito.eq(compoundKey))).thenReturn(List.of(content));
+        Mockito.when(contentEntryService.find(Mockito.eq(compoundKey))).thenReturn(List.of(content));
 
-        var result = helpService.getHelpFaqContentEntries(colleague, Set.of("system-guidance-and-faqs"));
+        var result = helpService.getHelpFaqs(colleague, Set.of("system-guidance-and-faqs"));
 
         assertEquals(content.getUuid(), result.get("system-guidance-and-faqs").get(0).getUuid());
     }

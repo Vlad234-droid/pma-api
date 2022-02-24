@@ -49,17 +49,17 @@ public class ContentEntryServiceImpl implements ContentEntryService {
     }
 
     @Override
-    public List<ContentEntry> findByKey(String key) {
+    public List<ContentEntry> find(String key) {
         return contentEntryDAO.find(RequestQuery.create("key_eq", key));
     }
 
     @Override
-    public List<ContentEntry> findByRequestQuery(RequestQuery rq) {
+    public List<ContentEntry> find(RequestQuery rq) {
         return contentEntryDAO.find(rq);
     }
 
     @Override
-    public ContentEntry findById(UUID uuid) {
+    public ContentEntry read(UUID uuid) {
 
         var content = contentEntryDAO.find(RequestQuery.create("uuid_eq", uuid)).get(0);
 

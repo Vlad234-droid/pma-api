@@ -45,7 +45,7 @@ public class HelpServiceImpl implements HelpService {
     }
 
     @Override
-    public Map<String, List<ContentEntry>> getHelpFaqContentEntries(Colleague colleague, Collection<String> keys) {
+    public Map<String, List<ContentEntry>> getHelpFaqs(Colleague colleague, Collection<String> keys) {
         var allKeys = ObjectUtils.isEmpty(keys) ? getAllKeys(processEngine.getRepositoryService(), HELP_FAQ_KEYS) : keys;
         return allKeys.stream().collect(Collectors.toMap(key -> key, key -> getContentEntries(key, colleague)));
     }
@@ -93,6 +93,6 @@ public class HelpServiceImpl implements HelpService {
 
         var decisionService = processEngine.getDecisionService();
         var compoundKey = (String) decisionService.evaluateDecisionTableByKey(HELP_FAQ_KEYS, variables).getSingleEntry();
-        return contentEntryService.findByKey(compoundKey);
+        return contentEntryService.find(compoundKey);
     }
 }

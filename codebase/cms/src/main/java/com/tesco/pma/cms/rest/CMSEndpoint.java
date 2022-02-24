@@ -62,7 +62,7 @@ public class CMSEndpoint {
                                                                                   @CurrentSecurityContext(expression = "authentication")
                                                                     Authentication authentication) {
         var colleagueProfile = profileService.findProfileByColleagueUuid(SecurityUtils.getColleagueUuid(authentication));
-        return colleagueProfile.map(profile -> RestResponse.success(helpService.getHelpFaqContentEntries(profile.getColleague(), keys)))
+        return colleagueProfile.map(profile -> RestResponse.success(helpService.getHelpFaqs(profile.getColleague(), keys)))
                 .orElseGet(() -> RestResponse.success(Collections.emptyMap()));
     }
 

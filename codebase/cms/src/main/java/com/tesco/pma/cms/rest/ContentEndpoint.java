@@ -41,7 +41,7 @@ public class ContentEndpoint {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isColleague()")
     public RestResponse<List<ContentEntry>> findByRequestQuery(RequestQuery rq) {
-        return RestResponse.success(contentEntryService.findByRequestQuery(rq));
+        return RestResponse.success(contentEntryService.find(rq));
     }
 
     @Operation(summary = "Create a Content", tags = {"CMS"})

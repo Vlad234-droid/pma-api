@@ -14,5 +14,5 @@ import java.util.Map;
 public interface HelpService {
     Map<String, String> getHelpFaqUrls(Colleague colleague, Collection<String> keys);
 
-    Map<String, List<ContentEntry>> getHelpFaqContentEntries(Colleague colleague, Collection<String> keys);
+    Map<String, List<ContentEntry>> getHelpFaqs(Colleague colleague, Collection<String> keys);
 }

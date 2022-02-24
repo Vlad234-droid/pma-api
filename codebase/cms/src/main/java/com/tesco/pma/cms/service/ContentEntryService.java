@@ -25,7 +25,7 @@ public interface ContentEntryService {
      * @param key - content entry key.
      * @return list of ContentEntry.
      */
-    List<ContentEntry> findByKey(String key);
+    List<ContentEntry> find(String key);
 
     /**
      * Find content entry by RequestQuery
@@ -33,7 +33,7 @@ public interface ContentEntryService {
      * @param requestQuery - request query.
      * @return list of ContentEntry.
      */
-    List<ContentEntry> findByRequestQuery(RequestQuery requestQuery);
+    List<ContentEntry> find(RequestQuery requestQuery);
 
     /**
      * Find content entry by ID
@@ -41,7 +41,7 @@ public interface ContentEntryService {
      * @param uuid - content entry ID.
      * @return ContentEntry instance.
      */
-    ContentEntry findById(UUID uuid);
+    ContentEntry read(UUID uuid);
 
     /**
      * Delete a content entry
