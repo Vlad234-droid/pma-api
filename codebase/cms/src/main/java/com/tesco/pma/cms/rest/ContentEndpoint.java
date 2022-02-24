@@ -1,6 +1,6 @@
 package com.tesco.pma.cms.rest;
 
-import com.tesco.pma.cms.model.ContentEntry;
+import com.tesco.pma.cms.api.ContentEntry;
 import com.tesco.pma.cms.service.ContentEntryService;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;

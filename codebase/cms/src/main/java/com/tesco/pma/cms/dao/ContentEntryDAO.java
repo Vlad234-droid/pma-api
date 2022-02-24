@@ -1,6 +1,6 @@
 package com.tesco.pma.cms.dao;
 
-import com.tesco.pma.cms.model.ContentEntry;
+import com.tesco.pma.cms.api.ContentEntry;
 import com.tesco.pma.pagination.RequestQuery;
 import org.apache.ibatis.annotations.Param;
 

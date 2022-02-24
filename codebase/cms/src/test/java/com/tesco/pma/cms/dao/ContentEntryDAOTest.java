@@ -2,8 +2,8 @@ package com.tesco.pma.cms.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.api.MapJson;
-import com.tesco.pma.cms.model.ContentEntry;
-import com.tesco.pma.cms.model.ContentStatus;
+import com.tesco.pma.cms.api.ContentEntry;
+import com.tesco.pma.cms.api.ContentStatus;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.pagination.RequestQuery;
 import org.junit.jupiter.api.Test;

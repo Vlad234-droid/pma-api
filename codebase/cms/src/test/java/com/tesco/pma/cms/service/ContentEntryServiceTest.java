@@ -2,8 +2,8 @@ package com.tesco.pma.cms.service;
 
 import com.tesco.pma.cms.dao.ContentEntryDAO;
 import com.tesco.pma.cms.exception.CMSException;
-import com.tesco.pma.cms.model.ContentEntry;
-import com.tesco.pma.cms.model.ContentStatus;
+import com.tesco.pma.cms.api.ContentEntry;
+import com.tesco.pma.cms.api.ContentStatus;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import org.junit.jupiter.api.Test;

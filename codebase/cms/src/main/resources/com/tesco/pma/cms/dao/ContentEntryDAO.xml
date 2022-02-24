@@ -3,7 +3,7 @@
 
 <mapper namespace="com.tesco.pma.cms.dao.ContentEntryDAO">
 
-    <resultMap id="contentStruct" type="com.tesco.pma.cms.model.ContentEntry">
+    <resultMap id="contentStruct" type="com.tesco.pma.cms.api.ContentEntry">
         <id column="uuid" property="uuid"/>
         <result column="key" property="key"/>
         <result column="title" property="title"/>
@@ -17,7 +17,7 @@
                 javaType="com.tesco.pma.api.MapJson"/>
 
         <result property="status" column="status_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
-                javaType="com.tesco.pma.cms.model.ContentStatus"/>
+                javaType="com.tesco.pma.cms.api.ContentStatus"/>
     </resultMap>
 
     <select id="find" resultMap="contentStruct">
@@ -35,7 +35,7 @@
                     AND <include refid="getFilterField"/> = '${filter.value}'
                 </if>
                 <if test="filter.operand.name == 'EQUALS' and filter.property == 'status'">
-                    AND <include refid="getFilterField"/> = ${@com.tesco.pma.cms.model.ContentStatus@valueOf(filter.value.toUpperCase()).getId()}
+                    AND <include refid="getFilterField"/> = ${@com.tesco.pma.cms.api.ContentStatus@valueOf(filter.value.toUpperCase()).getId()}
                 </if>
                 <if test="filter.operand.name == 'EQUALS' and filter.property == 'version'">
                     AND <include refid="versionCondition"/>
@@ -96,7 +96,7 @@
             #{content.createdBy}, #{content.createdTime},
             <include refid="maxVersionByTitle"><property name="title" value="#{content.title}"/></include> + 1,
             #{content.status, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler,
-                javaType=com.tesco.pma.cms.model.ContentStatus})
+                javaType=com.tesco.pma.cms.api.ContentStatus})
     </insert>
 
     <delete id="delete">

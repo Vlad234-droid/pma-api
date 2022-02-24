@@ -1,4 +1,4 @@
-package com.tesco.pma.cms.model;
+package com.tesco.pma.cms.api;
 
 import com.tesco.pma.api.DictionaryItem;
 import lombok.AllArgsConstructor;

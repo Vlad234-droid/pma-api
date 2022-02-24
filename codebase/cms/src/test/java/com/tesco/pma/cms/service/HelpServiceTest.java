@@ -2,7 +2,7 @@ package com.tesco.pma.cms.service;
 
 import com.tesco.pma.bpm.camunda.flow.AbstractCamundaSpringBootTest;
 import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
-import com.tesco.pma.cms.model.ContentEntry;
+import com.tesco.pma.cms.api.ContentEntry;
 import com.tesco.pma.util.TestUtils.KEYS;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

@@ -1,6 +1,6 @@
 package com.tesco.pma.cms.service;
 
-import com.tesco.pma.cms.model.ContentEntry;
+import com.tesco.pma.cms.api.ContentEntry;
 import com.tesco.pma.colleague.api.Colleague;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
