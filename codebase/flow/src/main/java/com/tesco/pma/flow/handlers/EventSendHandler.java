@@ -11,6 +11,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Send event handler
+ *
+ * Param: Map - EVENT_PARAMS
+ * Field injection: eventNameExpression
+ */
 @Component
 public class EventSendHandler extends AbstractEventSendHandler {
 

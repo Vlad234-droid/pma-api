@@ -151,16 +151,16 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
     private void sendEvent(UUID colleagueUuid, EventNames eventName) {
         var event = new EventSupport(eventName);
-        Map<String, Serializable> properties = new HashMap<>();
-        properties.put(FlowParameters.COLLEAGUE_UUID.name(), new ArrayList<>(Collections.singleton(colleagueUuid)));
+        Map<String, Serializable> properties = Map
+                .of(FlowParameters.COLLEAGUE_UUID.name(), new ArrayList<>(Collections.singleton(colleagueUuid)));
         event.setEventProperties(properties);
         eventSender.sendEvent(event);
     }
 
     private void sendAssignmentEvent(UUID colleagueUuid) {
         var event = new EventSupport(EventNames.PM_COLLEAGUE_CYCLE_ASSIGNMENT);
-        Map<String, Serializable> properties = new HashMap<>();
-        properties.put(FlowParameters.COLLEAGUE_UUIDS.name(), new ArrayList<>(Collections.singleton(colleagueUuid)));
+        Map<String, Serializable> properties = Map
+                .of(FlowParameters.COLLEAGUE_UUIDS.name(), new ArrayList<>(Collections.singleton(colleagueUuid)));
         event.setEventProperties(properties);
         eventSender.sendEvent(event);
     }

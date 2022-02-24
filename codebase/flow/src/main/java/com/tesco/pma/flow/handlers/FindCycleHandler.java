@@ -21,6 +21,12 @@ import static com.tesco.pma.cycle.service.PMCycleServiceImpl.ENTRY_CONFIG_KEY_CO
 import static com.tesco.pma.cycle.service.PMCycleServiceImpl.STATUS_CONDITION;
 import static com.tesco.pma.flow.exception.ErrorCodes.PM_CYCLE_MORE_THAN_ONE_IN_STATUSES;
 
+/**
+ * Find cycle by composite key and statuses
+ *
+ * Params: ALLOWED_STATUSES - PM cycle statuses
+ * PM_CYCLE_KEY - composite key
+ */
 @Component
 @RequiredArgsConstructor
 public class FindCycleHandler extends CamundaAbstractFlowHandler {
