@@ -8,7 +8,6 @@ import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
-import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.event.service.EventSender;
@@ -80,7 +79,6 @@ public class ReviewServiceImpl implements ReviewService {
     private final PMColleagueCycleService pmColleagueCycleService;
     private final TimelinePointDAO timelinePointDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
-    private final PMCycleService pmCycleService;
     private final EventSender eventSender;
     private final ProfileService profileService;
 
@@ -88,7 +86,6 @@ public class ReviewServiceImpl implements ReviewService {
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     private static final String COLLEAGUE_CYCLE_UUID_PARAMETER_NAME = "colleagueCycleUuid";
     private static final String MANAGER_UUID_PARAMETER_NAME = "managerUuid";
-    private static final String PERFORMANCE_CYCLE_UUID_PARAMETER_NAME = "performanceCycleUuid";
     private static final String TL_POINT_UUID_PARAMETER_NAME = "tlPointUuid";
     private static final String TYPE_PARAMETER_NAME = "type";
     private static final String NUMBER_PARAMETER_NAME = "number";
@@ -209,9 +206,8 @@ public class ReviewServiceImpl implements ReviewService {
             throw notFound(REVIEW_NOT_FOUND,
                     Map.of(MANAGER_UUID_PARAMETER_NAME, managerUuid));
         } else {
-            results.forEach(colleagueReviews -> {
-                colleagueReviews.setTimeline(getCycleTimelineByColleague(colleagueReviews.getUuid()));
-            });
+            results.forEach(colleagueReviews ->
+                    colleagueReviews.setTimeline(getCycleTimelineByColleague(colleagueReviews.getUuid())));
         }
         return results;
     }
@@ -776,7 +772,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         var colleague = profileService.findColleagueByColleagueUuid(colleagueUuid);
 
-        if (!colleague.getWorkRelationships().get(0).getIsManager()) {
+        if (Boolean.FALSE.equals(colleague.getWorkRelationships().get(0).getIsManager())) {
             return;
         }
 

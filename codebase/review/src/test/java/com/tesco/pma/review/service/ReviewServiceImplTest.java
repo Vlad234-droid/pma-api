@@ -6,7 +6,6 @@ import com.tesco.pma.configuration.MessageSourceConfig;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
-import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.error.ApiExceptionHandler;
 import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.NotFoundException;
@@ -85,9 +84,6 @@ class ReviewServiceImplTest {
 
     @MockBean
     private ReviewAuditLogDAO mockReviewAuditLogDAO;
-
-    @MockBean
-    private PMCycleService pmCycleService;
 
     @SpyBean
     private ReviewServiceImpl reviewService;

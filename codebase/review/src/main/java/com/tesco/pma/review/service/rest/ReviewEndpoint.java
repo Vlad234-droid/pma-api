@@ -5,16 +5,14 @@ import com.tesco.pma.configuration.CaseInsensitiveEnumEditor;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
-import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.DataUploadException;
-import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.file.api.File;
 import com.tesco.pma.file.api.FileType.FileTypeEnum;
 import com.tesco.pma.file.api.FilesUploadMetadata;
+import com.tesco.pma.fs.exception.ErrorCodes;
 import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.logging.TraceUtils;
-import com.tesco.pma.fs.exception.ErrorCodes;
 import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
@@ -89,11 +87,9 @@ public class ReviewEndpoint {
     private static final List<FileTypeEnum> REVIEW_FILE_TYPES = List.of(PDF, DOC, PPT);
     private final ReviewService reviewService;
     private final AuditorAware<UUID> auditorAware;
-    private final PMCycleService pmCycleService;
     private final FileService fileService;
     private final ProfileService profileService;
 
-    private static final String CURRENT_PARAMETER_NAME = "CURRENT";
     private static final String REVIEWS_FILES_PATH = "/home/%s/reviews";
 
     /**
@@ -602,18 +598,6 @@ public class ReviewEndpoint {
 
     private UUID resolveUserUuid() {
         return auditorAware.getCurrentAuditor();
-    }
-
-    private UUID getPMCycleUuid(UUID colleagueUuid, String cycleUuid) {
-        if (cycleUuid.equalsIgnoreCase(CURRENT_PARAMETER_NAME)) {
-            return pmCycleService.getCurrentByColleague(colleagueUuid).getUuid();
-        } else {
-            try {
-                return UUID.fromString(cycleUuid);
-            } catch (IllegalArgumentException e) {
-                throw new InvalidParameterException(HttpStatusCodes.BAD_REQUEST, e.getMessage(), "cycleUuid"); // NOPMD
-            }
-        }
     }
 
     @InitBinder
