@@ -23,7 +23,6 @@ import static com.tesco.pma.flow.exception.ErrorCodes.PM_CYCLE_MORE_THAN_ONE_IN_
 
 /**
  * Find cycle by composite key and statuses
- *
  * Params: ALLOWED_STATUSES - PM cycle statuses
  * PM_CYCLE_KEY - composite key
  */

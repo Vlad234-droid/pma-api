@@ -13,7 +13,6 @@ import java.util.Map;
 
 /**
  * Send event handler
- *
  * Param: Map - EVENT_PARAMS
  * Field injection: eventNameExpression
  */
