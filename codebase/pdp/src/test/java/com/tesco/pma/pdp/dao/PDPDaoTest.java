@@ -17,7 +17,9 @@ import java.util.UUID;
 
 import static com.tesco.pma.pdp.api.PDPGoalStatus.DRAFT;
 import static com.tesco.pma.pdp.api.PDPGoalStatus.PUBLISHED;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class PDPDaoTest extends AbstractDAOTest {
 
@@ -48,8 +50,8 @@ public class PDPDaoTest extends AbstractDAOTest {
     void readGoalByColleagueAndNumber() {
         final var result = instance.readGoalByColleagueAndNumber(COLLEAGUE_UUID, GOAL_NUMBER_2);
 
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(buildGoal(GOAL_UUID_2, GOAL_NUMBER_2, ACHIEVEMENT_DATE_2));
+        assertNotNull(result);
+        assertEquals(buildGoal(GOAL_UUID_2, GOAL_NUMBER_2, ACHIEVEMENT_DATE_2), result);
     }
 
     @Test
@@ -57,8 +59,8 @@ public class PDPDaoTest extends AbstractDAOTest {
     void readByUuid() {
         final var result = instance.readGoalByUuid(COLLEAGUE_UUID, GOAL_UUID_1);
 
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(buildGoal(GOAL_UUID_1, GOAL_NUMBER_1, ACHIEVEMENT_DATE_1));
+        assertNotNull(result);
+        assertEquals(buildGoal(GOAL_UUID_1, GOAL_NUMBER_1, ACHIEVEMENT_DATE_1), result);
     }
 
     @Test
@@ -66,9 +68,9 @@ public class PDPDaoTest extends AbstractDAOTest {
     void readGoalsByColleague() {
         final var result = instance.readGoalsByColleague(COLLEAGUE_UUID);
 
-        assertThat(result).isNotEmpty();
-        assertThat(result).hasSize(2);
-        assertThat(result).isEqualTo(buildGoals(GOAL_UUID_1, GOAL_UUID_2));
+        assertFalse(result.isEmpty());
+        assertEquals(2, result.size());
+        assertEquals(buildGoals(GOAL_UUID_1, GOAL_UUID_2), result);
     }
 
     @Test
@@ -79,7 +81,7 @@ public class PDPDaoTest extends AbstractDAOTest {
 
         final var rowsInserted = instance.createGoal(goal);
 
-        assertThat(rowsInserted).isOne();
+        assertEquals(1, rowsInserted);
     }
 
     @Test
@@ -92,7 +94,7 @@ public class PDPDaoTest extends AbstractDAOTest {
 
         final var rowsUpdated = instance.updateGoal(goal);
 
-        assertThat(rowsUpdated).isOne();
+        assertEquals(1, rowsUpdated);
     }
 
     @Test
@@ -101,7 +103,7 @@ public class PDPDaoTest extends AbstractDAOTest {
     void deleteGoalByUuidAndColleague() {
         final var rowsDeleted = instance.deleteGoalByUuidAndColleague(COLLEAGUE_UUID, GOAL_UUID_2);
 
-        assertThat(rowsDeleted).isOne();
+        assertEquals(1, rowsDeleted);
     }
 
     @Test
@@ -109,8 +111,8 @@ public class PDPDaoTest extends AbstractDAOTest {
     void readEarlyAchievementDate() {
         final var result = instance.readEarlyAchievementDate(COLLEAGUE_UUID);
 
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(ACHIEVEMENT_DATE_1);
+        assertNotNull(result);
+        assertEquals(ACHIEVEMENT_DATE_1, result);
     }
 
     private PDPGoal buildGoal(UUID uuid, int number, LocalDate achievementDate) {
