@@ -85,13 +85,12 @@ public class PMProcessEndpoint {
     @PostMapping(value = "/pm-cycles/assignment", produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isProcessManager() or isAdmin()")
     public RestResponse<String> runCycleAssignmentProcess(@RequestBody @NotEmpty List<@NotEmpty String> colleagues) {
-        var processKey = PM_CYCLE_ASSIGNMENT;
         var parameters = Map.of(COLLEAGUE_UUIDS.name(), colleagues);
 
         try {
-            return RestResponse.success(processManagerService.runProcess(processKey, parameters));
+            return RestResponse.success(processManagerService.runProcess(PM_CYCLE_ASSIGNMENT, parameters));
         } catch (ProcessExecutionException e) {
-            throw deploymentException(processKey, parameters, e);
+            throw deploymentException(PM_CYCLE_ASSIGNMENT, parameters, e);
         }
     }
 

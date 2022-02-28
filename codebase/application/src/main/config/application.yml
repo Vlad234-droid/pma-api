@@ -116,7 +116,7 @@ spring:
       com/tesco/pma/fs/exception/AppExceptionMessage,
       com/tesco/pma/flow/BPMExceptionMessages,
       com/tesco/pma/tip/exception/AppExceptionMessage,
-      com/tesco/pma/event/exception/AppEventMessage,
+      com/tesco/pma/event/exception/AppEventMessages,
       com/tesco/pma/pdp/exception/AppExceptionMessage,
       com/tesco/pma/reporting/dashboard/exception/AppExceptionMessage
     encoding: UTF-8
