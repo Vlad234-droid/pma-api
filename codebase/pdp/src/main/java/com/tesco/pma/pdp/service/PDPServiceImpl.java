@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,6 +21,7 @@ import java.util.UUID;
 import static com.tesco.pma.exception.ErrorCodes.CONSTRAINT_VIOLATION;
 import static com.tesco.pma.pdp.api.PDPGoalStatus.PUBLISHED;
 import static com.tesco.pma.pdp.exception.ErrorCodes.PDP_ALREADY_EXISTS;
+import static com.tesco.pma.pdp.exception.ErrorCodes.PDP_GOAL_NOT_FOUND_BY_COLLEAGUE;
 import static com.tesco.pma.pdp.exception.ErrorCodes.PDP_GOAL_NOT_FOUND_BY_COLLEAGUE_AND_NUMBER;
 import static com.tesco.pma.pdp.exception.ErrorCodes.PDP_GOAL_NOT_FOUND_BY_ID;
 
@@ -103,5 +105,13 @@ public class PDPServiceImpl implements PDPService {
     @Override
     public List<PDPGoal> getGoals(UUID colleagueUuid) {
         return pdpDao.readGoalsByColleague(colleagueUuid);
+    }
+
+    @Override
+    public LocalDate getEarlyAchievementDate(UUID colleagueUuid) {
+        return Optional.ofNullable(pdpDao.readEarlyAchievementDate(colleagueUuid))
+                .orElseThrow(() -> new NotFoundException(PDP_GOAL_NOT_FOUND_BY_COLLEAGUE.getCode(),
+                        messageSourceAccessor.getMessage(PDP_GOAL_NOT_FOUND_BY_COLLEAGUE,
+                                Map.of(COLLEAGUE_UUID, colleagueUuid))));
     }
 }
