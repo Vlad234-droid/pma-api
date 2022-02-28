@@ -1,7 +1,6 @@
 package com.tesco.pma.cycle.service;
 
 import com.tesco.pma.api.DictionaryFilter;
-import com.tesco.pma.bpm.api.DeploymentInfo;
 import com.tesco.pma.bpm.api.ProcessExecutionException;
 import com.tesco.pma.bpm.api.ProcessManagerService;
 import com.tesco.pma.colleague.api.ColleagueSimple;
@@ -19,7 +18,6 @@ import com.tesco.pma.cycle.dao.PMCycleDAO;
 import com.tesco.pma.cycle.exception.ErrorCodes;
 import com.tesco.pma.cycle.exception.PMCycleException;
 import com.tesco.pma.cycle.api.model.PMProcessModelParser;
-import com.tesco.pma.exception.InitializationException;
 import com.tesco.pma.util.ResourceProvider;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
@@ -43,7 +41,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,6 +87,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     private final PMProcessService pmProcessService;
     private final FileService fileService;
     private final ResourceProvider resourceProvider;
+    private final DeploymentService deploymentService;
 
     private static final String ORG_KEY_PARAMETER_NAME = "organisationKey";
     private static final String TEMPLATE_UUID_PARAMETER_NAME = "templateUUID";
@@ -363,24 +361,6 @@ public class PMCycleServiceImpl implements PMCycleService {
         return new PMCycleException(errorCode.getCode(), messageSourceAccessor.getMessage(errorCode.getCode(), params), null, cause);
     }
 
-
-    private String intDeployProcess(UUID templateUuid, String processName) throws InitializationException {
-
-        var file = fileService.get(templateUuid, true);
-        InputStream fileContent = new ByteArrayInputStream(file.getFileContent());
-
-        String resourceName = file.getFileName();
-
-        DeploymentInfo deploymentInfo = processManagerService.deploy(processName,
-                Map.of(resourceName, fileContent));
-        log.debug("Deployment id: {}", deploymentInfo.getId());
-
-
-        List<String> procdefs = processManagerService.getProcessesIds(deploymentInfo.getId(), resourceName);
-
-        return procdefs.iterator().next();
-    }
-
     private PMCycle intCreate(PMCycle cycle, UUID loggedUserUUID) {
         log.debug("Request to create performance cycle : {}, by user UUID: {}", cycle, loggedUserUUID);
 
@@ -431,7 +411,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         }
 
         try {
-            var processId = intDeployProcess(cycle.getTemplate().getUuid(), processKey);
+            var processId = deploymentService.deploy(cycle.getTemplate().getUuid());
             log.debug("Process definition id: {}", processId);
             intUpdateStatus(uuid, PMCycleStatus.REGISTERED, null); // todo move status map to BPMN or DMN
 

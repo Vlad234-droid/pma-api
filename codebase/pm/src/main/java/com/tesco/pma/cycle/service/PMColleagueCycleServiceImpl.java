@@ -31,11 +31,13 @@ import java.util.Map;
 import java.util.UUID;
 
 import static com.tesco.pma.api.DictionaryFilter.includeFilter;
+import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
+import static com.tesco.pma.cycle.api.PMCycleStatus.REGISTERED;
+import static com.tesco.pma.cycle.api.PMCycleStatus.STARTED;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_COLLEAGUE_CYCLE_ALREADY_EXISTS;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_COLLEAGUE_CYCLE_NOT_EXIST;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_BY_UUID_AND_STATUS;
 import static com.tesco.pma.logging.TraceId.TRACE_ID_HEADER;
-import static com.tesco.pma.process.api.PMProcessStatus.STARTED;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Slf4j
@@ -124,7 +126,7 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
     @Override
     public void start(UUID cycleUuid, UUID colleagueUuid) {
 
-        DictionaryFilter<PMCycleStatus> statusFilter = includeFilter(PMCycleStatus.REGISTERED);
+        DictionaryFilter<PMCycleStatus> statusFilter = includeFilter(REGISTERED, ACTIVE, STARTED);
         var cycle = cycleDAO.read(cycleUuid, statusFilter);
         if (null == cycle) {
             throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID_AND_STATUS,
@@ -132,12 +134,11 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
                             CYCLE_STATUSES_PARAMETER_NAME, statusFilter.getItems()));
         }
 
-        DictionaryFilter<PMProcessStatus> processStatusFilter = includeFilter(PMProcessStatus.REGISTERED);
-        var processes = pmProcessService.findByCycleUuidAndStatus(cycleUuid, processStatusFilter);
+        var processes = pmProcessService.findByCycleUuidAndStatus(cycleUuid, null);
         if (isEmpty(processes) || processes.size() > 1) {
             throw new NotFoundException(PMProcessErrorCodes.PROCESS_NOT_FOUND_BY_CYCLE.getCode(),
                     messageSourceAccessor.getMessage(PMProcessErrorCodes.PROCESS_NOT_FOUND_BY_CYCLE,
-                            Map.of(CYCLE_UUID, cycleUuid, STATUS_FILTER, processStatusFilter)));
+                            Map.of(CYCLE_UUID, cycleUuid)));
         }
 
         var process = processes.iterator().next();
@@ -145,7 +146,7 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
             var processUUID = processManagerService.runProcessById(process.getBpmProcessId(),
                     prepareFlowProperties(cycle, colleagueUuid));
             log.debug("Started process: {}", processUUID);
-            pmProcessService.updateStatus(process.getId(), STARTED, processStatusFilter);
+            pmProcessService.updateStatus(process.getId(), PMProcessStatus.STARTED, null);
         } catch (ProcessExecutionException e) {
             log.error("Can't start process: {}", process.getBpmProcessId());
         }
