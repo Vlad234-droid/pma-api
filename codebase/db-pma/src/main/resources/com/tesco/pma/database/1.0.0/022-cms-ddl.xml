@@ -1,0 +1,1330 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet author="adublyanin" id="1">
+        <createTable remarks="Content entity" tableName="cms_content">
+
+            <column name="uuid" type="${uuid_type}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="cms_content_pk"/>
+            </column>
+
+            <column name="status_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="key" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="description" type="VARCHAR(500)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="created_by" type="${uuid_type}">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_time" type="timestamptz">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="version" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="properties" type="jsonb" />
+
+        </createTable>
+
+    </changeSet>
+
+    <changeSet author="adublyanin" id="2">
+        <insert tableName="cms_content">
+            <column name="uuid" value="ff53e12f-0a69-4500-8e7d-bf63f993a225"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/your-contribution"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/your-contribution"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tesco.sharepoint.com/:u:/r/sites/TescoSourcingPeopleTeamSite/SitePages/Your-Contribution.aspx?csf=1&amp;web=1&amp;e=5q7nR8"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="18e185c8-a535-48f8-8f9d-f79aae13f703"/>
+            <column name="key" value="help-faqs/mastering-conversations"/>
+            <column name="title" value="help-faqs/mastering-conversations"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://learningattesco.learningpool.com/course/view.php?id=1529"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="8007de9c-943a-461a-8182-346a30198e4d"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/our-purpose-and-strategic-pillars"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/our-purpose-and-strategic-pillars"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tesco.sharepoint.com/sites/TescoSourcingCommunications/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FTescoSourcingCommunications%2FShared%20Documents%2FMaterials%20for%20sharing%2FPurpose%2FOur%20Purpose%20%5F%20Feb%202022%2Epdf&amp;parent=%2Fsites%2FTescoSourcingCommunications%2FShared%20Documents%2FMaterials%20for%20sharing%2FPurpose&amp;p=true&amp;wdLOR=c956B0EB2%2DA902%2D4701%2DBFBC%2D74B9CAB2C07A&amp;ct=1644571204296&amp;or=Outlook-Body&amp;cid=2A6457DD-2A2F-47D8-B5A0-43725452EADF"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="ce59091e-bcdd-439b-b50a-3e83a8ca7006"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/everyday-conversations"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/everyday-conversations"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://help.ourtesco.com/hc/en-us/articles/4415276897042-3-Everyday-conversations"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="2135c799-6cf8-4033-8a14-9c70d0b461cb"/>
+            <column name="key" value="help-faqs/countries/in/ids/managing-a-team-at-tesco"/>
+            <column name="title" value="help-faqs/countries/in/ids/managing-a-team-at-tesco"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tescobengaluru.e-learningportal.com/"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="3c9b3df0-afac-47d8-953d-2576f20f0851"/>
+            <column name="key" value="help-faqs/countries/ie/ids/opportunities-to-get-on"/>
+            <column name="title" value="help-faqs/countries/ie/ids/opportunities-to-get-on"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://colleague-help.ourtesco.com/hc/en-us/sections/4402719375892-Introduction-Opportunities-to-Get-On-Republic-of-Ireland"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="a68a86ac-fcd9-4b9e-b833-e50fd7275106"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/our-win-together-behaviours"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/our-win-together-behaviours"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": ""}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="8988e483-5838-4bdc-b71e-b9b85d29eca8"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/our-win-together-behaviours"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/our-win-together-behaviours"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://help.ourtesco.com/hc/en-us/articles/4415274741266-9-Our-Win-Together-behaviours"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="6bebde78-7581-4433-91fc-8c3692e940aa"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/mastering-feedback"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/mastering-feedback"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://help.ourtesco.com/hc/en-us/articles/4415274863122-14-Mastering-feedback"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="b17fc367-21a6-4255-8cc7-a19919ca8005"/>
+            <column name="key" value="help-faqs/our-purpose-and-strategic-pillars"/>
+            <column name="title" value="help-faqs/our-purpose-and-strategic-pillars"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://www.ourtesco.com/colleague/our-purpose"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="bb7a4e20-4b20-452f-8567-787d8230a18b"/>
+            <column name="key" value="help-faqs/countries/ie/ids/our-win-together-behaviours"/>
+            <column name="title" value="help-faqs/countries/ie/ids/our-win-together-behaviours"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://colleague-help.ourtesco.com/hc/en-us/articles/4417181771540-Our-Win-Together-behaviours"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="165bc0bf-d9ef-49c1-bafa-04018e98a3f4"/>
+            <column name="key" value="help-faqs/countries/ie/ids/further-learning-for-managers"/>
+            <column name="title" value="help-faqs/countries/ie/ids/further-learning-for-managers"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://colleague-help.ourtesco.com/hc/en-us/articles/360044848892-Learning-at-Tesco-ROI-"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="21037d9b-2b94-4737-b0f8-ece0b923a9b1"/>
+            <column name="key" value="help-faqs/further-learning-for-managers"/>
+            <column name="title" value="help-faqs/further-learning-for-managers"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://learningattesco.learningpool.com/course/view.php?id=1252"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="66cde6d7-ff10-4e93-b653-4f9b5e91dbf9"/>
+            <column name="key" value="help-faqs/countries/in/ids/our-purpose-and-strategic-pillars"/>
+            <column name="title" value="help-faqs/countries/in/ids/our-purpose-and-strategic-pillars"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tesco.sharepoint.com/sites/Mission-23?OR=Teams-HL&amp;CT=1639989328664"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="24346efb-bc6a-48bd-afe3-440e5d347722"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/managing-a-team-at-tesco"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/managing-a-team-at-tesco"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://help.ourtesco.com/hc/en-us/articles/4415285138450-10-Managing-a-team-at-Tesco-"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="e4973c12-d1cb-4dc3-be11-f2a1149c5651"/>
+            <column name="key" value="help-faqs/countries/in/ids/creating-a-winning-performance-culture"/>
+            <column name="title" value="help-faqs/countries/in/ids/creating-a-winning-performance-culture"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tescobengaluru.e-learningportal.com/"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="20ba836b-564f-479e-a356-8e25f9beeb62"/>
+            <column name="key" value="help-faqs/countries/ie/ids/mastering-feedback"/>
+            <column name="title" value="help-faqs/countries/ie/ids/mastering-feedback"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": ""}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="c505409d-6807-45bf-83d6-7ee955f3b837"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/mastering-conversations"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/mastering-conversations"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tesco.e-learningportal.com/"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="fe3adc5e-8cf2-4baf-892f-d701c9399d87"/>
+            <column name="key" value="help-faqs/opportunities-to-get-on"/>
+            <column name="title" value="help-faqs/opportunities-to-get-on"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://colleague-help.ourtesco.com/hc/en-us/sections/4405652305812-Opportunities-to-Get-On-UK-Colleagues-"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="8a672159-4e90-462a-b770-826378b56c58"/>
+            <column name="key" value="help-faqs/system-guidance-and-faqs"/>
+            <column name="title" value="help-faqs/system-guidance-and-faqs"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://colleague-help.ourtesco.com/hc/en-us/articles/4417358220820-System-guides-learning-and-help"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="baf03281-6acf-4d01-a059-6b9a8db3ec7e"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/further-learning-for-managers"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/further-learning-for-managers"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tesco.sharepoint.com/:x:/s/TescoSourcingPeopleTeamSite/EYiKjSuBuSBGjgjbgoftHiIBXoDKxQm1Sf6C0ug5KMLtmg?e=ObHmEZ&amp;CID=D3A85C43-AA11-4342-88B1-DB20B45A9E3B&amp;wdLOR=c25A44C3C-09F7-4E0F-94D3-F84AF6E83B04"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="66ad38aa-4632-494b-86c4-c60c0c5c3579"/>
+            <column name="key" value="help-faqs/countries/in/ids/everyones-welcome"/>
+            <column name="title" value="help-faqs/countries/in/ids/everyones-welcome"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://www.tescobengaluru.com/careers/"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="bd3afc6d-a3c7-4123-b656-dc28c1b3f73f"/>
+            <column name="key" value="help-faqs/countries/in/ids/system-guidance-and-faqs"/>
+            <column name="title" value="help-faqs/countries/in/ids/system-guidance-and-faqs"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://view.pagetiger.com/Your-ContributionBLR"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="22207e23-4126-4d2c-b80f-8ebad968cb6d"/>
+            <column name="key" value="help-faqs/countries/ie/ids/managing-a-team-at-tesco"/>
+            <column name="title" value="help-faqs/countries/ie/ids/managing-a-team-at-tesco"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://colleague-help.ourtesco.com/hc/en-us/articles/360044848892-Learning-at-Tesco-ROI-"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="991ee08d-1331-43d9-a26d-bb2fc03daa37"/>
+            <column name="key" value="help-faqs/countries/ie/ids/mastering-conversations"/>
+            <column name="title" value="help-faqs/countries/ie/ids/mastering-conversations"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://colleague-help.ourtesco.com/hc/en-us/articles/360044848892-Learning-at-Tesco-ROI-"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="e4ef6c4e-b7a6-4936-b53a-37830361c797"/>
+            <column name="key" value="help-faqs/countries/in/ids/managing-underperformance"/>
+            <column name="title" value="help-faqs/countries/in/ids/managing-underperformance"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tescobengaluru.e-learningportal.com/?t=16CCE52818AE&amp;ud=tescobengaluru&amp;s=B5FDC98C%2D0BDA%2D3250%2DAAC994F17CD6AB1F&amp;spDomainId=A6D4A2D2%2D0561%2D84B7%2D744E237B7B07F71E&amp;spInstId=A92CFB6D%2D1EC9%2DB3EF%2DC46CF99CD0787507&amp;action=page&amp;ts=202202141412&amp;spCode=Policy%2DCentral"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="0920433c-49df-420f-995e-8d200ab99191"/>
+            <column name="key" value="help-faqs/countries/in/ids/everyday-conversations"/>
+            <column name="title" value="help-faqs/countries/in/ids/everyday-conversations"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://view.pagetiger.com/Your-ContributionBLR"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="b375dc2c-d05f-4c95-8279-90022a66a94c"/>
+            <column name="key" value="help-faqs/countries/ie/ids/everyones-welcome"/>
+            <column name="title" value="help-faqs/countries/ie/ids/everyones-welcome"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://colleague-help.ourtesco.com/hc/en-us/articles/4405691414548-Everyone-s-Welcome-Digital-Learning"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="603da24e-004a-4f45-810a-d26e723a17a3"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/creating-a-winning-performance-culture"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/creating-a-winning-performance-culture"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tesco.e-learningportal.com/"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="6774b9e2-6119-4570-9906-0c2b1e98b220"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/being-an-inclusive-manager"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/being-an-inclusive-manager"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tesco.e-learningportal.com/"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="f924d448-db9c-4a7f-94a6-40f5af4c1651"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/managing-underperformance"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/managing-underperformance"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://help.ourtesco.com/hc/en-us/articles/4415277089682-15-Managing-underperformance"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="ba52fd87-c51f-4f36-a17e-5288a5a02cbc"/>
+            <column name="key" value="help-faqs/countries/in/ids/being-an-inclusive-manager"/>
+            <column name="title" value="help-faqs/countries/in/ids/being-an-inclusive-manager"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tescobengaluru.e-learningportal.com/"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="1a0aff98-f4ee-491f-888c-10d326996bb6"/>
+            <column name="key" value="help-faqs/performance-reviews"/>
+            <column name="title" value="help-faqs/performance-reviews"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://colleague-help.ourtesco.com/hc/en-us/articles/4417350679956-Performance-reviews"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="c2fbc67a-b227-499e-931c-2a169c8cfbf7"/>
+            <column name="key" value="help-faqs/everyones-welcome"/>
+            <column name="title" value="help-faqs/everyones-welcome"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://www.ourtesco.com/diversity-and-inclusion/"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="213ef7ac-ed01-42bd-9370-184cf79cb070"/>
+            <column name="key" value="help-faqs/managing-a-team-at-tesco"/>
+            <column name="title" value="help-faqs/managing-a-team-at-tesco"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://learningattesco.learningpool.com/course/view.php?id=1212"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="41a09456-e00f-487e-9370-0e3ca63db563"/>
+            <column name="key" value="help-faqs/countries/ie/ids/everyday-conversations"/>
+            <column name="title" value="help-faqs/countries/ie/ids/everyday-conversations"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://colleague-help.ourtesco.com/hc/en-us/articles/4417350830100-Everyday-conversations"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="cecfc5ae-3463-4419-b2af-14d33eb0c585"/>
+            <column name="key" value="help-faqs/creating-a-winning-performance-culture"/>
+            <column name="title" value="help-faqs/creating-a-winning-performance-culture"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": ""}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="2d3287e8-2b5f-42bd-80b8-c2127a592cba"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/creating-a-winning-performance-culture"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/creating-a-winning-performance-culture"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://help.ourtesco.com/hc/en-us/articles/4415285155602-11-Creating-a-winning-performance-culture"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="b3fd1807-44b0-4564-a583-33beac702175"/>
+            <column name="key" value="help-faqs/your-contribution"/>
+            <column name="title" value="help-faqs/your-contribution"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://colleague-help.ourtesco.com/hc/en-us/articles/4410479364500-Introducing-Your-Contribution"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="894f01a7-b232-4929-91e0-a93241914a5e"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/opportunities-to-get-on"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/opportunities-to-get-on"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tesco.sharepoint.com/sites/TescoSourcingPeopleTeamSite/SitePages/Your Opportunities to Get On.aspx"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="ad1846ba-6181-4230-a479-75cb642774c0"/>
+            <column name="key" value="help-faqs/countries/ie/ids/performance-reviews"/>
+            <column name="title" value="help-faqs/countries/ie/ids/performance-reviews"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://colleague-help.ourtesco.com/hc/en-us/articles/4417338519316-Performance-reviews"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="158ec6b7-2a2e-498e-9ca1-bc4c15616d84"/>
+            <column name="key" value="help-faqs/countries/ie/ids/being-an-inclusive-manager"/>
+            <column name="title" value="help-faqs/countries/ie/ids/being-an-inclusive-manager"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://colleague-help.ourtesco.com/hc/en-us/articles/360044848892-Learning-at-Tesco-ROI-"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="e0423600-e43a-49b2-a610-4f8d5b21b881"/>
+            <column name="key" value="help-faqs/countries/in/ids/further-learning-for-managers"/>
+            <column name="title" value="help-faqs/countries/in/ids/further-learning-for-managers"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tescobengaluru.e-learningportal.com/"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="3770921d-e079-4d14-8611-e5bbdfcafdb0"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/strategic-objectives"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/strategic-objectives"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://help.ourtesco.com/hc/en-us/articles/4415259478546-4-Strategic-objectives"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="dba26dce-ea1c-467c-8ac6-4210e5aee4c4"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/everyones-welcome"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/everyones-welcome"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tesco.sharepoint.com/sites/TescoSourcingPeopleTeamSite/SitePages/Diversity-%26-Inclusion.aspx"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="03d86c10-074e-438d-b6ca-285ea272b063"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/opportunities-to-get-on"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/opportunities-to-get-on"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://help.ourtesco.com/hc/en-us/articles/4415274688786-5-Opportunities-to-Get-On"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="91145e1e-fbae-4b37-b3dc-2a2b5b2fc843"/>
+            <column name="key" value="help-faqs/countries/in/ids/opportunities-to-get-on"/>
+            <column name="title" value="help-faqs/countries/in/ids/opportunities-to-get-on"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://view.pagetiger.com/Your-ContributionBLR"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="37b76f60-e2b8-4c26-9367-b8486a2dce34"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/mastering-feedback"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/mastering-feedback"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tesco.e-learningportal.com/"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="2914475f-8f1d-4976-a68a-6cc52bafe90c"/>
+            <column name="key" value="help-faqs/countries/in/ids/performance-reviews"/>
+            <column name="title" value="help-faqs/countries/in/ids/performance-reviews"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://view.pagetiger.com/Your-ContributionBLR"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="21c25f89-d66d-43bf-94df-2338ffa580d5"/>
+            <column name="key" value="help-faqs/countries/ie/ids/your-contribution"/>
+            <column name="title" value="help-faqs/countries/ie/ids/your-contribution"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://colleague-help.ourtesco.com/hc/en-us/articles/4415780139028-Introducing-Your-Contribution"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="1f2947dd-5fef-4075-9ed4-448aea4362f7"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/managing-a-team-at-tesco"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/managing-a-team-at-tesco"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tesco.e-learningportal.com/"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="21686ef4-6826-4e9a-b1c7-19486e5edc20"/>
+            <column name="key" value="help-faqs/countries/ie/ids/managing-underperformance"/>
+            <column name="title" value="help-faqs/countries/ie/ids/managing-underperformance"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://www.ourtesco.ie/working-at-tesco/people-policies/letters-for-managers/"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="d4ab4dbd-074a-456e-9ab6-122e0c48f983"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/performance-reviews"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/performance-reviews"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tesco.sharepoint.com/:u:/r/sites/TescoSourcingPeopleTeamSite/SitePages/Performance-Reviews.aspx?csf=1&amp;web=1&amp;e=SRzbrY"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="57efa1e5-2961-4153-a83a-a052f84d8258"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/our-purpose-and-strategic-pillars"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/our-purpose-and-strategic-pillars"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://help.ourtesco.com/hc/en-us/articles/4415285103762-7-Our-purpose-"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="1d024c04-6659-44d0-98e5-e0c570f176b9"/>
+            <column name="key" value="help-faqs/countries/in/ids/your-contribution"/>
+            <column name="title" value="help-faqs/countries/in/ids/your-contribution"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://view.pagetiger.com/Your-ContributionBLR"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="5814dc2a-28be-4fbd-b1b8-9e7fe4b183e2"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/feedback-at-tesco"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/feedback-at-tesco"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://help.ourtesco.com/hc/en-us/articles/4415259454354-2-Everyday-feedback"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="f28b9d70-9f46-4d89-8b57-4560d7960c56"/>
+            <column name="key" value="help-faqs/strategic-objectives"/>
+            <column name="title" value="help-faqs/strategic-objectives"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://colleague-help.ourtesco.com/hc/en-us/articles/4417164321428-Strategic-objectives"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="687b5acf-91ba-4054-8a4a-4cc699fa9b8a"/>
+            <column name="key" value="help-faqs/countries/in/ids/feedback-at-tesco"/>
+            <column name="title" value="help-faqs/countries/in/ids/feedback-at-tesco"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://view.pagetiger.com/Your-ContributionBLR"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="44d033b3-45c4-438c-8467-0a42dc4b8bfb"/>
+            <column name="key" value="help-faqs/countries/ie/ids/our-purpose-and-strategic-pillars"/>
+            <column name="title" value="help-faqs/countries/ie/ids/our-purpose-and-strategic-pillars"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://www.ourtesco.ie/our-purpose"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="60509e6b-51df-4757-bddd-1e7054b00ac8"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/strategic-objectives"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/strategic-objectives"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tesco.sharepoint.com/:u:/r/sites/TescoSourcingPeopleTeamSite/SitePages/Strategic-Objectives.aspx?csf=1&amp;web=1&amp;e=bhu4Ia"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="1512f372-dfcd-4473-9363-d004121970b7"/>
+            <column name="key" value="help-faqs/countries/in/ids/strategic-objectives"/>
+            <column name="title" value="help-faqs/countries/in/ids/strategic-objectives"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tescobengaluru.e-learningportal.com/"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="87c58fdc-08ab-4401-8b85-a143ea3f9709"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/mastering-conversations"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/mastering-conversations"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://help.ourtesco.com/hc/en-us/articles/4415274841234-13-Mastering-conversations-"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="0599aa58-dc94-4db8-a859-788dada8840a"/>
+            <column name="key" value="help-faqs/countries/ie/ids/strategic-objectives"/>
+            <column name="title" value="help-faqs/countries/ie/ids/strategic-objectives"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://colleague-help.ourtesco.com/hc/en-us/articles/4417173239060-Strategic-objectives"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="967aa40b-f814-49b1-9d68-e9a0e5235e3b"/>
+            <column name="key" value="help-faqs/managing-underperformance"/>
+            <column name="title" value="help-faqs/managing-underperformance"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": ""}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="d9f21f24-7989-4b16-a663-3102e09deefc"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/your-contribution"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/your-contribution"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://help.ourtesco.com/hc/en-us/articles/4415274566930-1-Your-Contribution"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="20c5f4e3-0fda-4bbb-a54f-58427f079896"/>
+            <column name="key" value="help-faqs/everyday-conversations"/>
+            <column name="title" value="help-faqs/everyday-conversations"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://colleague-help.ourtesco.com/hc/en-us/articles/4417350618900-Everyday-conversations"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="01eba837-b5bf-472e-ad63-42be6643567c"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/performance-reviews"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/performance-reviews"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://help.ourtesco.com/hc/en-us/articles/4419953732242-4-Performance-reviews"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="881459e9-b8d7-4126-96d7-9764717d77ee"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/further-learning-for-managers"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/further-learning-for-managers"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://help.ourtesco.com/hc/en-us/articles/4415277107218-16-Further-learning-for-managers"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="e2cc4718-210e-4eb8-b942-adfa028006d1"/>
+            <column name="key" value="help-faqs/countries/ie/ids/system-guidance-and-faqs"/>
+            <column name="title" value="help-faqs/countries/ie/ids/system-guidance-and-faqs"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://colleague-help.ourtesco.com/hc/en-us/articles/4417350843540-System-guides-learning-and-help"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="3872489f-9394-49f3-b8ba-3a16aa5c8c10"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/feedback-at-tesco"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/feedback-at-tesco"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tesco.sharepoint.com/:u:/r/sites/TescoSourcingPeopleTeamSite/SitePages/Everyday-Feedback.aspx?csf=1&amp;web=1&amp;e=siHJc8"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="19c6f87a-d30b-4e68-aa0e-e656a4d10fa7"/>
+            <column name="key" value="help-faqs/countries/in/ids/mastering-conversations"/>
+            <column name="title" value="help-faqs/countries/in/ids/mastering-conversations"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tescobengaluru.e-learningportal.com/"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="bc541c95-8423-49c4-b1f1-26eb0f8550df"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/system-guidance-and-faqs"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/system-guidance-and-faqs"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tesco.sharepoint.com/:u:/r/sites/TescoSourcingPeopleTeamSite/SitePages/System-Guides,-Learning-and-Help.aspx?csf=1&amp;web=1&amp;e=HUY4gs"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="aa5a4b38-e3f5-481e-adc8-9306db54aba8"/>
+            <column name="key" value="help-faqs/countries/ie/ids/feedback-at-tesco"/>
+            <column name="title" value="help-faqs/countries/ie/ids/feedback-at-tesco"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://colleague-help.ourtesco.com/hc/en-us/articles/4415780149268-Everyday-feedback"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="90495483-0848-45de-83ca-c545f56a9901"/>
+            <column name="key" value="help-faqs/mastering-feedback"/>
+            <column name="title" value="help-faqs/mastering-feedback"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": ""}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="5d38b66b-ac9f-4d89-8b53-fb806a46a98c"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/system-guidance-and-faqs"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/system-guidance-and-faqs"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://help.ourtesco.com/hc/en-us/sections/4419952578962-System-Guidance-and-FAQs"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="a5bf465e-f435-414a-882e-48eb5af76246"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/everyday-conversations"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/everyday-conversations"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tesco.sharepoint.com/:u:/r/sites/TescoSourcingPeopleTeamSite/SitePages/Everyday-Conversations.aspx?csf=1&amp;web=1&amp;e=sH2SEb"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="721e5754-b559-4203-84cb-338a573d27b6"/>
+            <column name="key" value="help-faqs/countries/in/ids/our-win-together-behaviours"/>
+            <column name="title" value="help-faqs/countries/in/ids/our-win-together-behaviours"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tescobengaluru.e-learningportal.com/"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="cdb38e02-1a33-4f6b-9a79-5d5c78c015b6"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/being-an-inclusive-manager"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/being-an-inclusive-manager"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://help.ourtesco.com/hc/en-us/articles/4415277026194-12-Being-an-inclusive-manager"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="cbc287a5-4541-4ceb-a16e-abaaaa3c3ea1"/>
+            <column name="key" value="help-faqs/countries/ie/ids/creating-a-winning-performance-culture"/>
+            <column name="title" value="help-faqs/countries/ie/ids/creating-a-winning-performance-culture"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": ""}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="348f5a5e-58b3-4955-9645-5d9f4ba957f0"/>
+            <column name="key" value="help-faqs/iam-sources/uk hospitality/ids/everyones-welcome"/>
+            <column name="title" value="help-faqs/iam-sources/uk hospitality/ids/everyones-welcome"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://help.ourtesco.com/hc/en-us/articles/4415276932370-6-Everyone-s-welcome"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="12a77a61-d20f-40dd-a356-02c8202fd529"/>
+            <column name="key" value="help-faqs/our-win-together-behaviours"/>
+            <column name="title" value="help-faqs/our-win-together-behaviours"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://colleague-help.ourtesco.com/hc/en-us/articles/4417164337812-Our-Win-Together-behaviours"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="d052fda4-6e4f-4902-a705-f913d34f0412"/>
+            <column name="key" value="help-faqs/being-an-inclusive-manager"/>
+            <column name="title" value="help-faqs/being-an-inclusive-manager"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://learningattesco.learningpool.com/course/view.php?id=1622"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="2fbf7178-89da-41ed-8a8e-cedc1537fa2b"/>
+            <column name="key" value="help-faqs/countries/in/ids/mastering-feedback"/>
+            <column name="title" value="help-faqs/countries/in/ids/mastering-feedback"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tescobengaluru.e-learningportal.com/"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="aa53af86-09e8-4a22-8b13-d525cebc28dc"/>
+            <column name="key" value="help-faqs/iam-sources/peopledataints/ids/managing-underperformance"/>
+            <column name="title" value="help-faqs/iam-sources/peopledataints/ids/managing-underperformance"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://tesco.sharepoint.com/sites/TescoSourcingPeopleTeamSite/Shared Documents/Forms/AllItems.aspx?csf=1&amp;web=1&amp;e=KEPNoz&amp;cid=858fb2f9%2Dce61%2D4c53%2D97dd%2D3951f6c5519e&amp;RootFolder=%2Fsites%2FTescoSourcingPeopleTeamSite%2FShared%20Documents%2FInspiring%20Great%20Performance%20Every%20Day%2FSupporting%20Your%20Performance&amp;FolderCTID=0x01200038418DC5D49E8F49B420977E3665D887"}
+            </column>
+        </insert>
+        <insert tableName="cms_content">
+            <column name="uuid" value="4de23d52-713d-4de9-8d13-f816177ab206"/>
+            <column name="key" value="help-faqs/feedback-at-tesco"/>
+            <column name="title" value="help-faqs/feedback-at-tesco"/>
+            <column name="status_id" value="2"/>
+            <column name="created_by" value="00000000-0000-0000-0000-000000000000"/>
+            <column name="created_time" value="2022-02-18 17:03:23.020000"/>
+            <column name="version" value="1"/>
+            <column name="properties">
+                {"url": "https://colleague-help.ourtesco.com/hc/en-us/articles/4417160813844-Everyday-feedback"}
+            </column>
+        </insert>
+
+
+        <rollback>
+            <delete tableName="cms_content">
+                <where>uuid = 'ff53e12f-0a69-4500-8e7d-bf63f993a225'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '18e185c8-a535-48f8-8f9d-f79aae13f703'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '8007de9c-943a-461a-8182-346a30198e4d'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'ce59091e-bcdd-439b-b50a-3e83a8ca7006'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '2135c799-6cf8-4033-8a14-9c70d0b461cb'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '3c9b3df0-afac-47d8-953d-2576f20f0851'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'a68a86ac-fcd9-4b9e-b833-e50fd7275106'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '8988e483-5838-4bdc-b71e-b9b85d29eca8'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '6bebde78-7581-4433-91fc-8c3692e940aa'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'b17fc367-21a6-4255-8cc7-a19919ca8005'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'bb7a4e20-4b20-452f-8567-787d8230a18b'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '165bc0bf-d9ef-49c1-bafa-04018e98a3f4'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '21037d9b-2b94-4737-b0f8-ece0b923a9b1'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '66cde6d7-ff10-4e93-b653-4f9b5e91dbf9'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '24346efb-bc6a-48bd-afe3-440e5d347722'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'e4973c12-d1cb-4dc3-be11-f2a1149c5651'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '20ba836b-564f-479e-a356-8e25f9beeb62'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'c505409d-6807-45bf-83d6-7ee955f3b837'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'fe3adc5e-8cf2-4baf-892f-d701c9399d87'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '8a672159-4e90-462a-b770-826378b56c58'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'baf03281-6acf-4d01-a059-6b9a8db3ec7e'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '66ad38aa-4632-494b-86c4-c60c0c5c3579'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'bd3afc6d-a3c7-4123-b656-dc28c1b3f73f'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '22207e23-4126-4d2c-b80f-8ebad968cb6d'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '991ee08d-1331-43d9-a26d-bb2fc03daa37'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'e4ef6c4e-b7a6-4936-b53a-37830361c797'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '0920433c-49df-420f-995e-8d200ab99191'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'b375dc2c-d05f-4c95-8279-90022a66a94c'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '603da24e-004a-4f45-810a-d26e723a17a3'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '6774b9e2-6119-4570-9906-0c2b1e98b220'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'f924d448-db9c-4a7f-94a6-40f5af4c1651'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'ba52fd87-c51f-4f36-a17e-5288a5a02cbc'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '1a0aff98-f4ee-491f-888c-10d326996bb6'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'c2fbc67a-b227-499e-931c-2a169c8cfbf7'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '213ef7ac-ed01-42bd-9370-184cf79cb070'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '41a09456-e00f-487e-9370-0e3ca63db563'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'cecfc5ae-3463-4419-b2af-14d33eb0c585'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '2d3287e8-2b5f-42bd-80b8-c2127a592cba'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'b3fd1807-44b0-4564-a583-33beac702175'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '894f01a7-b232-4929-91e0-a93241914a5e'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'ad1846ba-6181-4230-a479-75cb642774c0'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '158ec6b7-2a2e-498e-9ca1-bc4c15616d84'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'e0423600-e43a-49b2-a610-4f8d5b21b881'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '3770921d-e079-4d14-8611-e5bbdfcafdb0'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'dba26dce-ea1c-467c-8ac6-4210e5aee4c4'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '03d86c10-074e-438d-b6ca-285ea272b063'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '91145e1e-fbae-4b37-b3dc-2a2b5b2fc843'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '37b76f60-e2b8-4c26-9367-b8486a2dce34'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '2914475f-8f1d-4976-a68a-6cc52bafe90c'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '21c25f89-d66d-43bf-94df-2338ffa580d5'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '1f2947dd-5fef-4075-9ed4-448aea4362f7'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '21686ef4-6826-4e9a-b1c7-19486e5edc20'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'd4ab4dbd-074a-456e-9ab6-122e0c48f983'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '57efa1e5-2961-4153-a83a-a052f84d8258'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '1d024c04-6659-44d0-98e5-e0c570f176b9'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '5814dc2a-28be-4fbd-b1b8-9e7fe4b183e2'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'f28b9d70-9f46-4d89-8b57-4560d7960c56'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '687b5acf-91ba-4054-8a4a-4cc699fa9b8a'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '44d033b3-45c4-438c-8467-0a42dc4b8bfb'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '60509e6b-51df-4757-bddd-1e7054b00ac8'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '1512f372-dfcd-4473-9363-d004121970b7'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '87c58fdc-08ab-4401-8b85-a143ea3f9709'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '0599aa58-dc94-4db8-a859-788dada8840a'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '967aa40b-f814-49b1-9d68-e9a0e5235e3b'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'd9f21f24-7989-4b16-a663-3102e09deefc'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '20c5f4e3-0fda-4bbb-a54f-58427f079896'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '01eba837-b5bf-472e-ad63-42be6643567c'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '881459e9-b8d7-4126-96d7-9764717d77ee'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'e2cc4718-210e-4eb8-b942-adfa028006d1'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '3872489f-9394-49f3-b8ba-3a16aa5c8c10'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '19c6f87a-d30b-4e68-aa0e-e656a4d10fa7'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'bc541c95-8423-49c4-b1f1-26eb0f8550df'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'aa5a4b38-e3f5-481e-adc8-9306db54aba8'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '90495483-0848-45de-83ca-c545f56a9901'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '5d38b66b-ac9f-4d89-8b53-fb806a46a98c'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'a5bf465e-f435-414a-882e-48eb5af76246'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '721e5754-b559-4203-84cb-338a573d27b6'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'cdb38e02-1a33-4f6b-9a79-5d5c78c015b6'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'cbc287a5-4541-4ceb-a16e-abaaaa3c3ea1'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '348f5a5e-58b3-4955-9645-5d9f4ba957f0'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '12a77a61-d20f-40dd-a356-02c8202fd529'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'd052fda4-6e4f-4902-a705-f913d34f0412'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '2fbf7178-89da-41ed-8a8e-cedc1537fa2b'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = 'aa53af86-09e8-4a22-8b13-d525cebc28dc'</where>
+            </delete>
+            <delete tableName="cms_content">
+                <where>uuid = '4de23d52-713d-4de9-8d13-f816177ab206'</where>
+            </delete>
+        </rollback>
+
+    </changeSet>
+
+</databaseChangeLog>
