@@ -71,7 +71,7 @@
     </select>
 
     <select id="readEarlyAchievementDate" resultType="java.time.LocalDate">
-        SELECT max(achievement_date)
+        SELECT MIN(achievement_date)
         FROM pdp_goal
         WHERE colleague_uuid = #{colleagueUuid}
     </select>

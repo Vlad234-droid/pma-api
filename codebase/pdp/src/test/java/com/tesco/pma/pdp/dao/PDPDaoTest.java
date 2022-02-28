@@ -110,7 +110,7 @@ public class PDPDaoTest extends AbstractDAOTest {
         final var result = instance.readEarlyAchievementDate(COLLEAGUE_UUID);
 
         assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(ACHIEVEMENT_DATE_2);
+        assertThat(result).isEqualTo(ACHIEVEMENT_DATE_1);
     }
 
     private PDPGoal buildGoal(UUID uuid, int number, LocalDate achievementDate) {

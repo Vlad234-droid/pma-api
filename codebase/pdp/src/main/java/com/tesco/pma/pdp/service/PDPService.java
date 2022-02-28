@@ -78,7 +78,7 @@ public interface PDPService {
     /**
      * Get early achievement date of Goals
      * @param colleagueUuid is colleague identifier
-     * @return the latest achievement date of colleague's Goals
+     * @return the earliest achievement date of colleague's Goals
      * @throws NotFoundException if goal by colleagueUuid is not found
      */
     LocalDate getEarlyAchievementDate(@NotNull UUID colleagueUuid);

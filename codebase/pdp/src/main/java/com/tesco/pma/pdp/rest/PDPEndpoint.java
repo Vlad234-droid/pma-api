@@ -193,9 +193,9 @@ public class PDPEndpoint {
     /**
      * Get call that returns early achievement date of Goals as JSON.
      *
-     * @return a RestResponse parameterized with the latest achievement date of Goals
+     * @return a RestResponse parameterized with the earliest achievement date of Goals
      */
-    @Operation(summary = "Get a PDP Goal by its uuid", tags = {"pdp"})
+    @Operation(summary = "Get the earliest achievement date of PDP Goals by its colleague", tags = {"pdp"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found achievement date of Goal")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "PDP Goal not found", content = @Content)
     @GetMapping(path = "/goals/early-achievement-date", produces = MediaType.APPLICATION_JSON_VALUE)

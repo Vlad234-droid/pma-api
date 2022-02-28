@@ -64,7 +64,7 @@ public interface PDPDao {
     List<PDPGoal> readGoalsByColleague(@Param("colleagueUuid") UUID colleagueUuid);
 
     /**
-     * Get the latest achievement date of colleague's goals
+     * Get the earliest achievement date of colleague's goals
      * @param colleagueUuid is colleague identifier
      * @return early achievement date of goals
      */
