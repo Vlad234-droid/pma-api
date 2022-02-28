@@ -113,7 +113,7 @@ class PMCycleDAOTest extends AbstractDAOTest {
     void getAll() {
         var rq = new RequestQuery();
         rq.addFilters("status", ACTIVE.getId());
-        var actual = dao.getAll(rq, false);
+        var actual = dao.findAll(rq, false);
         assertEquals(1, actual.size());
         assertEquals(CYCLE_UUID, actual.get(0).getUuid());
     }

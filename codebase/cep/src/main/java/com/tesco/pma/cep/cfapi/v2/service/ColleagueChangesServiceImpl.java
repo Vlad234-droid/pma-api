@@ -9,16 +9,19 @@ import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
 import com.tesco.pma.colleague.security.service.UserManagementService;
 import com.tesco.pma.event.EventNames;
-import com.tesco.pma.event.EventParams;
 import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.event.service.EventSender;
+import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.logging.LogFormatter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -102,7 +105,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
             sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.POST_CEP_COLLEAGUE_ADDED);
 
             // Send an event to Camunda
-            sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.CEP_COLLEAGUE_ADDED);
+            sendAssignmentEvent(colleagueChangeEventPayload.getColleagueUuid());
         }
         return updated;
     }
@@ -164,7 +167,15 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
     private void sendEvent(UUID colleagueUuid, EventNames eventName) {
         var event = new EventSupport(eventName);
-        event.setEventProperties(Map.of(EventParams.COLLEAGUE_UUID.name(), colleagueUuid));
+        event.setEventProperties(Map.of(FlowParameters.COLLEAGUE_UUID.name(), colleagueUuid));
+        eventSender.sendEvent(event);
+    }
+
+    private void sendAssignmentEvent(UUID colleagueUuid) {
+        var event = new EventSupport(EventNames.PM_COLLEAGUE_CYCLE_ASSIGNMENT);
+        Map<String, Serializable> properties = Map
+                .of(FlowParameters.COLLEAGUE_UUIDS.name(), new ArrayList<>(Collections.singleton(colleagueUuid)));
+        event.setEventProperties(properties);
         eventSender.sendEvent(event);
     }
 
