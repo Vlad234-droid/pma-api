@@ -7,6 +7,7 @@ import com.tesco.pma.cycle.api.CompositePMCycleResponse;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.request.PMCycleUpdateFormRequest;
+import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.exception.InvalidPayloadException;
@@ -47,6 +48,7 @@ public class PMCycleEndpoint {
     public static final String INCLUDE_FORMS = "includeForms";
 
     private final PMCycleService service;
+    private final PMColleagueCycleService pmColleagueCycleService;
     private final AuditorAware<UUID> auditorAware;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
@@ -222,7 +224,7 @@ public class PMCycleEndpoint {
     }
 
     /**
-     * PUT call to start Performance Cycle.
+     * PUT call to start scheduled performance cycle.
      *
      * @param uuid cycle uuid
      * @return sucess
@@ -231,12 +233,32 @@ public class PMCycleEndpoint {
             description = "Performance cycle started",
             tags = {"performance-cycle"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle started")
-    @PutMapping(value = "/pm-cycles/{uuid}/start")
+    @PutMapping(value = "/pm-cycles/{uuid}/start-scheduled")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public RestResponse<?> start(@PathVariable final UUID uuid) {
-        log.debug("REST request to start Process : {}", uuid);
+    public RestResponse<?> startScheduled(@PathVariable final UUID uuid) {
+        log.debug("REST request to start cycle : {}", uuid);
         service.start(uuid);
-        return RestResponse.success();
+        return success();
+    }
+
+    /**
+     * PUT call to start colleague cycle.
+     *
+     * @param cycleUuid     cycle uuid
+     * @param colleagueUuid colleague uuid
+     * @return sucess
+     */
+    @Operation(summary = "Start performance cycle for colleague",
+            description = "Performance cycle started",
+            tags = {"performance-cycle"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle started")
+    @PutMapping(value = "/pm-cycles/{cycleUuid}/colleagues/{colleagueUuid}/start")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public RestResponse<?> startColleagueCycle(@PathVariable final UUID cycleUuid,
+                                               @PathVariable final UUID colleagueUuid) {
+        log.debug("REST request to start cycle : {}, colleague: {}", cycleUuid, colleagueUuid);
+        pmColleagueCycleService.start(cycleUuid, colleagueUuid);
+        return success();
     }
 
     @Operation(summary = "Update form",
