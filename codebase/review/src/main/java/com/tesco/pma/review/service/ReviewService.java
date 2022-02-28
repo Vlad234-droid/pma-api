@@ -22,17 +22,15 @@ import java.util.UUID;
 public interface ReviewService {
 
     /**
-     * Finds review by performanceCycleUuid, colleagueUuid, review type and number.
+     * Finds review by colleagueUuid, review type and number.
      *
-     * @param performanceCycleUuid an identifier of performance cycle
-     * @param colleagueUuid        an identifier of colleague
-     * @param type                 a review type
-     * @param number               a sequence number of review
+     * @param colleagueUuid an identifier of colleague
+     * @param type          a review type
+     * @param number        a sequence number of review
      * @return review
      * @throws NotFoundException if review doesn't exist.
      */
-    Review getReview(@NotNull UUID performanceCycleUuid,
-                     @NotNull UUID colleagueUuid,
+    Review getReview(@NotNull UUID colleagueUuid,
                      @NotNull PMReviewType type,
                      @NotNull Integer number);
 
@@ -45,42 +43,36 @@ public interface ReviewService {
     Review getReview(@NotNull UUID uuid);
 
     /**
-     * Finds reviews by performanceCycleUuid, colleagueUuid and review type
+     * Finds reviews by colleagueUuid and review type
      *
-     * @param performanceCycleUuid an identifier of performance cycle
-     * @param colleagueUuid        an identifier of colleague
-     * @param type                 a review type
+     * @param colleagueUuid an identifier of colleague
+     * @param type          a review type
      * @return a list of reviews
      * @throws NotFoundException if reviews don't exist.
      */
-    List<Review> getReviews(@NotNull UUID performanceCycleUuid,
-                            @NotNull UUID colleagueUuid,
+    List<Review> getReviews(@NotNull UUID colleagueUuid,
                             @NotNull PMReviewType type);
 
     /**
-     * Finds reviews by performanceCycleUuid, colleagueUuid and review type
+     * Finds reviews by colleagueUuid and review type
      *
-     * @param performanceCycleUuid an identifier of performance cycle
-     * @param colleagueUuid        an identifier of colleague
-     * @param type                 a review type
+     * @param colleagueUuid an identifier of colleague
+     * @param type          a review type
      * @return a list of reviews
      * @throws NotFoundException if reviews don't exist.
      */
-    List<Review> getReviews(@NotNull UUID performanceCycleUuid,
-                            @NotNull UUID colleagueUuid,
+    List<Review> getReviews(@NotNull UUID colleagueUuid,
                             @NotNull PMReviewType type,
                             @NotNull PMTimelinePointStatus status);
 
     /**
-     * Finds reviews by performanceCycleUuid, colleagueUuid
+     * Finds reviews by colleagueUuid
      *
-     * @param performanceCycleUuid an identifier of performance cycle
-     * @param colleagueUuid        an identifier of colleague
+     * @param colleagueUuid an identifier of colleague
      * @return a list of reviews
      * @throws NotFoundException if reviews don't exist.
      */
-    List<Review> getReviewsByColleague(@NotNull UUID performanceCycleUuid,
-                                       @NotNull UUID colleagueUuid);
+    List<Review> getReviewsByColleague(@NotNull UUID colleagueUuid);
 
     /**
      * Finds list of colleague's view with active reviews, timeline points etc. by managerUuid
@@ -95,56 +87,52 @@ public interface ReviewService {
     /**
      * Creates review.
      *
-     * @param review               a review
-     * @param performanceCycleUuid an identifier of performance cycle
-     * @param colleagueUuid        an identifier of colleague
+     * @param review        a review
+     * @param colleagueUuid an identifier of colleague
      * @return created review.
      * @throws DatabaseConstraintViolationException review already exist.
      */
-    Review createReview(@NotNull Review review, @NotNull UUID performanceCycleUuid, @NotNull UUID colleagueUuid);
+    Review createReview(@NotNull Review review,
+                        @NotNull UUID colleagueUuid);
 
     /**
      * Updates existing review.
      *
-     * @param review               a review
-     * @param performanceCycleUuid an identifier of performance cycle
-     * @param colleagueUuid        an identifier of colleague
+     * @param review        a review
+     * @param colleagueUuid an identifier of colleague
      * @return updated review.
      * @throws NotFoundException if review doesn't exist.
      */
-    Review updateReview(@NotNull Review review, @NotNull UUID performanceCycleUuid,
-                        @NotNull UUID colleagueUuid, @NotNull UUID loggedUserUuid);
+    Review updateReview(@NotNull Review review,
+                        @NotNull UUID colleagueUuid,
+                        @NotNull UUID loggedUserUuid);
 
     /**
      * Create/update reviews.
      *
-     * @param performanceCycleUuid an identifier of performance cycle
-     * @param colleagueUuid        an identifier of colleague
-     * @param type                 a review type
-     * @param reviews              list of reviews.
+     * @param colleagueUuid an identifier of colleague
+     * @param type          a review type
+     * @param reviews       list of reviews.
      * @return created/updated reviews.
      * @throws DatabaseConstraintViolationException review already exist.
      */
-    List<Review> updateReviews(@NotNull UUID performanceCycleUuid,
-                               @NotNull UUID colleagueUuid,
+    List<Review> updateReviews(@NotNull UUID colleagueUuid,
                                @NotNull PMReviewType type,
                                List<Review> reviews, UUID loggedUserUuid);
 
     /**
      * Updates reviews status.
      *
-     * @param performanceCycleUuid an identifier of performance cycle
-     * @param colleagueUuid        an identifier of colleague
-     * @param type                 a review type
-     * @param reviews              list of review
-     * @param status               a new review status
-     * @param reason               a reason of changing status
-     * @param loggedUserUuid       an identifier of logged user
+     * @param colleagueUuid  an identifier of colleague
+     * @param type           a review type
+     * @param reviews        list of review
+     * @param status         a new review status
+     * @param reason         a reason of changing status
+     * @param loggedUserUuid an identifier of logged user
      * @return a ObjectiveStatus
      * @throws NotFoundException if review doesn't exist.
      */
-    PMTimelinePointStatus updateReviewsStatus(@NotNull UUID performanceCycleUuid,
-                                              @NotNull UUID colleagueUuid,
+    PMTimelinePointStatus updateReviewsStatus(@NotNull UUID colleagueUuid,
                                               @NotNull PMReviewType type,
                                               List<Review> reviews,
                                               @NotNull PMTimelinePointStatus status,
@@ -154,14 +142,12 @@ public interface ReviewService {
     /**
      * Deletes review by business key.
      *
-     * @param performanceCycleUuid an identifier of performance cycle
      * @param colleagueUuid        an identifier of colleague
      * @param type                 a review type
      * @param number               a sequence number of review
      * @throws NotFoundException if review doesn't exist.
      */
-    void deleteReview(@NotNull UUID performanceCycleUuid,
-                      @NotNull UUID colleagueUuid,
+    void deleteReview(@NotNull UUID colleagueUuid,
                       @NotNull PMReviewType type,
                       @NotNull Integer number);
 

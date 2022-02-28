@@ -72,7 +72,7 @@ public interface PMCycleService {
     PMCycle update(@NotNull PMCycle cycle);
 
     /**
-     * Returns the current active performance cycle
+     * Returns the current started performance cycle
      *
      * @param colleagueUuid Colleague identifier
      * @return performance cycle
@@ -98,7 +98,7 @@ public interface PMCycleService {
      */
     List<PMCycle> getByColleague(@NotNull UUID colleagueUuid);
 
-    List<PMCycle> getAll(RequestQuery requestQuery, boolean includeMetadata);
+    List<PMCycle> findAll(RequestQuery requestQuery, boolean includeMetadata);
 
     /**
      * Get PMCycleMetadata by file UUID

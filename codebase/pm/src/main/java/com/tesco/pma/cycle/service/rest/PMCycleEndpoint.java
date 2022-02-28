@@ -1,5 +1,7 @@
 package com.tesco.pma.cycle.service.rest;
 
+import com.tesco.pma.bpm.api.ProcessExecutionException;
+import com.tesco.pma.bpm.api.ProcessManagerService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.api.CompositePMCycleMetadataResponse;
@@ -8,9 +10,11 @@ import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.request.PMCycleUpdateFormRequest;
 import com.tesco.pma.cycle.service.PMCycleService;
+import com.tesco.pma.exception.DeploymentException;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.pagination.RequestQuery;
+import com.tesco.pma.process.api.PMProcessErrorCodes;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,10 +35,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+import static com.tesco.pma.flow.FlowParameters.COLLEAGUE_UUIDS;
 import static com.tesco.pma.rest.RestResponse.success;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -45,8 +52,10 @@ public class PMCycleEndpoint {
 
     public static final String INCLUDE_METADATA = "includeMetadata";
     public static final String INCLUDE_FORMS = "includeForms";
+    public static final String PM_CYCLE_ASSIGNMENT = "pm_cycle_assignment";
 
     private final PMCycleService service;
+    private final ProcessManagerService processManagerService;
     private final AuditorAware<UUID> auditorAware;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
@@ -154,7 +163,7 @@ public class PMCycleEndpoint {
     public RestResponse<List<PMCycle>> getAll(RequestQuery requestQuery,
                                               @RequestParam(value = INCLUDE_METADATA, defaultValue = "false")
                                                       boolean includeMetadata) {
-        return success(service.getAll(requestQuery, includeMetadata));
+        return success(service.findAll(requestQuery, includeMetadata));
     }
 
     /**
@@ -264,6 +273,25 @@ public class PMCycleEndpoint {
         return success(service.updateFormToLatestVersion(cycleUuid, formKey));
     }
 
+    @Operation(summary = "Run cycle assignment process", tags = {"processes"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Started cycle assignment process")
+    @PostMapping(value = "/pm-cycles/assignment", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isProcessManager() or isAdmin()")
+    public RestResponse<String> runCycleAssignmentProcess(@RequestBody @NotEmpty List<@NotEmpty String> colleagues) {
+        var parameters = Map.of(COLLEAGUE_UUIDS.name(), colleagues);
+
+        try {
+            return RestResponse.success(processManagerService.runProcess(PM_CYCLE_ASSIGNMENT, parameters));
+        } catch (ProcessExecutionException e) {
+            throw deploymentException(PM_CYCLE_ASSIGNMENT, parameters, e);
+        }
+    }
+
+    private DeploymentException deploymentException(String processKey, Map<String, ?> parameters, Throwable cause) {
+        return new DeploymentException(PMProcessErrorCodes.PROCESS_CANNOT_BE_STARTED.getCode(),
+                messageSourceAccessor.getMessage(PMProcessErrorCodes.PROCESS_CANNOT_BE_STARTED,
+                        Map.of("processKey", processKey, "parameters", parameters)), "processes", cause);
+    }
 
     private UUID resolveUserUuid() {
         return auditorAware.getCurrentAuditor();

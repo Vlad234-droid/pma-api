@@ -7,7 +7,8 @@ public enum ErrorCodes implements ErrorCodeAware {
     PM_CYCLE_NOT_FOUND_FOR_COLLEAGUE,
     EVENT_COLLEAGUE_UUID_ABSENT,
     EVENT_INVALID_COLLEAGUE_UUID_FORMAT,
-    PARAMETER_CANNOT_BE_READ;
+    PARAMETER_CANNOT_BE_READ,
+    PM_CYCLE_MORE_THAN_ONE_IN_STATUSES;
 
     @Override
     public String getCode() {

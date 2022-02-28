@@ -205,7 +205,7 @@
                            on (prt.code = upper(tlp.code))
         WHERE 1 = 1
           and cc.colleague_uuid = #{colleagueUuid}
-          and cc.cycle_uuid = #{cycleUuid}
+          and cc.status_id = #{pmCycleStatus.id}
         order by tlp.start_time
     </select>
 

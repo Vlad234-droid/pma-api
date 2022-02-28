@@ -4,6 +4,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.tesco.pma.api.MapJson;
 import com.tesco.pma.colleague.api.ColleagueSimple;
+import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.review.domain.ColleagueView;
@@ -315,7 +316,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                         .build()
         );
 
-        final var result = instance.getReviewsByColleague(CYCLE_UUID, COLLEAGUE_UUID);
+        final var result = instance.getReviewsByColleague(COLLEAGUE_UUID, PMCycleStatus.STARTED);
 
         assertThat(result).isEqualTo(reviews);
     }

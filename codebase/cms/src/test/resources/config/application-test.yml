@@ -34,15 +34,15 @@ spring:
   datasource:
     default:
       mybatis-session:
-        type-aliases-package: com.tesco.pma.api, com.tesco.pma.process.api
+        type-aliases-package: com.tesco.pma.api, com.tesco.pma.process.api, com.tesco.pma.cms.model
         configuration-properties:
-          base-package: com.tesco.pma.dao, com.tesco.pma.process.dao, com.tesco.pma.cycle.dao
+          base-package: com.tesco.pma.dao, com.tesco.pma.process.dao, com.tesco.pma.cycle.dao, com.tesco.pma.cms.dao
           batchSize: 100
     postgres-version: 11.11
     camunda:
       driver-class-name: org.h2.Driver
       jdbc-url: jdbc:h2:mem:camunda-test;MODE=Oracle;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-#      jdbc-url: jdbc:h2:tcp://localhost//opt/h2/db/demo;MODE=Oracle;DB_CLOSE_DELAY=-1
+      #      jdbc-url: jdbc:h2:tcp://localhost//opt/h2/db/demo;MODE=Oracle;DB_CLOSE_DELAY=-1
       username: sa
       password:
       type: com.zaxxer.hikari.HikariDataSource
@@ -102,7 +102,7 @@ camunda:
     history-level: activity
     database:
       schema-update: true
-#      schema-update: create-drop
+      #      schema-update: create-drop
       type: h2
     metrics:
       enabled: false
@@ -110,5 +110,6 @@ camunda:
       enabled: false
     id-generator: strong
     auto-deployment-enabled: true
-    deployment-resource-pattern: classpath:com/tesco/pma/cms/service/help_faq_urls.dmn
+    deployment-resource-pattern: classpath:com/tesco/pma/cms/service/help_faq_urls.dmn, 
+                                           com/tesco/pma/cms/service/help_faq_keys.dmn
 

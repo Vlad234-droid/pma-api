@@ -44,6 +44,7 @@ public class PDPEndpointTest extends AbstractEndpointTest {
 
     private static final String PDP_GOALS_URL = "/pdp/goals";
     private static final String PDP_GOAL_URL = PDP_GOALS_URL + "/{goalUuid}";
+    private static final String PDP_GOAL_EARLY_DATE_URL = PDP_GOALS_URL + "/early-achievement-date";
     private static final int GOAL_NUMBER_1 = 1;
     private static final int GOAL_NUMBER_2 = 2;
 
@@ -61,6 +62,7 @@ public class PDPEndpointTest extends AbstractEndpointTest {
     public static final UUID PDP_TEMPLATE_UUID = UUID.fromString("c8727e57-8844-4db5-b1b3-7548b7582244");
     public static final String PDP_TEMPLATE_PATH = "pdp/templates";
     public static final String PDP_TEMPLATE_FILE_NAME = "Personal Development Plan Template.pptx";
+    public static final String PDP_GOAL_EARLY_DATE_GET_RESPONSE_JSON_FILE_NAME = "pm_pdp_goal_early_date_get_ok_response.json";
 
     @MockBean
     private PDPService pdpService;
@@ -179,6 +181,22 @@ public class PDPEndpointTest extends AbstractEndpointTest {
         assertNotNull(result);
         assertNotNull(result.getResponse());
         assertEquals(content, result.getResponse().getContentAsString());
+    }
+
+    @Test
+    void getEarlyAchievementDate() throws Exception {
+        when(pdpService.getEarlyAchievementDate(COLLEAGUE_UUID)).thenReturn(ACHIEVEMENT_DATE);
+
+        var result = performGet(status().isOk(), PDP_GOAL_EARLY_DATE_URL, GOAL_UUID_1);
+
+        assertResponseContent(result.getResponse(), PDP_GOAL_EARLY_DATE_GET_RESPONSE_JSON_FILE_NAME);
+    }
+
+    @Test
+    void getEarlyAchievementDateIfGoalIsNotFound() throws Exception {
+        when(pdpService.getEarlyAchievementDate(COLLEAGUE_UUID)).thenThrow(NotFoundException.class);
+
+        performGet(status().isNotFound(), PDP_GOAL_EARLY_DATE_URL, GOAL_UUID_1);
     }
 
     private PDPGoal buildGoal(UUID uuid, int number) {

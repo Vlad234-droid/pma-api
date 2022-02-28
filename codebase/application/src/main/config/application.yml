@@ -64,7 +64,8 @@ spring:
                               com.tesco.pma.pdp.api,
                               com.tesco.pma.pdp.domain,
                               com.tesco.pma.reporting.review.domain,
-                              com.tesco.pma.reporting.dashboard.domain
+                              com.tesco.pma.reporting.dashboard.domain,
+                              com.tesco.pma.cms.model
         configuration-properties:
           base-package: com.tesco.pma.dao,
                         com.tesco.pma.colleague.profile.dao,
@@ -80,7 +81,8 @@ spring:
                         com.tesco.pma.tip.dao,
                         com.tesco.pma.pdp.dao,
                         com.tesco.pma.reporting.dashboard.dao,
-                        com.tesco.pma.reporting.review.dao
+                        com.tesco.pma.reporting.review.dao,
+                        com.tesco.pma.cms.dao
           batchSize: 500
     camunda:
       # Camunda database config
@@ -116,7 +118,7 @@ spring:
       com/tesco/pma/fs/exception/AppExceptionMessage,
       com/tesco/pma/flow/BPMExceptionMessages,
       com/tesco/pma/tip/exception/AppExceptionMessage,
-      com/tesco/pma/event/exception/AppEventMessage,
+      com/tesco/pma/event/exception/AppEventMessages,
       com/tesco/pma/pdp/exception/AppExceptionMessage,
       com/tesco/pma/reporting/dashboard/exception/AppExceptionMessage
     encoding: UTF-8
@@ -220,12 +222,11 @@ tesco:
       cep:
         subject: ${CEP_SUBJECT}
         publish:
-          url: ${TESCO_API_BASE_URL}/colleague/v1/events
+          url: ${TESCO_API_BASE_URL}/colleague/v2/events
         retry-timeout: 30
         subscribe:
           feeds:
-            jit: colleagues-jit-v1
-            immediate: colleagues-immediate-v1
+            capi: capi-colleague-facts-v2
       colleague-api:
         base-url: ${TESCO_API_BASE_URL}/colleague/v2/colleagues
       events-api:
@@ -242,10 +243,9 @@ tesco:
       PM_REVIEW_DECLINED: com.tesco.pma.bpm.action.RunFlowByEventAction
       PM_REVIEW_BEFORE_END: com.tesco.pma.bpm.action.RunFlowByEventAction
       # Import events
-      IMPORT_NEW_COLLEAGUE: com.tesco.pma.bpm.action.RunFlowByEventAction
+      PM_COLLEAGUE_CYCLE_ASSIGNMENT: com.tesco.pma.bpm.action.RunFlowByEventAction
       POST_IMPORT_NEW_COLLEAGUE: com.tesco.pma.colleague.security.action.CreateAccountByEventAction
       # CEP events
-      CEP_COLLEAGUE_ADDED: com.tesco.pma.bpm.action.RunFlowByEventAction
       POST_CEP_COLLEAGUE_ADDED: com.tesco.pma.colleague.security.action.CreateAccountByEventAction
       CEP_COLLEAGUE_UPDATED: com.tesco.pma.bpm.action.RunFlowByEventAction
       CEP_COLLEAGUE_LEFT: com.tesco.pma.bpm.action.RunFlowByEventAction
@@ -277,6 +277,8 @@ tesco:
         key: pdp/templates/Personal Development Plan Template.pptx
       form:
         key: pdp/forms/standard_pdp.form
+    colleague-changes:
+      force: ${CFAPI_FORCE:false}
 
 camunda:
   bpm:

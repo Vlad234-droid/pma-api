@@ -14,10 +14,10 @@ import com.tesco.pma.config.parser.model.ParsingError;
 import com.tesco.pma.config.parser.model.ParsingResult;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.event.EventNames;
-import com.tesco.pma.event.EventParams;
 import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.logging.TraceUtils;
 import com.tesco.pma.service.BatchService;
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -197,8 +199,8 @@ public class ImportColleagueServiceImpl implements ImportColleagueService {
 
     private void sendEvents(ImportReport importReport) {
         var events = importReport.getImported().stream().map(uuid -> {
-            var event = new EventSupport(EventNames.IMPORT_NEW_COLLEAGUE);
-            event.setEventProperties(Map.of(EventParams.COLLEAGUE_UUID.name(), uuid));
+            var event = new EventSupport(EventNames.PM_COLLEAGUE_CYCLE_ASSIGNMENT);
+            event.setEventProperties(Map.of(FlowParameters.COLLEAGUE_UUIDS.name(), new ArrayList<>(Collections.singletonList(uuid))));
             return event;
         }).collect(Collectors.toList());
         eventSender.sendEvents(events);
@@ -206,7 +208,7 @@ public class ImportColleagueServiceImpl implements ImportColleagueService {
         // Send events to User Management Service on creation new accounts
         events = importReport.getImported().stream().map(uuid -> {
             var event = new EventSupport(EventNames.POST_IMPORT_NEW_COLLEAGUE);
-            event.setEventProperties(Map.of(EventParams.COLLEAGUE_UUID.name(), uuid));
+            event.setEventProperties(Map.of(FlowParameters.COLLEAGUE_UUID.name(), uuid));
             return event;
         }).collect(Collectors.toList());
         eventSender.sendEvents(events);

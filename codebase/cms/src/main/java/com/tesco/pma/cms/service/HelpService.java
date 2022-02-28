@@ -1,8 +1,10 @@
 package com.tesco.pma.cms.service;
 
+import com.tesco.pma.cms.api.ContentEntry;
 import com.tesco.pma.colleague.api.Colleague;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,4 +13,6 @@ import java.util.Map;
  */
 public interface HelpService {
     Map<String, String> getHelpFaqUrls(Colleague colleague, Collection<String> keys);
+
+    Map<String, List<ContentEntry>> getHelpFaqs(Colleague colleague, Collection<String> keys);
 }

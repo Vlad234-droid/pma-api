@@ -6,7 +6,10 @@ import com.tesco.pma.util.ResourceProvider;
 import com.tesco.pma.process.service.ClasspathResourceProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 
 @Profile("test")
 @Configuration

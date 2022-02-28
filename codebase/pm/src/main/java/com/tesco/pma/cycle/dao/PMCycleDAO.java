@@ -63,8 +63,8 @@ public interface PMCycleDAO {
      * @param includeMetadata include metadata in response or not
      * @return list of number of performance cycles
      */
-    List<PMCycle> getAll(@Param("requestQuery") RequestQuery requestQuery,
-                         @Param("includeMetadata") boolean includeMetadata);
+    List<PMCycle> findAll(@Param("requestQuery") RequestQuery requestQuery,
+                          @Param("includeMetadata") boolean includeMetadata);
 
     /**
      * Updates existing performance cycle

@@ -25,15 +25,10 @@
       <bpmn:incoming>Flow_0xu53rm</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0xu53rm" sourceRef="Gateway_1tan81w" targetRef="Event_0wbcq88" />
-    <bpmn:task id="find_cycle" name="Find cycle">
-      <bpmn:incoming>Flow_0qspkka</bpmn:incoming>
-      <bpmn:outgoing>Flow_1pwrscg</bpmn:outgoing>
-    </bpmn:task>
     <bpmn:sequenceFlow id="Flow_0qspkka" sourceRef="calculate_cycle" targetRef="find_cycle" />
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_15635sa</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_1pwrscg" sourceRef="find_cycle" targetRef="send_event" />
     <bpmn:serviceTask id="read_colleagues" name="Read&#10;Colleagues" camunda:class="com.tesco.pma.flow.handlers.ReadColleaguesHandler">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -44,11 +39,6 @@
       <bpmn:incoming>Flow_09d6b3d</bpmn:incoming>
       <bpmn:outgoing>Flow_0zg4uzh</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:scriptTask id="send_event" name="Send event" scriptFormat="groovy">
-      <bpmn:incoming>Flow_1pwrscg</bpmn:incoming>
-      <bpmn:outgoing>Flow_0u2i8fq</bpmn:outgoing>
-      <bpmn:script>println "\nPM_CYCLE_KEY: ${PM_CYCLE_KEY}; " + "COLLEAGUE: ${COLLEAGUE}"</bpmn:script>
-    </bpmn:scriptTask>
     <bpmn:sequenceFlow id="Flow_0u2i8fq" name="next" sourceRef="send_event" targetRef="count_down" />
     <bpmn:startEvent id="PM_COLLEAGUE_CYCLE_ASSIGNMENT_ID">
       <bpmn:outgoing>Flow_09d6b3d</bpmn:outgoing>
@@ -65,8 +55,50 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0u2i8fq</bpmn:incoming>
+      <bpmn:incoming>Flow_0q2y0sk</bpmn:incoming>
       <bpmn:outgoing>Flow_0x082xc</bpmn:outgoing>
     </bpmn:task>
+    <bpmn:serviceTask id="send_event" name="Send event" camunda:class="com.tesco.pma.flow.handlers.EventSendHandler">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="EVENT_PARAMS">
+            <camunda:map>
+              <camunda:entry key="PM_CYCLE_UUID">${PM_CYCLE.getUuid()}</camunda:entry>
+              <camunda:entry key="COLLEAGUE_UUID">${COLLEAGUE.getColleagueUUID()}</camunda:entry>
+            </camunda:map>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+        <camunda:field name="eventNameExpression">
+          <camunda:string>PM_COLLEAGUE_CYCLE_CREATE</camunda:string>
+        </camunda:field>
+        <camunda:field name="isErrorSensitiveExpression">
+          <camunda:string>true</camunda:string>
+        </camunda:field>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ucb76t</bpmn:incoming>
+      <bpmn:outgoing>Flow_0u2i8fq</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1ucb76t" sourceRef="find_cycle" targetRef="send_event" />
+    <bpmn:serviceTask id="find_cycle" name="Find cycle" camunda:class="com.tesco.pma.flow.handlers.FindCycleHandler">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="ALLOWED_STATUSES">
+            <camunda:list>
+              <camunda:value>ACTIVE</camunda:value>
+              <camunda:value>REGISTERED</camunda:value>
+              <camunda:value>STARTED</camunda:value>
+            </camunda:list>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0qspkka</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ucb76t</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0q2y0sk" sourceRef="Event_120sj2b" targetRef="count_down" />
+    <bpmn:boundaryEvent id="Event_120sj2b" attachedToRef="find_cycle">
+      <bpmn:outgoing>Flow_0q2y0sk</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0yzsmlh" errorRef="Error_04kaxdf" />
+    </bpmn:boundaryEvent>
     <bpmn:textAnnotation id="TextAnnotation_1om5661">
       <bpmn:text>List of colleague_uuid identifiers</bpmn:text>
     </bpmn:textAnnotation>
@@ -104,8 +136,13 @@ PM_CYCLE_KEY</bpmn:text>
     <bpmn:association id="Association_1bpcj21" sourceRef="TextAnnotation_04x845v" targetRef="calculate_cycle" />
   </bpmn:process>
   <bpmn:message id="Message_03v6y3h" name="PM_COLLEAGUE_CYCLE_ASSIGNMENT" />
+  <bpmn:error id="Error_04kaxdf" name="More than one in statuses" errorCode="PM_CYCLE_MORE_THAN_ONE_IN_STATUSES" />
+  <bpmn:escalation id="Escalation_06pt3q2" name="Escalation_0habstg" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="pm_cycle_assignment">
+      <bpmndi:BPMNShape id="TextAnnotation_06v4573_di" bpmnElement="TextAnnotation_06v4573">
+        <dc:Bounds x="870" y="67" width="236" height="79" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0zg4uzh_di" bpmnElement="Flow_0zg4uzh">
         <di:waypoint x="400" y="227" />
         <di:waypoint x="445" y="227" />
@@ -121,16 +158,12 @@ PM_CYCLE_KEY</bpmn:text>
         <di:waypoint x="300" y="227" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0u2i8fq_di" bpmnElement="Flow_0u2i8fq">
-        <di:waypoint x="880" y="267" />
-        <di:waypoint x="880" y="330" />
+        <di:waypoint x="920" y="267" />
+        <di:waypoint x="920" y="330" />
         <di:waypoint x="520" y="330" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="884" y="283" width="22" height="14" />
+          <dc:Bounds x="925" y="283" width="21" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1pwrscg_di" bpmnElement="Flow_1pwrscg">
-        <di:waypoint x="790" y="227" />
-        <di:waypoint x="830" y="227" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0qspkka_di" bpmnElement="Flow_0qspkka">
         <di:waypoint x="650" y="227" />
@@ -151,6 +184,15 @@ PM_CYCLE_KEY</bpmn:text>
         <di:waypoint x="238" y="227" />
         <di:waypoint x="300" y="227" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ucb76t_di" bpmnElement="Flow_1ucb76t">
+        <di:waypoint x="790" y="227" />
+        <di:waypoint x="870" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0q2y0sk_di" bpmnElement="Flow_0q2y0sk">
+        <di:waypoint x="740" y="285" />
+        <di:waypoint x="740" y="310" />
+        <di:waypoint x="520" y="310" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Gateway_1tan81w_di" bpmnElement="Gateway_1tan81w" isMarkerVisible="true">
         <dc:Bounds x="445" y="202" width="50" height="50" />
       </bpmndi:BPMNShape>
@@ -160,17 +202,11 @@ PM_CYCLE_KEY</bpmn:text>
       <bpmndi:BPMNShape id="Event_0wbcq88_di" bpmnElement="Event_0wbcq88">
         <dc:Bounds x="452" y="122" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0gj86vu_di" bpmnElement="find_cycle">
-        <dc:Bounds x="690" y="187" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1dm92gb_di" bpmnElement="StartEvent_1">
         <dc:Bounds x="202" y="209" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_16kaxh0_di" bpmnElement="read_colleagues">
         <dc:Bounds x="300" y="187" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_02zirbn_di" bpmnElement="send_event">
-        <dc:Bounds x="830" y="187" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1iol3ns_di" bpmnElement="PM_COLLEAGUE_CYCLE_ASSIGNMENT_ID">
         <dc:Bounds x="202" y="282" width="36" height="36" />
@@ -184,9 +220,6 @@ PM_CYCLE_KEY</bpmn:text>
       <bpmndi:BPMNShape id="TextAnnotation_071i9e8_di" bpmnElement="TextAnnotation_071i9e8">
         <dc:Bounds x="290" y="80" width="120" height="30" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_06v4573_di" bpmnElement="TextAnnotation_06v4573">
-        <dc:Bounds x="830" y="80" width="236" height="79" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0l0wo1c_di" bpmnElement="TextAnnotation_0l0wo1c">
         <dc:Bounds x="174" y="350" width="256" height="68" />
       </bpmndi:BPMNShape>
@@ -196,6 +229,12 @@ PM_CYCLE_KEY</bpmn:text>
       <bpmndi:BPMNShape id="TextAnnotation_04x845v_di" bpmnElement="TextAnnotation_04x845v">
         <dc:Bounds x="545" y="80" width="111" height="54" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0di380a_di" bpmnElement="find_cycle">
+        <dc:Bounds x="690" y="187" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19yxoxn_di" bpmnElement="send_event">
+        <dc:Bounds x="870" y="187" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_187l81e_di" bpmnElement="Association_187l81e">
         <di:waypoint x="220" y="209" />
         <di:waypoint x="220" y="175" />
@@ -203,10 +242,6 @@ PM_CYCLE_KEY</bpmn:text>
       <bpmndi:BPMNEdge id="Association_06v4uua_di" bpmnElement="Association_06v4uua">
         <di:waypoint x="350" y="187" />
         <di:waypoint x="350" y="110" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_0cdbodu_di" bpmnElement="Association_0cdbodu">
-        <di:waypoint x="880" y="187" />
-        <di:waypoint x="880" y="159" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_09ld78l_di" bpmnElement="Association_09ld78l">
         <di:waypoint x="220" y="318" />
@@ -220,6 +255,13 @@ PM_CYCLE_KEY</bpmn:text>
         <di:waypoint x="601" y="134" />
         <di:waypoint x="600" y="187" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0cdbodu_di" bpmnElement="Association_0cdbodu">
+        <di:waypoint x="920" y="187" />
+        <di:waypoint x="920" y="146" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1f4v5iu_di" bpmnElement="Event_120sj2b">
+        <dc:Bounds x="722" y="249" width="36" height="36" />
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

@@ -7,12 +7,12 @@ import com.tesco.pma.colleague.security.domain.request.ColleagueAccountRequest;
 import com.tesco.pma.colleague.security.service.UserManagementService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.event.Event;
-import com.tesco.pma.event.EventParams;
 import com.tesco.pma.event.EventResponse;
 import com.tesco.pma.event.EventResponseSupport;
 import com.tesco.pma.event.controller.Action;
 import com.tesco.pma.event.controller.EventException;
 import com.tesco.pma.exception.AlreadyExistsException;
+import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.logging.LogFormatter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,8 +40,8 @@ public class CreateAccountByEventAction implements Action {
     @Override
     public EventResponse perform(Event event) throws EventException {
         var eventProperties = event.getEventProperties();
-        if (eventProperties.containsKey(EventParams.COLLEAGUE_UUID.name())) {
-            var colleagueUuid = UUID.fromString(eventProperties.get(EventParams.COLLEAGUE_UUID.name()).toString());
+        if (eventProperties.containsKey(FlowParameters.COLLEAGUE_UUID.name())) {
+            var colleagueUuid = UUID.fromString(eventProperties.get(FlowParameters.COLLEAGUE_UUID.name()).toString());
             createAccount(colleagueUuid);
         }
         return new EventResponseSupport(event.getEventName(), EventResponse.END);
