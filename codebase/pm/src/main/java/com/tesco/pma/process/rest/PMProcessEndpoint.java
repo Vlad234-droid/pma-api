@@ -22,18 +22,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotEmpty;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.tesco.pma.flow.FlowParameters.COLLEAGUE_UUIDS;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @Slf4j
@@ -41,8 +37,6 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping(path = "/processes")
 public class PMProcessEndpoint {
-
-    static final String PM_CYCLE_ASSIGNMENT = "pm_cycle_assignment";
 
     private final PMProcessService processService;
     private final ProcessManagerService processManagerService;
@@ -80,24 +74,9 @@ public class PMProcessEndpoint {
         }
     }
 
-    @Operation(summary = "Run cycle assignment process", tags = {"processes"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Started cycle assignment process")
-    @PostMapping(value = "/pm-cycles/assignment", produces = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isProcessManager() or isAdmin()")
-    public RestResponse<String> runCycleAssignmentProcess(@RequestBody @NotEmpty List<@NotEmpty String> colleagues) {
-        var parameters = Map.of(COLLEAGUE_UUIDS.name(), colleagues);
-
-        try {
-            return RestResponse.success(processManagerService.runProcess(PM_CYCLE_ASSIGNMENT, parameters));
-        } catch (ProcessExecutionException e) {
-            throw deploymentException(PM_CYCLE_ASSIGNMENT, parameters, e);
-        }
-    }
-
     private DeploymentException deploymentException(String processKey, Map<String, ?> parameters, Throwable cause) {
         return new DeploymentException(PMProcessErrorCodes.PROCESS_CANNOT_BE_STARTED.getCode(),
                 messageSourceAccessor.getMessage(PMProcessErrorCodes.PROCESS_CANNOT_BE_STARTED,
                         Map.of("processKey", processKey, "parameters", parameters)), "processes", cause);
-
     }
 }
