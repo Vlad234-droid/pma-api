@@ -22,7 +22,7 @@ public interface TimelinePointService {
      *
      * @param colleagueCycleUuid colleague's cycle UUID
      * @param code code of point
-     * @param status
+     * @param status status of timeline point
      * @return timeline point
      */
     List<TimelinePoint> get(UUID colleagueCycleUuid, String code, PMTimelinePointStatus status);
