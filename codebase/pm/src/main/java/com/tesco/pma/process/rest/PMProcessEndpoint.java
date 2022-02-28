@@ -42,6 +42,8 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RequestMapping(path = "/processes")
 public class PMProcessEndpoint {
 
+    static final String PM_CYCLE_ASSIGNMENT = "pm_cycle_assignment";
+
     private final PMProcessService processService;
     private final ProcessManagerService processManagerService;
     private final NamedMessageSourceAccessor messageSourceAccessor;
@@ -80,10 +82,10 @@ public class PMProcessEndpoint {
 
     @Operation(summary = "Run cycle assignment process", tags = {"processes"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Started cycle assignment process")
-    @PostMapping(value = "/cycle_assignment", produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/pm-cycles/assignment", produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isProcessManager() or isAdmin()")
     public RestResponse<String> runCycleAssignmentProcess(@RequestBody @NotEmpty List<@NotEmpty String> colleagues) {
-        var processKey = "pm_cycle_assignment";
+        var processKey = PM_CYCLE_ASSIGNMENT;
         var parameters = Map.of(COLLEAGUE_UUIDS.name(), colleagues);
 
         try {
