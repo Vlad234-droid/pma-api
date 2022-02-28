@@ -157,6 +157,23 @@ public class PDPServiceImplTest {
         assertEquals(goals, result);
     }
 
+    @Test
+    void getEarlyAchievementDate() {
+        when(pdpDao.readEarlyAchievementDate(COLLEAGUE_UUID)).thenReturn(ACHIEVEMENT_DATE);
+
+        var result = pdpService.getEarlyAchievementDate(COLLEAGUE_UUID);
+
+        assertEquals(ACHIEVEMENT_DATE, result);
+    }
+
+    @Test
+    void getEarlyAchievementDateThrowsNotFoundExceptionWhenDaoReturnsNull() {
+        when(pdpDao.readEarlyAchievementDate(COLLEAGUE_UUID)).thenReturn(null);
+
+        assertThrows(NotFoundException.class, () ->
+                pdpService.getEarlyAchievementDate(COLLEAGUE_UUID));
+    }
+
     private PDPGoal buildGoal(UUID uuid, int number) {
         return new PDPGoal(uuid, COLLEAGUE_UUID, number, PROPERTIES, ACHIEVEMENT_DATE, PUBLISHED);
     }

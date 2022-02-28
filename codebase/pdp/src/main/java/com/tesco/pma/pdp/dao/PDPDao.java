@@ -3,6 +3,7 @@ package com.tesco.pma.pdp.dao;
 import com.tesco.pma.pdp.domain.PDPGoal;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -61,4 +62,11 @@ public interface PDPDao {
      * @return list of PDP Goals by its colleagueUuid
      */
     List<PDPGoal> readGoalsByColleague(@Param("colleagueUuid") UUID colleagueUuid);
+
+    /**
+     * Get the latest achievement date of colleague's goals
+     * @param colleagueUuid is colleague identifier
+     * @return early achievement date of goals
+     */
+    LocalDate readEarlyAchievementDate(@Param("colleagueUuid") UUID colleagueUuid);
 }

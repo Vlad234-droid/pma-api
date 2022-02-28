@@ -28,7 +28,8 @@ public class PDPDaoTest extends AbstractDAOTest {
     private static final int GOAL_NUMBER_1 = 1;
     private static final int GOAL_NUMBER_2 = 2;
     private static final UUID COLLEAGUE_UUID = UUID.fromString("ce245be1-1f43-4d5f-85dc-db6e2cce0c2a");
-    private static final LocalDate ACHIEVEMENT_DATE = LocalDate.parse("2021-12-29");
+    private static final LocalDate ACHIEVEMENT_DATE_1 = LocalDate.parse("2021-12-28");
+    private static final LocalDate ACHIEVEMENT_DATE_2 = LocalDate.parse("2021-12-29");
     private static final MapJson PROPERTIES = new MapJson(Map.of("pm_pdp_test_property1", "P1", "pm_pdp_test_property2", "P2"));
 
 
@@ -48,7 +49,7 @@ public class PDPDaoTest extends AbstractDAOTest {
         final var result = instance.readGoalByColleagueAndNumber(COLLEAGUE_UUID, GOAL_NUMBER_2);
 
         assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(buildGoal(GOAL_UUID_2, GOAL_NUMBER_2));
+        assertThat(result).isEqualTo(buildGoal(GOAL_UUID_2, GOAL_NUMBER_2, ACHIEVEMENT_DATE_2));
     }
 
     @Test
@@ -57,7 +58,7 @@ public class PDPDaoTest extends AbstractDAOTest {
         final var result = instance.readGoalByUuid(COLLEAGUE_UUID, GOAL_UUID_1);
 
         assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(buildGoal(GOAL_UUID_1, GOAL_NUMBER_1));
+        assertThat(result).isEqualTo(buildGoal(GOAL_UUID_1, GOAL_NUMBER_1, ACHIEVEMENT_DATE_1));
     }
 
     @Test
@@ -74,7 +75,7 @@ public class PDPDaoTest extends AbstractDAOTest {
     @DataSet(BASE_PATH_TO_DATA_SET + "cleanup.xml")
     @ExpectedDataSet(BASE_PATH_TO_DATA_SET + "goal_create_expected.xml")
     void createGoal() {
-        final var goal = buildGoal(GOAL_UUID_1, GOAL_NUMBER_1);
+        final var goal = buildGoal(GOAL_UUID_1, GOAL_NUMBER_1, ACHIEVEMENT_DATE_1);
 
         final var rowsInserted = instance.createGoal(goal);
 
@@ -85,7 +86,7 @@ public class PDPDaoTest extends AbstractDAOTest {
     @DataSet(BASE_PATH_TO_DATA_SET + "goals_init.xml")
     @ExpectedDataSet(BASE_PATH_TO_DATA_SET + "goal_update_expected.xml")
     void updateGoal() {
-        final var goal = buildGoal(GOAL_UUID_1, GOAL_NUMBER_1);
+        final var goal = buildGoal(GOAL_UUID_1, GOAL_NUMBER_1, ACHIEVEMENT_DATE_1);
         goal.setAchievementDate(LocalDate.parse("2021-12-30"));
         goal.setStatus(DRAFT);
 
@@ -103,11 +104,20 @@ public class PDPDaoTest extends AbstractDAOTest {
         assertThat(rowsDeleted).isOne();
     }
 
-    private PDPGoal buildGoal(UUID uuid, int number) {
-        return new PDPGoal(uuid, COLLEAGUE_UUID, number, PROPERTIES, ACHIEVEMENT_DATE, PUBLISHED);
+    @Test
+    @DataSet(BASE_PATH_TO_DATA_SET + "goals_init.xml")
+    void readEarlyAchievementDate() {
+        final var result = instance.readEarlyAchievementDate(COLLEAGUE_UUID);
+
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(ACHIEVEMENT_DATE_2);
+    }
+
+    private PDPGoal buildGoal(UUID uuid, int number, LocalDate achievementDate) {
+        return new PDPGoal(uuid, COLLEAGUE_UUID, number, PROPERTIES, achievementDate, PUBLISHED);
     }
 
     private List<PDPGoal> buildGoals(UUID uuid1, UUID uuid2) {
-        return List.of(buildGoal(uuid1, GOAL_NUMBER_1), buildGoal(uuid2, GOAL_NUMBER_2));
+        return List.of(buildGoal(uuid1, GOAL_NUMBER_1, ACHIEVEMENT_DATE_1), buildGoal(uuid2, GOAL_NUMBER_2, ACHIEVEMENT_DATE_2));
     }
 }

@@ -7,6 +7,7 @@ import com.tesco.pma.pdp.domain.PDPGoal;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -73,4 +74,12 @@ public interface PDPService {
      * @return list of PDP Goals by its colleagueUuid
      */
     List<PDPGoal> getGoals(@NotNull UUID colleagueUuid);
+
+    /**
+     * Get early achievement date of Goals
+     * @param colleagueUuid is colleague identifier
+     * @return the latest achievement date of colleague's Goals
+     * @throws NotFoundException if goal by colleagueUuid is not found
+     */
+    LocalDate getEarlyAchievementDate(@NotNull UUID colleagueUuid);
 }
