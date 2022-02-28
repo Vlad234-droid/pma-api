@@ -318,7 +318,8 @@ camunda:
                                            com/tesco/pma/flow/notifications/tips/tips_flow.bpmn,
                                            com/tesco/pma/flow/notifications/tips/tips_notification_decisions.dmn,
                                            com/tesco/pma/flow/notifications/tips/tips_event_to_template_id.dmn,
-                                           com/tesco/pma/flow/reporting/rating/overall_rating.dmn
+                                           com/tesco/pma/flow/reporting/rating/overall_rating.dmn,
+                                           com/tesco/pma/flow/pm_cycle_assignment.bpmn
     deployment-resource-paths: com/tesco/pma/flow
 
 ---
