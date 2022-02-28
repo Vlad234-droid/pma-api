@@ -6,6 +6,7 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.LocalTestConfig;
 import com.tesco.pma.cycle.service.PMCycleService;
+import com.tesco.pma.error.ApiExceptionHandler;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -22,7 +23,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = PMCycleEndpoint.class)
-@ContextConfiguration(classes = {LocalTestConfig.class, PMCycleEndpoint.class})
+@ContextConfiguration(classes = {LocalTestConfig.class, PMCycleEndpoint.class, ApiExceptionHandler.class})
 class PMCycleEndpointTest extends AbstractEndpointTest {
 
     private static final String PM_CYCLES_ASSIGNMENT_URL = "/pm-cycles/assignment";

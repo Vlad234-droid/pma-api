@@ -12,8 +12,7 @@ import org.springframework.context.annotation.*;
 @Profile("test")
 @Configuration
 @Import({MessageSourceAutoConfiguration.class,
-        MessageSourceConfig.class,
-        ApiExceptionHandler.class})
+        MessageSourceConfig.class})
 public class LocalTestConfig {
 
     @Autowired
