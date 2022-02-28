@@ -156,7 +156,7 @@ public class PMCycleEndpoint {
     public RestResponse<List<PMCycle>> getAll(RequestQuery requestQuery,
                                               @RequestParam(value = INCLUDE_METADATA, defaultValue = "false")
                                                       boolean includeMetadata) {
-        return success(service.getAll(requestQuery, includeMetadata));
+        return success(service.findAll(requestQuery, includeMetadata));
     }
 
     /**

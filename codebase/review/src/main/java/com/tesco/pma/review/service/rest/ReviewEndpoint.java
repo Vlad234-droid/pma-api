@@ -5,16 +5,14 @@ import com.tesco.pma.configuration.CaseInsensitiveEnumEditor;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
-import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.exception.DataUploadException;
-import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.file.api.File;
 import com.tesco.pma.file.api.FileType.FileTypeEnum;
 import com.tesco.pma.file.api.FilesUploadMetadata;
+import com.tesco.pma.fs.exception.ErrorCodes;
 import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.logging.TraceUtils;
-import com.tesco.pma.fs.exception.ErrorCodes;
 import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
@@ -89,11 +87,9 @@ public class ReviewEndpoint {
     private static final List<FileTypeEnum> REVIEW_FILE_TYPES = List.of(PDF, DOC, PPT);
     private final ReviewService reviewService;
     private final AuditorAware<UUID> auditorAware;
-    private final PMCycleService pmCycleService;
     private final FileService fileService;
     private final ProfileService profileService;
 
-    private static final String CURRENT_PARAMETER_NAME = "CURRENT";
     private static final String REVIEWS_FILES_PATH = "/home/%s/reviews";
 
     /**
@@ -119,7 +115,7 @@ public class ReviewEndpoint {
                                              @RequestBody Review review) {
         review.setType(type);
         review.setNumber(number);
-        return success(reviewService.createReview(review, getPMCycleUuid(colleagueUuid, cycleUuid), colleagueUuid));
+        return success(reviewService.createReview(review, colleagueUuid));
     }
 
     /**
@@ -141,7 +137,6 @@ public class ReviewEndpoint {
                                                     @PathVariable("type") PMReviewType type,
                                                     @RequestBody List<Review> reviews) {
         return success(reviewService.updateReviews(
-                getPMCycleUuid(colleagueUuid, cycleUuid),
                 colleagueUuid,
                 type,
                 reviews,
@@ -167,7 +162,7 @@ public class ReviewEndpoint {
                                           @PathVariable("cycleUuid") String cycleUuid,
                                           @PathVariable("type") PMReviewType type,
                                           @PathVariable("number") Integer number) {
-        return success(reviewService.getReview(getPMCycleUuid(colleagueUuid, cycleUuid), colleagueUuid, type, number));
+        return success(reviewService.getReview(colleagueUuid, type, number));
     }
 
     /**
@@ -203,7 +198,7 @@ public class ReviewEndpoint {
     public RestResponse<List<Review>> getReviews(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                                  @PathVariable("cycleUuid") String cycleUuid,
                                                  @PathVariable("type") PMReviewType type) {
-        return success(reviewService.getReviews(getPMCycleUuid(colleagueUuid, cycleUuid), colleagueUuid, type));
+        return success(reviewService.getReviews(colleagueUuid, type));
     }
 
     /**
@@ -221,7 +216,7 @@ public class ReviewEndpoint {
     @PreAuthorize("isColleague()")
     public RestResponse<List<Review>> getReviewsByColleague(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                                             @PathVariable("cycleUuid") String cycleUuid) {
-        return success(reviewService.getReviewsByColleague(getPMCycleUuid(colleagueUuid, cycleUuid), colleagueUuid));
+        return success(reviewService.getReviewsByColleague(colleagueUuid));
     }
 
     /**
@@ -282,8 +277,7 @@ public class ReviewEndpoint {
         review.setType(type);
         review.setNumber(number);
 
-        return success(reviewService.updateReview(review, getPMCycleUuid(colleagueUuid, cycleUuid), colleagueUuid,
-                resolveUserUuid()));
+        return success(reviewService.updateReview(review, colleagueUuid, resolveUserUuid()));
     }
 
     /**
@@ -310,7 +304,6 @@ public class ReviewEndpoint {
                                                                    @PathVariable("status") PMTimelinePointStatus status,
                                                                    @RequestBody UpdateReviewsStatusRequest request) {
         return success(reviewService.updateReviewsStatus(
-                getPMCycleUuid(colleagueUuid, cycleUuid),
                 colleagueUuid,
                 type,
                 request.getReviews(),
@@ -339,11 +332,7 @@ public class ReviewEndpoint {
                                            @PathVariable("cycleUuid") String cycleUuid,
                                            @PathVariable("type") PMReviewType type,
                                            @PathVariable("number") Integer number) {
-        reviewService.deleteReview(
-                getPMCycleUuid(colleagueUuid, cycleUuid),
-                colleagueUuid,
-                type,
-                number);
+        reviewService.deleteReview(colleagueUuid, type, number);
         return success();
     }
 
@@ -441,7 +430,8 @@ public class ReviewEndpoint {
     @GetMapping(path = "/colleagues/{colleagueUuid}/reviews/files", produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isColleague()")
     public RestResponse<List<File>> getReviewsFilesByColleague(@PathVariable UUID colleagueUuid,
-                                @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+                                                               @CurrentSecurityContext(expression = "authentication")
+                                                                       Authentication authentication) {
 
         var currentUserUuid = UUID.fromString(authentication.getName());
 
@@ -482,7 +472,7 @@ public class ReviewEndpoint {
      * Post call to upload Review Files
      *
      * @param filesUploadMetadata files metadata
-     * @param files files data
+     * @param files               files data
      * @return uploaded files
      */
     @Operation(
@@ -608,18 +598,6 @@ public class ReviewEndpoint {
 
     private UUID resolveUserUuid() {
         return auditorAware.getCurrentAuditor();
-    }
-
-    private UUID getPMCycleUuid(UUID colleagueUuid, String cycleUuid) {
-        if (cycleUuid.equalsIgnoreCase(CURRENT_PARAMETER_NAME)) {
-            return pmCycleService.getCurrentByColleague(colleagueUuid).getUuid();
-        } else {
-            try {
-                return UUID.fromString(cycleUuid);
-            } catch (IllegalArgumentException e) {
-                throw new InvalidParameterException(HttpStatusCodes.BAD_REQUEST, e.getMessage(), "cycleUuid"); // NOPMD
-            }
-        }
     }
 
     @InitBinder

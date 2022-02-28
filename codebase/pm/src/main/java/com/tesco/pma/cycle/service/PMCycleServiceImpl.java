@@ -57,7 +57,6 @@ import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
 import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_METADATA_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_ALLOWED_TO_START;
-import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_BY_UUID;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_BY_UUID_AND_STATUS;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_COLLEAGUE;
@@ -213,14 +212,8 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
     @Override
-    public List<PMCycle> getAll(RequestQuery requestQuery, boolean includeMetadata) {
-
-        var results = cycleDAO.getAll(requestQuery, includeMetadata);
-        if (null == results) {
-            throw notFound(PM_CYCLE_NOT_FOUND,
-                    Map.of(INCLUDE_METADATA_PARAMETER_NAME, includeMetadata));
-        }
-        return results;
+    public List<PMCycle> findAll(RequestQuery requestQuery, boolean includeMetadata) {
+        return cycleDAO.findAll(requestQuery, includeMetadata);
     }
 
     @Override
@@ -478,7 +471,7 @@ public class PMCycleServiceImpl implements PMCycleService {
                 new Condition(TEMPLATE_UUID_CONDITION, EQUALS, cycle.getTemplate().getUuid())
         ));
 
-        List<PMCycle> cycleList = cycleDAO.getAll(query, false);
+        List<PMCycle> cycleList = cycleDAO.findAll(query, false);
         if (!isEmpty(cycleList)) {
             throw notFound(PM_CYCLE_NOT_ALLOWED_TO_START,
                     Map.of(CONDITION_PARAMETER_NAME, query.getFilters()));
