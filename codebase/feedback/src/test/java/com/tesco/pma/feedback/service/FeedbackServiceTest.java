@@ -22,7 +22,6 @@ import java.util.List;
 
 import static com.tesco.pma.feedback.util.TestDataUtil.COLLEAGUE_UUID;
 import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACKS_COUNT;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -94,10 +93,8 @@ class FeedbackServiceTest {
         List<Feedback> result = underTest.findAll(requestQuery);
 
         //then
-        assertThat(result)
-                .hasSize(2)
-                .element(0)
-                .isSameAs(feedback1);
+        assertEquals(2, result.size());
+        assertEquals(feedback1, result.get(0));
     }
 
     @Test
