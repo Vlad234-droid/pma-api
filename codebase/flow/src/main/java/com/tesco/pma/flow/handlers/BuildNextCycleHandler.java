@@ -74,7 +74,7 @@ public class BuildNextCycleHandler extends CamundaAbstractFlowHandler {
         Condition condition1 = new Condition("entry-config-key", Condition.Operand.EQUALS, previousCycle.getEntryConfigKey());
         Condition condition2 = new Condition("template-uuid", Condition.Operand.EQUALS, previousCycle.getTemplate().getUuid());
         requestQuery.setFilters(List.of(condition1, condition2));
-        return pmCycleService.getAll(requestQuery, false).size();
+        return pmCycleService.findAll(requestQuery, false).size();
     }
 
     private int getPmCycleMax(PMCycle previousCycle) {
