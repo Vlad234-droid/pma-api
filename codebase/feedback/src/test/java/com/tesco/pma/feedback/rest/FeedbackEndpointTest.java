@@ -92,7 +92,7 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getAllFeedbacks() throws Exception {
+    void getAllFeedbacks() throws Exception { //NOSONAR used MockMvc checks
         // given
         Feedback feedback1 = TestDataUtil.buildFeedback();
         feedback1.setUuid(TestDataUtil.FEEDBACK_UUID_LAST);
@@ -111,7 +111,7 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getFeedback() throws Exception {
+    void getFeedback() throws Exception { //NOSONAR used MockMvc checks
         // given
         Feedback feedback = TestDataUtil.buildFeedback();
         feedback.setUuid(TestDataUtil.FEEDBACK_UUID_LAST);
@@ -127,7 +127,7 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getFeedbackNotFound() throws Exception {
+    void getFeedbackNotFound() throws Exception { //NOSONAR used MockMvc checks
         // given
         Feedback feedback = TestDataUtil.buildFeedback();
         feedback.setUuid(TestDataUtil.FEEDBACK_UUID_LAST);
@@ -143,7 +143,7 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getGivenFeedbacksCount() throws Exception {
+    void getGivenFeedbacksCount() throws Exception { //NOSONAR used MockMvc checks
         // given
         when(service.findGivenFeedbackCount(TestDataUtil.COLLEAGUE_UUID)).thenReturn(FEEDBACKS_COUNT);
 
@@ -168,7 +168,7 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getRequestedFeedbacksCount() throws Exception {
+    void getRequestedFeedbacksCount() throws Exception { //NOSONAR used MockMvc checks
         // given
         when(service.findRequestedFeedbackCount(TestDataUtil.COLLEAGUE_UUID)).thenReturn(FEEDBACKS_COUNT);
 
