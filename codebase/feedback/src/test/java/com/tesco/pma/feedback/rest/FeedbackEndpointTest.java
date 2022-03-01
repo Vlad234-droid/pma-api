@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collections;
 import java.util.List;
 
+import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACKS_COUNT;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
@@ -144,7 +145,7 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
     @Test
     void getGivenFeedbacksCount() throws Exception {
         // given
-        when(service.findGivenFeedbackCount(TestDataUtil.COLLEAGUE_UUID)).thenReturn(5);
+        when(service.findGivenFeedbackCount(TestDataUtil.COLLEAGUE_UUID)).thenReturn(FEEDBACKS_COUNT);
 
         //when & then
         mvc.perform(get("/feedbacks/given")
@@ -152,25 +153,24 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
-                .andExpect(jsonPath("$.data").value(5));
+                .andExpect(jsonPath("$.data").value(FEEDBACKS_COUNT));
     }
 
     @Test
     void cannotGetGivenFeedbacksCountIfUnauthorized() throws Exception {
-        // given
-        when(service.findGivenFeedbackCount(TestDataUtil.COLLEAGUE_UUID)).thenReturn(5);
-
         //when & then
         mvc.perform(get("/feedbacks/given")
                         .with(anonymous())
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
+
+        verifyNoInteractions(service);
     }
 
     @Test
     void getRequestedFeedbacksCount() throws Exception {
         // given
-        when(service.findRequestedFeedbackCount(TestDataUtil.COLLEAGUE_UUID)).thenReturn(5);
+        when(service.findRequestedFeedbackCount(TestDataUtil.COLLEAGUE_UUID)).thenReturn(FEEDBACKS_COUNT);
 
         //when & then
         mvc.perform(get("/feedbacks/requested")
@@ -178,19 +178,18 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
-                .andExpect(jsonPath("$.data").value(5));
+                .andExpect(jsonPath("$.data").value(FEEDBACKS_COUNT));
     }
 
     @Test
     void cannotGetRequestedFeedbacksCountIfUnauthorized() throws Exception {
-        // given
-        when(service.findRequestedFeedbackCount(TestDataUtil.COLLEAGUE_UUID)).thenReturn(5);
-
         //when & then
         mvc.perform(get("/feedbacks/requested")
                         .with(anonymous())
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
+
+        verifyNoInteractions(service);
     }
 
 }

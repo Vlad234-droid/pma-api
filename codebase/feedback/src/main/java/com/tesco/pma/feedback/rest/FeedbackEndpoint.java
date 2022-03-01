@@ -177,7 +177,8 @@ public class FeedbackEndpoint {
     @GetMapping("/feedbacks/given")
     @Operation(summary = "Get given feedbacks count for colleague", tags = {"feedback"})
     @PreAuthorize("isColleague()")
-    public RestResponse<Integer> getGivenFeedbackCount(@CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+    public RestResponse<Integer> getGivenFeedbackCount(@CurrentSecurityContext(expression = "authentication")
+                                                                   Authentication authentication) {
         var colleagueUuid = getColleagueUuid(authentication);
         log.debug("REST request to get given Feedbacks count for colleague : {}", colleagueUuid);
         return RestResponse.success(feedbackService.findGivenFeedbackCount(colleagueUuid));
@@ -191,7 +192,8 @@ public class FeedbackEndpoint {
     @GetMapping("/feedbacks/requested")
     @Operation(summary = "Get requested feedbacks count for colleague", tags = {"feedback"})
     @PreAuthorize("isColleague()")
-    public RestResponse<Integer> getRequestedFeedbackCount(@CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+    public RestResponse<Integer> getRequestedFeedbackCount(@CurrentSecurityContext(expression = "authentication")
+                                                                       Authentication authentication) {
         var colleagueUuid = getColleagueUuid(authentication);
         log.debug("REST request to get requested Feedbacks count for colleague : {}", colleagueUuid);
         return RestResponse.success(feedbackService.findRequestedFeedbackCount(colleagueUuid));

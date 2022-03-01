@@ -20,6 +20,8 @@ import org.springframework.dao.DuplicateKeyException;
 
 import java.util.List;
 
+import static com.tesco.pma.feedback.util.TestDataUtil.COLLEAGUE_UUID;
+import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACKS_COUNT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -109,7 +111,33 @@ class FeedbackServiceTest {
 
         //then
         verify(feedbackDAO, times(1)).getByUuid(TestDataUtil.FEEDBACK_UUID_LAST);
-        assertEquals(TestDataUtil.COLLEAGUE_UUID, result.getColleagueUuid());
+        assertEquals(COLLEAGUE_UUID, result.getColleagueUuid());
+    }
+
+    @Test
+    void findGivenFeedbackCount() {
+        //given
+        when(feedbackDAO.findGivenFeedbackCount(COLLEAGUE_UUID)).thenReturn(FEEDBACKS_COUNT);
+
+        //when
+        var result = underTest.findGivenFeedbackCount(COLLEAGUE_UUID);
+
+        //then
+        verify(feedbackDAO, times(1)).findGivenFeedbackCount(COLLEAGUE_UUID);
+        assertEquals(FEEDBACKS_COUNT, result);
+    }
+
+    @Test
+    void findRequestedFeedbackCount() {
+        //given
+        when(feedbackDAO.findRequestedFeedbackCount(COLLEAGUE_UUID)).thenReturn(FEEDBACKS_COUNT);
+
+        //when
+        var result = underTest.findRequestedFeedbackCount(COLLEAGUE_UUID);
+
+        //then
+        verify(feedbackDAO, times(1)).findRequestedFeedbackCount(COLLEAGUE_UUID);
+        assertEquals(FEEDBACKS_COUNT, result);
     }
 
     @Test
