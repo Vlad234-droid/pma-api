@@ -67,7 +67,7 @@ class BuildNextCycleHandlerTest {
         Mockito.when(service.get(CYCLE_UUID, false)).thenReturn(compositeResponse);
         List<PMCycle> pmCycles = Mockito.mock(List.class);
         Mockito.when(pmCycles.size()).thenReturn(4);
-        Mockito.when(service.getAll(Mockito.any(RequestQuery.class), Mockito.eq(false))).thenReturn(pmCycles);
+        Mockito.when(service.findAll(Mockito.any(RequestQuery.class), Mockito.eq(false))).thenReturn(pmCycles);
 
         //when
         handler.execute(executionContext);
