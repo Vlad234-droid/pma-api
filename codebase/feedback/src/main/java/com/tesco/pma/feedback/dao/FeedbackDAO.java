@@ -28,6 +28,19 @@ public interface FeedbackDAO {
      */
     List<Feedback> findAll(@Param("requestQuery") RequestQuery requestQuery);
 
+    /**
+     * Find given feedbacks count
+     * @param colleagueUuid an identifier of colleague
+     * @return given feedbacks count
+     */
+    int findGivenFeedbackCount(@Param("colleagueUuid") UUID colleagueUuid);
+
+    /**
+     * Find requested feedbacks count
+     * @param colleagueUuid an identifier of colleague
+     * @return requested feedbacks count
+     */
+    int findRequestedFeedbackCount(@Param("colleagueUuid") UUID colleagueUuid);
 
     /**
      * Insert feedback without items

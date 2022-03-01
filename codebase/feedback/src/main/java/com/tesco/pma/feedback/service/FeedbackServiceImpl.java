@@ -150,6 +150,20 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public int findGivenFeedbackCount(UUID colleagueUuid) {
+        log.debug("Request to get given feedbacks count for colleague: {}", colleagueUuid);
+        return feedbackDAO.findGivenFeedbackCount(colleagueUuid);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public int findRequestedFeedbackCount(UUID colleagueUuid) {
+        log.debug("Request to get requested feedbacks count for colleague: {}", colleagueUuid);
+        return feedbackDAO.findRequestedFeedbackCount(colleagueUuid);
+    }
+
+    @Override
     public FeedbackItem save(FeedbackItem feedbackItem) {
         log.debug("Request to save FeedbackItem : {}", feedbackItem);
         if (feedbackItem.getUuid() == null) {

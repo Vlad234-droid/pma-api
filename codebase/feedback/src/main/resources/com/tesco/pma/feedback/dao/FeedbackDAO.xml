@@ -380,6 +380,21 @@
         LEFT JOIN feedback_item fi ON ff.uuid = fi.feedback_uuid
     </select>
 
+    <select id="findGivenFeedbackCount" flushCache="true" resultType="int">
+        SELECT count(f.uuid)
+        FROM feedback f
+        WHERE f.read = false
+          AND f.status_id = 2
+          AND f.target_colleague_uuid = #{colleagueUuid}
+    </select>
+
+    <select id="findRequestedFeedbackCount" flushCache="true" resultType="int">
+        SELECT count(f.uuid)
+        FROM feedback f
+        WHERE f.status_id = 3
+          AND f.colleague_uuid = #{colleagueUuid}
+    </select>
+
     <insert id="insert" useGeneratedKeys="true" keyProperty="uuid" keyColumn="uuid" flushCache="true">
         INSERT INTO feedback (uuid,
                               colleague_uuid,

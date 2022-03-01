@@ -4,6 +4,7 @@ import com.tesco.pma.feedback.api.Feedback;
 import com.tesco.pma.feedback.api.FeedbackItem;
 import com.tesco.pma.pagination.RequestQuery;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,6 +43,20 @@ public interface FeedbackService {
      * @return the entity.
      */
     Feedback findOne(UUID uuid);
+
+    /**
+     * Find given feedbacks count
+     * @param colleagueUuid an identifier of colleague
+     * @return requested feedbacks count
+     */
+    int findGivenFeedbackCount(@NotNull UUID colleagueUuid);
+
+    /**
+     * Find requested feedbacks count
+     * @param colleagueUuid an identifier of colleague
+     * @return requested feedbacks count
+     */
+    int findRequestedFeedbackCount(@NotNull UUID colleagueUuid);
 
     /**
      * Update feedback.
