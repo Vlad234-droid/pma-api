@@ -63,7 +63,9 @@ spring:
                               com.tesco.pma.tip.api,
                               com.tesco.pma.pdp.api,
                               com.tesco.pma.pdp.domain,
-                              com.tesco.pma.reports.review.domain
+                              com.tesco.pma.reporting.review.domain,
+                              com.tesco.pma.reporting.dashboard.domain,
+                              com.tesco.pma.cms.model
         configuration-properties:
           base-package: com.tesco.pma.dao,
                         com.tesco.pma.colleague.profile.dao,
@@ -78,7 +80,9 @@ spring:
                         com.tesco.pma.config.dao,
                         com.tesco.pma.tip.dao,
                         com.tesco.pma.pdp.dao,
-                        com.tesco.pma.reports.review.dao
+                        com.tesco.pma.reporting.dashboard.dao,
+                        com.tesco.pma.reporting.review.dao,
+                        com.tesco.pma.cms.dao
           batchSize: 500
     camunda:
       # Camunda database config
@@ -108,15 +112,15 @@ spring:
       com/tesco/pma/feedback/exception/AppExceptionMessage,
       com/tesco/pma/cycle/exception/AppExceptionMessage,
       com/tesco/pma/process/service/AppPMProcessMessages,
-      com/tesco/pma/colleague/profile/import/AppImportMessages,
+      com/tesco/pma/config/import/AppImportMessages,
       com/tesco/pma/colleague/security/exception/AppExceptionMessage,
       com/tesco/pma/notes/exception/AppNotesMessages,
       com/tesco/pma/fs/exception/AppExceptionMessage,
       com/tesco/pma/flow/BPMExceptionMessages,
       com/tesco/pma/tip/exception/AppExceptionMessage,
-      com/tesco/pma/event/exception/AppEventMessage,
+      com/tesco/pma/event/exception/AppEventMessages,
       com/tesco/pma/pdp/exception/AppExceptionMessage,
-      com/tesco/pma/reports/review/exception/AppExceptionMessage
+      com/tesco/pma/reporting/dashboard/exception/AppExceptionMessage
     encoding: UTF-8
   async-executor:
     core-pool-size: 2
@@ -128,6 +132,7 @@ server:
     context-path: /v1
   trusted-port: 8084
   trusted-path-prefix: /v1/user-management
+#  forward-headers-strategy: NATIVE
 management:
   server:
     port: 8090
@@ -184,6 +189,7 @@ tesco:
         ROLE_PeopleTeam:  ${AD_ROLE_PEOPLE_TEAM}
         ROLE_TalentAdmin: ${AD_ROLE_TALENT_ADMIN}
         ROLE_ProcessManager: ${AD_ROLE_PROCESS_MANAGER}
+        ROLE_Executive: ${AD_ROLE_EXECUTIVE}
       default-user:
         uuid: ${DEFAULT_USER_UUID:10000000-1000-1000-1000-100000000001}
     rest-template:
@@ -216,12 +222,11 @@ tesco:
       cep:
         subject: ${CEP_SUBJECT}
         publish:
-          url: ${TESCO_API_BASE_URL}/colleague/v1/events
+          url: ${TESCO_API_BASE_URL}/colleague/v2/events
         retry-timeout: 30
         subscribe:
           feeds:
-            jit: colleagues-jit-v1
-            immediate: colleagues-immediate-v1
+            capi: capi-colleague-facts-v2
       colleague-api:
         base-url: ${TESCO_API_BASE_URL}/colleague/v2/colleagues
       events-api:
@@ -238,10 +243,9 @@ tesco:
       PM_REVIEW_DECLINED: com.tesco.pma.bpm.action.RunFlowByEventAction
       PM_REVIEW_BEFORE_END: com.tesco.pma.bpm.action.RunFlowByEventAction
       # Import events
-      IMPORT_NEW_COLLEAGUE: com.tesco.pma.bpm.action.RunFlowByEventAction
+      PM_COLLEAGUE_CYCLE_ASSIGNMENT: com.tesco.pma.bpm.action.RunFlowByEventAction
       POST_IMPORT_NEW_COLLEAGUE: com.tesco.pma.colleague.security.action.CreateAccountByEventAction
       # CEP events
-      CEP_COLLEAGUE_ADDED: com.tesco.pma.bpm.action.RunFlowByEventAction
       POST_CEP_COLLEAGUE_ADDED: com.tesco.pma.colleague.security.action.CreateAccountByEventAction
       CEP_COLLEAGUE_UPDATED: com.tesco.pma.bpm.action.RunFlowByEventAction
       CEP_COLLEAGUE_LEFT: com.tesco.pma.bpm.action.RunFlowByEventAction
@@ -273,6 +277,8 @@ tesco:
         key: pdp/templates/Personal Development Plan Template.pptx
       form:
         key: pdp/forms/standard_pdp.form
+    colleague-changes:
+      force: ${CFAPI_FORCE:false}
 
 camunda:
   bpm:
@@ -314,7 +320,7 @@ camunda:
                                            com/tesco/pma/flow/notifications/tips/tips_flow.bpmn,
                                            com/tesco/pma/flow/notifications/tips/tips_notification_decisions.dmn,
                                            com/tesco/pma/flow/notifications/tips/tips_event_to_template_id.dmn,
-                                           com/tesco/pma/flow/reports/rating/overall_rating.dmn,
+                                           com/tesco/pma/flow/reporting/rating/overall_rating.dmn,
                                            com/tesco/pma/flow/review/review_allowed_statuses.dmn,
                                            com/tesco/pma/flow/review/review_allowed_prev_statuses.dmn,
                                            com/tesco/pma/flow/review/tl_point_allowed_prev_statuses.dmn,

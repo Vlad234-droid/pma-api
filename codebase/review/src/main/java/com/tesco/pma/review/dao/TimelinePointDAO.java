@@ -1,5 +1,6 @@
 package com.tesco.pma.review.dao;
 
+import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.review.domain.TimelinePoint;
 import org.apache.ibatis.annotations.Param;
@@ -160,12 +161,12 @@ public interface TimelinePointDAO {
     /**
      * Returns time line by PM cycleUuid
      *
-     * @param cycleUuid     an identifier of performance cycle
      * @param colleagueUuid an identifier of colleague
+     * @param pmCycleStatus a status of colleague cycle
      * @return a list of TimelinePoint
      */
-    List<TimelinePoint> getTimeline(@Param("cycleUuid") UUID cycleUuid,
-                                    @Param("colleagueUuid") UUID colleagueUuid);
+    List<TimelinePoint> getTimeline(@Param("colleagueUuid") UUID colleagueUuid,
+                                    @Param("pmCycleStatus") PMCycleStatus pmCycleStatus);
 
 
     /**

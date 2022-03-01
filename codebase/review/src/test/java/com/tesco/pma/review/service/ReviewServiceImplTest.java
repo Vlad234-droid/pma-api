@@ -6,7 +6,6 @@ import com.tesco.pma.configuration.MessageSourceConfig;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
-import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.error.ApiExceptionHandler;
 import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.NotFoundException;
@@ -88,9 +87,6 @@ class ReviewServiceImplTest {
     @MockBean
     private ReviewAuditLogDAO mockReviewAuditLogDAO;
 
-    @MockBean
-    private PMCycleService pmCycleService;
-
     @SpyBean
     private ReviewServiceImpl reviewService;
 
@@ -134,7 +130,6 @@ class ReviewServiceImplTest {
 
         final var res = reviewService.getReview(
                 randomUUID,
-                randomUUID,
                 OBJECTIVE,
                 NUMBER_1);
 
@@ -177,7 +172,7 @@ class ReviewServiceImplTest {
         when(mockReviewDmnService.getReviewAllowedPrevStatuses(any(),any()))
                 .thenReturn(List.of(DRAFT));
 
-        final var res = reviewService.updateReview(expectedReview, randomUUID, randomUUID, null);
+        final var res = reviewService.updateReview(expectedReview, randomUUID, null);
 
         assertThat(res)
                 .returns(expectedReview.getProperties(), from(Review::getProperties));
@@ -217,7 +212,7 @@ class ReviewServiceImplTest {
         when(mockReviewDmnService.getReviewAllowedStatuses(any(),any()))
                 .thenReturn(List.of(DRAFT));
 
-        final var res = reviewService.createReview(expectedReview, randomUUID, randomUUID);
+        final var res = reviewService.createReview(expectedReview, randomUUID);
 
         assertThat(res).isSameAs(expectedReview);
     }
@@ -225,7 +220,6 @@ class ReviewServiceImplTest {
     @Test
     void deleteReviewNotExists() {
         final var tlPointUUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0010");
-        final var performanceCycleUuid = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0012");
 
         final var expectedColleagueCycle = PMColleagueCycle.builder().build();
         final var expectedTimelinePoint = TimelinePoint.builder()
@@ -254,7 +248,6 @@ class ReviewServiceImplTest {
                 .thenReturn(List.of(DRAFT,DECLINED,APPROVED));
         final var exception = assertThrows(NotFoundException.class,
                 () -> reviewService.deleteReview(
-                        performanceCycleUuid,
                         COLLEAGUE_UUID,
                         OBJECTIVE,
                         1));

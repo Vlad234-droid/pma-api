@@ -137,7 +137,7 @@
         and r.status_id = csr.new_status_id
         and csr.rn = 1)
         where cc.colleague_uuid = #{colleagueUuid}
-        and cc.cycle_uuid = #{cycleUuid}
+        and cc.status_id = #{pmCycleStatus.id}
         order by r.type_id, r.number
     </select>
 
@@ -182,7 +182,7 @@
                            on (lm_d.id = lm_c.department_id)
                  left join pm_colleague_cycle cc
                            on (c.uuid = cc.colleague_uuid
-                               and cc.status_id = 1)
+                               and cc.status_id = 7)
                  left join pm_timeline_point tlp
                            on (cc.uuid = tlp.colleague_cycle_uuid)
                  left join pm_review r

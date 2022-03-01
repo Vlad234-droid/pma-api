@@ -12,8 +12,12 @@
             ]]>
         </sql>
         <rollback>
-            <dropIndex indexName="colleague_cycle_ux"
-                       tableName="pm_colleague_cycle"/>
+            <sql><![CDATA[
+            drop index if exists colleague_cycle_ux;
+
+            CREATE UNIQUE INDEX if not exists coll_cycle_unique ON pm_colleague_cycle(colleague_uuid, cycle_uuid, status_id)
+            where status_id = 1;
+            ]]></sql>
         </rollback>
     </changeSet>
 </databaseChangeLog>

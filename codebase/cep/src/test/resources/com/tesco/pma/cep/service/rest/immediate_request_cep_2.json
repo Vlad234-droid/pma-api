@@ -1,9 +1,0 @@
-{
-  "eventType": "Joiner",
-  "colleagueUUID": "77778888-9999-0000-1111-222222222222",
-  "effectiveDate": "2021-06-25",
-  "changedAttributes": [
-    "someField",
-    "someOtherField"
-  ]
-}

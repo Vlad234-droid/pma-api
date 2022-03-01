@@ -95,6 +95,9 @@
                 <when test="filter.property == 'uuid' or filter.property == 'template-uuid' or filter.property == 'created-by'">
                     #{value}::uuid
                 </when>
+                <when test="filter.property == 'status'">
+                    #{value}::int
+                </when>
                 <otherwise>
                     #{value}
                 </otherwise>
@@ -209,7 +212,7 @@
         <include refid="addStatusIdCondition"/>
     </update>
 
-    <select id="getAll" resultMap="cycleResultMap">
+    <select id="findAll" resultMap="cycleResultMap">
         SELECT uuid,
         entry_config_key,
         template_uuid,

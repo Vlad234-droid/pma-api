@@ -42,7 +42,7 @@ public class PMNewColleagueEventHandler extends AbstractColleagueCycleHandler {
                 var requestQuery = new RequestQuery();
                 requestQuery.addFilters(STATUS_FIELD_FILTER, ACTIVE.getId());
 
-                pmCycleService.getAll(requestQuery, true)
+                pmCycleService.findAll(requestQuery, true)
                         .stream()
                         .filter(c -> configEntryService.isColleagueExistsForCompositeKey(colleagueUuid, c.getEntryConfigKey()))
                         .findFirst()

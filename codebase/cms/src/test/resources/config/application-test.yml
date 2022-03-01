@@ -1,0 +1,115 @@
+spring:
+  application:
+    name: app
+    index: ${random.uuid}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://test-issue-url.com
+          jwk-set-uri: http://test-jwk-set-uri.com
+        opaquetoken:
+          client-id: test_client_id
+          client-secret: test_client_secret
+          introspection-uri: http://test-introspection-uri.com
+      client:
+        registration:
+          identity:
+            client-id: test_client_id
+            client-secret: test_client_secret
+            authorization-grant-type: client_credentials
+            client-authentication-method: POST
+            scope:
+              - test_scope_1
+              - test_scope_2
+            provider: identity
+        provider:
+          identity:
+            token-uri: http://test-token-uri.com
+  mvc:
+    format:
+      date-time: iso
+      date: iso
+      time: iso
+  datasource:
+    default:
+      mybatis-session:
+        type-aliases-package: com.tesco.pma.api, com.tesco.pma.process.api, com.tesco.pma.cms.model
+        configuration-properties:
+          base-package: com.tesco.pma.dao, com.tesco.pma.process.dao, com.tesco.pma.cycle.dao, com.tesco.pma.cms.dao
+          batchSize: 100
+    postgres-version: 11.11
+    camunda:
+      driver-class-name: org.h2.Driver
+      jdbc-url: jdbc:h2:mem:camunda-test;MODE=Oracle;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      #      jdbc-url: jdbc:h2:tcp://localhost//opt/h2/db/demo;MODE=Oracle;DB_CLOSE_DELAY=-1
+      username: sa
+      password:
+      type: com.zaxxer.hikari.HikariDataSource
+      connection-test-query: SELECT 1 FROM DUAL
+      minimum-idle: 1
+      maximum-pool-size: 10
+      pool-name: camunda_ds_pool
+      is-auto-commit: false
+  liquibase:
+    enabled: true
+    change-log: 'classpath:/com/tesco/pma/database/changelog-master.xml'
+    labels: '!integration AND !performance'
+  messages:
+    basename: >
+      com/tesco/pma/exception/AppExceptionMessage
+    encoding: UTF-8
+server:
+  port: 8083
+  servlet:
+    context-path: /
+
+tesco:
+  application:
+    code: DEMO
+    executor:
+      default-beans:
+        - test-default-1
+      test-with-custom-configuration:
+        core-pool-size: 3
+        max-pool-size: 100
+        queue-capacity: 555
+    rest-event-executor:
+      core-pool-size: 1
+      max-core-pool-size: 1
+      queue-capacity: 1
+    rest-template:
+      connect-timeout: 20
+      read-timeout: 30
+      http-factory-class: com.tesco.pma.configuration.RestTemplateConfigurationTest.TestFactory
+    to-override: value
+    clean-test:
+      clean-interval:
+        default-value: 100
+        lookup:
+          code: long
+          type: cleanIntervalResolver
+      threshold:
+        default-value: 1000
+        lookup:
+          code: integer
+          type: thresholdResolver
+      max-iteration-cnt: 10
+
+camunda:
+  bpm:
+    process-engine-name: demo-camunda
+    history-level: activity
+    database:
+      schema-update: true
+      #      schema-update: create-drop
+      type: h2
+    metrics:
+      enabled: false
+    job-execution:
+      enabled: false
+    id-generator: strong
+    auto-deployment-enabled: true
+    deployment-resource-pattern: classpath:com/tesco/pma/cms/service/help_faq_urls.dmn, 
+                                           com/tesco/pma/cms/service/help_faq_keys.dmn
+

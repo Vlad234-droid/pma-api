@@ -85,12 +85,13 @@ TESCO_API_BASE_URL: https://api.tesco.com
 ONE_LOGIN_BASE_URL: https://login.ourtesco.com
 PMA_API_URL: http://pma-api-service:8083/v1
 COLLEAGUE_INBOX_API_URL: https://api.ourtesco.com/dex-colleague-my-inbox/my-inbox
-AD_ROLE_ADMIN: GG-UK-TescoGlobal-PMA-PPE-Admin
-AD_ROLE_COLLEAGUE: GG-UK-TescoGlobal-PMA-PPE-Colleague
-AD_ROLE_LINE_MANAGER: GG-UK-TescoGlobal-PMA-PPE-LineManager
-AD_ROLE_PEOPLE_TEAM: GG-UK-TescoGlobal-PMA-PPE-PeopleTeam
-AD_ROLE_TALENT_ADMIN: GG-UK-TescoGlobal-PMA-PPE-TalentAdmin
-AD_ROLE_PROCESS_MANAGER: GG-UK-TescoGlobal-PMA-PPE-ProcessManager
+AD_ROLE_ADMIN: GG-UK-TescoGlobal-PMA-Admin
+AD_ROLE_COLLEAGUE: GG-UK-TescoGlobal-PMA-Colleague
+AD_ROLE_LINE_MANAGER: GG-UK-TescoGlobal-PMA-LineManager
+AD_ROLE_PEOPLE_TEAM: GG-UK-TescoGlobal-PMA-PeopleTeam
+AD_ROLE_TALENT_ADMIN: GG-UK-TescoGlobal-PMA-TalentAdmin
+AD_ROLE_PROCESS_MANAGER: GG-UK-TescoGlobal-PMA-ProcessManager
+AD_ROLE_EXECUTIVE: GG-UK-TescoGlobal-PMA-Executive
 IDENTITY_CLIENT_ID: ead11e8a-6186-4898-a47b-8d63068b58dd
 # has to be set to IAM ClientId
 IAM_INTEGRATION_SUBJECT: 00000000-0000-0000-0000-000000000000

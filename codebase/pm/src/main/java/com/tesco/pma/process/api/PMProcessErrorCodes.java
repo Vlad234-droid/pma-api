@@ -39,7 +39,11 @@ public enum PMProcessErrorCodes implements ErrorCodeAware {
      * Process not found by cycle uuid
      */
     PROCESS_NOT_FOUND_BY_CYCLE,
-    ;
+
+    /**
+     * Process cannot be started
+     */
+    PROCESS_CANNOT_BE_STARTED;
 
 
     @Override

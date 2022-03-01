@@ -1,5 +1,6 @@
 package com.tesco.pma.review.dao;
 
+import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 import com.tesco.pma.review.domain.ColleagueView;
@@ -82,14 +83,14 @@ public interface ReviewDAO {
                              @Param("number") Integer number);
 
     /**
-     * Get reviews by performanceCycleUuid, colleagueUuid
+     * Get reviews by colleagueUuid
      *
-     * @param cycleUuid     an identifier of performance cycle
      * @param colleagueUuid an identifier of colleague
+     * @param pmCycleStatus a status of colleague cycle
      * @return a list of reviews
      */
-    List<Review> getReviewsByColleague(@Param("cycleUuid") UUID cycleUuid,
-                                       @Param("colleagueUuid") UUID colleagueUuid);
+    List<Review> getReviewsByColleague(@Param("colleagueUuid") UUID colleagueUuid,
+                                       @Param("pmCycleStatus") PMCycleStatus pmCycleStatus);
 
     /**
      * Returns list of colleague's view with active reviews, timeline points etc. by managerUuid

@@ -155,8 +155,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         if (ex.getRootCause() != null) {
             error.addDetails(ApiValidationError.builder()
-                    .code(ex.getRootCause().getClass().getName())
-                    .message(ex.getRootCause().getMessage())
+                    .code(ex.getRootCause().getClass().getName()) //NOSONAR has null check
+                    .message(ex.getRootCause().getMessage()) //NOSONAR has null check
                     .field(getFieldName(ex))
                     .build());
         }
@@ -350,7 +350,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         String message = messageSourceAccessor.getMessage(ErrorCodes.METHOD_ARGUMENT_TYPE_MISMATCH,
                 Map.of(PARAMETER, ex.getName(),
                         VALUE, Objects.requireNonNullElse(ex.getValue(), StringUtils.EMPTY),
-                        TYPE, ex.getRequiredType() != null ? ex.getRequiredType().getSimpleName() : "undefined"));
+                        TYPE, ex.getRequiredType() != null ? ex.getRequiredType().getSimpleName() : "undefined")); //NOSONAR has null check
 
         logger.error(LogFormatter.formatMessage(METHOD_ARGUMENT_TYPE_MISMATCH, message), ex);
 

@@ -4,7 +4,7 @@ import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.bpm.camunda.flow.CamundaExecutionContext;
 import com.tesco.pma.cycle.api.model.PMElement;
 import com.tesco.pma.cycle.api.model.PMProcessModelParser;
-import com.tesco.pma.event.EventParams;
+import com.tesco.pma.flow.FlowParameters;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.model.bpmn.instance.Activity;
@@ -56,8 +56,8 @@ public class HandlerUtils {
         var event = context.getEvent();
         if (event != null) {
             var eventProperties = event.getEventProperties();
-            if (eventProperties.containsKey(EventParams.COLLEAGUE_UUID.name())) {
-                return UUID.fromString(eventProperties.get(EventParams.COLLEAGUE_UUID.name()).toString());
+            if (eventProperties.containsKey(FlowParameters.COLLEAGUE_UUID.name())) {
+                return UUID.fromString(eventProperties.get(FlowParameters.COLLEAGUE_UUID.name()).toString());
             }
         }
         return null;

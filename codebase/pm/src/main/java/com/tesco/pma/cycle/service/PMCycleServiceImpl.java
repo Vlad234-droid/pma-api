@@ -13,10 +13,13 @@ import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import com.tesco.pma.cycle.api.PMForm;
 import com.tesco.pma.cycle.api.model.PMReviewElement;
+import com.tesco.pma.cycle.api.request.PMCycleUpdateFormRequest;
+import com.tesco.pma.cycle.api.request.PMFormRequest;
 import com.tesco.pma.cycle.dao.PMCycleDAO;
 import com.tesco.pma.cycle.exception.ErrorCodes;
 import com.tesco.pma.cycle.exception.PMCycleException;
 import com.tesco.pma.cycle.api.model.PMProcessModelParser;
+import com.tesco.pma.exception.InitializationException;
 import com.tesco.pma.util.ResourceProvider;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
@@ -32,6 +35,7 @@ import com.tesco.pma.process.api.PMRuntimeProcess;
 import com.tesco.pma.process.service.PMProcessService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -54,17 +58,17 @@ import static com.tesco.pma.cycle.api.PMCycleStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMCycleStatus.FAILED;
 import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
 import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
-import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_ALREADY_EXISTS;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_METADATA_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_ALLOWED_TO_START;
-import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_BY_UUID;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_BY_UUID_AND_STATUS;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_COLLEAGUE;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_FOR_STATUS_UPDATE;
+import static com.tesco.pma.exception.ErrorCodes.ERROR_FILE_NOT_FOUND;
 import static com.tesco.pma.logging.TraceId.TRACE_ID_HEADER;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.process.api.PMProcessStatus.STARTED;
+import static com.tesco.pma.util.FileUtils.getFormName;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Set.of;
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -144,7 +148,6 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public CompositePMCycleResponse get(UUID uuid, boolean includeForms) {
         var pmCycle = cycleDAO.read(uuid, null);
         if (null == pmCycle) {
@@ -168,9 +171,8 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public PMCycle getCurrentByColleague(UUID colleagueUuid) {
-        var activeFilter = includeFilter(Set.of(ACTIVE));
+        var activeFilter = includeFilter(Set.of(PMCycleStatus.STARTED));
         var cycles = cycleDAO.getByColleague(colleagueUuid, activeFilter);
         if (null == cycles || cycles.isEmpty()) {
             throw notFound(PM_CYCLE_NOT_FOUND_COLLEAGUE,
@@ -202,7 +204,6 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<PMCycle> getByColleague(UUID colleagueUuid) {
         var cycles = cycleDAO.getByColleague(colleagueUuid);
         if (null == cycles || cycles.isEmpty()) {
@@ -213,14 +214,8 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
     @Override
-    public List<PMCycle> getAll(RequestQuery requestQuery, boolean includeMetadata) {
-
-        var results = cycleDAO.getAll(requestQuery, includeMetadata);
-        if (null == results) {
-            throw notFound(PM_CYCLE_NOT_FOUND,
-                    Map.of(INCLUDE_METADATA_PARAMETER_NAME, includeMetadata));
-        }
-        return results;
+    public List<PMCycle> findAll(RequestQuery requestQuery, boolean includeMetadata) {
+        return cycleDAO.findAll(requestQuery, includeMetadata);
     }
 
     @Override
@@ -258,6 +253,59 @@ public class PMCycleServiceImpl implements PMCycleService {
         //TODO update rt process
     }
 
+    @Override
+    @Transactional
+    public PMCycle updateForm(UUID cycleUuid, PMCycleUpdateFormRequest updateFormRequest) {
+        log.debug("Updating form for cycle:{}, updateFormRequest:{}", cycleUuid, updateFormRequest);
+
+        PMCycle cycle = cycleDAO.read(cycleUuid, null);
+        if (null == cycle) {
+            throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID,
+                    Map.of(CYCLE_UUID_PARAMETER_NAME, cycleUuid));
+        }
+
+        PMForm pmFormFrom = getPMForm(updateFormRequest.getChangeFrom());
+        PMForm pmFormTo = getPMForm(updateFormRequest.getChangeTo());
+
+        cycle.getMetadata().getCycle().getTimelinePoints().stream()
+                .filter(tpe -> REVIEW == tpe.getType())
+                .map(PMReviewElement.class::cast)
+                .filter(rw -> rw.getForm() != null && rw.getForm().getId().equals(pmFormFrom.getId()))
+                .findAny()
+                .orElseThrow(() -> new NotFoundException(ERROR_FILE_NOT_FOUND.name(),
+                        "Form was not found for changing", pmFormFrom.getKey()))
+                .setForm(pmFormTo);
+
+        cycleDAO.update(cycle, null);
+        return cycle;
+    }
+
+    @Override
+    @Transactional
+    public PMCycle updateFormToLatestVersion(UUID cycleUuid, String formKey) {
+        log.debug("Updating form to the latest version for the cycle:{}, formKey:{}", cycleUuid, formKey);
+
+        PMCycle cycle = cycleDAO.read(cycleUuid, null);
+        if (null == cycle) {
+            throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID,
+                    Map.of(CYCLE_UUID_PARAMETER_NAME, cycleUuid));
+        }
+
+        PMForm latestForm = getPMForm(formKey);
+
+        cycle.getMetadata().getCycle().getTimelinePoints().stream()
+                .filter(tpe -> tpe.getType() == REVIEW)
+                .map(review -> (PMReviewElement) review)
+                .filter(rw -> rw.getForm() != null && rw.getForm().getKey().equals(formKey))
+                .findAny()
+                .orElseThrow(() -> new NotFoundException(ERROR_FILE_NOT_FOUND.name(),
+                        "Form was not found for changing", formKey))
+                .setForm(latestForm);
+
+        cycleDAO.update(cycle, null);
+        return cycle;
+    }
+
     private void cycleFailed(String processKey, UUID uuid, Exception ex) {
         log.error("Performance cycle publish error, cause: ", ex);
         try {
@@ -271,19 +319,14 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     //TODO refactor to common solution (include @com.tesco.pma.review.service.ReviewServiceImpl)
     private NotFoundException notFound(ErrorCodeAware errorCode, Map<String, ?> params) {
-        return notFound(errorCode, params, null);
-    }
-
-    private NotFoundException notFound(ErrorCodeAware errorCode, Map<String, ?> params, Throwable cause) {
         return new NotFoundException(errorCode.getCode(),
-                messageSourceAccessor.getMessage(errorCode.getCode(), params), null, cause);
+                messageSourceAccessor.getMessage(errorCode.getCode(), params), null, null);
     }
 
-    private DatabaseConstraintViolationException databaseConstraintViolation(ErrorCodeAware errorCode,
-                                                                             Map<String, ?> params,
+    private DatabaseConstraintViolationException databaseConstraintViolation(Map<String, ?> params,
                                                                              Throwable cause) {
-        return new DatabaseConstraintViolationException(errorCode.getCode(),
-                messageSourceAccessor.getMessage(errorCode.getCode(), params), null, cause);
+        return new DatabaseConstraintViolationException(((ErrorCodeAware) ErrorCodes.PM_CYCLE_ALREADY_EXISTS).getCode(),
+                messageSourceAccessor.getMessage(((ErrorCodeAware) ErrorCodes.PM_CYCLE_ALREADY_EXISTS).getCode(), params), null, cause);
     }
 
 
@@ -314,7 +357,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
 
-    private String intDeployProcess(UUID templateUuid, String processName) throws Exception {
+    private String intDeployProcess(UUID templateUuid, String processName) throws InitializationException {
 
         var file = fileService.get(templateUuid, true);
         InputStream fileContent = new ByteArrayInputStream(file.getFileContent());
@@ -347,7 +390,6 @@ public class PMCycleServiceImpl implements PMCycleService {
             return cycle;
         } catch (DuplicateKeyException e) {
             throw databaseConstraintViolation(
-                    PM_CYCLE_ALREADY_EXISTS,
                     Map.of(ORG_KEY_PARAMETER_NAME, cycle.getEntryConfigKey(),
                             TEMPLATE_UUID_PARAMETER_NAME, cycle.getTemplate().getUuid()), e);
         }
@@ -445,11 +487,11 @@ public class PMCycleServiceImpl implements PMCycleService {
 
         query.setFilters(List.of(
                 new Condition(ENTRY_CONFIG_KEY_CONDITION, EQUALS, cycle.getEntryConfigKey()),
-                new Condition(STATUS_CONDITION, EQUALS, ACTIVE.getId()),
+                new Condition(STATUS_CONDITION, EQUALS, STARTED.getId()),
                 new Condition(TEMPLATE_UUID_CONDITION, EQUALS, cycle.getTemplate().getUuid())
         ));
 
-        List<PMCycle> cycleList = cycleDAO.getAll(query, false);
+        List<PMCycle> cycleList = cycleDAO.findAll(query, false);
         if (!isEmpty(cycleList)) {
             throw notFound(PM_CYCLE_NOT_ALLOWED_TO_START,
                     Map.of(CONDITION_PARAMETER_NAME, query.getFilters()));
@@ -471,6 +513,37 @@ public class PMCycleServiceImpl implements PMCycleService {
             return form;
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    private PMForm getPMForm(String formKey) {
+        try {
+            var formName = FilenameUtils.getName(getFormName(formKey));
+            var formPath = FilenameUtils.getFullPathNoEndSeparator(formKey);
+            var formFile = fileService.get(formPath, formName, false, null);
+            return new PMForm(formFile.getUuid().toString(), formKey, formKey, null);
+        } catch (Exception e) {
+            throw new NotFoundException(ERROR_FILE_NOT_FOUND.name(), "Form was not found", formKey, e);
+        }
+    }
+
+    private PMForm getPMForm(UUID formUuid) {
+        try {
+            var formFile = fileService.get(formUuid, false);
+            var formKey = FilenameUtils.concat(formFile.getPath(), formFile.getFileName());
+
+            return new PMForm(formFile.getUuid().toString(), formKey, formKey, null);
+        } catch (Exception e) {
+            throw new NotFoundException(ERROR_FILE_NOT_FOUND.name(), "Form was not found", formUuid.toString(), e);
+        }
+    }
+
+    private PMForm getPMForm(PMFormRequest formRequest) {
+        try {
+            return getPMForm(UUID.fromString(formRequest.getId()));
+        } catch (Exception e) {
+            String formKey = formRequest.getKey() != null ? formRequest.getKey() : formRequest.getCode();
+            return getPMForm(formKey);
         }
     }
 }

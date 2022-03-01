@@ -29,10 +29,10 @@ import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Sort.SortOrder.DESC;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -42,7 +42,7 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 @SpringBootTest(classes = FileServiceImpl.class)
 @ExtendWith(MockitoExtension.class)
-public class FileServiceImplTest {
+class FileServiceImplTest {
 
     private static final UUID FILE_UUID_1 = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65765");
     private static final String FILE_NAME = "test1.txt";
@@ -145,7 +145,7 @@ public class FileServiceImplTest {
         var includeFileContent = false;
         var requestQuery = new RequestQuery();
         requestQuery.setFilters(asList(new Condition("path", EQUALS, PATH), new Condition("file-name", EQUALS, FILE_NAME)));
-        when(fileDao.findByRequestQuery(eq(requestQuery), eq(includeFileContent), eq(CREATOR_ID), eq(true)))
+        when(fileDao.findByRequestQuery(requestQuery, includeFileContent, CREATOR_ID, true))
                 .thenReturn(asList(fileData));
 
         var result = service.get(PATH, FILE_NAME, includeFileContent, CREATOR_ID);
@@ -169,7 +169,7 @@ public class FileServiceImplTest {
         requestQuery.setFilters(asList(new Condition("path", EQUALS, PATH), new Condition("file-name", EQUALS, FILE_NAME)));
         requestQuery.setLimit(null);
         requestQuery.setSort(Arrays.asList(new Sort("version", DESC)));
-        when(fileDao.findByRequestQuery(eq(requestQuery), eq(includeFileContent), eq(CREATOR_ID), eq(false))).thenReturn(filesData);
+        when(fileDao.findByRequestQuery(requestQuery, includeFileContent, CREATOR_ID, false)).thenReturn(filesData);
 
         var result = service.getAllVersions(PATH, FILE_NAME, includeFileContent, CREATOR_ID);
 
@@ -183,11 +183,11 @@ public class FileServiceImplTest {
         requestQuery.setFilters(asList(new Condition("path", EQUALS, PATH), new Condition("file-name", EQUALS, FILE_NAME)));
         requestQuery.setLimit(null);
         requestQuery.setSort(Arrays.asList(new Sort("version", DESC)));
-        when(fileDao.findByRequestQuery(eq(requestQuery), eq(includeFileContent), eq(CREATOR_ID), eq(false))).thenReturn(emptyList());
+        when(fileDao.findByRequestQuery(requestQuery, includeFileContent, CREATOR_ID, false)).thenReturn(emptyList());
 
         var result = service.getAllVersions(PATH, FILE_NAME, includeFileContent, CREATOR_ID);
 
-        assertThat(result).isEmpty();
+        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -220,8 +220,9 @@ public class FileServiceImplTest {
     @Test
     void deleteFileByVersionsThrowsNotFoundExceptionWhenDaoReturnsNotOne() {
         when(fileDao.deleteVersions(PATH, FILE_NAME, VERSION_1, CREATOR_ID)).thenReturn(0);
+        var versions = List.of(VERSION_1, VERSION_2);
 
-        assertThrows(NotFoundException.class, () -> service.deleteVersions(PATH, FILE_NAME, List.of(VERSION_1, VERSION_2), CREATOR_ID));
+        assertThrows(NotFoundException.class, () -> service.deleteVersions(PATH, FILE_NAME, versions, CREATOR_ID));
     }
 
     private File buildFileData(String fileName, UUID uuid, Integer version) {

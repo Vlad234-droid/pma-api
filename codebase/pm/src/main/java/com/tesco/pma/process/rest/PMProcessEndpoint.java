@@ -2,8 +2,10 @@ package com.tesco.pma.process.rest;
 
 import com.tesco.pma.bpm.api.ProcessExecutionException;
 import com.tesco.pma.bpm.api.ProcessManagerService;
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import com.tesco.pma.exception.DeploymentException;
+import com.tesco.pma.process.api.PMProcessErrorCodes;
 import com.tesco.pma.process.service.PMProcessService;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
@@ -38,6 +40,7 @@ public class PMProcessEndpoint {
 
     private final PMProcessService processService;
     private final ProcessManagerService processManagerService;
+    private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Operation(summary = "Get process metadata by process key, e.g., TYPE_1, TYPE_2, TYPE_4",
             tags = {"processes"})
@@ -67,9 +70,13 @@ public class PMProcessEndpoint {
         try {
             return RestResponse.success(processManagerService.runProcess(processKey, parameters));
         } catch (ProcessExecutionException e) {
-            //todo
-            throw new DeploymentException("PROCESS_CANNOT_BE_STARTED", "Process cannot be started by key "
-                    + processKey + " with parameters " + parameters, "processes", e);
+            throw deploymentException(processKey, parameters, e);
         }
+    }
+
+    private DeploymentException deploymentException(String processKey, Map<String, ?> parameters, Throwable cause) {
+        return new DeploymentException(PMProcessErrorCodes.PROCESS_CANNOT_BE_STARTED.getCode(),
+                messageSourceAccessor.getMessage(PMProcessErrorCodes.PROCESS_CANNOT_BE_STARTED,
+                        Map.of("processKey", processKey, "parameters", parameters)), "processes", cause);
     }
 }

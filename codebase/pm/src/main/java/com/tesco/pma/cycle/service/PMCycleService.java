@@ -5,6 +5,7 @@ import com.tesco.pma.cycle.api.CompositePMCycleMetadataResponse;
 import com.tesco.pma.cycle.api.CompositePMCycleResponse;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
+import com.tesco.pma.cycle.api.request.PMCycleUpdateFormRequest;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.pagination.RequestQuery;
@@ -71,7 +72,7 @@ public interface PMCycleService {
     PMCycle update(@NotNull PMCycle cycle);
 
     /**
-     * Returns the current active performance cycle
+     * Returns the current started performance cycle
      *
      * @param colleagueUuid Colleague identifier
      * @return performance cycle
@@ -97,7 +98,7 @@ public interface PMCycleService {
      */
     List<PMCycle> getByColleague(@NotNull UUID colleagueUuid);
 
-    List<PMCycle> getAll(RequestQuery requestQuery, boolean includeMetadata);
+    List<PMCycle> findAll(RequestQuery requestQuery, boolean includeMetadata);
 
     /**
      * Get PMCycleMetadata by file UUID
@@ -123,5 +124,9 @@ public interface PMCycleService {
     void start(UUID uuid);
 
     void completeCycle(UUID cycleUUID);
+
+    PMCycle updateForm(UUID cycleUuid, PMCycleUpdateFormRequest updateFormRequest);
+
+    PMCycle updateFormToLatestVersion(UUID cycleUuid, String formKey);
 }
 

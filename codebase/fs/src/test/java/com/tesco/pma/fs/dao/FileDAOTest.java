@@ -16,14 +16,18 @@ import org.springframework.test.context.DynamicPropertySource;
 import java.time.Instant;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static com.tesco.pma.file.api.FileStatus.ACTIVE;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Condition.Operand.GREATER_THAN;
 import static com.tesco.pma.pagination.Condition.Operand.IN;
 import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
 
-public class FileDAOTest extends AbstractDAOTest {
+class FileDAOTest extends AbstractDAOTest {
 
     private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/fs/dao/";
 
@@ -50,8 +54,8 @@ public class FileDAOTest extends AbstractDAOTest {
     void readByUuid() {
         final var result = instance.read(FILE_UUID_1, true, COLLEAGUE_UUID);
 
-        assertThat(result).isNotNull();
-        assertThat(result.getUuid()).isEqualTo(FILE_UUID_1);
+        assertNotNull(result);
+        assertEquals(FILE_UUID_1, result.getUuid());
     }
 
     @Test
@@ -59,7 +63,7 @@ public class FileDAOTest extends AbstractDAOTest {
     void readByUuidFoundNothingIfColleagueIsNotOwner() {
         final var result = instance.read(FILE_UUID_1, true, NOT_OWNER_COLLEAGUE_UUID);
 
-        assertThat(result).isNull();
+        assertNull(result);
     }
 
     @Test
@@ -70,9 +74,9 @@ public class FileDAOTest extends AbstractDAOTest {
 
         final var result = instance.findByRequestQuery(requestQuery, true, COLLEAGUE_UUID, true);
 
-        assertThat(result).isNotEmpty();
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0).getUuid()).isEqualTo(FILE_UUID_3);
+        assertFalse(result.isEmpty());
+        assertEquals(1, result.size());
+        assertEquals(FILE_UUID_3, result.get(0).getUuid());
     }
 
     @Test
@@ -83,9 +87,9 @@ public class FileDAOTest extends AbstractDAOTest {
 
         final var result = instance.findByRequestQuery(requestQuery, true, COLLEAGUE_UUID, true);
 
-        assertThat(result).isNotEmpty();
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0).getUuid()).isEqualTo(FILE_UUID_3);
+        assertFalse(result.isEmpty());
+        assertEquals(1, result.size());
+        assertEquals(FILE_UUID_3, result.get(0).getUuid());
     }
 
     @Test
@@ -98,9 +102,9 @@ public class FileDAOTest extends AbstractDAOTest {
         final var result = instance.findByRequestQuery(requestQuery,
                  true, COLLEAGUE_UUID, true);
 
-        assertThat(result).isNotEmpty();
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0).getUuid()).isEqualTo(FILE_UUID_3);
+        assertFalse(result.isEmpty());
+        assertEquals(1, result.size());
+        assertEquals(FILE_UUID_3, result.get(0).getUuid());
     }
 
     @Test
@@ -112,9 +116,9 @@ public class FileDAOTest extends AbstractDAOTest {
         final var result = instance.findByRequestQuery(requestQuery,
                  true, COLLEAGUE_UUID, true);
 
-        assertThat(result).isNotEmpty();
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0).getUuid()).isEqualTo(FILE_UUID_2);
+        assertFalse(result.isEmpty());
+        assertEquals(1, result.size());
+        assertEquals(FILE_UUID_2, result.get(0).getUuid());
     }
 
     @Test
@@ -126,7 +130,7 @@ public class FileDAOTest extends AbstractDAOTest {
         final var result = instance.findByRequestQuery(requestQuery,
                  true, COLLEAGUE_UUID, true);
 
-        assertThat(result).isEmpty();
+        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -135,7 +139,7 @@ public class FileDAOTest extends AbstractDAOTest {
         final var result = instance.findByRequestQuery(new RequestQuery(),
                 true, NOT_OWNER_COLLEAGUE_UUID, true);
 
-        assertThat(result).isEmpty();
+        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -147,10 +151,10 @@ public class FileDAOTest extends AbstractDAOTest {
         final var result = instance.findByRequestQuery(requestQuery,
                  true, COLLEAGUE_UUID, true);
 
-        assertThat(result).isNotEmpty();
-        assertThat(result).hasSize(2);
-        assertThat(result.get(0).getUuid()).isEqualTo(FILE_UUID_3);
-        assertThat(result.get(1).getUuid()).isEqualTo(FILE_UUID_2);
+        assertFalse(result.isEmpty());
+        assertEquals(2, result.size());
+        assertEquals(FILE_UUID_3, result.get(0).getUuid());
+        assertEquals(FILE_UUID_2, result.get(1).getUuid());
     }
 
     @Test
@@ -163,8 +167,8 @@ public class FileDAOTest extends AbstractDAOTest {
         final var result = instance.findByRequestQuery(requestQuery,
                  true, COLLEAGUE_UUID, false);
 
-        assertThat(result).isNotEmpty();
-        assertThat(result).hasSize(2);
+        assertFalse(result.isEmpty());
+        assertEquals(2, result.size());
     }
 
     @Test
@@ -177,7 +181,7 @@ public class FileDAOTest extends AbstractDAOTest {
         final var result = instance.findByRequestQuery(requestQuery,
                  true, COLLEAGUE_UUID, false);
 
-        assertThat(result).isEmpty();
+        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -188,7 +192,7 @@ public class FileDAOTest extends AbstractDAOTest {
 
         final var rowsInserted = instance.create(file);
 
-        assertThat(rowsInserted).isOne();
+        assertEquals(1, rowsInserted);
     }
 
     @Test
@@ -197,7 +201,7 @@ public class FileDAOTest extends AbstractDAOTest {
     void deleteByUuidAndColleague() {
         final var rowsDeleted = instance.deleteByUuidAndColleague(FILE_UUID_1, COLLEAGUE_UUID);
 
-        assertThat(rowsDeleted).isOne();
+        assertEquals(1, rowsDeleted);
     }
 
     @Test
@@ -206,7 +210,7 @@ public class FileDAOTest extends AbstractDAOTest {
     void deleteVersions() {
         final var rowsDeleted = instance.deleteVersions(PATH, "test1.txt", 2, COLLEAGUE_UUID);
 
-        assertThat(rowsDeleted).isOne();
+        assertEquals(1, rowsDeleted);
     }
 
     private File buildFileData() {
