@@ -47,10 +47,10 @@
     <bpmn:sequenceFlow id="Flow_00jz8u2" sourceRef="Activity_0uxnsor" targetRef="Event_0udd3h7" />
     <bpmn:textAnnotation id="TextAnnotation_1x0ra5i">
       <bpmn:text>Event: PM_CYCLE_REPEAT
-Parameters:
-PM_CYCLE_UUID - the cycle identifier
-PM_CYCLE_REPEATS_LEFT - remaining cycles
-</bpmn:text>
+        Parameters:
+        PM_CYCLE_UUID - the cycle identifier
+        PM_CYCLE_REPEATS_LEFT - remaining cycles
+      </bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0emnczc" sourceRef="Event_0fd7pp4" targetRef="TextAnnotation_1x0ra5i" />
   </bpmn:process>

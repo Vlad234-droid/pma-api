@@ -108,7 +108,7 @@
           <camunda:inputParameter name="EVENT_PARAMS">
             <camunda:map>
               <camunda:entry key="PM_CYCLE_UUID">${PM_CYCLE.getUuid()}</camunda:entry>
-              <camunda:entry key="PM_CYCLE_REPEAT_COUNT">${PM_CYCLE_REPEAT_COUNT}</camunda:entry>
+              <camunda:entry key="PM_CYCLE_REPEATS_LEFT">${PM_CYCLE_REPEATS_LEFT}</camunda:entry>
             </camunda:map>
           </camunda:inputParameter>
         </camunda:inputOutput>
@@ -136,6 +136,30 @@
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="schedule_end_annual_cycle">
+      <bpmndi:BPMNEdge id="Flow_17927e3_di" bpmnElement="Flow_17927e3">
+        <di:waypoint x="1070" y="117" />
+        <di:waypoint x="1135" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04oi66v_di" bpmnElement="Flow_04oi66v">
+        <di:waypoint x="920" y="117" />
+        <di:waypoint x="970" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1w8hg0y_di" bpmnElement="Flow_1w8hg0y">
+        <di:waypoint x="1185" y="117" />
+        <di:waypoint x="1232" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_153oiny_di" bpmnElement="Flow_153oiny">
+        <di:waypoint x="1160" y="142" />
+        <di:waypoint x="1160" y="190" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1083" y="156" width="74" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1oxbl4b_di" bpmnElement="Flow_1oxbl4b">
+        <di:waypoint x="1210" y="230" />
+        <di:waypoint x="1250" y="230" />
+        <di:waypoint x="1250" y="135" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0carm1i_di" bpmnElement="Flow_0carm1i">
         <di:waypoint x="620" y="117" />
         <di:waypoint x="670" y="117" />
@@ -159,30 +183,6 @@
       <bpmndi:BPMNEdge id="Flow_0739xeu_di" bpmnElement="Flow_0739xeu">
         <di:waypoint x="288" y="117" />
         <di:waypoint x="320" y="117" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_04oi66v_di" bpmnElement="Flow_04oi66v">
-        <di:waypoint x="920" y="117" />
-        <di:waypoint x="970" y="117" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_17927e3_di" bpmnElement="Flow_17927e3">
-        <di:waypoint x="1070" y="117" />
-        <di:waypoint x="1135" y="117" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1oxbl4b_di" bpmnElement="Flow_1oxbl4b">
-        <di:waypoint x="1210" y="230" />
-        <di:waypoint x="1250" y="230" />
-        <di:waypoint x="1250" y="135" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1w8hg0y_di" bpmnElement="Flow_1w8hg0y">
-        <di:waypoint x="1185" y="117" />
-        <di:waypoint x="1232" y="117" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_153oiny_di" bpmnElement="Flow_153oiny">
-        <di:waypoint x="1160" y="142" />
-        <di:waypoint x="1160" y="190" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1083" y="156" width="74" height="27" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="99" width="36" height="36" />
