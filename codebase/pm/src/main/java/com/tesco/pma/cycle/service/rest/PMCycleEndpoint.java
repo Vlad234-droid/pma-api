@@ -1,15 +1,20 @@
 package com.tesco.pma.cycle.service.rest;
 
+import com.tesco.pma.bpm.api.ProcessExecutionException;
+import com.tesco.pma.bpm.api.ProcessManagerService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.api.CompositePMCycleMetadataResponse;
 import com.tesco.pma.cycle.api.CompositePMCycleResponse;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
+import com.tesco.pma.cycle.api.request.PMCycleUpdateFormRequest;
 import com.tesco.pma.cycle.service.PMCycleService;
+import com.tesco.pma.exception.DeploymentException;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.pagination.RequestQuery;
+import com.tesco.pma.process.api.PMProcessErrorCodes;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,10 +35,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+import static com.tesco.pma.flow.FlowParameters.COLLEAGUE_UUIDS;
 import static com.tesco.pma.rest.RestResponse.success;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -42,12 +50,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 public class PMCycleEndpoint {
 
-    private static final String CYCLE_UUID_PARAMETER_NAME = "cycleUuid";
-    private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     public static final String INCLUDE_METADATA = "includeMetadata";
     public static final String INCLUDE_FORMS = "includeForms";
+    public static final String PM_CYCLE_ASSIGNMENT = "pm_cycle_assignment";
 
     private final PMCycleService service;
+    private final ProcessManagerService processManagerService;
     private final AuditorAware<UUID> auditorAware;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
@@ -155,7 +163,7 @@ public class PMCycleEndpoint {
     public RestResponse<List<PMCycle>> getAll(RequestQuery requestQuery,
                                               @RequestParam(value = INCLUDE_METADATA, defaultValue = "false")
                                                       boolean includeMetadata) {
-        return success(service.getAll(requestQuery, includeMetadata));
+        return success(service.findAll(requestQuery, includeMetadata));
     }
 
     /**
@@ -238,6 +246,51 @@ public class PMCycleEndpoint {
         log.debug("REST request to start Process : {}", uuid);
         service.start(uuid);
         return RestResponse.success();
+    }
+
+    @Operation(summary = "Update form",
+            description = "Update performance cycle form",
+            tags = {"performance-cycle"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle form updated")
+    @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
+    @PutMapping(value = "/pm-cycles/{uuid}/forms", produces = APPLICATION_JSON_VALUE,
+            consumes = APPLICATION_JSON_VALUE)
+    public RestResponse<PMCycle> updateForm(@PathVariable("uuid") final UUID cycleUuid,
+                                            @RequestBody PMCycleUpdateFormRequest updateFormRequest) {
+
+        return success(service.updateForm(cycleUuid, updateFormRequest));
+    }
+
+    @Operation(summary = "Update form to the latest version",
+            description = "Update form to the latest version",
+            tags = {"performance-cycle"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Form updated to the latest version")
+    @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
+    @PutMapping(value = "/pm-cycles/{uuid}/forms/latest", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<PMCycle> updateFormLatestVersion(@PathVariable("uuid") final UUID cycleUuid,
+                                                         @RequestParam(value = "form-key") String formKey) {
+
+        return success(service.updateFormToLatestVersion(cycleUuid, formKey));
+    }
+
+    @Operation(summary = "Run cycle assignment process", tags = {"processes"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Started cycle assignment process")
+    @PostMapping(value = "/pm-cycles/assignment", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isProcessManager() or isAdmin()")
+    public RestResponse<String> runCycleAssignmentProcess(@RequestBody @NotEmpty List<@NotEmpty String> colleagues) {
+        var parameters = Map.of(COLLEAGUE_UUIDS.name(), colleagues);
+
+        try {
+            return RestResponse.success(processManagerService.runProcess(PM_CYCLE_ASSIGNMENT, parameters));
+        } catch (ProcessExecutionException e) {
+            throw deploymentException(PM_CYCLE_ASSIGNMENT, parameters, e);
+        }
+    }
+
+    private DeploymentException deploymentException(String processKey, Map<String, ?> parameters, Throwable cause) {
+        return new DeploymentException(PMProcessErrorCodes.PROCESS_CANNOT_BE_STARTED.getCode(),
+                messageSourceAccessor.getMessage(PMProcessErrorCodes.PROCESS_CANNOT_BE_STARTED,
+                        Map.of("processKey", processKey, "parameters", parameters)), "processes", cause);
     }
 
     private UUID resolveUserUuid() {

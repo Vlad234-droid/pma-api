@@ -3,6 +3,7 @@ package com.tesco.pma.review.dao;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.tesco.pma.api.MapJson;
+import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.review.domain.TimelinePoint;
 import org.assertj.core.api.Assertions;
@@ -368,7 +369,7 @@ class TimelinePointDAOTest extends AbstractDAOTest {
             "pm_colleague_cycle_init.xml",
             "pm_timeline_point_init.xml"})
     void getTimeline() {
-        final var result = instance.getTimeline(CYCLE_UUID, COLLEAGUE_UUID);
+        final var result = instance.getTimeline(COLLEAGUE_UUID, PMCycleStatus.STARTED);
 
         var lastUpdatedTime = LocalDateTime.of(2022, 1, 1, 10, 0, 0)
                 .toInstant(ZoneOffset.UTC);

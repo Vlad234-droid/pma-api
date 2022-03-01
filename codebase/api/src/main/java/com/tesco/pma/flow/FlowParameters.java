@@ -16,6 +16,7 @@ public enum FlowParameters {
     MODEL_PARENT_ELEMENT,
 
     PM_CYCLE_UUID,
+    PM_CYCLE_KEY,
     PM_CYCLE,
     PM_CYCLE_START_TIME,
     PM_CYCLE_REPEATS_LEFT,

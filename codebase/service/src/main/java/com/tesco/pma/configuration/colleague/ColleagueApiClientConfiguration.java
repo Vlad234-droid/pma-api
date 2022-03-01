@@ -1,5 +1,6 @@
 package com.tesco.pma.configuration.colleague;
 
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.service.colleague.client.ColleagueApiClient;
 import com.tesco.pma.service.colleague.client.RestTemplateBasedColleagueApiClient;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,8 +14,9 @@ public class ColleagueApiClientConfiguration {
     @Bean
     public ColleagueApiClient colleagueApiClient(
             RestTemplate restTemplate,
-            @Value("${tesco.application.external-endpoints.colleague-api.base-url}") String colleagueApiBaseUrl) {
-        return new RestTemplateBasedColleagueApiClient(colleagueApiBaseUrl, restTemplate);
+            @Value("${tesco.application.external-endpoints.colleague-api.base-url}") String colleagueApiBaseUrl,
+            NamedMessageSourceAccessor messageSourceAccessor) {
+        return new RestTemplateBasedColleagueApiClient(colleagueApiBaseUrl, restTemplate, messageSourceAccessor);
     }
 
 }
