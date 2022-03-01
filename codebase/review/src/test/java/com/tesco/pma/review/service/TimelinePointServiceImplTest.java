@@ -14,7 +14,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
+
+import static com.tesco.pma.review.util.TestDataUtils.TL_POINT_UUID;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -57,6 +62,33 @@ class TimelinePointServiceImplTest {
 
         //then
         assertThrows(AlreadyExistsException.class, () -> underTest.create(timelinePoint));
+    }
+
+    @Test
+    void get() {
+        //given
+        var timelinePoint = TestDataUtils.buildTimelinePoint();
+        when(dao.getByParams(any(), any(), any())).thenReturn(List.of(timelinePoint));
+
+        //when
+        var timelinePoints = underTest.get(null, null, null);
+
+        //then
+        verify(dao, times(1)).getByParams(null, null, null);
+        assertEquals(TL_POINT_UUID, timelinePoints.get(0).getUuid());
+    }
+
+    @Test
+    void updateStatus() {
+        //given
+        when(dao.updateStatus(any(), any(), any())).thenReturn(1);
+
+        //when
+        var status = underTest.updateStatus(null, null, null);
+
+        //then
+        verify(dao, times(1)).updateStatus(null, null, null);
+        assertEquals(1, status);
     }
 
 }
