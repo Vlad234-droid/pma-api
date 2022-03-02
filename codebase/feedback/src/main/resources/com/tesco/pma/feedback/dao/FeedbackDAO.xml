@@ -384,7 +384,7 @@
         SELECT count(f.uuid)
         FROM feedback f
         WHERE f.read = false
-          AND f.status_id = 2
+          AND f.status_id IN (2, 4)
           AND f.target_colleague_uuid = #{colleagueUuid}
     </select>
 
