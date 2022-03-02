@@ -170,7 +170,7 @@ public class FeedbackEndpoint {
     }
 
     /**
-     * {@code GET  /feedbacks/given} : get given feedbacks count.
+     * {@code GET  /feedbacks/given-count} : get given feedbacks count.
      *
      * @return the {@link RestResponse} with the given feedbacks count {@code 200 (OK)}.
      */
@@ -185,7 +185,7 @@ public class FeedbackEndpoint {
     }
 
     /**
-     * {@code GET  /feedbacks/requested} : get requested feedbacks count.
+     * {@code GET  /feedbacks/requested-count} : get requested feedbacks count.
      *
      * @return the {@link RestResponse} with the requested feedbacks count {@code 200 (OK)}.
      */
