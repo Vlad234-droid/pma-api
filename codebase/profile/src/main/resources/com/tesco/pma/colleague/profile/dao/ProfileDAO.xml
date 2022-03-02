@@ -225,16 +225,12 @@
         <where>
             <if test="!requestQuery.filters.isEmpty()">
 
-                <foreach collection="requestQuery.filters" item="filter" index="index">
+                <foreach collection="requestQuery.filters" item="filter" index="index" separator="AND">
                     <if test="filter.operand.name == 'EQUALS' and filter.property == 'manager-uuid'">
-                        AND
-                        <include refid="getFilterField"/>
-                        = uuid(#{filter.value})
+                        <include refid="getFilterField"/> = uuid(#{filter.value})
                     </if>
                     <if test="filter.operand.name == 'EQUALS' and filter.property == 'work-level'">
-                        AND
-                        <include refid="getFilterField"/>
-                        = #{filter.value}
+                        <include refid="getFilterField"/> = #{filter.value}
                     </if>
                 </foreach>
 
@@ -243,21 +239,30 @@
                 </include>
 
                 <foreach collection="requestQuery.filters" item="filter" index="index" separator=" OR ">
-                    <if test="filter.property == 'first-name' or filter.property == 'middle-name' or filter.property == 'last-name'">
-                        <choose>
-                            <when test="filter.operand.name == 'LIKE'">
-                                UPPER(<include refid="getFilterField"/>) like UPPER('%${filter.value}%')
-                            </when>
-                            <when test="filter.operand.name == 'EQUALS'">
-                                UPPER(<include refid="getFilterField"/>) = UPPER(#{filter.value})
-                            </when>
-                        </choose>
-                    </if>
+                    <include refid="searchByNameConditions"/>
                 </foreach>
 
                 <include refid="putIfNamesExist">
                     <property name="alias" value=")"/>
                 </include>
+            </if>
+
+            <if test="!requestQuery.groups.isEmpty()">
+                AND
+                <foreach collection="requestQuery.groups" item="group" index="i" separator="OR" open="(" close=")">
+                    <choose>
+                        <when test="group.type.name == 'OR'">
+                            <foreach collection="group.filters" item="filter" separator="OR">
+                                <include refid="searchByNameConditions"/>
+                            </foreach>
+                        </when>
+                        <when test="group.type.name == 'AND'">
+                            <foreach collection="group.filters" item="filter" separator="AND">
+                                <include refid="searchByNameConditions"/>
+                            </foreach>
+                        </when>
+                    </choose>
+                </foreach>
             </if>
         </where>
 
@@ -267,6 +272,19 @@
             OFFSET #{requestQuery.offset}
         </if>
     </select>
+
+    <sql id="searchByNameConditions">
+        <if test="filter.property == 'first-name' or filter.property == 'middle-name' or filter.property == 'last-name'">
+            <choose>
+                <when test="filter.operand.name == 'LIKE'">
+                    UPPER(<include refid="getFilterField"/>) like UPPER('%${filter.value}%')
+                </when>
+                <when test="filter.operand.name == 'EQUALS'">
+                    UPPER(<include refid="getFilterField"/>) = UPPER(#{filter.value})
+                </when>
+            </choose>
+        </if>
+    </sql>
 
     <sql id="getFilterField">
         <choose>
