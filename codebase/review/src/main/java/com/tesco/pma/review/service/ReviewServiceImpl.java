@@ -34,7 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -78,7 +77,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final EventSender eventSender;
     private final ProfileService profileService;
-    private final ReviewDmnService reviewDmnService;
+    private final ReviewDecisionService reviewDecisionService;
+    private final TimelinePointDecisionService timelinePointDecisionService;
 
     private static final String REVIEW_UUID_PARAMETER_NAME = "reviewUuid";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
@@ -228,7 +228,7 @@ public class ReviewServiceImpl implements ReviewService {
             );
         }
         try {
-            var allowedStatuses = reviewDmnService.getReviewAllowedStatuses(review.getType(), CREATE_OPERATION_NAME);
+            var allowedStatuses = reviewDecisionService.getReviewAllowedStatuses(review.getType(), CREATE_OPERATION_NAME);
             if (allowedStatuses.isEmpty()) {
                 throw notFound(ALLOWED_STATUSES_NOT_FOUND,
                         Map.of(OPERATION_PARAMETER_NAME, CREATE_OPERATION_NAME));
@@ -353,12 +353,12 @@ public class ReviewServiceImpl implements ReviewService {
                                                      PMTimelinePointStatus status,
                                                      String reason,
                                                      UUID loggedUserUuid) {
+        var prevStatuses = reviewDecisionService.getReviewAllowedPrevStatuses(type, status);
+        if (prevStatuses.isEmpty()) {
+            throw notFound(ALLOWED_STATUSES_NOT_FOUND,
+                    Map.of(OPERATION_PARAMETER_NAME, CHANGE_STATUS_OPERATION_NAME));
+        }
         var timelinePoint = getTimelinePoint(colleagueUuid, type);
-        var prevStatuses = reviewDmnService.getReviewAllowedPrevStatuses(type, status);
-            if (prevStatuses.isEmpty()) {
-                throw notFound(ALLOWED_STATUSES_NOT_FOUND,
-                        Map.of(OPERATION_PARAMETER_NAME, CHANGE_STATUS_OPERATION_NAME));
-            }
         reviews.forEach(review -> {
             if (1 == reviewDAO.updateStatusByParams(
                     timelinePoint.getUuid(),
@@ -418,7 +418,7 @@ public class ReviewServiceImpl implements ReviewService {
                     Map.of(MIN_PARAMETER_NAME, minReviews));
         }
 
-        var allowedStatuses = reviewDmnService.getReviewAllowedStatuses(timelinePoint.getReviewType(), DELETE_OPERATION_NAME);
+        var allowedStatuses = reviewDecisionService.getReviewAllowedStatuses(timelinePoint.getReviewType(), DELETE_OPERATION_NAME);
         if (allowedStatuses.isEmpty()) {
             throw notFound(ALLOWED_STATUSES_NOT_FOUND,
                     Map.of(OPERATION_PARAMETER_NAME, DELETE_OPERATION_NAME));
@@ -526,8 +526,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private List<PMTimelinePointStatus> getAllowedStatusesForUpdate(PMReviewType reviewType, PMTimelinePointStatus newStatus) {
-        var allowedStatusesForUpdate = reviewDmnService.getReviewAllowedStatuses(reviewType, UPDATE_OPERATION_NAME);
-        var prevStatusesForChangeStatus = reviewDmnService.getReviewAllowedPrevStatuses(reviewType, newStatus);
+        var allowedStatusesForUpdate = reviewDecisionService.getReviewAllowedStatuses(reviewType, UPDATE_OPERATION_NAME);
+        var prevStatusesForChangeStatus = reviewDecisionService.getReviewAllowedPrevStatuses(reviewType, newStatus);
         return allowedStatusesForUpdate.stream()
                 .filter(prevStatusesForChangeStatus::contains)
                 .collect(toList());
@@ -575,7 +575,7 @@ public class ReviewServiceImpl implements ReviewService {
         var calcTlPoint = calcTlPoint(timelinePoint);
         if (1 == timelinePointDAO.update(
                 calcTlPoint,
-                reviewDmnService.getTlPointAllowedPrevStatuses(calcTlPoint.getStatus()))) {
+                timelinePointDecisionService.getTlPointAllowedPrevStatuses(calcTlPoint.getStatus()))) {
             return calcTlPoint;
         } else {
             return null;
@@ -678,7 +678,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private void sendEvent(TimelinePoint timelinePoint, UUID loggedUserUUID, UUID colleagueUuid) {
-        var eventName = reviewDmnService.getEventName(timelinePoint.getStatus());
+        var eventName = timelinePointDecisionService.getStatusUpdateEventName(timelinePoint.getStatus());
 
         if (eventName == null) {
             return;

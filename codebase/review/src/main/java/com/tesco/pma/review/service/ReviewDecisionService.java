@@ -5,13 +5,9 @@ import com.tesco.pma.cycle.api.PMTimelinePointStatus;
 
 import java.util.Collection;
 
-public interface ReviewDmnService {
+public interface ReviewDecisionService {
 
     Collection<PMTimelinePointStatus> getReviewAllowedStatuses(PMReviewType reviewType, String operation);
 
     Collection<PMTimelinePointStatus> getReviewAllowedPrevStatuses(PMReviewType reviewType, PMTimelinePointStatus newStatus);
-
-    Collection<PMTimelinePointStatus> getTlPointAllowedPrevStatuses(PMTimelinePointStatus newStatus);
-
-    String getEventName(PMTimelinePointStatus status);
 }

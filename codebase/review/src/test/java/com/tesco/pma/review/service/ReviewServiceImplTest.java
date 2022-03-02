@@ -97,7 +97,10 @@ class ReviewServiceImplTest {
     private ProfileService profileService;
 
     @MockBean
-    private ReviewDmnService mockReviewDmnService;
+    private ReviewDecisionService mockReviewDecisionService;
+
+    @MockBean
+    private TimelinePointDecisionService mockTimelinePointDecisionService;
 
     @Profile("test")
     @Configuration
@@ -167,9 +170,9 @@ class ReviewServiceImplTest {
         when(mockReviewDAO.getByParams(any(), any(), any(), any()))
                 .thenReturn(List.of(beforeReview));
 
-        when(mockReviewDmnService.getReviewAllowedStatuses(any(),any()))
+        when(mockReviewDecisionService.getReviewAllowedStatuses(any(), any()))
                 .thenReturn(List.of(DRAFT));
-        when(mockReviewDmnService.getReviewAllowedPrevStatuses(any(),any()))
+        when(mockReviewDecisionService.getReviewAllowedPrevStatuses(any(), any()))
                 .thenReturn(List.of(DRAFT));
 
         final var res = reviewService.updateReview(expectedReview, randomUUID, null);
@@ -209,7 +212,7 @@ class ReviewServiceImplTest {
         when(mockReviewDAO.create(any(Review.class)))
                 .thenReturn(1);
 
-        when(mockReviewDmnService.getReviewAllowedStatuses(any(),any()))
+        when(mockReviewDecisionService.getReviewAllowedStatuses(any(), any()))
                 .thenReturn(List.of(DRAFT));
 
         final var res = reviewService.createReview(expectedReview, randomUUID);
@@ -244,8 +247,8 @@ class ReviewServiceImplTest {
         when(mockReviewDAO.deleteByParams(any(), any(), any(), any(), any()))
                 .thenReturn(0);
 
-        when(mockReviewDmnService.getReviewAllowedStatuses(any(),any()))
-                .thenReturn(List.of(DRAFT,DECLINED,APPROVED));
+        when(mockReviewDecisionService.getReviewAllowedStatuses(any(), any()))
+                .thenReturn(List.of(DRAFT, DECLINED, APPROVED));
         final var exception = assertThrows(NotFoundException.class,
                 () -> reviewService.deleteReview(
                         COLLEAGUE_UUID,
