@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -50,7 +51,7 @@ public class ContentEntryServiceImpl implements ContentEntryService {
 
     @Override
     public List<ContentEntry> find(String key) {
-        return contentEntryDAO.find(RequestQuery.create("key_eq", key));
+        return contentEntryDAO.find(RequestQuery.create(Map.of("key_eq", key, "version_eq", -1)));
     }
 
     @Override
