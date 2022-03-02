@@ -53,13 +53,13 @@ class PMCycleMappingDMNTest {
                 KEYS.LEGAL_EMPLOYER_NAME, "Tesco",
                 KEYS.BUSINESS_TYPE, OFFICE,
                 KEYS.WORK_LEVEL, WorkLevel.WL4
-        ), KEYS.GROUP_A_V1);
+        ), KEYS.GROUP_A1);
 
         assertSuccessRule(Map.of(
                 KEYS.LEGAL_EMPLOYER_NAME, "Tesco",
                 KEYS.BUSINESS_TYPE, OFFICE,
                 KEYS.WORK_LEVEL, WorkLevel.WL5
-        ), KEYS.GROUP_A_V1);
+        ), KEYS.GROUP_A1);
     }
 
     @Test
@@ -77,7 +77,7 @@ class PMCycleMappingDMNTest {
                 KEYS.LEGAL_EMPLOYER_NAME, "Tesco",
                 KEYS.BUSINESS_TYPE, OFFICE,
                 KEYS.WORK_LEVEL, WorkLevel.WL3
-        ), KEYS.GROUP_A_V2);
+        ), KEYS.GROUP_A2);
     }
 
     @Test
@@ -97,7 +97,7 @@ class PMCycleMappingDMNTest {
                 KEYS.BUSINESS_TYPE, OFFICE,
                 KEYS.WORK_LEVEL, WorkLevel.WL2,
                 KEYS.SALARY_FREQUENCY, "Annual"
-        ), KEYS.GROUP_A_V2);
+        ), KEYS.GROUP_A2);
     }
 
     @Test

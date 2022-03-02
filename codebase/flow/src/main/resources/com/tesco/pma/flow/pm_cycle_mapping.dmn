@@ -57,7 +57,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="I2">
-          <text>"group_a_v1"</text>
+          <text>"group_a1"</text>
         </outputEntry>
       </rule>
       <rule id="excelRow3">
@@ -91,7 +91,7 @@
           <text>not("tesco mobile")</text>
         </inputEntry>
         <outputEntry id="I3">
-          <text>"group_a_v2"</text>
+          <text>"group_a2"</text>
         </outputEntry>
       </rule>
       <rule id="excelRow4">
@@ -115,7 +115,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="I4">
-          <text>"group_a_v2"</text>
+          <text>"group_a2"</text>
         </outputEntry>
       </rule>
       <rule id="excelRow5">
@@ -163,7 +163,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="I6">
-          <text>"group_a_v2"</text>
+          <text>"group_a2"</text>
         </outputEntry>
       </rule>
       <rule id="excelRow7">
@@ -403,7 +403,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="I16">
-          <text>"group_a_v2"</text>
+          <text>"group_a2"</text>
         </outputEntry>
       </rule>
       <rule id="excelRow17">
@@ -667,7 +667,7 @@
           <text>"uk maintenance"</text>
         </inputEntry>
         <outputEntry id="I27">
-          <text>"group_a_v2"</text>
+          <text>"group_a2"</text>
         </outputEntry>
       </rule>
       <rule id="excelRow28">
@@ -715,7 +715,7 @@
           <text>"uk maintenance"</text>
         </inputEntry>
         <outputEntry id="I29">
-          <text>"group_a_v2"</text>
+          <text>"group_a2"</text>
         </outputEntry>
       </rule>
       <rule id="excelRow30">
@@ -787,7 +787,7 @@
           <text>"uk hospitality"</text>
         </inputEntry>
         <outputEntry id="I32">
-          <text>"group_a_v2"</text>
+          <text>"group_a2"</text>
         </outputEntry>
       </rule>
       <rule id="excelRow33">
@@ -811,7 +811,7 @@
           <text>"uk hospitality"</text>
         </inputEntry>
         <outputEntry id="I33">
-          <text>"group_a_v2"</text>
+          <text>"group_a2"</text>
         </outputEntry>
       </rule>
       <rule id="excelRow34">
@@ -955,7 +955,7 @@
           <text>"tesco mobile"</text>
         </inputEntry>
         <outputEntry id="I39">
-          <text>"group_a_v2"</text>
+          <text>"group_a2"</text>
         </outputEntry>
       </rule>
       <rule id="excelRow40">
@@ -979,7 +979,7 @@
           <text>"people data grp"</text>
         </inputEntry>
         <outputEntry id="I40">
-          <text>"group_a_v2"</text>
+          <text>"group_a2"</text>
         </outputEntry>
       </rule>
       <rule id="excelRow41">
@@ -1051,7 +1051,7 @@
           <text>"people data in"</text>
         </inputEntry>
         <outputEntry id="I43">
-          <text>"group_a_v2"</text>
+          <text>"group_a2"</text>
         </outputEntry>
       </rule>
       <rule id="excelRow44">
@@ -1075,7 +1075,7 @@
           <text>"people data in"</text>
         </inputEntry>
         <outputEntry id="I44">
-          <text>"group_a_v2"</text>
+          <text>"group_a2"</text>
         </outputEntry>
       </rule>
       <rule id="excelRow45">
@@ -1099,7 +1099,7 @@
           <text>"people data grp"</text>
         </inputEntry>
         <outputEntry id="I45">
-          <text>"group_a_v2"</text>
+          <text>"group_a2"</text>
         </outputEntry>
       </rule>
       <rule id="excelRow46">
@@ -1123,7 +1123,7 @@
           <text>"people data grp"</text>
         </inputEntry>
         <outputEntry id="I46">
-          <text>"group_a_v2"</text>
+          <text>"group_a2"</text>
         </outputEntry>
       </rule>
       <rule id="excelRow47">
@@ -1147,7 +1147,7 @@
           <text>"people data in"</text>
         </inputEntry>
         <outputEntry id="I47">
-          <text>"group_a_v2"</text>
+          <text>"group_a2"</text>
         </outputEntry>
       </rule>
       <rule id="excelRow48">
@@ -1195,7 +1195,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="I49">
-          <text>"group_a_v2"</text>
+          <text>"group_a2"</text>
         </outputEntry>
       </rule>
       <rule id="excelRow50">
@@ -1219,7 +1219,7 @@
           <text></text>
         </inputEntry>
         <outputEntry id="I50">
-          <text>"group_a_v2"</text>
+          <text>"group_a2"</text>
         </outputEntry>
       </rule>
     </decisionTable>

@@ -33,8 +33,8 @@ public class TestUtils {
         JOB_NAME,
         IAM_SOURCE,
 
-        GROUP_A_V1,
-        GROUP_A_V2,
+        GROUP_A1,
+        GROUP_A2,
         GROUP_B,
         GROUP_C
     }
