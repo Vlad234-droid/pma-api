@@ -31,16 +31,20 @@ public interface FeedbackDAO {
     /**
      * Get given feedbacks count
      * @param colleagueUuid an identifier of colleague
+     * @param statusFilter feedback status filter
      * @return given feedbacks count
      */
-    int getGivenFeedbackCount(@Param("colleagueUuid") UUID colleagueUuid);
+    int getGivenFeedbackCount(@Param("colleagueUuid") UUID colleagueUuid,
+                              @Param("statusFilter") DictionaryFilter<FeedbackStatus> statusFilter);
 
     /**
      * Get requested feedbacks count
      * @param colleagueUuid an identifier of colleague
+     * @param statusFilter feedback status filter
      * @return requested feedbacks count
      */
-    int getRequestedFeedbackCount(@Param("colleagueUuid") UUID colleagueUuid);
+    int getRequestedFeedbackCount(@Param("colleagueUuid") UUID colleagueUuid,
+                                  @Param("statusFilter") DictionaryFilter<FeedbackStatus> statusFilter);
 
     /**
      * Insert feedback without items

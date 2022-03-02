@@ -17,6 +17,7 @@ import org.springframework.test.context.DynamicPropertySource;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -72,7 +73,8 @@ public class FeedbackDAOTest extends AbstractDAOTest {
         //given
 
         //when
-        var result = underTest.getGivenFeedbackCount(TestDataUtil.COLLEAGUE_UUID);
+        var result = underTest.getGivenFeedbackCount(TestDataUtil.COLLEAGUE_UUID,
+                DictionaryFilter.includeFilter(Set.of(FeedbackStatus.SUBMITTED, FeedbackStatus.COMPLETED)));
 
         //then
         assertEquals(3, result);
@@ -84,7 +86,8 @@ public class FeedbackDAOTest extends AbstractDAOTest {
         //given
 
         //when
-        var result = underTest.getRequestedFeedbackCount(TestDataUtil.COLLEAGUE_UUID);
+        var result = underTest.getRequestedFeedbackCount(TestDataUtil.COLLEAGUE_UUID,
+                DictionaryFilter.includeFilter(Set.of(FeedbackStatus.PENDING)));
 
         //then
         assertEquals(1, result);
