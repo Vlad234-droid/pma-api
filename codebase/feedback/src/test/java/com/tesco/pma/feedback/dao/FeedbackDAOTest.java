@@ -72,7 +72,7 @@ public class FeedbackDAOTest extends AbstractDAOTest {
         //given
 
         //when
-        var result = underTest.findGivenFeedbackCount(TestDataUtil.COLLEAGUE_UUID);
+        var result = underTest.getGivenFeedbackCount(TestDataUtil.COLLEAGUE_UUID);
 
         //then
         assertEquals(3, result);
@@ -84,7 +84,7 @@ public class FeedbackDAOTest extends AbstractDAOTest {
         //given
 
         //when
-        var result = underTest.findRequestedFeedbackCount(TestDataUtil.COLLEAGUE_UUID);
+        var result = underTest.getRequestedFeedbackCount(TestDataUtil.COLLEAGUE_UUID);
 
         //then
         assertEquals(1, result);

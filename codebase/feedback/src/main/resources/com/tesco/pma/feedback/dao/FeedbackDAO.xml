@@ -380,7 +380,7 @@
         LEFT JOIN feedback_item fi ON ff.uuid = fi.feedback_uuid
     </select>
 
-    <select id="findGivenFeedbackCount" flushCache="true" resultType="int">
+    <select id="getGivenFeedbackCount" flushCache="true" resultType="int">
         SELECT count(f.uuid)
         FROM feedback f
         WHERE f.read = false
@@ -388,7 +388,7 @@
           AND f.target_colleague_uuid = #{colleagueUuid}
     </select>
 
-    <select id="findRequestedFeedbackCount" flushCache="true" resultType="int">
+    <select id="getRequestedFeedbackCount" flushCache="true" resultType="int">
         SELECT count(f.uuid)
         FROM feedback f
         WHERE f.status_id = 3

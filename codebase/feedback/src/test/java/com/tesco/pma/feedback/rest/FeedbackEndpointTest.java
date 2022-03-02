@@ -145,10 +145,10 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
     @Test
     void getGivenFeedbacksCount() throws Exception { //NOSONAR used MockMvc checks
         // given
-        when(service.findGivenFeedbackCount(TestDataUtil.COLLEAGUE_UUID)).thenReturn(FEEDBACKS_COUNT);
+        when(service.getGivenFeedbackCount(TestDataUtil.COLLEAGUE_UUID)).thenReturn(FEEDBACKS_COUNT);
 
         //when & then
-        mvc.perform(get("/feedbacks/given")
+        mvc.perform(get("/feedbacks/given-count")
                         .with(colleague(TestDataUtil.COLLEAGUE_UUID.toString()))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -159,7 +159,7 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
     @Test
     void cannotGetGivenFeedbacksCountIfUnauthorized() throws Exception {
         //when & then
-        mvc.perform(get("/feedbacks/given")
+        mvc.perform(get("/feedbacks/given-count")
                         .with(anonymous())
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
@@ -170,10 +170,10 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
     @Test
     void getRequestedFeedbacksCount() throws Exception { //NOSONAR used MockMvc checks
         // given
-        when(service.findRequestedFeedbackCount(TestDataUtil.COLLEAGUE_UUID)).thenReturn(FEEDBACKS_COUNT);
+        when(service.getRequestedFeedbackCount(TestDataUtil.COLLEAGUE_UUID)).thenReturn(FEEDBACKS_COUNT);
 
         //when & then
-        mvc.perform(get("/feedbacks/requested")
+        mvc.perform(get("/feedbacks/requested-count")
                         .with(colleague(TestDataUtil.COLLEAGUE_UUID.toString()))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -184,7 +184,7 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
     @Test
     void cannotGetRequestedFeedbacksCountIfUnauthorized() throws Exception {
         //when & then
-        mvc.perform(get("/feedbacks/requested")
+        mvc.perform(get("/feedbacks/requested-count")
                         .with(anonymous())
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());

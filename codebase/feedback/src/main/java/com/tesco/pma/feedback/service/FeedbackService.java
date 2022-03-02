@@ -45,18 +45,18 @@ public interface FeedbackService {
     Feedback findOne(UUID uuid);
 
     /**
-     * Find given feedbacks count
+     * Get given feedbacks count
      * @param colleagueUuid an identifier of colleague
      * @return requested feedbacks count
      */
-    int findGivenFeedbackCount(@NotNull UUID colleagueUuid);
+    int getGivenFeedbackCount(@NotNull UUID colleagueUuid);
 
     /**
-     * Find requested feedbacks count
+     * Get requested feedbacks count
      * @param colleagueUuid an identifier of colleague
      * @return requested feedbacks count
      */
-    int findRequestedFeedbackCount(@NotNull UUID colleagueUuid);
+    int getRequestedFeedbackCount(@NotNull UUID colleagueUuid);
 
     /**
      * Update feedback.

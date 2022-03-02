@@ -151,16 +151,16 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     @Transactional(readOnly = true)
-    public int findGivenFeedbackCount(UUID colleagueUuid) {
+    public int getGivenFeedbackCount(UUID colleagueUuid) {
         log.debug("Request to get given feedbacks count for colleague: {}", colleagueUuid);
-        return feedbackDAO.findGivenFeedbackCount(colleagueUuid);
+        return feedbackDAO.getGivenFeedbackCount(colleagueUuid);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public int findRequestedFeedbackCount(UUID colleagueUuid) {
+    public int getRequestedFeedbackCount(UUID colleagueUuid) {
         log.debug("Request to get requested feedbacks count for colleague: {}", colleagueUuid);
-        return feedbackDAO.findRequestedFeedbackCount(colleagueUuid);
+        return feedbackDAO.getRequestedFeedbackCount(colleagueUuid);
     }
 
     @Override

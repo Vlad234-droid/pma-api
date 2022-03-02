@@ -174,14 +174,14 @@ public class FeedbackEndpoint {
      *
      * @return the {@link RestResponse} with the given feedbacks count {@code 200 (OK)}.
      */
-    @GetMapping("/feedbacks/given")
+    @GetMapping("/feedbacks/given-count")
     @Operation(summary = "Get given feedbacks count for colleague", tags = {"feedback"})
     @PreAuthorize("isColleague()")
     public RestResponse<Integer> getGivenFeedbackCount(@CurrentSecurityContext(expression = "authentication")
                                                                    Authentication authentication) {
         var colleagueUuid = getColleagueUuid(authentication);
         log.debug("REST request to get given Feedbacks count for colleague : {}", colleagueUuid);
-        return RestResponse.success(feedbackService.findGivenFeedbackCount(colleagueUuid));
+        return RestResponse.success(feedbackService.getGivenFeedbackCount(colleagueUuid));
     }
 
     /**
@@ -189,14 +189,14 @@ public class FeedbackEndpoint {
      *
      * @return the {@link RestResponse} with the requested feedbacks count {@code 200 (OK)}.
      */
-    @GetMapping("/feedbacks/requested")
+    @GetMapping("/feedbacks/requested-count")
     @Operation(summary = "Get requested feedbacks count for colleague", tags = {"feedback"})
     @PreAuthorize("isColleague()")
     public RestResponse<Integer> getRequestedFeedbackCount(@CurrentSecurityContext(expression = "authentication")
                                                                        Authentication authentication) {
         var colleagueUuid = getColleagueUuid(authentication);
         log.debug("REST request to get requested Feedbacks count for colleague : {}", colleagueUuid);
-        return RestResponse.success(feedbackService.findRequestedFeedbackCount(colleagueUuid));
+        return RestResponse.success(feedbackService.getRequestedFeedbackCount(colleagueUuid));
     }
 
 }
