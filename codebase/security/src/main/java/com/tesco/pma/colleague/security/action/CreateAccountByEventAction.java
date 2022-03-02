@@ -3,7 +3,7 @@ package com.tesco.pma.colleague.security.action;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.AccountType;
-import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
+import com.tesco.pma.colleague.security.domain.request.ColleagueAccountRequest;
 import com.tesco.pma.colleague.security.service.UserManagementService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.event.Event;
@@ -53,11 +53,12 @@ public class CreateAccountByEventAction implements Action {
             return;
         }
 
-        var request = new CreateAccountRequest();
+        var request = new ColleagueAccountRequest();
         request.setName(colleague.getIamId());
         request.setIamId(colleague.getIamId());
         request.setType(AccountType.USER);
         request.setStatus(AccountStatus.ENABLED);
+        request.setColleagueUuid(colleague.getUuid());
 
         try {
             userManagementService.createAccount(request);
