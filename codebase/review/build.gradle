@@ -30,6 +30,8 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-core:${openApiCoreVersion}")
     implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
 
+    implementation ("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter:${camundaVersion}")
+
     testCompile project(':service').sourceSets.test.output
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
@@ -52,6 +54,10 @@ dependencies {
     testRuntimeOnly "org.liquibase:liquibase-core:${liquibaseVersion}"
     testRuntimeOnly project(':db-pma')
     testRuntimeOnly project(':security')
+
+    testRuntimeOnly("de.odysseus.juel:juel-api:${juelVersion}")
+    testRuntimeOnly("de.odysseus.juel:juel-impl:${juelVersion}")
+    testRuntimeOnly("de.odysseus.juel:juel-spi:${juelVersion}")
 }
 
 dependencyManagement {

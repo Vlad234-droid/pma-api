@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="review_operation_allowed_statuses" name="Review operation allowed statuses" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.12.0">
+  <decision id="review_operation_allowed_statuses_table" name="Define rules for review statuses">
+    <informationRequirement id="InformationRequirement_0l1amtp">
+      <requiredInput href="#InputData_1r42hau" />
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_187rs2j">
+      <requiredInput href="#InputData_1ihuzky" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_0pqb5mg" hitPolicy="COLLECT">
+      <input id="Input_1" label="Review type">
+        <inputExpression id="InputExpression_1" typeRef="string">
+          <text>REVIEW_TYPE</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1o8h75v" label="Operation">
+        <inputExpression id="LiteralExpression_1ejxg4w" typeRef="string">
+          <text>OPERATION</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="Allowed status" name="STATUS" typeRef="string" biodi:width="241" />
+      <rule id="DecisionRule_0k5l50v">
+        <inputEntry id="UnaryTests_1mkg3vm">
+          <text>"OBJECTIVE","MYR","EYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1v1z4wt">
+          <text>"CREATE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_11qlxwp">
+          <text>"DRAFT"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1qinq2a">
+        <inputEntry id="UnaryTests_062r32w">
+          <text>"OBJECTIVE","MYR","EYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_07fykn6">
+          <text>"CREATE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1kyerrt">
+          <text>"WAITING_FOR_APPROVAL"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0lw2jf6">
+        <inputEntry id="UnaryTests_19bnb3u">
+          <text>"OBJECTIVE","MYR","EYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0x2d3hh">
+          <text>"UPDATE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0oukop9">
+          <text>"DRAFT"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0fg4vtv">
+        <inputEntry id="UnaryTests_09dg6jz">
+          <text>"OBJECTIVE","MYR","EYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1nr9zq3">
+          <text>"UPDATE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_02evqtb">
+          <text>"DECLINED"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_08zu1r9">
+        <inputEntry id="UnaryTests_1nix134">
+          <text>"OBJECTIVE","EYR"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_129cdvh">
+          <text>"UPDATE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0cm08fz">
+          <text>"APPROVED"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0h6k0v7">
+        <inputEntry id="UnaryTests_19xx0p7">
+          <text>"OBJECTIVE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1cc4196">
+          <text>"DELETE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1xm4nq8">
+          <text>"DRAFT"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0ab8595">
+        <inputEntry id="UnaryTests_1xde2fr">
+          <text>"OBJECTIVE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0bu11w6">
+          <text>"DELETE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0gjvhff">
+          <text>"DECLINED"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_14tyeya">
+        <inputEntry id="UnaryTests_1qhzgmf">
+          <text>"OBJECTIVE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0dtuimj">
+          <text>"DELETE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0zk5vgm">
+          <text>"APPROVED"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <inputData id="InputData_1r42hau" name="Review type" />
+  <inputData id="InputData_1ihuzky" name="Operation" />
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="review_operation_allowed_statuses_table">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_1rjvlpz" dmnElementRef="InputData_1r42hau">
+        <dc:Bounds height="45" width="125" x="118" y="258" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_1qbhndb" dmnElementRef="InputData_1ihuzky">
+        <dc:Bounds height="45" width="125" x="288" y="259" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_1lrmgf5" dmnElementRef="InformationRequirement_0l1amtp">
+        <di:waypoint x="181" y="258" />
+        <di:waypoint x="220" y="200" />
+        <di:waypoint x="220" y="180" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="DMNEdge_01ioam9" dmnElementRef="InformationRequirement_187rs2j">
+        <di:waypoint x="351" y="259" />
+        <di:waypoint x="280" y="200" />
+        <di:waypoint x="280" y="180" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
