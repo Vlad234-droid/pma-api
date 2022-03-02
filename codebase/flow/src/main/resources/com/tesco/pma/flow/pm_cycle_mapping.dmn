@@ -1153,7 +1153,7 @@
       <rule id="excelRow48">
         <description>GROUP B</description>
         <inputEntry id="A48">
-          <text>"tesco international sourcing limited","tesco sourcing india private ltd","tesco international sourcing limited hong kong"‚"äì sucursala bucuresti","tesco joint buying service (shanghai) co."</text>
+          <text>"tesco international sourcing limited","tesco sourcing india private ltd","tesco international sourcing limited hong kong","äì sucursala bucuresti","tesco joint buying service (shanghai) co."</text>
         </inputEntry>
         <inputEntry id="B48">
           <text>"office"</text>
@@ -1177,7 +1177,7 @@
       <rule id="excelRow49">
         <description>GROUP A2</description>
         <inputEntry id="A49">
-          <text>"tesco international sourcing limited","tesco sourcing india private ltd","tesco international sourcing limited hong kong"‚"äì sucursala bucuresti","tesco joint buying service (shanghai) co."</text>
+          <text>"tesco international sourcing limited","tesco sourcing india private ltd","tesco international sourcing limited hong kong","äì sucursala bucuresti","tesco joint buying service (shanghai) co."</text>
         </inputEntry>
         <inputEntry id="B49">
           <text>"office"</text>
@@ -1201,7 +1201,7 @@
       <rule id="excelRow50">
         <description>GROUP A2</description>
         <inputEntry id="A50">
-          <text>"tesco international sourcing limited","tesco sourcing india private ltd","tesco international sourcing limited hong kong"‚"äì sucursala bucuresti","tesco joint buying service (shanghai) co."</text>
+          <text>"tesco international sourcing limited","tesco sourcing india private ltd","tesco international sourcing limited hong kong","äì sucursala bucuresti","tesco joint buying service (shanghai) co."</text>
         </inputEntry>
         <inputEntry id="B50">
           <text>"office"</text>

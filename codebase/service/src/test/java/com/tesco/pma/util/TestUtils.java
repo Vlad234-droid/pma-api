@@ -33,9 +33,10 @@ public class TestUtils {
         JOB_NAME,
         IAM_SOURCE,
 
+        GROUP_A_V1,
         GROUP_A_V2,
-        GROUP_B_V2,
-        GROUP_C_V2
+        GROUP_B,
+        GROUP_C
     }
 
     public static Colleague createColleague(Map<KEYS, Object> params) {
