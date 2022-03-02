@@ -17,6 +17,7 @@ public final class TestDataUtil {
     public static final UUID FEEDBACK_ITEM_UUID = UUID.fromString("693b16a7-e151-486a-b4cd-3b377dddac95");
     public static final String FEEDBACK_ITEM_CODE = "code";
     public static final String FEEDBACK_ITEM_CONTENT = "Content";
+    public static final Integer FEEDBACKS_COUNT = 5;
 
     private TestDataUtil() {
     }

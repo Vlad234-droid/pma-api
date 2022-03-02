@@ -363,6 +363,21 @@
         <include refid="requestQuerySort"/>
     </select>
 
+    <select id="getGivenFeedbackCount" flushCache="true" resultType="int">
+        SELECT count(f.uuid)
+        FROM feedback f
+        WHERE f.read = false
+          AND f.target_colleague_uuid = #{colleagueUuid}
+          <include refid="addStatusIdCondition"/>
+    </select>
+
+    <select id="getRequestedFeedbackCount" flushCache="true" resultType="int">
+        SELECT count(f.uuid)
+        FROM feedback f
+        WHERE f.colleague_uuid = #{colleagueUuid}
+          <include refid="addStatusIdCondition"/>
+    </select>
+
     <insert id="insert" useGeneratedKeys="true" keyProperty="uuid" keyColumn="uuid" flushCache="true">
         INSERT INTO feedback (uuid,
                               colleague_uuid,
