@@ -96,7 +96,7 @@
       <bpmn:incoming>Flow_1oxbl4b</bpmn:incoming>
       <bpmn:incoming>Flow_1w8hg0y</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:serviceTask id="Activity_170353t" name="Send repeat cycle event" camunda:class="com.tesco.pma.flow.handlers.EventSenderHandler">
+    <bpmn:serviceTask id="Activity_170353t" name="Send repeat cycle event" camunda:class="com.tesco.pma.flow.handlers.EventSendHandler">
       <bpmn:extensionElements>
         <camunda:field name="eventNameExpression">
           <camunda:string>PM_CYCLE_REPEAT</camunda:string>

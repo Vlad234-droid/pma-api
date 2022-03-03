@@ -12,8 +12,6 @@ import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.BpmnError;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -25,7 +23,6 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class BuildNextCycleHandler extends CamundaAbstractFlowHandler {
 
     private static final String ERROR = "build_error";
