@@ -38,6 +38,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DECLINED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MAX;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MIN;
@@ -93,6 +95,12 @@ class ReviewServiceImplTest {
 
     @MockBean
     private ProfileService profileService;
+
+    @MockBean
+    private ReviewDecisionService mockReviewDecisionService;
+
+    @MockBean
+    private TimelinePointDecisionService mockTimelinePointDecisionService;
 
     @Profile("test")
     @Configuration
@@ -162,6 +170,11 @@ class ReviewServiceImplTest {
         when(mockReviewDAO.getByParams(any(), any(), any(), any()))
                 .thenReturn(List.of(beforeReview));
 
+        when(mockReviewDecisionService.getReviewAllowedStatuses(any(), any()))
+                .thenReturn(List.of(DRAFT));
+        when(mockReviewDecisionService.getReviewAllowedPrevStatuses(any(), any()))
+                .thenReturn(List.of(DRAFT));
+
         final var res = reviewService.updateReview(expectedReview, randomUUID, null);
 
         assertThat(res)
@@ -199,6 +212,9 @@ class ReviewServiceImplTest {
         when(mockReviewDAO.create(any(Review.class)))
                 .thenReturn(1);
 
+        when(mockReviewDecisionService.getReviewAllowedStatuses(any(), any()))
+                .thenReturn(List.of(DRAFT));
+
         final var res = reviewService.createReview(expectedReview, randomUUID);
 
         assertThat(res).isSameAs(expectedReview);
@@ -230,6 +246,9 @@ class ReviewServiceImplTest {
 
         when(mockReviewDAO.deleteByParams(any(), any(), any(), any(), any()))
                 .thenReturn(0);
+
+        when(mockReviewDecisionService.getReviewAllowedStatuses(any(), any()))
+                .thenReturn(List.of(DRAFT, DECLINED, APPROVED));
         final var exception = assertThrows(NotFoundException.class,
                 () -> reviewService.deleteReview(
                         COLLEAGUE_UUID,

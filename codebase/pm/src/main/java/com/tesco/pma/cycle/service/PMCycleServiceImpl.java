@@ -1,6 +1,7 @@
 package com.tesco.pma.cycle.service;
 
 import com.tesco.pma.api.DictionaryFilter;
+import com.tesco.pma.bpm.api.DeploymentInfo;
 import com.tesco.pma.bpm.api.ProcessExecutionException;
 import com.tesco.pma.bpm.api.ProcessManagerService;
 import com.tesco.pma.colleague.api.ColleagueSimple;
@@ -9,18 +10,18 @@ import com.tesco.pma.cycle.api.CompositePMCycleMetadataResponse;
 import com.tesco.pma.cycle.api.CompositePMCycleResponse;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
-import com.tesco.pma.cycle.api.model.PMCycleMetadata;
 import com.tesco.pma.cycle.api.PMForm;
+import com.tesco.pma.cycle.api.model.PMCycleMetadata;
+import com.tesco.pma.cycle.api.model.PMProcessModelParser;
 import com.tesco.pma.cycle.api.model.PMReviewElement;
 import com.tesco.pma.cycle.api.request.PMCycleUpdateFormRequest;
 import com.tesco.pma.cycle.api.request.PMFormRequest;
 import com.tesco.pma.cycle.dao.PMCycleDAO;
 import com.tesco.pma.cycle.exception.ErrorCodes;
 import com.tesco.pma.cycle.exception.PMCycleException;
-import com.tesco.pma.cycle.api.model.PMProcessModelParser;
-import com.tesco.pma.util.ResourceProvider;
 import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
+import com.tesco.pma.exception.InitializationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.fs.service.FileService;
@@ -31,6 +32,7 @@ import com.tesco.pma.process.api.PMProcessErrorCodes;
 import com.tesco.pma.process.api.PMProcessStatus;
 import com.tesco.pma.process.api.PMRuntimeProcess;
 import com.tesco.pma.process.service.PMProcessService;
+import com.tesco.pma.util.ResourceProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -41,6 +43,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,14 +83,6 @@ public class PMCycleServiceImpl implements PMCycleService {
     public static final String TEMPLATE_UUID_CONDITION = "template-uuid";
     private static final String CYCLE_UUID = "cycleUUID";
     private static final String STATUS_FILTER = "status_filter";
-    private final PMCycleDAO cycleDAO;
-    private final NamedMessageSourceAccessor messageSourceAccessor;
-    private final ProcessManagerService processManagerService;
-    private final PMProcessService pmProcessService;
-    private final FileService fileService;
-    private final ResourceProvider resourceProvider;
-    private final DeploymentService deploymentService;
-
     private static final String ORG_KEY_PARAMETER_NAME = "organisationKey";
     private static final String TEMPLATE_UUID_PARAMETER_NAME = "templateUUID";
     private static final String CYCLE_UUID_PARAMETER_NAME = "cycleUuid";
@@ -98,7 +93,6 @@ public class PMCycleServiceImpl implements PMCycleService {
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     private static final String PROCESS_NAME_PARAMETER_NAME = "processName";
     private static final String CONDITION_PARAMETER_NAME = "condition";
-
     private static final Map<PMCycleStatus, DictionaryFilter<PMCycleStatus>> UPDATE_STATUS_RULE_MAP;
 
     static {
@@ -109,6 +103,13 @@ public class PMCycleServiceImpl implements PMCycleService {
                 COMPLETED, includeFilter(of(ACTIVE, DRAFT))
         );
     }
+
+    private final PMCycleDAO cycleDAO;
+    private final NamedMessageSourceAccessor messageSourceAccessor;
+    private final ProcessManagerService processManagerService;
+    private final PMProcessService pmProcessService;
+    private final FileService fileService;
+    private final ResourceProvider resourceProvider;
 
     @Override
     @Transactional
@@ -246,6 +247,18 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     @Override
     @Transactional
+    public void start(PMCycle cycle) {
+        log.debug("Request to start performance cycle : {}", cycle);
+        try {
+            var processId = processManagerService.runProcessByResourceName(cycle.getTemplate().getFileName(), prepareFlowProperties(cycle));
+            log.debug("Started process: {}", processId);
+        } catch (ProcessExecutionException e) {
+            cycleFailed(cycle.getTemplate().getFileName(), cycle.getUuid(), e);
+        }
+    }
+
+    @Override
+    @Transactional
     public void completeCycle(UUID cycleUUID) {
         intUpdateStatus(cycleUUID, COMPLETED, null); // todo move status map to BPMN or DMN
         //TODO update rt process
@@ -354,6 +367,24 @@ public class PMCycleServiceImpl implements PMCycleService {
         return new PMCycleException(errorCode.getCode(), messageSourceAccessor.getMessage(errorCode.getCode(), params), null, cause);
     }
 
+
+    private String intDeployProcess(UUID templateUuid, String processName) throws InitializationException {
+
+        var file = fileService.get(templateUuid, true);
+        InputStream fileContent = new ByteArrayInputStream(file.getFileContent());
+
+        String resourceName = file.getFileName();
+
+        DeploymentInfo deploymentInfo = processManagerService.deploy(processName,
+                Map.of(resourceName, fileContent));
+        log.debug("Deployment id: {}", deploymentInfo.getId());
+
+
+        List<String> procdefs = processManagerService.getProcessesIds(deploymentInfo.getId(), resourceName);
+
+        return procdefs.iterator().next();
+    }
+
     private PMCycle intCreate(PMCycle cycle, UUID loggedUserUUID) {
         log.debug("Request to create performance cycle : {}, by user UUID: {}", cycle, loggedUserUUID);
 
@@ -374,7 +405,6 @@ public class PMCycleServiceImpl implements PMCycleService {
                             TEMPLATE_UUID_PARAMETER_NAME, cycle.getTemplate().getUuid()), e);
         }
     }
-
 
     private PMCycle intUpdate(PMCycle cycle) {
         var statusFilter = UPDATE_STATUS_RULE_MAP.get(cycle.getStatus());
@@ -404,7 +434,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         }
 
         try {
-            var processId = deploymentService.deploy(cycle.getTemplate().getUuid());
+            var processId = intDeployProcess(cycle.getTemplate().getUuid(), processKey);
             log.debug("Process definition id: {}", processId);
             intUpdateStatus(uuid, PMCycleStatus.REGISTERED, null); // todo move status map to BPMN or DMN
 

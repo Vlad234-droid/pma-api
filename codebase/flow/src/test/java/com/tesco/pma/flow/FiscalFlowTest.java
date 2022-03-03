@@ -11,6 +11,7 @@ import com.tesco.pma.flow.handlers.InitTimelinePointHandler;
 import com.tesco.pma.flow.handlers.PMColleagueCycleHandler;
 import com.tesco.pma.flow.handlers.PMNewColleagueEventHandler;
 import com.tesco.pma.flow.handlers.ProcessTimelinePointHandler;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -76,15 +77,18 @@ public class FiscalFlowTest extends AbstractCamundaSpringBootTest {
     @MockBean
     private ProcessTimelinePointHandler processTimelinePointHandler;
 
-    @Test
-    void success() throws Exception {
+    @BeforeEach
+    void init() throws Exception {
         mockExecutionInHandler(initTimelinePointEyr, (context) -> {
             context.setVariable(BEFORE_START_DATE.name(), "2022-03-02");
             context.setVariable(START_DATE.name(), "2022-03-15");
             context.setVariable(BEFORE_END_DATE.name(), "2022-03-24");
             context.setVariable(END_DATE.name(), "2022-03-31");
         });
+    }
 
+    @Test
+    void success() throws Exception {
         assertThatForProcess(runProcess("fiscal_test",
                 Map.of(FlowParameters.PM_CYCLE.name(), buildPMCycle(),
                         PM_TYPE, PMReviewElement.PM_REVIEW)))
@@ -98,13 +102,6 @@ public class FiscalFlowTest extends AbstractCamundaSpringBootTest {
 
     @Test
     void importNewColleagueEvent() throws Exception {
-        mockExecutionInHandler(initTimelinePointEyr, (context) -> {
-            context.setVariable(BEFORE_START_DATE.name(), "2022-03-02");
-            context.setVariable(START_DATE.name(), "2022-03-15");
-            context.setVariable(BEFORE_END_DATE.name(), "2022-03-24");
-            context.setVariable(END_DATE.name(), "2022-03-31");
-        });
-
         assertThatForProcess(runProcessByEvent(new EventSupport(IMPORT_NEW_COLLEAGUE_EVENT_NAME),
                 new HashMap<>(Map.of(FlowParameters.COLLEAGUE_UUID.name(), UUID.randomUUID(),
                         FlowParameters.PM_CYCLE.name(), buildPMCycle(),

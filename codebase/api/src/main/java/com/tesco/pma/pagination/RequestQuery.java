@@ -41,12 +41,16 @@ public class RequestQuery {
 
     private List<Condition> filters;
 
+    @JsonProperty("_groups")
+    private List<ConditionGroup> groups;
+
     @JsonProperty("_search")
     private String search;
 
     public RequestQuery() {
         this.sort = new ArrayList<>();
         this.filters = new ArrayList<>();
+        this.groups = new ArrayList<>();
     }
 
     @JsonProperty("_sort")

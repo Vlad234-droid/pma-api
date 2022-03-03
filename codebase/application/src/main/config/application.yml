@@ -255,6 +255,8 @@ tesco:
       NF_FEEDBACK_GIVEN: com.tesco.pma.bpm.action.RunFlowByEventAction
       NF_FEEDBACK_REQUESTS_RESPONDED: com.tesco.pma.bpm.action.RunFlowByEventAction
       NF_FEEDBACK_REQUESTED: com.tesco.pma.bpm.action.RunFlowByEventAction
+      # Cycle
+      PM_CYCLE_REPEAT: com.tesco.pma.bpm.action.RunFlowByEventAction
       # Objectives
       NF_ORGANISATION_OBJECTIVES: com.tesco.pma.bpm.action.RunFlowByEventAction
       NF_OBJECTIVES_APPROVED_FOR_SHARING: com.tesco.pma.bpm.action.RunFlowByEventAction
@@ -320,7 +322,11 @@ camunda:
                                            com/tesco/pma/flow/notifications/tips/tips_flow.bpmn,
                                            com/tesco/pma/flow/notifications/tips/tips_notification_decisions.dmn,
                                            com/tesco/pma/flow/notifications/tips/tips_event_to_template_id.dmn,
-                                           com/tesco/pma/flow/reporting/rating/overall_rating.dmn
+                                           com/tesco/pma/flow/reporting/rating/overall_rating.dmn,
+                                           com/tesco/pma/flow/review/review_allowed_statuses.dmn,
+                                           com/tesco/pma/flow/review/review_allowed_prev_statuses.dmn,
+                                           com/tesco/pma/flow/review/tl_point_allowed_prev_statuses.dmn,
+                                           com/tesco/pma/flow/review/tl_point_status_to_event.dmn
     deployment-resource-paths: com/tesco/pma/flow
 
 ---

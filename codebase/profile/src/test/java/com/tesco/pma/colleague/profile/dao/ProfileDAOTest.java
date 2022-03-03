@@ -5,6 +5,7 @@ import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.dao.AbstractDAOTest;
+import com.tesco.pma.pagination.ConditionGroup;
 import com.tesco.pma.pagination.RequestQuery;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -428,6 +430,19 @@ public class ProfileDAOTest extends AbstractDAOTest {
         assertNotNull(colleague.getServiceDates().getHireDate());
         assertNotNull(colleague.getServiceDates().getLeavingDate());
 
+    }
+
+    @Test
+    void findColleagueSuggestionsGroupByAnd() {
+        var group = new ConditionGroup();
+        group.addFilters("first-name_eq", "John");
+        group.addFilters("last-name_eq", "Dow");
+
+        var rq = new RequestQuery();
+        rq.setGroups(List.of(group));
+
+
+        assertEquals(1, dao.findColleagueSuggestionsByFullName(rq).size());
     }
 
     private RequestQuery createRQ(Map<String, Object> filters) {

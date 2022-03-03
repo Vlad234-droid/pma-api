@@ -7,6 +7,7 @@ import com.tesco.pma.colleague.security.domain.Account;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.Role;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
+import com.tesco.pma.colleague.security.domain.request.ColleagueAccountRequest;
 import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
 import com.tesco.pma.colleague.security.domain.request.RoleRequest;
 import com.tesco.pma.colleague.security.exception.ErrorCodes;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -98,9 +100,18 @@ public class UserManagementServiceImpl implements UserManagementService {
             throw accountAlreadyExistsException(request.getName());
         }
 
+        UUID colleagueUuid = null;
+        if (request instanceof ColleagueAccountRequest) {
+            colleagueUuid = ((ColleagueAccountRequest) request).getColleagueUuid();
+        }
         try {
-            accountManagementDAO.create(request.getName(), request.getIamId(),
-                    request.getStatus(), request.getType());
+            if (colleagueUuid == null) {
+                accountManagementDAO.create(request.getName(), request.getIamId(),
+                        request.getStatus(), request.getType());
+            } else {
+                accountManagementDAO.create(colleagueUuid, request.getName(), request.getIamId(),
+                        request.getStatus(), request.getType(), Instant.now());
+            }
         } catch (DuplicateKeyException e) {
             throw accountAlreadyExistsException(e, request.getName());
         }

@@ -146,6 +146,16 @@ public interface ProcessManagerService {
     String runProcessByEvent(String eventName) throws ProcessExecutionException;
 
     /**
+     * Run latest process version
+     *
+     * @param resourceName resource name
+     * @param varMap Map of variables for starting process
+     * @return process instance id
+     * @throws ProcessExecutionException runtime exception
+     */
+    String runProcessByResourceName(String resourceName, Map<String, ?> varMap) throws ProcessExecutionException;
+
+    /**
      * Notifies the process engine that a message event with name 'messageName' has
      * been received and has been correlated to an execution with id 'executionId'
      * The waiting execution is notified synchronously.

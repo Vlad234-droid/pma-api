@@ -215,6 +215,37 @@ public class CamundaProcessManagerServiceBean implements ProcessManagerService {
     }
 
     @Override
+    public String runProcessByResourceName(String resourceName, Map<String, ?> varMap) throws ProcessExecutionException {
+        try {
+            ProcessEngine processEngine = getProcessEngine();
+            ProcessDefinitionQuery processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
+            processDefinitionQuery.processDefinitionResourceName(resourceName).latestVersion();
+            ProcessDefinition processDefinition = processDefinitionQuery.singleResult();
+            if (processDefinition == null) {
+                String message = "Couldn't find process by resource name %s";
+                throw new ProcessExecutionException(String.format(message, resourceName));
+            }
+            RuntimeService runtimeService = processEngine.getRuntimeService();
+            String instanceId;
+            if (varMap != null) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> castedMapVariables = (Map<String, Object>) varMap;
+
+                instanceId = runtimeService.startProcessInstanceById(processDefinition.getId(), castedMapVariables).getId();
+            } else {
+                instanceId = runtimeService.startProcessInstanceById(processDefinition.getId()).getId();
+            }
+            if (instanceId == null) {
+                String message = "Couldn't find process by resource name %s";
+                throw new ProcessExecutionException(String.format(message, resourceName));
+            }
+            return instanceId;
+        } catch (Exception e) {
+            throw new ProcessExecutionException(e);
+        }
+    }
+
+    @Override
     public String runProcessById(String processId, Map<String, ?> varMap) throws ProcessExecutionException {
         try {
             ProcessEngine processEngine = getProcessEngine();

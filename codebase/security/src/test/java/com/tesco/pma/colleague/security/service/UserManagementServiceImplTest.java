@@ -20,11 +20,13 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
 import static com.tesco.pma.colleague.security.TestDataUtils.buildAccount;
 import static com.tesco.pma.colleague.security.TestDataUtils.buildAccounts;
+import static com.tesco.pma.colleague.security.TestDataUtils.buildColleagueAccountRequest;
 import static com.tesco.pma.colleague.security.TestDataUtils.buildCreateAccountRequest;
 import static com.tesco.pma.colleague.security.TestDataUtils.buildRoleRequest;
 import static com.tesco.pma.colleague.security.TestDataUtils.buildRoles;
@@ -102,6 +104,24 @@ class UserManagementServiceImplTest {
         verify(mockAccountManagementDAO, times(2)).findAccountByName(anyString());
         verify(mockAccountManagementDAO, times(1)).create(anyString(), anyString(),
                 any(AccountStatus.class), any(AccountType.class));
+        verify(mockAccountManagementDAO, times(1)).assignRole(any(UUID.class), anyInt());
+    }
+
+    @Test
+    void createAccountWithColleagueUuidSuccessfully() {
+
+        when(mockAccountManagementDAO.findAccountByName(anyString()))
+                .thenReturn(null)
+                .thenReturn(buildAccount());
+        when(mockAccountManagementDAO.assignRole(any(UUID.class), anyInt()))
+                .thenReturn(1);
+
+        var createAccountRequest = buildColleagueAccountRequest(3);
+        userManagementService.createAccount(createAccountRequest);
+
+        verify(mockAccountManagementDAO, times(2)).findAccountByName(anyString());
+        verify(mockAccountManagementDAO, times(1)).create(any(UUID.class), anyString(), anyString(),
+                any(AccountStatus.class), any(AccountType.class), any(Instant.class));
         verify(mockAccountManagementDAO, times(1)).assignRole(any(UUID.class), anyInt());
     }
 
