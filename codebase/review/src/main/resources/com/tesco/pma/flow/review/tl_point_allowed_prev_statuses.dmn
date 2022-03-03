@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="tl_point_allowed_prev_statuses" name="Timeline point allowed previous statuses" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.12.0">
+  <decision id="tl_point_allowed_prev_statuses_table" name="Define rules for timeline point previous statuses">
+    <informationRequirement id="InformationRequirement_187rs2j">
+      <requiredInput href="#InputData_1ihuzky" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_0pqb5mg" hitPolicy="COLLECT">
+      <input id="InputClause_1o8h75v" label="New status" biodi:width="602.6666870117188">
+        <inputExpression id="LiteralExpression_1ejxg4w" typeRef="string">
+          <text>NEW_STATUS</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="Allowed previous status" name="STATUS" typeRef="string" biodi:width="241" />
+      <rule id="DecisionRule_0k5l50v">
+        <inputEntry id="UnaryTests_1v1z4wt">
+          <text>"STARTED","DRAFT","WAITING_FOR_APPROVAL","APPROVED","DECLINED","OVERDUE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_11qlxwp">
+          <text>"STARTED"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1qinq2a">
+        <inputEntry id="UnaryTests_07fykn6">
+          <text>"STARTED","DRAFT","WAITING_FOR_APPROVAL","APPROVED","DECLINED","OVERDUE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1kyerrt">
+          <text>"DRAFT"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0lw2jf6">
+        <inputEntry id="UnaryTests_0x2d3hh">
+          <text>"STARTED","DRAFT","WAITING_FOR_APPROVAL","APPROVED","DECLINED","OVERDUE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0oukop9">
+          <text>"WAITING_FOR_APPROVAL"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0fg4vtv">
+        <inputEntry id="UnaryTests_1nr9zq3">
+          <text>"STARTED","DRAFT","WAITING_FOR_APPROVAL","APPROVED","DECLINED","OVERDUE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_02evqtb">
+          <text>"APPROVED"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_08zu1r9">
+        <inputEntry id="UnaryTests_129cdvh">
+          <text>"STARTED","DRAFT","WAITING_FOR_APPROVAL","APPROVED","DECLINED","OVERDUE"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0cm08fz">
+          <text>"DECLINED"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0h6k0v7">
+        <inputEntry id="UnaryTests_1cc4196">
+          <text>"APPROVED"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1xm4nq8">
+          <text>"OVERDUE"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <inputData id="InputData_1ihuzky" name="New status" />
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="tl_point_allowed_prev_statuses_table">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_1qbhndb" dmnElementRef="InputData_1ihuzky">
+        <dc:Bounds height="45" width="125" x="187" y="259" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_01ioam9" dmnElementRef="InformationRequirement_187rs2j">
+        <di:waypoint x="250" y="259" />
+        <di:waypoint x="250" y="200" />
+        <di:waypoint x="250" y="180" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

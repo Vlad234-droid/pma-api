@@ -7,35 +7,6 @@
       "id": "Field_0hu83pj"
     },
     {
-      "text": "**Strategic objectives**\n\nHave you achieved your objectives?",
-      "type": "text",
-      "id": "Field_1s4fms4"
-    },
-    {
-      "values": [
-        {
-          "label": "Not achieved",
-          "value": "Not achieved"
-        },
-        {
-          "label": "Achieved",
-          "value": "Achieved"
-        },
-        {
-          "label": "Over-achieved",
-          "value": "Over-achieved"
-        }
-      ],
-      "label": "**Objective**",
-      "type": "select",
-      "id": "Field_05cjh0f",
-      "key": "objective",
-      "validate": {
-        "required": true
-      },
-      "description": "{request.review:OBJECTIVE}"
-    },
-    {
       "key": "day_job",
       "label": "**Day job**",
       "type": "textfield",
@@ -46,6 +17,35 @@
         "minLength": 10
       },
       "description": "What have you contributed to your team's priorities or KPIs?"
+    },
+    {
+      "text": "**Strategic objectives**\n\nHave you achieved your objectives?",
+      "type": "text",
+      "id": "Field_1s4fms4"
+    },
+    {
+      "values": [
+        {
+          "label": "Over-achieved",
+          "value": "Over-achieved"
+        },
+        {
+          "label": "Achieved",
+          "value": "Achieved"
+        },
+        {
+          "label": "Not achieved",
+          "value": "Not achieved"
+        }
+      ],
+      "label": "**Objective**",
+      "type": "select",
+      "id": "Field_05cjh0f",
+      "key": "objective",
+      "validate": {
+        "required": true
+      },
+      "description": "{request.review:OBJECTIVE}"
     },
     {
       "label": "**Yourself**",

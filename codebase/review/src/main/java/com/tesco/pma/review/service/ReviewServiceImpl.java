@@ -34,7 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -43,12 +42,9 @@ import java.util.UUID;
 
 import static com.tesco.pma.api.ActionType.PUBLISH;
 import static com.tesco.pma.api.ActionType.SAVE_AS_DRAFT;
-import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DECLINED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
-import static com.tesco.pma.cycle.api.PMTimelinePointStatus.OVERDUE;
-import static com.tesco.pma.cycle.api.PMTimelinePointStatus.STARTED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.WAITING_FOR_APPROVAL;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MAX;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MIN;
@@ -81,6 +77,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final EventSender eventSender;
     private final ProfileService profileService;
+    private final ReviewDecisionService reviewDecisionService;
+    private final TimelinePointDecisionService timelinePointDecisionService;
 
     private static final String REVIEW_UUID_PARAMETER_NAME = "reviewUuid";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
@@ -118,11 +116,6 @@ public class ReviewServiceImpl implements ReviewService {
             WAITING_FOR_APPROVAL,
             APPROVED,
             DECLINED);
-
-    private static final Map<PMTimelinePointStatus, String> STATUS_TO_EVENT_NAME_MAP = Map.of(
-            WAITING_FOR_APPROVAL, NF_PM_REVIEW_SUBMITTED_EVENT_NAME,
-            APPROVED, NF_PM_REVIEW_APPROVED_EVENT_NAME,
-            DECLINED, "NF_PM_REVIEW_DECLINED");
 
     @Override
     public Review getReview(UUID colleagueUuid, PMReviewType type, Integer number) {
@@ -235,7 +228,7 @@ public class ReviewServiceImpl implements ReviewService {
             );
         }
         try {
-            var allowedStatuses = getStatusesForCreate();
+            var allowedStatuses = reviewDecisionService.getReviewAllowedStatuses(review.getType(), CREATE_OPERATION_NAME);
             if (allowedStatuses.isEmpty()) {
                 throw notFound(ALLOWED_STATUSES_NOT_FOUND,
                         Map.of(OPERATION_PARAMETER_NAME, CREATE_OPERATION_NAME));
@@ -360,13 +353,13 @@ public class ReviewServiceImpl implements ReviewService {
                                                      PMTimelinePointStatus status,
                                                      String reason,
                                                      UUID loggedUserUuid) {
+        var prevStatuses = reviewDecisionService.getReviewAllowedPrevStatuses(type, status);
+        if (prevStatuses.isEmpty()) {
+            throw notFound(ALLOWED_STATUSES_NOT_FOUND,
+                    Map.of(OPERATION_PARAMETER_NAME, CHANGE_STATUS_OPERATION_NAME));
+        }
         var timelinePoint = getTimelinePoint(colleagueUuid, type);
         reviews.forEach(review -> {
-            var prevStatuses = getPrevStatusesForChangeStatus(type, status);
-            if (prevStatuses.isEmpty()) {
-                throw notFound(ALLOWED_STATUSES_NOT_FOUND,
-                        Map.of(OPERATION_PARAMETER_NAME, CHANGE_STATUS_OPERATION_NAME));
-            }
             if (1 == reviewDAO.updateStatusByParams(
                     timelinePoint.getUuid(),
                     type,
@@ -379,6 +372,7 @@ public class ReviewServiceImpl implements ReviewService {
                         null,
                         review.getNumber());
                 var actualReview = actualReviews.get(0);
+                //feedback presents in MYR
                 if (review.getProperties() != null
                         && !review.getProperties().getMapJson().isEmpty()) {
                     actualReview.setProperties(review.getProperties());
@@ -424,7 +418,7 @@ public class ReviewServiceImpl implements ReviewService {
                     Map.of(MIN_PARAMETER_NAME, minReviews));
         }
 
-        var allowedStatuses = getStatusesForDelete(timelinePoint.getReviewType());
+        var allowedStatuses = reviewDecisionService.getReviewAllowedStatuses(timelinePoint.getReviewType(), DELETE_OPERATION_NAME);
         if (allowedStatuses.isEmpty()) {
             throw notFound(ALLOWED_STATUSES_NOT_FOUND,
                     Map.of(OPERATION_PARAMETER_NAME, DELETE_OPERATION_NAME));
@@ -532,19 +526,11 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private List<PMTimelinePointStatus> getAllowedStatusesForUpdate(PMReviewType reviewType, PMTimelinePointStatus newStatus) {
-        var allowedStatusesForUpdate = getStatusesForUpdate(reviewType);
-        var prevStatusesForChangeStatus = getPrevStatusesForChangeStatus(reviewType, newStatus);
+        var allowedStatusesForUpdate = reviewDecisionService.getReviewAllowedStatuses(reviewType, UPDATE_OPERATION_NAME);
+        var prevStatusesForChangeStatus = reviewDecisionService.getReviewAllowedPrevStatuses(reviewType, newStatus);
         return allowedStatusesForUpdate.stream()
                 .filter(prevStatusesForChangeStatus::contains)
                 .collect(toList());
-    }
-
-    private List<PMTimelinePointStatus> getAllowedStatusesForTLPointUpdate(PMTimelinePointStatus newStatus) {
-        if (newStatus == APPROVED) {
-            return List.of(STARTED, DRAFT, WAITING_FOR_APPROVAL, APPROVED, DECLINED, OVERDUE);
-        } else {
-            return List.of(STARTED, DRAFT, WAITING_FOR_APPROVAL, APPROVED, DECLINED);
-        }
     }
 
     private List<OrgObjective> intCreateOrgObjectives(List<OrgObjective> orgObjectives, UUID loggedUserUuid) {
@@ -585,65 +571,11 @@ public class ReviewServiceImpl implements ReviewService {
         return getPublishedOrgObjectives();
     }
 
-    private List<PMTimelinePointStatus> getStatusesForCreate() {
-        return List.of(DRAFT, WAITING_FOR_APPROVAL);
-    }
-
-    private List<PMTimelinePointStatus> getStatusesForUpdate(PMReviewType reviewType) {
-        switch (reviewType) {
-            case OBJECTIVE:
-            case EYR:
-                return List.of(DRAFT, DECLINED, APPROVED);
-            case MYR:
-                return List.of(DRAFT, DECLINED);
-            default:
-                return Collections.emptyList();
-        }
-    }
-
-    private List<PMTimelinePointStatus> getStatusesForDelete(PMReviewType reviewType) {
-        if (reviewType.equals(OBJECTIVE)) {
-            return List.of(DRAFT, DECLINED, APPROVED);
-        } else {
-            return Collections.emptyList();
-        }
-    }
-
-    private List<PMTimelinePointStatus> getPrevStatusesForChangeStatus(PMReviewType reviewType, PMTimelinePointStatus newStatus) {
-        if (reviewType.equals(OBJECTIVE)) {
-            switch (newStatus) {
-                case DRAFT:
-                    return List.of(DRAFT, DECLINED);
-                case WAITING_FOR_APPROVAL:
-                    return List.of(DRAFT, WAITING_FOR_APPROVAL, DECLINED, APPROVED);
-                case APPROVED:
-                    return List.of(WAITING_FOR_APPROVAL, APPROVED);
-                case DECLINED:
-                    return List.of(WAITING_FOR_APPROVAL, DECLINED);
-                default:
-                    return Collections.emptyList();
-            }
-        } else {
-            switch (newStatus) {
-                case DRAFT:
-                    return List.of(DRAFT, DECLINED);
-                case WAITING_FOR_APPROVAL:
-                    return List.of(DRAFT, WAITING_FOR_APPROVAL, DECLINED);
-                case APPROVED:
-                    return List.of(WAITING_FOR_APPROVAL, APPROVED);
-                case DECLINED:
-                    return List.of(WAITING_FOR_APPROVAL, DECLINED);
-                default:
-                    return Collections.emptyList();
-            }
-        }
-    }
-
     private TimelinePoint updateTLPointStatus(TimelinePoint timelinePoint) {
         var calcTlPoint = calcTlPoint(timelinePoint);
         if (1 == timelinePointDAO.update(
                 calcTlPoint,
-                getAllowedStatusesForTLPointUpdate(calcTlPoint.getStatus()))) {
+                timelinePointDecisionService.getTlPointAllowedPrevStatuses(calcTlPoint.getStatus()))) {
             return calcTlPoint;
         } else {
             return null;
@@ -746,7 +678,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private void sendEvent(TimelinePoint timelinePoint, UUID loggedUserUUID, UUID colleagueUuid) {
-        var eventName = STATUS_TO_EVENT_NAME_MAP.get(timelinePoint.getStatus());
+        var eventName = timelinePointDecisionService.getStatusUpdateEventName(timelinePoint.getStatus());
 
         if (eventName == null) {
             return;

@@ -5,9 +5,11 @@ import com.tesco.pma.colleague.security.domain.Account;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.AccountType;
 import com.tesco.pma.colleague.security.domain.Role;
+import com.tesco.pma.colleague.security.domain.request.ColleagueAccountRequest;
 import com.tesco.pma.colleague.security.domain.request.CreateAccountRequest;
 import com.tesco.pma.colleague.security.domain.request.RoleRequest;
 import lombok.experimental.UtilityClass;
+import org.springframework.beans.BeanUtils;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -51,6 +53,14 @@ public class TestDataUtils {
         createAccountRequest.setType(AccountType.USER);
         createAccountRequest.setRoleId(roleId);
         return createAccountRequest;
+    }
+
+    public static ColleagueAccountRequest buildColleagueAccountRequest(Object roleId) {
+        var createAccountRequest = buildCreateAccountRequest(roleId);
+        var colleagueAccountRequest = new ColleagueAccountRequest();
+        BeanUtils.copyProperties(createAccountRequest, colleagueAccountRequest);
+        colleagueAccountRequest.setColleagueUuid(UUID.randomUUID());
+        return colleagueAccountRequest;
     }
 
     public static ColleagueEntity buildColleagueEntity(UUID uuid) {

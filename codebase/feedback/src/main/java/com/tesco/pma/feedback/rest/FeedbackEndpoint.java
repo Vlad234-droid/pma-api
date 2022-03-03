@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +33,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.tesco.pma.util.SecurityUtils.getColleagueUuid;
 
 /**
  * REST controller for managing {@link Feedback}.
@@ -163,6 +167,36 @@ public class FeedbackEndpoint {
         log.debug("REST request to get Feedback : {}", uuid);
         Feedback feedback = feedbackService.findOne(uuid);
         return RestResponse.success(feedback);
+    }
+
+    /**
+     * {@code GET  /feedbacks/given-count} : get given feedbacks count.
+     *
+     * @return the {@link RestResponse} with the given feedbacks count {@code 200 (OK)}.
+     */
+    @GetMapping("/feedbacks/given-count")
+    @Operation(summary = "Get given feedbacks count for colleague", tags = {"feedback"})
+    @PreAuthorize("isColleague()")
+    public RestResponse<Integer> getGivenFeedbackCount(@CurrentSecurityContext(expression = "authentication")
+                                                                   Authentication authentication) {
+        var colleagueUuid = getColleagueUuid(authentication);
+        log.debug("REST request to get given Feedbacks count for colleague : {}", colleagueUuid);
+        return RestResponse.success(feedbackService.getGivenFeedbackCount(colleagueUuid));
+    }
+
+    /**
+     * {@code GET  /feedbacks/requested-count} : get requested feedbacks count.
+     *
+     * @return the {@link RestResponse} with the requested feedbacks count {@code 200 (OK)}.
+     */
+    @GetMapping("/feedbacks/requested-count")
+    @Operation(summary = "Get requested feedbacks count for colleague", tags = {"feedback"})
+    @PreAuthorize("isColleague()")
+    public RestResponse<Integer> getRequestedFeedbackCount(@CurrentSecurityContext(expression = "authentication")
+                                                                       Authentication authentication) {
+        var colleagueUuid = getColleagueUuid(authentication);
+        log.debug("REST request to get requested Feedbacks count for colleague : {}", colleagueUuid);
+        return RestResponse.success(feedbackService.getRequestedFeedbackCount(colleagueUuid));
     }
 
 }

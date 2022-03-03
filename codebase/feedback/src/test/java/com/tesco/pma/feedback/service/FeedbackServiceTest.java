@@ -1,5 +1,6 @@
 package com.tesco.pma.feedback.service;
 
+import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
@@ -19,8 +20,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.util.List;
+import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static com.tesco.pma.feedback.util.TestDataUtil.COLLEAGUE_UUID;
+import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACKS_COUNT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -92,10 +95,8 @@ class FeedbackServiceTest {
         List<Feedback> result = underTest.findAll(requestQuery);
 
         //then
-        assertThat(result)
-                .hasSize(2)
-                .element(0)
-                .isSameAs(feedback1);
+        assertEquals(2, result.size());
+        assertEquals(feedback1, result.get(0));
     }
 
     @Test
@@ -109,7 +110,35 @@ class FeedbackServiceTest {
 
         //then
         verify(feedbackDAO, times(1)).getByUuid(TestDataUtil.FEEDBACK_UUID_LAST);
-        assertEquals(TestDataUtil.COLLEAGUE_UUID, result.getColleagueUuid());
+        assertEquals(COLLEAGUE_UUID, result.getColleagueUuid());
+    }
+
+    @Test
+    void findGivenFeedbackCount() {
+        //given
+        var statusFilter = DictionaryFilter.includeFilter(Set.of(FeedbackStatus.SUBMITTED, FeedbackStatus.COMPLETED));
+        when(feedbackDAO.getGivenFeedbackCount(COLLEAGUE_UUID, statusFilter)).thenReturn(FEEDBACKS_COUNT);
+
+        //when
+        var result = underTest.getGivenFeedbackCount(COLLEAGUE_UUID);
+
+        //then
+        verify(feedbackDAO, times(1)).getGivenFeedbackCount(COLLEAGUE_UUID, statusFilter);
+        assertEquals(FEEDBACKS_COUNT, result);
+    }
+
+    @Test
+    void findRequestedFeedbackCount() {
+        //given
+        var statusFilter = DictionaryFilter.includeFilter(Set.of(FeedbackStatus.PENDING));
+        when(feedbackDAO.getRequestedFeedbackCount(COLLEAGUE_UUID, statusFilter)).thenReturn(FEEDBACKS_COUNT);
+
+        //when
+        var result = underTest.getRequestedFeedbackCount(COLLEAGUE_UUID);
+
+        //then
+        verify(feedbackDAO, times(1)).getRequestedFeedbackCount(COLLEAGUE_UUID, statusFilter);
+        assertEquals(FEEDBACKS_COUNT, result);
     }
 
     @Test
