@@ -13,6 +13,7 @@ import com.tesco.pma.review.dao.OrgObjectiveDAO;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
 import com.tesco.pma.review.dao.ReviewDAO;
 import com.tesco.pma.review.dao.TimelinePointDAO;
+import com.tesco.pma.review.domain.ColleagueView;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStats;
 import com.tesco.pma.review.domain.ReviewStatusCounter;
@@ -128,6 +129,29 @@ class ReviewServiceImplTest {
         when(mockTimelinePointDAO.getByParams(any(), any(), any()))
                 .thenReturn(List.of(expectedTimelinePoint));
 
+        when(mockReviewDAO.read(any()))
+                .thenReturn(expectedReview);
+
+        final var res = reviewService.getReview(randomUUID);
+
+        assertThat(res).isSameAs(expectedReview);
+    }
+
+    @Test
+    void getReviewByBusinessKeysShouldReturnReview() {
+        final var randomUUID = UUID.randomUUID();
+        final var expectedReview = Review.builder().build();
+        final var expectedColleagueCycle = PMColleagueCycle.builder().build();
+        final var expectedTimelinePoint = TimelinePoint.builder()
+                .properties(TIMELINE_POINT_PROPERTIES_INIT)
+                .build();
+
+        when(mockColleagueCycleService.getByCycleUuid(any(), any(), any()))
+                .thenReturn(List.of(expectedColleagueCycle));
+
+        when(mockTimelinePointDAO.getByParams(any(), any(), any()))
+                .thenReturn(List.of(expectedTimelinePoint));
+
         when(mockReviewDAO.getByParams(any(), any(), any(), any()))
                 .thenReturn(List.of(expectedReview));
 
@@ -137,6 +161,74 @@ class ReviewServiceImplTest {
                 NUMBER_1);
 
         assertThat(res).isSameAs(expectedReview);
+    }
+
+    @Test
+    void getReviewsByBusinessKeysShouldReturnReviews() {
+        final var randomUUID = UUID.randomUUID();
+        final var expectedReview = Review.builder().build();
+        final var reviews = List.of(expectedReview);
+        final var expectedColleagueCycle = PMColleagueCycle.builder().build();
+        final var expectedTimelinePoint = TimelinePoint.builder()
+                .properties(TIMELINE_POINT_PROPERTIES_INIT)
+                .build();
+
+        when(mockColleagueCycleService.getByCycleUuid(any(), any(), any()))
+                .thenReturn(List.of(expectedColleagueCycle));
+
+        when(mockTimelinePointDAO.getByParams(any(), any(), any()))
+                .thenReturn(List.of(expectedTimelinePoint));
+
+        when(mockReviewDAO.getByParams(any(), any(), any(), any()))
+                .thenReturn(reviews);
+
+        final var res = reviewService.getReviews(
+                randomUUID,
+                OBJECTIVE);
+
+        assertThat(res).isSameAs(reviews);
+    }
+
+    @Test
+    void getReviewsByBusinessKeysAndStatusShouldReturnReviews() {
+        final var randomUUID = UUID.randomUUID();
+        final var expectedReview = Review.builder().build();
+        final var reviews = List.of(expectedReview);
+        final var expectedColleagueCycle = PMColleagueCycle.builder().build();
+        final var expectedTimelinePoint = TimelinePoint.builder()
+                .properties(TIMELINE_POINT_PROPERTIES_INIT)
+                .build();
+
+        when(mockColleagueCycleService.getByCycleUuid(any(), any(), any()))
+                .thenReturn(List.of(expectedColleagueCycle));
+
+        when(mockTimelinePointDAO.getByParams(any(), any(), any()))
+                .thenReturn(List.of(expectedTimelinePoint));
+
+        when(mockReviewDAO.getByParams(any(), any(), any(), any()))
+                .thenReturn(reviews);
+
+        final var res = reviewService.getReviews(
+                randomUUID,
+                OBJECTIVE,
+                DRAFT);
+
+        assertThat(res).isSameAs(reviews);
+    }
+
+    @Test
+    void getReviewsByColleagueShouldReturnReviews() {
+        final var randomUUID = UUID.randomUUID();
+        final var expectedReview = Review.builder().build();
+        final var reviews = List.of(expectedReview);
+
+        when(mockReviewDAO.getReviewsByColleague(any(), any()))
+                .thenReturn(reviews);
+
+        final var res = reviewService.getReviewsByColleague(
+                randomUUID);
+
+        assertThat(res).isSameAs(reviews);
     }
 
     @Test
@@ -258,6 +350,48 @@ class ReviewServiceImplTest {
         assertEquals(REVIEW_NOT_FOUND.getCode(), exception.getCode());
         assertEquals(REVIEW_NOT_FOUND_MESSAGE, exception.getMessage());
 
+    }
+
+    @Test
+    void getCycleTimelineByColleagueShouldReturnTimelinePoints() {
+        final var randomUUID = UUID.randomUUID();
+        final var tlPointUUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0010");
+        final var expectedTimelinePoint = TimelinePoint.builder()
+                .uuid(tlPointUUID)
+                .properties(TIMELINE_POINT_PROPERTIES_INIT)
+                .reviewType(OBJECTIVE)
+                .build();
+        final var expectedTimelinePoints = List.of(expectedTimelinePoint);
+
+        when(mockTimelinePointDAO.getTimeline(any(), any()))
+                .thenReturn(expectedTimelinePoints);
+
+        final var res = reviewService.getCycleTimelineByColleague(randomUUID);
+
+        assertThat(res).isSameAs(expectedTimelinePoints);
+    }
+
+    @Test
+    void getTeamViewShouldReturnColleagueViews() {
+        final var randomUUID = UUID.randomUUID();
+        final var tlPointUUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0010");
+        final var expectedTimelinePoint = TimelinePoint.builder()
+                .uuid(tlPointUUID)
+                .properties(TIMELINE_POINT_PROPERTIES_INIT)
+                .reviewType(OBJECTIVE)
+                .build();
+        final var expectedTimelinePoints = List.of(expectedTimelinePoint);
+        final var colleagueView = ColleagueView.builder()
+                .timeline(expectedTimelinePoints)
+                .build();
+        final var expectedColleagueViews = List.of(colleagueView);
+
+        when(mockReviewDAO.getTeamView(any(), any()))
+                .thenReturn(expectedColleagueViews);
+
+        final var res = reviewService.getTeamView(randomUUID, 1);
+
+        assertThat(res).isSameAs(expectedColleagueViews);
     }
 
 }
