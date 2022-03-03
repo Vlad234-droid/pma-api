@@ -8,6 +8,10 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Grouping filters by an operator
+ */
+
 @Data
 public class ConditionGroup {
 
