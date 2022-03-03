@@ -72,7 +72,7 @@ public interface PMCycleService {
     PMCycle update(@NotNull PMCycle cycle);
 
     /**
-     * Returns the current active performance cycle
+     * Returns the current started performance cycle
      *
      * @param colleagueUuid Colleague identifier
      * @return performance cycle

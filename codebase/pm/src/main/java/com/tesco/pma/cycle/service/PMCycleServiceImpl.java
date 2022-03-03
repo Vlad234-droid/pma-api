@@ -170,7 +170,7 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     @Override
     public PMCycle getCurrentByColleague(UUID colleagueUuid) {
-        var activeFilter = includeFilter(Set.of(ACTIVE));
+        var activeFilter = includeFilter(Set.of(PMCycleStatus.STARTED));
         var cycles = cycleDAO.getByColleague(colleagueUuid, activeFilter);
         if (null == cycles || cycles.isEmpty()) {
             throw notFound(PM_CYCLE_NOT_FOUND_COLLEAGUE,
