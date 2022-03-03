@@ -690,6 +690,10 @@ public class ReviewServiceImpl implements ReviewService {
             recipientUUID = getManagerUuid(colleagueUuid);
         }
 
+        if (recipientUUID == null) {
+            return;
+        }
+
         var event = EventSupport.create(eventName, Map.of(
                 COLLEAGUE_UUID_EVENT_PARAM, recipientUUID,
                 SENDER_COLLEAGUE_UUID_EVENT_PARAM, loggedUserUUID,
