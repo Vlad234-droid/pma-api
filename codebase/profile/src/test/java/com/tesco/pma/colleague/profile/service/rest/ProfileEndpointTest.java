@@ -6,11 +6,13 @@ import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
 import com.tesco.pma.colleague.profile.service.ProfileService;
+import com.tesco.pma.pagination.ConditionGroup;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.json.JacksonTester;
@@ -30,6 +32,7 @@ import java.util.stream.IntStream;
 import static java.util.UUID.randomUUID;
 import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -140,6 +143,34 @@ class ProfileEndpointTest extends AbstractEndpointTest {
 
         // then
         andExpect(resultActions, status().isOk(), profileAttributes);
+
+    }
+
+    @Test
+    void getSuggestionsTest() throws Exception {
+
+        // given
+        when(mockProfileService.getSuggestions(Mockito.any()))
+                .thenReturn(new ArrayList<>());
+
+        var qs = "first-name_eq=John&_groups[0][last-name_eq]=Dow&_groups[0][_type]=OR";
+
+         //when
+        ResultActions resultActions = mvc.perform(get("/colleagues/suggestions?"+qs)
+                .with(allRoles(colleagueUuid.toString()))
+                .accept(APPLICATION_JSON));
+
+        resultActions.andExpect(status().isOk());
+
+        // then
+        Mockito.verify(mockProfileService).getSuggestions(Mockito.argThat(rqResult -> {
+            assertEquals("John", rqResult.getFilters().get(0).getValue());
+            assertEquals("first-name", rqResult.getFilters().get(0).getProperty());
+            assertEquals("Dow", rqResult.getGroups().get(0).getFilters().get(0).getValue());
+            assertEquals("last-name", rqResult.getGroups().get(0).getFilters().get(0).getProperty());
+            assertEquals(ConditionGroup.GroupType.OR, rqResult.getGroups().get(0).getType());
+            return true;
+        }));
 
     }
 
