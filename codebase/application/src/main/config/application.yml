@@ -255,6 +255,8 @@ tesco:
       NF_FEEDBACK_GIVEN: com.tesco.pma.bpm.action.RunFlowByEventAction
       NF_FEEDBACK_REQUESTS_RESPONDED: com.tesco.pma.bpm.action.RunFlowByEventAction
       NF_FEEDBACK_REQUESTED: com.tesco.pma.bpm.action.RunFlowByEventAction
+      # Cycle
+      PM_CYCLE_REPEAT: com.tesco.pma.bpm.action.RunFlowByEventAction
       # Objectives
       NF_ORGANISATION_OBJECTIVES: com.tesco.pma.bpm.action.RunFlowByEventAction
       NF_OBJECTIVES_APPROVED_FOR_SHARING: com.tesco.pma.bpm.action.RunFlowByEventAction

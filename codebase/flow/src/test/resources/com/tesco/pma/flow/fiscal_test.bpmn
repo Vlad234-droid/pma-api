@@ -67,9 +67,6 @@
     <bpmn:sequenceFlow id="Flow_1qhm8xl" sourceRef="processColleagueCycles" targetRef="Gateway_0a3kzk4" />
     <bpmn:sequenceFlow id="Flow_1c2mhm6" sourceRef="Gateway_1msj1uv" targetRef="objective" />
     <bpmn:sequenceFlow id="Flow_10o56ax" sourceRef="Gateway_1msj1uv" targetRef="myr" />
-    <bpmn:endEvent id="Event_0v9jvii">
-      <bpmn:incoming>Flow_1xexb8c</bpmn:incoming>
-    </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0y1flzn" sourceRef="myr" targetRef="Gateway_1jg5slo" />
     <bpmn:sequenceFlow id="Flow_10nqhon" sourceRef="Gateway_1msj1uv" targetRef="eyr" />
     <bpmn:sequenceFlow id="Flow_1yhukqj" sourceRef="eyr" targetRef="Gateway_1jg5slo" />
@@ -228,10 +225,9 @@
       <bpmn:messageEventDefinition id="MessageEventDefinition_1an17t6" messageRef="Message_1l9x4m5" />
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_1q25lda" sourceRef="Event_03cxyfj" targetRef="processNewColleague" />
-    <bpmn:sequenceFlow id="Flow_1xexb8c" sourceRef="finalizeFlow" targetRef="Event_0v9jvii" />
     <bpmn:serviceTask id="finalizeFlow" name="Finalize flow" camunda:class="com.tesco.pma.flow.handlers.FinalizeFlowHandler">
       <bpmn:incoming>Flow_063syv1</bpmn:incoming>
-      <bpmn:outgoing>Flow_1xexb8c</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0xf8g9b</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:startEvent id="Event_1jq7j62">
       <bpmn:outgoing>Flow_16dj1pj</bpmn:outgoing>
@@ -371,6 +367,10 @@
       <bpmn:incoming>Flow_1qhm8xl</bpmn:incoming>
       <bpmn:outgoing>Flow_0072lv2</bpmn:outgoing>
     </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="Event_07lxfik">
+      <bpmn:incoming>Flow_0xf8g9b</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0xf8g9b" sourceRef="finalizeFlow" targetRef="Event_07lxfik" />
     <bpmn:textAnnotation id="TextAnnotation_0iq783w">
       <bpmn:text>Event: IMPORT_NEW_COLLEAGUE Params: colleagueUuid</bpmn:text>
     </bpmn:textAnnotation>
@@ -392,6 +392,8 @@
   <bpmn:message id="Message_13qq9wf" name="CEP_COLLEAGUE_ADDED_1" />
   <bpmn:message id="Message_15jak7p" name="CEP_COLLEAGUE_UPDATED_1" />
   <bpmn:message id="Message_0p5u9hh" name="CEP_COLLEAGUE_LEFT_1" />
+  <bpmn:message id="Message_1n5q26q" />
+  <bpmn:message id="Message_05285he" name="PM_CYCLE_REPEAT" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="fiscal_test">
       <bpmndi:BPMNEdge id="Flow_0072lv2_di" bpmnElement="Flow_0072lv2">
@@ -436,10 +438,6 @@
         <di:waypoint x="539" y="342" />
         <di:waypoint x="539" y="270" />
         <di:waypoint x="700" y="270" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1xexb8c_di" bpmnElement="Flow_1xexb8c">
-        <di:waypoint x="1740" y="600" />
-        <di:waypoint x="1772" y="600" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1q25lda_di" bpmnElement="Flow_1q25lda">
         <di:waypoint x="539" y="188" />
@@ -496,6 +494,13 @@
         <di:waypoint x="640" y="600" />
         <di:waypoint x="725" y="600" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xf8g9b_di" bpmnElement="Flow_0xf8g9b">
+        <di:waypoint x="1740" y="600" />
+        <di:waypoint x="1782" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_07lxfik_di" bpmnElement="Event_07lxfik">
+        <dc:Bounds x="1782" y="582" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1bu82ro_di" bpmnElement="objective" isExpanded="true">
         <dc:Bounds x="901" y="920" width="619" height="190" />
       </bpmndi:BPMNShape>
@@ -546,9 +551,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1a5zpoj_di" bpmnElement="processTimelinePointObjective">
         <dc:Bounds x="1130" y="960" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0v9jvii_di" bpmnElement="Event_0v9jvii">
-        <dc:Bounds x="1772" y="582" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1mwce77_di" bpmnElement="Gateway_1msj1uv">
         <dc:Bounds x="825" y="575" width="50" height="50" />

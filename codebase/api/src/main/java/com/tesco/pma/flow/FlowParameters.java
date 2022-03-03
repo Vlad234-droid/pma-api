@@ -19,9 +19,9 @@ public enum FlowParameters {
     PM_CYCLE_KEY,
     PM_CYCLE,
     PM_CYCLE_START_TIME,
+    PM_CYCLE_REPEATS_LEFT,
     PM_COLLEAGUE_CYCLE,
     PM_COLLEAGUE_CYCLE_UUID,
-
     SCHEDULED,
 
     //timeline variables
