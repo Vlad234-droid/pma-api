@@ -50,6 +50,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
@@ -271,6 +273,45 @@ class ReviewServiceImplTest {
 
         assertThat(res)
                 .returns(expectedReview.getProperties(), from(Review::getProperties));
+    }
+
+    @Test
+    void updateReviews() {
+        //given
+        final var randomUUID = UUID.randomUUID();
+        final var review = Review.builder()
+                .type(OBJECTIVE)
+                .status(DRAFT)
+                .build();
+        final var reviews = List.of(review);
+        final var timelinePoint = TimelinePoint.builder()
+                .status(DRAFT)
+                .uuid(randomUUID)
+                .properties(TIMELINE_POINT_PROPERTIES_INIT)
+                .build();
+        final var colleagueCycle = PMColleagueCycle.builder().build();
+        final var expectedReviewStats = ReviewStats.builder()
+                .statusStats(Collections.emptyList())
+                .build();
+        when(mockColleagueCycleService.getByCycleUuid(any(), any(), any()))
+                .thenReturn(List.of(colleagueCycle));
+
+        when(mockTimelinePointDAO.getByParams(any(), any(), any()))
+                .thenReturn(List.of(timelinePoint));
+        when(mockReviewDecisionService.getReviewAllowedStatuses(any(), any()))
+                .thenReturn(List.of(DRAFT));
+        when(mockReviewDAO.getReviewStats(any()))
+                .thenReturn(expectedReviewStats);
+
+        //when
+        reviewService.updateReviews(randomUUID, OBJECTIVE, reviews, randomUUID);
+
+        //then
+        verify(mockReviewDAO, times(1)).getByParams(timelinePoint.getUuid(),
+                review.getType(),
+                null,
+                1);
+        verify(mockReviewDAO, times(1)).create(review);
     }
 
     @Test
