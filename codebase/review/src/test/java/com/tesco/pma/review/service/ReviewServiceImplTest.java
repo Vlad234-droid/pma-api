@@ -1,6 +1,7 @@
 package com.tesco.pma.review.service;
 
 import com.tesco.pma.api.MapJson;
+import com.tesco.pma.api.OrgObjectiveStatus;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.MessageSourceConfig;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
@@ -14,6 +15,7 @@ import com.tesco.pma.review.dao.ReviewAuditLogDAO;
 import com.tesco.pma.review.dao.ReviewDAO;
 import com.tesco.pma.review.dao.TimelinePointDAO;
 import com.tesco.pma.review.domain.ColleagueView;
+import com.tesco.pma.review.domain.OrgObjective;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStats;
 import com.tesco.pma.review.domain.ReviewStatusCounter;
@@ -42,6 +44,7 @@ import static com.tesco.pma.cycle.api.PMReviewType.OBJECTIVE;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.APPROVED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DECLINED;
 import static com.tesco.pma.cycle.api.PMTimelinePointStatus.DRAFT;
+import static com.tesco.pma.cycle.api.PMTimelinePointStatus.WAITING_FOR_APPROVAL;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MAX;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MIN;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND;
@@ -85,7 +88,7 @@ class ReviewServiceImplTest {
     private TimelinePointDAO mockTimelinePointDAO;
 
     @MockBean
-    private OrgObjectiveDAO mockOrgObjective;
+    private OrgObjectiveDAO mockOrgObjectiveDAO;
 
     @MockBean
     private ReviewAuditLogDAO mockReviewAuditLogDAO;
@@ -276,6 +279,56 @@ class ReviewServiceImplTest {
     }
 
     @Test
+    void updateReviewsStatus() {
+        //given
+        final var randomUUID = UUID.randomUUID();
+        final var review = Review.builder()
+                .type(OBJECTIVE)
+                .status(DRAFT)
+                .number(1)
+                .build();
+        final var reviews = List.of(review);
+        final var timelinePoint = TimelinePoint.builder()
+                .status(DRAFT)
+                .uuid(randomUUID)
+                .properties(TIMELINE_POINT_PROPERTIES_INIT)
+                .build();
+        final var colleagueCycle = PMColleagueCycle.builder().build();
+        final var expectedReviewStats = ReviewStats.builder()
+                .statusStats(Collections.emptyList())
+                .build();
+        when(mockColleagueCycleService.getByCycleUuid(any(), any(), any()))
+                .thenReturn(List.of(colleagueCycle));
+
+        when(mockTimelinePointDAO.getByParams(any(), any(), any()))
+                .thenReturn(List.of(timelinePoint));
+        when(mockReviewDecisionService.getReviewAllowedStatuses(any(), any()))
+                .thenReturn(List.of(DRAFT));
+        when(mockReviewDecisionService.getReviewAllowedPrevStatuses(any(), any()))
+                .thenReturn(List.of(DRAFT));
+        when(mockReviewDAO.getReviewStats(any()))
+                .thenReturn(expectedReviewStats);
+        when(mockReviewDAO.updateStatusByParams(any(), any(), any(), any(), any()))
+                .thenReturn(1);
+        when(mockReviewDAO.getByParams(any(), any(), any(), any()))
+                .thenReturn(reviews);
+
+        //when
+        reviewService.updateReviewsStatus(randomUUID, OBJECTIVE, reviews, WAITING_FOR_APPROVAL, null, randomUUID);
+
+        //then
+        verify(mockReviewDAO, times(1)).getByParams(timelinePoint.getUuid(),
+                review.getType(),
+                null,
+                1);
+        verify(mockReviewDAO, times(1)).updateStatusByParams(timelinePoint.getUuid(),
+                OBJECTIVE,
+                review.getNumber(),
+                WAITING_FOR_APPROVAL,
+                List.of(DRAFT));
+    }
+
+    @Test
     void updateReviews() {
         //given
         final var randomUUID = UUID.randomUUID();
@@ -435,4 +488,70 @@ class ReviewServiceImplTest {
         assertThat(res).isSameAs(expectedColleagueViews);
     }
 
+    @Test
+    void createOrgObjectivesShouldNotCreateNewVersion() {
+        final var randomUUID = UUID.randomUUID();
+        final var orgObjective = OrgObjective.builder()
+                .uuid(randomUUID)
+                .number(1)
+                .status(OrgObjectiveStatus.DRAFT)
+                .title("Test")
+                .version(1)
+                .build();
+        final var orgObjectives = List.of(orgObjective);
+        when(mockOrgObjectiveDAO.getAll())
+                .thenReturn(orgObjectives);
+
+        reviewService.createOrgObjectives(orgObjectives, randomUUID);
+
+        verify(mockOrgObjectiveDAO, times(0)).getMaxVersion();
+        verify(mockOrgObjectiveDAO, times(0)).create(orgObjective);
+    }
+
+    @Test
+    void createOrgObjectives() {
+        final var randomUUID = UUID.randomUUID();
+        final var orgObjective = OrgObjective.builder()
+                .uuid(randomUUID)
+                .number(1)
+                .status(OrgObjectiveStatus.DRAFT)
+                .title("Test")
+                .version(1)
+                .build();
+        final var orgObjectives = List.of(orgObjective);
+        final var oldOrgObjective = OrgObjective.builder()
+                .uuid(randomUUID)
+                .number(1)
+                .status(OrgObjectiveStatus.DRAFT)
+                .title("Test old")
+                .version(1)
+                .build();
+        final var oldOrgObjectives = List.of(oldOrgObjective);
+        when(mockOrgObjectiveDAO.getAll())
+                .thenReturn(oldOrgObjectives);
+
+        reviewService.createOrgObjectives(orgObjectives, randomUUID);
+
+        verify(mockOrgObjectiveDAO, times(1)).getMaxVersion();
+        verify(mockOrgObjectiveDAO, times(1)).create(orgObjective);
+    }
+
+    @Test
+    void getAllOrgObjectives() {
+        final var randomUUID = UUID.randomUUID();
+        final var orgObjective = OrgObjective.builder()
+                .uuid(randomUUID)
+                .number(1)
+                .status(OrgObjectiveStatus.DRAFT)
+                .title("Test")
+                .version(1)
+                .build();
+        final var orgObjectives = List.of(orgObjective);
+        when(mockOrgObjectiveDAO.getAll())
+                .thenReturn(orgObjectives);
+
+        var res = reviewService.getAllOrgObjectives();
+
+        assertThat(res).isSameAs(orgObjectives);
+    }
 }
