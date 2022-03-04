@@ -33,9 +33,12 @@ public class ProfileDAOTest extends AbstractDAOTest {
     public static final UUID COLLEAGUE_UUID = UUID.fromString("c409869b-2acf-45cd-8cc6-e13af2e6f935");
     private static final UUID COLLEAGUE_UUID_1 = UUID.fromString("119e0d2b-1dc2-409f-8198-ecd66e59d47a");
     private static final UUID MANAGER_UUID_1 = UUID.fromString("c409869b-2acf-45cd-8cc6-e13af2e6f935");
-    public static final String LEGAL_ENTITY = "Tesco Stores Limited";
-    public static final String LOCATION_ID = "INDH000001";
-    public static final String LAST_NAME_DOW = "Dow";
+    private static final String LEGAL_ENTITY = "Tesco Stores Limited";
+    private static final String LOCATION_ID = "INDH000001";
+    private static final String V_DOW = "Dow";
+    private static final String V_JOHN = "John";
+    private static final String F_FIRST_NAME_EQ = "first-name_eq";
+    private static final String F_LAST_NAME_EQ = "last-name_eq";
 
     @Autowired
     private ProfileDAO dao;
@@ -402,7 +405,7 @@ public class ProfileDAOTest extends AbstractDAOTest {
 
         var colleagues = dao.findColleagueSuggestionsByFullName(
                 createRQ(Map.of(
-                        "last-name_like", LAST_NAME_DOW,
+                        "last-name_like", V_DOW,
                         "manager-uuid_eq", MANAGER_UUID_1.toString())));
 
         assertEquals(1, colleagues.size());
@@ -410,8 +413,8 @@ public class ProfileDAOTest extends AbstractDAOTest {
         assertEquals(1, dao.findColleagueSuggestionsByFullName(createRQ(Map.of("last-name_like", "Smith"))).size());
 
         var colleague = dao.findColleagueSuggestionsByFullName(createRQ(Map.of(
-                "first-name_eq", "John",
-                "last-name_eq", LAST_NAME_DOW
+                F_FIRST_NAME_EQ, V_JOHN,
+                F_LAST_NAME_EQ, V_DOW
         ))).stream().filter(col -> COLLEAGUE_UUID_1.toString().equals(col.getColleagueUUID().toString())).findFirst().get();
 
         assertNotNull(colleague);
@@ -422,8 +425,8 @@ public class ProfileDAOTest extends AbstractDAOTest {
         assertEquals("ET", colleague.getWorkRelationships().get(0).getEmploymentType());
         assertEquals(MANAGER_UUID_1.toString(), colleague.getWorkRelationships().get(0).getManagerUUID().toString());
         assertEquals("4", colleague.getWorkRelationships().get(0).getDepartment().getId());
-        assertEquals("John", colleague.getProfile().getFirstName());
-        assertEquals(LAST_NAME_DOW, colleague.getProfile().getLastName());
+        assertEquals(V_JOHN, colleague.getProfile().getFirstName());
+        assertEquals(V_DOW, colleague.getProfile().getLastName());
         assertEquals("Michael", colleague.getProfile().getMiddleName());
         assertEquals("test@test", colleague.getContact().getEmail());
         assertEquals("TPX2", colleague.getExternalSystems().getIam().getId());
@@ -436,8 +439,8 @@ public class ProfileDAOTest extends AbstractDAOTest {
     @Test
     void findColleagueSuggestionsGroupByAnd() {
         var group = new ConditionGroup();
-        group.addFilters("first-name_eq", "John");
-        group.addFilters("last-name_eq", LAST_NAME_DOW);
+        group.addFilters(F_FIRST_NAME_EQ, V_JOHN);
+        group.addFilters(F_LAST_NAME_EQ, V_DOW);
 
         var rq = new RequestQuery();
         rq.setGroups(List.of(group));

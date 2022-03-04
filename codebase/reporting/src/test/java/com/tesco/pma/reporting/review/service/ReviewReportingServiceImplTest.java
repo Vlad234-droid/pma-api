@@ -41,7 +41,7 @@ class ReviewReportingServiceImplTest {
     private static final String REPORT_NOT_FOUND_MESSAGE = "Report not found for: {" +
             QUERY_PARAMS + "=RequestQuery(offset=null, limit=null, sort=[], filters=[" +
             "Condition(property=year, operand=" + EQUALS + ", value=" + YEAR + "), " +
-            "Condition(property=statuses, operand=" + IN + ", value=[" + APPROVED + "])], search=null)}";
+            "Condition(property=statuses, operand=" + IN + ", value=[" + APPROVED + "])], groups=[], search=null)}";
 
     @Autowired
     private NamedMessageSourceAccessor messageSourceAccessor;
@@ -55,10 +55,10 @@ class ReviewReportingServiceImplTest {
     @Test
     void getLinkedObjectivesData() {
         var reportData = List.of(buildObjectiveLinkedReviewData(1),
-                                                            buildObjectiveLinkedReviewData(2));
+                buildObjectiveLinkedReviewData(2));
         final var requestQuery = new RequestQuery();
         requestQuery.setFilters(new ArrayList<>(Arrays.asList(new Condition("year", EQUALS, YEAR),
-                                                              new Condition("statuses", IN, List.of(APPROVED.getCode())))));
+                new Condition("statuses", IN, List.of(APPROVED.getCode())))));
 
         when(reviewReportingDAO.getLinkedObjectivesData(requestQuery)).thenReturn(reportData);
 
@@ -71,7 +71,7 @@ class ReviewReportingServiceImplTest {
     void getLinkedObjectivesDataNotExists() {
         final var requestQuery = new RequestQuery();
         requestQuery.setFilters(new ArrayList<>(Arrays.asList(new Condition("year", EQUALS, YEAR),
-                                                              new Condition("statuses", IN, List.of(APPROVED.getCode())))));
+                new Condition("statuses", IN, List.of(APPROVED.getCode())))));
         when(reviewReportingDAO.getLinkedObjectivesData(requestQuery)).thenReturn(null);
 
         final var exception = assertThrows(NotFoundException.class,
