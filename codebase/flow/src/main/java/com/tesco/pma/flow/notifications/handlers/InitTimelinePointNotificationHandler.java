@@ -33,7 +33,7 @@ public class InitTimelinePointNotificationHandler extends AbstractInitNotificati
             return;
         }
 
-        var dateString = (String) timelinePoint.getProperties().getMapJson().get(FlowParameters.START_DATE.name());
+        var dateString = timelinePoint.getProperties().getMapJson().get(FlowParameters.START_DATE.name());
         var date = LocalDate.parse(dateString, TIMELINE_DTF).atStartOfDay();
         var today = LocalDate.now().atStartOfDay();
         long daysBetween = Duration.between(date, today).toDays();

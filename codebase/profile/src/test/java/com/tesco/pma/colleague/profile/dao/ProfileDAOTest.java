@@ -35,6 +35,7 @@ public class ProfileDAOTest extends AbstractDAOTest {
     private static final UUID MANAGER_UUID_1 = UUID.fromString("c409869b-2acf-45cd-8cc6-e13af2e6f935");
     public static final String LEGAL_ENTITY = "Tesco Stores Limited";
     public static final String LOCATION_ID = "INDH000001";
+    public static final String LAST_NAME_DOW = "Dow";
 
     @Autowired
     private ProfileDAO dao;
@@ -401,7 +402,7 @@ public class ProfileDAOTest extends AbstractDAOTest {
 
         var colleagues = dao.findColleagueSuggestionsByFullName(
                 createRQ(Map.of(
-                        "last-name_like", "Dow",
+                        "last-name_like", LAST_NAME_DOW,
                         "manager-uuid_eq", MANAGER_UUID_1.toString())));
 
         assertEquals(1, colleagues.size());
@@ -410,7 +411,7 @@ public class ProfileDAOTest extends AbstractDAOTest {
 
         var colleague = dao.findColleagueSuggestionsByFullName(createRQ(Map.of(
                 "first-name_eq", "John",
-                "last-name_eq", "Dow"
+                "last-name_eq", LAST_NAME_DOW
         ))).stream().filter(col -> COLLEAGUE_UUID_1.toString().equals(col.getColleagueUUID().toString())).findFirst().get();
 
         assertNotNull(colleague);
@@ -422,7 +423,7 @@ public class ProfileDAOTest extends AbstractDAOTest {
         assertEquals(MANAGER_UUID_1.toString(), colleague.getWorkRelationships().get(0).getManagerUUID().toString());
         assertEquals("4", colleague.getWorkRelationships().get(0).getDepartment().getId());
         assertEquals("John", colleague.getProfile().getFirstName());
-        assertEquals("Dow", colleague.getProfile().getLastName());
+        assertEquals(LAST_NAME_DOW, colleague.getProfile().getLastName());
         assertEquals("Michael", colleague.getProfile().getMiddleName());
         assertEquals("test@test", colleague.getContact().getEmail());
         assertEquals("TPX2", colleague.getExternalSystems().getIam().getId());
@@ -436,7 +437,7 @@ public class ProfileDAOTest extends AbstractDAOTest {
     void findColleagueSuggestionsGroupByAnd() {
         var group = new ConditionGroup();
         group.addFilters("first-name_eq", "John");
-        group.addFilters("last-name_eq", "Dow");
+        group.addFilters("last-name_eq", LAST_NAME_DOW);
 
         var rq = new RequestQuery();
         rq.setGroups(List.of(group));
