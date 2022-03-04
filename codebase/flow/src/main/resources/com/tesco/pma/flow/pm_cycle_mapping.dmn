@@ -1,41 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="pm_cycle_mapping_file" name="PM CYCLE MAPPING" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" id="pm_cycle_mapping_file" name="PM CYCLE MAPPING" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
   <decision id="pm_cycle_mapping" name="Performance Cycles&#10;mapping">
     <informationRequirement id="InformationRequirement_0h11agz">
       <requiredInput href="#InputData_10zccfr" />
     </informationRequirement>
     <decisionTable id="decisionTable">
-      <input id="InputA" label="Legal Employer Name">
+      <input id="InputA" label="Legal Employer Name" biodi:width="192">
         <inputExpression id="InputExpression707389151" typeRef="string" expressionLanguage="juel">
           <text>${COLLEAGUE.workRelationships[0].legalEmployer == null ? "_null" : COLLEAGUE.workRelationships[0].legalEmployer.name.toLowerCase()}</text>
         </inputExpression>
       </input>
-      <input id="InputB" label="Business type">
+      <input id="InputB" label="Business type" biodi:width="182">
         <inputExpression id="InputExpression498951442" typeRef="string" expressionLanguage="juel">
           <text>${COLLEAGUE.workRelationships[0].department == null ? "_null" : COLLEAGUE.workRelationships[0].department.businessType.toLowerCase()}</text>
         </inputExpression>
       </input>
-      <input id="InputC" label="Work level">
+      <input id="InputC" label="Work level" biodi:width="150">
         <inputExpression id="InputExpression237680339" typeRef="string" expressionLanguage="juel">
           <text>${COLLEAGUE.workRelationships[0].workLevel == null ? "_null": COLLEAGUE.workRelationships[0].workLevel.name().toLowerCase()}</text>
         </inputExpression>
       </input>
-      <input id="InputD" label="Salary frequency">
+      <input id="InputD" label="Salary frequency" biodi:width="150">
         <inputExpression id="InputExpression1781928522" typeRef="string" expressionLanguage="juel">
           <text>${COLLEAGUE.workRelationships[0].salaryFrequency == null ? "_null" : COLLEAGUE.workRelationships[0].salaryFrequency.toLowerCase()}</text>
         </inputExpression>
       </input>
-      <input id="InputE" label="Job name">
+      <input id="InputE" label="Job name" biodi:width="194.60000610351562">
         <inputExpression id="InputExpression657918922" typeRef="string" expressionLanguage="juel">
           <text>${COLLEAGUE.workRelationships[0].job == null ? "_null" : COLLEAGUE.workRelationships[0].job.name.toLowerCase()}</text>
         </inputExpression>
       </input>
-      <input id="InputF" label="IAM Source">
+      <input id="InputF" label="IAM Source" biodi:width="150">
         <inputExpression id="InputExpression1068260267" typeRef="string" expressionLanguage="juel">
           <text>${COLLEAGUE.externalSystems.iam == null ? "_null" : COLLEAGUE.externalSystems.iam.source.toLowerCase()}</text>
         </inputExpression>
       </input>
-      <output id="OutputI" label="Cycle key" name="PM_CYCLE_KEY" typeRef="string" />
+      <input id="InputClause_1pk5vac" label="Primary Entity" biodi:width="150">
+        <inputExpression id="LiteralExpression_07n9cf5" typeRef="string" expressionLanguage="juel">
+          <text>${COLLEAGUE.workRelationships[0].primaryEntity == null ? "_null" : COLLEAGUE.workRelationships[0].primaryEntity.toLowerCase()}</text>
+        </inputExpression>
+      </input>
+      <output id="OutputI" label="Cycle key" name="PM_CYCLE_KEY" typeRef="string" biodi:width="150" />
       <rule id="excelRow2">
         <description>Overall Leadership (Full Annual Cycle, with objectives, mid-year review, q1, q3, year-end review)</description>
         <inputEntry id="A2">
@@ -54,6 +59,9 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F2">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0jlbam9">
           <text></text>
         </inputEntry>
         <outputEntry id="I2">
@@ -90,6 +98,9 @@
         <inputEntry id="F3">
           <text>not("tesco mobile")</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_02emxrx">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I3">
           <text>"group_a2"</text>
         </outputEntry>
@@ -112,6 +123,9 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F4">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0e4wyqg">
           <text></text>
         </inputEntry>
         <outputEntry id="I4">
@@ -138,6 +152,9 @@
         <inputEntry id="F5">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1epwozb">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I5">
           <text>"group_b"</text>
         </outputEntry>
@@ -160,6 +177,9 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F6">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0u0uysb">
           <text></text>
         </inputEntry>
         <outputEntry id="I6">
@@ -186,6 +206,9 @@
         <inputEntry id="F7">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1nlr370">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I7">
           <text>"group_b"</text>
         </outputEntry>
@@ -208,6 +231,9 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F8">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0cg614i">
           <text></text>
         </inputEntry>
         <outputEntry id="I8">
@@ -234,6 +260,9 @@
         <inputEntry id="F9">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1gm1qf3">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I9">
           <text>"group_b"</text>
         </outputEntry>
@@ -256,6 +285,9 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F10">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1pfekvt">
           <text></text>
         </inputEntry>
         <outputEntry id="I10">
@@ -282,6 +314,9 @@
         <inputEntry id="F11">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_03d34uq">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I11">
           <text>"group_b"</text>
         </outputEntry>
@@ -304,6 +339,9 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F12">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_16kv6hb">
           <text></text>
         </inputEntry>
         <outputEntry id="I12">
@@ -330,6 +368,9 @@
         <inputEntry id="F13">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1mwxdiv">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I13">
           <text>"group_b"</text>
         </outputEntry>
@@ -352,6 +393,9 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F14">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0p8uhsn">
           <text></text>
         </inputEntry>
         <outputEntry id="I14">
@@ -378,6 +422,9 @@
         <inputEntry id="F15">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_10qr6mj">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I15">
           <text>"group_b"</text>
         </outputEntry>
@@ -400,6 +447,9 @@
           <text>"express store manager"</text>
         </inputEntry>
         <inputEntry id="F16">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1f54gyz">
           <text></text>
         </inputEntry>
         <outputEntry id="I16">
@@ -426,6 +476,9 @@
         <inputEntry id="F17">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_0a4i6w2">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I17">
           <text>"group_c"</text>
         </outputEntry>
@@ -448,6 +501,9 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F18">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1x9go8i">
           <text></text>
         </inputEntry>
         <outputEntry id="I18">
@@ -474,6 +530,9 @@
         <inputEntry id="F19">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_0kez6ji">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I19">
           <text>"group_c"</text>
         </outputEntry>
@@ -496,6 +555,9 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F20">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_16lldn2">
           <text></text>
         </inputEntry>
         <outputEntry id="I20">
@@ -522,6 +584,9 @@
         <inputEntry id="F21">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1d7pmpu">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I21">
           <text>"group_c"</text>
         </outputEntry>
@@ -544,6 +609,9 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F22">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0kkzl59">
           <text></text>
         </inputEntry>
         <outputEntry id="I22">
@@ -570,6 +638,9 @@
         <inputEntry id="F23">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_0f0szxu">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I23">
           <text>"group_c"</text>
         </outputEntry>
@@ -592,6 +663,9 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F24">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_04s8s5n">
           <text></text>
         </inputEntry>
         <outputEntry id="I24">
@@ -618,6 +692,9 @@
         <inputEntry id="F25">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_18p8f7e">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I25">
           <text>"group_b"</text>
         </outputEntry>
@@ -641,6 +718,9 @@
         </inputEntry>
         <inputEntry id="F26">
           <text>"uk maintenance"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0lddimy">
+          <text></text>
         </inputEntry>
         <outputEntry id="I26">
           <text>"group_b"</text>
@@ -666,6 +746,9 @@
         <inputEntry id="F27">
           <text>"uk maintenance"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1ur1m3i">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I27">
           <text>"group_a2"</text>
         </outputEntry>
@@ -689,6 +772,9 @@
         </inputEntry>
         <inputEntry id="F28">
           <text>"uk maintenance"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1pfrbiu">
+          <text></text>
         </inputEntry>
         <outputEntry id="I28">
           <text>"group_b"</text>
@@ -714,6 +800,9 @@
         <inputEntry id="F29">
           <text>"uk maintenance"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_19jmksz">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I29">
           <text>"group_a2"</text>
         </outputEntry>
@@ -737,6 +826,9 @@
         </inputEntry>
         <inputEntry id="F30">
           <text>"uk hospitality"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_18pnbhz">
+          <text></text>
         </inputEntry>
         <outputEntry id="I30">
           <text>"group_b"</text>
@@ -762,6 +854,9 @@
         <inputEntry id="F31">
           <text>"uk hospitality"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1abzf8j">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I31">
           <text>"group_b"</text>
         </outputEntry>
@@ -785,6 +880,9 @@
         </inputEntry>
         <inputEntry id="F32">
           <text>"uk hospitality"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_06zjwg5">
+          <text></text>
         </inputEntry>
         <outputEntry id="I32">
           <text>"group_a2"</text>
@@ -810,6 +908,9 @@
         <inputEntry id="F33">
           <text>"uk hospitality"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_15jqk2n">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I33">
           <text>"group_a2"</text>
         </outputEntry>
@@ -833,6 +934,9 @@
         </inputEntry>
         <inputEntry id="F34">
           <text>"uk hospitality"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1y6e5ql">
+          <text></text>
         </inputEntry>
         <outputEntry id="I34">
           <text>"group_b"</text>
@@ -858,6 +962,9 @@
         <inputEntry id="F35">
           <text>"uk hospitality"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1is2o84">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I35">
           <text>"group_b"</text>
         </outputEntry>
@@ -881,6 +988,9 @@
         </inputEntry>
         <inputEntry id="F36">
           <text>"uk hospitality"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0u7celr">
+          <text></text>
         </inputEntry>
         <outputEntry id="I36">
           <text>"group_c"</text>
@@ -906,6 +1016,9 @@
         <inputEntry id="F37">
           <text>"tesco mobile"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_01gysyw">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I37">
           <text>"group_b"</text>
         </outputEntry>
@@ -929,6 +1042,9 @@
         </inputEntry>
         <inputEntry id="F38">
           <text>"tesco mobile"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0amval2">
+          <text></text>
         </inputEntry>
         <outputEntry id="I38">
           <text>"group_b"</text>
@@ -954,6 +1070,9 @@
         <inputEntry id="F39">
           <text>"tesco mobile"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_0ej5fp2">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I39">
           <text>"group_a2"</text>
         </outputEntry>
@@ -977,6 +1096,9 @@
         </inputEntry>
         <inputEntry id="F40">
           <text>"people data grp"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0i5jb6a">
+          <text></text>
         </inputEntry>
         <outputEntry id="I40">
           <text>"group_a2"</text>
@@ -1002,6 +1124,9 @@
         <inputEntry id="F41">
           <text>"people data grp"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1kafsqv">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I41">
           <text>"group_b"</text>
         </outputEntry>
@@ -1025,6 +1150,9 @@
         </inputEntry>
         <inputEntry id="F42">
           <text>"people data grp"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0o9klba">
+          <text></text>
         </inputEntry>
         <outputEntry id="I42">
           <text>"group_b"</text>
@@ -1050,6 +1178,9 @@
         <inputEntry id="F43">
           <text>"people data in"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1yo9mo8">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I43">
           <text>"group_a2"</text>
         </outputEntry>
@@ -1073,6 +1204,9 @@
         </inputEntry>
         <inputEntry id="F44">
           <text>"people data in"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1dngplg">
+          <text></text>
         </inputEntry>
         <outputEntry id="I44">
           <text>"group_a2"</text>
@@ -1098,6 +1232,9 @@
         <inputEntry id="F45">
           <text>"people data grp"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1epivsj">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I45">
           <text>"group_a2"</text>
         </outputEntry>
@@ -1121,6 +1258,9 @@
         </inputEntry>
         <inputEntry id="F46">
           <text>"people data grp"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1fjxujo">
+          <text></text>
         </inputEntry>
         <outputEntry id="I46">
           <text>"group_a2"</text>
@@ -1146,6 +1286,9 @@
         <inputEntry id="F47">
           <text>"people data in"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_0idycsv">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I47">
           <text>"group_a2"</text>
         </outputEntry>
@@ -1168,6 +1311,9 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F48">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1qwsj98">
           <text></text>
         </inputEntry>
         <outputEntry id="I48">
@@ -1194,6 +1340,9 @@
         <inputEntry id="F49">
           <text></text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1lsjprc">
+          <text></text>
+        </inputEntry>
         <outputEntry id="I49">
           <text>"group_a2"</text>
         </outputEntry>
@@ -1216,6 +1365,9 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F50">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1tv9hf1">
           <text></text>
         </inputEntry>
         <outputEntry id="I50">
