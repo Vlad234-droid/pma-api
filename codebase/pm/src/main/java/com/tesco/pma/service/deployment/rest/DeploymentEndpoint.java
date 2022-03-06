@@ -183,7 +183,7 @@ public class DeploymentEndpoint {
     @PostMapping(value = "/files/last")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public RestResponse<String> deployByPathAndFilename(@RequestParam("path") String path,
-                                                        @RequestParam("fileName") String fileName) {
+                                                        @RequestParam("file-name") String fileName) {
 
         return success(deploymentService.deploy(path, fileName));
     }
