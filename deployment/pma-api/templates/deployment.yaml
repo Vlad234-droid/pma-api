@@ -53,8 +53,9 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-          - name: config-volume
-            mountPath: /etc/config
+            - name: application-props-volume
+              mountPath: /app/config/application.properties
+              subPath: application.properties
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -68,6 +69,6 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-      - name: config-volume
-        configMap:
-          name: applicationProps
+        - name: application-props-volume
+          configMap:
+            name: application-props
