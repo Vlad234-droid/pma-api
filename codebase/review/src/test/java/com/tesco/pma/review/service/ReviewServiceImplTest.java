@@ -1,7 +1,7 @@
 package com.tesco.pma.review.service;
 
+import com.tesco.pma.api.ActionType;
 import com.tesco.pma.api.MapJson;
-import com.tesco.pma.api.OrgObjectiveStatus;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.MessageSourceConfig;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
@@ -10,12 +10,13 @@ import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.error.ApiExceptionHandler;
 import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.review.dao.OrgObjectiveDAO;
 import com.tesco.pma.review.dao.ReviewAuditLogDAO;
 import com.tesco.pma.review.dao.ReviewDAO;
 import com.tesco.pma.review.dao.TimelinePointDAO;
+import com.tesco.pma.review.domain.AuditOrgObjectiveReport;
 import com.tesco.pma.review.domain.ColleagueView;
-import com.tesco.pma.review.domain.OrgObjective;
 import com.tesco.pma.review.domain.Review;
 import com.tesco.pma.review.domain.ReviewStats;
 import com.tesco.pma.review.domain.ReviewStatusCounter;
@@ -48,6 +49,7 @@ import static com.tesco.pma.cycle.api.PMTimelinePointStatus.WAITING_FOR_APPROVAL
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MAX;
 import static com.tesco.pma.cycle.api.model.PMReviewElement.PM_REVIEW_MIN;
 import static com.tesco.pma.review.exception.ErrorCodes.REVIEW_NOT_FOUND;
+import static com.tesco.pma.review.util.TestDataUtils.buildOrgObjective;
 import static org.assertj.core.api.Assertions.from;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -63,6 +65,8 @@ import static org.mockito.Mockito.when;
 class ReviewServiceImplTest {
 
     private static final Integer NUMBER_1 = 1;
+    private static final String TEST = "Test";
+    private static final String TEST_OLD = "Test old";
 
     private static final MapJson TIMELINE_POINT_PROPERTIES_INIT = new MapJson(
             Map.of(PM_REVIEW_MIN, "3",
@@ -491,13 +495,7 @@ class ReviewServiceImplTest {
     @Test
     void createOrgObjectivesShouldNotCreateNewVersion() {
         final var randomUUID = UUID.randomUUID();
-        final var orgObjective = OrgObjective.builder()
-                .uuid(randomUUID)
-                .number(1)
-                .status(OrgObjectiveStatus.DRAFT)
-                .title("Test")
-                .version(1)
-                .build();
+        final var orgObjective = buildOrgObjective(TEST);
         final var orgObjectives = List.of(orgObjective);
         when(mockOrgObjectiveDAO.getAll())
                 .thenReturn(orgObjectives);
@@ -511,21 +509,9 @@ class ReviewServiceImplTest {
     @Test
     void createOrgObjectives() {
         final var randomUUID = UUID.randomUUID();
-        final var orgObjective = OrgObjective.builder()
-                .uuid(randomUUID)
-                .number(1)
-                .status(OrgObjectiveStatus.DRAFT)
-                .title("Test")
-                .version(1)
-                .build();
+        final var orgObjective = buildOrgObjective(TEST);
         final var orgObjectives = List.of(orgObjective);
-        final var oldOrgObjective = OrgObjective.builder()
-                .uuid(randomUUID)
-                .number(1)
-                .status(OrgObjectiveStatus.DRAFT)
-                .title("Test old")
-                .version(1)
-                .build();
+        final var oldOrgObjective = buildOrgObjective(TEST_OLD);
         final var oldOrgObjectives = List.of(oldOrgObjective);
         when(mockOrgObjectiveDAO.getAll())
                 .thenReturn(oldOrgObjectives);
@@ -538,14 +524,7 @@ class ReviewServiceImplTest {
 
     @Test
     void getAllOrgObjectives() {
-        final var randomUUID = UUID.randomUUID();
-        final var orgObjective = OrgObjective.builder()
-                .uuid(randomUUID)
-                .number(1)
-                .status(OrgObjectiveStatus.DRAFT)
-                .title("Test")
-                .version(1)
-                .build();
+        final var orgObjective = buildOrgObjective(TEST);
         final var orgObjectives = List.of(orgObjective);
         when(mockOrgObjectiveDAO.getAll())
                 .thenReturn(orgObjectives);
@@ -553,5 +532,73 @@ class ReviewServiceImplTest {
         var res = reviewService.getAllOrgObjectives();
 
         assertThat(res).isSameAs(orgObjectives);
+    }
+
+    @Test
+    void publishOrgObjectives() {
+        final var randomUUID = UUID.randomUUID();
+        final var orgObjective = buildOrgObjective(TEST);
+        final var orgObjectives = List.of(orgObjective);
+        when(mockOrgObjectiveDAO.getAllPublished())
+                .thenReturn(orgObjectives);
+        when(mockOrgObjectiveDAO.unpublish())
+                .thenReturn(1);
+        when(mockOrgObjectiveDAO.publish())
+                .thenReturn(1);
+
+        var res = reviewService.publishOrgObjectives(randomUUID);
+
+        assertThat(res).isSameAs(orgObjectives);
+    }
+
+    @Test
+    void createAndPublishOrgObjectives() {
+        final var randomUUID = UUID.randomUUID();
+        final var orgObjective = buildOrgObjective(TEST);
+        final var orgObjectives = List.of(orgObjective);
+        final var oldOrgObjective = buildOrgObjective(TEST_OLD);
+        final var oldOrgObjectives = List.of(oldOrgObjective);
+        when(mockOrgObjectiveDAO.getAll())
+                .thenReturn(oldOrgObjectives);
+        when(mockOrgObjectiveDAO.getAllPublished())
+                .thenReturn(orgObjectives);
+        when(mockOrgObjectiveDAO.unpublish())
+                .thenReturn(1);
+        when(mockOrgObjectiveDAO.publish())
+                .thenReturn(1);
+
+        var res = reviewService.createAndPublishOrgObjectives(orgObjectives, randomUUID);
+
+        verify(mockOrgObjectiveDAO, times(1)).getMaxVersion();
+        verify(mockOrgObjectiveDAO, times(1)).create(orgObjective);
+
+        assertThat(res).isSameAs(orgObjectives);
+    }
+
+    @Test
+    void getPublishedOrgObjectives() {
+        final var orgObjective = buildOrgObjective(TEST);
+        final var orgObjectives = List.of(orgObjective);
+        when(mockOrgObjectiveDAO.getAllPublished())
+                .thenReturn(orgObjectives);
+
+        var res = reviewService.getPublishedOrgObjectives();
+
+        assertThat(res).isSameAs(orgObjectives);
+    }
+
+    @Test
+    void getAuditOrgObjectiveReport() {
+        final var requestQuery = new RequestQuery();
+        final var auditOrgObjectiveReport = AuditOrgObjectiveReport.builder()
+                .action(ActionType.PUBLISH)
+                .build();
+        final var auditOrgObjectiveReports = List.of(auditOrgObjectiveReport);
+        when(mockReviewAuditLogDAO.getAuditOrgObjectiveReport(requestQuery))
+                .thenReturn(auditOrgObjectiveReports);
+
+        var res = reviewService.getAuditOrgObjectiveReport(requestQuery);
+
+        assertThat(res).isSameAs(auditOrgObjectiveReports);
     }
 }
