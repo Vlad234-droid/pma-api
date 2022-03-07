@@ -5,4 +5,4 @@ metadata:
   name: application-props
 data:
   application.properties: |-
-    {{ .Files.Get "$env/application.properties" | nindent 4 }}
+    {{ .Files.Get "./pma-api/$env/application.properties" | nindent 4 }}
