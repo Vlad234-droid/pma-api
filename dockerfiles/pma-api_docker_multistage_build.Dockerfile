@@ -66,14 +66,15 @@ ARG RUNTIME_JAVA_ARGS ""
 ENV JAVA_OPTS $RUNTIME_JAVA_OPTS
 ENV JAVA_ARGS $RUNTIME_JAVA_ARGS
 
-RUN mkdir /app
+ENV SERVICE_HOME /app
+RUN mkdir $SERVICE_HOME
 
-COPY --from=build /home/gradle/app/application/build/libs/*.jar /app/app.jar
-COPY --from=build /home/gradle/app/application/build/libs/config /app/config
+COPY --from=build /home/gradle/app/application/build/libs/*.jar $SERVICE_HOME/app.jar
+COPY --from=build /home/gradle/app/application/build/libs/config $SERVICE_HOME/config
 
 EXPOSE 8083/tcp
 EXPOSE 8090/tcp
 
-WORKDIR /app
+WORKDIR $SERVICE_HOME
 
-CMD java -Dloader.path=/app/config $JAVA_OPTS -jar ./app.jar $JAVA_ARGS
+CMD java -Dloader.path=$SERVICE_HOME/config $JAVA_OPTS -jar ./app.jar $JAVA_ARGS
