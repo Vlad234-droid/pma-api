@@ -2,6 +2,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: applicationProps
-data:
-{{ (.Files.Glob $env ).AsConfig | indent 2 }}
+  name: application-props
+binaryData:
+{{ range $path, $bytes := .Files.Glob (printf "$env/application.properties")}}
+{{ $name := base $path }}
+{{- printf "%s" $name}}{{ print ": "}}{{ $.Files.Get $path | b64enc }}
+{{ end }}
