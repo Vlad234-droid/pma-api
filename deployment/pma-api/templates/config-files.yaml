@@ -7,4 +7,3 @@ binaryData:
 {{ $path := "$env/application.properties" }}
 {{ $name := base $path }}
 {{- printf "%s" $name}}{{ print ": "}}{{ $.Files.Get $path | b64enc }}
-{{ end }}
