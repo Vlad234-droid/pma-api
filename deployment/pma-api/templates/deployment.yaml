@@ -71,7 +71,3 @@ spec:
       - name: configs-volume
         configMap:
           name: application-props
-          items:
-            - key: "application.properties"
-              path: "application.properties"
-
