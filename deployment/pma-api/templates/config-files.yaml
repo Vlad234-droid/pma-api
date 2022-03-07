@@ -4,5 +4,4 @@ kind: ConfigMap
 metadata:
   name: applicationProps
 data:
-  application.properties" |-
-{{ .Files.Get "$env/application.properties" | indent 4 }}
+{{ (.Files.Glob $env ).AsConfig | indent 2 }}
