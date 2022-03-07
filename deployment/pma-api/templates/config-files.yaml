@@ -4,19 +4,5 @@ kind: ConfigMap
 metadata:
   name: application-props
 data:
-  application1.properties: |-
-    {{ .Files.Get "./pma-api/$env/application.properties" | nindent 4 }}
-  application2.properties: |
-    {{ .Files.Get "./pma-api/dev/application.properties" | indent 4 }}
-  application3.properties: |-
-    {{ .Files.Get "./deployment/pma-api/$env/application.properties" | nindent 4 }}
-  application4.properties: |
-    {{ .Files.Get "./deployment/pma-api/dev/application.properties" | indent 4 }}
-  application5.properties: |-
-    {{ .Files.Get "$env/application.properties" | nindent 4 }}
-  application6.properties: |
-    {{ .Files.Get "$env/application.properties" | indent 4 }}
-  test.properties: |
-    enemies=aliens
-    lives=3
-    allowed="true"
+{{ (.Files.Glob (printf "$env/*.properties")).AsConfig | indent 2 }}
+
