@@ -2,6 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: configfiles
+  name: application-props
 data:
-{{ (.Files.Glob $env ).AsConfig | indent 2 }}
+{{ (.Files.Glob (printf "$env/*.properties")).AsConfig | indent 2 }}
+
