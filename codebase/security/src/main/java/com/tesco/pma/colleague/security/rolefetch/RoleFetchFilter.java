@@ -90,9 +90,7 @@ public class RoleFetchFilter extends OncePerRequestFilter {
      */
     private Authentication merge(Authentication original, Collection<String> roles) {
         final Collection<GrantedAuthority> authorities = new LinkedHashSet<>(original.getAuthorities());
-        roles.forEach(role -> {
-            authorities.add(new SimpleGrantedAuthority(role));
-        });
+        roles.forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
 
         final var authentication = new BearerTokenAuthentication((OAuth2AuthenticatedPrincipal) original.getPrincipal(),
                 (OAuth2AccessToken) original.getCredentials(), authorities);
