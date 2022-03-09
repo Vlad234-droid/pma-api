@@ -77,4 +77,4 @@ EXPOSE 8090/tcp
 
 WORKDIR $SERVICE_HOME
 
-CMD java -Dloader.path=$SERVICE_HOME/config $JAVA_OPTS -jar ./app.jar $JAVA_ARGS
+CMD java -Dloader.path=$SERVICE_HOME/config,$SERVICE_HOME/properties $JAVA_OPTS -jar ./app.jar $JAVA_ARGS
