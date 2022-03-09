@@ -263,8 +263,8 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle started")
     @PutMapping(value = "/pm-cycles/{cycleUuid}/colleagues/{colleagueUuid}/start")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public RestResponse<?> startColleagueCycle(@PathVariable final UUID cycleUuid,
-                                               @PathVariable final UUID colleagueUuid) {
+    public RestResponse<Void> startColleagueCycle(@PathVariable final UUID cycleUuid,
+                                                  @PathVariable final UUID colleagueUuid) {
         log.debug("REST request to start cycle : {}, colleague: {}", cycleUuid, colleagueUuid);
         pmColleagueCycleService.start(cycleUuid, colleagueUuid);
         return success();
