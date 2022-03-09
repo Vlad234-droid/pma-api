@@ -306,7 +306,7 @@ public class PMCycleServiceImpl implements PMCycleService {
 
         cycle.getMetadata().getCycle().getTimelinePoints().stream()
                 .filter(tpe -> tpe.getType() == REVIEW)
-                .map(review -> (PMReviewElement) review)
+                .map(PMReviewElement.class::cast)
                 .filter(rw -> rw.getForm() != null && rw.getForm().getKey().equals(formKey))
                 .findAny()
                 .orElseThrow(() -> new NotFoundException(ERROR_FILE_NOT_FOUND.name(),

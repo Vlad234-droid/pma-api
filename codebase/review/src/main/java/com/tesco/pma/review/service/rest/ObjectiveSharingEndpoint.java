@@ -33,7 +33,7 @@ public class ObjectiveSharingEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Objectives sharing have been enabled")
     @PostMapping(value = "/colleagues/{colleagueUuid}/pm-cycles/{cycleUuid}/review-types/objective/sharing",
             produces = APPLICATION_JSON_VALUE)
-    public RestResponse<?> shareObjectives(@PathVariable("cycleUuid") String pmCycle,
+    public RestResponse<Void> shareObjectives(@PathVariable("cycleUuid") String pmCycle,
                                            @PathVariable("colleagueUuid") UUID colleagueUuid) {
         objectiveSharingService.shareObjectives(colleagueUuid, getPMCycleUuid(colleagueUuid, pmCycle));
         return RestResponse.success();
@@ -43,7 +43,7 @@ public class ObjectiveSharingEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Objectives sharing have been disabled")
     @DeleteMapping(value = "/colleagues/{colleagueUuid}/pm-cycles/{cycleUuid}/review-types/objective/sharing",
             produces = APPLICATION_JSON_VALUE)
-    public RestResponse<?> stopSharingObjectives(@PathVariable("cycleUuid") String pmCycle,
+    public RestResponse<Void> stopSharingObjectives(@PathVariable("cycleUuid") String pmCycle,
                                                  @PathVariable("colleagueUuid") UUID colleagueUuid) {
         objectiveSharingService.stopSharingObjectives(colleagueUuid, getPMCycleUuid(colleagueUuid, pmCycle));
         return RestResponse.success();

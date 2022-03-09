@@ -43,6 +43,9 @@ import static com.tesco.pma.logging.TraceId.TRACE_ID_HEADER;
 @Slf4j
 @RestController
 public class DeploymentEndpoint {
+
+    private static final String PROCESS_UNDEPLOYMENT_FAILED = "Process undeployment failed";
+
     @Autowired
     ProcessManagerService processManagerService;
 
@@ -77,7 +80,7 @@ public class DeploymentEndpoint {
             processManagerService.undeployProcess(processName);
             return RestResponse.success(processName);
         } catch (InitializationException e) {
-            throw new DeploymentException(ErrorCodes.PROCESSING_FAILED.name(), "Process undeployment failed", processName, e);
+            throw new DeploymentException(ErrorCodes.PROCESSING_FAILED.name(), PROCESS_UNDEPLOYMENT_FAILED, processName, e);
         }
     }
 
@@ -111,7 +114,7 @@ public class DeploymentEndpoint {
                     resource.getValue().close();
                 } catch (IOException ex) {
                     // todo naming service
-                    log.warn("Resources was not closed correctly: " + resource.getKey(), ex);
+                    log.warn("Resources was not closed correctly: {}", resource.getKey(), ex);
                 }
             }
         }
@@ -126,7 +129,7 @@ public class DeploymentEndpoint {
         try {
             return RestResponse.success(processManagerService.undeploy(id, null));
         } catch (InitializationException e) {
-            throw new DeploymentException(ErrorCodes.PROCESSING_FAILED.name(), "Process undeployment failed", id, e);
+            throw new DeploymentException(ErrorCodes.PROCESSING_FAILED.name(), PROCESS_UNDEPLOYMENT_FAILED, id, e);
         }
     }
 
@@ -139,7 +142,7 @@ public class DeploymentEndpoint {
         try {
             return RestResponse.success(processManagerService.undeploy(null, name));
         } catch (InitializationException e) {
-            throw new DeploymentException(ErrorCodes.PROCESSING_FAILED.name(), "Process undeployment failed", name, e);
+            throw new DeploymentException(ErrorCodes.PROCESSING_FAILED.name(), PROCESS_UNDEPLOYMENT_FAILED, name, e);
         }
     }
 }

@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 
-public class DefaultAttributesServiceTest {
+class DefaultAttributesServiceTest {
 
     private final DefaultAttributesDAO defaultAttributesDAO = Mockito.mock(DefaultAttributesDAO.class);
     private final ProfileService profileService = Mockito.mock(ProfileService.class);
@@ -32,7 +32,7 @@ public class DefaultAttributesServiceTest {
             new DefaultAttributesServiceImpl(defaultAttributesDAO, profileService, reviewService, messages);
 
     @Test
-    public void updateDefaultAttributesTest(){
+    void updateDefaultAttributesTest(){
 
         var colleagueId = UUID.randomUUID();
         var colleague = new Colleague();
@@ -57,13 +57,13 @@ public class DefaultAttributesServiceTest {
         var colleagueProfile = new ColleagueProfile();
         colleagueProfile.setProfileAttributes(new ArrayList<>());
 
-        Mockito.when(profileService.findColleagueByColleagueUuid(Mockito.eq(colleagueId)))
+        Mockito.when(profileService.findColleagueByColleagueUuid(colleagueId))
                 .thenReturn(colleague);
 
-        Mockito.when(profileService.findProfileByColleagueUuid(Mockito.eq(colleagueId)))
+        Mockito.when(profileService.findProfileByColleagueUuid(colleagueId))
                 .thenReturn(Optional.of(colleagueProfile));
 
-        Mockito.when(reviewService.getCycleTimelineByColleague(Mockito.eq(colleagueId)))
+        Mockito.when(reviewService.getCycleTimelineByColleague(colleagueId))
                 .thenReturn(List.of(cycle, cycle2));
 
         Mockito.when(defaultAttributesDAO.findByCriteriasAndCategory(Mockito.any(), Mockito.eq(DefaultAttributeCategory.NOTIFICATION)))
