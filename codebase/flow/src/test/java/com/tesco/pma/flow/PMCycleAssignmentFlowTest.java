@@ -41,7 +41,7 @@ public class PMCycleAssignmentFlowTest extends AbstractCamundaSpringBootTest {
     private static final String READ_COLLEAGUES = "read_colleagues";
     private static final String CALCULATE_CYCLE = "calculate_cycle";
     private static final String FIND_CYCLE = "find_cycle";
-    private static final String SEND_EVENT = "send_event";
+    private static final String SEND_EVENT = "send_event_group_a2";
     private static final String COUNT_DOWN = "count_down";
 
     @Autowired
@@ -104,9 +104,10 @@ public class PMCycleAssignmentFlowTest extends AbstractCamundaSpringBootTest {
         for (int i = 0; i < count; i++) {
             colleagues.add(createColleague(Map.of(
                     KEYS.COLLEAGUE_UUID, UUID.randomUUID(),
-                    KEYS.LEGAL_EMPLOYER_NAME, "Tesco",
+                    KEYS.LEGAL_EMPLOYER_NAME, "tesco stores limited",
                     KEYS.BUSINESS_TYPE, "Office",
-                    KEYS.WORK_LEVEL, WorkLevel.WL3))
+                    KEYS.WORK_LEVEL, WorkLevel.WL2,
+                    KEYS.SALARY_FREQUENCY, "annual"))
             );
         }
         return colleagues;

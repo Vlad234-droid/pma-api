@@ -186,7 +186,7 @@ COLLEAGUE_UUID - assign the employee</bpmn:text>
     <bpmn:association id="Association_12bv29p" sourceRef="Event_0e0xeep" targetRef="TextAnnotation_0xgpen9" />
     <bpmn:textAnnotation id="TextAnnotation_15rrvoi">
       <bpmn:text>Event Name:
-PM_COLLEAGUE_CYCLE_CREATE
+PM_COLLEAGUE_CYCLE_CREATE_GROUP_C
 Parameters:
 PM_CYCLE_UUID
 COLLEAGUE_UUID</bpmn:text>
@@ -198,7 +198,7 @@ COLLEAGUE_UUID</bpmn:text>
   <bpmn:error id="Error_1gqjkup" name="Already exists" errorCode="PM_COLLEAGUE_CYCLE_ALREADY_EXISTS" />
   <bpmn:error id="Error_1i0dibh" name="More than one in status" errorCode="PM_COLLEAGUE_CYCLE_MORE_THAN_ONE_IN_STATUS" />
   <bpmn:error id="Error_09mtnxy" name="Initialization error" errorCode="init_error" />
-  <bpmn:message id="Message_0k1rokg" name="PM_COLLEAGUE_CYCLE_CREATE" />
+  <bpmn:message id="Message_0k1rokg" name="PM_COLLEAGUE_CYCLE_CREATE_GROUP_C" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="group_c">
       <bpmndi:BPMNEdge id="Flow_1qypu7n_di" bpmnElement="Flow_1qypu7n">
@@ -368,7 +368,7 @@ COLLEAGUE_UUID</bpmn:text>
         <dc:Bounds x="160" y="120" width="280" height="124" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_15rrvoi_di" bpmnElement="TextAnnotation_15rrvoi">
-        <dc:Bounds x="160" y="450" width="210" height="80" />
+        <dc:Bounds x="160" y="450" width="210" height="96" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0ngjglu_di" bpmnElement="Event_0hw207d">
         <dc:Bounds x="342" y="322" width="36" height="36" />
