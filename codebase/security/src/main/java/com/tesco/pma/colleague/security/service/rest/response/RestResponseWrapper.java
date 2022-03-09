@@ -16,7 +16,7 @@ public class RestResponseWrapper<T> {
 
     @JsonValue
     public ExtendedRestResponse<T> toJson() {
-        return new ExtendedRestResponse<T>(
+        return new ExtendedRestResponse<>(
                 original.isSuccess(),
                 original.getData(),
                 original.getErrors(),

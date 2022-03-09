@@ -26,9 +26,4 @@ public enum AccountStatus implements DictionaryItem<Integer> {
         return code;
     }
 
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
 }

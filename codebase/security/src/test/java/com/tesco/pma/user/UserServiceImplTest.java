@@ -84,11 +84,12 @@ class UserServiceImplTest {
     @Test
     void findUserByColleagueUuidColleagueApiException() {
         final var colleague = randomColleague();
+        final var colleagueUUID = colleague.getColleagueUUID();
         final var restClientException = RANDOM.nextObject(RestClientException.class);
         when(mockColleagueApiClient.findColleagueByColleagueUuid(colleague.getColleagueUUID()))
                 .thenThrow(restClientException);
 
-        assertThatCode(() -> instance.findUserByColleagueUuid(colleague.getColleagueUUID()))
+        assertThatCode(() -> instance.findUserByColleagueUuid(colleagueUUID))
                 .hasCause(restClientException)
                 .isInstanceOf(ExternalSystemException.class);
 

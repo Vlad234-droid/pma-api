@@ -89,8 +89,8 @@ public class UserManagementServiceImpl implements UserManagementService {
     @Transactional
     public void createAccount(CreateAccountRequest request) {
 
-        // TODO Waiting for qualification of requirements
-        // if (findColleagueByIamIdOrAccountName(request.getName(), request.getIamId()).isEmpty()) {
+        // TODO Waiting for qualification of requirements //NOSONAR
+        // if (findColleagueByIamIdOrAccountName(request.getName(), request.getIamId()).isEmpty()) {  //NOSONAR
         //    throw colleagueNotFoundException(request.getName(), request.getIamId());
         // }
 
