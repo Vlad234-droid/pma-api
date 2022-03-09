@@ -75,10 +75,10 @@ public class NotificationsFlowTest extends AbstractNotificationsFlowTest {
     public void init() throws Exception {
         colleagueProfile = createColleagueProfile(UUID.randomUUID(), WorkLevel.WL1, Map.of());
 
-        Mockito.when(profileService.findProfileByColleagueUuid(Mockito.eq(colleagueProfile.getColleague().getColleagueUUID())))
+        Mockito.when(profileService.findProfileByColleagueUuid(colleagueProfile.getColleague().getColleagueUUID()))
                 .thenReturn(Optional.of(colleagueProfile));
 
-        Mockito.when(profileService.findProfileByColleagueUuid(Mockito.eq(sourceColleagueUUID)))
+        Mockito.when(profileService.findProfileByColleagueUuid(sourceColleagueUUID))
                 .thenReturn(Optional.of(createColleagueProfile(sourceColleagueUUID, WorkLevel.WL1, new HashMap<>())));
     }
 

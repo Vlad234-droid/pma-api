@@ -67,7 +67,7 @@ public class ContentEndpoint {
     @DeleteMapping(path = "/content-entries/{uuid}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isColleague()")
-    public RestResponse<?> delete(@PathVariable UUID uuid) {
+    public RestResponse<Void> delete(@PathVariable UUID uuid) {
         contentEntryService.delete(uuid);
         return RestResponse.success();
     }

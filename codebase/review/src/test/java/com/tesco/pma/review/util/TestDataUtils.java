@@ -1,6 +1,8 @@
 package com.tesco.pma.review.util;
 
+import com.tesco.pma.api.OrgObjectiveStatus;
 import com.tesco.pma.file.api.File;
+import com.tesco.pma.review.domain.OrgObjective;
 import com.tesco.pma.review.domain.TimelinePoint;
 import lombok.experimental.UtilityClass;
 import org.jeasy.random.EasyRandom;
@@ -31,9 +33,20 @@ public class TestDataUtils {
         return file;
     }
 
-    public static TimelinePoint buildTimelinePoint(){
-        return  TimelinePoint.builder()
+    public static TimelinePoint buildTimelinePoint() {
+        return TimelinePoint.builder()
                 .uuid(TL_POINT_UUID)
+                .build();
+    }
+
+    public static OrgObjective buildOrgObjective(String title) {
+        final var randomUUID = UUID.randomUUID();
+        return OrgObjective.builder()
+                .uuid(randomUUID)
+                .number(1)
+                .status(OrgObjectiveStatus.DRAFT)
+                .title(title)
+                .version(1)
                 .build();
     }
 

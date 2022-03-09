@@ -58,11 +58,9 @@ public class FoldersDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml",
             BASE_PATH_TO_DATA_SET + "notes_entries_init.xml"})
     void createDuplicate() {
+        var folder = createFolder(FOLDER_UUID, OWNER_UUID, null);
 
-        Assertions.assertThrows(DuplicateKeyException.class, () -> {
-            var folder = createFolder(FOLDER_UUID, OWNER_UUID, null);
-            foldersDao.create(folder);
-        });
+        Assertions.assertThrows(DuplicateKeyException.class, () -> foldersDao.create(folder));
 
     }
 

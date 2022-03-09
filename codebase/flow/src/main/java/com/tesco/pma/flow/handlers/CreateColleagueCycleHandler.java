@@ -30,7 +30,7 @@ public class CreateColleagueCycleHandler extends AbstractColleagueCycleHandler {
     @Override
     protected void execute(ExecutionContext context) {
         var cycle = context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class);
-        var colleagueUuid = UUID.fromString(context.getVariable(FlowParameters.COLLEAGUE_UUID, String.class));
+        var colleagueUuid = context.getVariable(FlowParameters.COLLEAGUE_UUID, UUID.class);
 
         PMColleagueCycle colleagueCycle;
         var colleagueCycles = pmColleagueCycleService.getByCycleUuid(cycle.getUuid(), colleagueUuid, cycle.getStatus());

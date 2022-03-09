@@ -17,6 +17,7 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.review.domain.TimelinePoint;
 import com.tesco.pma.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -58,7 +59,7 @@ public class DefaultAttributesServiceImpl implements DefaultAttributesService {
         if (!CollectionUtils.isEmpty(colleague.getWorkRelationships())) {
             var workRel = colleague.getWorkRelationships().get(0);
 
-            if (workRel.getIsManager()) {
+            if (BooleanUtils.isTrue(workRel.getIsManager())) {
                 result.add(DefaultAttributeCriteria.LINE_MANAGER);
             }
 
