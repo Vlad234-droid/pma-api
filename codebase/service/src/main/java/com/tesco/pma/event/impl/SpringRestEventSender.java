@@ -27,11 +27,14 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SpringRestEventSender implements EventSender {
 
-    @Value("${tesco.application.external-endpoints.events-api.base-url}")
-    private String eventHandleApiConfig;
+    private static final String EVENT_PARAMETER = "event";
+    private static final String URL_PARAMETER = "url";
 
     private final RestTemplate restTemplate;
     private final NamedMessageSourceAccessor messageSourceAccessor;
+
+    @Value("${tesco.application.external-endpoints.events-api.base-url}")
+    private String eventHandleApiConfig;
 
     @Override
     public void sendEvent(Event event, String target, boolean isThrow) {
@@ -42,7 +45,7 @@ public class SpringRestEventSender implements EventSender {
 
             if (result.getStatusCode() != HttpStatus.OK) {
                 var message = messageSourceAccessor.getMessage(ErrorCodes.EVENT_SENDING_ERROR,
-                        Map.of("event", event, "url", url));
+                        Map.of(EVENT_PARAMETER, event, URL_PARAMETER, url));
 
                 if (result.getStatusCode().is5xxServerError()) {
                     throw new HttpServerErrorException(result.getStatusCode(), message);
@@ -60,10 +63,10 @@ public class SpringRestEventSender implements EventSender {
             if (isThrow) {
                 throw new EventSendingException(ErrorCodes.EVENT_SENDING_ERROR.getCode(),
                         messageSourceAccessor.getMessage(ErrorCodes.EVENT_SENDING_ERROR,
-                                Map.of("event", event, "url", url)), null, e);
+                                Map.of(EVENT_PARAMETER, event, URL_PARAMETER, url)), null, e);
             } else {
                 log.warn(messageSourceAccessor.getMessage(ErrorCodes.EVENT_SENDING_ERROR,
-                        Map.of("event", event, "url", url)), e);
+                        Map.of(EVENT_PARAMETER, event, URL_PARAMETER, url)), e);
             }
         }
     }

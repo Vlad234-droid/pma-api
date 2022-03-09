@@ -57,9 +57,9 @@ class ColleaguesEventsSendHandlerTest {
     @Test
     void executeTest() throws Exception {
         IntStream.range(1, 5).forEach(i -> colleagueEntities.add(createColleague()));
-        Mockito.when(executionContext.getVariable(Mockito.eq(FlowParameters.PM_CYCLE))).thenReturn(pmCycle);
+        Mockito.when(executionContext.getVariable(FlowParameters.PM_CYCLE)).thenReturn(pmCycle);
         Mockito.when(pmCycle.getEntryConfigKey()).thenReturn(COMPOUND_KEY);
-        Mockito.when(configEntryService.findColleaguesByCompositeKey(Mockito.eq(COMPOUND_KEY))).thenReturn(colleagueEntities);
+        Mockito.when(configEntryService.findColleaguesByCompositeKey(COMPOUND_KEY)).thenReturn(colleagueEntities);
 
         handler.execute(executionContext);
 

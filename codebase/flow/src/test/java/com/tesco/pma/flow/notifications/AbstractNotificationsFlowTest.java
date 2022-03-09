@@ -103,7 +103,7 @@ public abstract class AbstractNotificationsFlowTest extends AbstractCamundaSprin
 
         if(timelineCode != null) {
             var timelinePoint = createTimelinePoint(timelineCode, null);
-            Mockito.when(timelinePointDAO.getTimelineByUUID(Mockito.eq(timelinePoint.getUuid()))).thenReturn(timelinePoint);
+            Mockito.when(timelinePointDAO.getTimelineByUUID(timelinePoint.getUuid())).thenReturn(timelinePoint);
             event.putProperty(FlowParameters.TIMELINE_POINT_UUID.name(), timelinePoint.getUuid());
         }
 
@@ -114,7 +114,7 @@ public abstract class AbstractNotificationsFlowTest extends AbstractCamundaSprin
         var event = new EventSupport(evenName);
 
         if(timelinePoint != null) {
-            Mockito.when(timelinePointDAO.getTimelineByUUID(Mockito.eq(timelinePoint.getUuid()))).thenReturn(timelinePoint);
+            Mockito.when(timelinePointDAO.getTimelineByUUID(timelinePoint.getUuid())).thenReturn(timelinePoint);
             event.putProperty(FlowParameters.TIMELINE_POINT_UUID.name(), timelinePoint.getUuid());
         }
 

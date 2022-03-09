@@ -11,17 +11,17 @@ public abstract class AbstractApiRuntimeException extends RuntimeException imple
     protected final String code;
     protected final String field;
 
-    public AbstractApiRuntimeException(String code, String message) {
+    protected AbstractApiRuntimeException(String code, String message) {
         this(code, message, null);
     }
 
-    public AbstractApiRuntimeException(String code, String message, String field) {
+    protected AbstractApiRuntimeException(String code, String message, String field) {
         super(message);
         this.code = code;
         this.field = field;
     }
 
-    public AbstractApiRuntimeException(String code, String message, String field, Throwable cause) {
+    protected AbstractApiRuntimeException(String code, String message, String field, Throwable cause) {
         super(message, cause);
         this.code = code;
         this.field = field;

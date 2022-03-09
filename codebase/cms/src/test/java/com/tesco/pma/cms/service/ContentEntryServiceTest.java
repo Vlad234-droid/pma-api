@@ -13,7 +13,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ContentEntryServiceTest {
+class ContentEntryServiceTest {
 
     private final ContentEntryDAO contentEntryDAO = Mockito.mock(ContentEntryDAO.class);
     private final AuditorAware<UUID> auditorAware = Mockito.mock(AuditorAware.class);
@@ -26,7 +26,7 @@ public class ContentEntryServiceTest {
         var newContent = new ContentEntry();
         newContent.setTitle("test");
 
-        Mockito.when(contentEntryDAO.create(Mockito.eq(newContent))).thenReturn(1);
+        Mockito.when(contentEntryDAO.create(newContent)).thenReturn(1);
 
         contentEntryService.create(newContent);
 
@@ -35,14 +35,9 @@ public class ContentEntryServiceTest {
 
     @Test()
     void createWithoutTitleTest(){
+        var newContent = new ContentEntry();
+        Mockito.when(contentEntryDAO.create(newContent)).thenReturn(1);
 
-        assertThrows(CMSException.class, () -> {
-            var newContent = new ContentEntry();
-            Mockito.when(contentEntryDAO.create(Mockito.eq(newContent))).thenReturn(1);
-
-            contentEntryService.create(newContent);
-        });
+        assertThrows(CMSException.class, () -> contentEntryService.create(newContent));
     }
-
-
 }
