@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = ColleagueChangesEndpoint.class)
 @ContextConfiguration(classes = TestConfig.class)
-public class ColleagueChangesEndpointTests extends AbstractEndpointTest {
+class ColleagueChangesEndpointTests extends AbstractEndpointTest {
 
     private static final String POST_EVENT_PATH = "/colleagues/v2/events";
 
