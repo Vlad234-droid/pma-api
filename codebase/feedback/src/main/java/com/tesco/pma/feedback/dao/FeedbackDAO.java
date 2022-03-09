@@ -16,9 +16,10 @@ public interface FeedbackDAO {
      * Get by uuid
      *
      * @param uuid - unique identifier
+     * @param colleagueUuid - identifier of feedback's colleague or target colleague
      * @return feedback
      */
-    Feedback getByUuid(@Param("uuid") UUID uuid);
+    Feedback getByUuid(@Param("uuid") UUID uuid, @Param("colleagueUuid") UUID colleagueUuid);
 
     /**
      * Find all
@@ -58,9 +59,10 @@ public interface FeedbackDAO {
      * Mark feedback as read.
      *
      * @param uuid a Feedback identifier
+     * @param colleagueUuid - identifier of feedback's colleague or target colleague
      * @return number of updated entities
      */
-    int markAsRead(@Param("uuid") UUID uuid);
+    int markAsRead(@Param("uuid") UUID uuid, @Param("colleagueUuid") UUID colleagueUuid);
 
     /**
      * Update feedback.

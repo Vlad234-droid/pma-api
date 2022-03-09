@@ -18,7 +18,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collections;
 import java.util.List;
 
+import static com.tesco.pma.feedback.util.TestDataUtil.COLLEAGUE_UUID;
 import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACKS_COUNT;
+import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACK_UUID_LAST;
+import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACK_UUID_UNREAD;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
@@ -45,7 +48,7 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
 
         //when
         mvc.perform(post("/feedbacks")
-                        .with(colleague(TestDataUtil.COLLEAGUE_UUID.toString()))
+                        .with(colleague(COLLEAGUE_UUID.toString()))
                         .contentType(APPLICATION_JSON)
                         .content(OBJECT_MAPPER.writeValueAsString(Collections.singletonList(feedback))))
                 .andExpect(status().isCreated())
@@ -59,12 +62,12 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
     void updateFeedback() throws Exception {
         //given
         Feedback feedback = TestDataUtil.buildFeedback();
-        feedback.setUuid(TestDataUtil.FEEDBACK_UUID_LAST);
+        feedback.setUuid(FEEDBACK_UUID_LAST);
         when(service.update(feedback)).thenReturn(feedback);
 
         //when
-        mvc.perform(put("/feedbacks/{uuid}", TestDataUtil.FEEDBACK_UUID_LAST)
-                        .with(colleague(TestDataUtil.COLLEAGUE_UUID.toString()))
+        mvc.perform(put("/feedbacks/{uuid}", FEEDBACK_UUID_LAST)
+                        .with(colleague(COLLEAGUE_UUID.toString()))
                         .contentType(APPLICATION_JSON)
                         .content(OBJECT_MAPPER.writeValueAsString(feedback)))
                 .andExpect(status().isOk())
@@ -78,32 +81,32 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
     void markAsRead() throws Exception {
         //given
         Feedback feedback = TestDataUtil.buildFeedback();
-        feedback.setUuid(TestDataUtil.FEEDBACK_UUID_UNREAD);
+        feedback.setUuid(FEEDBACK_UUID_UNREAD);
 
         //when
-        mvc.perform(put("/feedbacks/{uuid}/read", TestDataUtil.FEEDBACK_UUID_UNREAD)
-                        .with(colleague(TestDataUtil.COLLEAGUE_UUID.toString()))
+        mvc.perform(put("/feedbacks/{uuid}/read", FEEDBACK_UUID_UNREAD)
+                        .with(colleague(COLLEAGUE_UUID.toString()))
                         .contentType(APPLICATION_JSON)
                         .content(OBJECT_MAPPER.writeValueAsString(feedback)))
                 .andExpect(status().isNoContent());
 
         //then
-        verify(service).markAsRead(TestDataUtil.FEEDBACK_UUID_UNREAD);
+        verify(service).markAsRead(FEEDBACK_UUID_UNREAD, COLLEAGUE_UUID);
     }
 
     @Test
     void getAllFeedbacks() throws Exception { //NOSONAR used MockMvc checks
         // given
         Feedback feedback1 = TestDataUtil.buildFeedback();
-        feedback1.setUuid(TestDataUtil.FEEDBACK_UUID_LAST);
+        feedback1.setUuid(FEEDBACK_UUID_LAST);
         Feedback feedback2 = TestDataUtil.buildFeedback();
-        feedback2.setUuid(TestDataUtil.FEEDBACK_UUID_UNREAD);
+        feedback2.setUuid(FEEDBACK_UUID_UNREAD);
         List<Feedback> feedbacks = List.of(feedback1, feedback2);
         when(service.findAll(any(RequestQuery.class))).thenReturn(feedbacks);
 
         //when & then
         mvc.perform(get("/feedbacks")
-                        .with(colleague(TestDataUtil.COLLEAGUE_UUID.toString()))
+                        .with(colleague(COLLEAGUE_UUID.toString()))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
@@ -114,12 +117,12 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
     void getFeedback() throws Exception { //NOSONAR used MockMvc checks
         // given
         Feedback feedback = TestDataUtil.buildFeedback();
-        feedback.setUuid(TestDataUtil.FEEDBACK_UUID_LAST);
-        when(service.findOne(TestDataUtil.FEEDBACK_UUID_LAST)).thenReturn(feedback);
+        feedback.setUuid(FEEDBACK_UUID_LAST);
+        when(service.findOne(FEEDBACK_UUID_LAST, COLLEAGUE_UUID)).thenReturn(feedback);
 
         //when & then
-        mvc.perform(get("/feedbacks/{uuid}", TestDataUtil.FEEDBACK_UUID_LAST)
-                        .with(colleague())
+        mvc.perform(get("/feedbacks/{uuid}", FEEDBACK_UUID_LAST)
+                        .with(colleague(COLLEAGUE_UUID.toString()))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
@@ -130,12 +133,12 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
     void getFeedbackNotFound() throws Exception { //NOSONAR used MockMvc checks
         // given
         Feedback feedback = TestDataUtil.buildFeedback();
-        feedback.setUuid(TestDataUtil.FEEDBACK_UUID_LAST);
-        when(service.findOne(TestDataUtil.FEEDBACK_UUID_LAST)).thenThrow(NotFoundException.class);
+        feedback.setUuid(FEEDBACK_UUID_LAST);
+        when(service.findOne(FEEDBACK_UUID_LAST, COLLEAGUE_UUID)).thenThrow(NotFoundException.class);
 
         //when & then
-        mvc.perform(get("/feedbacks/{uuid}", TestDataUtil.FEEDBACK_UUID_LAST)
-                        .with(allRoles(TestDataUtil.COLLEAGUE_UUID.toString()))
+        mvc.perform(get("/feedbacks/{uuid}", FEEDBACK_UUID_LAST)
+                        .with(allRoles(COLLEAGUE_UUID.toString()))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(APPLICATION_JSON))
@@ -145,11 +148,11 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
     @Test
     void getGivenFeedbacksCount() throws Exception { //NOSONAR used MockMvc checks
         // given
-        when(service.getGivenFeedbackCount(TestDataUtil.COLLEAGUE_UUID)).thenReturn(FEEDBACKS_COUNT);
+        when(service.getGivenFeedbackCount(COLLEAGUE_UUID)).thenReturn(FEEDBACKS_COUNT);
 
         //when & then
         mvc.perform(get("/feedbacks/given-count")
-                        .with(colleague(TestDataUtil.COLLEAGUE_UUID.toString()))
+                        .with(colleague(COLLEAGUE_UUID.toString()))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
@@ -170,11 +173,11 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
     @Test
     void getRequestedFeedbacksCount() throws Exception { //NOSONAR used MockMvc checks
         // given
-        when(service.getRequestedFeedbackCount(TestDataUtil.COLLEAGUE_UUID)).thenReturn(FEEDBACKS_COUNT);
+        when(service.getRequestedFeedbackCount(COLLEAGUE_UUID)).thenReturn(FEEDBACKS_COUNT);
 
         //when & then
         mvc.perform(get("/feedbacks/requested-count")
-                        .with(colleague(TestDataUtil.COLLEAGUE_UUID.toString()))
+                        .with(colleague(COLLEAGUE_UUID.toString()))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))

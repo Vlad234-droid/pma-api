@@ -59,7 +59,7 @@ public class FeedbackDAOTest extends AbstractDAOTest {
         //given
 
         //when
-        Feedback result = underTest.getByUuid(TestDataUtil.FEEDBACK_UUID_LAST);
+        Feedback result = underTest.getByUuid(TestDataUtil.FEEDBACK_UUID_LAST, TestDataUtil.COLLEAGUE_UUID);
 
         //then
         assertEquals(TestDataUtil.FEEDBACK_UUID_LAST, result.getUuid());
@@ -99,8 +99,8 @@ public class FeedbackDAOTest extends AbstractDAOTest {
         //given
 
         //when
-        int result = underTest.markAsRead(TestDataUtil.FEEDBACK_UUID_UNREAD);
-        Feedback readFeedback = underTest.getByUuid(TestDataUtil.FEEDBACK_UUID_UNREAD);
+        int result = underTest.markAsRead(TestDataUtil.FEEDBACK_UUID_UNREAD, TestDataUtil.TARGET_COLLEAGUE_UUID);
+        Feedback readFeedback = underTest.getByUuid(TestDataUtil.FEEDBACK_UUID_UNREAD, TestDataUtil.TARGET_COLLEAGUE_UUID);
 
         //then
         assertEquals(1, result);

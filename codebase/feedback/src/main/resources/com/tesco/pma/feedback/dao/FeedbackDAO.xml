@@ -66,6 +66,10 @@
         </if>
     </sql>
 
+    <sql id="addFeedbackColleagueCondition">
+        AND (f.colleague_uuid = #{colleagueUuid} OR f.target_colleague_uuid = #{colleagueUuid})
+    </sql>
+
     <sql id="getSortField">
         <choose>
             <when test="sort.field == 'colleague-first-name'">
@@ -272,6 +276,7 @@
                  LEFT JOIN job tcj on tc.job_id = tcj.id
                  LEFT JOIN department tcd on tc.department_id = tcd.id
         WHERE f.uuid = #{uuid}
+        <include refid="addFeedbackColleagueCondition"/>
     </select>
 
     <sql id="requestQuerySort">
@@ -418,6 +423,7 @@
         UPDATE feedback f
         SET read = true
         WHERE f.uuid = #{uuid}
+        <include refid="addFeedbackColleagueCondition"/>
     </update>
 
     <insert id="insertOrUpdateFeedbackItem" flushCache="true" useGeneratedKeys="true" keyColumn="uuid" keyProperty="uuid">

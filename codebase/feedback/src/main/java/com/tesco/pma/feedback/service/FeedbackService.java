@@ -24,9 +24,10 @@ public interface FeedbackService {
     /**
      * Partially updates a feedback.
      *
-     * @param uuid the uuid of the entity.
+     * @param uuid the uuid of the entity
+     * @param colleagueUuid - identifier of feedback's colleague or target colleague
      */
-    void markAsRead(UUID uuid);
+    void markAsRead(UUID uuid, @NotNull UUID colleagueUuid);
 
     /**
      * Get all the feedbacks.
@@ -39,10 +40,11 @@ public interface FeedbackService {
     /**
      * Get the "uuid" feedback.
      *
-     * @param uuid the uuid of the entity.
+     * @param uuid the uuid of the entity
+     * @param colleagueUuid - identifier of feedback's colleague or target colleague
      * @return the entity.
      */
-    Feedback findOne(UUID uuid);
+    Feedback findOne(UUID uuid, @NotNull UUID colleagueUuid);
 
     /**
      * Get given feedbacks count
