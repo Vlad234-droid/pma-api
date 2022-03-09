@@ -96,7 +96,7 @@
                     #{value}::uuid
                 </when>
                 <when test="filter.property == 'status'">
-                    #{value}::int
+                    #{value.id}
                 </when>
                 <otherwise>
                     #{value}

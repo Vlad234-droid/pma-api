@@ -8,13 +8,18 @@ import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.event.Event;
 import com.tesco.pma.flow.FlowParameters;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.springframework.stereotype.Component;
 
+import java.time.Period;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
+import static com.tesco.pma.cycle.api.model.PMCycleElement.PM_CYCLE_BEFORE_END;
+import static com.tesco.pma.cycle.api.model.PMCycleElement.PM_CYCLE_BEFORE_START;
 import static com.tesco.pma.flow.exception.ErrorCodes.PARAMETER_CANNOT_BE_READ;
 
 /**
@@ -44,7 +49,30 @@ public class InitCycleHandler extends CamundaAbstractFlowHandler {
         if (colleagueUuid != null) {
             context.setVariable(FlowParameters.COLLEAGUE_UUID, colleagueUuid);
         }
-        context.setVariable(FlowParameters.SCHEDULED, colleagueUuid == null && scheduled != null && scheduled);
+        var scheduleCycle = colleagueUuid == null && BooleanUtils.isTrue(scheduled);
+        context.setVariable(FlowParameters.SCHEDULED, scheduleCycle);
+        if (scheduleCycle) {
+            context.setVariable(FlowParameters.CYCLE_START_DATE, cycle.getStartTime());
+            context.setVariable(FlowParameters.CYCLE_END_DATE, cycle.getEndTime());
+
+            setBeforeDateVariables(context, cycle);
+        }
+    }
+
+    private void setBeforeDateVariables(ExecutionContext context, PMCycle cycle) {
+        var beforeStart = context.getNullableVariable(PM_CYCLE_BEFORE_START, String.class);
+        if (StringUtils.isNotEmpty(beforeStart)) {
+            var period = Period.parse(beforeStart);
+            var beforeStartDate = cycle.getStartTime().minus(period);
+            context.setVariable(FlowParameters.CYCLE_BEFORE_START_DATE, beforeStartDate);
+        }
+        var beforeEnd = context.getNullableVariable(PM_CYCLE_BEFORE_END, String.class);
+        if (StringUtils.isNotEmpty(beforeEnd)) {
+            var period = Period.parse(beforeEnd);
+            var before = cycle.getEndTime().minus(period);
+            var beforeEndDate = before.isBefore(cycle.getStartTime()) ? cycle.getStartTime() : before;
+            context.setVariable(FlowParameters.CYCLE_BEFORE_END_DATE, beforeEndDate);
+        }
     }
 
     private PMCycle findCycle(ExecutionContext context) {
@@ -101,7 +129,7 @@ public class InitCycleHandler extends CamundaAbstractFlowHandler {
     }
 
     private <E extends Enum<E>, T> T getOptionalVariableDeep(ExecutionContext context, E name, Class<T> tclass,
-                                                         Function<String, T> fromString) {
+                                                             Function<String, T> fromString) {
         T value = getOptionalVariable(context, name, tclass, fromString);
         if (value == null && context.getEvent() != null) {
             return getOptionalVariable(context.getEvent(), name, tclass, fromString);
