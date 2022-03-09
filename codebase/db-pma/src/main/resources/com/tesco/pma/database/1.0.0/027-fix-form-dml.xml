@@ -22,4 +22,38 @@
             ]]></sql>
         </rollback>
     </changeSet>
+    <changeSet author="ypashynskyi" id="2">
+        <sql><![CDATA[
+            update pm_cycle c
+            set metadata = replace(metadata::text, 'strategic_priority', 'strategic_driver')::jsonb
+            where c.uuid in ('3fa85f64-5717-4562-b3fc-2c963f66afa6',
+                             '3fa85f64-5717-4562-b3fc-2c963f66afa9');
+            ]]>
+        </sql>
+        <rollback>
+            <sql><![CDATA[
+            update pm_cycle c
+            set metadata = replace(metadata::text, 'strategic_driver', 'strategic_priority')::jsonb
+            where c.uuid in ('3fa85f64-5717-4562-b3fc-2c963f66afa6',
+                             '3fa85f64-5717-4562-b3fc-2c963f66afa9');
+            ]]></sql>
+        </rollback>
+    </changeSet>
+    <changeSet author="ypashynskyi" id="3">
+        <sql><![CDATA[
+            update pm_cycle c
+            set metadata = replace(metadata::text, 'Strategic priority', 'Strategic driver')::jsonb
+            where c.uuid in ('3fa85f64-5717-4562-b3fc-2c963f66afa6',
+                             '3fa85f64-5717-4562-b3fc-2c963f66afa9');
+            ]]>
+        </sql>
+        <rollback>
+            <sql><![CDATA[
+            update pm_cycle c
+            set metadata = replace(metadata::text, 'Strategic driver', 'Strategic priority')::jsonb
+            where c.uuid in ('3fa85f64-5717-4562-b3fc-2c963f66afa6',
+                             '3fa85f64-5717-4562-b3fc-2c963f66afa9');
+            ]]></sql>
+        </rollback>
+    </changeSet>
 </databaseChangeLog>
