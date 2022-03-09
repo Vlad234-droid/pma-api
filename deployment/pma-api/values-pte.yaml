@@ -104,4 +104,4 @@ PMA_DB_URL: jdbc:postgresql://10.114.146.40:5432/pma-pte?sslmode=require
 PMA_DB_SCHEMA: pma
 CAMUNDA_DB_SCHEMA: camunda
 SECURITY_ENABLED: false
-env: "pte/**.dec"
+env: "pte"

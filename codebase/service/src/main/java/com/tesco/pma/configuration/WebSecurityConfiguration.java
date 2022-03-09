@@ -162,7 +162,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public OpaqueTokenIntrospector identityOpaqueTokenIntrospector(RestTemplateBuilder restTemplateBuilder) {
         final var restTemplate = restTemplateBuilder.build();
         //remove BearerAuthorizationClientHttpRequestInterceptor if present
-        restTemplate.getInterceptors().removeIf(interceptor -> interceptor instanceof BearerAuthorizationClientHttpRequestInterceptor);
+        restTemplate.getInterceptors().removeIf(BearerAuthorizationClientHttpRequestInterceptor.class::isInstance);
         return new IdentityOpaqueTokenIntrospector(resourceServerProperties.getOpaquetoken().getIntrospectionUri(),
                 resourceServerProperties.getOpaquetoken().getClientId(),
                 resourceServerProperties.getOpaquetoken().getClientSecret(),

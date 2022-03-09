@@ -244,7 +244,7 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle started")
     @PutMapping(value = "/pm-cycles/{uuid}/start-scheduled")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public RestResponse<?> startScheduled(@PathVariable final UUID uuid) {
+    public RestResponse<Void> startScheduled(@PathVariable final UUID uuid) {
         log.debug("REST request to start cycle : {}", uuid);
         service.start(uuid);
         return success();

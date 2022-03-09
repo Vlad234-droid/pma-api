@@ -7,10 +7,10 @@
     <bpmn:serviceTask id="Activity_1h31hx9" name="Update performance cycle status:&#10;STARTED" camunda:class="com.tesco.pma.flow.handlers.UpdatePMCycleStatusHandler">
       <bpmn:extensionElements>
         <camunda:field name="statusValue">
-          <camunda:string>ACTIVE</camunda:string>
+          <camunda:string>STARTED</camunda:string>
         </camunda:field>
         <camunda:field name="oldStatusValues">
-          <camunda:string>REGISTERED</camunda:string>
+          <camunda:string>REGISTERED,ACTIVE</camunda:string>
         </camunda:field>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0j0lli3</bpmn:incoming>
@@ -100,33 +100,33 @@
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="schedule_start_annual_cycle">
-      <bpmndi:BPMNEdge id="Flow_0j0lli3_di" bpmnElement="Flow_0j0lli3">
-        <di:waypoint x="488" y="117" />
-        <di:waypoint x="520" y="117" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0zrcqyp_di" bpmnElement="Flow_0zrcqyp">
-        <di:waypoint x="620" y="117" />
-        <di:waypoint x="650" y="117" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_04i1tja_di" bpmnElement="Flow_04i1tja">
-        <di:waypoint x="288" y="117" />
-        <di:waypoint x="320" y="117" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1k27bfm_di" bpmnElement="Flow_1k27bfm">
-        <di:waypoint x="420" y="117" />
-        <di:waypoint x="452" y="117" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ab7oc5_di" bpmnElement="Flow_1ab7oc5">
-        <di:waypoint x="750" y="117" />
-        <di:waypoint x="780" y="117" />
+      <bpmndi:BPMNEdge id="Flow_0qulz9j_di" bpmnElement="Flow_0qulz9j">
+        <di:waypoint x="880" y="117" />
+        <di:waypoint x="912" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1xriudh_di" bpmnElement="Flow_1xriudh">
         <di:waypoint x="215" y="117" />
         <di:waypoint x="252" y="117" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0qulz9j_di" bpmnElement="Flow_0qulz9j">
-        <di:waypoint x="880" y="117" />
-        <di:waypoint x="912" y="117" />
+      <bpmndi:BPMNEdge id="Flow_1ab7oc5_di" bpmnElement="Flow_1ab7oc5">
+        <di:waypoint x="750" y="117" />
+        <di:waypoint x="780" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1k27bfm_di" bpmnElement="Flow_1k27bfm">
+        <di:waypoint x="420" y="117" />
+        <di:waypoint x="452" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04i1tja_di" bpmnElement="Flow_04i1tja">
+        <di:waypoint x="288" y="117" />
+        <di:waypoint x="320" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zrcqyp_di" bpmnElement="Flow_0zrcqyp">
+        <di:waypoint x="620" y="117" />
+        <di:waypoint x="650" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0j0lli3_di" bpmnElement="Flow_0j0lli3">
+        <di:waypoint x="488" y="117" />
+        <di:waypoint x="520" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="99" width="36" height="36" />

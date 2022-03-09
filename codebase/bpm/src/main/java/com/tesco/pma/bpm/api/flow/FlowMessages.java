@@ -18,8 +18,8 @@ public enum FlowMessages {
     /* Warnings */
     MAX_ITERATIONS_REACHED;
 
-    public static String format(Enum code, String message, Object... params) {
-        return String.format(code.name() + ": " + message, params);
+    public static String format(FlowMessages code, String message, Object... params) {
+        return String.format(String.format("%s: %s", code.name(), message), params);
     }
 
     public String format(String message, Object... params) {

@@ -100,24 +100,24 @@ public class EventDeserializer extends StdDeserializer<Event> {
         return reader.read(node);
     }
 
-    private ValueReader getValueReader(SerdeUtils.SupportedTypes supportedType) throws IOException {
+    private ValueReader getValueReader(SerdeUtils.SupportedTypes supportedType) {
         switch (supportedType) {
             case STRING:
-                return (node) -> node.get(SerdeUtils.OBJECT_VALUE_FIELD).textValue();
+                return node -> node.get(SerdeUtils.OBJECT_VALUE_FIELD).textValue();
             case INT:
-                return (node) -> node.get(SerdeUtils.OBJECT_VALUE_FIELD).intValue();
+                return node -> node.get(SerdeUtils.OBJECT_VALUE_FIELD).intValue();
             case LONG:
-                return (node) -> node.get(SerdeUtils.OBJECT_VALUE_FIELD).longValue();
+                return node -> node.get(SerdeUtils.OBJECT_VALUE_FIELD).longValue();
             case FLOAT:
-                return (node) -> node.get(SerdeUtils.OBJECT_VALUE_FIELD).floatValue();
+                return node -> node.get(SerdeUtils.OBJECT_VALUE_FIELD).floatValue();
             case DOUBLE:
-                return (node) -> node.get(SerdeUtils.OBJECT_VALUE_FIELD).doubleValue();
+                return node -> node.get(SerdeUtils.OBJECT_VALUE_FIELD).doubleValue();
             case BIGINT:
-                return (node) -> node.get(SerdeUtils.OBJECT_VALUE_FIELD).bigIntegerValue();
+                return node -> node.get(SerdeUtils.OBJECT_VALUE_FIELD).bigIntegerValue();
             case BIGDECIMAL:
-                return (node) -> node.get(SerdeUtils.OBJECT_VALUE_FIELD).decimalValue();
+                return node -> node.get(SerdeUtils.OBJECT_VALUE_FIELD).decimalValue();
             case DATE:
-                return (node) -> {
+                return node -> {
                     try {
                         return SerdeUtils.getDateFormatter().parse(node.get(SerdeUtils.OBJECT_VALUE_FIELD).textValue());
                     } catch (Exception e) {
@@ -125,7 +125,7 @@ public class EventDeserializer extends StdDeserializer<Event> {
                     }
                 };
             case EVENT:
-                return (node) -> {
+                return node -> {
                     String eventName = node.get(SerdeUtils.EventProperties.EVENT_NAME.name()).asText();
                     try {
                         EventSupport event = new EventSupport(eventName, node.get(SerdeUtils.EventProperties.EVENT_ID.name()).asText());
@@ -143,7 +143,7 @@ public class EventDeserializer extends StdDeserializer<Event> {
                     }
                 };
             default:
-                return (node) -> {
+                return node -> {
                     String className = node.get(SerdeUtils.OBJECT_CLASS_FIELD).asText();
                     try {
                         return Serializable.class

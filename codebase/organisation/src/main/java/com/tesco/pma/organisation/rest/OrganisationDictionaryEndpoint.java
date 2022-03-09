@@ -33,7 +33,6 @@ public class OrganisationDictionaryEndpoint {
 
     private final OrganisationDictionaryService service;
 
-
     @Operation(summary = "Get organisation dictionary by code",
             tags = {"organisation-dictionary"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the organisation dictionary")
@@ -65,7 +64,8 @@ public class OrganisationDictionaryEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Updated organisation dictionary")
     @PutMapping(value = "/{code}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isProcessManager() or isAdmin()")
-    public RestResponse<?> update(@PathVariable String code, @RequestBody OrganisationDictionary organisationDictionary) {
+    public RestResponse<OrganisationDictionary> update(@PathVariable String code,
+                                                       @RequestBody OrganisationDictionary organisationDictionary) {
         organisationDictionary.setCode(code);
         return RestResponse.success(service.update(organisationDictionary));
     }
@@ -74,7 +74,7 @@ public class OrganisationDictionaryEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Deleted organisation dictionary")
     @DeleteMapping(value = "/{code}", produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isProcessManager() or isAdmin()")
-    public RestResponse<?> delete(@PathVariable String code) {
+    public RestResponse<Void> delete(@PathVariable String code) {
         service.delete(code);
         return RestResponse.success();
     }

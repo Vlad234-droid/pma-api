@@ -57,7 +57,7 @@ public class ColleaguesEventsSendHandlerTest extends AbstractCamundaSpringBootTe
         var colleagueEntity = new ColleagueEntity();
         colleagueEntity.setUuid(colleagueUUID);
 
-        Mockito.when(configEntryService.findColleaguesByCompositeKey(Mockito.eq(ENTRY_CONFIG_KEY)))
+        Mockito.when(configEntryService.findColleaguesByCompositeKey(ENTRY_CONFIG_KEY))
                 .thenReturn(List.of(colleagueEntity));
     }
 
