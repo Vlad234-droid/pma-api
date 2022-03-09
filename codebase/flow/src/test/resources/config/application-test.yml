@@ -110,10 +110,13 @@ camunda:
                                           com/tesco/pma/flow/review_schedule_test.bpmn,
                                           com/tesco/pma/flow/fiscal_test.bpmn,
                                           com/tesco/pma/flow/tl_point_overdue_status.bpmn,
-                                          com/tesco/pma/flow/group_a.bpmn,
                                           com/tesco/pma/flow/repeat_test.bpmn,
                                           com/tesco/pma/flow/standard_init_timeline_point.bpmn,
                                           com/tesco/pma/flow/colleague_events_send_test.bpmn,
                                           com/tesco/pma/flow/pm_cycle_assignment.bpmn,
-                                          com/tesco/pma/flow/pm_cycle_mapping.dmn
+                                          com/tesco/pma/flow/pm_cycle_mapping.dmn,
+                                          com/tesco/pma/flow/group_a1.bpmn,
+                                          com/tesco/pma/flow/group_a2.bpmn,
+                                          com/tesco/pma/flow/group_b.bpmn,
+                                          com/tesco/pma/flow/group_c.bpmn
 
