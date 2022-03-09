@@ -40,7 +40,7 @@ public class InitCycleHandler extends CamundaAbstractFlowHandler {
         var cycle = findCycle(context);
         context.setVariable(FlowParameters.PM_CYCLE, cycle);
 
-        var colleagueUuid = getOptionalVariableDeep(context, FlowParameters.COLLEAGUE_UUID, String.class, null);
+        var colleagueUuid = getOptionalVariableDeep(context, FlowParameters.COLLEAGUE_UUID, UUID.class, UUID::fromString);
         var scheduled = getOptionalVariableDeep(context, FlowParameters.SCHEDULED, Boolean.class, Boolean::valueOf);
 
         if (colleagueUuid == null && scheduled == null) {

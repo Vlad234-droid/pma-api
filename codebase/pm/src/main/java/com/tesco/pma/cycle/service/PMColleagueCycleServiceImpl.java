@@ -138,7 +138,7 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
         if (isEmpty(processes) || processes.size() > 1) {
             throw new NotFoundException(PMProcessErrorCodes.PROCESS_NOT_FOUND_BY_CYCLE.getCode(),
                     messageSourceAccessor.getMessage(PMProcessErrorCodes.PROCESS_NOT_FOUND_BY_CYCLE,
-                            Map.of(CYCLE_UUID, cycleUuid)));
+                            Map.of(CYCLE_UUID, cycleUuid, STATUS_FILTER, "null")));
         }
 
         var process = processes.iterator().next();
