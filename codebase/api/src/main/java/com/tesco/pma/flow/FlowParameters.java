@@ -45,6 +45,7 @@ public enum FlowParameters {
     SENDER_COLLEAGUE_PROFILE,
 
     COLLEAGUE_UUIDS,
+    COLLEAGUE,
     COLLEAGUES,
 
     PROFILE_ATTRIBUTE_NAME,

@@ -229,7 +229,7 @@ public class ProfileServiceImpl implements ProfileService {
             return 0;
         }
 
-        return persistColleague(colleague, existingLocalColleague);
+        return persistColleague(colleague, null);
     }
 
     private int persistColleague(Colleague colleague, ColleagueEntity existingLocalColleague) {
