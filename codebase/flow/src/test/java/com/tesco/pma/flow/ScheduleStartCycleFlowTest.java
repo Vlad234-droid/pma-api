@@ -26,16 +26,16 @@ import static org.mockito.Mockito.verify;
 )
 class ScheduleStartCycleFlowTest {
 
-    public static final UUID CYCLE_UUID = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
+    private static final UUID CYCLE_UUID = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
 
-    public static final String KEY = "schedule_start_annual_cycle";
-    public static final String END_EVENT = "Event_0kgnfko";
-    public static final String CYCLE_BEFORE_START_DATE = "CYCLE_BEFORE_START_DATE";
-    public static final String CYCLE_START_DATE = "CYCLE_START_DATE";
-    public static final String SEND_NOTIFICATION_BEFORE_START = "Activity_0039qsr";
-    public static final String UPDATE_STATUS = "Activity_1h31hx9";
-    public static final String SEND_START = "Activity_11j279t";
-    public static final String SEND_NOTIFICATION_START = "Activity_1hj18fw";
+    private static final String KEY = "schedule_start_annual_cycle";
+    private static final String END_EVENT = "Event_0kgnfko";
+    private static final String CYCLE_BEFORE_START_DATE = "CYCLE_BEFORE_START_DATE";
+    private static final String CYCLE_START_DATE = "CYCLE_START_DATE";
+    private static final String SEND_NOTIFICATION_BEFORE_START = "Activity_0039qsr";
+    private static final String UPDATE_STATUS = "Activity_1h31hx9";
+    private static final String SEND_START = "Activity_11j279t";
+    private static final String SEND_NOTIFICATION_START = "Activity_1hj18fw";
 
     ProcessScenario scenario = mock(ProcessScenario.class);
     @MockBean

@@ -30,18 +30,18 @@ import static org.mockito.Mockito.verify;
 )
 class ScheduleEndCycleFlowTest {
 
-    public static final UUID CYCLE_UUID = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
-    public static final UUID TIMELINE_POINT_UUID = UUID.fromString("a0c0e913-5a45-4165-86a7-2fa9d5b1c8cb");
-    public static final String KEY = "schedule_end_annual_cycle";
-    public static final String END_EVENT = "Event_0zp8vpa";
-    public static final String CYCLE_BEFORE_END_DATE = "CYCLE_BEFORE_END_DATE";
-    public static final String CYCLE_END_DATE = "CYCLE_END_DATE";
-    public static final String SEND_NOTIFICATION_BEFORE_END = "Activity_1qxyb5w";
-    public static final String UPDATE_STATUS = "Activity_0s5ed5q";
-    public static final String SEND_END = "Activity_0v4l2b5";
-    public static final String SEND_NOTIFICATION_END = "Activity_15v2e6c";
-    public static final String CALCULATE_REMAINING_CYCLES = "Activity_123sf2q";
-    public static final String SEND_REPEAT_CYCLE = "Activity_170353t";
+    private static final UUID CYCLE_UUID = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
+    private static final UUID TIMELINE_POINT_UUID = UUID.fromString("a0c0e913-5a45-4165-86a7-2fa9d5b1c8cb");
+    private static final String KEY = "schedule_end_annual_cycle";
+    private static final String END_EVENT = "Event_0zp8vpa";
+    private static final String CYCLE_BEFORE_END_DATE = "CYCLE_BEFORE_END_DATE";
+    private static final String CYCLE_END_DATE = "CYCLE_END_DATE";
+    private static final String SEND_NOTIFICATION_BEFORE_END = "Activity_1qxyb5w";
+    private static final String UPDATE_STATUS = "Activity_0s5ed5q";
+    private static final String SEND_END = "Activity_0v4l2b5";
+    private static final String SEND_NOTIFICATION_END = "Activity_15v2e6c";
+    private static final String CALCULATE_REMAINING_CYCLES = "Activity_123sf2q";
+    private static final String SEND_REPEAT_CYCLE = "Activity_170353t";
 
     ProcessScenario scenario = mock(ProcessScenario.class);
     @MockBean

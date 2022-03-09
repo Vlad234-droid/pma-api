@@ -26,20 +26,20 @@ import static org.mockito.Mockito.when;
 )
 class GroupAv2FlowTest {
 
-    public static final String SCHEDULE_START_CYCLE = "schedule_start_cycle";
-    public static final String EYR = "eyr";
-    public static final String Q_3 = "q3";
-    public static final String MYR = "myr";
-    public static final String Q_1 = "q1";
-    public static final String OBJECTIVE = "objective";
-    public static final String SCHEDULE_END_CYCLE = "Activity_0nievhn";
-    public static final String SCHEDULE_START_ANNUAL_CYCLE = "schedule_start_annual_cycle";
-    public static final String INIT_TIMELINE_POINT = "init_timeline_point";
-    public static final String SCHEDULE_END_ANNUAL_CYCLE = "schedule_end_annual_cycle";
-    public static final String GROUP_A_V_2 = "group_a_v2";
-    public static final String END_EVENT_CYCLE_FINISHED = "Event_0v9jvii";
-    public static final String INIT_PROCESS = "Activity_0z4446w";
-    public static final String CREATE_COLLEAGUE_CYCLE = "Activity_1o7jf3y";
+    private static final String SCHEDULE_START_CYCLE = "schedule_start_cycle";
+    private static final String EYR = "eyr";
+    private static final String Q_3 = "q3";
+    private static final String MYR = "myr";
+    private static final String Q_1 = "q1";
+    private static final String OBJECTIVE = "objective";
+    private static final String SCHEDULE_END_CYCLE = "Activity_0nievhn";
+    private static final String SCHEDULE_START_ANNUAL_CYCLE = "schedule_start_annual_cycle";
+    private static final String INIT_TIMELINE_POINT = "init_timeline_point";
+    private static final String SCHEDULE_END_ANNUAL_CYCLE = "schedule_end_annual_cycle";
+    private static final String GROUP_A_V_2 = "group_a_v2";
+    private static final String END_EVENT_CYCLE_FINISHED = "Event_0v9jvii";
+    private static final String INIT_PROCESS = "Activity_0z4446w";
+    private static final String CREATE_COLLEAGUE_CYCLE = "Activity_1o7jf3y";
 
     ProcessScenario scenario = mock(ProcessScenario.class);
     @MockBean
