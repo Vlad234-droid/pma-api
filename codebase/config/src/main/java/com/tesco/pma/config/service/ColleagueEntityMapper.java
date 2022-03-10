@@ -27,6 +27,9 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class ColleagueEntityMapper {
 
+    private static final String DEPARTMENT_ID = "department_id";
+    private static final String JOB_ID = "job_id";
+
     List<ColleagueEntity> mapColleagues(List<FieldSet> data, Set<ColleagueEntity.WorkLevel> workLevels,
                                         Set<ColleagueEntity.Country> countries, Set<ColleagueEntity.Department> departments,
                                         Set<ColleagueEntity.Job> jobs, Set<String> validationErrors) {
@@ -47,9 +50,9 @@ public class ColleagueEntityMapper {
                     colleague.setWorkLevel(wlMap.get(getValueNullSafe(fs, "work_level")));
                     colleague.setPrimaryEntity(getValueNullSafe(fs, "primary_entity"));
                     colleague.setCountry(countryMap.get(getValueNullSafe(fs, "country_code")));
-                    colleague.setDepartment(depMap.get(getValueNullSafe(fs, "department_id")));
+                    colleague.setDepartment(depMap.get(getValueNullSafe(fs, DEPARTMENT_ID)));
                     colleague.setSalaryFrequency(getValueNullSafe(fs, "salary_frequency"));
-                    colleague.setJob(jobMap.get(getValueNullSafe(fs, "job_id")));
+                    colleague.setJob(jobMap.get(getValueNullSafe(fs, JOB_ID)));
                     colleague.setIamId(getValueNullSafe(fs, "iam_id"));
                     colleague.setIamSource(getValueNullSafe(fs, "iam_source"));
                     colleague.setManagerUuid(getUuidValueNullSafe(fs, "manager_uuid"));
@@ -132,10 +135,10 @@ public class ColleagueEntityMapper {
     Set<ColleagueEntity.Department> mapDepartments(List<FieldSet> data) {
         return data.stream()
                 .map(FieldSet::getValues)
-                .filter(c -> c.get("department_id").getType() != ValueType.BLANK)
+                .filter(c -> c.get(DEPARTMENT_ID).getType() != ValueType.BLANK)
                 .map(c -> {
                     var department = new ColleagueEntity.Department();
-                    department.setId(getValueNullSafe(c, "department_id"));
+                    department.setId(getValueNullSafe(c, DEPARTMENT_ID));
                     department.setName(getValueNullSafe(c, "department_name"));
                     department.setBusinessType(getValueNullSafe(c, "business_type"));
                     return department;
@@ -151,10 +154,10 @@ public class ColleagueEntityMapper {
     Set<ColleagueEntity.Job> mapJobs(List<FieldSet> data) {
         return data.stream()
                 .map(FieldSet::getValues)
-                .filter(c -> c.get("job_id").getType() != ValueType.BLANK)
+                .filter(c -> c.get(JOB_ID).getType() != ValueType.BLANK)
                 .map(c -> {
                     var job = new ColleagueEntity.Job();
-                    job.setId(getValueNullSafe(c, "job_id"));
+                    job.setId(getValueNullSafe(c, JOB_ID));
                     job.setName(getValueNullSafe(c, "job_name"));
                     return job;
                 })

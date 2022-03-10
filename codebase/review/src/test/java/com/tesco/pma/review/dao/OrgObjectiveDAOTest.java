@@ -108,10 +108,8 @@ class OrgObjectiveDAOTest extends AbstractDAOTest {
     void getOrgObjectives() {
         final var result = instance.getAll();
 
-        assertThat(result).isNotEmpty();
-        assertThat(result.size()).isEqualTo(1);
-
-        assertThat(result.get(0))
+        assertThat(result).isNotEmpty()
+                .singleElement()
                 .returns(NUMBER_1, from(OrgObjective::getNumber))
                 .returns(OrgObjectiveStatus.DRAFT, from(OrgObjective::getStatus))
                 .returns(ORG_TITLE_UPDATE, from(OrgObjective::getTitle))

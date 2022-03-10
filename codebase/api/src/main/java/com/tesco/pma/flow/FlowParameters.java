@@ -54,13 +54,18 @@ public enum FlowParameters {
     TIP_UUID,
     TIP,
 
+    CYCLE_BEFORE_START_DATE,
+    CYCLE_START_DATE,
+    CYCLE_BEFORE_END_DATE,
+    CYCLE_END_DATE,
+
     //notifications
     CONTACT_TEMPLATE_ID;
 
     /**
      * Returns corresponded parameter for string value if exist or the same parameter
-     * @param parameter source parameter
      *
+     * @param parameter source parameter
      * @return event for corresponded string value
      */
     public static FlowParameters getCorrespondedStringParameter(FlowParameters parameter) {

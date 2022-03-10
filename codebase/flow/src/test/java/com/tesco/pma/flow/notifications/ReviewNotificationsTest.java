@@ -46,10 +46,10 @@ public class ReviewNotificationsTest extends AbstractNotificationsFlowTest {
         colleagueProfile = createColleagueProfile(UUID.randomUUID(), WorkLevel.WL1, Map.of());
         senderColleagueProfile = createColleagueProfile(UUID.randomUUID(), "Mr", "Sender", WorkLevel.WL4, Map.of());
 
-        Mockito.when(profileService.findProfileByColleagueUuid(Mockito.eq(colleagueProfile.getColleague().getColleagueUUID())))
+        Mockito.when(profileService.findProfileByColleagueUuid(colleagueProfile.getColleague().getColleagueUUID()))
                 .thenReturn(Optional.of(colleagueProfile));
 
-        Mockito.when(profileService.findProfileByColleagueUuid(Mockito.eq(senderColleagueProfile.getColleague().getColleagueUUID())))
+        Mockito.when(profileService.findProfileByColleagueUuid(senderColleagueProfile.getColleague().getColleagueUUID()))
                 .thenReturn(Optional.of(senderColleagueProfile));
     }
 

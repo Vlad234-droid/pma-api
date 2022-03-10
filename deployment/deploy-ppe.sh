@@ -6,5 +6,4 @@ helm secrets upgrade \
   --set image.tag=$1 \
   -f ./pma-api/values-ppe.yaml \
   -f ./pma-api/secrets-ppe.yaml \
-  -f ./pma-api/ppe/* \
   -n api

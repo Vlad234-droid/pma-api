@@ -2,6 +2,7 @@ package com.tesco.pma.bpm.camunda.starter;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.spring.SpringProcessEngineConfiguration;
 import org.camunda.bpm.spring.boot.starter.configuration.CamundaDatasourceConfiguration;
 import org.camunda.bpm.spring.boot.starter.configuration.impl.AbstractCamundaConfiguration;
@@ -9,8 +10,6 @@ import org.camunda.bpm.spring.boot.starter.property.DatabaseProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.PlatformTransactionManager;
-
-import org.springframework.util.StringUtils;
 
 import com.tesco.pma.bpm.camunda.flow.listener.TransactionBpmnParseListener;
 
@@ -70,11 +69,11 @@ public class CamundaDataSourceConfigurationImpl extends AbstractCamundaConfigura
         configuration.setDatabaseType(database.getType());
         configuration.setDatabaseSchemaUpdate(database.getSchemaUpdate());
 
-        if (!StringUtils.isEmpty(database.getTablePrefix())) {
+        if (StringUtils.isNotEmpty(database.getTablePrefix())) {
             configuration.setDatabaseTablePrefix(database.getTablePrefix());
         }
 
-        if (!StringUtils.isEmpty(database.getSchemaName())) {
+        if (StringUtils.isNotEmpty(database.getSchemaName())) {
             configuration.setDatabaseSchema(database.getSchemaName());
         }
 

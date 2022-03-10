@@ -30,6 +30,7 @@ import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
 import static com.tesco.pma.cycle.api.PMCycleStatus.COMPLETED;
 import static com.tesco.pma.cycle.api.PMCycleStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
+import static com.tesco.pma.cycle.api.PMCycleStatus.TERMINATED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ContextConfiguration(classes = PMCycleTypeHandlerConfig.class)
@@ -112,7 +113,7 @@ class PMCycleDAOTest extends AbstractDAOTest {
     @DataSet(BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml")
     void getAll() {
         var rq = new RequestQuery();
-        rq.addFilters("status", ACTIVE.getId());
+        rq.addFilters("status_in", List.of(ACTIVE, TERMINATED));
         var actual = dao.findAll(rq, false);
         assertEquals(1, actual.size());
         assertEquals(CYCLE_UUID, actual.get(0).getUuid());

@@ -213,7 +213,7 @@ public class ProfileServiceImpl implements ProfileService {
             return updateColleague(colleagueUuid, List.of());
         }
 
-        Colleague colleague = colleagueApiService.findColleagueByUuid(colleagueUuid);
+        var colleague = colleagueApiService.findColleagueByUuid(colleagueUuid);
         if (colleague == null) {
             return 0;
         }
@@ -236,7 +236,7 @@ public class ProfileServiceImpl implements ProfileService {
         int updated = 0;
 
         try {
-            ColleagueEntity changedLocalColleague = colleagueFactsApiLocalMapper.colleagueFactsApiToLocal(colleague);
+            var changedLocalColleague = colleagueFactsApiLocalMapper.colleagueFactsApiToLocal(colleague);
             if (existingLocalColleague == null) {
                 updated = profileDAO.saveColleague(changedLocalColleague);
             } else {
@@ -311,7 +311,8 @@ public class ProfileServiceImpl implements ProfileService {
     private NotFoundException profileAttributeNotFound(String profileAttributeName, UUID colleagueUuid) {
         return new NotFoundException(PROFILE_ATTRIBUTE_NOT_FOUND.getCode(),
                 messages.getMessage(PROFILE_ATTRIBUTE_NOT_FOUND,
-                        Map.of("profileAttributeName", profileAttributeName, "colleagueUuid", colleagueUuid)));
+                        Map.of(PROFILE_ATTRIBUTE_NAME_PARAMETER_NAME, profileAttributeName,
+                                COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid)));
     }
 
 }
