@@ -28,8 +28,8 @@
           "value": "Other"
         }
       ],
-      "key": "strategic_priority",
-      "label": "Strategic priority",
+      "key": "strategic_driver",
+      "label": "Strategic driver",
       "type": "select",
       "id": "Field_1ribi5m",
       "validate": {
