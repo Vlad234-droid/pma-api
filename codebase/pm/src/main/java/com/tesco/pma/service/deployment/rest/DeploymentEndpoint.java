@@ -165,7 +165,7 @@ public class DeploymentEndpoint {
             description = "File deployed",
             tags = {"deployment"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "File deployed")
-    @PostMapping(value = "/files/{fileUuid}")
+    @PostMapping(value = "/files/{fileUuid}/deploy")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public RestResponse<String> deployByUuid(@PathVariable final UUID fileUuid) {
 
@@ -183,7 +183,7 @@ public class DeploymentEndpoint {
             description = "File deployed",
             tags = {"deployment"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "File deployed")
-    @PostMapping(value = "/files/last")
+    @PostMapping(value = "/files/deploy")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public RestResponse<String> deployByPathAndFilename(@RequestParam("path") String path,
                                                         @RequestParam("file-name") String fileName) {
