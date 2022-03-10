@@ -329,11 +329,7 @@ camunda:
                                            com/tesco/pma/flow/review/tl_point_allowed_prev_statuses.dmn,
                                            com/tesco/pma/flow/review/tl_point_status_to_event.dmn,
                                            com/tesco/pma/flow/pm_cycle_assignment.bpmn,
-                                           com/tesco/pma/flow/pm_cycle_mapping.dmn,
-                                           com/tesco/pma/flow/group_a1.bpmn,
-                                           com/tesco/pma/flow/group_a2.bpmn,
-                                           com/tesco/pma/flow/group_b.bpmn,
-                                           com/tesco/pma/flow/group_c.bpmn
+                                           com/tesco/pma/flow/pm_cycle_mapping.dmn
     deployment-resource-paths: com/tesco/pma/flow
 
 ---
