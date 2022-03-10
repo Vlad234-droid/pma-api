@@ -41,7 +41,7 @@ spring:
       password: ${PMA_DB_PASSWORD}
       type: com.zaxxer.hikari.HikariDataSource
       connection-test-query: SELECT 1
-      minimum-idle: 1
+#      minimum-idle: 10
       maximum-pool-size: 10
       #idle-timeout: 60000
       #max-life-time: 1750000
@@ -93,7 +93,7 @@ spring:
       password: ${PMA_DB_PASSWORD}
       type: com.zaxxer.hikari.HikariDataSource
       connection-test-query: SELECT 1
-      minimum-idle: 10
+#      minimum-idle: 10
       maximum-pool-size: 10
       pool-name: camunda_ds_pool
       is-auto-commit: false
