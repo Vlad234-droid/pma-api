@@ -22,12 +22,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 import static com.tesco.pma.cep.cfapi.v2.domain.EventType.DELETION;
@@ -47,7 +47,8 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     private final UserManagementService userManagementService;
     private final EventSender eventSender;
 
-    private static final Map<EventType, Function<ColleagueChangeEventPayload, Integer>> PROCESSORS = new HashMap<>();
+    private static final EnumMap<EventType, ToIntFunction<ColleagueChangeEventPayload>> PROCESSORS
+            = new EnumMap<>(EventType.class);
 
     @PostConstruct
     public void init() {
@@ -59,7 +60,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
     @Override
     public void processColleagueChangeEvent(ColleagueChangeEventPayload colleagueChangeEventPayload) {
-        // TODO Implement a logic related with invalidation caches of Profile API, Organisation API, PM API, ...
+        // TODO Implement a logic related with invalidation caches of Profile API, Organisation API, PM API, ... //NOSONAR
 
         // Now support only Joiner, Leaver, Modification, Deletion event types
         if (!EnumSet.of(JOINER, LEAVER, MODIFICATION, DELETION).contains(colleagueChangeEventPayload.getEventType())) {
@@ -86,7 +87,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
             throw new IllegalArgumentException("Invalid event type " + colleagueChangeEventPayload.getEventType());
         }
 
-        var updated = processor.apply(colleagueChangeEventPayload);
+        var updated = processor.applyAsInt(colleagueChangeEventPayload);
         if (updated == 0) {
             log.warn(LogFormatter.formatMessage(COLLEAGUE_NOT_FOUND, "For colleague '{}' was not updated records"),
                     colleagueChangeEventPayload.getColleagueUuid());
