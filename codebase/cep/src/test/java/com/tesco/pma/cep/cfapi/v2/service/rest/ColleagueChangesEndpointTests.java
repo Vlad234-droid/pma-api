@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = TestConfig.class)
 class ColleagueChangesEndpointTests extends AbstractEndpointTest {
 
-    private static final String POST_EVENT_PATH = "/colleagues/v2/events";
+    private static final String POST_EVENT_PATH = "/colleagues/events";
 
     private static final String REQUEST_CEP_HEADER_FEED_ID = "FeedId";
     private static final String REQUEST_CEP_FEED_ID = "capi-colleagues-v2";
