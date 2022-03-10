@@ -58,11 +58,15 @@ public class DeploymentEndpoint {
     @Autowired
     DeploymentService deploymentService;
 
+    @Operation(summary = "Get list of deployed processes",
+            tags = {"deployment"})
     @GetMapping(path = "/processes", produces = MediaType.APPLICATION_JSON_VALUE)
     public RestResponse<List<String>> processes() {
         return RestResponse.success(processManagerService.listProcesses());
     }
 
+    @Operation(summary = "Deploy process archive",
+            tags = {"deployment"})
     @PostMapping(path = "/processes/archive",
             consumes = MediaType.TEXT_PLAIN_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -78,6 +82,8 @@ public class DeploymentEndpoint {
         }
     }
 
+    @Operation(summary = "Undeploy all version of process by process key(name)",
+            tags = {"deployment"})
     @DeleteMapping(
             path = "/processes/{processName}",
             consumes = MediaType.TEXT_PLAIN_VALUE,
@@ -93,11 +99,15 @@ public class DeploymentEndpoint {
         }
     }
 
+    @Operation(summary = "Get list of deployments (identifier/name)",
+            tags = {"deployment"})
     @GetMapping(path = "/deployments", produces = MediaType.APPLICATION_JSON_VALUE)
     public RestResponse<List<DeploymentInfo>> deployments() {
         return RestResponse.success(processManagerService.listDeployments());
     }
 
+    @Operation(summary = "Deploy multipart files",
+            tags = {"deployment"})
     @PostMapping(path = "/deployments",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -129,6 +139,8 @@ public class DeploymentEndpoint {
         }
     }
 
+    @Operation(summary = "Undeploy deployment by id",
+            tags = {"deployment"})
     @DeleteMapping(
             path = "/deployments/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -142,6 +154,8 @@ public class DeploymentEndpoint {
         }
     }
 
+    @Operation(summary = "Undeploy deployment by name",
+            tags = {"deployment"})
     @DeleteMapping(
             path = "/deployments",
             produces = MediaType.APPLICATION_JSON_VALUE
