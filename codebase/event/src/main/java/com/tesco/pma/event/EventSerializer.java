@@ -103,6 +103,10 @@ public class EventSerializer extends StdSerializer<Event> {
                 return (gen, value) -> gen.writeNumberField(OBJECT_VALUE_FIELD, (BigDecimal) value);
             case DATE:
                 return (gen, value) -> gen.writeStringField(OBJECT_VALUE_FIELD, SerdeUtils.getDateFormatter().format((Date) value));
+            case UUID:
+                return (gen, value) -> gen.writeStringField(OBJECT_VALUE_FIELD, value.toString());
+            case ARRAY:
+                return (gen, value) -> writeCollection(OBJECT_VALUE_FIELD, (Collection<?>) value, gen);
             case EVENT:
                 return (gen, value) -> {
                     Event event = (Event) value;
@@ -127,15 +131,22 @@ public class EventSerializer extends StdSerializer<Event> {
 
     private void writeObject(ValueWriter valueWriter, Serializable value, JsonGenerator gen) throws IOException {
         gen.writeStartObject();
-        gen.writeStringField(OBJECT_CLASS_FIELD, value.getClass().getName());
+        writeType(value, gen);
         valueWriter.write(gen, value);
         gen.writeEndObject();
     }
-    
+
     private void writeObject(ValueWriter valueWriter, Serializable value, String objectField, JsonGenerator gen) throws IOException {
         gen.writeObjectFieldStart(objectField);
-        gen.writeStringField(OBJECT_CLASS_FIELD, value.getClass().getName());
+        writeType(value, gen);
         valueWriter.write(gen, value);
         gen.writeEndObject();
+    }
+
+    private void writeType(Serializable value, JsonGenerator gen) throws IOException {
+        var supportedType = SupportedTypes.getSupportedType(value);
+        if (supportedType.isPresent()) {
+            gen.writeStringField(OBJECT_CLASS_FIELD, supportedType.get().name());
+        }
     }
 }

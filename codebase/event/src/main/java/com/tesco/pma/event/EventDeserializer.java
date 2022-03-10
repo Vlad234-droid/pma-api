@@ -3,7 +3,6 @@ package com.tesco.pma.event;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
@@ -13,7 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Supports events deserializing
@@ -21,8 +20,6 @@ import java.util.Optional;
 public class EventDeserializer extends StdDeserializer<Event> {
 
     private static final long serialVersionUID = 7047795002792356540L;
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     interface ValueReader {
 
@@ -56,12 +53,12 @@ public class EventDeserializer extends StdDeserializer<Event> {
         }
 
         Map<String, Serializable> result = new HashMap<>();
-        for (Iterator<Map.Entry<String, JsonNode>> i = node.fields(); i.hasNext();) { //NOPMD
+        for (Iterator<Map.Entry<String, JsonNode>> i = node.fields(); i.hasNext(); ) { //NOPMD
             Map.Entry<String, JsonNode> entry = i.next();
             if (!EventSupport.isDefaultProperty(entry.getKey())) {
                 JsonNode value = entry.getValue();
                 if (value.isArray()) {
-                    readCollection(result, entry.getKey(), value);
+                    result.put(entry.getKey(), readCollection(value));
                 } else {
                     Serializable readValue = readValue(value);
                     if (readValue != null) {
@@ -73,17 +70,15 @@ public class EventDeserializer extends StdDeserializer<Event> {
         return result;
     }
 
-    private void readCollection(Map<String, Serializable> result, String key, JsonNode value) throws IOException {
-        ArrayList<Serializable> list = new ArrayList<>();
+    private ArrayList<Serializable> readCollection(JsonNode value) throws IOException { //NOPMD
+        var list = new ArrayList<Serializable>();
         for (JsonNode childNode : value) {
-            Serializable readValue = readValue(childNode);
+            var readValue = readValue(childNode);
             if (readValue != null) {
                 list.add(readValue);
             }
         }
-        if (!list.isEmpty()) {
-            result.put(key, list);
-        }
+        return list;
     }
 
     private Serializable readValue(JsonNode node) throws IOException {
@@ -91,12 +86,12 @@ public class EventDeserializer extends StdDeserializer<Event> {
         if (classNode == null) {
             return null;
         }
-        Optional<SerdeUtils.SupportedTypes> supportedType = SerdeUtils.SupportedTypes.getSupportedType(classNode.textValue());
-        if (!supportedType.isPresent()) {
+        var supportedType = SerdeUtils.SupportedTypes.getSupportedType(classNode.textValue());
+        if (supportedType.isEmpty()) {
             throw new IOException(String.format("Class %s is unsupported therefore value could not be deserialized",
-                                                classNode.textValue()));
+                    classNode.textValue()));
         }
-        ValueReader reader = getValueReader(supportedType.get());
+        var reader = getValueReader(supportedType.get());
         return reader.read(node);
     }
 
@@ -116,6 +111,8 @@ public class EventDeserializer extends StdDeserializer<Event> {
                 return node -> node.get(SerdeUtils.OBJECT_VALUE_FIELD).bigIntegerValue();
             case BIGDECIMAL:
                 return node -> node.get(SerdeUtils.OBJECT_VALUE_FIELD).decimalValue();
+            case ARRAY:
+                return node -> readCollection(node.get(SerdeUtils.OBJECT_VALUE_FIELD));
             case DATE:
                 return node -> {
                     try {
@@ -124,6 +121,8 @@ public class EventDeserializer extends StdDeserializer<Event> {
                         throw new IOException(e);
                     }
                 };
+            case UUID:
+                return node -> UUID.fromString(node.get(SerdeUtils.OBJECT_VALUE_FIELD).textValue());
             case EVENT:
                 return node -> {
                     String eventName = node.get(SerdeUtils.EventProperties.EVENT_NAME.name()).asText();
@@ -144,10 +143,8 @@ public class EventDeserializer extends StdDeserializer<Event> {
                 };
             default:
                 return node -> {
-                    String className = node.get(SerdeUtils.OBJECT_CLASS_FIELD).asText();
                     try {
-                        return Serializable.class
-                                .cast(OBJECT_MAPPER.treeToValue(node.get(SerdeUtils.OBJECT_VALUE_FIELD), Class.forName(className)));
+                        return node.get(SerdeUtils.OBJECT_VALUE_FIELD).toString();
                     } catch (Exception e) {
                         throw new IOException("Event cannot be instantiated", e);
                     }

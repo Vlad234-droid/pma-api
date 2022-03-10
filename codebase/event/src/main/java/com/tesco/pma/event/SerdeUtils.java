@@ -1,20 +1,24 @@
 package com.tesco.pma.event;
 
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
-import lombok.experimental.UtilityClass;
 
 @Slf4j
 @UtilityClass
 public class SerdeUtils {
 
-    public static final String OBJECT_CLASS_FIELD = "class";
+    public static final String OBJECT_CLASS_FIELD = "type";
     public static final String OBJECT_VALUE_FIELD = "value";
 
     // Note: to parse localized zone offset (like 'GMT+6') - space should be added to the end of the datetime string.
@@ -36,9 +40,10 @@ public class SerdeUtils {
     }
 
     public enum SupportedTypes {
-        LONG(Long.class), INT(Integer.class), FLOAT(Float.class), DOUBLE(Double.class), STRING(String.class), BIGINT(BigInteger.class),
-        BIGDECIMAL(BigDecimal.class), EVENT(EventSupport.class), DATE(java.util.Date.class),
-        SERIALIZABLE(Serializable.class);
+        LONG(Long.class), INT(Integer.class), FLOAT(Float.class), DOUBLE(Double.class),
+        STRING(String.class), BIGINT(BigInteger.class), BIGDECIMAL(BigDecimal.class), EVENT(EventSupport.class),
+        DATE(Date.class), UUID(java.util.UUID.class), ARRAY(ArrayList.class), //NOPMD
+        OBJECT(Serializable.class);
 
         private final Class<? extends Serializable> clazz;
 
@@ -46,29 +51,30 @@ public class SerdeUtils {
             this.clazz = clazz;
         }
 
-        public Class<? extends Serializable> getClazz() {
-            return clazz;
+        public static Optional<SupportedTypes> getSupportedType(String className) {
+            return Arrays.stream(values()).filter(v -> v.name().equalsIgnoreCase(className)).findFirst();
         }
 
-        public static Optional<SupportedTypes> getSupportedType(String className) {
-            Optional<SupportedTypes> optionalType =
+        public static Optional<SupportedTypes> getSupportedType(Object object) {
+            var className = object.getClass().getName();
+            var optionalType =
                     Arrays.stream(SupportedTypes.values()).filter(type -> type.clazz.getName().equals(className)).findAny();
             if (optionalType.isPresent()) {
                 return optionalType;
             } else {
                 try {
-                    if (SERIALIZABLE.clazz.isAssignableFrom(Class.forName(className))) {
-                        return Optional.of(SERIALIZABLE);
+                    Class<?> typeClass = Class.forName(className);
+                    if (typeClass.isArray() || Collection.class.isAssignableFrom(typeClass)) {
+                        return Optional.of(ARRAY);
+                    }
+                    if (OBJECT.clazz.isAssignableFrom(typeClass)) {
+                        return Optional.of(OBJECT);
                     }
                 } catch (ClassNotFoundException e) {
                     log.error("Fail to find class - " + className, e);
                 }
                 return Optional.empty();
             }
-        }
-
-        public static Optional<SupportedTypes> getSupportedType(Object object) {
-            return getSupportedType(object.getClass().getName());
         }
     }
 }
