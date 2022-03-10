@@ -210,7 +210,6 @@
     </bpmn:boundaryEvent>
     <bpmn:serviceTask id="Activity_0z4446w" name="Init&#10;process" camunda:class="com.tesco.pma.flow.handlers.InitCycleHandler">
       <bpmn:incoming>Flow_0nbbfyl</bpmn:incoming>
-      <bpmn:incoming>Flow_1qypu7n</bpmn:incoming>
       <bpmn:outgoing>Flow_000dycs</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:boundaryEvent id="Event_0hw207d" name="Initialization&#10;error" attachedToRef="Activity_0z4446w">
@@ -221,11 +220,6 @@
       <bpmn:incoming>Flow_0kcyq0g</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0kcyq0g" sourceRef="Event_0hw207d" targetRef="Event_010wo6f" />
-    <bpmn:sequenceFlow id="Flow_1qypu7n" sourceRef="PM_COLLEAGUE_CYCLE_CREATE_ID" targetRef="Activity_0z4446w" />
-    <bpmn:startEvent id="PM_COLLEAGUE_CYCLE_CREATE_ID">
-      <bpmn:outgoing>Flow_1qypu7n</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0ipt8hn" messageRef="Message_0k1rokg" />
-    </bpmn:startEvent>
     <bpmn:textAnnotation id="TextAnnotation_0xgpen9">
       <bpmn:text>Parameters:
 PM_CYCLE the cycle
@@ -237,14 +231,6 @@ or
 COLLEAGUE_UUID - assign the employee</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_12bv29p" sourceRef="Event_0e0xeep" targetRef="TextAnnotation_0xgpen9" />
-    <bpmn:textAnnotation id="TextAnnotation_15rrvoi">
-      <bpmn:text>Event Name:
-PM_COLLEAGUE_CYCLE_CREATE_GROUP_A1
-Parameters:
-PM_CYCLE_UUID
-COLLEAGUE_UUID</bpmn:text>
-    </bpmn:textAnnotation>
-    <bpmn:association id="Association_02cxcld" sourceRef="PM_COLLEAGUE_CYCLE_CREATE_ID" targetRef="TextAnnotation_15rrvoi" />
   </bpmn:process>
   <bpmn:message id="Message_1nslsct" name="IMPORT_NEW_COLLEAGUE" />
   <bpmn:message id="Message_1ujyhkz" name="CEP_COLLEAGUE_ADDED" />
@@ -254,12 +240,6 @@ COLLEAGUE_UUID</bpmn:text>
   <bpmn:message id="Message_0k1rokg" name="PM_COLLEAGUE_CYCLE_CREATE_GROUP_A1" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="group_a1">
-      <bpmndi:BPMNEdge id="Flow_1qypu7n_di" bpmnElement="Flow_1qypu7n">
-        <di:waypoint x="258" y="350" />
-        <di:waypoint x="274" y="350" />
-        <di:waypoint x="274" y="330" />
-        <di:waypoint x="290" y="330" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0kcyq0g_di" bpmnElement="Flow_0kcyq0g">
         <di:waypoint x="360" y="358" />
         <di:waypoint x="360" y="402" />
@@ -444,14 +424,8 @@ COLLEAGUE_UUID</bpmn:text>
       <bpmndi:BPMNShape id="Event_010wo6f_di" bpmnElement="Event_010wo6f">
         <dc:Bounds x="342" y="402" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0hp071o_di" bpmnElement="PM_COLLEAGUE_CYCLE_CREATE_ID">
-        <dc:Bounds x="222" y="332" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0xgpen9_di" bpmnElement="TextAnnotation_0xgpen9">
         <dc:Bounds x="160" y="120" width="280" height="124" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_15rrvoi_di" bpmnElement="TextAnnotation_15rrvoi">
-        <dc:Bounds x="160" y="450" width="210" height="96" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0ngjglu_di" bpmnElement="Event_0hw207d">
         <dc:Bounds x="342" y="322" width="36" height="36" />
@@ -468,10 +442,6 @@ COLLEAGUE_UUID</bpmn:text>
       <bpmndi:BPMNEdge id="Association_12bv29p_di" bpmnElement="Association_12bv29p">
         <di:waypoint x="240" y="282" />
         <di:waypoint x="240" y="244" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_02cxcld_di" bpmnElement="Association_02cxcld">
-        <di:waypoint x="240" y="368" />
-        <di:waypoint x="240" y="450" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
