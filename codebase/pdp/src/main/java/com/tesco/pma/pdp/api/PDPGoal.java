@@ -1,7 +1,6 @@
-package com.tesco.pma.pdp.domain;
+package com.tesco.pma.pdp.api;
 
 import com.tesco.pma.api.MapJson;
-import com.tesco.pma.pdp.api.PDPGoalStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
