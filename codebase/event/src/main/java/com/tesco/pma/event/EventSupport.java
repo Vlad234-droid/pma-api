@@ -28,7 +28,7 @@ public class EventSupport implements Event {
 
     private static final long serialVersionUID = 3665859671824003271L;
 
-    protected Map<String, Serializable> properties = new LinkedHashMap<>();
+    private final Map<String, Serializable> properties = new LinkedHashMap<>();
 
     public <E extends Enum<E>> EventSupport(E eventName) {
         this(eventName == null ? null : eventName.name());
@@ -54,11 +54,7 @@ public class EventSupport implements Event {
 
     public static EventSupport create(String eventName, Map<String, Serializable> eventParams) {
         var event = new EventSupport(eventName);
-
-        for (Map.Entry<String, Serializable> entry : eventParams.entrySet()) {
-            event.putProperty(entry.getKey(), entry.getValue());
-        }
-
+        eventParams.forEach(event::putProperty);
         return event;
     }
 
@@ -85,13 +81,13 @@ public class EventSupport implements Event {
             throw new IllegalArgumentException("Please use an appropriate set method instead");
         }
         if (value instanceof Collection) {
-            Collection<?> collectionValue = (Collection<?>) value;
+            var collectionValue = (Collection<?>) value;
             if (collectionValue.stream()
-                    .anyMatch(candidate -> !SerdeUtils.SupportedTypes.getSupportedType(candidate).isPresent())) {
+                    .anyMatch(candidate -> SerdeUtils.SupportedTypes.getSupportedType(candidate).isEmpty())) {
                 throw new IllegalArgumentException("Collection property contains non supported element types");
             }
         } else {
-            if (!SerdeUtils.SupportedTypes.getSupportedType(value).isPresent()) {
+            if (SerdeUtils.SupportedTypes.getSupportedType(value).isEmpty()) {
                 throw new IllegalArgumentException(String.format("Provided value type %s is not supported", value.getClass().getName()));
             }
         }

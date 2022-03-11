@@ -15,28 +15,28 @@ class EventSupportTest {
 
     @Test
     void testNotValidPropertyNameEventPriority() {
-        EventSupport event = new EventSupport(EVENT_NAME);
-        Exception expected = assertThrows(IllegalArgumentException.class, () -> {
-            event.putProperty(SerdeUtils.EventProperties.EVENT_PRIORITY.name(), "value1");
-        });
+        var event = new EventSupport(EVENT_NAME);
+        var name = SerdeUtils.EventProperties.EVENT_PRIORITY.name();
+        var expected = assertThrows(IllegalArgumentException.class,
+                () -> event.putProperty(name, "value1"));
         Assertions.assertNotNull(expected);
     }
 
     @Test
     void testNotValidPropertyNameEventName() {
-        EventSupport event = new EventSupport(EVENT_NAME);
-        Exception expected = assertThrows(IllegalArgumentException.class, () -> {
-            event.putProperty(SerdeUtils.EventProperties.EVENT_NAME.name(), "value2");
-        });
+        var event = new EventSupport(EVENT_NAME);
+        var name = SerdeUtils.EventProperties.EVENT_NAME.name();
+        var expected = assertThrows(IllegalArgumentException.class,
+                () -> event.putProperty(name, "value2"));
         Assertions.assertNotNull(expected);
     }
 
     @Test
     void testNotValidPropertyNameCallbackEvent() {
-        EventSupport event = new EventSupport(EVENT_NAME);
-        Exception expected = assertThrows(IllegalArgumentException.class, () -> {
-            event.putProperty(SerdeUtils.EventProperties.CALLBACK_EVENT.name(), "value3");
-        });
+        var event = new EventSupport(EVENT_NAME);
+        var name = SerdeUtils.EventProperties.CALLBACK_EVENT.name();
+        var expected = assertThrows(IllegalArgumentException.class,
+                () -> event.putProperty(name, "value3"));
         Assertions.assertNotNull(expected);
     }
 
@@ -51,50 +51,47 @@ class EventSupportTest {
 
     @Test
     void testNotValidPropertyNullName() {
-        EventSupport event = new EventSupport(EVENT_NAME);
-        Exception expected = assertThrows(IllegalArgumentException.class, () -> {
-            event.putProperty("", null);
-        });
+        var event = new EventSupport(EVENT_NAME);
+        var expected = assertThrows(IllegalArgumentException.class,
+                () -> event.putProperty("", null));
         Assertions.assertNotNull(expected);
     }
 
     @Test
     void testNotValidPropertyEmptyName() {
-        EventSupport event = new EventSupport(EVENT_NAME);
-        Exception expected = assertThrows(IllegalArgumentException.class, () -> {
-            event.putProperty("", null);
-        });
+        var event = new EventSupport(EVENT_NAME);
+        var expected = assertThrows(IllegalArgumentException.class,
+                () -> event.putProperty("", null));
         Assertions.assertNotNull(expected);
     }
 
     @Test
     void testNotValidPropertyNullValue() {
-        EventSupport event = new EventSupport(EVENT_NAME);
-        Exception expected = assertThrows(IllegalArgumentException.class, () -> {
-            event.putProperty(SerdeUtils.EventProperties.CALLBACK_SERVICE_URL.name(), null);
-        });
+        var event = new EventSupport(EVENT_NAME);
+        var name = SerdeUtils.EventProperties.CALLBACK_SERVICE_URL.name();
+        var expected = assertThrows(IllegalArgumentException.class,
+                () -> event.putProperty(name, null));
         Assertions.assertNotNull(expected);
     }
 
     @Test
     void testNotValidCollectionPropertyValue() {
-        EventSupport event = new EventSupport(EVENT_NAME);
-        ArrayList<Object> list = new ArrayList<>();
+        var event = new EventSupport(EVENT_NAME);
+        var list = new ArrayList<>();
         list.add(new Object());
-        Exception expected = assertThrows(IllegalArgumentException.class, () -> {
-            event.putProperty("prop1", list);
-        });
+        var expected = assertThrows(IllegalArgumentException.class,
+                () -> event.putProperty("prop1", list));
         Assertions.assertNotNull(expected);
     }
 
     @Test
     void testEventCreate() {
-        String code = "code";
-        String callbackCode = "callbackCode";
-        String callbackServiceURL = "callbackServiceURL";
-        String serializableKey = "serializableKey";
+        var code = "code";
+        var callbackCode = "callbackCode";
+        var callbackServiceURL = "callbackServiceURL";
+        var serializableKey = "serializableKey";
         Short serializableValue = 1;
-        EventSupport event = new EventSupport(code);
+        var event = new EventSupport(code);
         event.setCallbackEvent(new EventSupport(callbackCode));
         event.setCallbackServiceURL(callbackServiceURL);
         event.setEventPriority(EventPriority.HIGH);
@@ -102,7 +99,7 @@ class EventSupportTest {
         event.putProperty(serializableKey, serializableValue);
 
         assertEquals(code, event.getEventName());
-        String eventId = event.getEventId();
+        var eventId = event.getEventId();
         assertNotNull(eventId);
         assertEquals(eventId.length(), UUID.randomUUID().toString().replace("-", "").length());
         assertEquals(EventPriority.HIGH, event.getEventPriority());

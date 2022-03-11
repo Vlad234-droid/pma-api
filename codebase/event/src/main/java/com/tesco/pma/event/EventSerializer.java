@@ -1,13 +1,10 @@
 package com.tesco.pma.event;
 
-import static com.tesco.pma.event.SerdeUtils.EventProperties.CALLBACK_EVENT;
-import static com.tesco.pma.event.SerdeUtils.EventProperties.CALLBACK_SERVICE_URL;
-import static com.tesco.pma.event.SerdeUtils.EventProperties.EVENT_ID;
-import static com.tesco.pma.event.SerdeUtils.EventProperties.EVENT_NAME;
-import static com.tesco.pma.event.SerdeUtils.EventProperties.EVENT_PRIORITY;
-import static com.tesco.pma.event.SerdeUtils.EventProperties.PROPERTIES;
-import static com.tesco.pma.event.SerdeUtils.OBJECT_CLASS_FIELD;
-import static com.tesco.pma.event.SerdeUtils.OBJECT_VALUE_FIELD;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.tesco.pma.event.SerdeUtils.EventProperties;
+import com.tesco.pma.event.SerdeUtils.SupportedTypes;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -16,16 +13,16 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-
-import com.tesco.pma.event.SerdeUtils.EventProperties;
-import com.tesco.pma.event.SerdeUtils.SupportedTypes;
+import static com.tesco.pma.event.SerdeUtils.EventProperties.CALLBACK_EVENT;
+import static com.tesco.pma.event.SerdeUtils.EventProperties.CALLBACK_SERVICE_URL;
+import static com.tesco.pma.event.SerdeUtils.EventProperties.EVENT_ID;
+import static com.tesco.pma.event.SerdeUtils.EventProperties.EVENT_NAME;
+import static com.tesco.pma.event.SerdeUtils.EventProperties.EVENT_PRIORITY;
+import static com.tesco.pma.event.SerdeUtils.EventProperties.PROPERTIES;
+import static com.tesco.pma.event.SerdeUtils.OBJECT_CLASS_FIELD;
+import static com.tesco.pma.event.SerdeUtils.OBJECT_VALUE_FIELD;
 
 public class EventSerializer extends StdSerializer<Event> {
 
@@ -42,23 +39,23 @@ public class EventSerializer extends StdSerializer<Event> {
 
     @Override
     public void serialize(Event event, JsonGenerator gen, SerializerProvider provider) throws IOException {
-        ValueWriter valueWriter = getValueWriter(SupportedTypes.EVENT);
+        var valueWriter = getValueWriter(SupportedTypes.EVENT);
         writeObject(valueWriter, event, gen);
     }
 
     private void writeProperties(String fieldName, Map<String, Serializable> properties, JsonGenerator gen) throws IOException {
-        Set<String> keysToSerialize =
+        var keysToSerialize =
                 properties.keySet().stream().filter(key -> EventProperties.find(key) == null).collect(Collectors.toSet());
         if (keysToSerialize.isEmpty()) {
             return;
         }
         gen.writeObjectFieldStart(fieldName);
-        for (String key : keysToSerialize) {
-            Serializable value = properties.get(key);
+        for (var key : keysToSerialize) {
+            var value = properties.get(key);
             if (value instanceof Collection) {
                 writeCollection(key, (Collection<?>) value, gen);
             } else {
-                Optional<SupportedTypes> supportedType = SupportedTypes.getSupportedType(value);
+                var supportedType = SupportedTypes.getSupportedType(value);
                 if (supportedType.isPresent()) {
                     writeObject(getValueWriter(supportedType.get()), value, key, gen);
                 }
@@ -72,9 +69,9 @@ public class EventSerializer extends StdSerializer<Event> {
             return;
         }
         gen.writeArrayFieldStart(fieldName);
-        for (Object value : values) {
-            Serializable serializableValue = (Serializable) value;
-            Optional<SupportedTypes> supportedType = SupportedTypes.getSupportedType(serializableValue);
+        for (var value : values) {
+            var serializableValue = (Serializable) value;
+            var supportedType = SupportedTypes.getSupportedType(serializableValue);
             if (supportedType.isPresent()) {
                 writeObject(getValueWriter(supportedType.get()), serializableValue, gen);
             }
@@ -109,7 +106,7 @@ public class EventSerializer extends StdSerializer<Event> {
                 return (gen, value) -> writeCollection(OBJECT_VALUE_FIELD, (Collection<?>) value, gen);
             case EVENT:
                 return (gen, value) -> {
-                    Event event = (Event) value;
+                    var event = (Event) value;
                     if (event == null) {
                         return;
                     }

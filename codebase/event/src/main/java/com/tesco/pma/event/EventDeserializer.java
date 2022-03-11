@@ -10,7 +10,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
@@ -40,7 +39,7 @@ public class EventDeserializer extends StdDeserializer<Event> {
         if (node == null) {
             return null;
         }
-        JsonNode classNode = node.get(SerdeUtils.OBJECT_CLASS_FIELD);
+        var classNode = node.get(SerdeUtils.OBJECT_CLASS_FIELD);
         if (classNode == null) {
             return new ExternalEventReader().read(node);
         }
@@ -52,15 +51,15 @@ public class EventDeserializer extends StdDeserializer<Event> {
             return Collections.emptyMap();
         }
 
-        Map<String, Serializable> result = new HashMap<>();
-        for (Iterator<Map.Entry<String, JsonNode>> i = node.fields(); i.hasNext(); ) { //NOPMD
-            Map.Entry<String, JsonNode> entry = i.next();
+        var result = new HashMap<String, Serializable>();
+        for (var i = node.fields(); i.hasNext(); ) { //NOPMD
+            var entry = i.next();
             if (!EventSupport.isDefaultProperty(entry.getKey())) {
-                JsonNode value = entry.getValue();
+                var value = entry.getValue();
                 if (value.isArray()) {
                     result.put(entry.getKey(), readCollection(value));
                 } else {
-                    Serializable readValue = readValue(value);
+                    var readValue = readValue(value);
                     if (readValue != null) {
                         result.put(entry.getKey(), readValue);
                     }
@@ -72,7 +71,7 @@ public class EventDeserializer extends StdDeserializer<Event> {
 
     private ArrayList<Serializable> readCollection(JsonNode value) throws IOException { //NOPMD
         var list = new ArrayList<Serializable>();
-        for (JsonNode childNode : value) {
+        for (var childNode : value) {
             var readValue = readValue(childNode);
             if (readValue != null) {
                 list.add(readValue);
@@ -82,7 +81,7 @@ public class EventDeserializer extends StdDeserializer<Event> {
     }
 
     private Serializable readValue(JsonNode node) throws IOException {
-        JsonNode classNode = node.get(SerdeUtils.OBJECT_CLASS_FIELD);
+        var classNode = node.get(SerdeUtils.OBJECT_CLASS_FIELD);
         if (classNode == null) {
             return null;
         }
@@ -127,10 +126,10 @@ public class EventDeserializer extends StdDeserializer<Event> {
                 return node -> {
                     String eventName = node.get(SerdeUtils.EventProperties.EVENT_NAME.name()).asText();
                     try {
-                        EventSupport event = new EventSupport(eventName, node.get(SerdeUtils.EventProperties.EVENT_ID.name()).asText());
+                        var event = new EventSupport(eventName, node.get(SerdeUtils.EventProperties.EVENT_ID.name()).asText());
                         event.setEventPriority(
                                 EventPriority.getByName(node.get(SerdeUtils.EventProperties.EVENT_PRIORITY.name()).asText()));
-                        JsonNode callbackServiceURLNode = node.get(SerdeUtils.EventProperties.CALLBACK_SERVICE_URL.name());
+                        var callbackServiceURLNode = node.get(SerdeUtils.EventProperties.CALLBACK_SERVICE_URL.name());
                         if (callbackServiceURLNode != null) {
                             event.setCallbackServiceURL(callbackServiceURLNode.asText());
                         }

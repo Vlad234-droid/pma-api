@@ -63,7 +63,7 @@ public class SerdeUtils {
                 return optionalType;
             } else {
                 try {
-                    Class<?> typeClass = Class.forName(className);
+                    var typeClass = Class.forName(className);
                     if (typeClass.isArray() || Collection.class.isAssignableFrom(typeClass)) {
                         return Optional.of(ARRAY);
                     }
