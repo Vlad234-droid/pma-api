@@ -63,7 +63,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private OAuth2ResourceServerProperties resourceServerProperties;
 
     @Autowired
-    private OpaqueTokenIntrospector identityOpaqueTokenIntrospector;
+    private OpaqueTokenIntrospector identityOpaqueTokenIntrospector; //NOSONAR
 
     @Autowired
     @Qualifier("identityAuthenticationEntryPoint")
