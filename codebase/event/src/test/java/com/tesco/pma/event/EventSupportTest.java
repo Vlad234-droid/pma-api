@@ -42,10 +42,10 @@ class EventSupportTest {
 
     @Test
     void testNotValidPropertyNameCallbackServiceURL() {
-        EventSupport event = new EventSupport(EVENT_NAME);
-        Exception expected = assertThrows(IllegalArgumentException.class, () -> {
-            event.putProperty(SerdeUtils.EventProperties.CALLBACK_SERVICE_URL.name(), "value4");
-        });
+        var event = new EventSupport(EVENT_NAME);
+        var name = SerdeUtils.EventProperties.CALLBACK_SERVICE_URL.name();
+        var expected = assertThrows(IllegalArgumentException.class,
+                () -> event.putProperty(name, "value4"));
         Assertions.assertNotNull(expected);
     }
 
