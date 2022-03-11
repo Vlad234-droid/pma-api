@@ -3,7 +3,7 @@
 
 <mapper namespace="com.tesco.pma.pdp.dao.PDPDao">
 
-    <resultMap id="goalResultMap" type="com.tesco.pma.pdp.domain.PDPGoal">
+    <resultMap id="goalResultMap" type="com.tesco.pma.pdp.api.PDPGoal">
         <id property="uuid" column="uuid"/>
         <result property="colleagueUuid" column="colleague_uuid"/>
         <result property="number" column="number"/>
