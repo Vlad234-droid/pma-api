@@ -50,13 +50,12 @@ RUN set -o errexit -o nounset \
     && ln --symbolic "${GRADLE_HOME}/bin/gradle" /usr/bin/gradle \
     \
     && echo "Testing Gradle installation" \
-    && gradle --version \
-    && mkdir -p /home/gradle/app
+    && gradle --version
+
+WORKDIR /home/gradle/app
 
 COPY --chown=gradle:gradle --chmod=0755 ./scripts/start.sh /home/gradle/app
 COPY --chown=gradle:gradle ./codebase/ /home/gradle/app
-
-WORKDIR /home/gradle/app
 
 # Build app, and skip tests
 RUN gradle build --no-daemon -PbuildProfiles=$BUILD_PROFILES -x test \
@@ -85,4 +84,4 @@ EXPOSE 8090/tcp
 
 WORKDIR $SERVICE_HOME
 
-CMD java -Dloader.path=$SERVICE_HOME/config,$SERVICE_HOME/properties $JAVA_OPTS -jar ./app.jar $JAVA_ARGS
+CMD $SERVICE_HOME/start.sh
