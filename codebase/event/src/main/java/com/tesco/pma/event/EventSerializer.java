@@ -82,7 +82,7 @@ public class EventSerializer extends StdSerializer<Event> {
         gen.writeEndArray();
     }
 
-    private ValueWriter getValueWriter(SupportedTypes supportedType) throws IOException {
+    private ValueWriter getValueWriter(SupportedTypes supportedType) {
         switch (supportedType) {
             case STRING:
                 return (gen, value) -> gen.writeStringField(OBJECT_VALUE_FIELD, (String) value);

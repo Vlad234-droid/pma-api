@@ -71,9 +71,8 @@ class DatabaseHealthIndicatorTest {
         assertNotNull(health.getError());
         assertEquals(DB_CONNECTION_ERROR, health.getError().get("type"));
         assertNotNull(health.getError().get(BODY));
-        assertThat((String) health.getError().get(BODY)).contains(defaultDbIndicator.getHealthIndicatorProperties().getName());
-        assertThat((String) health.getError().get(BODY)).contains(defaultDbIndicator.getHealthIndicatorProperties().getReference());
-        assertThat((String) health.getError().get(BODY))
+        assertThat((String) health.getError().get(BODY)).contains(defaultDbIndicator.getHealthIndicatorProperties().getName())
+                .contains(defaultDbIndicator.getHealthIndicatorProperties().getReference())
                 .contains(StringUtils.deleteAny(defaultDbIndicator.getHealthIndicatorProperties().getUrl(), "$"));
     }
 }

@@ -17,7 +17,7 @@ import org.mockito.Mockito;
 import java.util.List;
 import java.util.UUID;
 
-public class NotesServiceTest {
+class NotesServiceTest {
 
     private final FoldersDAO foldersDao = Mockito.mock(FoldersDAO.class);
     private final NotesDAO notesDao = Mockito.mock(NotesDAO.class);
@@ -40,7 +40,7 @@ public class NotesServiceTest {
     }
 
     @Test
-    public void createNoteWithWrongReferenceTest(){
+    void createNoteWithWrongReferenceTest(){
 
         UUID referenceUuid = UUID.randomUUID();
 
@@ -64,7 +64,7 @@ public class NotesServiceTest {
     }
 
     @Test
-    public void createNoteWithOwnerEqualsReferenceTest(){
+    void createNoteWithOwnerEqualsReferenceTest(){
 
         var note = new Note();
         note.setOwnerColleagueUuid(currentUser.getColleague().getColleagueUUID());

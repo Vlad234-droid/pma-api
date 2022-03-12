@@ -99,14 +99,14 @@ public class CamundaProcessManagerServiceTest {
     }
 
     @Test
-    public void deployProcessTest() throws FileNotFoundException, InitializationException {
+    void deployProcessTest() throws FileNotFoundException, InitializationException {
         deploymentId = processManager.deployProcessArchive(new File(PROCESS_ARCHIVE_PATH)).getId();
         long deploymentCount = repositoryService.createDeploymentQuery().deploymentId(deploymentId).count();
         assertEquals(1, deploymentCount, "Should be 1 deployed process");
     }
 
     @Test
-    public void undeployProcessByKeyTest() throws InitializationException {
+    void undeployProcessByKeyTest() throws InitializationException {
         deployProcess();
         long deploymentCount = repositoryService.createProcessDefinitionQuery().processDefinitionKey(PROCESS_NAME).count();
         assertEquals(2, deploymentCount, "Should be 2 deployed process");
@@ -116,7 +116,7 @@ public class CamundaProcessManagerServiceTest {
     }
 
     @Test
-    public void undeployProcessByKeyVersionTest() throws InitializationException {
+    void undeployProcessByKeyVersionTest() throws InitializationException {
         deployProcess();
         long deploymentCount = repositoryService.createProcessDefinitionQuery().processDefinitionKey(PROCESS_NAME).count();
         assertEquals(2, deploymentCount, "Should be 2 deployed process");
@@ -126,7 +126,7 @@ public class CamundaProcessManagerServiceTest {
     }
 
     @Test
-    public void runProcessByKeyTest() throws ProcessExecutionException {
+    void runProcessByKeyTest() throws ProcessExecutionException {
         String executionId = processManager.runProcess(PROCESS_NAME);
         Execution execution = runtimeService.createExecutionQuery().executionId(executionId).singleResult();
         assertNotNull(execution, "Execution should be present");
@@ -134,7 +134,7 @@ public class CamundaProcessManagerServiceTest {
     }
 
     @Test
-    public void runProcessByKeyVersionTest() throws ProcessExecutionException {
+    void runProcessByKeyVersionTest() throws ProcessExecutionException {
         deployProcess();
         final int version = 1;
         String executionId = processManager.runProcess(PROCESS_NAME, String.valueOf(version));
@@ -151,7 +151,7 @@ public class CamundaProcessManagerServiceTest {
     }
 
     @Test
-    public void signalProcessByEventTest() throws ProcessExecutionException {
+    void signalProcessByEventTest() throws ProcessExecutionException {
         String processInstanceId = processManager.runProcess(PROCESS_NAME);
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
         assertNotNull(processInstance, "Process instance should be present");
@@ -161,7 +161,7 @@ public class CamundaProcessManagerServiceTest {
     }
 
     @Test
-    public void testSameMessageNameFails() {
+    void testSameMessageNameFails() {
         String deploymentId = repositoryService.createDeployment().addClasspathResource(SAME_MESSAGE_BPMN20_XML).deploy().getId();
         try {
             repositoryService.createDeployment().addClasspathResource(OTHER_SAME_MESSAGE_BPMN20_XML).deploy();
@@ -176,7 +176,7 @@ public class CamundaProcessManagerServiceTest {
     }
 
     @Test
-    public void runUnexistedProcessByKey() {
+    void runUnexistedProcessByKey() {
         assertThrows(ProcessExecutionException.class, () -> processManager.runProcess(UNEXISTED));
     }
 }

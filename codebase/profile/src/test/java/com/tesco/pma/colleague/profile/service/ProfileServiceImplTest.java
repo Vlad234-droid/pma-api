@@ -1,15 +1,15 @@
 package com.tesco.pma.colleague.profile.service;
 
-import com.tesco.pma.colleague.profile.dao.ProfileDAO;
-import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
-import com.tesco.pma.colleague.profile.service.util.ColleagueFactsApiLocalMapper;
-import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.colleague.profile.AbstractProfileTests;
 import com.tesco.pma.colleague.profile.LocalTestConfig;
 import com.tesco.pma.colleague.profile.dao.ProfileAttributeDAO;
-import com.tesco.pma.colleague.profile.domain.TypedAttribute;
+import com.tesco.pma.colleague.profile.dao.ProfileDAO;
+import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
+import com.tesco.pma.colleague.profile.domain.TypedAttribute;
+import com.tesco.pma.colleague.profile.service.util.ColleagueFactsApiLocalMapper;
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.service.colleague.ColleagueApiService;
 import org.junit.jupiter.api.Test;
@@ -139,8 +139,9 @@ class ProfileServiceImplTest extends AbstractProfileTests {
         when(mockProfileDAO.update(any(TypedAttribute.class)))
                 .thenReturn(0);
 
+        var profileAttributes = profileAttributes(3);
         var exception = assertThrows(NotFoundException.class,
-                () -> profileService.updateProfileAttributes(colleagueUuid, profileAttributes(3)));
+                () -> profileService.updateProfileAttributes(colleagueUuid, profileAttributes));
 
         assertEquals(PROFILE_ATTRIBUTE_NOT_FOUND.name(), exception.getCode());
         assertEquals(PROFILE_ATTRIBUTE_NOT_FOUND_MESSAGE, exception.getMessage());
@@ -170,8 +171,9 @@ class ProfileServiceImplTest extends AbstractProfileTests {
         when(mockProfileDAO.create(any(TypedAttribute.class)))
                 .thenReturn(0);
 
+        var profileAttributes = profileAttributes(3);
         var exception = assertThrows(NotFoundException.class,
-                () -> profileService.createProfileAttributes(colleagueUuid, profileAttributes(3)));
+                () -> profileService.createProfileAttributes(colleagueUuid, profileAttributes));
 
         assertEquals(PROFILE_ATTRIBUTE_NOT_FOUND.name(), exception.getCode());
         assertEquals(PROFILE_ATTRIBUTE_NOT_FOUND_MESSAGE, exception.getMessage());
@@ -186,8 +188,9 @@ class ProfileServiceImplTest extends AbstractProfileTests {
         when(mockProfileDAO.create(any(TypedAttribute.class)))
                 .thenThrow(DuplicateKeyException.class);
 
+        var profileAttributes = profileAttributes(3);
         var exception = assertThrows(DatabaseConstraintViolationException.class,
-                () -> profileService.createProfileAttributes(colleagueUuid, profileAttributes(3)));
+                () -> profileService.createProfileAttributes(colleagueUuid, profileAttributes));
 
         assertEquals(PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS.name(), exception.getCode());
         assertEquals(PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS_MESSAGE, exception.getMessage());
@@ -217,8 +220,9 @@ class ProfileServiceImplTest extends AbstractProfileTests {
         when(mockProfileDAO.delete(any(TypedAttribute.class)))
                 .thenReturn(0);
 
+        var profileAttributes = profileAttributes(3);
         var exception = assertThrows(NotFoundException.class,
-                () -> profileService.deleteProfileAttributes(colleagueUuid, profileAttributes(3)));
+                () -> profileService.deleteProfileAttributes(colleagueUuid, profileAttributes));
 
         assertEquals(PROFILE_ATTRIBUTE_NOT_FOUND.name(), exception.getCode());
         assertEquals(PROFILE_ATTRIBUTE_NOT_FOUND_MESSAGE, exception.getMessage());

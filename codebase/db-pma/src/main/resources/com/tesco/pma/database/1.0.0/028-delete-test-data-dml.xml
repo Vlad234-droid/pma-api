@@ -1,0 +1,37 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet author="ypashynskyi" id="1">
+        <sql><![CDATA[
+            delete
+            from pm_cycle c
+            where c.uuid in ('3fa85f64-5717-4562-b3fc-2c963f66afa6',
+                             '3fa85f64-5717-4562-b3fc-2c963f66afa9',
+                             '3fa85f64-5717-4562-b3fc-2c963f66af10');
+            ]]>
+        </sql>
+        <rollback>
+            <sql><![CDATA[
+            select 1;
+            ]]></sql>
+        </rollback>
+    </changeSet>
+    <changeSet author="ypashynskyi" id="2">
+        <sql><![CDATA[
+            delete
+            from colleague c
+            where c.uuid in ('10000000-0000-0000-0000-000000000001',
+                             '10000000-0000-0000-0000-000000000002',
+                             '10000000-0000-0000-0000-000000000003',
+                             '10000000-0000-0000-0000-000000000004');
+            ]]>
+        </sql>
+        <rollback>
+            <sql><![CDATA[
+            select 1;
+            ]]></sql>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

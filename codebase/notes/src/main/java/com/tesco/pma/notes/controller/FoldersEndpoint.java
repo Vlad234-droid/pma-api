@@ -37,7 +37,7 @@ public class FoldersEndpoint {
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isColleague()")
-    public RestResponse<?> createFolder(@RequestBody Folder folder) {
+    public RestResponse<Folder> createFolder(@RequestBody Folder folder) {
         return RestResponse.success(notesService.createFolder(folder));
     }
 
@@ -55,7 +55,7 @@ public class FoldersEndpoint {
     @PutMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isColleague()")
-    public RestResponse<?> update(@PathVariable("id") UUID uuid, @RequestBody Folder folder) {
+    public RestResponse<Folder> update(@PathVariable("id") UUID uuid, @RequestBody Folder folder) {
         return RestResponse.success(notesService.updateFolder(folder));
     }
 
@@ -64,7 +64,7 @@ public class FoldersEndpoint {
     @DeleteMapping(value = "/{id}",produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isColleague()")
-    public RestResponse<?> delete(@PathVariable("id") UUID uuid) {
+    public RestResponse<Void> delete(@PathVariable("id") UUID uuid) {
         notesService.deleteFolder(uuid);
         return RestResponse.success();
     }

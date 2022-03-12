@@ -67,11 +67,11 @@
           "code": "Objective Status"
         },
         {
-          "id": "strategic-priority",
-          "name": "Strategic priority",
+          "id": "strategic-driver",
+          "name": "Strategic driver",
           "type": "STRING",
-          "description": "Link to Strategic priorities",
-          "code": "Strategic priority"
+          "description": "Link to Strategic drivers",
+          "code": "Strategic driver"
         },
         {
           "id": "title",
@@ -113,7 +113,7 @@
         "UKE12375188",
         1,
         "APPROVED",
-        "Priority",
+        "Driver",
         "Title",
         "How Achieved",
         "How Over-Achieved"

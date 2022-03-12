@@ -6,7 +6,7 @@ import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.pdp.LocalServiceTestConfig;
 import com.tesco.pma.pdp.dao.PDPDao;
-import com.tesco.pma.pdp.domain.PDPGoal;
+import com.tesco.pma.pdp.api.PDPGoal;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 @SpringBootTest(classes = {LocalServiceTestConfig.class, PDPServiceImpl.class})
 @ExtendWith(MockitoExtension.class)
-public class PDPServiceImplTest {
+class PDPServiceImplTest {
 
     private static final UUID GOAL_UUID_1 = UUID.fromString("6d37262f-3a00-4706-a74b-6bf98be65765");
     private static final UUID GOAL_UUID_2 = UUID.fromString("7d37262f-3a00-4706-a74b-6bf98be65765");
@@ -65,8 +65,9 @@ public class PDPServiceImplTest {
     void shouldThrowDatabaseConstraintViolationExceptionWhenCreateGoalsWithDuplicateKey() {
         when(pdpDao.createGoal(any())).thenThrow(DuplicateKeyException.class);
 
+        var goals = buildGoals(GOAL_UUID_1, GOAL_UUID_2);
         assertThrows(DatabaseConstraintViolationException.class, () ->
-                pdpService.createGoals(COLLEAGUE_UUID, buildGoals(GOAL_UUID_1, GOAL_UUID_2)));
+                pdpService.createGoals(COLLEAGUE_UUID, goals));
     }
 
     @Test
@@ -83,16 +84,18 @@ public class PDPServiceImplTest {
     void shouldThrowDatabaseConstraintViolationExceptionWhenUpdateGoalsWithDuplicateKey() {
         when(pdpDao.updateGoal(any())).thenThrow(DuplicateKeyException.class);
 
+        var goals = buildGoals(GOAL_UUID_1, GOAL_UUID_2);
         assertThrows(DatabaseConstraintViolationException.class, () ->
-                pdpService.updateGoals(COLLEAGUE_UUID, buildGoals(GOAL_UUID_1, GOAL_UUID_2)));
+                pdpService.updateGoals(COLLEAGUE_UUID, goals));
     }
 
     @Test
     void updateGoalsThrowsNotFoundExceptionWhenDaoReturnsNotOne() {
         when(pdpDao.updateGoal(any())).thenReturn(0);
 
+        var goals = buildGoals(GOAL_UUID_1, GOAL_UUID_2);
         assertThrows(NotFoundException.class, () ->
-                pdpService.updateGoals(COLLEAGUE_UUID, buildGoals(GOAL_UUID_1, GOAL_UUID_2)));
+                pdpService.updateGoals(COLLEAGUE_UUID, goals));
     }
 
     @Test

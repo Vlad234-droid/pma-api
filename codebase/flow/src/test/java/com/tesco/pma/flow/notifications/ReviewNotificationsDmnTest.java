@@ -25,7 +25,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class ReviewNotificationsDmnTest {
+class ReviewNotificationsDmnTest {
 
     private static final String PATH = "com/tesco/pma/flow/notifications/review/review_notifications_decisions.dmn";
     private static final String DMN_ID = "review_notifications_decisions_table";

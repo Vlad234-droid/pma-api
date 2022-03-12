@@ -162,8 +162,8 @@ public class InitTimelinePointHandler extends CamundaAbstractFlowHandler {
                 throw incorrectParameter(context, names, START, e);
             }
         } else {
-            log.debug("No parameter specified: " + names.get(START_DELAY) + ", " + names.get(START)
-                    + "\nCycle start date is used: " + calculatedStartDate);
+            log.debug("No parameter specified: {},{}\nCycle start date is used: {}",
+                    names.get(START_DELAY), names.get(START), calculatedStartDate);
         }
         context.setVariable(FlowParameters.START_DATE, calculatedStartDate);
         context.setVariable(FlowParameters.START_DATE_S, HandlerUtils.formatDate(calculatedStartDate));
