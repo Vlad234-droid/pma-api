@@ -53,7 +53,6 @@ public class DeploymentServiceImpl implements DeploymentService {
             return procdefs.iterator().next();
         } catch (InitializationException e) {
             log.error("Exception while deploying file: {}", file.getFileName());
-            //TODO throw exc
             return null;
         }
     }

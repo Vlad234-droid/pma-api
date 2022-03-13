@@ -29,7 +29,6 @@ public class PMCycleJsonbCombinedSerializer {
     private static final String DESCRIPTION = "description";
     private static final String TYPE = "type";
     private static final String CYCLE_TYPE = "cycleType";
-    private static final String REVIEW_TYPE = "reviewType";
     private static final String CYCLE = "cycle";
     private static final String PROPERTIES = "properties";
     private static final String TIMELINEPOINTS = "timelinePoints";
