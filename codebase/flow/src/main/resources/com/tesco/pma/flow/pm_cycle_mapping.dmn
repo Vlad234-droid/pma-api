@@ -261,7 +261,7 @@
       <rule id="excelRow9">
         <description>GROUP B</description>
         <inputEntry id="A9">
-          <text>"tesco stores limited &amp; oakwood distribution limited", "_null"</text>
+          <text>"tesco stores limited","oakwood distribution limited", "_null"</text>
         </inputEntry>
         <inputEntry id="B9">
           <text>"office"</text>
@@ -288,7 +288,7 @@
       <rule id="excelRow10">
         <description>GROUP B</description>
         <inputEntry id="A10">
-          <text>"tesco stores limited &amp; oakwood distribution limited", "_null"</text>
+          <text>"tesco stores limited","oakwood distribution limited", "_null"</text>
         </inputEntry>
         <inputEntry id="B10">
           <text>"office"</text>
@@ -316,7 +316,7 @@
       <rule id="excelRow11">
         <description>GROUP B</description>
         <inputEntry id="A11">
-          <text>"tesco stores limited &amp; oakwood distribution limited"</text>
+          <text>"tesco stores limited","oakwood distribution limited"</text>
         </inputEntry>
         <inputEntry id="B11">
           <text>"depot, distribution &amp; store"</text>
@@ -345,7 +345,7 @@
       <rule id="excelRow12">
         <description>GROUP B</description>
         <inputEntry id="A12">
-          <text>"tesco stores limited &amp; oakwood distribution limited"</text>
+          <text>"tesco stores limited","oakwood distribution limited"</text>
         </inputEntry>
         <inputEntry id="B12">
           <text>"depot, distribution &amp; store"</text>
@@ -374,7 +374,7 @@
       <rule id="excelRow13">
         <description>GROUP C</description>
         <inputEntry id="A13">
-          <text>"tesco stores limited &amp; oakwood distribution limited","_null"</text>
+          <text>"tesco stores limited","oakwood distribution limited","_null"</text>
         </inputEntry>
         <inputEntry id="B13">
           <text>"depot, distribution &amp; store"</text>

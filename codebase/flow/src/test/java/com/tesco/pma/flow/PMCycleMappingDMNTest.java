@@ -50,13 +50,13 @@ class PMCycleMappingDMNTest {
     @Test
     void groupAWl45() {
         assertSuccessRule(Map.of(
-                KEYS.LEGAL_EMPLOYER_NAME, "Tesco",
+                KEYS.LEGAL_EMPLOYER_NAME, TESCO_STORES_LIMITED,
                 KEYS.BUSINESS_TYPE, OFFICE,
                 KEYS.WORK_LEVEL, WorkLevel.WL4
         ), KEYS.GROUP_A1);
 
         assertSuccessRule(Map.of(
-                KEYS.LEGAL_EMPLOYER_NAME, "Tesco",
+                KEYS.LEGAL_EMPLOYER_NAME, TESCO_STORES_LIMITED,
                 KEYS.BUSINESS_TYPE, OFFICE,
                 KEYS.WORK_LEVEL, WorkLevel.WL5
         ), KEYS.GROUP_A1);
@@ -74,9 +74,10 @@ class PMCycleMappingDMNTest {
     @Test
     void groupAWl3() {
         assertSuccessRule(Map.of(
-                KEYS.LEGAL_EMPLOYER_NAME, "Tesco",
+                KEYS.LEGAL_EMPLOYER_NAME, "Tesco International Sourcing Limited",
                 KEYS.BUSINESS_TYPE, OFFICE,
-                KEYS.WORK_LEVEL, WorkLevel.WL3
+                KEYS.WORK_LEVEL, WorkLevel.WL3,
+                KEYS.SALARY_FREQUENCY, "Annual"
         ), KEYS.GROUP_A2);
     }
 
@@ -96,7 +97,8 @@ class PMCycleMappingDMNTest {
                 KEYS.LEGAL_EMPLOYER_NAME, TESCO_STORES_LIMITED,
                 KEYS.BUSINESS_TYPE, OFFICE,
                 KEYS.WORK_LEVEL, WorkLevel.WL2,
-                KEYS.SALARY_FREQUENCY, "Annual"
+                KEYS.SALARY_FREQUENCY, "Annual",
+                KEYS.IAM_SOURCE, "Access API"
         ), KEYS.GROUP_A2);
     }
 
@@ -104,7 +106,8 @@ class PMCycleMappingDMNTest {
     void groupBOffice() {
         assertSuccessRule(Map.of(
                 KEYS.LEGAL_EMPLOYER_NAME, TESCO_STORES_LIMITED,
-                KEYS.BUSINESS_TYPE, OFFICE
+                KEYS.BUSINESS_TYPE, OFFICE,
+                KEYS.IAM_SOURCE, "Access API"
         ), KEYS.GROUP_B);
     }
 
@@ -113,7 +116,8 @@ class PMCycleMappingDMNTest {
         assertSuccessRule(Map.of(
                 KEYS.LEGAL_EMPLOYER_NAME, TESCO_STORES_LIMITED,
                 KEYS.BUSINESS_TYPE, OFFICE,
-                KEYS.WORK_LEVEL, WorkLevel.WL1
+                KEYS.WORK_LEVEL, WorkLevel.WL1,
+                KEYS.IAM_SOURCE, "Access API"
         ), KEYS.GROUP_B);
     }
 
