@@ -69,7 +69,7 @@ class ReviewReportingDAOTest extends AbstractDAOTest {
                 () -> assertEquals(2, data.getObjectiveNumber()),
                 () -> assertEquals(APPROVED, data.getStatus()),
                 () -> assertEquals("Title init", data.getObjectiveTitle()),
-                () -> assertEquals("Strategic Priority", data.getStrategicPriority()),
+                () -> assertEquals("Strategic Driver", data.getStrategicDriver()),
                 () -> assertEquals("How achieved objective", data.getHowAchieved()),
                 () -> assertEquals("How overachieved objective", data.getHowOverAchieved()));
     }

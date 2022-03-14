@@ -52,7 +52,7 @@ import static com.tesco.pma.security.UserRoleNames.LINE_MANAGER;
  *
  * <p>Needed for testing proposes.
  */
-//TODO:: remove when we will have service users on ppe
+//TODO:: remove when we will have service users on ppe //NOSONAR
 @Configuration
 @ConditionalOnExpression(TestUserWithOverridingRolesConfiguration.CONDITIONAL_ON_EXPRESSION)
 public class TestUserWithOverridingRolesConfiguration {

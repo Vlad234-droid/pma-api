@@ -30,7 +30,7 @@
             number="1"
             properties="{&quot;title&quot;: &quot;Title init&quot;,
                          &quot;description&quot;: &quot;Description init&quot;,
-                         &quot;strategic_priority&quot;: &quot;Strategic Priority&quot;,
+                         &quot;strategic_driver&quot;: &quot;Strategic Driver&quot;,
                          &quot;how_achieved&quot;: &quot;How achieved objective&quot;,
                          &quot;how_over_achieved&quot;: &quot;How overachieved objective&quot;,
                          &quot;meets&quot;: &quot;Meets init&quot;,
@@ -45,7 +45,7 @@
             number="1"
             properties="{&quot;title&quot;: &quot;Title init&quot;,
                          &quot;description&quot;: &quot;Description init&quot;,
-                         &quot;strategic_priority&quot;: &quot;Strategic Priority&quot;,
+                         &quot;strategic_driver&quot;: &quot;Strategic Driver&quot;,
                          &quot;how_achieved&quot;: &quot;How achieved objective&quot;,
                          &quot;how_over_achieved&quot;: &quot;How overachieved objective&quot;,
                          &quot;meets&quot;: &quot;Meets init&quot;,
@@ -60,7 +60,7 @@
             number="2"
             properties="{&quot;title&quot;: &quot;Title init&quot;,
                          &quot;description&quot;: &quot;Description init&quot;,
-                         &quot;strategic_priority&quot;: &quot;Strategic Priority&quot;,
+                         &quot;strategic_driver&quot;: &quot;Strategic Driver&quot;,
                          &quot;how_achieved&quot;: &quot;How achieved objective&quot;,
                          &quot;how_over_achieved&quot;: &quot;How overachieved objective&quot;,
                          &quot;meets&quot;: &quot;Meets init&quot;,

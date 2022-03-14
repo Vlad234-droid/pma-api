@@ -1,6 +1,6 @@
 package com.tesco.pma.pdp.dao;
 
-import com.tesco.pma.pdp.domain.PDPGoal;
+import com.tesco.pma.pdp.api.PDPGoal;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDate;
