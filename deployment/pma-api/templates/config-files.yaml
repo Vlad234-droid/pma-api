@@ -4,5 +4,5 @@ kind: ConfigMap
 metadata:
   name: application-props
 data:
-{{ (.Files.Glob (printf "%s/*.properties" $env)).AsConfig | indent 2 }}
+{{ (.Files.Glob (printf "%s/*" $env)).AsConfig | indent 2 }}
 
