@@ -99,7 +99,7 @@ environment:
   # has to be set to IAM ClientId
   IAM_INTEGRATION_SUBJECT: 047eab65-0049-44c5-980c-06b6d9592472
   # has to be set to CEP ClientId
-  CEP_SUBJECT: 78fe5149-d011-423d-b218-dd3cc967508c
+  CEP_SUBJECT: a9245228-b55a-48ec-ab61-dc7eab85ca9f
   # has to be set, if SECURITY_ENABLED = false
   DEFAULT_USER_UUID: 10000000-1000-1000-1000-100000000001
   PMA_DB_USERNAME: pmadbadmin@euw-pte-214-pma-postgresql
