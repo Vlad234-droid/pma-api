@@ -13,13 +13,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
@@ -44,15 +44,15 @@ public class ColleagueChangesEndpoint {
      * Consuming colleague changes events
      *
      * @param colleagueChangeEventPayload - payload request
+     * @return a RestResponse with status
      */
     // @Hidden - uncomment after integration
     @Operation(summary = "Consuming events", description = "Consuming colleague changes events", tags = {"cep"})
     @ApiResponse(responseCode = HttpStatusCodes.TOO_MANY_REQUESTS, description = "Too Many Requests", content = @Content)
-    @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping("/events")
     @PreAuthorize("isAdmin() or authentication.name == @cepProperties.subject")
-    public void processColleagueChangeEvent(@RequestHeader HttpHeaders headers,
-                                            @RequestBody ColleagueChangeEventPayload colleagueChangeEventPayload) {
+    public ResponseEntity<Void> processColleagueChangeEvent(@RequestHeader HttpHeaders headers,
+                                                      @RequestBody ColleagueChangeEventPayload colleagueChangeEventPayload) {
 
         if (headers != null) {
             var eventId = headers.getFirst("EventId");
@@ -65,10 +65,12 @@ public class ColleagueChangesEndpoint {
         if (Objects.isNull(colleagueChangeEventPayload) || Objects.isNull(colleagueChangeEventPayload.getEventType())) {
             log.warn(LogFormatter.formatMessage(ErrorCodes.EVENT_PAYLOAD_ERROR, "Invalid payload was received from CEP"));
             log.debug(String.format("Tried to process a event request %s", colleagueChangeEventPayload));
-            return;
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
 
         startProcessingColleagueChangeEvent(colleagueChangeEventPayload);
+
+        return ResponseEntity.ok().build();
 
     }
 
