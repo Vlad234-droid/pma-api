@@ -237,7 +237,6 @@ COLLEAGUE_UUID - assign the employee</bpmn:text>
   <bpmn:error id="Error_1gqjkup" name="Already exists" errorCode="PM_COLLEAGUE_CYCLE_ALREADY_EXISTS" />
   <bpmn:error id="Error_1i0dibh" name="More than one in status" errorCode="PM_COLLEAGUE_CYCLE_MORE_THAN_ONE_IN_STATUS" />
   <bpmn:error id="Error_09mtnxy" name="Initialization error" errorCode="init_error" />
-  <bpmn:message id="Message_0k1rokg" name="PM_COLLEAGUE_CYCLE_CREATE_GROUP_A2" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="group_a2">
       <bpmndi:BPMNEdge id="Flow_0kcyq0g_di" bpmnElement="Flow_0kcyq0g">
