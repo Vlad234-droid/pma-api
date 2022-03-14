@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * Utility class for feedback validation
+ */
 @Slf4j
 @UtilityClass
 public class FeedbackValidator {
