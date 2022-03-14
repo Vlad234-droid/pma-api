@@ -26,7 +26,7 @@ import java.util.Objects;
 import java.util.concurrent.Executor;
 
 @RestController
-@RequestMapping(path = "/colleagues/v2")
+@RequestMapping(path = "/colleagues")
 @Validated
 @Slf4j
 public class ColleagueChangesEndpoint {

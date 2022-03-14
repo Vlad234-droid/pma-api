@@ -5,6 +5,7 @@ import com.tesco.pma.bpm.api.ProcessManagerService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.LocalTestConfig;
+import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.error.ApiExceptionHandler;
 import com.tesco.pma.rest.AbstractEndpointTest;
@@ -43,6 +44,9 @@ class PMCycleEndpointTest extends AbstractEndpointTest {
 
     @MockBean
     private NamedMessageSourceAccessor messageSourceAccessor;
+
+    @MockBean
+    PMColleagueCycleService pmColleagueCycleService;
 
     @Test
     void runCycleAssignmentProcess() throws Exception {

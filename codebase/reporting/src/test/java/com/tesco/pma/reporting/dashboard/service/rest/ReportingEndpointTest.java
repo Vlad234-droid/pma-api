@@ -334,7 +334,7 @@ class ReportingEndpointTest extends AbstractEndpointTest {
         var report = new Report();
         report.setData(List.of(
                 List.of("UKE12375189", COLLEAGUE_UUID_STR, "Name", "Surname", "WL5", "JobTitle", "UKE12375188", 1,
-                        "APPROVED", "Priority", "Title", "How Achieved", "How Over-Achieved")));
+                        "APPROVED", "Driver", "Title", "How Achieved", "How Over-Achieved")));
         report.setMetadata(new ObjectiveLinkedReviewReportProvider().getReportMetadata());
 
         return report;

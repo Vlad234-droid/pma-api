@@ -265,7 +265,7 @@ public class FileEndpoint {
     @PreAuthorize("isColleague()")
     public RestResponse<Void> delete(@RequestParam("path") String path,
                                      @RequestParam("fileName") String fileName,
-                                     @RequestParam("versions") @NotEmpty List<@NotNull Integer> versions,
+                                     @RequestParam(name = "versions", required = false) List<@NotNull Integer> versions,
                                      @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         fileService.deleteVersions(path, fileName, versions, resolveColleagueUuid(authentication));
         return RestResponse.success();

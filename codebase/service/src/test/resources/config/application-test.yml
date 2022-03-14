@@ -59,7 +59,6 @@ spring:
                               com.tesco.pma.config.domain,
                               com.tesco.pma.tip.api,
                               com.tesco.pma.pdp.api,
-                              com.tesco.pma.pdp.domain,
                               com.tesco.pma.reporting.review.domain,
                               com.tesco.pma.reporting.dashboard.domain
         configuration-properties:

@@ -2,14 +2,18 @@ package com.tesco.pma.service.deployment.rest;
 
 import com.tesco.pma.bpm.api.DeploymentInfo;
 import com.tesco.pma.bpm.api.ProcessManagerService;
+import com.tesco.pma.cycle.service.DeploymentService;
 import com.tesco.pma.exception.DeploymentException;
 import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.exception.InitializationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.logging.TraceUtils;
+import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,8 +38,10 @@ import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.tesco.pma.logging.TraceId.TRACE_ID_HEADER;
+import static com.tesco.pma.rest.RestResponse.success;
 
 /**
  * @author Vadim Shatokhin <a href="mailto:VShatokhin@luxoft.com">VShatokhin@luxoft.com</a> Date: 14.06.2021 Time: 18:20
@@ -49,11 +55,18 @@ public class DeploymentEndpoint {
     @Autowired
     ProcessManagerService processManagerService;
 
+    @Autowired
+    DeploymentService deploymentService;
+
+    @Operation(summary = "Get list of deployed processes",
+            tags = {"deployment"})
     @GetMapping(path = "/processes", produces = MediaType.APPLICATION_JSON_VALUE)
     public RestResponse<List<String>> processes() {
         return RestResponse.success(processManagerService.listProcesses());
     }
 
+    @Operation(summary = "Deploy process archive",
+            tags = {"deployment"})
     @PostMapping(path = "/processes/archive",
             consumes = MediaType.TEXT_PLAIN_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -69,6 +82,8 @@ public class DeploymentEndpoint {
         }
     }
 
+    @Operation(summary = "Undeploy all version of process by process key(name)",
+            tags = {"deployment"})
     @DeleteMapping(
             path = "/processes/{processName}",
             consumes = MediaType.TEXT_PLAIN_VALUE,
@@ -84,11 +99,15 @@ public class DeploymentEndpoint {
         }
     }
 
+    @Operation(summary = "Get list of deployments (identifier/name)",
+            tags = {"deployment"})
     @GetMapping(path = "/deployments", produces = MediaType.APPLICATION_JSON_VALUE)
     public RestResponse<List<DeploymentInfo>> deployments() {
         return RestResponse.success(processManagerService.listDeployments());
     }
 
+    @Operation(summary = "Deploy multipart files",
+            tags = {"deployment"})
     @PostMapping(path = "/deployments",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -120,6 +139,8 @@ public class DeploymentEndpoint {
         }
     }
 
+    @Operation(summary = "Undeploy deployment by id",
+            tags = {"deployment"})
     @DeleteMapping(
             path = "/deployments/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -133,6 +154,8 @@ public class DeploymentEndpoint {
         }
     }
 
+    @Operation(summary = "Undeploy deployment by name",
+            tags = {"deployment"})
     @DeleteMapping(
             path = "/deployments",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -144,5 +167,41 @@ public class DeploymentEndpoint {
         } catch (InitializationException e) {
             throw new DeploymentException(ErrorCodes.PROCESSING_FAILED.name(), PROCESS_UNDEPLOYMENT_FAILED, name, e);
         }
+    }
+
+    /**
+     * PUT call to deploy file resource by uuid.
+     *
+     * @param fileUuid file uuid
+     * @return id of deployed runtime process
+     */
+    @Operation(summary = "Deploy file resource by uuid",
+            description = "File deployed",
+            tags = {"deployment"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "File deployed")
+    @PostMapping(value = "/files/{fileUuid}/deploy")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public RestResponse<String> deployByUuid(@PathVariable final UUID fileUuid) {
+
+        return success(deploymentService.deploy(fileUuid));
+    }
+
+    /**
+     * PUT call to deploy the last version of the file resource by path and filename.
+     *
+     * @param path     file path
+     * @param fileName file name
+     * @return id of deployed runtime process
+     */
+    @Operation(summary = "Deploy the last version of the file resource by path and filename",
+            description = "File deployed",
+            tags = {"deployment"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "File deployed")
+    @PostMapping(value = "/files/deploy")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public RestResponse<String> deployByPathAndFilename(@RequestParam("path") String path,
+                                                        @RequestParam("file-name") String fileName) {
+
+        return success(deploymentService.deploy(path, fileName));
     }
 }

@@ -26,7 +26,7 @@ import static com.tesco.pma.reporting.review.domain.provider.ObjectiveLinkedRevi
 import static com.tesco.pma.reporting.review.domain.provider.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.OBJECTIVE_NUMBER;
 import static com.tesco.pma.reporting.review.domain.provider.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.OBJECTIVE_TITLE;
 import static com.tesco.pma.reporting.review.domain.provider.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.STATUS;
-import static com.tesco.pma.reporting.review.domain.provider.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.STRATEGIC_PRIORITY;
+import static com.tesco.pma.reporting.review.domain.provider.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.STRATEGIC_DRIVER;
 import static com.tesco.pma.reporting.review.domain.provider.ObjectiveLinkedReviewReportProvider.ColumnMetadataEnum.WORKING_LEVEL;
 
 /**
@@ -52,8 +52,8 @@ public class ObjectiveLinkedReviewReportProvider implements Reportable {
        LINE_MANAGER("line-manager", "Line Manager", STRING, "Line Manager"),
        OBJECTIVE_NUMBER("objective-number", "Objective number", INTEGER, "Objective number"),
        STATUS("objective-status", "Objective Status", STRING, "Objective Status"),
-       STRATEGIC_PRIORITY("strategic-priority", "Strategic priority", STRING,
-               "Link to Strategic priorities"),
+       STRATEGIC_DRIVER("strategic-driver", "Strategic driver", STRING,
+               "Link to Strategic drivers"),
        OBJECTIVE_TITLE("title", "Objective title", STRING, "Objective title"),
        HOW_ACHIEVED("how-achieved", "How achieved", STRING,
                "How do I know I've ACHIEVED this objective?"),
@@ -110,7 +110,7 @@ public class ObjectiveLinkedReviewReportProvider implements Reportable {
                 LINE_MANAGER.getColumnMetadata(),
                 OBJECTIVE_NUMBER.getColumnMetadata(),
                 STATUS.getColumnMetadata(),
-                STRATEGIC_PRIORITY.getColumnMetadata(),
+                STRATEGIC_DRIVER.getColumnMetadata(),
                 OBJECTIVE_TITLE.getColumnMetadata(),
                 HOW_ACHIEVED.getColumnMetadata(),
                 HOW_OVER_ACHIEVED.getColumnMetadata());
