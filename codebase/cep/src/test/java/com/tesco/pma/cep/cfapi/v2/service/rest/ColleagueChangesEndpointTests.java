@@ -60,19 +60,9 @@ class ColleagueChangesEndpointTests extends AbstractEndpointTest {
     }
 
     @Test
-    void processJoinerEventTypeShouldReturnAcceptedHttpStatus() throws Exception {
+    void processJoinerEventTypeShouldReturnOkHttpStatus() throws Exception {
 
-        callEventRequest(REQUEST_CEP_FEED_ID, JOINER_EVENT_TYPE_JSON, status().isAccepted());
-
-        verify(mockColleagueChangesService, timeout(500))
-                .processColleagueChangeEvent(any(ColleagueChangeEventPayload.class));
-
-    }
-
-    @Test
-    void processLeaverEventTypeShouldReturnAcceptedHttpStatus() throws Exception {
-
-        callEventRequest(REQUEST_CEP_FEED_ID, LEAVER_EVENT_TYPE_JSON, status().isAccepted());
+        callEventRequest(REQUEST_CEP_FEED_ID, JOINER_EVENT_TYPE_JSON, status().isOk());
 
         verify(mockColleagueChangesService, timeout(500))
                 .processColleagueChangeEvent(any(ColleagueChangeEventPayload.class));
@@ -80,19 +70,9 @@ class ColleagueChangesEndpointTests extends AbstractEndpointTest {
     }
 
     @Test
-    void processModificationEventTypeShouldReturnAcceptedHttpStatus() throws Exception {
+    void processLeaverEventTypeShouldReturnOkHttpStatus() throws Exception {
 
-        callEventRequest(REQUEST_CEP_FEED_ID, MODIFICATION_EVENT_TYPE_JSON, status().isAccepted());
-
-        verify(mockColleagueChangesService, timeout(500))
-                .processColleagueChangeEvent(any(ColleagueChangeEventPayload.class));
-
-    }
-
-    @Test
-    void processDeletionEventTypeShouldReturnAcceptedHttpStatus() throws Exception {
-
-        callEventRequest(REQUEST_CEP_FEED_ID, DELETION_EVENT_TYPE_JSON, status().isAccepted());
+        callEventRequest(REQUEST_CEP_FEED_ID, LEAVER_EVENT_TYPE_JSON, status().isOk());
 
         verify(mockColleagueChangesService, timeout(500))
                 .processColleagueChangeEvent(any(ColleagueChangeEventPayload.class));
@@ -100,9 +80,29 @@ class ColleagueChangesEndpointTests extends AbstractEndpointTest {
     }
 
     @Test
-    void processColleagueChangeEventSeveralTimesShouldReturnAcceptedHttpStatus() throws Exception {
+    void processModificationEventTypeShouldReturnOkHttpStatus() throws Exception {
+
+        callEventRequest(REQUEST_CEP_FEED_ID, MODIFICATION_EVENT_TYPE_JSON, status().isOk());
+
+        verify(mockColleagueChangesService, timeout(500))
+                .processColleagueChangeEvent(any(ColleagueChangeEventPayload.class));
+
+    }
+
+    @Test
+    void processDeletionEventTypeShouldReturnOkHttpStatus() throws Exception {
+
+        callEventRequest(REQUEST_CEP_FEED_ID, DELETION_EVENT_TYPE_JSON, status().isOk());
+
+        verify(mockColleagueChangesService, timeout(500))
+                .processColleagueChangeEvent(any(ColleagueChangeEventPayload.class));
+
+    }
+
+    @Test
+    void processColleagueChangeEventSeveralTimesShouldReturnOkHttpStatus() throws Exception {
         for (var i = 0; i < MAX_NUMBER_PARALLEL_REQUESTS; i++) {
-            callEventRequest(REQUEST_CEP_FEED_ID, JOINER_EVENT_TYPE_JSON, status().isAccepted());
+            callEventRequest(REQUEST_CEP_FEED_ID, JOINER_EVENT_TYPE_JSON, status().isOk());
         }
 
         verify(mockColleagueChangesService, timeout(500)
@@ -121,7 +121,7 @@ class ColleagueChangesEndpointTests extends AbstractEndpointTest {
 
         // when
         for (var i = 0; i < MAX_NUMBER_PARALLEL_REQUESTS; i++) {
-            callEventRequest(REQUEST_CEP_FEED_ID, JOINER_EVENT_TYPE_JSON, status().isAccepted());
+            callEventRequest(REQUEST_CEP_FEED_ID, JOINER_EVENT_TYPE_JSON, status().isOk());
         }
 
         callEventRequest(REQUEST_CEP_FEED_ID, JOINER_EVENT_TYPE_JSON, status().isTooManyRequests());
@@ -140,7 +140,7 @@ class ColleagueChangesEndpointTests extends AbstractEndpointTest {
                         .content("{\"colleagueUUID\":\"77778888-9999-0000-1111-222222222222\"}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isAccepted());
+                .andExpect(status().isUnprocessableEntity());
 
         mvc.perform(post(POST_EVENT_PATH)
                         .with(jwtWithSubject(TEST_CEP_SUBJECT))
@@ -148,7 +148,7 @@ class ColleagueChangesEndpointTests extends AbstractEndpointTest {
                         .content("{}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isAccepted());
+                .andExpect(status().isUnprocessableEntity());
 
         verify(mockColleagueChangesService, timeout(500).times(0))
                 .processColleagueChangeEvent(any(ColleagueChangeEventPayload.class));
