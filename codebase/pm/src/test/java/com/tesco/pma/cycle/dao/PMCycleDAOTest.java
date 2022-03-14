@@ -113,7 +113,7 @@ class PMCycleDAOTest extends AbstractDAOTest {
     @DataSet(BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml")
     void getAll() {
         var rq = new RequestQuery();
-        rq.addFilters("status_in", List.of(ACTIVE, TERMINATED));
+        rq.addFilters("entry-config-key", "entry_config_key");
         var actual = dao.findAll(rq, false);
         assertEquals(1, actual.size());
         assertEquals(CYCLE_UUID, actual.get(0).getUuid());
