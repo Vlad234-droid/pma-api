@@ -18,7 +18,7 @@ import java.util.Optional;
 @UtilityClass
 public class SerdeUtils {
 
-    public static final String OBJECT_CLASS_FIELD = "type";
+    public static final String OBJECT_TYPE_FIELD = "type";
     public static final String OBJECT_VALUE_FIELD = "value";
 
     // Note: to parse localized zone offset (like 'GMT+6') - space should be added to the end of the datetime string.

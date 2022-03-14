@@ -21,7 +21,7 @@ import static com.tesco.pma.event.SerdeUtils.EventProperties.EVENT_ID;
 import static com.tesco.pma.event.SerdeUtils.EventProperties.EVENT_NAME;
 import static com.tesco.pma.event.SerdeUtils.EventProperties.EVENT_PRIORITY;
 import static com.tesco.pma.event.SerdeUtils.EventProperties.PROPERTIES;
-import static com.tesco.pma.event.SerdeUtils.OBJECT_CLASS_FIELD;
+import static com.tesco.pma.event.SerdeUtils.OBJECT_TYPE_FIELD;
 import static com.tesco.pma.event.SerdeUtils.OBJECT_VALUE_FIELD;
 
 public class EventSerializer extends StdSerializer<Event> {
@@ -143,7 +143,7 @@ public class EventSerializer extends StdSerializer<Event> {
     private void writeType(Serializable value, JsonGenerator gen) throws IOException {
         var supportedType = SupportedTypes.getSupportedType(value);
         if (supportedType.isPresent()) {
-            gen.writeStringField(OBJECT_CLASS_FIELD, supportedType.get().name());
+            gen.writeStringField(OBJECT_TYPE_FIELD, supportedType.get().name());
         }
     }
 }

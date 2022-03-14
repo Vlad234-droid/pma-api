@@ -27,7 +27,6 @@ class EventSerdeTest {
     private static final String LIST_KEY = "listKey";
 
     @Test
-        // NOPMD
     void test() throws IOException { //NOPMD
         EventSupport event = new EventSupport(ROOT);
         event.setCallbackServiceURL(CALLBACK_SERVICE_URL);

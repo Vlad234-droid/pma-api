@@ -28,7 +28,7 @@ public class EventSupport implements Event {
 
     private static final long serialVersionUID = 3665859671824003271L;
 
-    private final Map<String, Serializable> properties = new LinkedHashMap<>();
+    protected Map<String, Serializable> properties = new LinkedHashMap<>();
 
     public <E extends Enum<E>> EventSupport(E eventName) {
         this(eventName == null ? null : eventName.name());

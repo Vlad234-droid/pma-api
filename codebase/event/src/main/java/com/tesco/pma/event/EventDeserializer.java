@@ -39,7 +39,7 @@ public class EventDeserializer extends StdDeserializer<Event> {
         if (node == null) {
             return null;
         }
-        var classNode = node.get(SerdeUtils.OBJECT_CLASS_FIELD);
+        var classNode = node.get(SerdeUtils.OBJECT_TYPE_FIELD);
         if (classNode == null) {
             return new ExternalEventReader().read(node);
         }
@@ -81,7 +81,7 @@ public class EventDeserializer extends StdDeserializer<Event> {
     }
 
     private Serializable readValue(JsonNode node) throws IOException {
-        var classNode = node.get(SerdeUtils.OBJECT_CLASS_FIELD);
+        var classNode = node.get(SerdeUtils.OBJECT_TYPE_FIELD);
         if (classNode == null) {
             return null;
         }
