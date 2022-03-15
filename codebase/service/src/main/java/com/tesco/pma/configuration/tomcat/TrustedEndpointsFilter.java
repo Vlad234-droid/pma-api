@@ -22,7 +22,6 @@ public class TrustedEndpointsFilter implements Filter {
     private final Logger log = LoggerFactory.getLogger(getClass().getName());
 
     /**
-     *
      * @param trustedPort
      * @param trustedPathPrefix
      */
@@ -35,7 +34,7 @@ public class TrustedEndpointsFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) {
-        log.debug("Trusted port filter init: " + trustedPortNum + ":" + trustedPathPrefix);
+        log.debug("Trusted port filter init: {}:{}", trustedPortNum, trustedPathPrefix);
     }
 
     @Override
@@ -67,6 +66,7 @@ public class TrustedEndpointsFilter implements Filter {
 
     @Override
     public void destroy() {
+        log.debug("Trusted port filter destroy");
     }
 
 }

@@ -49,11 +49,9 @@ public class NotesDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml",
             BASE_PATH_TO_DATA_SET + "notes_entries_init.xml"})
     void createDuplicate() {
+        var note = createNote(NOTE_UUID, FOLDER_UUID, OWNER_UUID);
 
-        Assertions.assertThrows(DuplicateKeyException.class, () -> {
-            var note = createNote(NOTE_UUID, FOLDER_UUID, OWNER_UUID);
-            notesDao.create(note);
-        });
+        Assertions.assertThrows(DuplicateKeyException.class, () -> notesDao.create(note));
 
     }
 
@@ -67,11 +65,9 @@ public class NotesDAOTest extends AbstractDAOTest {
         for(int i = 0; i<12; i++){
             titleTooLong.append("1234567890");
         }
+        var note = createNote(UUID.randomUUID(), FOLDER_UUID, OWNER_UUID, titleTooLong.toString());
 
-        Assertions.assertThrows(DataIntegrityViolationException.class, () -> {
-            var note = createNote(UUID.randomUUID(), FOLDER_UUID, OWNER_UUID, titleTooLong.toString());
-            notesDao.create(note);
-        });
+        Assertions.assertThrows(DataIntegrityViolationException.class, () -> notesDao.create(note));
 
     }
 

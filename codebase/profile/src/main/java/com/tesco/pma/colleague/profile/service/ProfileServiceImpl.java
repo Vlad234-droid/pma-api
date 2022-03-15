@@ -40,7 +40,7 @@ import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_NOT_F
 @Validated
 @RequiredArgsConstructor
 @Slf4j
-//todo @CacheConfig(cacheNames = "aggregatedColleagues")
+//todo @CacheConfig(cacheNames = "aggregatedColleagues") //NOSONAR
 public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileDAO profileDAO;
@@ -53,7 +53,7 @@ public class ProfileServiceImpl implements ProfileService {
     private static final String PROFILE_ATTRIBUTE_NAME_PARAMETER_NAME = "profileAttributeName";
 
     @Override
-    //todo    @Cacheable
+    //todo    @Cacheable //NOSONAR
     public Optional<ColleagueProfile> findProfileByColleagueUuid(UUID colleagueUuid) {
 
         var colleague = findColleagueByColleagueUuid(colleagueUuid);
@@ -148,7 +148,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public Colleague findColleagueByColleagueUuid(UUID colleagueUuid) {
         var oc = profileDAO.getColleague(colleagueUuid);
-        //todo try to download and insert colleagueApiService.findColleagueByUuid(colleagueUuid)
+        //todo try to download and insert colleagueApiService.findColleagueByUuid(colleagueUuid) //NOSONAR
         return oc != null ? colleagueFactsApiLocalMapper.localToColleagueFactsApi(oc, colleagueUuid, false) : null;
     }
 
@@ -179,7 +179,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    // TODO To optimize logic for update only changed fields
+    // TODO To optimize logic for update only changed fields //NOSONAR
     public int updateColleague(UUID colleagueUuid, Collection<String> changedFields) {
         int updated = 0;
 
@@ -213,7 +213,7 @@ public class ProfileServiceImpl implements ProfileService {
             return updateColleague(colleagueUuid, List.of());
         }
 
-        Colleague colleague = colleagueApiService.findColleagueByUuid(colleagueUuid);
+        var colleague = colleagueApiService.findColleagueByUuid(colleagueUuid);
         if (colleague == null) {
             return 0;
         }
@@ -236,7 +236,7 @@ public class ProfileServiceImpl implements ProfileService {
         int updated = 0;
 
         try {
-            ColleagueEntity changedLocalColleague = colleagueFactsApiLocalMapper.colleagueFactsApiToLocal(colleague);
+            var changedLocalColleague = colleagueFactsApiLocalMapper.colleagueFactsApiToLocal(colleague);
             if (existingLocalColleague == null) {
                 updated = profileDAO.saveColleague(changedLocalColleague);
             } else {
@@ -311,7 +311,8 @@ public class ProfileServiceImpl implements ProfileService {
     private NotFoundException profileAttributeNotFound(String profileAttributeName, UUID colleagueUuid) {
         return new NotFoundException(PROFILE_ATTRIBUTE_NOT_FOUND.getCode(),
                 messages.getMessage(PROFILE_ATTRIBUTE_NOT_FOUND,
-                        Map.of("profileAttributeName", profileAttributeName, "colleagueUuid", colleagueUuid)));
+                        Map.of(PROFILE_ATTRIBUTE_NAME_PARAMETER_NAME, profileAttributeName,
+                                COLLEAGUE_UUID_PARAMETER_NAME, colleagueUuid)));
     }
 
 }

@@ -24,7 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -54,7 +53,7 @@ class UserEndpointTest extends AbstractEndpointTest {
     void getUserByColleagueUuidSucceeded(int status, String role) throws Exception {
         final var user = randomUser();
         final var colleagueUuid = user.getColleague().getColleagueUUID();
-        when(mockUserService.findUserByColleagueUuid(eq(colleagueUuid)))
+        when(mockUserService.findUserByColleagueUuid(colleagueUuid))
                 .thenReturn(Optional.of(user));
 
         mvc.perform(get("/users/{colleagueUuid}", colleagueUuid)
@@ -69,7 +68,7 @@ class UserEndpointTest extends AbstractEndpointTest {
     @SuppressWarnings("java:S2699")
     void getUserByColleagueUuidNotFound() throws Exception {
         final var colleagueUuid = randomUuid();
-        when(mockUserService.findUserByColleagueUuid(eq(colleagueUuid)))
+        when(mockUserService.findUserByColleagueUuid(colleagueUuid))
                 .thenReturn(Optional.empty());
 
         mvc.perform(get("/users/{colleagueUuid}", colleagueUuid)
@@ -85,7 +84,7 @@ class UserEndpointTest extends AbstractEndpointTest {
     void getUserByIamIdSucceeded() throws Exception {
         final var user = randomUser();
         final var iamId = RANDOM.nextObject(String.class);
-        when(mockUserService.findUserByIamId(eq(iamId)))
+        when(mockUserService.findUserByIamId(iamId))
                 .thenReturn(Optional.of(user));
 
         mvc.perform(get("/users/iam-ids/{iamId}", iamId)
@@ -100,7 +99,7 @@ class UserEndpointTest extends AbstractEndpointTest {
     @SuppressWarnings("java:S2699")
     void getUserByIamIdNotFound() throws Exception {
         final var iamId = RANDOM.nextObject(String.class);
-        when(mockUserService.findUserByIamId(eq(iamId)))
+        when(mockUserService.findUserByIamId(iamId))
                 .thenReturn(Optional.empty());
 
         mvc.perform(get("/users/iam-ids/{iamId}", iamId)

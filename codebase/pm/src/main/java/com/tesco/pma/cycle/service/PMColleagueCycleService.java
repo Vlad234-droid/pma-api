@@ -75,4 +75,6 @@ public interface PMColleagueCycleService {
      * @param newStatus     - new status
      */
     void changeStatusForColleague(UUID colleagueUuid, PMCycleStatus oldStatus, PMCycleStatus newStatus);
+
+    void start(UUID cycleUuid, UUID colleagueUuid);
 }

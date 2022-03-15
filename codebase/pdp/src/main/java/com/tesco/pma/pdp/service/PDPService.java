@@ -2,7 +2,7 @@ package com.tesco.pma.pdp.service;
 
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.pdp.domain.PDPGoal;
+import com.tesco.pma.pdp.api.PDPGoal;
 
 
 import javax.validation.constraints.NotEmpty;

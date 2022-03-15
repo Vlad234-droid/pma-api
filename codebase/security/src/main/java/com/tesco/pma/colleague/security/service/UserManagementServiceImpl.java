@@ -1,6 +1,5 @@
 package com.tesco.pma.colleague.security.service;
 
-import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.dao.AccountManagementDAO;
 import com.tesco.pma.colleague.security.domain.Account;
@@ -90,8 +89,8 @@ public class UserManagementServiceImpl implements UserManagementService {
     @Transactional
     public void createAccount(CreateAccountRequest request) {
 
-        // TODO Waiting for qualification of requirements
-        // if (findColleagueByIamIdOrAccountName(request.getName(), request.getIamId()).isEmpty()) {
+        // TODO Waiting for qualification of requirements //NOSONAR
+        // if (findColleagueByIamIdOrAccountName(request.getName(), request.getIamId()).isEmpty()) {  //NOSONAR
         //    throw colleagueNotFoundException(request.getName(), request.getIamId());
         // }
 
@@ -158,7 +157,7 @@ public class UserManagementServiceImpl implements UserManagementService {
     }
 
     private List<Account> refinementAccounts(List<Account> accounts) {
-        return accounts.stream().peek(account -> {
+        return accounts.stream().map(account -> {
             Collection<Role> roles = account.getRoles();
             if (roles.isEmpty()) {
                 account.setRoles(null);
@@ -167,6 +166,7 @@ public class UserManagementServiceImpl implements UserManagementService {
                 account.setRoleId(roleId);
                 account.setRoles(null);
             }
+            return account;
         }).collect(Collectors.toList());
     }
 
@@ -211,29 +211,6 @@ public class UserManagementServiceImpl implements UserManagementService {
     private Optional<Account> findAccountByName(String name) {
         Account account = accountManagementDAO.findAccountByName(name);
         return Optional.ofNullable(account);
-    }
-
-    /**
-     * To check the account through PMA database and Colleague Facts API
-     *
-     * @param accountName
-     * @param iamId
-     * @return
-     */
-    private Optional<ColleagueEntity> findColleagueByIamIdOrAccountName(String accountName, String iamId) {
-        var colleague = profileService.getColleagueByIamId(iamId);
-        if (colleague == null) {
-            colleague = profileService.getColleagueByIamId(accountName);
-        }
-
-        return Optional.ofNullable(colleague);
-    }
-
-    private NotFoundException colleagueNotFoundException(String accountName, String iamId) {
-        return new NotFoundException(ErrorCodes.SECURITY_COLLEAGUE_NOT_FOUND.getCode(),
-                messages.getMessage(ErrorCodes.SECURITY_COLLEAGUE_NOT_FOUND,
-                        Map.of(ACCOUNT_NAME_PARAMETER_NAME, accountName,
-                                IAM_ID_PARAMETER_NAME, iamId)));
     }
 
     private NotFoundException accountNotFoundException(String accountName) {

@@ -1,4 +1,4 @@
-package com.tesco.pma.pdp.domain;
+package com.tesco.pma.pdp.api;
 
 import com.tesco.pma.cycle.api.model.PMFormElement;
 import lombok.AccessLevel;
@@ -22,7 +22,7 @@ public class PDPResponse implements Serializable {
 
     private static final long serialVersionUID = 5457741975642793776L;
 
-    List<PDPGoal> goals;
+    private List<PDPGoal> goals;
 
-    PMFormElement form;
+    private PMFormElement form;
 }

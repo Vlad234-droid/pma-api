@@ -1,22 +1,9 @@
 apiVersion: v1
 data:
-  TESCO_API_BASE_URL: {{ .Values.TESCO_API_BASE_URL }}
-  ONE_LOGIN_BASE_URL: {{ .Values.ONE_LOGIN_BASE_URL }}
-  PMA_API_URL: {{ .Values.PMA_API_URL }}
-  COLLEAGUE_INBOX_API_URL: {{ .Values.COLLEAGUE_INBOX_API_URL }}
-  AD_ROLE_ADMIN: {{ .Values.AD_ROLE_ADMIN }}
-  AD_ROLE_LINE_MANAGER: {{ .Values.AD_ROLE_LINE_MANAGER }}
-  AD_ROLE_COLLEAGUE: {{ .Values.AD_ROLE_COLLEAGUE }}
-  AD_ROLE_PEOPLE_TEAM: {{ .Values.AD_ROLE_PEOPLE_TEAM }}
-  AD_ROLE_TALENT_ADMIN: {{ .Values.AD_ROLE_TALENT_ADMIN }}
-  AD_ROLE_PROCESS_MANAGER: {{ .Values.AD_ROLE_PROCESS_MANAGER }}
-  AD_ROLE_EXECUTIVE: {{ .Values.AD_ROLE_EXECUTIVE }}
-  IDENTITY_CLIENT_ID: {{ .Values.IDENTITY_CLIENT_ID | quote }}
-  PMA_DB_URL: {{ .Values.PMA_DB_URL }}
-  PMA_DB_SCHEMA: {{ .Values.PMA_DB_SCHEMA }}
-  CAMUNDA_DB_SCHEMA: {{ .Values.CAMUNDA_DB_SCHEMA }}
-  PMA_DB_USERNAME: {{ .Values.PMA_DB_USERNAME }}
-  SECURITY_ENABLED: {{ .Values.SECURITY_ENABLED | quote }}
+  ENV_NAME: {{ .Values.env | quote }}
+  {{- range $key, $val := .Values.environment }}
+  {{ $key }}: {{ $val | quote }}
+  {{- end }}
 kind: ConfigMap
 metadata:
   name: pma-api-config

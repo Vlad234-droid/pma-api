@@ -99,8 +99,9 @@ class ReviewAuditLogDAOTest extends AbstractDAOTest {
                 .action(PUBLISH)
                 .build();
         final var result = instance.getAuditOrgObjectiveReport(requestQuery);
-        assertThat(result.size()).isEqualTo(3);
-        assertThat(result.get(0)).isEqualTo(auditOrgObjectiveReportBuilder);
+        assertThat(result).hasSize(3)
+                .element(0)
+                .isEqualTo(auditOrgObjectiveReportBuilder);
     }
 
 }

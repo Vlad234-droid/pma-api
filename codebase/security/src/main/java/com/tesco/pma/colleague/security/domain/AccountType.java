@@ -25,9 +25,4 @@ public enum AccountType implements DictionaryItem<Integer> {
         return code;
     }
 
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
 }

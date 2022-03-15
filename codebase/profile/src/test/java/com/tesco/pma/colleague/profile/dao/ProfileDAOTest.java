@@ -27,12 +27,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ProfileDAOTest extends AbstractDAOTest {
+class ProfileDAOTest extends AbstractDAOTest {
 
     private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/colleague/profile/dao/";
     public static final UUID COLLEAGUE_UUID = UUID.fromString("c409869b-2acf-45cd-8cc6-e13af2e6f935");
     private static final UUID COLLEAGUE_UUID_1 = UUID.fromString("119e0d2b-1dc2-409f-8198-ecd66e59d47a");
     private static final UUID MANAGER_UUID_1 = UUID.fromString("c409869b-2acf-45cd-8cc6-e13af2e6f935");
+    private static final UUID MANAGER_UUID_2 = UUID.fromString("b5f79bef-7905-400f-8cb6-d0ebe41b961c");
     private static final String LEGAL_ENTITY = "Tesco Stores Limited";
     private static final String LOCATION_ID = "INDH000001";
     private static final String V_DOW = "Dow";
@@ -247,69 +248,50 @@ public class ProfileDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
-    void saveColleagueData() { //NOPMD
+    void saveColleagueData() {
         var colleagueUuid = UUID.randomUUID();
-        var managerUuid = UUID.fromString("b5f79bef-7905-400f-8cb6-d0ebe41b961c");
+        var colleague = buildColleagueEntity(colleagueUuid, MANAGER_UUID_2);
 
-        var job = new ColleagueEntity.Job();
-        job.setId("JobID");
-        job.setCode("JC");
-
-        var country = new ColleagueEntity.Country();
-        country.setCode("US");
-
-        var workLevel = new ColleagueEntity.WorkLevel();
-        workLevel.setCode("WL1_new");
-
-        var dep = new ColleagueEntity.Department();
-        dep.setId("DepId");
-        dep.setBusinessType("Store");
-
-        var colleague = new ColleagueEntity();
-        colleague.setUuid(colleagueUuid);
-        colleague.setManagerUuid(managerUuid);
-        colleague.setFirstName("FN");
-        colleague.setLastName("LN");
-        colleague.setEmail("email");
-        colleague.setWorkLevel(workLevel);
-        colleague.setPrimaryEntity("PE");
-        colleague.setCountry(country);
-        colleague.setDepartment(dep);
-        colleague.setSalaryFrequency("SF");
-        colleague.setJob(job);
-        colleague.setIamSource("IAM_S");
-        colleague.setIamId("IAM_ID");
-        colleague.setManager(true);
-        colleague.setEmploymentType("ET");
-        colleague.setLocationId(LOCATION_ID);
-        colleague.setLegalEntity(LEGAL_ENTITY);
-
-        dao.updateCountry(country);
-        dao.updateDepartment(dep);
-        dao.updateJob(job);
-        dao.updateWorkLevel(workLevel);
+        dao.updateCountry(colleague.getCountry());
+        dao.updateDepartment(colleague.getDepartment());
+        dao.updateJob(colleague.getJob());
+        dao.updateWorkLevel(colleague.getWorkLevel());
 
         dao.saveColleague(colleague);
 
         var saved = dao.getColleague(colleagueUuid);
 
         assertEquals(colleagueUuid, saved.getUuid());
-        assertEquals(managerUuid, saved.getManagerUuid());
+        assertEquals(MANAGER_UUID_2, saved.getManagerUuid());
         assertEquals("FN", saved.getFirstName());
         assertEquals("LN", saved.getLastName());
         assertEquals("email", saved.getEmail());
-        assertEquals(workLevel, saved.getWorkLevel());
+        assertEquals(colleague.getWorkLevel(), saved.getWorkLevel());
         assertEquals("PE", saved.getPrimaryEntity());
-        assertEquals(country, saved.getCountry());
-        assertEquals(dep, saved.getDepartment());
+        assertEquals(colleague.getCountry(), saved.getCountry());
+        assertEquals(colleague.getDepartment(), saved.getDepartment());
         assertEquals("SF", saved.getSalaryFrequency());
-        assertEquals(job, saved.getJob());
+        assertEquals(colleague.getJob(), saved.getJob());
         assertEquals("IAM_S", saved.getIamSource());
         assertEquals("IAM_ID", saved.getIamId());
         assertEquals("ET", saved.getEmploymentType());
         assertEquals(LEGAL_ENTITY, saved.getLegalEntity());
         assertEquals(LOCATION_ID, saved.getLocationId());
         assertTrue(saved.isManager());
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues.xml"})
+    void updateColleagueData() {
+        var colleagueUuid = UUID.randomUUID();
+        var colleague = buildColleagueEntity(colleagueUuid, MANAGER_UUID_2);
+
+        dao.updateCountry(colleague.getCountry());
+        dao.updateDepartment(colleague.getDepartment());
+        dao.updateJob(colleague.getJob());
+        dao.updateWorkLevel(colleague.getWorkLevel());
+
+        dao.saveColleague(colleague);
 
         colleague.setFirstName("FN_1");
         colleague.setLastName("LN_1");
@@ -323,16 +305,12 @@ public class ProfileDAOTest extends AbstractDAOTest {
         var updated = dao.getColleague(colleagueUuid);
 
         assertEquals(colleagueUuid, updated.getUuid());
-        assertEquals(managerUuid, updated.getManagerUuid());
+        assertEquals(MANAGER_UUID_2, updated.getManagerUuid());
         assertEquals("FN_1", updated.getFirstName());
         assertEquals("LN_1", updated.getLastName());
         assertEquals("EMAIL_1", updated.getEmail());
-        assertEquals(workLevel, updated.getWorkLevel());
         assertEquals("PE_1", updated.getPrimaryEntity());
-        assertEquals(country, updated.getCountry());
-        assertEquals(dep, updated.getDepartment());
         assertEquals("SF_1", updated.getSalaryFrequency());
-        assertEquals(job, updated.getJob());
         assertEquals("IAM_S", updated.getIamSource());
         assertEquals("IAM_ID", updated.getIamId());
         assertEquals("ET_1", updated.getEmploymentType());
@@ -512,6 +490,43 @@ public class ProfileDAOTest extends AbstractDAOTest {
         department.setName(id);
         department.setBusinessType(id);
         return department;
+    }
+
+    private ColleagueEntity buildColleagueEntity(UUID colleagueUuid, UUID managerUuid) {
+        var job = new ColleagueEntity.Job();
+        job.setId("JobID");
+        job.setCode("JC");
+
+        var country = new ColleagueEntity.Country();
+        country.setCode("US");
+
+        var workLevel = new ColleagueEntity.WorkLevel();
+        workLevel.setCode("WL1_new");
+
+        var dep = new ColleagueEntity.Department();
+        dep.setId("DepId");
+        dep.setBusinessType("Store");
+
+        var colleague = new ColleagueEntity();
+        colleague.setUuid(colleagueUuid);
+        colleague.setManagerUuid(managerUuid);
+        colleague.setFirstName("FN");
+        colleague.setLastName("LN");
+        colleague.setEmail("email");
+        colleague.setWorkLevel(workLevel);
+        colleague.setPrimaryEntity("PE");
+        colleague.setCountry(country);
+        colleague.setDepartment(dep);
+        colleague.setSalaryFrequency("SF");
+        colleague.setJob(job);
+        colleague.setIamSource("IAM_S");
+        colleague.setIamId("IAM_ID");
+        colleague.setManager(true);
+        colleague.setEmploymentType("ET");
+        colleague.setLocationId(LOCATION_ID);
+        colleague.setLegalEntity(LEGAL_ENTITY);
+
+        return colleague;
     }
 
 }

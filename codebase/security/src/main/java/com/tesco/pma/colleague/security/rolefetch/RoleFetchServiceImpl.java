@@ -42,7 +42,7 @@ public class RoleFetchServiceImpl implements RoleFetchService {
             Collection<Role> roles = account.getRoles();
             var roleIds = roles.stream()
                     .map(role -> rolesMapper.findRoleByCode(role.getCode()))
-                    .filter(role -> UserRoleNames.ALL.contains(role.replaceAll(ROLE_PREFIX, "")))
+                    .filter(role -> UserRoleNames.ALL.contains(role.replace(ROLE_PREFIX, "")))
                     .collect(Collectors.toSet());
 
             // Add default role ids

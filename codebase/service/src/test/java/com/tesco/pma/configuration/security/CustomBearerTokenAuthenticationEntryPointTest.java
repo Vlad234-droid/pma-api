@@ -41,7 +41,7 @@ class CustomBearerTokenAuthenticationEntryPointTest {
     }
 
     @Test
-    public void commenceSetRestResponseWith401StatusAndWwwAuthHeader() throws Exception {
+    void commenceSetRestResponseWith401StatusAndWwwAuthHeader() throws Exception {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         instance.setRealmName("test-realm");

@@ -13,7 +13,7 @@ import static com.tesco.pma.configuration.DateTimeFormatters.ISO_INSTANT_WITH_TH
 /**
  * Deserializer for {@link Instant} type which uses our own format
  */
-public class IsoInstantDeserializer extends InstantDeserializer<Instant> {
+public class IsoInstantDeserializer extends InstantDeserializer<Instant> { //NOSONAR
 
     public IsoInstantDeserializer(InstantDeserializer<Instant> base, DateTimeFormatter formatter) {
         super(base, formatter);

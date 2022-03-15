@@ -95,7 +95,7 @@ public class ConfigEntryEndpoint {
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isProcessManager() or isAdmin()")
-    public RestResponse<?> create(@RequestBody ConfigEntry configEntry) {
+    public RestResponse<Void> create(@RequestBody ConfigEntry configEntry) {
         configEntryService.createConfigEntry(configEntry);
         return RestResponse.success();
     }
@@ -105,7 +105,7 @@ public class ConfigEntryEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Updated config entry")
     @PutMapping(value = "/{entryUuid}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isProcessManager() or isAdmin()")
-    public RestResponse<?> update(@PathVariable UUID entryUuid, @RequestBody ConfigEntry configEntry) {
+    public RestResponse<Void> update(@PathVariable UUID entryUuid, @RequestBody ConfigEntry configEntry) {
         configEntry.setUuid(entryUuid);
         configEntryService.updateConfigEntry(configEntry);
         return RestResponse.success();
@@ -116,7 +116,7 @@ public class ConfigEntryEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Delete config entry")
     @DeleteMapping(value = "/{entryUuid}", produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isProcessManager() or isAdmin()")
-    public RestResponse<?> delete(@PathVariable UUID entryUuid) {
+    public RestResponse<Void> delete(@PathVariable UUID entryUuid) {
         configEntryService.deleteConfigEntry(entryUuid);
         return RestResponse.success();
     }
@@ -125,7 +125,7 @@ public class ConfigEntryEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Structure has been published")
     @PostMapping(value = "/{entryUuid}/publish", produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isProcessManager() or isAdmin()")
-    public RestResponse<?> publishEntryConfigStructure(@PathVariable UUID entryUuid) {
+    public RestResponse<Void> publishEntryConfigStructure(@PathVariable UUID entryUuid) {
         configEntryService.publishConfigEntry(entryUuid);
         return RestResponse.success();
     }
@@ -134,7 +134,7 @@ public class ConfigEntryEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Structure has been unpublished")
     @DeleteMapping(value = "/{entryUuid}/publish", produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isProcessManager() or isAdmin()")
-    public RestResponse<?> unpublishEntryConfigStructure(@PathVariable UUID entryUuid) {
+    public RestResponse<Void> unpublishEntryConfigStructure(@PathVariable UUID entryUuid) {
         configEntryService.unpublishConfigEntry(entryUuid);
         return RestResponse.success();
     }
