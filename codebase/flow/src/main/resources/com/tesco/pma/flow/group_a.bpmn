@@ -7,7 +7,7 @@
         <camunda:property name="pm_type" value="cycle" />
         <camunda:property name="pm_cycle_type" value="fiscal" />
         <camunda:property name="pm_cycle_start_time" value="2022-02-21" />
-        <camunda:property name="pm_cycle_start_time" value="2023-02-26" />
+        <camunda:property name="pm_cycle_end_time" value="2023-02-26" />
         <camunda:property name="pm_cycle_before_start" value="P2W" />
         <camunda:property name="pm_cycle_before_end" value="P2W" />
         <camunda:property name="pm_cycle_max" value="1" />
