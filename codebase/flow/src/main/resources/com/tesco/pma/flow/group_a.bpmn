@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_14hkk3c" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
-  <bpmn:process id="group_a2" name="Annual with objectives" isExecutable="true">
+  <bpmn:process id="group_a1" name="Annual with objectives" isExecutable="true">
     <bpmn:documentation>Annual with objectives, MYR, EYR</bpmn:documentation>
     <bpmn:extensionElements>
       <camunda:properties>
@@ -12,7 +12,6 @@
         <camunda:property name="pm_cycle_max" value="5" />
       </camunda:properties>
     </bpmn:extensionElements>
-    <bpmn:sequenceFlow id="Flow_1c2mhm6" sourceRef="Gateway_1msj1uv" targetRef="objective" />
     <bpmn:sequenceFlow id="Flow_10o56ax" sourceRef="Gateway_1msj1uv" targetRef="eyr" />
     <bpmn:endEvent id="Event_0v9jvii">
       <bpmn:incoming>Flow_1qcajud</bpmn:incoming>
@@ -23,11 +22,11 @@
     <bpmn:sequenceFlow id="Flow_1yhukqj" sourceRef="myr" targetRef="Gateway_1p29s5e" />
     <bpmn:parallelGateway id="Gateway_1msj1uv">
       <bpmn:incoming>Flow_13tajpm</bpmn:incoming>
-      <bpmn:outgoing>Flow_1c2mhm6</bpmn:outgoing>
       <bpmn:outgoing>Flow_10o56ax</bpmn:outgoing>
       <bpmn:outgoing>Flow_10nqhon</bpmn:outgoing>
       <bpmn:outgoing>Flow_1i8797i</bpmn:outgoing>
       <bpmn:outgoing>Flow_1r6dvjh</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0kpfy1y</bpmn:outgoing>
     </bpmn:parallelGateway>
     <bpmn:sequenceFlow id="Flow_1wxy8ol" sourceRef="q3" targetRef="Gateway_1p29s5e" />
     <bpmn:sequenceFlow id="Flow_1i8797i" sourceRef="Gateway_1msj1uv" targetRef="q3" />
@@ -44,11 +43,12 @@
       <bpmn:incoming>Flow_1yhukqj</bpmn:incoming>
       <bpmn:incoming>Flow_0y1flzn</bpmn:incoming>
       <bpmn:incoming>Flow_1wxy8ol</bpmn:incoming>
+      <bpmn:incoming>Flow_0ptkppw</bpmn:incoming>
       <bpmn:outgoing>Flow_0mw0pef</bpmn:outgoing>
     </bpmn:parallelGateway>
     <bpmn:sequenceFlow id="Flow_0mw0pef" sourceRef="Gateway_1p29s5e" targetRef="Gateway_1f3fwrs" />
     <bpmn:sequenceFlow id="Flow_1qcajud" sourceRef="Activity_0nievhn" targetRef="Event_0v9jvii" />
-    <bpmn:callActivity id="objective" name="My objectives" calledElement="init_timeline_point" camunda:variableMappingClass="com.tesco.pma.bpm.camunda.util.ExtensionsDelegateVariableMapping">
+    <bpmn:callActivity id="objective" name="My objectives A1" calledElement="init_timeline_point" camunda:variableMappingClass="com.tesco.pma.bpm.camunda.util.ExtensionsDelegateVariableMapping">
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="pm_review_min" value="3" />
@@ -57,8 +57,8 @@
           <camunda:property name="pm_type" value="review" />
           <camunda:property name="pm_form_key" value="forms/standard_objective.form" />
           <camunda:property name="pm_review_before_start" value="P2W" />
-          <camunda:property name="pm_review_before_end" value="P2W" />
-          <camunda:property name="pm_review_duration" value="P8W" />
+          <camunda:property name="pm_review_before_end" value="P1W" />
+          <camunda:property name="pm_review_duration" value="P2W" />
           <camunda:property name="pm_timeline_point_code" value="OBJECTIVE" />
           <camunda:property name="pm_timeline_point_description" value="My objectives" />
         </camunda:properties>
@@ -67,7 +67,7 @@
         <camunda:in source="COLLEAGUE_UUID" target="COLLEAGUE_UUID" />
         <camunda:in source="PM_COLLEAGUE_CYCLE" target="PM_COLLEAGUE_CYCLE" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1c2mhm6</bpmn:incoming>
+      <bpmn:incoming>Flow_1amf8qq</bpmn:incoming>
       <bpmn:outgoing>Flow_012jexf</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:callActivity id="q1" name="Q1" calledElement="init_timeline_point" camunda:variableMappingClass="com.tesco.pma.bpm.camunda.util.ExtensionsDelegateVariableMapping">
@@ -93,8 +93,8 @@
           <camunda:property name="pm_review_type" value="myr" />
           <camunda:property name="pm_review_start_delay" value="P6M" />
           <camunda:property name="pm_review_before_start" value="P2W" />
-          <camunda:property name="pm_review_before_end" value="P2W" />
-          <camunda:property name="pm_review_duration" value="P4W" />
+          <camunda:property name="pm_review_before_end" value="P1W" />
+          <camunda:property name="pm_review_duration" value="P2W" />
           <camunda:property name="pm_form_key" value="forms/standard_myr.form" />
           <camunda:property name="pm_timeline_point_code" value="MYR" />
           <camunda:property name="pm_timeline_point_description" value="Mid-year review" />
@@ -132,8 +132,8 @@
           <camunda:property name="pm_review_type" value="eyr" />
           <camunda:property name="pm_review_start_delay" value="P50W" />
           <camunda:property name="pm_review_before_start" value="P2W" />
-          <camunda:property name="pm_review_before_end" value="P2W" />
-          <camunda:property name="pm_review_duration" value="P8W" />
+          <camunda:property name="pm_review_before_end" value="P1W" />
+          <camunda:property name="pm_review_duration" value="P2W" />
           <camunda:property name="pm_form_key" value="forms/group_a_eyr.form" />
           <camunda:property name="pm_timeline_point_code" value="EYR" />
           <camunda:property name="pm_timeline_point_description" value="Year-end review" />
@@ -220,6 +220,41 @@
       <bpmn:incoming>Flow_0kcyq0g</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0kcyq0g" sourceRef="Event_0hw207d" targetRef="Event_010wo6f" />
+    <bpmn:exclusiveGateway id="Gateway_1r2cf32">
+      <bpmn:incoming>Flow_0kpfy1y</bpmn:incoming>
+      <bpmn:outgoing>Flow_1amf8qq</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1v7kmeh</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:callActivity id="Activity_1mntugb" name="My objectives A2" calledElement="init_timeline_point" camunda:variableMappingClass="com.tesco.pma.bpm.camunda.util.ExtensionsDelegateVariableMapping">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="pm_review_min" value="3" />
+          <camunda:property name="pm_review_max" value="3" />
+          <camunda:property name="pm_review_type" value="objective" />
+          <camunda:property name="pm_type" value="review" />
+          <camunda:property name="pm_form_key" value="forms/standard_objective.form" />
+          <camunda:property name="pm_review_before_start" value="P2W" />
+          <camunda:property name="pm_review_before_end" value="P2W" />
+          <camunda:property name="pm_review_duration" value="P8W" />
+          <camunda:property name="pm_timeline_point_code" value="OBJECTIVE" />
+          <camunda:property name="pm_timeline_point_description" value="My objectives" />
+        </camunda:properties>
+        <camunda:in source="PM_CYCLE" target="PM_CYCLE" />
+        <camunda:in source="SCHEDULED" target="SCHEDULED" />
+        <camunda:in source="COLLEAGUE_UUID" target="COLLEAGUE_UUID" />
+        <camunda:in source="PM_COLLEAGUE_CYCLE" target="PM_COLLEAGUE_CYCLE" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1v7kmeh</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ptkppw</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_0kpfy1y" sourceRef="Gateway_1msj1uv" targetRef="Gateway_1r2cf32" />
+    <bpmn:sequenceFlow id="Flow_1amf8qq" sourceRef="Gateway_1r2cf32" targetRef="objective">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${PM_CYCLE_KEY.equalsIgnoreCase('group_a1')}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1v7kmeh" sourceRef="Gateway_1r2cf32" targetRef="Activity_1mntugb">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${PM_CYCLE_KEY.equalsIgnoreCase('group_a2')}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0ptkppw" sourceRef="Activity_1mntugb" targetRef="Gateway_1p29s5e" />
     <bpmn:textAnnotation id="TextAnnotation_0xgpen9">
       <bpmn:text>Parameters:
 PM_CYCLE the cycle
@@ -238,7 +273,7 @@ COLLEAGUE_UUID - assign the employee</bpmn:text>
   <bpmn:error id="Error_1i0dibh" name="More than one in status" errorCode="PM_COLLEAGUE_CYCLE_MORE_THAN_ONE_IN_STATUS" />
   <bpmn:error id="Error_09mtnxy" name="Initialization error" errorCode="init_error" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="group_a2">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="group_a1">
       <bpmndi:BPMNEdge id="Flow_0kcyq0g_di" bpmnElement="Flow_0kcyq0g">
         <di:waypoint x="360" y="358" />
         <di:waypoint x="360" y="402" />
@@ -358,13 +393,26 @@ COLLEAGUE_UUID - assign the employee</bpmn:text>
           <dc:Bounds x="491" y="73" width="59" height="53" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1c2mhm6_di" bpmnElement="Flow_1c2mhm6">
+      <bpmndi:BPMNEdge id="Flow_0kpfy1y_di" bpmnElement="Flow_0kpfy1y">
         <di:waypoint x="740" y="325" />
-        <di:waypoint x="740" y="480" />
-        <di:waypoint x="790" y="480" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="404" y="256" width="52" height="27" />
-        </bpmndi:BPMNLabel>
+        <di:waypoint x="740" y="505" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1amf8qq_di" bpmnElement="Flow_1amf8qq">
+        <di:waypoint x="765" y="530" />
+        <di:waypoint x="778" y="530" />
+        <di:waypoint x="778" y="490" />
+        <di:waypoint x="790" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1v7kmeh_di" bpmnElement="Flow_1v7kmeh">
+        <di:waypoint x="765" y="530" />
+        <di:waypoint x="778" y="530" />
+        <di:waypoint x="778" y="580" />
+        <di:waypoint x="790" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ptkppw_di" bpmnElement="Flow_0ptkppw">
+        <di:waypoint x="890" y="580" />
+        <di:waypoint x="950" y="580" />
+        <di:waypoint x="950" y="325" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0v9jvii_di" bpmnElement="Event_0v9jvii">
         <dc:Bounds x="1102" y="282" width="36" height="36" />
@@ -425,6 +473,12 @@ COLLEAGUE_UUID - assign the employee</bpmn:text>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0xgpen9_di" bpmnElement="TextAnnotation_0xgpen9">
         <dc:Bounds x="160" y="120" width="280" height="124" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1r2cf32_di" bpmnElement="Gateway_1r2cf32" isMarkerVisible="true">
+        <dc:Bounds x="715" y="505" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1mntugb_di" bpmnElement="Activity_1mntugb">
+        <dc:Bounds x="790" y="540" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0ngjglu_di" bpmnElement="Event_0hw207d">
         <dc:Bounds x="342" y="322" width="36" height="36" />

@@ -18,7 +18,6 @@ import java.util.UUID;
 
 /**
  * Action to start a pm cycle for colleague
- *
  * Parameters:
  *  - COLLEAGUE_UUID
  *  - PM_CYCLE_UUID
