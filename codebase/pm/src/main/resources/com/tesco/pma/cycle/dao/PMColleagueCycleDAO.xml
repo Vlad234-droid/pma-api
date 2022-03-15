@@ -94,7 +94,7 @@
                 #{cc.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
                 #{cc.creationTime})
         ON CONFLICT(colleague_uuid)
-            WHERE status_id in (1,7,3)
+            WHERE status_id &lt;&gt; 2
             DO NOTHING
     </insert>
 

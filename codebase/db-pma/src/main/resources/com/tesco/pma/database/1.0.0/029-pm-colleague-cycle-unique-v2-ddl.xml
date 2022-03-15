@@ -8,10 +8,8 @@
         <sql><![CDATA[
             drop index if exists colleague_cycle_ux;
 
-            CREATE UNIQUE INDEX if not exists colleague_cycle_draft_ux ON pm_colleague_cycle (colleague_uuid)
-                where status_id = 4;
-            CREATE UNIQUE INDEX if not exists colleague_cycle_actual_ux ON pm_colleague_cycle (colleague_uuid)
-                where status_id in (1,7,3);
+            CREATE UNIQUE INDEX if not exists colleague_cycle_ux ON pm_colleague_cycle (colleague_uuid)
+                where status_id <> 2;
             ]]>
         </sql>
         <rollback changeSetPath="${rollback_file_path}" changeSetId="1" changeSetAuthor="vadim.shatokhin"/>
