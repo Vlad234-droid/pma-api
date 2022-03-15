@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class EventSerdeTest {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
-    
+
     private static final String ROOT = "root";
     private static final String CALLBACK = "callback";
     private static final String CALLBACK_SERVICE_URL = "callbackServiceURL";
@@ -26,7 +26,7 @@ class EventSerdeTest {
     private static final ArrayList<Serializable> LIST = new ArrayList<>(); //NOPMD
     private static final String LIST_KEY = "listKey";
 
-    @Test // NOPMD
+    @Test
     void test() throws IOException { //NOPMD
         EventSupport event = new EventSupport(ROOT);
         event.setCallbackServiceURL(CALLBACK_SERVICE_URL);
