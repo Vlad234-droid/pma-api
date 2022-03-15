@@ -131,7 +131,7 @@
         <camunda:properties>
           <camunda:property name="pm_type" value="review" />
           <camunda:property name="pm_review_type" value="eyr" />
-          <camunda:property name="pm_review_start_delay" value="P50W" />
+          <camunda:property name="pm_review_start_delay" value="P44W" />
           <camunda:property name="pm_review_before_start" value="P2W" />
           <camunda:property name="pm_review_before_end" value="P2W" />
           <camunda:property name="pm_review_duration" value="P8W" />
