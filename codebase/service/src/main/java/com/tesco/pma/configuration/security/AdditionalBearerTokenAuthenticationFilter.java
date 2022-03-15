@@ -32,7 +32,7 @@ import java.io.IOException;
  * <p>2. in case of authentication success  - merge existing and additional auth using {@link AuthenticationMerger}.
  * Default merger returns current Authentication.
  */
-//TODO:: Implement check Identity user is same as OneLogin user.
+//TODO:: Implement check Identity user is same as OneLogin user. // NOSONAR
 public class AdditionalBearerTokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final AuthenticationManagerResolver<HttpServletRequest> authenticationManagerResolver;
