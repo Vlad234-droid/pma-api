@@ -56,6 +56,7 @@ class FileEndpointTest extends AbstractEndpointTest {
     private static final String PATH_AND_NAME_PARAMS_URL = "?path=" + PATH + "&fileName=" + FILE_NAME;
     private static final String VERSIONS_PARAMS_URL = "&versions=" + VERSION_1 + "&versions=" + VERSION_2;
     private static final String DELETE_BY_VERSIONS_URL = FILES_URL + VERSIONS_URL + PATH_AND_NAME_PARAMS_URL + VERSIONS_PARAMS_URL;
+    private static final String DELETE_BY_ALL_VERSIONS_URL = FILES_URL + VERSIONS_URL + PATH_AND_NAME_PARAMS_URL;
 
     private static final byte[] CONTENT = {72, 101, 108};
     private static final String TXT_FILE_CONTENT_TYPE = "application/vnd.oasis.opendocument.text";
@@ -264,6 +265,13 @@ class FileEndpointTest extends AbstractEndpointTest {
         doNothing().when(service).deleteVersions(PATH, FILE_NAME, List.of(VERSION_1, VERSION_2), CREATOR_ID);
 
         performDeleteWith(colleague(COLLEAGUE_UUID_STR), status().isOk(), DELETE_BY_VERSIONS_URL);
+    }
+
+    @Test
+    void deleteFileByAllVersions() throws Exception { //NOSONAR used MockMvc checks
+        doNothing().when(service).deleteVersions(PATH, FILE_NAME, null, CREATOR_ID);
+
+        performDeleteWith(colleague(COLLEAGUE_UUID_STR), status().isOk(), DELETE_BY_ALL_VERSIONS_URL);
     }
 
     @Test

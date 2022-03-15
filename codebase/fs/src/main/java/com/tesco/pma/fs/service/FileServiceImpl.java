@@ -21,6 +21,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -83,8 +84,12 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public File get(UUID fileUuid, boolean includeFileContent, UUID colleagueUuid) {
+        var params = new HashMap<String, Object>(); // used HashMap because colleagueUuid can be null
+        params.put(FILE_UUID, fileUuid);
+        params.put(FILE_OWNER, colleagueUuid);
+
         return Optional.ofNullable(fileDao.read(fileUuid, includeFileContent, colleagueUuid))
-                .orElseThrow(() -> notFound(ERROR_FILE_NOT_FOUND, Map.of(FILE_UUID, fileUuid, FILE_OWNER, colleagueUuid)));
+                .orElseThrow(() -> notFound(ERROR_FILE_NOT_FOUND, params));
     }
 
     @Override
@@ -98,9 +103,13 @@ public class FileServiceImpl implements FileService {
         requestQuery.setFilters(Arrays.asList(new Condition("path", EQUALS, path),
                                               new Condition("file-name", EQUALS, fileName)));
 
+        var params = new HashMap<String, Object>(); // used HashMap because colleagueUuid can be null
+        params.put(FILE_NAME, fileName);
+        params.put(FILE_OWNER, colleagueUuid);
+
         return get(requestQuery, includeFileContent, colleagueUuid, true).stream()
                 .findFirst()
-                .orElseThrow(() -> notFound(ERROR_FILE_NOT_FOUND, Map.of(FILE_NAME, fileName, FILE_OWNER, colleagueUuid)));
+                .orElseThrow(() -> notFound(ERROR_FILE_NOT_FOUND, params));
     }
 
     @Override
@@ -119,7 +128,11 @@ public class FileServiceImpl implements FileService {
     public void delete(UUID fileUuid, UUID colleagueUuid) {
         var deleted = fileDao.deleteByUuidAndColleague(fileUuid, colleagueUuid);
         if (1 != deleted) {
-            throw notFound(ERROR_FILE_NOT_FOUND, Map.of(FILE_UUID, fileUuid, FILE_OWNER, colleagueUuid));
+            var params = new HashMap<String, Object>(); // used HashMap because colleagueUuid can be null
+            params.put(FILE_UUID, fileUuid);
+            params.put(FILE_OWNER, colleagueUuid);
+
+            throw notFound(ERROR_FILE_NOT_FOUND, params);
         }
     }
 
@@ -133,8 +146,13 @@ public class FileServiceImpl implements FileService {
         versions.forEach(version -> {
             var deleted = fileDao.deleteVersions(path, fileName, version, colleagueUuid);
             if (1 != deleted) {
-                throw notFound(ERROR_FILE_NOT_FOUND, Map.of(FILE_PATH, path, FILE_NAME, fileName,
-                                                            FILE_VERSION, version, FILE_OWNER, colleagueUuid));
+                var params = new HashMap<String, Object>(); // used HashMap because colleagueUuid can be null
+                params.put(FILE_PATH, path);
+                params.put(FILE_NAME, fileName);
+                params.put(FILE_VERSION, version);
+                params.put(FILE_OWNER, colleagueUuid);
+
+                throw notFound(ERROR_FILE_NOT_FOUND, params);
             }
         });
 

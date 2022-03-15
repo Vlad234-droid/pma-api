@@ -432,23 +432,8 @@ public class ReviewEndpoint {
     public RestResponse<List<File>> getReviewsFilesByColleague(@PathVariable UUID colleagueUuid,
                                                                @CurrentSecurityContext(expression = "authentication")
                                                                        Authentication authentication) {
-
-        var currentUserUuid = UUID.fromString(authentication.getName());
-
-        var requestQuery = getRequestQueryForReviewFiles(colleagueUuid);
-
-        var isCurrentUserLineManager = false;
-
-        if (!colleagueUuid.equals(currentUserUuid)) {
-            var profile = profileService.getColleague(colleagueUuid);
-            if (currentUserUuid.equals(profile.getManagerUuid())) {
-                isCurrentUserLineManager = true;
-            }
-        }
-
-        var fileOwnerUuid = isCurrentUserLineManager ? colleagueUuid : currentUserUuid;
-
-        return RestResponse.success(fileService.get(requestQuery, false, fileOwnerUuid, true));
+        return RestResponse.success(fileService.get(getRequestQueryForReviewFiles(colleagueUuid), false,
+                resolveFileOwnerUuid(authentication, colleagueUuid), true));
     }
 
     /**
@@ -566,11 +551,12 @@ public class ReviewEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.FORBIDDEN, description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Internal Server Error", content = @Content)
 
-    @GetMapping("/reviews/files/{fileUuid}/download")
+    @GetMapping("/colleagues/{colleagueUuid}/reviews/files/{fileUuid}/download")
     @PreAuthorize("isColleague()")
-    public ResponseEntity<Resource> download(@PathVariable UUID fileUuid,
+    public ResponseEntity<Resource> download(@PathVariable UUID colleagueUuid,
+                                             @PathVariable UUID fileUuid,
                                              @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        var file = fileService.get(fileUuid, true, resolveColleagueUuid(authentication));
+        var file = fileService.get(fileUuid, true, resolveFileOwnerUuid(authentication, colleagueUuid));
         var content = file.getFileContent();
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
@@ -594,6 +580,21 @@ public class ReviewEndpoint {
 
     private UUID resolveColleagueUuid(Authentication authentication) {
         return hasAuthority(authentication, ADMIN) ? null : getColleagueUuid(authentication);
+    }
+
+    private UUID resolveFileOwnerUuid(Authentication authentication, UUID colleagueUuid) {
+        var currentUserUuid = getColleagueUuid(authentication);
+
+        var isCurrentUserLineManager = false;
+
+        if (!colleagueUuid.equals(currentUserUuid)) {
+            var profile = profileService.getColleague(colleagueUuid);
+            if (currentUserUuid.equals(profile.getManagerUuid())) {
+                isCurrentUserLineManager = true;
+            }
+        }
+
+        return isCurrentUserLineManager ? colleagueUuid : currentUserUuid;
     }
 
     private UUID resolveUserUuid() {

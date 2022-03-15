@@ -23,6 +23,7 @@ WORKDIR /home/gradle
 
 RUN apt-get update \
     && apt-get install --yes --no-install-recommends \
+        dos2unix \
         fontconfig \
         unzip \
         wget \
@@ -51,13 +52,18 @@ RUN set -o errexit -o nounset \
     && echo "Testing Gradle installation" \
     && gradle --version
 
-COPY --chown=gradle:gradle ./codebase/ /home/gradle/app
-
 WORKDIR /home/gradle/app
 
-# Build app, and skip tests
-RUN gradle build --no-daemon -PbuildProfiles=$BUILD_PROFILES -x test
+COPY --chown=gradle:gradle --chmod=0755 ./scripts/start.sh /home/gradle/app
+COPY --chown=gradle:gradle ./codebase/ /home/gradle/app
 
+# Build app, and skip tests
+RUN gradle build --no-daemon -PbuildProfiles=$BUILD_PROFILES -x test \
+    && dos2unix /home/gradle/app/start.sh
+
+# ==========
+# main stage
+# ==========
 FROM openjdk:11-jdk-slim
 
 ARG RUNTIME_JAVA_OPTS ""
@@ -69,6 +75,7 @@ ENV JAVA_ARGS $RUNTIME_JAVA_ARGS
 ENV SERVICE_HOME /app
 RUN mkdir $SERVICE_HOME
 
+COPY --from=build /home/gradle/app/start.sh $SERVICE_HOME
 COPY --from=build /home/gradle/app/application/build/libs/*.jar $SERVICE_HOME/app.jar
 COPY --from=build /home/gradle/app/application/build/libs/config $SERVICE_HOME/config
 
@@ -77,4 +84,4 @@ EXPOSE 8090/tcp
 
 WORKDIR $SERVICE_HOME
 
-CMD java -Dloader.path=$SERVICE_HOME/config,$SERVICE_HOME/properties $JAVA_OPTS -jar ./app.jar $JAVA_ARGS
+CMD $SERVICE_HOME/start.sh

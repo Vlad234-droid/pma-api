@@ -6,7 +6,7 @@ import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.pdp.LocalServiceTestConfig;
 import com.tesco.pma.pdp.dao.PDPDao;
-import com.tesco.pma.pdp.domain.PDPGoal;
+import com.tesco.pma.pdp.api.PDPGoal;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

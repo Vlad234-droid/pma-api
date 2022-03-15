@@ -6,7 +6,7 @@ import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.file.api.File;
 import com.tesco.pma.pdp.LocalTestConfig;
-import com.tesco.pma.pdp.domain.PDPGoal;
+import com.tesco.pma.pdp.api.PDPGoal;
 import com.tesco.pma.pdp.service.PDPService;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import com.tesco.pma.util.ResourceProvider;
@@ -84,7 +84,7 @@ public class PDPEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void createGoalsUnsuccessIfBadRequest() throws Exception {
+    void createGoalsUnsuccessIfBadRequest() throws Exception { //NOSONAR used MockMvc checks
         doThrow(DatabaseConstraintViolationException.class).when(pdpService).createGoals(COLLEAGUE_UUID, buildGoals(GOAL_UUID_1, GOAL_UUID_2));
 
         performPost(PDP_GOALS_UPDATE_REQUEST_JSON_FILE_NAME, status().isBadRequest(), PDP_GOALS_URL);
@@ -101,28 +101,28 @@ public class PDPEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void updateGoalsUnsuccessIfGoalIsNotFound() throws Exception {
+    void updateGoalsUnsuccessIfGoalIsNotFound() throws Exception { //NOSONAR used MockMvc checks
         doThrow(NotFoundException.class).when(pdpService).updateGoals(COLLEAGUE_UUID, buildGoals(GOAL_UUID_1, GOAL_UUID_2));
 
         performPut(PDP_GOALS_UPDATE_REQUEST_JSON_FILE_NAME, status().isNotFound(), PDP_GOALS_URL);
     }
 
     @Test
-    void updateGoalsUnsuccessIfGoalIfBadRequest() throws Exception {
+    void updateGoalsUnsuccessIfGoalIfBadRequest() throws Exception { //NOSONAR used MockMvc checks
         doThrow(DatabaseConstraintViolationException.class).when(pdpService).updateGoals(COLLEAGUE_UUID, buildGoals(GOAL_UUID_1, GOAL_UUID_2));
 
         performPut(PDP_GOALS_UPDATE_REQUEST_JSON_FILE_NAME, status().isBadRequest(), PDP_GOALS_URL);
     }
 
     @Test
-    void deleteGoal() throws Exception {
+    void deleteGoal() throws Exception { //NOSONAR used MockMvc checks
         doNothing().when(pdpService).deleteGoal(COLLEAGUE_UUID, GOAL_UUID_1);
 
         performDelete(status().isOk(), PDP_GOAL_URL, GOAL_UUID_1);
     }
 
     @Test
-    void deleteGoalUnsuccessIfGoalIsNotFound() throws Exception {
+    void deleteGoalUnsuccessIfGoalIsNotFound() throws Exception { //NOSONAR used MockMvc checks
         doThrow(NotFoundException.class).when(pdpService).deleteGoal(COLLEAGUE_UUID, GOAL_UUID_1);
 
         performDelete(status().isNotFound(), PDP_GOAL_URL, GOAL_UUID_1);
@@ -139,7 +139,7 @@ public class PDPEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getGoalByColleagueAndNumberUnsuccessIfGoalIsNotFound() throws Exception {
+    void getGoalByColleagueAndNumberUnsuccessIfGoalIsNotFound() throws Exception { //NOSONAR used MockMvc checks
         when(pdpService.getGoal(COLLEAGUE_UUID, GOAL_NUMBER_1)).thenThrow(NotFoundException.class);
 
         performGet(status().isNotFound(), PDP_GOALS_URL + "/numbers/{number}", GOAL_NUMBER_1);
@@ -156,7 +156,7 @@ public class PDPEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getGoalByUuidUnsuccessIfGoalIsNotFound() throws Exception {
+    void getGoalByUuidUnsuccessIfGoalIsNotFound() throws Exception { //NOSONAR used MockMvc checks
         when(pdpService.getGoal(COLLEAGUE_UUID, GOAL_UUID_1)).thenThrow(NotFoundException.class);
 
         performGet(status().isNotFound(), PDP_GOAL_URL, GOAL_UUID_1);
@@ -193,7 +193,7 @@ public class PDPEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getEarlyAchievementDateIfGoalIsNotFound() throws Exception {
+    void getEarlyAchievementDateIfGoalIsNotFound() throws Exception { //NOSONAR used MockMvc checks
         when(pdpService.getEarlyAchievementDate(COLLEAGUE_UUID)).thenThrow(NotFoundException.class);
 
         performGet(status().isNotFound(), PDP_GOAL_EARLY_DATE_URL, GOAL_UUID_1);

@@ -79,7 +79,7 @@ class ReviewEndpointTest extends AbstractEndpointTest {
     private ProfileService mockProfileService;
 
     @Test
-    void getReviewsFilesByColleagueWithColleague() throws Exception {
+    void getReviewsFilesByColleagueWithColleague() throws Exception { //NOSONAR used MockMvc checks
         var colleagueUuid = UUID.randomUUID();
 
         when(mockFileService.get(new RequestQuery(), false, colleagueUuid, true)).thenReturn(files(3));
@@ -91,7 +91,7 @@ class ReviewEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getReviewsFilesByColleagueWithLineManager() throws Exception {
+    void getReviewsFilesByColleagueWithLineManager() throws Exception { //NOSONAR used MockMvc checks
         var colleagueUuid = UUID.randomUUID();
         var currentUserUuid = UUID.randomUUID();
         var colleagueEntity = new ColleagueEntity();
@@ -107,7 +107,7 @@ class ReviewEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void deleteFileByUuids() throws Exception {
+    void deleteFileByUuids() throws Exception { //NOSONAR used MockMvc checks
         var colleagueUuid = UUID.randomUUID();
         var fileUuid = UUID.randomUUID();
         doNothing().when(mockFileService).delete(fileUuid, colleagueUuid);
@@ -116,7 +116,7 @@ class ReviewEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void deleteFileByUuidsUnsuccessIfFileIsNotFound() throws Exception {
+    void deleteFileByUuidsUnsuccessIfFileIsNotFound() throws Exception { //NOSONAR used MockMvc checks
         var fileUuid = UUID.randomUUID();
         doThrow(NotFoundException.class).when(mockFileService).delete(fileUuid, null);
 
@@ -170,16 +170,40 @@ class ReviewEndpointTest extends AbstractEndpointTest {
                 .thenReturn(buildFileData(FILE_UUID, PDF_FILE_NAME, 1, fileType));
 
         var result = performGetWith(colleague(COLLEAGUE_UUID_STR), status().isOk(),
-                MediaType.APPLICATION_OCTET_STREAM, REVIEWS_FILES_URL + "/" + FILE_UUID + "/download");
+                MediaType.APPLICATION_OCTET_STREAM, REVIEWS_FILES_URL_TEMPLATE + "/" + FILE_UUID + "/download", CREATOR_ID);
 
         assertThat(result.getResponse().getContentAsByteArray()).isNotSameAs(CONTENT);
     }
 
     @Test
-    void downloadUnsuccess() throws Exception {
-        when(mockFileService.get(FILE_UUID, true, null)).thenThrow(NotFoundException.class);
+    void downloadWithLineManager() throws Exception {
+        var currentUserUuid = UUID.randomUUID();
+        var colleagueEntity = new ColleagueEntity();
+        colleagueEntity.setManagerUuid(currentUserUuid);
 
-        performGetWith(roles(List.of(COLLEAGUE, ADMIN)), status().isNotFound(), REVIEWS_FILES_URL + "/" + FILE_UUID + "/download");
+        var fileType = new FileType();
+        fileType.setId(3);
+        fileType.setCode("PDF");
+        fileType.setDescription("Portable document format file");
+
+        when(mockProfileService.getColleague(CREATOR_ID)).thenReturn(colleagueEntity);
+        when(mockFileService.get(FILE_UUID, true, CREATOR_ID))
+                .thenReturn(buildFileData(FILE_UUID, PDF_FILE_NAME, 1, fileType));
+
+        var result = performGetWith(colleague(currentUserUuid.toString()), status().isOk(),
+                MediaType.APPLICATION_OCTET_STREAM, REVIEWS_FILES_URL_TEMPLATE + "/" + FILE_UUID + "/download", CREATOR_ID);
+
+        assertThat(result.getResponse().getContentAsByteArray()).isNotSameAs(CONTENT);
+    }
+
+    @Test
+    void downloadUnsuccess() throws Exception { //NOSONAR used MockMvc checks
+        var colleagueUuid = UUID.randomUUID();
+
+        when(mockFileService.get(FILE_UUID, true, colleagueUuid)).thenThrow(NotFoundException.class);
+
+        performGetWith(colleague(colleagueUuid.toString()), status().isNotFound(),
+                REVIEWS_FILES_URL_TEMPLATE + "/" + FILE_UUID + "/download", colleagueUuid);
     }
 
     private MockMultipartFile getUploadMetadataMultipartFile(String fileName) throws IOException {
