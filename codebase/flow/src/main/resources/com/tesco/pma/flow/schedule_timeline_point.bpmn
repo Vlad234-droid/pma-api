@@ -161,7 +161,7 @@
       <bpmn:outgoing>Flow_0twlvto</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_16da9jd" name="review" sourceRef="Gateway_02rftxe" targetRef="Gateway_1j7nfg7">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${pm_type.equals("REVIEW")}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${pm_type.equals("review")}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:intermediateCatchEvent id="Event_0abe7m8" name="Start&#10;Qn">
       <bpmn:incoming>Flow_0twlvto</bpmn:incoming>
@@ -193,7 +193,7 @@
       <bpmn:incoming>Flow_0ibguy2</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0twlvto" name="timeline&#10;point&#10;Q1 or Q3" sourceRef="Gateway_02rftxe" targetRef="Event_0abe7m8">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${pm_type.equals("TIMELINE_POINT") &amp;&amp; (pm_timeline_point_code.equals("Q1") || pm_timeline_point_code.equals("Q3"))}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${pm_type.equals("timeline_point") &amp;&amp; (pm_timeline_point_code.equals("Q1") || pm_timeline_point_code.equals("Q3"))}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0ay69ky" sourceRef="Event_0abe7m8" targetRef="Activity_1du843u" />
     <bpmn:sequenceFlow id="Flow_0ibguy2" sourceRef="Activity_1du843u" targetRef="Event_02gqiwm" />

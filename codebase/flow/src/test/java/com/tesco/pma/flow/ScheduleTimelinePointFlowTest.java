@@ -43,7 +43,7 @@ class ScheduleTimelinePointFlowTest {
     void shouldSendQn() {
         //given
         var variables = Variables.createVariables()
-                .putValue(PMElement.PM_TYPE, PMElementType.TIMELINE_POINT.name())
+                .putValue(PMElement.PM_TYPE, PMElementType.TIMELINE_POINT.name().toLowerCase())
                 .putValue(FlowParameters.TIMELINE_POINT.name(), buildTimelinePoint())
                 .putValue(FlowParameters.START_DATE.name(), LocalDate.now().toString())
                 .putValue(PMTimelinePointElement.PM_TIMELINE_POINT_CODE, "Q1");
@@ -60,7 +60,7 @@ class ScheduleTimelinePointFlowTest {
     void shouldStartReview() {
         //given
         var variables = Variables.createVariables()
-                .putValue(PMElement.PM_TYPE, PMElementType.REVIEW.name())
+                .putValue(PMElement.PM_TYPE, PMElementType.REVIEW.name().toLowerCase())
                 .putValue(FlowParameters.TIMELINE_POINT.name(), buildTimelinePoint())
                 .putValue(FlowParameters.START_DATE.name(), LocalDate.now().toString())
                 .putValue(FlowParameters.END_DATE.name(), LocalDate.now().toString())
