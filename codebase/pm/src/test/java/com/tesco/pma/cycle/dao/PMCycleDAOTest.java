@@ -30,7 +30,6 @@ import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
 import static com.tesco.pma.cycle.api.PMCycleStatus.COMPLETED;
 import static com.tesco.pma.cycle.api.PMCycleStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
-import static com.tesco.pma.cycle.api.PMCycleStatus.TERMINATED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ContextConfiguration(classes = PMCycleTypeHandlerConfig.class)

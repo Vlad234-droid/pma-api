@@ -2,13 +2,11 @@ package com.tesco.pma.cycle.service;
 
 import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.bpm.api.ProcessManagerService;
-import com.tesco.pma.configuration.MessageSourceConfig;
-import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.cycle.LocalTestConfig;
 import com.tesco.pma.cycle.api.CompositePMCycleResponse;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.dao.PMCycleDAO;
-import com.tesco.pma.error.ApiExceptionHandler;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.pagination.RequestQuery;
@@ -19,23 +17,23 @@ import com.tesco.pma.util.ResourceProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration;
-import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Collections;
 import java.util.UUID;
 
-import static com.tesco.pma.cycle.api.PMCycleStatus.*;
-import static com.tesco.pma.util.TestDataUtil.*;
+import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
+import static com.tesco.pma.cycle.api.PMCycleStatus.COMPLETED;
+import static com.tesco.pma.cycle.api.PMCycleStatus.DRAFT;
+import static com.tesco.pma.util.TestDataUtil.CYCLE_UUID;
+import static com.tesco.pma.util.TestDataUtil.TEMPLATE_UUID;
+import static com.tesco.pma.util.TestDataUtil.TEST_FILE_NAME;
+import static com.tesco.pma.util.TestDataUtil.USER_UUID;
+import static com.tesco.pma.util.TestDataUtil.buildCycle;
+import static com.tesco.pma.util.TestDataUtil.buildCycleWithMetadata;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -46,15 +44,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
-@SpringBootTest(classes = PMCycleServiceImplTest.LocalTestConfig.class)
+@SpringBootTest(classes = LocalTestConfig.class)
 @ExtendWith(MockitoExtension.class)
 class PMCycleServiceImplTest {
 
 
     @MockBean
     private PMCycleDAO cycleDAO;
-    @Autowired
-    private NamedMessageSourceAccessor messageSourceAccessor;
     @MockBean
     private ProcessManagerService processManagerService;
     @MockBean
@@ -68,18 +64,6 @@ class PMCycleServiceImplTest {
 
     @SpyBean
     private PMCycleServiceImpl cycleService;
-
-
-    @Profile("test")
-    @Configuration
-    @Import({MessageSourceAutoConfiguration.class,
-            MessageSourceConfig.class,
-            HttpMessageConvertersAutoConfiguration.class,
-            ApiExceptionHandler.class,
-            JacksonAutoConfiguration.class
-    })
-    static class LocalTestConfig {
-    }
 
 
     @Test
