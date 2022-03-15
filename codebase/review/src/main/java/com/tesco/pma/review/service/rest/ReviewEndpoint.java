@@ -438,7 +438,7 @@ public class ReviewEndpoint {
                                                                @CurrentSecurityContext(expression = "authentication")
                                                                        Authentication authentication) {
         return RestResponse.success(fileService.get(getRequestQueryForReviewFiles(colleagueUuid), false,
-                getFileAccess(authentication, colleagueUuid), true));
+                resolveFileAccess(authentication, colleagueUuid), true));
     }
 
     /**
@@ -561,7 +561,7 @@ public class ReviewEndpoint {
     public ResponseEntity<Resource> download(@PathVariable UUID colleagueUuid,
                                              @PathVariable UUID fileUuid,
                                              @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        var file = fileService.get(fileUuid, true, getFileAccess(authentication, colleagueUuid));
+        var file = fileService.get(fileUuid, true, resolveFileAccess(authentication, colleagueUuid));
         var content = file.getFileContent();
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
@@ -587,7 +587,7 @@ public class ReviewEndpoint {
         return hasAuthority(authentication, ADMIN) ? null : getColleagueUuid(authentication);
     }
 
-    private UUID getFileAccess(Authentication authentication, UUID colleagueUuid) {
+    private UUID resolveFileAccess(Authentication authentication, UUID colleagueUuid) {
         var currentUserUuid = getColleagueUuid(authentication);
 
         if (!colleagueUuid.equals(currentUserUuid)) {
