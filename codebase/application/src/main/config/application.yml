@@ -281,6 +281,10 @@ tesco:
         key: pdp/forms/standard_pdp.form
     colleague-changes:
       force: ${CFAPI_FORCE:false}
+    rest-event-executor:
+      core-pool-size: 3
+      max-core-pool-size: 10
+      queue-capacity: 100000
 
 camunda:
   bpm:
