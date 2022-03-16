@@ -2,12 +2,13 @@ package com.tesco.pma.feedback.validator;
 
 import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.feedback.api.Feedback;
-import com.tesco.pma.rest.HttpStatusCodes;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
 import java.util.UUID;
+
+import static com.tesco.pma.rest.HttpStatusCodes.BAD_REQUEST;
 
 /**
  * Utility class for feedback validation
@@ -25,12 +26,12 @@ public class FeedbackValidator {
      */
     public boolean validateFeedbackColleague(Feedback feedback, UUID colleagueUuid) {
         if (Objects.equals(feedback.getColleagueUuid(), feedback.getTargetColleagueUuid())) {
-            throw new InvalidPayloadException(HttpStatusCodes.BAD_REQUEST,
+            throw new InvalidPayloadException(BAD_REQUEST,
                     "Feedback's Colleague UUID must not be same as Target Colleague UUID", "feedback.colleagueUuid");
         }
         if (!Objects.equals(feedback.getColleagueUuid(), colleagueUuid)
                 && !Objects.equals(feedback.getTargetColleagueUuid(), colleagueUuid)) {
-            throw new InvalidPayloadException(HttpStatusCodes.BAD_REQUEST,
+            throw new InvalidPayloadException(BAD_REQUEST,
                     "Colleague UUID from token must be same as Feedback's Colleague UUID or Target Colleague", "feedback.colleagueUuid");
         }
         return true;
