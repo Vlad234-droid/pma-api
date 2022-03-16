@@ -2,7 +2,6 @@ package com.tesco.pma.database;
 
 import liquibase.Liquibase;
 import liquibase.database.DatabaseFactory;
-import liquibase.exception.DatabaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -25,17 +24,18 @@ class DatabaseIntegrationTest {
     private static Liquibase liquibase;
 
     @BeforeAll
-    static void beforeAll() throws DatabaseException {
-        final var resourceAccessor = new ClassLoaderResourceAccessor();
-        final var database = DatabaseFactory.getInstance().openDatabase(
-                CONTAINER.getJdbcUrl(),
-                CONTAINER.getUsername(),
-                CONTAINER.getPassword(),
-                Properties.class.getName(),
-                resourceAccessor
-        );
+    static void beforeAll() throws Exception {
+        try (var resourceAccessor = new ClassLoaderResourceAccessor()) {
+            final var database = DatabaseFactory.getInstance().openDatabase(
+                    CONTAINER.getJdbcUrl(),
+                    CONTAINER.getUsername(),
+                    CONTAINER.getPassword(),
+                    Properties.class.getName(),
+                    resourceAccessor
+            );
 
-        liquibase = new Liquibase(CHANGELOG_MASTER_FILE, resourceAccessor, database);
+            liquibase = new Liquibase(CHANGELOG_MASTER_FILE, resourceAccessor, database);
+        }
     }
 
     @Test
