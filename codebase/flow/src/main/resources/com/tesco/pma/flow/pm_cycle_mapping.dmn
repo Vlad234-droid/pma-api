@@ -21,8 +21,13 @@
         </inputExpression>
       </input>
       <input id="InputD" label="Salary Frequency">
-        <inputExpression id="InputExpression1677684130" typeRef="string" expressionLanguage="juel">
-          <text>${COLLEAGUE.workRelationships[0].salaryFrequency == null ? "_null" : COLLEAGUE.workRelationships[0].salaryFrequency.toLowerCase()}</text>
+        <inputExpression id="InputExpression1677684130" typeRef="string">
+          <text>{
+    wr: COLLEAGUE.workRelationships[1],
+    val: wr.getSalaryFrequency(),
+    valLowerCase: lower case(val),
+    result: if matches(val, "^(?!\s*$).+") then valLowerCase else "_null"
+}.result</text>
         </inputExpression>
       </input>
       <input id="InputE" label="Job name">
