@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.UUID;
 
 import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
-import static com.tesco.pma.cycle.api.PMCycleStatus.COMPLETED;
 import static com.tesco.pma.cycle.api.PMCycleStatus.DRAFT;
 import static com.tesco.pma.util.TestDataUtil.CYCLE_UUID;
 import static com.tesco.pma.util.TestDataUtil.TEMPLATE_UUID;
@@ -180,18 +179,6 @@ class PMCycleServiceImplTest {
 
         cycleService.start(cycle);
         verify(processManagerService).runProcessByResourceName(eq(TEST_FILE_NAME), any());
-    }
-
-    @Test
-    void completeCycle() {
-        var cycle = buildCycle();
-        cycle.setStatus(DRAFT);
-        when(cycleDAO.read(eq(CYCLE_UUID), any())).thenReturn(cycle);
-        when(cycleDAO.updateStatus(eq(CYCLE_UUID), any(), any())).thenReturn(1);
-
-        cycleService.completeCycle(CYCLE_UUID);
-
-        verify(cycleDAO).updateStatus(eq(CYCLE_UUID), eq(COMPLETED), any());
     }
 
 }

@@ -8,6 +8,8 @@ import com.tesco.pma.flow.FlowParameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import static com.tesco.pma.cycle.api.PMCycleStatus.COMPLETED;
+
 @Component
 @RequiredArgsConstructor
 public class FinalizeFlowHandler extends CamundaAbstractFlowHandler {
@@ -17,6 +19,6 @@ public class FinalizeFlowHandler extends CamundaAbstractFlowHandler {
     @Override
     protected void execute(ExecutionContext context) {
         var cycle = context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class);
-        pmCycleService.completeCycle(cycle.getUuid());
+        pmCycleService.updateStatus(cycle.getUuid(), COMPLETED);
     }
 }

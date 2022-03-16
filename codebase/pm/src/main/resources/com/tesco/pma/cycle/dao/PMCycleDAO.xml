@@ -87,7 +87,7 @@
                     #{value}::uuid
                 </when>
                 <when test="filter.property == 'status' or filter.property == 'type'">
-                    #{value}::INTEGER
+                    #{value.id}
                 </when>
                 <otherwise>
                     #{value}

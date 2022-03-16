@@ -256,12 +256,6 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     @Override
     @Transactional
-    public void completeCycle(UUID cycleUUID) {
-        intUpdateStatus(cycleUUID, COMPLETED, null);
-    }
-
-    @Override
-    @Transactional
     public PMCycle updateForm(UUID cycleUuid, PMCycleUpdateFormRequest updateFormRequest) {
         log.debug("Updating form for cycle:{}, updateFormRequest:{}", cycleUuid, updateFormRequest);
 
