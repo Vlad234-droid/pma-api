@@ -4,6 +4,7 @@ import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.feedback.api.Feedback;
 import com.tesco.pma.feedback.service.FeedbackService;
+import com.tesco.pma.feedback.validator.FeedbackValidator;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
@@ -34,7 +35,6 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.tesco.pma.feedback.validator.FeedbackValidator.validateFeedbackColleague;
 import static com.tesco.pma.util.SecurityUtils.getColleagueUuid;
 
 /**
@@ -68,7 +68,7 @@ public class FeedbackEndpoint {
         log.debug("REST request to save Feedbacks : {}", feedbacks);
         var colleagueUuid = getColleagueUuid(authentication);
         var result = feedbacks.stream()
-                .filter(feedback -> validateFeedbackColleague(feedback, colleagueUuid))
+                .filter(feedback -> FeedbackValidator.validateFeedbackColleague(feedback, colleagueUuid))
                 .map(feedbackService::create)
                 .collect(Collectors.toList());
         return RestResponse.success(result);
@@ -103,7 +103,7 @@ public class FeedbackEndpoint {
             throw new InvalidParameterException(HttpStatusCodes.BAD_REQUEST, "Path uuid does not match body uuid", "feedback.uuid");
         }
 
-        validateFeedbackColleague(feedback, getColleagueUuid(authentication));
+        FeedbackValidator.validateFeedbackColleague(feedback, getColleagueUuid(authentication));
 
         return RestResponse.success(feedbackService.update(feedback));
     }

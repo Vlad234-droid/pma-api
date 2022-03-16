@@ -23,7 +23,6 @@ import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACKS_COUNT;
 import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACK_UUID_LAST;
 import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACK_UUID_UNREAD;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
