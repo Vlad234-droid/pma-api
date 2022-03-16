@@ -45,7 +45,6 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 @RequiredArgsConstructor
 public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
 
-    public static final String COLLEAGUE_CYCLE_UUID = "colleagueCycleUuid";
     private final BatchService batchService;
     private final PMColleagueCycleDAO dao;
     private final NamedMessageSourceAccessor messageSourceAccessor;
@@ -57,6 +56,8 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
     private static final String STATUS_FILTER = "status_filter";
     private static final String CYCLE_UUID_PARAMETER_NAME = "cycleUuid";
     private static final String CYCLE_STATUSES_PARAMETER_NAME = "statuses";
+    public static final String COLLEAGUE_CYCLE_UUID = "colleagueCycleUuid";
+    public static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
 
     @Override
     public PMColleagueCycle get(UUID uuid) {
@@ -91,8 +92,8 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
         } catch (DuplicateKeyException ex) {
             throw new AlreadyExistsException(PM_COLLEAGUE_CYCLE_ALREADY_EXISTS.getCode(),
                     messageSourceAccessor.getMessage(PM_COLLEAGUE_CYCLE_ALREADY_EXISTS,
-                            Map.of("cycleUuid", pmColleagueCycle.getCycleUuid(),
-                                    "colleagueUuid", pmColleagueCycle.getColleagueUuid())), ex);
+                            Map.of(CYCLE_UUID_PARAMETER_NAME, pmColleagueCycle.getCycleUuid(),
+                                    COLLEAGUE_UUID_PARAMETER_NAME, pmColleagueCycle.getColleagueUuid())), ex);
         }
         return pmColleagueCycle;
     }
