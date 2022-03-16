@@ -5,6 +5,8 @@ import com.tesco.pma.event.Event;
 import com.tesco.pma.event.exception.ErrorCodes;
 import com.tesco.pma.event.exception.EventSendingException;
 import com.tesco.pma.event.service.EventSender;
+import com.tesco.pma.logging.TraceId;
+import com.tesco.pma.logging.TraceUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +40,7 @@ public class SpringRestEventSender implements EventSender {
 
     @Override
     public void sendEvent(Event event, String target, boolean isThrow) {
+        TraceUtils.setTraceId(new TraceId(event.getEventId(), null));
         var url = getUrl(target);
         try {
             HttpEntity<Event> requestBody = new HttpEntity<>(event);
