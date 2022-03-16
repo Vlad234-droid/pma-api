@@ -407,7 +407,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         try {
             var processId = deploymentService.deploy(cycle.getTemplate().getUuid());
             log.debug("Process definition id: {}", processId);
-            intUpdateStatus(uuid, PMCycleStatus.REGISTERED, null);
+            intUpdateStatus(uuid, ACTIVE, null);
 
             var pmRuntimeProcess = PMRuntimeProcess.builder()
                     .bpmProcessId(processId)
