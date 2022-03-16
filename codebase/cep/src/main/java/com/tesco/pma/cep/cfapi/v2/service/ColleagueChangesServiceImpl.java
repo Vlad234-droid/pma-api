@@ -67,8 +67,8 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
             return;
         }
 
-        // For all event types except for Joiner profile must be existing
-        if (!JOINER.equals(colleagueChangeEventPayload.getEventType())) {
+        // For all event types except for Joiner and Modification profile must be existing
+        if (EnumSet.of(LEAVER, DELETION).contains(colleagueChangeEventPayload.getEventType())) {
             Optional<ColleagueProfile> optionalColleagueProfile = profileService.findProfileByColleagueUuid(
                     colleagueChangeEventPayload.getColleagueUuid());
             if (optionalColleagueProfile.isEmpty()) {
@@ -82,6 +82,8 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     }
 
     private void startProcessColleagueChangeEvent(ColleagueChangeEventPayload colleagueChangeEventPayload) {
+        log.debug("Start processing of event type " + colleagueChangeEventPayload.getEventType());
+
         var processor = PROCESSORS.get(colleagueChangeEventPayload.getEventType());
         if (processor == null) {
             throw new IllegalArgumentException("Invalid event type " + colleagueChangeEventPayload.getEventType());
@@ -126,6 +128,12 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     }
 
     private int processModificationEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
+        Optional<ColleagueProfile> optionalColleagueProfile = profileService.findProfileByColleagueUuid(
+                colleagueChangeEventPayload.getColleagueUuid());
+        if (optionalColleagueProfile.isEmpty()) {
+            return processJoinerEventType(colleagueChangeEventPayload);
+        }
+
         var changedAttributes = filteringChangedAttributes(colleagueChangeEventPayload);
         if (changedAttributes.isEmpty()) {
             log.warn(LogFormatter.formatMessage(CHANGED_ATTRIBUTES_NOT_FOUND, "For colleague '{}' was not updated records"),

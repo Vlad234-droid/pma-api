@@ -1,0 +1,17 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+    <property name="rollback_file_path" value="com/tesco/pma/database/1.0.0/025-pm-colleague-cycle-unique-ddl.xml" global="false"/>
+
+    <changeSet author="ypashynskyi" id="1">
+        <sql><![CDATA[
+            drop index if exists colleague_cycle_ux;
+
+            CREATE UNIQUE INDEX if not exists colleague_cycle_ux ON pm_colleague_cycle (colleague_uuid)
+                where status_id <> 2;
+            ]]>
+        </sql>
+        <rollback changeSetPath="${rollback_file_path}" changeSetId="1" changeSetAuthor="vadim.shatokhin"/>
+    </changeSet>
+</databaseChangeLog>
