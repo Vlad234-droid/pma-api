@@ -18,7 +18,7 @@ public class FeedbackValidator {
 
     /**
      * Validate feedback's colleague
-     * @param feedback a Feedback to validate it
+     * @param feedback a Feedback to validate its colleague
      * @param colleagueUuid an identifier of feedback's colleague or target colleague
      * @return true - if feedback is valid
      * @throws InvalidPayloadException if feedback is invalid
