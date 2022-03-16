@@ -130,8 +130,6 @@ public interface PMCycleService {
      */
     void start(PMCycle cycle);
 
-    void completeCycle(UUID cycleUUID);
-
     PMCycle updateForm(UUID cycleUuid, PMCycleUpdateFormRequest updateFormRequest);
 
     PMCycle updateFormToLatestVersion(UUID cycleUuid, String formKey);
