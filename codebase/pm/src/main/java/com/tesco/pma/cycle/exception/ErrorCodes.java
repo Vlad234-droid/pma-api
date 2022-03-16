@@ -67,7 +67,11 @@ public enum ErrorCodes implements ErrorCodeAware {
     /**
      * Pm runtime process not found by uuid
      */
-    PM_RT_PROCESS_NOT_FOUND_BY_UUID;
+    PM_RT_PROCESS_NOT_FOUND_BY_UUID,
+    /**
+     * Error during file deployment
+     */
+    FILE_DEPLOYMENT_ERROR;
 
     @Override
     public String getCode() {
