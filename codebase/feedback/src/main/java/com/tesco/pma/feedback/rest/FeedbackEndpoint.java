@@ -4,7 +4,6 @@ import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.feedback.api.Feedback;
 import com.tesco.pma.feedback.service.FeedbackService;
-import com.tesco.pma.feedback.validator.FeedbackValidator;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
@@ -35,6 +34,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.tesco.pma.feedback.validator.FeedbackValidator.validateFeedbackColleague;
 import static com.tesco.pma.util.SecurityUtils.getColleagueUuid;
 
 /**
@@ -68,7 +68,7 @@ public class FeedbackEndpoint {
         log.debug("REST request to save Feedbacks : {}", feedbacks);
         var colleagueUuid = getColleagueUuid(authentication);
         var result = feedbacks.stream()
-                .filter(f -> FeedbackValidator.validateFeedbackColleague(f, colleagueUuid))
+                .filter(feedback -> validateFeedbackColleague(feedback, colleagueUuid))
                 .map(feedbackService::create)
                 .collect(Collectors.toList());
         return RestResponse.success(result);
@@ -103,10 +103,9 @@ public class FeedbackEndpoint {
             throw new InvalidParameterException(HttpStatusCodes.BAD_REQUEST, "Path uuid does not match body uuid", "feedback.uuid");
         }
 
-        FeedbackValidator.validateFeedbackColleague(feedback, getColleagueUuid(authentication));
+        validateFeedbackColleague(feedback, getColleagueUuid(authentication));
 
-        var result = feedbackService.update(feedback);
-        return RestResponse.success(result);
+        return RestResponse.success(feedbackService.update(feedback));
     }
 
     /**
@@ -160,9 +159,10 @@ public class FeedbackEndpoint {
             + "    \"_start\": \"1\",\n"
             + "    \"_limit\": \"7\",\n"
             + "    \"_search\": \"first or middle or last target colleague name\"\n"
-            + "  }") RequestQuery requestQuery) {
+            + "  }") RequestQuery requestQuery,
+                     @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         log.debug("REST request to get a feedbacks of Feedbacks");
-        return RestResponse.success(feedbackService.findAll(requestQuery));
+        return RestResponse.success(feedbackService.findAll(requestQuery, getColleagueUuid(authentication)));
     }
 
     /**

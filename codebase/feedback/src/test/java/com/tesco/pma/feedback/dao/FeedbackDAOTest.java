@@ -3,11 +3,8 @@ package com.tesco.pma.feedback.dao;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.dao.AbstractDAOTest;
-import com.tesco.pma.feedback.api.Feedback;
-import com.tesco.pma.feedback.api.FeedbackItem;
 import com.tesco.pma.feedback.api.FeedbackStatus;
 import com.tesco.pma.feedback.api.FeedbackTargetType;
-import com.tesco.pma.feedback.util.TestDataUtil;
 import com.tesco.pma.pagination.RequestQuery;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +13,16 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import static com.tesco.pma.feedback.util.TestDataUtil.COLLEAGUE_UUID;
+import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACK_ITEM_UUID;
+import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACK_UUID_LAST;
+import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACK_UUID_UNREAD;
+import static com.tesco.pma.feedback.util.TestDataUtil.TARGET_COLLEAGUE_UUID;
+import static com.tesco.pma.feedback.util.TestDataUtil.buildFeedback;
+import static com.tesco.pma.feedback.util.TestDataUtil.buildFeedbackItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -42,14 +45,14 @@ public class FeedbackDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "feedback_init.xml"})
     void findAllFeedbacksWithItems() {
         //given
-        RequestQuery requestQuery = new RequestQuery();
+        var requestQuery = new RequestQuery();
 
         //when
-        List<Feedback> result = underTest.findAll(requestQuery);
+        var result = underTest.findAll(requestQuery, COLLEAGUE_UUID);
 
         //then
         assertEquals(6, result.size());
-        assertEquals(TestDataUtil.FEEDBACK_UUID_LAST, result.get(0).getUuid());
+        assertEquals(FEEDBACK_UUID_LAST, result.get(0).getUuid());
         assertEquals(3, result.get(0).getFeedbackItems().size());
     }
 
@@ -59,11 +62,11 @@ public class FeedbackDAOTest extends AbstractDAOTest {
         //given
 
         //when
-        Feedback result = underTest.getByUuid(TestDataUtil.FEEDBACK_UUID_LAST, TestDataUtil.COLLEAGUE_UUID);
+        var result = underTest.getByUuid(FEEDBACK_UUID_LAST, COLLEAGUE_UUID);
 
         //then
-        assertEquals(TestDataUtil.FEEDBACK_UUID_LAST, result.getUuid());
-        assertEquals(TestDataUtil.COLLEAGUE_UUID, result.getColleagueUuid());
+        assertEquals(FEEDBACK_UUID_LAST, result.getUuid());
+        assertEquals(COLLEAGUE_UUID, result.getColleagueUuid());
         assertEquals(FeedbackTargetType.OBJECTIVE, result.getTargetType());
     }
 
@@ -73,7 +76,7 @@ public class FeedbackDAOTest extends AbstractDAOTest {
         //given
 
         //when
-        var result = underTest.getGivenFeedbackCount(TestDataUtil.COLLEAGUE_UUID,
+        var result = underTest.getGivenFeedbackCount(COLLEAGUE_UUID,
                 DictionaryFilter.includeFilter(Set.of(FeedbackStatus.SUBMITTED, FeedbackStatus.COMPLETED)));
 
         //then
@@ -86,7 +89,7 @@ public class FeedbackDAOTest extends AbstractDAOTest {
         //given
 
         //when
-        var result = underTest.getRequestedFeedbackCount(TestDataUtil.COLLEAGUE_UUID,
+        var result = underTest.getRequestedFeedbackCount(COLLEAGUE_UUID,
                 DictionaryFilter.includeFilter(Set.of(FeedbackStatus.PENDING)));
 
         //then
@@ -99,8 +102,8 @@ public class FeedbackDAOTest extends AbstractDAOTest {
         //given
 
         //when
-        int result = underTest.markAsRead(TestDataUtil.FEEDBACK_UUID_UNREAD, TestDataUtil.TARGET_COLLEAGUE_UUID);
-        Feedback readFeedback = underTest.getByUuid(TestDataUtil.FEEDBACK_UUID_UNREAD, TestDataUtil.TARGET_COLLEAGUE_UUID);
+        var result = underTest.markAsRead(FEEDBACK_UUID_UNREAD, TARGET_COLLEAGUE_UUID);
+        var readFeedback = underTest.getByUuid(FEEDBACK_UUID_UNREAD, TARGET_COLLEAGUE_UUID);
 
         //then
         assertEquals(1, result);
@@ -111,12 +114,12 @@ public class FeedbackDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "feedback_init.xml"})
     void insertFeedback() {
         //given
-        Feedback feedback = TestDataUtil.buildFeedback();
+        var feedback = buildFeedback();
         feedback.setUuid(UUID.randomUUID());
         feedback.setCreatedTime(Instant.now());
 
         //when
-        int result = underTest.insert(feedback);
+        var result = underTest.insert(feedback);
 
         //then
         assertEquals(1, result);
@@ -127,11 +130,11 @@ public class FeedbackDAOTest extends AbstractDAOTest {
     void updateFeedback() {
         //given
         DictionaryFilter<FeedbackStatus> statusFilter = DictionaryFilter.includeFilter();
-        Feedback feedback = TestDataUtil.buildFeedback();
-        feedback.setUuid(TestDataUtil.FEEDBACK_UUID_LAST);
+        var feedback = buildFeedback();
+        feedback.setUuid(FEEDBACK_UUID_LAST);
 
         //when
-        int result = underTest.update(feedback, statusFilter);
+        var result = underTest.update(feedback, statusFilter);
 
         //then
         assertEquals(1, result);
@@ -141,25 +144,25 @@ public class FeedbackDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "feedback_init.xml"})
     void shouldThrowDuplicateKeyExceptionWhenInsertFeedbackHasAlreadyExistsUuid() {
         //given
-        Feedback feedback = TestDataUtil.buildFeedback();
-        feedback.setUuid(TestDataUtil.FEEDBACK_UUID_LAST);
+        var feedback = buildFeedback();
+        feedback.setUuid(FEEDBACK_UUID_LAST);
         feedback.setCreatedTime(Instant.now());
 
         //when and then
         var exception = assertThrows(DuplicateKeyException.class,
                 () -> underTest.insert(feedback));
-        assertTrue(exception.getMessage().contains(TestDataUtil.FEEDBACK_UUID_LAST.toString()));
+        assertTrue(exception.getMessage().contains(FEEDBACK_UUID_LAST.toString()));
     }
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "feedback_init.xml"})
     void insertFeedbackItem() {
         //given
-        FeedbackItem feedbackItem = TestDataUtil.buildFeedbackItem();
+        var feedbackItem = buildFeedbackItem();
         feedbackItem.setUuid(UUID.randomUUID());
 
         //when
-        int result = underTest.insertOrUpdateFeedbackItem(feedbackItem);
+        var result = underTest.insertOrUpdateFeedbackItem(feedbackItem);
 
         //then
         assertEquals(1, result);
@@ -169,11 +172,11 @@ public class FeedbackDAOTest extends AbstractDAOTest {
     @DataSet({BASE_PATH_TO_DATA_SET + "feedback_init.xml"})
     void updateFeedbackItem() {
         //given
-        FeedbackItem feedbackItem = TestDataUtil.buildFeedbackItem();
-        feedbackItem.setUuid(TestDataUtil.FEEDBACK_ITEM_UUID);
+        var feedbackItem = buildFeedbackItem();
+        feedbackItem.setUuid(FEEDBACK_ITEM_UUID);
 
         //when
-        int result = underTest.insertOrUpdateFeedbackItem(feedbackItem);
+        var result = underTest.insertOrUpdateFeedbackItem(feedbackItem);
 
         //then
         assertEquals(1, result);

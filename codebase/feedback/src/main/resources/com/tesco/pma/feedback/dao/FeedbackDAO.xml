@@ -349,6 +349,7 @@
         LEFT JOIN job tcj on tc.job_id = tcj.id
         LEFT JOIN department tcd on tc.department_id = tcd.id
         WHERE 1 = 1
+        <include refid="addFeedbackColleagueCondition"/>
         <if test="!requestQuery.filters.isEmpty()">
             <foreach collection="requestQuery.filters" item="filter" index="index" open=" AND " separator=" AND ">
                 <include refid="getExpression"/>

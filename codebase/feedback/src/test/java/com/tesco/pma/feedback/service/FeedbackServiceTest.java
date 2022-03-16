@@ -5,8 +5,6 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.event.service.EventSender;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.feedback.api.Feedback;
-import com.tesco.pma.feedback.api.FeedbackItem;
 import com.tesco.pma.feedback.api.FeedbackStatus;
 import com.tesco.pma.feedback.dao.FeedbackDAO;
 import com.tesco.pma.feedback.util.TestDataUtil;
@@ -55,10 +53,10 @@ class FeedbackServiceTest {
     @Test
     void createFeedback() {
         //given
-        Feedback feedback = TestDataUtil.buildFeedback();
+        var feedback = TestDataUtil.buildFeedback();
 
         //when
-        Feedback result = underTest.create(feedback);
+        var result = underTest.create(feedback);
 
         //then
         assertNotNull(result.getUuid());
@@ -67,7 +65,7 @@ class FeedbackServiceTest {
     @Test
     void shouldThrowDatabaseConstraintViolationExceptionWhenCreateFeedbackWithDuplicateKey() {
         //given
-        Feedback feedback = TestDataUtil.buildFeedback();
+        var feedback = TestDataUtil.buildFeedback();
         when(feedbackDAO.insert(feedback)).thenThrow(DuplicateKeyException.class);
 
         //then
@@ -86,16 +84,16 @@ class FeedbackServiceTest {
     @Test
     void findAllFeedbacks() {
         //given
-        RequestQuery requestQuery = new RequestQuery();
-        Feedback feedback1 = TestDataUtil.buildFeedback();
+        var requestQuery = new RequestQuery();
+        var feedback1 = TestDataUtil.buildFeedback();
         feedback1.setUuid(FEEDBACK_UUID_LAST);
-        Feedback feedback2 = TestDataUtil.buildFeedback();
+        var feedback2 = TestDataUtil.buildFeedback();
         feedback2.setUuid(FEEDBACK_UUID_UNREAD);
-        List<Feedback> feedbacks = List.of(feedback1, feedback2);
-        when(feedbackDAO.findAll(requestQuery)).thenReturn(feedbacks);
+        var feedbacks = List.of(feedback1, feedback2);
+        when(feedbackDAO.findAll(requestQuery, COLLEAGUE_UUID)).thenReturn(feedbacks);
 
         //when
-        List<Feedback> result = underTest.findAll(requestQuery);
+        var result = underTest.findAll(requestQuery, COLLEAGUE_UUID);
 
         //then
         assertEquals(2, result.size());
@@ -105,11 +103,11 @@ class FeedbackServiceTest {
     @Test
     void findOneFeedback() {
         //given
-        Feedback feedback = TestDataUtil.buildFeedback();
+        var feedback = TestDataUtil.buildFeedback();
         when(feedbackDAO.getByUuid(FEEDBACK_UUID_LAST, COLLEAGUE_UUID)).thenReturn(feedback);
 
         //when
-        Feedback result = underTest.findOne(FEEDBACK_UUID_LAST, COLLEAGUE_UUID);
+        var result = underTest.findOne(FEEDBACK_UUID_LAST, COLLEAGUE_UUID);
 
         //then
         verify(feedbackDAO, times(1)).getByUuid(FEEDBACK_UUID_LAST, COLLEAGUE_UUID);
@@ -147,13 +145,13 @@ class FeedbackServiceTest {
     @Test
     void updateFeedback() {
         //given
-        Feedback feedback = TestDataUtil.buildFeedback();
+        var feedback = TestDataUtil.buildFeedback();
         feedback.setUuid(FEEDBACK_UUID_LAST);
         feedback.setStatus(FeedbackStatus.COMPLETED);
         when(feedbackDAO.update(eq(feedback), any())).thenReturn(1);
 
         //when
-        Feedback result = underTest.update(feedback);
+        var result = underTest.update(feedback);
 
         //then
         assertEquals(FeedbackStatus.COMPLETED, result.getStatus());
@@ -162,11 +160,11 @@ class FeedbackServiceTest {
     @Test
     void insertFeedbackItem() {
         //given
-        FeedbackItem feedbackItem = TestDataUtil.buildFeedbackItem();
+        var feedbackItem = TestDataUtil.buildFeedbackItem();
         when(feedbackDAO.insertOrUpdateFeedbackItem(feedbackItem)).thenReturn(1);
 
         //when
-        FeedbackItem result = underTest.save(feedbackItem);
+        var result = underTest.save(feedbackItem);
 
         //then
         assertNotNull(result.getUuid());
@@ -175,14 +173,14 @@ class FeedbackServiceTest {
     @Test
     void updateFeedbackItem() {
         //given
-        String content = "New content";
-        FeedbackItem feedbackItem = TestDataUtil.buildFeedbackItem();
+        var content = "New content";
+        var feedbackItem = TestDataUtil.buildFeedbackItem();
         feedbackItem.setUuid(FEEDBACK_ITEM_UUID);
         feedbackItem.setContent(content);
         when(feedbackDAO.insertOrUpdateFeedbackItem(feedbackItem)).thenReturn(1);
 
         //when
-        FeedbackItem result = underTest.save(feedbackItem);
+        var result = underTest.save(feedbackItem);
 
         //then
         assertEquals(content, result.getContent());
@@ -191,7 +189,7 @@ class FeedbackServiceTest {
     @Test
     void saveFeedbackItemShouldThrowNotFoundException() {
         //given
-        FeedbackItem feedbackItem = TestDataUtil.buildFeedbackItem();
+        var feedbackItem = TestDataUtil.buildFeedbackItem();
         feedbackItem.setUuid(FEEDBACK_ITEM_UUID);
         when(feedbackDAO.insertOrUpdateFeedbackItem(feedbackItem)).thenReturn(0);
 

@@ -125,21 +125,21 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     @Transactional
     public void markAsRead(UUID uuid, UUID colleagueUuid) {
-        log.debug("Request to mark as read Feedback with uuid: {} and colleague or target uuid: {}", uuid, colleagueUuid);
+        log.debug("Request to mark as read Feedback with uuid: {} for colleague or target uuid: {}", uuid, colleagueUuid);
         feedbackDAO.markAsRead(uuid, colleagueUuid);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Feedback> findAll(RequestQuery requestQuery) {
-        log.debug("Request to get all Feedbacks");
-        return feedbackDAO.findAll(requestQuery);
+    public List<Feedback> findAll(RequestQuery requestQuery, UUID colleagueUuid) {
+        log.debug("Request to get all Feedbacks for colleague or target uuid: {}", colleagueUuid);
+        return feedbackDAO.findAll(requestQuery, colleagueUuid);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Feedback findOne(UUID uuid, UUID colleagueUuid) {
-        log.debug("Request to get Feedback : {} and colleague or target uuid: {}", uuid, colleagueUuid);
+        log.debug("Request to get Feedback : {} for colleague or target uuid: {}", uuid, colleagueUuid);
         Feedback feedback = feedbackDAO.getByUuid(uuid, colleagueUuid);
         if (feedback == null) {
             String message = messageSourceAccessor.getMessage(ErrorCodes.FEEDBACK_NOT_FOUND,

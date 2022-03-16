@@ -25,9 +25,10 @@ public interface FeedbackDAO {
      * Find all
      *
      * @param requestQuery filtering, sorting and pagination
+     * @param colleagueUuid - identifier of feedback's colleague or target colleague
      * @return a list of Feedbacks
      */
-    List<Feedback> findAll(@Param("requestQuery") RequestQuery requestQuery);
+    List<Feedback> findAll(@Param("requestQuery") RequestQuery requestQuery, @Param("colleagueUuid") UUID colleagueUuid);
 
     /**
      * Get given feedbacks count
