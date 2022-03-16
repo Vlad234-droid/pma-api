@@ -59,7 +59,11 @@ public enum ErrorCodes implements ErrorCodeAware {
     /**
      * Objective sharing was not enabled
      */
-    OBJECTIVE_SHARING_NOT_ENABLED;
+    OBJECTIVE_SHARING_NOT_ENABLED,
+    /**
+     * Cannot read file as not a manager of colleague
+     */
+    INSUFFICIENT_FILE_ACCESS;
 
     @Override
     public String getCode() {

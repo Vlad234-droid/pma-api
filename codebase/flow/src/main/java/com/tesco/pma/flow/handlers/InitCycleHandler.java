@@ -40,7 +40,7 @@ public class InitCycleHandler extends CamundaAbstractFlowHandler {
         var cycle = findCycle(context);
         context.setVariable(FlowParameters.PM_CYCLE, cycle);
 
-        var colleagueUuid = getOptionalVariableDeep(context, FlowParameters.COLLEAGUE_UUID, String.class, null);
+        var colleagueUuid = getOptionalVariableDeep(context, FlowParameters.COLLEAGUE_UUID, UUID.class, UUID::fromString);
         var scheduled = getOptionalVariableDeep(context, FlowParameters.SCHEDULED, Boolean.class, Boolean::valueOf);
 
         if (colleagueUuid == null && scheduled == null) {
@@ -51,12 +51,10 @@ public class InitCycleHandler extends CamundaAbstractFlowHandler {
         }
         var scheduleCycle = colleagueUuid == null && BooleanUtils.isTrue(scheduled);
         context.setVariable(FlowParameters.SCHEDULED, scheduleCycle);
-        if (scheduleCycle) {
-            context.setVariable(FlowParameters.CYCLE_START_DATE, cycle.getStartTime());
-            context.setVariable(FlowParameters.CYCLE_END_DATE, cycle.getEndTime());
+        context.setVariable(FlowParameters.CYCLE_START_DATE, cycle.getStartTime());
+        context.setVariable(FlowParameters.CYCLE_END_DATE, cycle.getEndTime());
 
-            setBeforeDateVariables(context, cycle);
-        }
+        setBeforeDateVariables(context, cycle);
     }
 
     private void setBeforeDateVariables(ExecutionContext context, PMCycle cycle) {

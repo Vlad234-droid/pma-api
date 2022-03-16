@@ -41,7 +41,7 @@ spring:
       password: ${PMA_DB_PASSWORD}
       type: com.zaxxer.hikari.HikariDataSource
       connection-test-query: SELECT 1
-      minimum-idle: 1
+#      minimum-idle: 10
       maximum-pool-size: 10
       #idle-timeout: 60000
       #max-life-time: 1750000
@@ -62,7 +62,6 @@ spring:
                               com.tesco.pma.config.domain,
                               com.tesco.pma.tip.api,
                               com.tesco.pma.pdp.api,
-                              com.tesco.pma.pdp.domain,
                               com.tesco.pma.reporting.review.domain,
                               com.tesco.pma.reporting.dashboard.domain,
                               com.tesco.pma.cms.model
@@ -93,7 +92,7 @@ spring:
       password: ${PMA_DB_PASSWORD}
       type: com.zaxxer.hikari.HikariDataSource
       connection-test-query: SELECT 1
-      minimum-idle: 10
+#      minimum-idle: 10
       maximum-pool-size: 10
       pool-name: camunda_ds_pool
       is-auto-commit: false
@@ -258,6 +257,7 @@ tesco:
       NF_FEEDBACK_REQUESTED: com.tesco.pma.bpm.action.RunFlowByEventAction
       # Cycle
       PM_CYCLE_REPEAT: com.tesco.pma.bpm.action.RunFlowByEventAction
+      PM_COLLEAGUE_CYCLE_CREATE: com.tesco.pma.flow.action.ColleagueCycleCreateEventAction
       # Objectives
       NF_ORGANISATION_OBJECTIVES: com.tesco.pma.bpm.action.RunFlowByEventAction
       NF_OBJECTIVES_APPROVED_FOR_SHARING: com.tesco.pma.bpm.action.RunFlowByEventAction
@@ -282,6 +282,10 @@ tesco:
         key: pdp/forms/standard_pdp.form
     colleague-changes:
       force: ${CFAPI_FORCE:false}
+    rest-event-executor:
+      core-pool-size: 3
+      max-core-pool-size: 10
+      queue-capacity: 100000
 
 camunda:
   bpm:
@@ -329,15 +333,3 @@ camunda:
                                            com/tesco/pma/flow/review/tl_point_allowed_prev_statuses.dmn,
                                            com/tesco/pma/flow/review/tl_point_status_to_event.dmn
     deployment-resource-paths: com/tesco/pma/flow
-
----
-spring:
-  config:
-    activate:
-      on-profile: cep-local
-tesco:
-  application:
-    external-endpoints:
-      cep:
-        publish:
-          url: http://localhost:8083/v1/requests/events/local

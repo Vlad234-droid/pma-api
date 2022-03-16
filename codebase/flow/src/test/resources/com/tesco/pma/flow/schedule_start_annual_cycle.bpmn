@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0x6yq13" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="schedule_start_annual_cycle" name="Schedule start annual cycle" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_1xriudh</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Activity_1h31hx9" name="Update performance cycle status:&#10;STARTED" camunda:class="com.tesco.pma.flow.handlers.UpdatePMCycleStatusHandler">
+      <bpmn:extensionElements>
+        <camunda:field name="statusValue">
+          <camunda:string>ACTIVE</camunda:string>
+        </camunda:field>
+        <camunda:field name="oldStatusValues">
+          <camunda:string>REGISTERED</camunda:string>
+        </camunda:field>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0j0lli3</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zrcqyp</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:intermediateCatchEvent id="Event_1yqu26x" name="Before&#10;start">
+      <bpmn:incoming>Flow_1xriudh</bpmn:incoming>
+      <bpmn:outgoing>Flow_04i1tja</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1mzpoj9">
+        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${CYCLE_BEFORE_START_DATE}</bpmn:timeDate>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:serviceTask id="Activity_0039qsr" name="Send&#10;notification&#10;before start&#10;cycle event" camunda:class="com.tesco.pma.flow.handlers.ColleaguesEventsSendHandler">
+      <bpmn:extensionElements>
+        <camunda:field name="eventNameExpression">
+          <camunda:string>NF_PM_CYCLE_BEFORE_START</camunda:string>
+        </camunda:field>
+        <camunda:field name="isErrorSensitiveExpression">
+          <camunda:string>false</camunda:string>
+        </camunda:field>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="EVENT_PARAMS">
+            <camunda:map>
+              <camunda:entry key="PM_CYCLE_UUID">${PM_CYCLE.getUuid()}</camunda:entry>
+            </camunda:map>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_04i1tja</bpmn:incoming>
+      <bpmn:outgoing>Flow_1k27bfm</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:intermediateCatchEvent id="Event_17azrn7" name="Start">
+      <bpmn:incoming>Flow_1k27bfm</bpmn:incoming>
+      <bpmn:outgoing>Flow_0j0lli3</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0yfpc9q">
+        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${CYCLE_START_DATE}</bpmn:timeDate>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:serviceTask id="Activity_1hj18fw" name="Send&#10;notification&#10;start cycle&#10;event" camunda:class="com.tesco.pma.flow.handlers.ColleaguesEventsSendHandler">
+      <bpmn:extensionElements>
+        <camunda:field name="eventNameExpression">
+          <camunda:string>NF_PM_CYCLE_START</camunda:string>
+        </camunda:field>
+        <camunda:field name="isErrorSensitiveExpression">
+          <camunda:string>false</camunda:string>
+        </camunda:field>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="EVENT_PARAMS">
+            <camunda:map>
+              <camunda:entry key="PM_CYCLE_UUID">${PM_CYCLE.getUuid()}</camunda:entry>
+            </camunda:map>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ab7oc5</bpmn:incoming>
+      <bpmn:outgoing>Flow_0qulz9j</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_11j279t" name="Send&#10;start cycle &#10;event" camunda:class="com.tesco.pma.flow.handlers.ColleaguesEventsSendHandler">
+      <bpmn:extensionElements>
+        <camunda:field name="eventNameExpression">
+          <camunda:string>PM_CYCLE_STARTED</camunda:string>
+        </camunda:field>
+        <camunda:field name="isErrorSensitiveExpression">
+          <camunda:string>false</camunda:string>
+        </camunda:field>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="EVENT_PARAMS">
+            <camunda:map>
+              <camunda:entry key="PM_CYCLE_UUID">${PM_CYCLE.getUuid()}</camunda:entry>
+            </camunda:map>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0zrcqyp</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ab7oc5</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0j0lli3" sourceRef="Event_17azrn7" targetRef="Activity_1h31hx9" />
+    <bpmn:sequenceFlow id="Flow_0zrcqyp" sourceRef="Activity_1h31hx9" targetRef="Activity_11j279t" />
+    <bpmn:sequenceFlow id="Flow_04i1tja" sourceRef="Event_1yqu26x" targetRef="Activity_0039qsr" />
+    <bpmn:sequenceFlow id="Flow_1k27bfm" sourceRef="Activity_0039qsr" targetRef="Event_17azrn7" />
+    <bpmn:sequenceFlow id="Flow_1ab7oc5" sourceRef="Activity_11j279t" targetRef="Activity_1hj18fw" />
+    <bpmn:sequenceFlow id="Flow_1xriudh" sourceRef="StartEvent_1" targetRef="Event_1yqu26x" />
+    <bpmn:endEvent id="Event_0kgnfko">
+      <bpmn:incoming>Flow_0qulz9j</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0qulz9j" sourceRef="Activity_1hj18fw" targetRef="Event_0kgnfko" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="schedule_start_annual_cycle">
+      <bpmndi:BPMNEdge id="Flow_0j0lli3_di" bpmnElement="Flow_0j0lli3">
+        <di:waypoint x="488" y="117" />
+        <di:waypoint x="520" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zrcqyp_di" bpmnElement="Flow_0zrcqyp">
+        <di:waypoint x="620" y="117" />
+        <di:waypoint x="650" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04i1tja_di" bpmnElement="Flow_04i1tja">
+        <di:waypoint x="288" y="117" />
+        <di:waypoint x="320" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1k27bfm_di" bpmnElement="Flow_1k27bfm">
+        <di:waypoint x="420" y="117" />
+        <di:waypoint x="452" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ab7oc5_di" bpmnElement="Flow_1ab7oc5">
+        <di:waypoint x="750" y="117" />
+        <di:waypoint x="780" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xriudh_di" bpmnElement="Flow_1xriudh">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="252" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qulz9j_di" bpmnElement="Flow_0qulz9j">
+        <di:waypoint x="880" y="117" />
+        <di:waypoint x="912" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1h31hx9_di" bpmnElement="Activity_1h31hx9">
+        <dc:Bounds x="520" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1yqu26x_di" bpmnElement="Event_1yqu26x">
+        <dc:Bounds x="252" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="253" y="142" width="33" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0039qsr_di" bpmnElement="Activity_0039qsr">
+        <dc:Bounds x="320" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_17azrn7_di" bpmnElement="Event_17azrn7">
+        <dc:Bounds x="452" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="458" y="142" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1hj18fw_di" bpmnElement="Activity_1hj18fw">
+        <dc:Bounds x="780" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_11j279t_di" bpmnElement="Activity_11j279t">
+        <dc:Bounds x="650" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0kgnfko_di" bpmnElement="Event_0kgnfko">
+        <dc:Bounds x="912" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

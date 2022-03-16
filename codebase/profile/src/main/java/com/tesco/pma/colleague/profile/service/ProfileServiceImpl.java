@@ -40,7 +40,7 @@ import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_NOT_F
 @Validated
 @RequiredArgsConstructor
 @Slf4j
-//todo @CacheConfig(cacheNames = "aggregatedColleagues")
+//todo @CacheConfig(cacheNames = "aggregatedColleagues") //NOSONAR
 public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileDAO profileDAO;
@@ -53,7 +53,7 @@ public class ProfileServiceImpl implements ProfileService {
     private static final String PROFILE_ATTRIBUTE_NAME_PARAMETER_NAME = "profileAttributeName";
 
     @Override
-    //todo    @Cacheable
+    //todo    @Cacheable //NOSONAR
     public Optional<ColleagueProfile> findProfileByColleagueUuid(UUID colleagueUuid) {
 
         var colleague = findColleagueByColleagueUuid(colleagueUuid);
@@ -148,7 +148,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public Colleague findColleagueByColleagueUuid(UUID colleagueUuid) {
         var oc = profileDAO.getColleague(colleagueUuid);
-        //todo try to download and insert colleagueApiService.findColleagueByUuid(colleagueUuid)
+        //todo try to download and insert colleagueApiService.findColleagueByUuid(colleagueUuid) //NOSONAR
         return oc != null ? colleagueFactsApiLocalMapper.localToColleagueFactsApi(oc, colleagueUuid, false) : null;
     }
 
@@ -179,7 +179,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    // TODO To optimize logic for update only changed fields
+    // TODO To optimize logic for update only changed fields //NOSONAR
     public int updateColleague(UUID colleagueUuid, Collection<String> changedFields) {
         int updated = 0;
 

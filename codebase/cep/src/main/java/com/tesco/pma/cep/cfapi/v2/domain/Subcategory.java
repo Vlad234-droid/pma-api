@@ -41,7 +41,10 @@ public enum Subcategory {
     WORK_RELATIONSHIP_UPDATE("workRelationshipUpdate"),
 
     @JsonProperty("other")
-    OTHER_UPDATE("other");
+    OTHER_UPDATE("other"),
+
+    @JsonProperty("sourceSystemUpdate")
+    SOURCE_SYSTEM_UPDATE("sourceSystemUpdate");
 
     private final String subcategoryName;
 

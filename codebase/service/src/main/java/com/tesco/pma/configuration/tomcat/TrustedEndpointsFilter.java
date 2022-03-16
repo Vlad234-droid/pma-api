@@ -66,6 +66,7 @@ public class TrustedEndpointsFilter implements Filter {
 
     @Override
     public void destroy() {
+        log.debug("Trusted port filter destroy");
     }
 
 }

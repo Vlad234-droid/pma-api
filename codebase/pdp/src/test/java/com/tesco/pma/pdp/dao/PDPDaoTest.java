@@ -4,7 +4,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.tesco.pma.api.MapJson;
 import com.tesco.pma.dao.AbstractDAOTest;
-import com.tesco.pma.pdp.domain.PDPGoal;
+import com.tesco.pma.pdp.api.PDPGoal;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.DynamicPropertyRegistry;

@@ -28,7 +28,7 @@ public class ObjectiveLinkedReviewData {
     String lineManager;
     Integer objectiveNumber;
     PMTimelinePointStatus status;
-    String strategicPriority;
+    String strategicDriver;
     String objectiveTitle;
     String howAchieved;
     String howOverAchieved;
@@ -45,7 +45,7 @@ public class ObjectiveLinkedReviewData {
         strings.add(lineManager);
         strings.add(objectiveNumber);
         strings.add(status);
-        strings.add(strategicPriority);
+        strings.add(strategicDriver);
         strings.add(objectiveTitle);
         strings.add(howAchieved);
         strings.add(howOverAchieved);
