@@ -17,9 +17,15 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ActiveProfiles("test")
-@SpringBootTest(classes = {CamundaSpringBootTestConfig.class})
+@SpringBootTest(classes = {CamundaSpringBootTestConfig.class},
+        properties = "camunda.bpm.deployment-resource-pattern=com/tesco/pma/flow/repeat_cycle.bpmn"
+)
 class RepeatFlowTest {
 
+    private static final String END_EVENT_NEXT_CYCLE_STARTED = "Event_0udd3h7";
+    private static final String BUILD_NEXT_CYCLE = "Activity_0u4krab";
+    private static final String CREATE_CYCLE = "Activity_0unikql";
+    private static final String START_CYCLE = "Activity_0uxnsor";
     ProcessScenario scenario = mock(ProcessScenario.class);
     @MockBean
     BuildNextCycleHandler buildNextCycleHandler;
@@ -29,11 +35,6 @@ class RepeatFlowTest {
     UpdatePMCycleStatusHandler updatePMCycleStatusHandler;
     @MockBean
     StartCycleHandler startCycleHandler;
-
-    private static final String END_EVENT_NEXT_CYCLE_STARTED = "Event_0udd3h7";
-    private static final String BUILD_NEXT_CYCLE = "Activity_0u4krab";
-    private static final String CREATE_CYCLE = "Activity_0unikql";
-    private static final String START_CYCLE = "Activity_0uxnsor";
 
     @Test
     void shouldStartNextCycleByRepeatEvent() {
