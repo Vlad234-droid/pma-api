@@ -6,18 +6,32 @@
     </informationRequirement>
     <decisionTable id="decisionTable">
       <input id="InputA" label="Legal Employer Name">
-        <inputExpression id="InputExpression1174389866" typeRef="string" expressionLanguage="juel">
-          <text>${COLLEAGUE.workRelationships[0].legalEmployer == null ? "_null" : COLLEAGUE.workRelationships[0].legalEmployer.name.toLowerCase()}</text>
+        <inputExpression id="InputExpression1174389866" typeRef="string" expressionLanguage="feel">
+          <text>{
+    wr: COLLEAGUE.workRelationships[1],
+    le: wr.getLegalEmployer(),
+    val: if (le = null) then null else le.getName(),
+    result: if matches(val, "^(?!\s*$).+") then lower case(val) else "_null"
+}.result</text>
         </inputExpression>
       </input>
       <input id="InputB" label="Business Type">
-        <inputExpression id="InputExpression305259078" typeRef="string" expressionLanguage="juel">
-          <text>${COLLEAGUE.workRelationships[0].department == null ? "_null" : COLLEAGUE.workRelationships[0].department.businessType.toLowerCase()}</text>
+        <inputExpression id="InputExpression305259078" typeRef="string" expressionLanguage="feel">
+          <text>{
+    wr: COLLEAGUE.workRelationships[1],
+    dep: wr.getDepartment(),
+    val: if (dep = null) then null else dep.getBusinessType(),
+    result: if matches(val, "^(?!\s*$).+") then lower case(val) else "_null"
+}.result</text>
         </inputExpression>
       </input>
       <input id="InputC" label="Work Level">
-        <inputExpression id="InputExpression225691907" typeRef="string" expressionLanguage="juel">
-          <text>${COLLEAGUE.workRelationships[0].workLevel == null ? "_null": COLLEAGUE.workRelationships[0].workLevel.name().toLowerCase()}</text>
+        <inputExpression id="InputExpression225691907" typeRef="string" expressionLanguage="feel">
+          <text>{
+    wr: COLLEAGUE.workRelationships[1],
+    wl: wr.getWorkLevel(),
+    result: if matches(wl, "^(?!\s*$).+") then lower case(wl) else "_null"
+}.result</text>
         </inputExpression>
       </input>
       <input id="InputD" label="Salary Frequency">
@@ -31,18 +45,31 @@
         </inputExpression>
       </input>
       <input id="InputE" label="Job name">
-        <inputExpression id="InputExpression1215053968" typeRef="string" expressionLanguage="juel">
-          <text>${COLLEAGUE.workRelationships[0].job == null ? "_null" : COLLEAGUE.workRelationships[0].job.name.toLowerCase()}</text>
+        <inputExpression id="InputExpression1215053968" typeRef="string" expressionLanguage="feel">
+          <text>{
+    wr: COLLEAGUE.workRelationships[1],
+    job: wr.getJob(),
+    val: if (job = null) then null else job.getName(),
+    result: if matches(val, "^(?!\s*$).+") then lower case(val) else "_null"
+}.result</text>
         </inputExpression>
       </input>
       <input id="InputF" label="IAM source">
-        <inputExpression id="InputExpression935241046" typeRef="string" expressionLanguage="juel">
-          <text>${COLLEAGUE.externalSystems.iam == null ? "_null" : COLLEAGUE.externalSystems.iam.source.toLowerCase()}</text>
+        <inputExpression id="InputExpression935241046" typeRef="string" expressionLanguage="feel">
+          <text>{
+    es: COLLEAGUE.getExternalSystems(),
+    iam: if (es = null) then null else es.getIam(),
+    val: if (iam = null) then null else iam.getSource(),
+    result: if matches(val, "^(?!\s*$).+") then lower case(val) else "_null"
+}.result</text>
         </inputExpression>
       </input>
       <input id="InputG" label="Country">
-        <inputExpression id="InputExpression568074149" typeRef="string" expressionLanguage="juel">
-          <text>${COLLEAGUE.countryCode == null ? "_null" : COLLEAGUE.countryCode.toLowerCase()}</text>
+        <inputExpression id="InputExpression568074149" typeRef="string" expressionLanguage="feel">
+          <text>{
+    cc: COLLEAGUE.getCountryCode(),
+    result: if matches(cc, "^(?!\s*$).+") then lower case(cc) else "_null"
+}.result</text>
         </inputExpression>
       </input>
       <output id="OutputI" label="Cycle key" name="PM_CYCLE_KEY" typeRef="string" />
