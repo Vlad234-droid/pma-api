@@ -93,7 +93,7 @@
                 #{cc.endTime},
                 #{cc.properties, jdbcType=OTHER, typeHandler=com.tesco.pma.dao.utils.jsonb.MapJsonbTypeHandler},
                 #{cc.creationTime})
-        ON CONFLICT(colleague_uuid, status_id)
+        ON CONFLICT(colleague_uuid)
             WHERE status_id &lt;&gt; 2
             DO NOTHING
     </insert>

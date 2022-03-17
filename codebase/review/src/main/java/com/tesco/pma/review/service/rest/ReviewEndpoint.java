@@ -2,6 +2,7 @@ package com.tesco.pma.review.service.rest;
 
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.CaseInsensitiveEnumEditor;
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.api.PMReviewType;
 import com.tesco.pma.cycle.api.PMTimelinePointStatus;
@@ -38,6 +39,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
@@ -62,6 +64,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static com.tesco.pma.file.api.FileType.FileTypeEnum.DOC;
@@ -72,6 +75,7 @@ import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.pagination.Condition.Operand.IN;
 import static com.tesco.pma.rest.HttpStatusCodes.CREATED;
 import static com.tesco.pma.rest.RestResponse.success;
+import static com.tesco.pma.review.exception.ErrorCodes.INSUFFICIENT_FILE_ACCESS;
 import static com.tesco.pma.security.UserRoleNames.ADMIN;
 import static com.tesco.pma.util.SecurityUtils.getColleagueUuid;
 import static com.tesco.pma.util.SecurityUtils.hasAuthority;
@@ -89,6 +93,7 @@ public class ReviewEndpoint {
     private final AuditorAware<UUID> auditorAware;
     private final FileService fileService;
     private final ProfileService profileService;
+    private final NamedMessageSourceAccessor messageSourceAccessor;
 
     private static final String REVIEWS_FILES_PATH = "/home/%s/reviews";
 
@@ -433,7 +438,7 @@ public class ReviewEndpoint {
                                                                @CurrentSecurityContext(expression = "authentication")
                                                                        Authentication authentication) {
         return RestResponse.success(fileService.get(getRequestQueryForReviewFiles(colleagueUuid), false,
-                resolveFileOwnerUuid(authentication, colleagueUuid), true));
+                resolveFileAccess(authentication, colleagueUuid), true));
     }
 
     /**
@@ -556,7 +561,7 @@ public class ReviewEndpoint {
     public ResponseEntity<Resource> download(@PathVariable UUID colleagueUuid,
                                              @PathVariable UUID fileUuid,
                                              @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        var file = fileService.get(fileUuid, true, resolveFileOwnerUuid(authentication, colleagueUuid));
+        var file = fileService.get(fileUuid, true, resolveFileAccess(authentication, colleagueUuid));
         var content = file.getFileContent();
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
@@ -582,19 +587,18 @@ public class ReviewEndpoint {
         return hasAuthority(authentication, ADMIN) ? null : getColleagueUuid(authentication);
     }
 
-    private UUID resolveFileOwnerUuid(Authentication authentication, UUID colleagueUuid) {
+    private UUID resolveFileAccess(Authentication authentication, UUID colleagueUuid) {
         var currentUserUuid = getColleagueUuid(authentication);
-
-        var isCurrentUserLineManager = false;
 
         if (!colleagueUuid.equals(currentUserUuid)) {
             var profile = profileService.getColleague(colleagueUuid);
-            if (currentUserUuid.equals(profile.getManagerUuid())) {
-                isCurrentUserLineManager = true;
+            if (!currentUserUuid.equals(profile.getManagerUuid())) {
+                throw new AccessDeniedException(messageSourceAccessor.getMessage(INSUFFICIENT_FILE_ACCESS,
+                        Map.of("managerUuid", currentUserUuid, "colleagueUuid", colleagueUuid)));
             }
         }
 
-        return isCurrentUserLineManager ? colleagueUuid : currentUserUuid;
+        return colleagueUuid;
     }
 
     private UUID resolveUserUuid() {
