@@ -48,7 +48,7 @@ public class FeedbackDAOTest extends AbstractDAOTest {
         var requestQuery = new RequestQuery();
 
         //when
-        var result = underTest.findAll(requestQuery, COLLEAGUE_UUID);
+        var result = underTest.findAll(requestQuery);
 
         //then
         assertEquals(6, result.size());

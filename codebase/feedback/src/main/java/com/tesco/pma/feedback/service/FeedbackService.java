@@ -33,10 +33,9 @@ public interface FeedbackService {
      * Get all the feedbacks.
      *
      * @param requestQuery filter, sort, offset
-     * @param colleagueUuid - identifier of feedback's colleague or target colleague
      * @return the list of entities.
      */
-    List<Feedback> findAll(RequestQuery requestQuery, @NotNull UUID colleagueUuid);
+    List<Feedback> findAll(RequestQuery requestQuery);
 
     /**
      * Get the "uuid" feedback.

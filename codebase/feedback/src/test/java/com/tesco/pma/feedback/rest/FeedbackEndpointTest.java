@@ -123,7 +123,7 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
         var feedback2 = TestDataUtil.buildFeedback();
         feedback2.setUuid(FEEDBACK_UUID_UNREAD);
         var feedbacks = List.of(feedback1, feedback2);
-        when(service.findAll(any(RequestQuery.class), eq(COLLEAGUE_UUID))).thenReturn(feedbacks);
+        when(service.findAll(any(RequestQuery.class))).thenReturn(feedbacks);
 
         //when & then
         mvc.perform(get("/feedbacks")

@@ -90,10 +90,10 @@ class FeedbackServiceTest {
         var feedback2 = TestDataUtil.buildFeedback();
         feedback2.setUuid(FEEDBACK_UUID_UNREAD);
         var feedbacks = List.of(feedback1, feedback2);
-        when(feedbackDAO.findAll(requestQuery, COLLEAGUE_UUID)).thenReturn(feedbacks);
+        when(feedbackDAO.findAll(requestQuery)).thenReturn(feedbacks);
 
         //when
-        var result = underTest.findAll(requestQuery, COLLEAGUE_UUID);
+        var result = underTest.findAll(requestQuery);
 
         //then
         assertEquals(2, result.size());

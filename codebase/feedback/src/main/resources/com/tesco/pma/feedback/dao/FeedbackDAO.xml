@@ -185,6 +185,9 @@
 
     <sql id="getExpression">
         <choose>
+            <when test="filter.property == 'authenticated-colleague'">
+                (f.colleague_uuid = '${filter.value}' OR f.target_colleague_uuid = '${filter.value}')
+            </when>
             <when test="filter.operand.name == 'EQUALS' and filter.property != 'created-time' and filter.property != 'updated-time'">
                 <include refid="getFilterField"/>
                 = '${filter.value}'
@@ -348,7 +351,6 @@
         LEFT JOIN job tcj on tc.job_id = tcj.id
         LEFT JOIN department tcd on tc.department_id = tcd.id
         WHERE 1 = 1
-        <include refid="addFeedbackColleagueCondition"/>
         <if test="!requestQuery.filters.isEmpty()">
             <foreach collection="requestQuery.filters" item="filter" index="index" open=" AND " separator=" AND ">
                 <include refid="getExpression"/>

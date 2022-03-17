@@ -131,9 +131,9 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Feedback> findAll(RequestQuery requestQuery, UUID colleagueUuid) {
-        log.debug("Request to get all Feedbacks for colleague or target uuid: {}", colleagueUuid);
-        return feedbackDAO.findAll(requestQuery, colleagueUuid);
+    public List<Feedback> findAll(RequestQuery requestQuery) {
+        log.debug("Request to get all Feedbacks");
+        return feedbackDAO.findAll(requestQuery);
     }
 
     @Override

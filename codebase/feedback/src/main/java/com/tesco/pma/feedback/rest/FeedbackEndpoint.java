@@ -5,6 +5,7 @@ import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.feedback.api.Feedback;
 import com.tesco.pma.feedback.service.FeedbackService;
 import com.tesco.pma.feedback.validator.FeedbackValidator;
+import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
@@ -35,6 +36,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.util.SecurityUtils.getColleagueUuid;
 
 /**
@@ -162,7 +164,10 @@ public class FeedbackEndpoint {
             + "  }") RequestQuery requestQuery,
                      @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         log.debug("REST request to get a feedbacks of Feedbacks");
-        return RestResponse.success(feedbackService.findAll(requestQuery, getColleagueUuid(authentication)));
+        var filters = requestQuery.getFilters();
+        filters.add(new Condition("authenticated-colleague", EQUALS, getColleagueUuid(authentication)));
+        requestQuery.setFilters(filters);
+        return RestResponse.success(feedbackService.findAll(requestQuery));
     }
 
     /**
