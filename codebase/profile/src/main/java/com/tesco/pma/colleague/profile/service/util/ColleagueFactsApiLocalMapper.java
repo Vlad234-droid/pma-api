@@ -153,15 +153,12 @@ public class ColleagueFactsApiLocalMapper {
         final var contact = source.getContact();
         if (Objects.nonNull(contact)) {
             destination.setEmail(contact.getEmail());
-
-            final var addresses = contact.getAddresses();
-            if (Objects.nonNull(addresses) && !addresses.isEmpty()) {
-                ColleagueEntity.Country country = new ColleagueEntity.Country();
-                country.setCode(addresses.get(0).getCountryCode());
-                country.setName(UNDEFINED_VALUE);
-                destination.setCountry(country);
-            }
         }
+
+        ColleagueEntity.Country country = new ColleagueEntity.Country();
+        country.setCode(source.getCountryCode());
+        country.setName(UNDEFINED_VALUE);
+        destination.setCountry(country);
 
         final var externalSystems = source.getExternalSystems();
         if (Objects.nonNull(externalSystems) && Objects.nonNull(externalSystems.getIam())) {

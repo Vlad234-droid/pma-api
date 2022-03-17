@@ -4,6 +4,8 @@ import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.exception.InvalidPayloadException;
 import com.tesco.pma.feedback.api.Feedback;
 import com.tesco.pma.feedback.service.FeedbackService;
+import com.tesco.pma.feedback.validator.FeedbackValidator;
+import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
@@ -34,6 +36,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
 import static com.tesco.pma.util.SecurityUtils.getColleagueUuid;
 
 /**
@@ -61,9 +64,15 @@ public class FeedbackEndpoint {
     @Operation(summary = "Create a new list of feedbacks with items", tags = {"feedback"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "List of feedbacks created")
     @PreAuthorize("isColleague()")
-    public RestResponse<List<Feedback>> createFeedbacks(@Valid @RequestBody List<Feedback> feedbacks) throws URISyntaxException {
+    public RestResponse<List<Feedback>> createFeedbacks(@RequestBody List<@Valid Feedback> feedbacks,
+                                                        @CurrentSecurityContext(expression = "authentication")
+                                                                Authentication authentication) throws URISyntaxException {
         log.debug("REST request to save Feedbacks : {}", feedbacks);
-        List<Feedback> result = feedbacks.stream().map(feedbackService::create).collect(Collectors.toList());
+        var colleagueUuid = getColleagueUuid(authentication);
+        var result = feedbacks.stream()
+                .filter(feedback -> FeedbackValidator.validateFeedbackColleague(feedback, colleagueUuid))
+                .map(feedbackService::create)
+                .collect(Collectors.toList());
         return RestResponse.success(result);
     }
 
@@ -85,7 +94,8 @@ public class FeedbackEndpoint {
     @PreAuthorize("isColleague()")
     public RestResponse<Feedback> updateFeedback(
             @PathVariable(value = "uuid", required = false) final UUID uuid,
-            @Valid @RequestBody Feedback feedback
+            @Valid @RequestBody Feedback feedback,
+            @CurrentSecurityContext(expression = "authentication") Authentication authentication
     ) throws URISyntaxException {
         log.debug("REST request to update Feedback : {}, {}", uuid, feedback);
         if (feedback.getUuid() == null) {
@@ -95,8 +105,9 @@ public class FeedbackEndpoint {
             throw new InvalidParameterException(HttpStatusCodes.BAD_REQUEST, "Path uuid does not match body uuid", "feedback.uuid");
         }
 
-        Feedback result = feedbackService.update(feedback);
-        return RestResponse.success(result);
+        FeedbackValidator.validateFeedbackColleague(feedback, getColleagueUuid(authentication));
+
+        return RestResponse.success(feedbackService.update(feedback));
     }
 
     /**
@@ -114,10 +125,11 @@ public class FeedbackEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NO_CONTENT, description = "Mark as read successfully")
     @PreAuthorize("isColleague()")
     public RestResponse<Void> markAsRead(
-            @PathVariable(value = "uuid", required = true) final UUID uuid
+            @PathVariable(value = "uuid") final UUID uuid,
+            @CurrentSecurityContext(expression = "authentication") Authentication authentication
     ) throws URISyntaxException {
         log.debug("REST request to mark Feedback as read : {}", uuid);
-        feedbackService.markAsRead(uuid);
+        feedbackService.markAsRead(uuid, getColleagueUuid(authentication));
         return RestResponse.success();
     }
 
@@ -149,8 +161,12 @@ public class FeedbackEndpoint {
             + "    \"_start\": \"1\",\n"
             + "    \"_limit\": \"7\",\n"
             + "    \"_search\": \"first or middle or last target colleague name\"\n"
-            + "  }") RequestQuery requestQuery) {
+            + "  }") RequestQuery requestQuery,
+                     @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         log.debug("REST request to get a feedbacks of Feedbacks");
+        var filters = requestQuery.getFilters();
+        filters.add(new Condition("authenticated-colleague", EQUALS, getColleagueUuid(authentication)));
+        requestQuery.setFilters(filters);
         return RestResponse.success(feedbackService.findAll(requestQuery));
     }
 
@@ -163,9 +179,12 @@ public class FeedbackEndpoint {
     @GetMapping("/feedbacks/{uuid}")
     @Operation(summary = "Get feedback by UUID with all items", tags = {"feedback"})
     @PreAuthorize("isColleague()")
-    public RestResponse<Feedback> getFeedback(@PathVariable UUID uuid) {
+    public RestResponse<Feedback> getFeedback(@PathVariable UUID uuid,
+                                              @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         log.debug("REST request to get Feedback : {}", uuid);
-        Feedback feedback = feedbackService.findOne(uuid);
+        var feedback = feedbackService.findOne(uuid);
+        var colleagueUuid = getColleagueUuid(authentication);
+        FeedbackValidator.validateFeedbackColleague(feedback, colleagueUuid);
         return RestResponse.success(feedback);
     }
 
