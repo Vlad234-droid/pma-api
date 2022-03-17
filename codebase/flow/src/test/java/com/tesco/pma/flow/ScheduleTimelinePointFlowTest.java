@@ -33,7 +33,10 @@ class ScheduleTimelinePointFlowTest {
     private static final String END_EVENT = "Event_1fwl5fm";
     private static final String END_QN_EVENT = "Event_02gqiwm";
     private static final String SCHEDULE_TIMELINE_POINT = "Activity_1du843u";
-    private static final String BEFORE_START_REVIEW = "Activity_0gtujyz";
+    private static final String SEND_BEFORE_START_REVIEW = "Activity_0gtujyz";
+    private static final String SEND_BEFORE_END_REVIEW = "Activity_14syf2g";
+    private static final String SEND_START_REVIEW = "Activity_02h925b";
+    private static final String SEND_END_REVIEW = "Activity_1arxp9t";
 
     ProcessScenario scenario = mock(ProcessScenario.class);
     @MockBean
@@ -71,7 +74,53 @@ class ScheduleTimelinePointFlowTest {
         Scenario.run(scenario).startByKey(KEY, variables).execute();
 
         //then
-        verify(scenario, times(1)).hasCompleted(BEFORE_START_REVIEW);
+        verify(scenario, times(1)).hasCompleted(SEND_BEFORE_START_REVIEW);
+        verify(scenario, times(1)).hasCompleted(SEND_BEFORE_END_REVIEW);
+        verify(scenario, times(1)).hasCompleted(SEND_START_REVIEW);
+        verify(scenario, times(1)).hasCompleted(SEND_END_REVIEW);
+        verify(scenario, times(1)).hasFinished(END_EVENT);
+    }
+
+    @Test
+    void shouldNotSendBeforeStartReviewEventIfDateIsAbsent() {
+        //given
+        //Don not put BEFORE_START_DATE and BEFORE_END_DATE variables (do not confused with null value)
+        var variables = Variables.createVariables()
+                .putValue(PMElement.PM_TYPE, PMElementType.REVIEW.name().toLowerCase())
+                .putValue(FlowParameters.TIMELINE_POINT.name(), buildTimelinePoint())
+                .putValue(FlowParameters.START_DATE.name(), LocalDate.now().toString())
+                .putValue(FlowParameters.END_DATE.name(), LocalDate.now().toString());
+
+        //when
+        Scenario.run(scenario).startByKey(KEY, variables).execute();
+
+        //then
+        verify(scenario, times(0)).hasCompleted(SEND_BEFORE_START_REVIEW);
+        verify(scenario, times(1)).hasCompleted(SEND_START_REVIEW);
+        verify(scenario, times(0)).hasCompleted(SEND_BEFORE_END_REVIEW);
+        verify(scenario, times(1)).hasCompleted(SEND_END_REVIEW);
+        verify(scenario, times(1)).hasFinished(END_EVENT);
+    }
+
+    @Test
+    void shouldNotSendBeforeStartReviewEventIfDateIsNull() {
+        //given
+        var variables = Variables.createVariables()
+                .putValue(PMElement.PM_TYPE, PMElementType.REVIEW.name().toLowerCase())
+                .putValue(FlowParameters.TIMELINE_POINT.name(), buildTimelinePoint())
+                .putValue(FlowParameters.START_DATE.name(), LocalDate.now().toString())
+                .putValue(FlowParameters.END_DATE.name(), LocalDate.now().toString())
+                .putValue(FlowParameters.BEFORE_START_DATE.name(), null)
+                .putValue(FlowParameters.BEFORE_END_DATE.name(), null);
+
+        //when
+        Scenario.run(scenario).startByKey(KEY, variables).execute();
+
+        //then
+        verify(scenario, times(0)).hasCompleted(SEND_BEFORE_START_REVIEW);
+        verify(scenario, times(1)).hasCompleted(SEND_START_REVIEW);
+        verify(scenario, times(0)).hasCompleted(SEND_BEFORE_END_REVIEW);
+        verify(scenario, times(1)).hasCompleted(SEND_END_REVIEW);
         verify(scenario, times(1)).hasFinished(END_EVENT);
     }
 
