@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
         classes = {CamundaSpringBootTestConfig.class},
         properties = "camunda.bpm.deployment-resource-pattern=com/tesco/pma/flow/group_c.bpmn"
 )
-class GroupCTest {
+class GroupCFlowTest {
 
     private static final String KEY = "group_c";
     private static final String END_EVENT = "Event_0v9jvii";
