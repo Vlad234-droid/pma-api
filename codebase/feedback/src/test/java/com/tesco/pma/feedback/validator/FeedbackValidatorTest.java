@@ -3,11 +3,12 @@ package com.tesco.pma.feedback.validator;
 import com.tesco.pma.exception.InvalidPayloadException;
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
 import static com.tesco.pma.feedback.util.TestDataUtil.TARGET_COLLEAGUE_UUID;
 import static com.tesco.pma.feedback.util.TestDataUtil.COLLEAGUE_UUID;
 import static com.tesco.pma.feedback.util.TestDataUtil.buildFeedback;
 import static com.tesco.pma.rest.HttpStatusCodes.BAD_REQUEST;
-import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -39,8 +40,8 @@ class FeedbackValidatorTest {
     @Test
     void validateFeedbackColleagueUnsuccessIfCurrentColleagueIsNoneOfColleaguesOfFeedback() {
         var invalidFeedback = buildFeedback();
-        invalidFeedback.setColleagueUuid(randomUUID());
-        invalidFeedback.setTargetColleagueUuid(randomUUID());
+        invalidFeedback.setColleagueUuid(UUID.randomUUID());
+        invalidFeedback.setTargetColleagueUuid(UUID.randomUUID());
 
         final var exception = assertThrows(InvalidPayloadException.class,
                 () -> FeedbackValidator.validateFeedbackColleague(invalidFeedback, COLLEAGUE_UUID));

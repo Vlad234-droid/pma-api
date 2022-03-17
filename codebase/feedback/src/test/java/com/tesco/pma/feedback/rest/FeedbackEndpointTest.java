@@ -16,12 +16,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static com.tesco.pma.feedback.util.TestDataUtil.COLLEAGUE_UUID;
 import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACKS_COUNT;
 import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACK_UUID_LAST;
 import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACK_UUID_UNREAD;
-import static java.util.UUID.randomUUID;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
@@ -65,8 +65,8 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
         var feedback = TestDataUtil.buildFeedback();
         when(service.create(feedback)).thenReturn(feedback);
         var invalidFeedback = TestDataUtil.buildFeedback();
-        invalidFeedback.setColleagueUuid(randomUUID());
-        invalidFeedback.setTargetColleagueUuid(randomUUID());
+        invalidFeedback.setColleagueUuid(UUID.randomUUID());
+        invalidFeedback.setTargetColleagueUuid(UUID.randomUUID());
 
         //when
         mvc.perform(post("/feedbacks")
@@ -171,8 +171,8 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
         // given
         var feedback = TestDataUtil.buildFeedback();
         feedback.setUuid(FEEDBACK_UUID_LAST);
-        feedback.setColleagueUuid(randomUUID());
-        feedback.setTargetColleagueUuid(randomUUID());
+        feedback.setColleagueUuid(UUID.randomUUID());
+        feedback.setTargetColleagueUuid(UUID.randomUUID());
         when(service.findOne(FEEDBACK_UUID_LAST)).thenReturn(feedback);
 
         //when
