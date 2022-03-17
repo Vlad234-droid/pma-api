@@ -27,6 +27,7 @@ import java.util.UUID;
 
 import static com.tesco.pma.api.DictionaryFilter.includeFilter;
 import static com.tesco.pma.cycle.api.PMCycleStatus.*;
+import static java.util.List.of;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ContextConfiguration(classes = PMCycleTypeHandlerConfig.class)
@@ -107,9 +108,19 @@ class PMCycleDAOTest extends AbstractDAOTest {
 
     @Test
     @DataSet(BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml")
-    void getAll() {
+    void getAllByStatus() {
         var rq = new RequestQuery();
-        rq.addFilters("status_in", List.of(ACTIVE, TERMINATED));
+        rq.addFilters("status_in", of("ACTIVE", "TERMINATED"));
+        var actual = dao.findAll(rq, false);
+        assertEquals(1, actual.size());
+        assertEquals(CYCLE_UUID, actual.get(0).getUuid());
+    }
+
+    @Test
+    @DataSet(BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml")
+    void getAllByTypeLowerCase() {
+        var rq = new RequestQuery();
+        rq.addFilters("type_ne", "hiring");
         var actual = dao.findAll(rq, false);
         assertEquals(1, actual.size());
         assertEquals(CYCLE_UUID, actual.get(0).getUuid());
