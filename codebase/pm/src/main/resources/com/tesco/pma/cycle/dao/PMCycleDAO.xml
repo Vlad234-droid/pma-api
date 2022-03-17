@@ -86,8 +86,11 @@
                 <when test="filter.property == 'uuid' or filter.property == 'template-uuid' or filter.property == 'created-by'">
                     #{value}::uuid
                 </when>
-                <when test="filter.property == 'status' or filter.property == 'type'">
-                    #{value.id}
+                <when test="filter.property == 'status'">
+                    ${@com.tesco.pma.cycle.api.PMCycleStatus@valueOf(value.toUpperCase()).getId()}
+                </when>
+                <when test="filter.property == 'type'">
+                    ${@com.tesco.pma.cycle.api.PMCycleType@valueOf(value.toUpperCase()).getId()}
                 </when>
                 <otherwise>
                     #{value}
@@ -98,14 +101,36 @@
 
     <sql id="getExpression">
         <choose>
-            <when test="filter.operand.name == 'EQUALS' and filter.property != 'start-time' and filter.property != 'end-time'">
+            <when test="filter.operand.name == 'EQUALS' and filter.property != 'start-time' and filter.property != 'end-time'
+                            and filter.property != 'status' and filter.property != 'type'">
                 <include refid="getFilterField"/>
                 = '${filter.value}'
             </when>
 
-            <when test="filter.operand.name == 'NOT_EQUALS' and filter.property != 'start-time' and filter.property != 'end-time'">
+            <when test="filter.operand.name == 'EQUALS' and filter.property == 'status'">
+                <include refid="getFilterField"/>
+                = ${@com.tesco.pma.cycle.api.PMCycleStatus@valueOf(filter.value.toUpperCase()).getId()}
+            </when>
+
+            <when test="filter.operand.name == 'EQUALS' and filter.property == 'type'">
+                <include refid="getFilterField"/>
+                = ${@com.tesco.pma.cycle.api.PMCycleType@valueOf(filter.value.toUpperCase()).getId()}
+            </when>
+
+            <when test="filter.operand.name == 'NOT_EQUALS' and filter.property != 'start-time' and filter.property != 'end-time'
+                            and filter.property != 'status' and filter.property != 'type'">
                 <include refid="getFilterField"/>
                 != '${filter.value}'
+            </when>
+
+            <when test="filter.operand.name == 'NOT_EQUALS' and filter.property == 'status'">
+                <include refid="getFilterField"/>
+                != ${@com.tesco.pma.cycle.api.PMCycleStatus@valueOf(filter.value.toUpperCase()).getId()}
+            </when>
+
+            <when test="filter.operand.name == 'NOT_EQUALS' and filter.property == 'type'">
+                <include refid="getFilterField"/>
+                != ${@com.tesco.pma.cycle.api.PMCycleType@valueOf(filter.value.toUpperCase()).getId()}
             </when>
 
             <when test="filter.operand.name == 'IN' and filter.property != 'start-time' and filter.property != 'end-time'">

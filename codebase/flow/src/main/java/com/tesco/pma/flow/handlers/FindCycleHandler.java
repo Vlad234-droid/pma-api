@@ -3,19 +3,15 @@ package com.tesco.pma.flow.handlers;
 import com.tesco.pma.bpm.api.flow.ExecutionContext;
 import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.pagination.RequestQuery;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.EnumUtils;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.tesco.pma.cycle.service.PMCycleServiceImpl.ENTRY_CONFIG_KEY_CONDITION;
 import static com.tesco.pma.cycle.service.PMCycleServiceImpl.STATUS_CONDITION;
@@ -57,15 +53,14 @@ public class FindCycleHandler extends CamundaAbstractFlowHandler {
         }
     }
 
-    private RequestQuery buildRequestQuery(String configKey, Collection<PMCycleStatus> statuses) {
+    private RequestQuery buildRequestQuery(String configKey, List<String> statuses) {
         var requestQuery = new RequestQuery();
         requestQuery.addFilters(STATUS_IN_CONDITION, statuses);
         requestQuery.addFilters(ENTRY_CONFIG_KEY_CONDITION, configKey);
         return requestQuery;
     }
 
-    private Collection<PMCycleStatus> getStatuses(ExecutionContext context) {
-        List<String> params = context.getVariable(ALLOWED_STATUSES);
-        return params.stream().map(p -> EnumUtils.getEnumIgnoreCase(PMCycleStatus.class, p)).collect(Collectors.toSet());
+    private List<String> getStatuses(ExecutionContext context) {
+        return context.getVariable(ALLOWED_STATUSES);
     }
 }
