@@ -23,7 +23,7 @@ camunda:
     job-execution:
       enabled: false
     id-generator: strong
-    deployment-resource-pattern: classpath:*.bpmn,
+    deployment-resource-pattern:
         com/tesco/pma/bpm/camunda/util/delegate_variable_mapping.bpmn,
         com/tesco/pma/bpm/camunda/util/delegate_variable_mapping_review_init.bpmn
     deployment-resource-paths: com/tesco/pma/flow
