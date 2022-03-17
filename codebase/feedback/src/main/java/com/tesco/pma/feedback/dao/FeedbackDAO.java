@@ -58,9 +58,10 @@ public interface FeedbackDAO {
      * Mark feedback as read.
      *
      * @param uuid a Feedback identifier
+     * @param colleagueUuid - identifier of feedback's colleague or target colleague
      * @return number of updated entities
      */
-    int markAsRead(@Param("uuid") UUID uuid);
+    int markAsRead(@Param("uuid") UUID uuid, @Param("colleagueUuid") UUID colleagueUuid);
 
     /**
      * Update feedback.

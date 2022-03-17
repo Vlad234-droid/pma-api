@@ -30,8 +30,6 @@ class ScheduleStartCycleFlowTest {
 
     private static final String KEY = "schedule_start_annual_cycle";
     private static final String END_EVENT = "Event_0kgnfko";
-    private static final String CYCLE_BEFORE_START_DATE = "CYCLE_BEFORE_START_DATE";
-    private static final String CYCLE_START_DATE = "CYCLE_START_DATE";
     private static final String SEND_NOTIFICATION_BEFORE_START = "Activity_0039qsr";
     private static final String UPDATE_STATUS = "Activity_1h31hx9";
     private static final String SEND_START = "Activity_11j279t";
@@ -47,8 +45,8 @@ class ScheduleStartCycleFlowTest {
     void shouldFinishScheduledCycle() {
         //given
         var variables = Variables.createVariables()
-                .putValue(CYCLE_BEFORE_START_DATE, LocalDate.now().toString())
-                .putValue(CYCLE_START_DATE, LocalDate.now().toString())
+                .putValue(FlowParameters.CYCLE_BEFORE_START_DATE.name(), LocalDate.now().toString())
+                .putValue(FlowParameters.CYCLE_START_DATE.name(), LocalDate.now().toString())
                 .putValue(FlowParameters.PM_CYCLE.name(), buildPmCycle());
 
         //when
@@ -56,6 +54,44 @@ class ScheduleStartCycleFlowTest {
 
         //then
         verify(scenario, times(1)).hasCompleted(SEND_NOTIFICATION_BEFORE_START);
+        verify(scenario, times(1)).hasCompleted(UPDATE_STATUS);
+        verify(scenario, times(1)).hasCompleted(SEND_START);
+        verify(scenario, times(1)).hasCompleted(SEND_NOTIFICATION_START);
+        verify(scenario, times(1)).hasFinished(END_EVENT);
+    }
+
+    @Test
+    void shouldNotSendBeforeStartEventIfDateIsAbsent() {
+        //given
+        //Don not put DATE variables (do not confused with null value)
+        var variables = Variables.createVariables()
+                .putValue(FlowParameters.CYCLE_START_DATE.name(), LocalDate.now().toString())
+                .putValue(FlowParameters.PM_CYCLE.name(), buildPmCycle());
+
+        //when
+        Scenario.run(scenario).startByKey(KEY, variables).execute();
+
+        //then
+        verify(scenario, times(0)).hasCompleted(SEND_NOTIFICATION_BEFORE_START);
+        verify(scenario, times(1)).hasCompleted(UPDATE_STATUS);
+        verify(scenario, times(1)).hasCompleted(SEND_START);
+        verify(scenario, times(1)).hasCompleted(SEND_NOTIFICATION_START);
+        verify(scenario, times(1)).hasFinished(END_EVENT);
+    }
+
+    @Test
+    void shouldNotSendBeforeStartEventIfDateIsNull() {
+        //given
+        var variables = Variables.createVariables()
+                .putValue(FlowParameters.CYCLE_BEFORE_START_DATE.name(), null)
+                .putValue(FlowParameters.CYCLE_START_DATE.name(), LocalDate.now().toString())
+                .putValue(FlowParameters.PM_CYCLE.name(), buildPmCycle());
+
+        //when
+        Scenario.run(scenario).startByKey(KEY, variables).execute();
+
+        //then
+        verify(scenario, times(0)).hasCompleted(SEND_NOTIFICATION_BEFORE_START);
         verify(scenario, times(1)).hasCompleted(UPDATE_STATUS);
         verify(scenario, times(1)).hasCompleted(SEND_START);
         verify(scenario, times(1)).hasCompleted(SEND_NOTIFICATION_START);

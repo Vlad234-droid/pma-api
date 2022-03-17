@@ -66,6 +66,10 @@
         </if>
     </sql>
 
+    <sql id="addFeedbackColleagueCondition">
+        AND (f.colleague_uuid = #{colleagueUuid} OR f.target_colleague_uuid = #{colleagueUuid})
+    </sql>
+
     <sql id="getSortField">
         <choose>
             <when test="sort.field == 'colleague-first-name'">
@@ -181,6 +185,9 @@
 
     <sql id="getExpression">
         <choose>
+            <when test="filter.property == 'authenticated-colleague'">
+                (f.colleague_uuid = '${filter.value}' OR f.target_colleague_uuid = '${filter.value}')
+            </when>
             <when test="filter.operand.name == 'EQUALS' and filter.property != 'created-time' and filter.property != 'updated-time'">
                 <include refid="getFilterField"/>
                 = '${filter.value}'
@@ -418,6 +425,7 @@
         UPDATE feedback f
         SET read = true
         WHERE f.uuid = #{uuid}
+        <include refid="addFeedbackColleagueCondition"/>
     </update>
 
     <insert id="insertOrUpdateFeedbackItem" flushCache="true" useGeneratedKeys="true" keyColumn="uuid" keyProperty="uuid">
