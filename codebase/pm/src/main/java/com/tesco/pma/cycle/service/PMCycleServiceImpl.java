@@ -125,7 +125,7 @@ public class PMCycleServiceImpl implements PMCycleService {
             intUpdate(cycle);
         }
 
-        UUID rtProcessUuid = intDeploy(cycle.getUuid());
+        var rtProcessUuid = intDeploy(cycle.getUuid());
         log.debug("Runtime process uuid: {}", rtProcessUuid);
         intStartCycle(cycle.getUuid());
 
@@ -135,7 +135,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     @Override
     @Transactional
     public PMCycle updateStatus(UUID uuid, PMCycleStatus status) {
-        return intUpdateStatus(uuid, status, null); // todo move status map to BPMN or DMN
+        return intUpdateStatus(uuid, status, null);
     }
 
     @Override
@@ -239,7 +239,6 @@ public class PMCycleServiceImpl implements PMCycleService {
     @Override
     @Transactional
     public void start(UUID uuid) {
-        //TODO get rt
         intStartCycle(uuid);
     }
 
@@ -257,13 +256,6 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     @Override
     @Transactional
-    public void completeCycle(UUID cycleUUID) {
-        intUpdateStatus(cycleUUID, COMPLETED, null); // todo move status map to BPMN or DMN
-        //TODO update rt process
-    }
-
-    @Override
-    @Transactional
     public PMCycle updateForm(UUID cycleUuid, PMCycleUpdateFormRequest updateFormRequest) {
         log.debug("Updating form for cycle:{}, updateFormRequest:{}", cycleUuid, updateFormRequest);
 
@@ -273,8 +265,8 @@ public class PMCycleServiceImpl implements PMCycleService {
                     Map.of(CYCLE_UUID_PARAMETER_NAME, cycleUuid));
         }
 
-        PMForm pmFormFrom = getPMForm(updateFormRequest.getChangeFrom());
-        PMForm pmFormTo = getPMForm(updateFormRequest.getChangeTo());
+        var pmFormFrom = getPMForm(updateFormRequest.getChangeFrom());
+        var pmFormTo = getPMForm(updateFormRequest.getChangeTo());
 
         cycle.getMetadata().getCycle().getTimelinePoints().stream()
                 .filter(tpe -> REVIEW == tpe.getType())
@@ -300,7 +292,7 @@ public class PMCycleServiceImpl implements PMCycleService {
                     Map.of(CYCLE_UUID_PARAMETER_NAME, cycleUuid));
         }
 
-        PMForm latestForm = getPMForm(formKey);
+        var latestForm = getPMForm(formKey);
 
         cycle.getMetadata().getCycle().getTimelinePoints().stream()
                 .filter(tpe -> tpe.getType() == REVIEW)
@@ -318,7 +310,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     private void cycleFailed(String processKey, UUID uuid, Exception ex) {
         log.error("Performance cycle publish error, cause: ", ex);
         try {
-            intUpdateStatus(uuid, FAILED, null); // todo move status map to BPMN or DMN
+            intUpdateStatus(uuid, FAILED, null);
         } catch (NotFoundException exc) {
             log.error("Performance cycle change status error, cause: ", exc);
         }
@@ -326,7 +318,6 @@ public class PMCycleServiceImpl implements PMCycleService {
                 PROCESS_NAME_PARAMETER_NAME, processKey), ex);
     }
 
-    //TODO refactor to common solution (include @com.tesco.pma.review.service.ReviewServiceImpl)
     private NotFoundException notFound(ErrorCodeAware errorCode, Map<String, ?> params) {
         return new NotFoundException(errorCode.getCode(),
                 messageSourceAccessor.getMessage(errorCode.getCode(), params), null, null);
@@ -334,8 +325,8 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     private DatabaseConstraintViolationException databaseConstraintViolation(Map<String, ?> params,
                                                                              Throwable cause) {
-        return new DatabaseConstraintViolationException(((ErrorCodeAware) ErrorCodes.PM_CYCLE_ALREADY_EXISTS).getCode(),
-                messageSourceAccessor.getMessage(((ErrorCodeAware) ErrorCodes.PM_CYCLE_ALREADY_EXISTS).getCode(), params), null, cause);
+        return new DatabaseConstraintViolationException(ErrorCodes.PM_CYCLE_ALREADY_EXISTS.getCode(),
+                messageSourceAccessor.getMessage(ErrorCodes.PM_CYCLE_ALREADY_EXISTS.getCode(), params), null, cause);
     }
 
 
@@ -347,7 +338,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         }
 
         var resultStatusFilter = statusFilter == null || statusFilter.isEmpty()
-                ? UPDATE_STATUS_RULE_MAP.get(status) // todo move status map to BPMN or DMN
+                ? UPDATE_STATUS_RULE_MAP.get(status)
                 : statusFilter;
 
         if (1 == cycleDAO.updateStatus(uuid, status, resultStatusFilter)) {
@@ -416,7 +407,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         try {
             var processId = deploymentService.deploy(cycle.getTemplate().getUuid());
             log.debug("Process definition id: {}", processId);
-            intUpdateStatus(uuid, PMCycleStatus.REGISTERED, null); // todo move status map to BPMN or DMN
+            intUpdateStatus(uuid, ACTIVE, null);
 
             var pmRuntimeProcess = PMRuntimeProcess.builder()
                     .bpmProcessId(processId)
@@ -473,7 +464,7 @@ public class PMCycleServiceImpl implements PMCycleService {
     }
 
     private void validateCycleForStart(PMCycle cycle) {
-        RequestQuery query = new RequestQuery();
+        var query = new RequestQuery();
 
         query.setFilters(List.of(
                 new Condition(ENTRY_CONFIG_KEY_CONDITION, EQUALS, cycle.getEntryConfigKey()),

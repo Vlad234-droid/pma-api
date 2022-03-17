@@ -1,0 +1,32 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet author="ypashynskyi" id="1">
+        <sql><![CDATA[
+            drop index if exists feedback_created_time_status_ix;
+
+            CREATE INDEX if not exists feedback_created_time_status_ix ON feedback (created_time, status_id);
+            ]]>
+        </sql>
+        <rollback>
+            <sql><![CDATA[
+            drop index if exists feedback_created_time_status_ix;
+            ]]></sql>
+        </rollback>
+    </changeSet>
+    <changeSet author="ypashynskyi" id="2">
+        <sql><![CDATA[
+            drop index if exists feedback_updated_time_status_ix;
+
+            CREATE INDEX if not exists feedback_updated_time_status_ix ON feedback (updated_time, status_id);
+            ]]>
+        </sql>
+        <rollback>
+            <sql><![CDATA[
+            drop index if exists feedback_updated_time_status_ix;
+            ]]></sql>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

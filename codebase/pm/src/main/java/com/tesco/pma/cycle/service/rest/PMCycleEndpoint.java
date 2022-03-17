@@ -19,6 +19,7 @@ import com.tesco.pma.process.api.PMProcessErrorCodes;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -162,7 +163,28 @@ public class PMCycleEndpoint {
             content = @Content)
     @GetMapping(value = "/pm-cycles/", produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isProcessManager() or isAdmin()")
-    public RestResponse<List<PMCycle>> getAll(RequestQuery requestQuery,
+    public RestResponse<List<PMCycle>> getAll(@Parameter(example = "{\n"
+            + "   \"uuid\":\"3fa85f64-5717-4562-b3fc-2c963f66af10\",\n"
+            + "   \"entry-config-key_nin\":[\n"
+            + "      \"type_1\",\n"
+            + "      \"type_3\"\n"
+            + "   ],\n"
+            + "   \"template-uuid_in\":[\n"
+            + "      \"3fa85f64-5717-4562-b3fc-2c963f66af10\",\n"
+            + "      \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\n"
+            + "   ],\n"
+            + "   \"name_ne\":\"test1\",\n"
+            + "   \"status_in\":[\n"
+            + "      \"1\",\n"
+            + "      \"2\"\n"
+            + "   ],\n"
+            + "   \"type_ne\":\"1\",\n"
+            + "   \"created-by\":\"3fa85f64-5717-4562-b3fc-2c963f66afa4\",\n"
+            + "   \"start-time_lt\":\"2021-11-26T14:18:42.615Z\",\n"
+            + "   \"start-time_lte\":\"2021-11-26T14:18:42.615Z\",\n"
+            + "   \"end-time_gt\":\"2021-11-25T14:36:33.587Z\",\n"
+            + "   \"end-time_gte\":\"2021-11-25T14:36:33.587Z\"\n"
+            + "}") RequestQuery requestQuery,
                                               @RequestParam(value = INCLUDE_METADATA, defaultValue = "false")
                                                       boolean includeMetadata) {
         return success(service.findAll(requestQuery, includeMetadata));
