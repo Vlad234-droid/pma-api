@@ -138,9 +138,9 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     @Transactional(readOnly = true)
-    public Feedback findOne(UUID uuid, UUID colleagueUuid) {
-        log.debug("Request to get Feedback : {} for colleague or target uuid: {}", uuid, colleagueUuid);
-        Feedback feedback = feedbackDAO.getByUuid(uuid, colleagueUuid);
+    public Feedback findOne(UUID uuid) {
+        log.debug("Request to get Feedback : {}", uuid);
+        Feedback feedback = feedbackDAO.getByUuid(uuid);
         if (feedback == null) {
             String message = messageSourceAccessor.getMessage(ErrorCodes.FEEDBACK_NOT_FOUND,
                     Map.of(PARAM_NAME, "uuid", PARAM_VALUE, uuid));

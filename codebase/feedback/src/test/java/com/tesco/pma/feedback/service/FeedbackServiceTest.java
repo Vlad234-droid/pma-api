@@ -104,13 +104,13 @@ class FeedbackServiceTest {
     void findOneFeedback() {
         //given
         var feedback = TestDataUtil.buildFeedback();
-        when(feedbackDAO.getByUuid(FEEDBACK_UUID_LAST, COLLEAGUE_UUID)).thenReturn(feedback);
+        when(feedbackDAO.getByUuid(FEEDBACK_UUID_LAST)).thenReturn(feedback);
 
         //when
-        var result = underTest.findOne(FEEDBACK_UUID_LAST, COLLEAGUE_UUID);
+        var result = underTest.findOne(FEEDBACK_UUID_LAST);
 
         //then
-        verify(feedbackDAO, times(1)).getByUuid(FEEDBACK_UUID_LAST, COLLEAGUE_UUID);
+        verify(feedbackDAO, times(1)).getByUuid(FEEDBACK_UUID_LAST);
         assertEquals(COLLEAGUE_UUID, result.getColleagueUuid());
     }
 

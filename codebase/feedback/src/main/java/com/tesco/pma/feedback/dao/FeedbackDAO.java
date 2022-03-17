@@ -16,10 +16,9 @@ public interface FeedbackDAO {
      * Get by uuid
      *
      * @param uuid - unique identifier
-     * @param colleagueUuid - identifier of feedback's colleague or target colleague
      * @return feedback
      */
-    Feedback getByUuid(@Param("uuid") UUID uuid, @Param("colleagueUuid") UUID colleagueUuid);
+    Feedback getByUuid(@Param("uuid") UUID uuid);
 
     /**
      * Find all

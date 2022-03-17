@@ -62,7 +62,7 @@ public class FeedbackDAOTest extends AbstractDAOTest {
         //given
 
         //when
-        var result = underTest.getByUuid(FEEDBACK_UUID_LAST, COLLEAGUE_UUID);
+        var result = underTest.getByUuid(FEEDBACK_UUID_LAST);
 
         //then
         assertEquals(FEEDBACK_UUID_LAST, result.getUuid());
@@ -103,7 +103,7 @@ public class FeedbackDAOTest extends AbstractDAOTest {
 
         //when
         var result = underTest.markAsRead(FEEDBACK_UUID_UNREAD, TARGET_COLLEAGUE_UUID);
-        var readFeedback = underTest.getByUuid(FEEDBACK_UUID_UNREAD, TARGET_COLLEAGUE_UUID);
+        var readFeedback = underTest.getByUuid(FEEDBACK_UUID_UNREAD);
 
         //then
         assertEquals(1, result);

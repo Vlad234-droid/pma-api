@@ -42,10 +42,9 @@ public interface FeedbackService {
      * Get the "uuid" feedback.
      *
      * @param uuid the uuid of the entity
-     * @param colleagueUuid - identifier of feedback's colleague or target colleague
      * @return the entity.
      */
-    Feedback findOne(UUID uuid, @NotNull UUID colleagueUuid);
+    Feedback findOne(UUID uuid);
 
     /**
      * Get given feedbacks count

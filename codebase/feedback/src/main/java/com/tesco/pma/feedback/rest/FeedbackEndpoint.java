@@ -177,7 +177,9 @@ public class FeedbackEndpoint {
     public RestResponse<Feedback> getFeedback(@PathVariable UUID uuid,
                                               @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
         log.debug("REST request to get Feedback : {}", uuid);
-        var feedback = feedbackService.findOne(uuid, getColleagueUuid(authentication));
+        var feedback = feedbackService.findOne(uuid);
+        var colleagueUuid = getColleagueUuid(authentication);
+        FeedbackValidator.validateFeedbackColleague(feedback, colleagueUuid);
         return RestResponse.success(feedback);
     }
 

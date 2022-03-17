@@ -33,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class FeedbackEndpointTest extends AbstractEndpointTest {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final String FEEDBACKS_UUID_URL = "/feedbacks/{uuid}";
 
     @Autowired
     protected MockMvc mvc;
@@ -86,7 +87,7 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
         when(service.update(feedback)).thenReturn(feedback);
 
         //when
-        mvc.perform(put("/feedbacks/{uuid}", FEEDBACK_UUID_LAST)
+        mvc.perform(put(FEEDBACKS_UUID_URL, FEEDBACK_UUID_LAST)
                         .with(colleague(COLLEAGUE_UUID.toString()))
                         .contentType(APPLICATION_JSON)
                         .content(OBJECT_MAPPER.writeValueAsString(feedback)))
@@ -138,10 +139,10 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
         // given
         var feedback = TestDataUtil.buildFeedback();
         feedback.setUuid(FEEDBACK_UUID_LAST);
-        when(service.findOne(FEEDBACK_UUID_LAST, COLLEAGUE_UUID)).thenReturn(feedback);
+        when(service.findOne(FEEDBACK_UUID_LAST)).thenReturn(feedback);
 
         //when & then
-        mvc.perform(get("/feedbacks/{uuid}", FEEDBACK_UUID_LAST)
+        mvc.perform(get(FEEDBACKS_UUID_URL, FEEDBACK_UUID_LAST)
                         .with(colleague(COLLEAGUE_UUID.toString()))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -154,15 +155,34 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
         // given
         var feedback = TestDataUtil.buildFeedback();
         feedback.setUuid(FEEDBACK_UUID_LAST);
-        when(service.findOne(FEEDBACK_UUID_LAST, COLLEAGUE_UUID)).thenThrow(NotFoundException.class);
+        when(service.findOne(FEEDBACK_UUID_LAST)).thenThrow(NotFoundException.class);
 
         //when & then
-        mvc.perform(get("/feedbacks/{uuid}", FEEDBACK_UUID_LAST)
+        mvc.perform(get(FEEDBACKS_UUID_URL, FEEDBACK_UUID_LAST)
                         .with(allRoles(COLLEAGUE_UUID.toString()))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.success").value(false));
+    }
+
+    @Test
+    void unsuccessGetFeedbackIfPostValidationFailed  () throws Exception { //NOSONAR used MockMvc checks
+        // given
+        var feedback = TestDataUtil.buildFeedback();
+        feedback.setUuid(FEEDBACK_UUID_LAST);
+        feedback.setColleagueUuid(randomUUID());
+        feedback.setTargetColleagueUuid(randomUUID());
+        when(service.findOne(FEEDBACK_UUID_LAST)).thenReturn(feedback);
+
+        //when
+        mvc.perform(get(FEEDBACKS_UUID_URL, FEEDBACK_UUID_LAST)
+                        .with(colleague(COLLEAGUE_UUID.toString()))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        // then
+        verify(service, times(1)).findOne(FEEDBACK_UUID_LAST);
     }
 
     @Test
