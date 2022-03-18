@@ -295,7 +295,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     private void updateDepartmentDictionary(ColleagueEntity existingLocalColleague, ColleagueEntity changedLocalColleague) {
         ColleagueEntity.Department changedDepartment = changedLocalColleague.getDepartment();
-        if (changedDepartment != null && (existingLocalColleague == null
+        if (changedDepartment != null && changedDepartment.getId() != null && (existingLocalColleague == null
                 || !existingLocalColleague.getDepartment().getId().equals(changedDepartment.getId()))) {
             profileDAO.updateDepartment(changedDepartment);
         }
