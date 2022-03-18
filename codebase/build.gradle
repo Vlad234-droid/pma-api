@@ -7,3 +7,5 @@ plugins {
 
 
 apply from: "$rootDir/gradle/projects.gradle"
+
+ext['postgresql.version'] = "$postgresVersion"
