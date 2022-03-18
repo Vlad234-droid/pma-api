@@ -36,6 +36,7 @@ import static com.tesco.pma.cep.cfapi.v2.domain.EventType.LEAVER;
 import static com.tesco.pma.cep.cfapi.v2.domain.EventType.MODIFICATION;
 import static com.tesco.pma.cep.cfapi.v2.exception.ErrorCodes.CHANGED_ATTRIBUTES_NOT_FOUND;
 import static com.tesco.pma.cep.cfapi.v2.exception.ErrorCodes.COLLEAGUE_NOT_FOUND;
+import static com.tesco.pma.cep.cfapi.v2.exception.ErrorCodes.MANAGER_NOT_FOUND;
 
 @Service
 @Slf4j
@@ -97,6 +98,12 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     }
 
     private int processJoinerEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
+        var manager = profileService.findManagerByColleague(colleagueChangeEventPayload.getCurrent());
+        if (manager == null) {
+            log.warn(LogFormatter.formatMessage(MANAGER_NOT_FOUND, "For colleague '{}' manager was not found"),
+                    colleagueChangeEventPayload.getColleagueUuid());
+        }
+
         int updated;
         if (colleagueChangesProperties.isForce()) {
             updated = profileService.create(colleagueChangeEventPayload.getColleagueUuid());
