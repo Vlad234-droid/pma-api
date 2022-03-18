@@ -3,7 +3,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
 
-    <changeSet author="ypashynskyi" id="1" ignore="true">
+    <changeSet author="ypashynskyi" id="1">
         <sql><![CDATA[
             update pm_review r
             set properties = jsonb_set(properties #- '{how_archieved}',
