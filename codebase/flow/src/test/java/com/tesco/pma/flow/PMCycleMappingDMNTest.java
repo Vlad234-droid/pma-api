@@ -52,13 +52,15 @@ class PMCycleMappingDMNTest {
         assertSuccessRule(Map.of(
                 KEYS.LEGAL_EMPLOYER_NAME, TESCO_STORES_LIMITED,
                 KEYS.BUSINESS_TYPE, OFFICE,
-                KEYS.WORK_LEVEL, WorkLevel.WL4
+                KEYS.WORK_LEVEL, WorkLevel.WL4,
+                KEYS.PRIMARY_ENTITY, "Tesco PLC"
         ), KEYS.GROUP_A1);
 
         assertSuccessRule(Map.of(
                 KEYS.LEGAL_EMPLOYER_NAME, TESCO_STORES_LIMITED,
                 KEYS.BUSINESS_TYPE, OFFICE,
-                KEYS.WORK_LEVEL, WorkLevel.WL5
+                KEYS.WORK_LEVEL, WorkLevel.WL5,
+                KEYS.PRIMARY_ENTITY, "Tesco PLC"
         ), KEYS.GROUP_A1);
     }
 
@@ -77,7 +79,8 @@ class PMCycleMappingDMNTest {
                 KEYS.LEGAL_EMPLOYER_NAME, "Tesco International Sourcing Limited",
                 KEYS.BUSINESS_TYPE, OFFICE,
                 KEYS.WORK_LEVEL, WorkLevel.WL3,
-                KEYS.SALARY_FREQUENCY, "Annual"
+                KEYS.SALARY_FREQUENCY, "Annual",
+                KEYS.PRIMARY_ENTITY, "Tesco PLC"
         ), KEYS.GROUP_A2);
     }
 
