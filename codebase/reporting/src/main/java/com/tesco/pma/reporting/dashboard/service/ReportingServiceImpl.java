@@ -48,7 +48,6 @@ import static com.tesco.pma.reporting.ReportingConstants.MYR_HOW_RATING;
 import static com.tesco.pma.reporting.ReportingConstants.MYR_WHAT_RATING;
 import static com.tesco.pma.reporting.ReportingConstants.HAS_FEEDBACK_REQUESTED;
 import static com.tesco.pma.reporting.ReportingConstants.HAS_FEEDBACK_GIVEN;
-import static com.tesco.pma.reporting.util.ExcelReportUtils.TOPICS_PARAM_NAME;
 
 /**
  * Service for reporting data
@@ -75,10 +74,6 @@ public class ReportingServiceImpl implements ReportingService {
 
     @Override
     public Report getStatsReport(RequestQuery requestQuery) {
-        if (requestQuery.getFilters().stream().noneMatch(c -> TOPICS_PARAM_NAME.equalsIgnoreCase(c.getProperty()))) {
-            throw notFound(ErrorCodes.REPORT_NOT_FOUND, Map.of(QUERY_PARAMS, requestQuery));
-        }
-
         var targetingColleagues = getReportColleagues(requestQuery);
         var statsReportProvider = new StatsReportProvider();
         statsReportProvider.setData(findStatsData(targetingColleagues, requestQuery));

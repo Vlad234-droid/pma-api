@@ -58,7 +58,6 @@ import static com.tesco.pma.reporting.util.ExcelReportUtils.TOPICS_PARAM_NAME;
 import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
@@ -143,18 +142,6 @@ class ReportingServiceImplTest {
 
         assertEquals(REPORT_NOT_FOUND.getCode(), exception.getCode());
         assertEquals(getReportNotFoundMessage(requestQuery), exception.getMessage());
-    }
-
-    @Test
-    void getStatsReportNotTopics() {
-        final var requestQuery = new RequestQuery();
-
-        final var exception = assertThrows(NotFoundException.class,
-                () -> reportingService.getStatsReport(requestQuery));
-
-        assertEquals(REPORT_NOT_FOUND.getCode(), exception.getCode());
-        assertEquals(getReportNotFoundMessage(requestQuery), exception.getMessage());
-        verifyNoInteractions(reportingDAO);
     }
 
     private String getReportNotFoundMessage(RequestQuery requestQuery) {

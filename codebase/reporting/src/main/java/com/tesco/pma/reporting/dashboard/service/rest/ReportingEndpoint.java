@@ -1,7 +1,9 @@
 package com.tesco.pma.reporting.dashboard.service.rest;
 
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.error.ErrorCodeAware;
 import com.tesco.pma.exception.DownloadException;
+import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.reporting.Report;
 import com.tesco.pma.reporting.exception.ErrorCodes;
@@ -31,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import static com.tesco.pma.reporting.util.ExcelReportUtils.TOPICS_PARAM_NAME;
 import static com.tesco.pma.rest.RestResponse.success;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -122,6 +125,9 @@ public class ReportingEndpoint {
     @GetMapping(path = StatsReportProvider.REPORT_NAME + "/formats/excel", produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isAdmin()")
     public ResponseEntity<Resource> getStatisticsReportFile(RequestQuery requestQuery)  {
+        if (requestQuery.getFilters().stream().noneMatch(c -> TOPICS_PARAM_NAME.equalsIgnoreCase(c.getProperty()))) {
+            throw notFound(ErrorCodes.REPORT_NOT_FOUND, Map.of(TOPICS_PARAM_NAME, ""));
+        }
         var report = reportingService.getStatsReport(requestQuery);
         return buildResponseWithReport(report, requestQuery, ExcelReportUtils::buildResourceWithStatisticTopics);
     }
@@ -146,5 +152,13 @@ public class ReportingEndpoint {
         var message = messages.getMessage(ErrorCodes.INTERNAL_DOWNLOAD_ERROR,
                 Map.of(REPORT_NAME_PARAM_NAME, reportName, REQUEST_QUERY_PARAM_NAME, requestQuery));
         return new DownloadException(ErrorCodes.INTERNAL_DOWNLOAD_ERROR.getCode(), message, reportName, cause.getCause());
+    }
+
+    private NotFoundException notFound(ErrorCodeAware errorCode, Map<String, ?> params) {
+        return new NotFoundException(
+                errorCode.getCode(),
+                messages.getMessageForParams(errorCode.getCode(), params),
+                null,
+                null);
     }
 }
