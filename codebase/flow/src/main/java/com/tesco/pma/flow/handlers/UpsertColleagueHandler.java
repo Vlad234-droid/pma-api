@@ -17,6 +17,6 @@ public class UpsertColleagueHandler extends CamundaAbstractFlowHandler {
     @Override
     protected void execute(ExecutionContext context) throws Exception {
         var colleague = context.getVariable(FlowParameters.COLLEAGUE, Colleague.class);
-        log.warn("test {}", colleague);
+        profileService.updateColleague(colleague);
     }
 }
