@@ -59,6 +59,8 @@ import static java.util.Arrays.asList;
 import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -226,7 +228,16 @@ class ReportingEndpointTest extends AbstractEndpointTest {
     void getStatsReportFileIfNotFound() throws Exception { //NOSONAR used MockMvc checks
         when(reportingService.getStatsReport(any())).thenThrow(NotFoundException.class);
 
+        performGetWith(talentAdmin(), status().isNotFound(), STATS_REPORT_URL + "?" + TOPICS_PARAM_NAME + "_in[0]=colleagues-count");
+
+        verify(reportingService, times(1)).getStatsReport(any());
+    }
+
+    @Test
+    void getStatsReportFileIfNoTopics() throws Exception { //NOSONAR used MockMvc checks
         performGetWith(talentAdmin(), status().isNotFound(), STATS_REPORT_URL, new RequestQuery());
+
+        verifyNoInteractions(reportingService);
     }
 
     private List<ColleagueReportTargeting> buildColleagueTargeting() {
