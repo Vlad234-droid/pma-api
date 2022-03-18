@@ -14,6 +14,7 @@ import com.tesco.pma.colleague.api.workrelationships.WorkRelationship;
 import com.tesco.pma.colleague.profile.dao.ProfileDAO;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
@@ -189,7 +190,7 @@ public class ColleagueFactsApiLocalMapper {
                 destination.setEmploymentType(workRelationship.getEmploymentType());
 
                 destination.setManagerUuid(workRelationship.getManagerUUID());
-                destination.setManager(workRelationship.getIsManager());
+                destination.setManager(BooleanUtils.toBoolean(workRelationship.getIsManager()));
 
                 ColleagueEntity.WorkLevel workLevel =
                         new ColleagueEntity.WorkLevel();
