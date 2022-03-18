@@ -32,6 +32,7 @@ public class TestUtils {
         SALARY_FREQUENCY,
         JOB_NAME,
         IAM_SOURCE,
+        PRIMARY_ENTITY,
 
         GROUP_A1,
         GROUP_A2,
@@ -61,6 +62,9 @@ public class TestUtils {
             var job = new Job();
             job.setName((String) params.get(KEYS.JOB_NAME));
             wr.setJob(job);
+        }
+        if (params.containsKey(KEYS.PRIMARY_ENTITY)) {
+            wr.setPrimaryEntity((String) params.get(KEYS.PRIMARY_ENTITY));
         }
         var colleague = new Colleague();
         colleague.setColleagueUUID((UUID) params.get(KEYS.COLLEAGUE_UUID));
