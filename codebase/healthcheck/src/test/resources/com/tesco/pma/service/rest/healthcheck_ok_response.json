@@ -7,7 +7,7 @@
       "type": "COMPONENT",
       "description": "PostgreSQL database",
       "status": "Ok",
-      "version": "42.2.18",
+      "version": "42.2.25",
       "checked": "2021-06-24T15:36:48.433Z"
     },
     {
