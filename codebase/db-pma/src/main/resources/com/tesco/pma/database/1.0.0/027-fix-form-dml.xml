@@ -9,7 +9,7 @@
             set properties = jsonb_set(properties #- '{how_archieved}',
                                        '{how_achieved}',
                                        properties #> '{how_archieved}')
-            where r.properties ? 'how_archieved';
+            where r.properties ->> 'how_archieved' = '{how_archieved}';
             ]]>
         </sql>
         <rollback>
@@ -18,7 +18,7 @@
             set properties = jsonb_set(properties #- '{how_achieved}',
                                        '{how_archieved}',
                                        properties #> '{how_achieved}')
-            where r.properties ? 'how_achieved';
+            where r.properties ->> 'how_achieved' = '{how_achieved}';
             ]]></sql>
         </rollback>
     </changeSet>
