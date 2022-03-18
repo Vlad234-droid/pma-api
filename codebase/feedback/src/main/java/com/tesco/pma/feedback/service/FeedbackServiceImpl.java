@@ -124,9 +124,9 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     @Transactional
-    public void markAsRead(UUID uuid) {
-        log.debug("Request to mark as read Feedback with uuid: {}", uuid);
-        feedbackDAO.markAsRead(uuid);
+    public void markAsRead(UUID uuid, UUID colleagueUuid) {
+        log.debug("Request to mark as read Feedback with uuid: {} for colleague or target uuid: {}", uuid, colleagueUuid);
+        feedbackDAO.markAsRead(uuid, colleagueUuid);
     }
 
     @Override

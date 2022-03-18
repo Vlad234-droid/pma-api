@@ -237,12 +237,12 @@ public class ProfileServiceImpl implements ProfileService {
 
         try {
             var changedLocalColleague = colleagueFactsApiLocalMapper.colleagueFactsApiToLocal(colleague);
+            updateDictionaries(existingLocalColleague, changedLocalColleague);
             if (existingLocalColleague == null) {
                 updated = profileDAO.saveColleague(changedLocalColleague);
             } else {
                 updated = profileDAO.updateColleague(changedLocalColleague);
             }
-            updateDictionaries(existingLocalColleague, changedLocalColleague);
         } catch (DataIntegrityViolationException exception) {
             String message = String.format("Data integrity violation exception = %s", exception.getMessage());
             log.error(LogFormatter.formatMessage(ErrorCodes.DATA_INTEGRITY_VIOLATION_EXCEPTION, message));
