@@ -170,6 +170,7 @@ class PMCycleServiceImplTest {
 
         verify(deploymentService).deploy(TEMPLATE_UUID);
         verify(pmProcessService).register(any(), eq(PMProcessStatus.REGISTERED));
+        assertEquals(ACTIVE, cycle.getStatus());
         assertEquals(processUUID, deployedUUID);
     }
 
