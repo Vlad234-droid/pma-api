@@ -96,29 +96,15 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     }
 
     private int processJoinerEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
-        // Send an event to Camunda
-        sendAssignmentEvent(colleagueChangeEventPayload.getColleagueUuid(), colleagueChangeEventPayload.getCurrent());
-        return 1;
         var manager = profileService.findManagerByColleague(colleagueChangeEventPayload.getCurrent());
         if (manager == null) {
             log.warn(LogFormatter.formatMessage(MANAGER_NOT_FOUND, "For colleague '{}' manager was not found"),
                     colleagueChangeEventPayload.getColleagueUuid());
         }
 
-        int updated;
-        if (colleagueChangesProperties.isForce()) {
-            updated = profileService.create(colleagueChangeEventPayload.getColleagueUuid());
-        } else {
-            updated = profileService.create(colleagueChangeEventPayload.getCurrent());
-        }
-        if (updated > 0) {
-            // Send an event to User Management Service on creation a new account
-            sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.POST_CEP_COLLEAGUE_ADDED);
-
-            // Send an event to Camunda
-            sendAssignmentEvent(colleagueChangeEventPayload.getColleagueUuid());
-        }
-        return updated;
+        // Send an event to Camunda
+        sendAssignmentEvent(colleagueChangeEventPayload.getColleagueUuid(), colleagueChangeEventPayload.getCurrent());
+        return 1;
     }
 
     private int processLeaverEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {

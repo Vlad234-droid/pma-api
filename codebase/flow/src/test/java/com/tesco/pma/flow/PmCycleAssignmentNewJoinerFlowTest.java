@@ -66,7 +66,7 @@ class PmCycleAssignmentNewJoinerFlowTest {
     void successFlow() {
         //given
         var colleagueUuid = UUID.randomUUID();
-        var colleague = getColleague(false);
+        var colleague = getColleague();
         var variables = Variables.createVariables()
                 .putValue(FlowParameters.COLLEAGUE_UUID.name(), colleagueUuid)
                 .putValue(FlowParameters.COLLEAGUE.name(), colleague)
@@ -103,10 +103,10 @@ class PmCycleAssignmentNewJoinerFlowTest {
     }
 
     @Test
-    void cycleNotFoundNoManager() throws Exception {
+    void cycleNotFound() throws Exception {
         //given
         var colleagueUuid = UUID.randomUUID();
-        var colleague = getColleague(false);
+        var colleague = getColleague();
         var variables = Variables.createVariables()
                 .putValue(FlowParameters.COLLEAGUE_UUID.name(), colleagueUuid)
                 .putValue(FlowParameters.COLLEAGUE.name(), colleague);
@@ -122,37 +122,11 @@ class PmCycleAssignmentNewJoinerFlowTest {
         verify(scenario, times(1)).hasFinished(END_EVENT_NO_CYCLE);
     }
 
-    @Test
-    void cycleNotFoundIsManager() throws Exception {
-        //given
-        var colleagueUuid = UUID.randomUUID();
-        var colleague = getColleague(true);
-        var variables = Variables.createVariables()
-                .putValue(FlowParameters.COLLEAGUE_UUID.name(), colleagueUuid)
-                .putValue(FlowParameters.COLLEAGUE.name(), colleague)
-                .putValue(FlowParameters.PM_CYCLE.name(), new PMCycle());
-
-
-        doThrow(new BpmnError(PM_CYCLE_MORE_THAN_ONE_IN_STATUSES)).when(findCycleHandler).execute(any());
-        //when
-        Scenario.run(scenario).startByMessage(MESSAGE_KEY, variables).execute();
-
-        //then
-        verify(scenario, times(1)).hasCompleted(RESOLVE_COLLEAGUE_HANDLER_ACTIVITY);
-        verify(scenario, times(1)).hasCompleted(CALCULATE_CYCLE_NEW_JOINER_ACTIVITY);
-        verify(scenario, times(1)).hasCanceled(FIND_CYCLE_NEW_JOINER_ACTIVITY);
-        verify(scenario, times(1)).hasCompleted(UPSERT_COLLEAGUE_NEW_JOINER_ACTIVITY);
-        verify(scenario, times(1)).hasCompleted(SEND_EVENT_COL_CYCLE_CREATE_ACTIVITY);
-        verify(scenario, times(1)).hasCompleted(SEND_EVENT_ACC_CREATE_ACTIVITY);
-        verify(scenario, times(1)).hasFinished(END_EVENT_1);
-        verify(scenario, times(1)).hasFinished(END_EVENT_2);
-    }
-
-    private Colleague getColleague(boolean manager) {
+    private Colleague getColleague() {
         var value = new Colleague();
         var wr = new WorkRelationship();
         wr.setWorkLevel(WorkLevel.WL4);
-        wr.setIsManager(manager);
+        wr.setIsManager(false);
         value.setWorkRelationships(List.of(wr));
         return value;
     }

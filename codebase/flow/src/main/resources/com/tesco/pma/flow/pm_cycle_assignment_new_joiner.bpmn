@@ -12,7 +12,7 @@
       <bpmn:outgoing>Flow_0qspkka</bpmn:outgoing>
     </bpmn:businessRuleTask>
     <bpmn:endEvent id="Event_0wbcq88">
-      <bpmn:incoming>Flow_0qctsul</bpmn:incoming>
+      <bpmn:incoming>Flow_0nbqsce</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0qspkka" sourceRef="calculate_cycle_new_joiner" targetRef="find_cycle_new_joiner" />
     <bpmn:startEvent id="PM_COLLEAGUE_CYCLE_ASSIGNMENT_NEW_JOINER_ID">
@@ -55,7 +55,7 @@
       <bpmn:outgoing>Flow_11nfjgw</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:boundaryEvent id="Event_120sj2b" attachedToRef="find_cycle_new_joiner">
-      <bpmn:outgoing>Flow_07xoxs4</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0nbqsce</bpmn:outgoing>
       <bpmn:errorEventDefinition id="ErrorEventDefinition_0yzsmlh" errorRef="Error_04kaxdf" />
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_1uafnw4" sourceRef="PM_COLLEAGUE_CYCLE_ASSIGNMENT_NEW_JOINER_ID" targetRef="resolveColleagueHandler" />
@@ -67,7 +67,6 @@
     <bpmn:sequenceFlow id="Flow_11nfjgw" sourceRef="find_cycle_new_joiner" targetRef="upsert_colleague_new_joiner" />
     <bpmn:serviceTask id="upsert_colleague_new_joiner" name="Upsert colleague" camunda:class="com.tesco.pma.flow.handlers.UpsertColleagueHandler">
       <bpmn:incoming>Flow_11nfjgw</bpmn:incoming>
-      <bpmn:incoming>Flow_0ol8di8</bpmn:incoming>
       <bpmn:outgoing>Flow_1j3hb3d</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1j3hb3d" sourceRef="upsert_colleague_new_joiner" targetRef="Gateway_1vfvbcu" />
@@ -97,16 +96,6 @@
       <bpmn:incoming>Flow_0bcxs8d</bpmn:incoming>
       <bpmn:outgoing>Flow_1hcsege</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="Gateway_0g5q33g" default="Flow_0qctsul">
-      <bpmn:incoming>Flow_07xoxs4</bpmn:incoming>
-      <bpmn:outgoing>Flow_0qctsul</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0ol8di8</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_07xoxs4" sourceRef="Event_120sj2b" targetRef="Gateway_0g5q33g" />
-    <bpmn:sequenceFlow id="Flow_0qctsul" sourceRef="Gateway_0g5q33g" targetRef="Event_0wbcq88" />
-    <bpmn:sequenceFlow id="Flow_0ol8di8" sourceRef="Gateway_0g5q33g" targetRef="upsert_colleague_new_joiner">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${COLLEAGUE.getWorkRelationships().get(0).getIsManager()}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:endEvent id="Event_069p1qz">
       <bpmn:incoming>Flow_1hcsege</bpmn:incoming>
     </bpmn:endEvent>
@@ -123,6 +112,7 @@
       <bpmn:incoming>Flow_1o3ntu6</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1o3ntu6" sourceRef="Event_0qsf8b7" targetRef="Event_03wj34z" />
+    <bpmn:sequenceFlow id="Flow_0nbqsce" sourceRef="Event_120sj2b" targetRef="Event_0wbcq88" />
     <bpmn:textAnnotation id="TextAnnotation_06v4573">
       <bpmn:text>Event Name:
 PM_COLLEAGUE_CYCLE_CREATE
@@ -167,18 +157,17 @@ COLLEAGUE_UUID</bpmn:text>
   <bpmn:error id="Error_1u0i8jo" name="Colleague does not found in cfapi" errorCode="COLLEAGUE_NOT_FOUND" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="pm_cycle_assignment_new_joiner">
-      <bpmndi:BPMNEdge id="Flow_0ol8di8_di" bpmnElement="Flow_0ol8di8">
-        <di:waypoint x="785" y="450" />
-        <di:waypoint x="920" y="450" />
-        <di:waypoint x="920" y="347" />
+      <bpmndi:BPMNEdge id="Flow_1o3ntu6_di" bpmnElement="Flow_1o3ntu6">
+        <di:waypoint x="430" y="365" />
+        <di:waypoint x="430" y="392" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0qctsul_di" bpmnElement="Flow_0qctsul">
-        <di:waypoint x="760" y="475" />
-        <di:waypoint x="760" y="562" />
+      <bpmndi:BPMNEdge id="Flow_16260jy_di" bpmnElement="Flow_16260jy">
+        <di:waypoint x="1270" y="220" />
+        <di:waypoint x="1362" y="220" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_07xoxs4_di" bpmnElement="Flow_07xoxs4">
-        <di:waypoint x="760" y="365" />
-        <di:waypoint x="760" y="425" />
+      <bpmndi:BPMNEdge id="Flow_1hcsege_di" bpmnElement="Flow_1hcsege">
+        <di:waypoint x="1270" y="390" />
+        <di:waypoint x="1362" y="390" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0bcxs8d_di" bpmnElement="Flow_0bcxs8d">
         <di:waypoint x="1060" y="332" />
@@ -210,23 +199,12 @@ COLLEAGUE_UUID</bpmn:text>
         <di:waypoint x="670" y="307" />
         <di:waypoint x="710" y="307" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1hcsege_di" bpmnElement="Flow_1hcsege">
-        <di:waypoint x="1270" y="390" />
-        <di:waypoint x="1362" y="390" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_16260jy_di" bpmnElement="Flow_16260jy">
-        <di:waypoint x="1270" y="220" />
-        <di:waypoint x="1362" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1o3ntu6_di" bpmnElement="Flow_1o3ntu6">
-        <di:waypoint x="430" y="365" />
-        <di:waypoint x="430" y="392" />
+      <bpmndi:BPMNEdge id="Flow_0nbqsce_di" bpmnElement="Flow_0nbqsce">
+        <di:waypoint x="760" y="365" />
+        <di:waypoint x="760" y="432" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_1hrua4y_di" bpmnElement="calculate_cycle_new_joiner">
         <dc:Bounds x="570" y="267" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0wbcq88_di" bpmnElement="Event_0wbcq88">
-        <dc:Bounds x="742" y="562" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1iol3ns_di" bpmnElement="PM_COLLEAGUE_CYCLE_ASSIGNMENT_NEW_JOINER_ID">
         <dc:Bounds x="255" y="289" width="36" height="36" />
@@ -249,8 +227,14 @@ COLLEAGUE_UUID</bpmn:text>
       <bpmndi:BPMNShape id="Activity_0muv0zc_di" bpmnElement="send_event_acc_create">
         <dc:Bounds x="1170" y="350" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0g5q33g_di" bpmnElement="Gateway_0g5q33g" isMarkerVisible="true">
-        <dc:Bounds x="735" y="425" width="50" height="50" />
+      <bpmndi:BPMNShape id="Event_069p1qz_di" bpmnElement="Event_069p1qz">
+        <dc:Bounds x="1362" y="372" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1hceb4a_di" bpmnElement="Event_1hceb4a">
+        <dc:Bounds x="1362" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_03wj34z_di" bpmnElement="Event_03wj34z">
+        <dc:Bounds x="412" y="392" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_06v4573_di" bpmnElement="TextAnnotation_06v4573">
         <dc:Bounds x="1170" y="80" width="236" height="79" />
@@ -270,14 +254,11 @@ COLLEAGUE_UUID</bpmn:text>
       <bpmndi:BPMNShape id="TextAnnotation_1pq34rg_di" bpmnElement="TextAnnotation_1pq34rg">
         <dc:Bounds x="1171" y="480" width="230" height="68" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1hceb4a_di" bpmnElement="Event_1hceb4a">
-        <dc:Bounds x="1362" y="202" width="36" height="36" />
+      <bpmndi:BPMNShape id="Event_0wbcq88_di" bpmnElement="Event_0wbcq88">
+        <dc:Bounds x="742" y="432" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_03wj34z_di" bpmnElement="Event_03wj34z">
-        <dc:Bounds x="412" y="392" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_069p1qz_di" bpmnElement="Event_069p1qz">
-        <dc:Bounds x="1362" y="372" width="36" height="36" />
+      <bpmndi:BPMNShape id="Event_0rzqx33_di" bpmnElement="Event_0qsf8b7">
+        <dc:Bounds x="412" y="329" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1f4v5iu_di" bpmnElement="Event_120sj2b">
         <dc:Bounds x="742" y="329" width="36" height="36" />
@@ -306,9 +287,6 @@ COLLEAGUE_UUID</bpmn:text>
         <di:waypoint x="1220" y="430" />
         <di:waypoint x="1221" y="480" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_0rzqx33_di" bpmnElement="Event_0qsf8b7">
-        <dc:Bounds x="412" y="329" width="36" height="36" />
-      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
