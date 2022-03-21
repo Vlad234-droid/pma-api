@@ -11,6 +11,7 @@ import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.request.PMCycleUpdateFormRequest;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.cycle.service.PMCycleService;
+import com.tesco.pma.cycle.service.PmCycleMappingService;
 import com.tesco.pma.exception.DeploymentException;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.exception.InvalidPayloadException;
@@ -18,6 +19,7 @@ import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.process.api.PMProcessErrorCodes;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
+import com.tesco.pma.util.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,6 +28,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -59,6 +63,7 @@ public class PMCycleEndpoint {
     private final PMCycleService service;
     private final ProcessManagerService processManagerService;
     private final PMColleagueCycleService pmColleagueCycleService;
+    private final PmCycleMappingService pmCycleMappingService;
     private final AuditorAware<UUID> auditorAware;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
@@ -329,6 +334,18 @@ public class PMCycleEndpoint {
         } catch (ProcessExecutionException e) {
             throw deploymentException(PM_CYCLE_ASSIGNMENT, parameters, e);
         }
+    }
+
+    @Operation(summary = "Get performance cycle mapping key",
+            tags = {"performance-cycle"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found performance cycle mapping key")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle mapping key not found",
+            content = @Content)
+    @GetMapping(value = "/pm-cycles/mappings/keys", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<String> getPmCycleMappingKey(@CurrentSecurityContext(expression = "authentication")
+                                                                 Authentication authentication) {
+        var colleagueUuid = SecurityUtils.getColleagueUuid(authentication);
+        return success(pmCycleMappingService.getPmCycleMappingKey(colleagueUuid));
     }
 
     private DeploymentException deploymentException(String processKey, Map<String, ?> parameters, Throwable cause) {
