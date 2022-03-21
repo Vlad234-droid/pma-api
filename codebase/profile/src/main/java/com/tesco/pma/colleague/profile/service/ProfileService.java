@@ -132,14 +132,4 @@ public interface ProfileService {
      */
     Collection<String> getColleagueFactsAPISupportedAttributes();
 
-
-    /**
-     * Find manager is already exist in DB. Otherwise, try to load data with using CFAPI.
-     *
-     * @param colleague
-     *
-     * @return manager object
-     */
-    ColleagueEntity findManagerByColleague(Colleague colleague);
-
 }
