@@ -11,6 +11,7 @@ import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.request.PMCycleUpdateFormRequest;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.cycle.service.PMCycleService;
+import com.tesco.pma.cycle.service.PmCycleMappingService;
 import com.tesco.pma.exception.DeploymentException;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.exception.InvalidPayloadException;
@@ -42,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.Set;
 
 import static com.tesco.pma.flow.FlowParameters.COLLEAGUE_UUIDS;
 import static com.tesco.pma.rest.RestResponse.success;
@@ -59,6 +61,7 @@ public class PMCycleEndpoint {
     private final PMCycleService service;
     private final ProcessManagerService processManagerService;
     private final PMColleagueCycleService pmColleagueCycleService;
+    private final PmCycleMappingService pmCycleMappingService;
     private final AuditorAware<UUID> auditorAware;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
@@ -329,6 +332,16 @@ public class PMCycleEndpoint {
         } catch (ProcessExecutionException e) {
             throw deploymentException(PM_CYCLE_ASSIGNMENT, parameters, e);
         }
+    }
+
+    @Operation(summary = "Get performance cycle mapping keys",
+            tags = {"performance-cycle"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found performance cycle mapping keys")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle mapping keys not found",
+            content = @Content)
+    @GetMapping(value = "/pm-cycles/mappings/keys", produces = APPLICATION_JSON_VALUE)
+    public RestResponse<Set<String>> getPmCycleMappingKey() {
+        return success(pmCycleMappingService.getPmCycleMappingKeys());
     }
 
     private DeploymentException deploymentException(String processKey, Map<String, ?> parameters, Throwable cause) {
