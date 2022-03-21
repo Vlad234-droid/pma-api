@@ -19,7 +19,6 @@ import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.process.api.PMProcessErrorCodes;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
-import com.tesco.pma.util.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,8 +27,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -46,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.Set;
 
 import static com.tesco.pma.flow.FlowParameters.COLLEAGUE_UUIDS;
 import static com.tesco.pma.rest.RestResponse.success;
@@ -336,16 +334,14 @@ public class PMCycleEndpoint {
         }
     }
 
-    @Operation(summary = "Get performance cycle mapping key",
+    @Operation(summary = "Get performance cycle mapping keys",
             tags = {"performance-cycle"})
-    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found performance cycle mapping key")
-    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle mapping key not found",
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found performance cycle mapping keys")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle mapping keys not found",
             content = @Content)
     @GetMapping(value = "/pm-cycles/mappings/keys", produces = APPLICATION_JSON_VALUE)
-    public RestResponse<String> getPmCycleMappingKey(@CurrentSecurityContext(expression = "authentication")
-                                                                 Authentication authentication) {
-        var colleagueUuid = SecurityUtils.getColleagueUuid(authentication);
-        return success(pmCycleMappingService.getPmCycleMappingKey(colleagueUuid));
+    public RestResponse<Set<String>> getPmCycleMappingKey() {
+        return success(pmCycleMappingService.getPmCycleMappingKeys());
     }
 
     private DeploymentException deploymentException(String processKey, Map<String, ?> parameters, Throwable cause) {

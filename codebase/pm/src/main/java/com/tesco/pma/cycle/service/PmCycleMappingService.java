@@ -1,10 +1,10 @@
 package com.tesco.pma.cycle.service;
 
-import java.util.UUID;
+import java.util.Set;
 
 public interface PmCycleMappingService {
 
-    String getPmCycleMappingKey(UUID colleagueUuid);
+    Set<String> getPmCycleMappingKeys();
 
 
 }

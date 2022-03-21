@@ -1,5 +1,6 @@
 package com.tesco.pma.cms.service;
 
+import com.tesco.pma.bpm.util.DmnTablesUtils;
 import com.tesco.pma.cms.api.ContentEntry;
 import com.tesco.pma.colleague.api.Colleague;
 import lombok.RequiredArgsConstructor;
@@ -40,38 +41,14 @@ public class HelpServiceImpl implements HelpService {
     
     @Override
     public Map<String, String> getHelpFaqUrls(Colleague colleague, Collection<String> keys) {
-        var allKeys = ObjectUtils.isEmpty(keys) ? getAllKeys(processEngine.getRepositoryService(), HELP_FAQ_URLS) : keys;
+        var allKeys = ObjectUtils.isEmpty(keys) ? DmnTablesUtils.getAllKeys(processEngine.getRepositoryService(), HELP_FAQ_URLS) : keys;
         return allKeys.stream().collect(Collectors.toMap(key -> key, key -> getUrl(key, colleague)));
     }
 
     @Override
     public Map<String, List<ContentEntry>> getHelpFaqs(Colleague colleague, Collection<String> keys) {
-        var allKeys = ObjectUtils.isEmpty(keys) ? getAllKeys(processEngine.getRepositoryService(), HELP_FAQ_KEYS) : keys;
+        var allKeys = ObjectUtils.isEmpty(keys) ? DmnTablesUtils.getAllKeys(processEngine.getRepositoryService(), HELP_FAQ_KEYS) : keys;
         return allKeys.stream().collect(Collectors.toMap(key -> key, key -> getContentEntries(key, colleague)));
-    }
-
-
-    private Collection<String> getAllKeys(RepositoryService repositoryService, String tableName) {
-
-        var ddId = repositoryService.createDecisionDefinitionQuery().decisionDefinitionKey(tableName).singleResult().getId();
-        var dmnModelInstance = repositoryService.getDmnModelInstance(ddId);
-        var modelType = dmnModelInstance.getModel().getType(DecisionTable.class);
-        var tables = dmnModelInstance.getModelElementsByType(modelType);
-
-        if (tables.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        var table = (DecisionTable) tables.iterator().next();
-
-        return table.getRules().stream()
-                .map(this::getKeyText)
-                .collect(Collectors.toSet());
-    }
-
-    private String getKeyText(Rule rule) {
-        var entry = rule.getInputEntries().iterator().next();
-        return StringUtils.remove(entry.getTextContent(), '"');
     }
 
     private String getUrl(String key, Colleague colleague) {
