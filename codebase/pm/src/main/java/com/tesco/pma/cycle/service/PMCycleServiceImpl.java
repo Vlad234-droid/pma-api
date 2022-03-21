@@ -54,6 +54,7 @@ import static com.tesco.pma.cycle.api.PMCycleStatus.COMPLETED;
 import static com.tesco.pma.cycle.api.PMCycleStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMCycleStatus.FAILED;
 import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
+import static com.tesco.pma.cycle.api.PMCycleStatus.REGISTERED;
 import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_METADATA_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_ALLOWED_TO_START;
@@ -94,10 +95,11 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     static {
         UPDATE_STATUS_RULE_MAP = Map.of(
-                ACTIVE, includeFilter(of(INACTIVE, DRAFT, PMCycleStatus.REGISTERED)),
-                INACTIVE, includeFilter(of(PMCycleStatus.REGISTERED, DRAFT)),
-                DRAFT, includeFilter(of(DRAFT)),
-                COMPLETED, includeFilter(of(ACTIVE, DRAFT))
+                ACTIVE, includeFilter(of(INACTIVE, DRAFT, REGISTERED)),
+                INACTIVE, includeFilter(of(REGISTERED, DRAFT)),
+                DRAFT, includeFilter(of(DRAFT, REGISTERED)),
+                COMPLETED, includeFilter(of(ACTIVE, DRAFT)),
+                REGISTERED, includeFilter(of(DRAFT, REGISTERED))
         );
     }
 
@@ -361,7 +363,9 @@ public class PMCycleServiceImpl implements PMCycleService {
 
         try {
             cycle.setUuid(UUID.randomUUID());
-            cycle.setStatus(DRAFT);
+            if (null == cycle.getStatus()) {
+                cycle.setStatus(DRAFT);
+            }
             cycle.setCreatedBy(ColleagueSimple
                     .builder()
                     .uuid(loggedUserUUID)
@@ -389,7 +393,7 @@ public class PMCycleServiceImpl implements PMCycleService {
 
 
     private UUID intDeploy(UUID uuid) {
-        DictionaryFilter<PMCycleStatus> statusFilter = includeFilter(DRAFT);
+        DictionaryFilter<PMCycleStatus> statusFilter = includeFilter(DRAFT, REGISTERED);
         var cycle = cycleDAO.read(uuid, statusFilter);
 
         if (null == cycle) {
@@ -428,7 +432,7 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     private void intStartCycle(UUID cycleUUID) {
 
-        DictionaryFilter<PMCycleStatus> statusFilter = includeFilter(PMCycleStatus.REGISTERED);
+        DictionaryFilter<PMCycleStatus> statusFilter = includeFilter(ACTIVE);
         var cycle = cycleDAO.read(cycleUUID, statusFilter);
         if (null == cycle) {
             throw notFound(PM_CYCLE_NOT_FOUND_BY_UUID_AND_STATUS,
@@ -443,7 +447,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         if (isEmpty(processes) || processes.size() > 1) {
             throw new NotFoundException(PMProcessErrorCodes.PROCESS_NOT_FOUND_BY_CYCLE.getCode(),
                     messageSourceAccessor.getMessage(PMProcessErrorCodes.PROCESS_NOT_FOUND_BY_CYCLE,
-                            Map.of(CYCLE_UUID, cycleUUID, STATUS_FILTER, statusFilter)));
+                            Map.of(CYCLE_UUID, cycleUUID, STATUS_FILTER, processStatusFilter)));
         }
 
         var process = processes.iterator().next();
@@ -468,7 +472,7 @@ public class PMCycleServiceImpl implements PMCycleService {
 
         query.setFilters(List.of(
                 new Condition(ENTRY_CONFIG_KEY_CONDITION, EQUALS, cycle.getEntryConfigKey()),
-                new Condition(STATUS_CONDITION, EQUALS, STARTED.getId()),
+                new Condition(STATUS_CONDITION, EQUALS, STARTED.getCode()),
                 new Condition(TEMPLATE_UUID_CONDITION, EQUALS, cycle.getTemplate().getUuid())
         ));
 

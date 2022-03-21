@@ -36,6 +36,7 @@ public enum FlowParameters {
     BEFORE_END_DATE_S,
     END_DATE_S,
 
+    COLLEAGUE,
     COLLEAGUE_UUID,
     COLLEAGUE_PROFILE,
     COLLEAGUE_WORK_LEVEL,

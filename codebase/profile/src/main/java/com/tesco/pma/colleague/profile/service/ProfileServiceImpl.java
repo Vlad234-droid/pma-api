@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.tesco.pma.colleague.profile.exception.ErrorCodes.MANAGER_NOT_FOUND;
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_ATTRIBUTE_NOT_FOUND;
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_NOT_FOUND;
 
@@ -179,21 +180,6 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public ColleagueEntity findManagerByColleague(Colleague colleague) {
-        var colleagueEntity = colleagueFactsApiLocalMapper.colleagueFactsApiToLocal(colleague);
-
-        if (colleagueEntity.getManagerUuid() != null) {
-            var managerUuid = colleagueEntity.getManagerUuid();
-            var inserted = create(managerUuid);
-            if (inserted > 0) {
-                return profileDAO.getColleague(managerUuid);
-            }
-        }
-
-        return null;
-    }
-
-    @Override
     // TODO To optimize logic for update only changed fields //NOSONAR
     public int updateColleague(UUID colleagueUuid, Collection<String> changedFields) {
         int updated = 0;
@@ -248,6 +234,12 @@ public class ProfileServiceImpl implements ProfileService {
 
         try {
             var changedLocalColleague = colleagueFactsApiLocalMapper.colleagueFactsApiToLocal(colleague);
+
+            var manager = persistManager(changedLocalColleague.getManagerUuid());
+            if (manager == null) {
+                changedLocalColleague.setManagerUuid(null);
+            }
+
             updateDictionaries(existingLocalColleague, changedLocalColleague);
             if (existingLocalColleague == null) {
                 updated = profileDAO.saveColleague(changedLocalColleague);
@@ -260,6 +252,35 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         return updated;
+    }
+
+    private ColleagueEntity persistManager(UUID managerUuid) {
+        if (managerUuid == null) {
+            return null;
+        }
+
+        var manager = profileDAO.getColleague(managerUuid);
+        if (manager != null) {
+            return manager;
+        }
+
+        var colleague = colleagueApiService.findColleagueByUuid(managerUuid);
+        if (colleague == null) {
+            return null;
+        }
+
+        var localColleague = colleagueFactsApiLocalMapper.colleagueFactsApiToLocal(colleague);
+        var inserted = profileDAO.saveColleague(localColleague);
+        if (inserted > 0) {
+            manager = profileDAO.getColleague(managerUuid);
+        }
+
+        if (manager == null) {
+            log.warn(LogFormatter.formatMessage(MANAGER_NOT_FOUND, "For colleague manager '{}' was not found"),
+                    managerUuid);
+        }
+
+        return manager;
     }
 
     private List<TypedAttribute> findProfileAttributes(UUID colleagueUuid) {
