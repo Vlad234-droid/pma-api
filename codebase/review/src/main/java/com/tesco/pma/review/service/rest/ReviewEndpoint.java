@@ -95,8 +95,6 @@ public class ReviewEndpoint {
     private final ProfileService profileService;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
-    private static final String REVIEWS_FILES_PATH = "/home/%s/reviews";
-
     /**
      * POST call to create a Review.
      *
@@ -527,7 +525,7 @@ public class ReviewEndpoint {
                 fileData.setFileContent(file.getBytes());
                 var fileUploadMetadata = uploadMetadataIterator.next();
                 var creatorId = getColleagueUuid(authentication);
-                fileUploadMetadata.setPath(String.format(REVIEWS_FILES_PATH, creatorId));
+                fileUploadMetadata.setPath(getReviewsFilesPath(creatorId));
                 if (REVIEW_FILE_TYPES.stream().noneMatch(t -> t.getCode().equals(fileUploadMetadata.getType().getCode()))) {
                     throw new InvalidPayloadException(ErrorCodes.INVALID_PAYLOAD.getCode(),
                             "Review file type must be one of " + REVIEW_FILE_TYPES, "type");
@@ -571,7 +569,7 @@ public class ReviewEndpoint {
     }
 
     private RequestQuery getRequestQueryForReviewFiles(UUID colleagueUuid) {
-        var path = String.format(REVIEWS_FILES_PATH, colleagueUuid);
+        var path = getReviewsFilesPath(colleagueUuid);
         var types = REVIEW_FILE_TYPES.stream()
                 .map(FileTypeEnum::getId)
                 .collect(toList());
@@ -603,6 +601,10 @@ public class ReviewEndpoint {
 
     private UUID resolveUserUuid() {
         return auditorAware.getCurrentAuditor();
+    }
+
+    private static String getReviewsFilesPath(UUID userUuid) {
+        return "/home/" + userUuid + "/reviews";
     }
 
     @InitBinder

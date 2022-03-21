@@ -159,13 +159,12 @@
             </foreach>
         </if>
     </update>
-    <!-- todo: check 1=1 case usage everywhere -->
+
     <update id="intUpdateStatus" flushCache="true">
         update pm_timeline_point tlp
         SET status_id=#{newStatus.id},
         last_updated_time=#{lastUpdatedTime}
-        WHERE 1=1
-        AND tlp.uuid = #{uuid}
+        WHERE tlp.uuid = #{uuid}
         <if test="prevStatuses != null and !prevStatuses.isEmpty()">
             and tlp.status_id in
             <foreach item="prevStatus" collection="prevStatuses" separator="," open="(" close=")">
@@ -203,8 +202,7 @@
                             on (cc.uuid = tlp.colleague_cycle_uuid)
                  left join pm_review_type prt
                            on (prt.code = upper(tlp.code))
-        WHERE 1 = 1
-          and cc.colleague_uuid = #{colleagueUuid}
+        WHERE cc.colleague_uuid = #{colleagueUuid}
           and cc.status_id = #{pmCycleStatus.id}
         order by tlp.start_time
     </select>

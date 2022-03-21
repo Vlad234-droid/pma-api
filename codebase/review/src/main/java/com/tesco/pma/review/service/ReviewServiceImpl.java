@@ -308,7 +308,7 @@ public class ReviewServiceImpl implements ReviewService {
         var timelinePoint = getTimelinePoint(colleagueUuid, type);
         List<Review> results = new ArrayList<>();
 
-        for (int idx = 0; idx < reviews.size(); idx++) {
+        for (var idx = 0; idx < reviews.size(); idx++) {
             var review = reviews.get(idx);
             review.setTlPointUuid(timelinePoint.getUuid());
             review.setType(type);
@@ -516,8 +516,8 @@ public class ReviewServiceImpl implements ReviewService {
         Iterator<T> it1 = copy1.iterator();
         Iterator<T> it2 = copy2.iterator();
         while (it1.hasNext()) {
-            T t1 = it1.next();
-            T t2 = it2.next();
+            var t1 = it1.next();
+            var t2 = it2.next();
             if (comparator.compare(t1, t2) != 0) {
                 return false;
             }
