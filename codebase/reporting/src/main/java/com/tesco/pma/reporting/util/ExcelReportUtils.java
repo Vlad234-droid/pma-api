@@ -118,7 +118,7 @@ public class ExcelReportUtils {
         createCell("Filters applied:", 0, rowWithFilters);
         createCell(filters, 1, rowWithFilters);
 
-        for (int i = 0; i < columnMetadata.size(); i++) {
+        for (var i = 0; i < columnMetadata.size(); i++) {
             if (statistics.contains(columnMetadata.get(i).getId())) {
                 var row = sheet.createRow(rowCount++);
                 createCell(columnMetadata.get(i).getName(), 0, row);
