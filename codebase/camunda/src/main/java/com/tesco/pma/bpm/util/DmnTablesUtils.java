@@ -1,5 +1,6 @@
 package com.tesco.pma.bpm.util;
 
+import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.dmn.engine.impl.DmnDecisionResultException;
 import org.camunda.bpm.engine.RepositoryService;
@@ -11,20 +12,21 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@UtilityClass
 public class DmnTablesUtils {
 
-    public static Set<String> getAllKeys(RepositoryService repositoryService, String tableName) {
+    public Set<String> getAllKeys(RepositoryService repositoryService, String tableName) {
         return getAll(repositoryService, tableName, DmnTablesUtils::getKeyText);
     }
 
-    public static Set<String> getAllResults(RepositoryService repositoryService, String tableName) {
+    public Set<String> getAllResults(RepositoryService repositoryService, String tableName) {
         return getAll(repositoryService, tableName, DmnTablesUtils::getResultText);
     }
 
-    private static Set<String> getAll(RepositoryService repositoryService, String tableName, Function<Rule, String> func){
+    private Set<String> getAll(RepositoryService repositoryService, String tableName, Function<Rule, String> func) {
         var table = getTable(repositoryService, tableName);
 
-        if (table == null){
+        if (table == null) {
             return Collections.emptySet();
         }
 
@@ -33,7 +35,7 @@ public class DmnTablesUtils {
                 .collect(Collectors.toSet());
     }
 
-    private static DecisionTable getTable(RepositoryService repositoryService, String tableName) {
+    private DecisionTable getTable(RepositoryService repositoryService, String tableName) {
         var ddId = repositoryService.createDecisionDefinitionQuery().decisionDefinitionKey(tableName)
                 .list().stream()
                 .findAny().orElseThrow(() -> new DmnDecisionResultException("No result")).getId();
@@ -49,12 +51,12 @@ public class DmnTablesUtils {
         return (DecisionTable) tables.iterator().next();
     }
 
-    private static String getKeyText(Rule rule) {
+    private String getKeyText(Rule rule) {
         var entry = rule.getInputEntries().iterator().next();
         return StringUtils.remove(entry.getTextContent(), '"');
     }
 
-    private static String getResultText(Rule rule) {
+    private String getResultText(Rule rule) {
         var entry = rule.getOutputEntries().iterator().next();
         return StringUtils.remove(entry.getTextContent(), '"');
     }
