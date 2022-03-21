@@ -10,6 +10,11 @@ public enum ErrorCodes implements ErrorCodeAware {
     COLLEAGUE_NOT_FOUND,
 
     /**
+     * Manager not found
+     */
+    MANAGER_NOT_FOUND,
+
+    /**
      * Changed attributes not found
      */
     CHANGED_ATTRIBUTES_NOT_FOUND,

@@ -163,12 +163,12 @@ class HealthCheckEndpointTest extends AbstractEndpointTest {
 
     private Health okDbIndicator() {
         return new Health("com.tesco.pma.datasource", COMPONENT, "PostgreSQL database",
-                OK, "42.2.18", CHECKED_DATE, null);
+                OK, "42.2.25", CHECKED_DATE, null);
     }
 
     private Health failedDbIndicator() {
         return new Health("com.tesco.pma.datasource", COMPONENT, "PostgreSQL database",
-                FAIL, "42.2.18", CHECKED_DATE, Map.of("type", DB_CONNECTION_ERROR,
+                FAIL, "42.2.25", CHECKED_DATE, Map.of("type", DB_CONNECTION_ERROR,
                 "body", "Failed to obtain database connection: localhost:5432"));
     }
 

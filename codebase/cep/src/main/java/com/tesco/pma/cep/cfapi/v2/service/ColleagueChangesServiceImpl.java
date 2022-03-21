@@ -34,6 +34,7 @@ import static com.tesco.pma.cep.cfapi.v2.domain.EventType.LEAVER;
 import static com.tesco.pma.cep.cfapi.v2.domain.EventType.MODIFICATION;
 import static com.tesco.pma.cep.cfapi.v2.exception.ErrorCodes.CHANGED_ATTRIBUTES_NOT_FOUND;
 import static com.tesco.pma.cep.cfapi.v2.exception.ErrorCodes.COLLEAGUE_NOT_FOUND;
+import static com.tesco.pma.cep.cfapi.v2.exception.ErrorCodes.MANAGER_NOT_FOUND;
 
 @Service
 @Slf4j
@@ -98,6 +99,26 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         // Send an event to Camunda
         sendAssignmentEvent(colleagueChangeEventPayload.getColleagueUuid(), colleagueChangeEventPayload.getCurrent());
         return 1;
+        var manager = profileService.findManagerByColleague(colleagueChangeEventPayload.getCurrent());
+        if (manager == null) {
+            log.warn(LogFormatter.formatMessage(MANAGER_NOT_FOUND, "For colleague '{}' manager was not found"),
+                    colleagueChangeEventPayload.getColleagueUuid());
+        }
+
+        int updated;
+        if (colleagueChangesProperties.isForce()) {
+            updated = profileService.create(colleagueChangeEventPayload.getColleagueUuid());
+        } else {
+            updated = profileService.create(colleagueChangeEventPayload.getCurrent());
+        }
+        if (updated > 0) {
+            // Send an event to User Management Service on creation a new account
+            sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.POST_CEP_COLLEAGUE_ADDED);
+
+            // Send an event to Camunda
+            sendAssignmentEvent(colleagueChangeEventPayload.getColleagueUuid());
+        }
+        return updated;
     }
 
     private int processLeaverEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {

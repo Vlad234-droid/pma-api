@@ -179,6 +179,21 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    public ColleagueEntity findManagerByColleague(Colleague colleague) {
+        var colleagueEntity = colleagueFactsApiLocalMapper.colleagueFactsApiToLocal(colleague);
+
+        if (colleagueEntity.getManagerUuid() != null) {
+            var managerUuid = colleagueEntity.getManagerUuid();
+            var inserted = create(managerUuid);
+            if (inserted > 0) {
+                return profileDAO.getColleague(managerUuid);
+            }
+        }
+
+        return null;
+    }
+
+    @Override
     // TODO To optimize logic for update only changed fields //NOSONAR
     public int updateColleague(UUID colleagueUuid, Collection<String> changedFields) {
         int updated = 0;
@@ -276,7 +291,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     private void updateDepartmentDictionary(ColleagueEntity existingLocalColleague, ColleagueEntity changedLocalColleague) {
         ColleagueEntity.Department changedDepartment = changedLocalColleague.getDepartment();
-        if (changedDepartment != null && (existingLocalColleague == null
+        if (changedDepartment != null && changedDepartment.getId() != null && (existingLocalColleague == null
                 || !existingLocalColleague.getDepartment().getId().equals(changedDepartment.getId()))) {
             profileDAO.updateDepartment(changedDepartment);
         }
