@@ -11,7 +11,7 @@ import java.util.Map;
 public class CamundaExecutionContext implements ExecutionContext {
 
     private static final long serialVersionUID = 7215268279587439949L;
-    private final DelegateExecution execution;
+    private final transient DelegateExecution execution;
     protected final String processDefinitionId;
 
     public CamundaExecutionContext(DelegateExecution execution) {

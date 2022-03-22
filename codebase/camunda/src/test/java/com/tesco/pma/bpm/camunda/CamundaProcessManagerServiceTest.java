@@ -9,6 +9,7 @@ import org.camunda.bpm.engine.ProcessEngineException;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.repository.Deployment;
+import org.camunda.bpm.engine.repository.DeploymentBuilder;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.runtime.Execution;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
@@ -163,8 +164,9 @@ public class CamundaProcessManagerServiceTest {
     @Test
     void testSameMessageNameFails() {
         String deploymentId = repositoryService.createDeployment().addClasspathResource(SAME_MESSAGE_BPMN20_XML).deploy().getId();
+        DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().addClasspathResource(OTHER_SAME_MESSAGE_BPMN20_XML);
         try {
-            repositoryService.createDeployment().addClasspathResource(OTHER_SAME_MESSAGE_BPMN20_XML).deploy();
+            deploymentBuilder.deploy();
             fail("exception expected");
         } catch (ProcessEngineException e) {
             e.printStackTrace(); //NOPMD
