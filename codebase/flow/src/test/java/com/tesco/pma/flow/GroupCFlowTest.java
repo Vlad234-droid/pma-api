@@ -11,6 +11,7 @@ import org.camunda.bpm.scenario.delegate.ExternalTaskDelegate;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.UUID;
@@ -27,6 +28,7 @@ import static org.mockito.Mockito.when;
         classes = {CamundaSpringBootTestConfig.class},
         properties = "camunda.bpm.deployment-resource-pattern=com/tesco/pma/flow/group_c.bpmn"
 )
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class GroupCFlowTest {
 
     private static final String KEY = "group_c";
@@ -50,8 +52,8 @@ class GroupCFlowTest {
     @MockBean
     CreateColleagueCycleHandler createColleagueCycleHandler;
 
-//    @Test
-    void shouldFinishScheduledCycle() { //NOPMD
+    @Test
+    void shouldFinishScheduledCycle() {
         //given
         var variables = Variables.createVariables()
                 .putValue(FlowParameters.SCHEDULED.name(), true)
@@ -72,8 +74,8 @@ class GroupCFlowTest {
         verify(scenario, times(1)).hasFinished(END_EVENT);
     }
 
-//    @Test
-    void shouldFinishColleagueCycle() { //NOPMD
+    @Test
+    void shouldFinishColleagueCycle() {
         //given
         var variables = Variables.createVariables()
                 .putValue(FlowParameters.SCHEDULED.name(), false)
