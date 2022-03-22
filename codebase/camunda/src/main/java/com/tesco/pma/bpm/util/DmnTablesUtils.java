@@ -63,7 +63,8 @@ public class DmnTablesUtils {
     private DecisionTable getTable(RepositoryService repositoryService, String tableName) {
         var ddId = repositoryService.createDecisionDefinitionQuery().decisionDefinitionKey(tableName)
                 .list().stream()
-                .findAny().orElseThrow(() -> new DmnDecisionResultException("No result")).getId();
+                .reduce((f,s) -> s.getVersion() > f.getVersion() ? s : f)
+                .orElseThrow(() -> new DmnDecisionResultException("No result")).getId();
 
         var dmnModelInstance = repositoryService.getDmnModelInstance(ddId);
         var modelType = dmnModelInstance.getModel().getType(DecisionTable.class);
