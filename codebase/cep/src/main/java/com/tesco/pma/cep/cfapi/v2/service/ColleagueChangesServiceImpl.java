@@ -36,6 +36,7 @@ import static com.tesco.pma.cep.cfapi.v2.domain.EventType.LEAVER;
 import static com.tesco.pma.cep.cfapi.v2.domain.EventType.MODIFICATION;
 import static com.tesco.pma.cep.cfapi.v2.exception.ErrorCodes.CHANGED_ATTRIBUTES_NOT_FOUND;
 import static com.tesco.pma.cep.cfapi.v2.exception.ErrorCodes.COLLEAGUE_NOT_FOUND;
+import static com.tesco.pma.colleague.security.exception.ErrorCodes.SECURITY_ACCOUNT_NOT_FOUND;
 
 @Service
 @Slf4j
@@ -116,6 +117,13 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     private int processLeaverEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
         // Disable an access a colleague to app
         var account = userManagementService.findAccountByColleagueUuid(colleagueChangeEventPayload.getColleagueUuid());
+        if (account == null) {
+            String message = String.format("An account for colleague with uuid = %s not found",
+                    colleagueChangeEventPayload.getColleagueUuid());
+            log.error(LogFormatter.formatMessage(SECURITY_ACCOUNT_NOT_FOUND, message));
+            return 0;
+        }
+
         var changeAccountStatusRequest = new ChangeAccountStatusRequest();
         changeAccountStatusRequest.setName(account.getName());
         changeAccountStatusRequest.setStatus(AccountStatus.DISABLED);

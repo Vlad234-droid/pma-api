@@ -22,7 +22,12 @@ public enum ErrorCodes implements ErrorCodeAware {
     /**
      * Role for account already added
      */
-    SECURITY_DUPLICATED_ROLE;
+    SECURITY_DUPLICATED_ROLE,
+
+    /**
+     * Empty account name or IAM ID
+     */
+    EMPTY_SECURITY_ACCOUNT_NAME_OR_IAM_ID;
 
     @Override
     public String getCode() {
