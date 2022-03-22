@@ -1,7 +1,6 @@
 package com.tesco.pma.bpm.util;
 
 import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.dmn.engine.impl.DmnDecisionResultException;
 import org.camunda.bpm.engine.RepositoryService;
@@ -13,7 +12,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Slf4j
 @UtilityClass
 public class DmnTablesUtils {
 
