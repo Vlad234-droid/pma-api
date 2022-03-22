@@ -25,6 +25,10 @@ dependencies {
         exclude group: 'org.codehaus.groovy', module: 'groovy-testng'
     }
 
+    implementation("de.odysseus.juel:juel-api:${juelVersion}")
+    implementation("de.odysseus.juel:juel-impl:${juelVersion}")
+    implementation("de.odysseus.juel:juel-spi:${juelVersion}")
+
     testImplementation project(':service').sourceSets.test.output
     testImplementation ("com.h2database:h2:${h2Version}")
     testImplementation ("com.zaxxer:HikariCP:${hikariVersion}")
