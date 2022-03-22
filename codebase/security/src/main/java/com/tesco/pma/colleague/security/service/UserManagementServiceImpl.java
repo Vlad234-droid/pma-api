@@ -13,8 +13,10 @@ import com.tesco.pma.colleague.security.exception.ErrorCodes;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.AlreadyExistsException;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.logging.LogFormatter;
 import com.tesco.pma.pagination.RequestQuery;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.tesco.pma.colleague.security.exception.ErrorCodes.EMPTY_SECURITY_ACCOUNT_NAME_OR_IAM_ID;
+
 
 /**
  * Implementation of {@link UserManagementService}.
@@ -37,6 +41,7 @@ import java.util.stream.Collectors;
 @Service
 @Validated
 @RequiredArgsConstructor
+@Slf4j
 public class UserManagementServiceImpl implements UserManagementService {
 
     private final AccountManagementDAO accountManagementDAO;
@@ -97,6 +102,12 @@ public class UserManagementServiceImpl implements UserManagementService {
         Optional<Account> optionalAccount = findAccountByName(request.getName());
         if (optionalAccount.isPresent()) {
             throw accountAlreadyExistsException(request.getName());
+        }
+
+        if (request.getName() == null || request.getIamId() == null) {
+            String message = String.format("Empty an account name or IAM ID for request = %s", request);
+            log.error(LogFormatter.formatMessage(EMPTY_SECURITY_ACCOUNT_NAME_OR_IAM_ID, message));
+            return;
         }
 
         UUID colleagueUuid = null;
