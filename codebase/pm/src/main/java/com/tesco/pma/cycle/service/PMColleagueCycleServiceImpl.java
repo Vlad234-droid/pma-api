@@ -161,7 +161,7 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
         Map<String, Object> props = new HashMap<>();
         props.put(TRACE_ID_HEADER, TraceUtils.getTraceId().getValue());
         props.put(FlowParameters.PM_CYCLE.name(), cycle);
-        props.put(FlowParameters.PM_COLLEAGUE_CYCLE_UUID.name(), colleagueUuid);
+        props.put(FlowParameters.COLLEAGUE_UUID.name(), colleagueUuid);
         return props;
     }
 
