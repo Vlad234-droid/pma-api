@@ -8,14 +8,11 @@ import com.tesco.pma.exception.InitializationException;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngines;
-import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.repository.Deployment;
 import org.camunda.bpm.engine.repository.DeploymentBuilder;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.repository.ProcessDefinitionQuery;
 import org.camunda.bpm.engine.repository.ResourceDefinition;
-import org.camunda.bpm.engine.runtime.Execution;
-import org.camunda.bpm.engine.runtime.ExecutionQuery;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,7 +36,6 @@ import java.util.zip.ZipInputStream;
 
 @Slf4j
 public class CamundaProcessManagerServiceBean implements ProcessManagerService {
-    // todo naming service
 
     @Override
     public DeploymentInfo deployProcessArchive(String path) throws FileNotFoundException, InitializationException {
@@ -51,7 +47,7 @@ public class CamundaProcessManagerServiceBean implements ProcessManagerService {
         if (log.isDebugEnabled()) {
             log.debug("Deploy process from - " + resource);
         }
-        try (ZipFile zipCheck = new ZipFile(resource)) {
+        try (var zipCheck = new ZipFile(resource)) {
             DeploymentBuilder builder = getProcessEngine().getRepositoryService().createDeployment();
             builder.name(resource.getName());
             builder.addZipInputStream(new ZipInputStream(new FileInputStream(resource))); //NOPMD
@@ -128,8 +124,8 @@ public class CamundaProcessManagerServiceBean implements ProcessManagerService {
             if (log.isDebugEnabled()) {
                 log.debug(String.format("Undeploy process by name(key) %s, version %s", processName, version));
             }
-            ProcessEngine processEngine = getProcessEngine();
-            ProcessDefinitionQuery processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
+            var processEngine = getProcessEngine();
+            var processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
             processDefinitionQuery.processDefinitionKey(processName);
             processDefinitionQuery.processDefinitionVersion(Integer.valueOf(version));
             deleteProcessDeploymentsByQuery(processDefinitionQuery, processEngine);
@@ -140,8 +136,8 @@ public class CamundaProcessManagerServiceBean implements ProcessManagerService {
 
     @Override
     public List<String> listProcesses() {
-        ProcessEngine processEngine = getProcessEngine();
-        ProcessDefinitionQuery processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
+        var processEngine = getProcessEngine();
+        var processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
         var list = processDefinitionQuery.orderByProcessDefinitionName().asc().list();
         return Objects.requireNonNullElse(list.stream().map(ResourceDefinition::getName).collect(Collectors.toList()),
                 Collections.emptyList());
@@ -157,8 +153,8 @@ public class CamundaProcessManagerServiceBean implements ProcessManagerService {
 
     @Override
     public List<String> getProcessesIds(String deploymentId, String resourceName) {
-        ProcessEngine processEngine = getProcessEngine();
-        ProcessDefinitionQuery processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
+        var processEngine = getProcessEngine();
+        var processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
         processDefinitionQuery.deploymentId(deploymentId).processDefinitionResourceName(resourceName);
         var list = processDefinitionQuery.orderByProcessDefinitionName().asc().list();
         return Objects.requireNonNullElse(list.stream().map(ResourceDefinition::getId).collect(Collectors.toList()),
@@ -183,18 +179,18 @@ public class CamundaProcessManagerServiceBean implements ProcessManagerService {
     @Override
     public String runProcess(String processName, String version, Map<String, ?> varMap) throws ProcessExecutionException {
         try {
-            ProcessEngine processEngine = getProcessEngine();
-            ProcessDefinitionQuery processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
+            var processEngine = getProcessEngine();
+            var processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
             processDefinitionQuery.processDefinitionKey(processName);
             if (version != null) {
                 processDefinitionQuery.processDefinitionVersion(Integer.valueOf(version));
             }
-            ProcessDefinition processDefinition = processDefinitionQuery.singleResult();
+            var processDefinition = processDefinitionQuery.singleResult();
             if (processDefinition == null) {
-                String message = "Couldn't find process by key %s, version %s";
+                var message = "Couldn't find process by key %s, version %s";
                 throw new ProcessExecutionException(String.format(message, processName, version));
             }
-            RuntimeService runtimeService = processEngine.getRuntimeService();
+            var runtimeService = processEngine.getRuntimeService();
             String instanceId;
             if (varMap != null) {
                 @SuppressWarnings("unchecked")
@@ -205,7 +201,7 @@ public class CamundaProcessManagerServiceBean implements ProcessManagerService {
                 instanceId = runtimeService.startProcessInstanceById(processDefinition.getId()).getId();
             }
             if (instanceId == null) {
-                String message = "Couldn't start process by key %s, version %s";
+                var message = "Couldn't start process by key %s, version %s";
                 throw new ProcessExecutionException(String.format(message, processName, version));
             }
             return instanceId;
@@ -217,15 +213,15 @@ public class CamundaProcessManagerServiceBean implements ProcessManagerService {
     @Override
     public String runProcessByResourceName(String resourceName, Map<String, ?> varMap) throws ProcessExecutionException {
         try {
-            ProcessEngine processEngine = getProcessEngine();
-            ProcessDefinitionQuery processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
+            var processEngine = getProcessEngine();
+            var processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
             processDefinitionQuery.processDefinitionResourceName(resourceName).latestVersion();
-            ProcessDefinition processDefinition = processDefinitionQuery.singleResult();
+            var processDefinition = processDefinitionQuery.singleResult();
             if (processDefinition == null) {
-                String message = "Couldn't find process by resource name %s";
+                var message = "Couldn't find process by resource name %s";
                 throw new ProcessExecutionException(String.format(message, resourceName));
             }
-            RuntimeService runtimeService = processEngine.getRuntimeService();
+            var runtimeService = processEngine.getRuntimeService();
             String instanceId;
             if (varMap != null) {
                 @SuppressWarnings("unchecked")
@@ -236,7 +232,7 @@ public class CamundaProcessManagerServiceBean implements ProcessManagerService {
                 instanceId = runtimeService.startProcessInstanceById(processDefinition.getId()).getId();
             }
             if (instanceId == null) {
-                String message = "Couldn't find process by resource name %s";
+                var message = "Couldn't find process by resource name %s";
                 throw new ProcessExecutionException(String.format(message, resourceName));
             }
             return instanceId;
@@ -248,16 +244,16 @@ public class CamundaProcessManagerServiceBean implements ProcessManagerService {
     @Override
     public String runProcessById(String processId, Map<String, ?> varMap) throws ProcessExecutionException {
         try {
-            ProcessEngine processEngine = getProcessEngine();
-            ProcessDefinitionQuery processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
+            var processEngine = getProcessEngine();
+            var processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
             processDefinitionQuery.processDefinitionId(processId);
 
-            ProcessDefinition processDefinition = processDefinitionQuery.singleResult();
+            var processDefinition = processDefinitionQuery.singleResult();
             if (processDefinition == null) {
-                String message = "Couldn't find process by id %s";
+                var message = "Couldn't find process by id %s";
                 throw new ProcessExecutionException(String.format(message, processId));
             }
-            RuntimeService runtimeService = processEngine.getRuntimeService();
+            var runtimeService = processEngine.getRuntimeService();
             String instanceId;
             if (varMap != null) {
                 @SuppressWarnings("unchecked")
@@ -268,7 +264,7 @@ public class CamundaProcessManagerServiceBean implements ProcessManagerService {
                 instanceId = runtimeService.startProcessInstanceById(processDefinition.getId()).getId();
             }
             if (instanceId == null) {
-                String message = "Couldn't start process by id %s";
+                var message = "Couldn't start process by id %s";
                 throw new ProcessExecutionException(String.format(message, processId));
             }
             return instanceId;
@@ -281,8 +277,8 @@ public class CamundaProcessManagerServiceBean implements ProcessManagerService {
     public String runProcessByEvent(String eventName, Map<String, ?> varMap) throws ProcessExecutionException {
         String instanceId;
         try {
-            ProcessEngine processEngine = getProcessEngine();
-            RuntimeService runtimeService = processEngine.getRuntimeService();
+            var processEngine = getProcessEngine();
+            var runtimeService = processEngine.getRuntimeService();
 
             if (varMap != null) {
                 @SuppressWarnings("unchecked")
@@ -292,7 +288,7 @@ public class CamundaProcessManagerServiceBean implements ProcessManagerService {
                 instanceId = runtimeService.startProcessInstanceByMessage(eventName).getId();
             }
             if (instanceId == null) {
-                String message = "Couldn't start process by key %s";
+                var message = "Couldn't start process by key %s";
                 throw new ProcessExecutionException(String.format(message, eventName));
             }
         } catch (Exception e) {
@@ -314,14 +310,14 @@ public class CamundaProcessManagerServiceBean implements ProcessManagerService {
     @Override
     public void signalEvent(String code, String instanceId, Map<String, Object> processVariables) throws ProcessExecutionException {
         try {
-            ProcessEngine processEngine = getProcessEngine();
-            RuntimeService runtimeService = processEngine.getRuntimeService();
-            ExecutionQuery executionQuery = runtimeService.createExecutionQuery();
+            var processEngine = getProcessEngine();
+            var runtimeService = processEngine.getRuntimeService();
+            var executionQuery = runtimeService.createExecutionQuery();
             executionQuery.processInstanceId(instanceId);
             executionQuery.messageEventSubscriptionName(code);
-            Execution execution = executionQuery.singleResult();
+            var execution = executionQuery.singleResult();
             if (execution == null) {
-                String message = "Couldn't find execution by event code %s for process instance %s";
+                var message = "Couldn't find execution by event code %s for process instance %s";
                 throw new ProcessExecutionException(String.format(message, code, instanceId));
             }
             if (processVariables != null) {
