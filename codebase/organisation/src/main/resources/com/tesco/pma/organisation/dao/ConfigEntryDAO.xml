@@ -32,7 +32,12 @@
         <association property="job" autoMapping="true" columnPrefix="j_"/>
         <association property="country" autoMapping="true" columnPrefix="co_"/>
         <association property="workLevel" autoMapping="true" columnPrefix="wl_"/>
-        <association property="department" autoMapping="true" columnPrefix="d_"/>
+        <association property="department">
+            <id column="d_uuid" property="uuid"/>
+            <result column="d_id" property="id"/>
+            <result column="d_name" property="name"/>
+            <association property="businessType" autoMapping="true" columnPrefix="bt_"/>
+        </association>
     </resultMap>
 
     <select id="findAllUnpublishedRootEntries" resultMap="configEntryStructure">
@@ -117,14 +122,17 @@
         co.name as co_name,
         wl.code as wl_code,
         wl.name as wl_name,
+        d.uuid as d_uuid,
         d.id as d_id,
         d.name as d_name,
-        d.business_type as d_businessType
+        bt.uuid as bt_uuid,
+        bt.name as bt_name
         FROM colleague c
         LEFT JOIN job j ON j.id = c.job_id
         JOIN country co ON co.code = c.country_code
         LEFT JOIN work_level wl ON wl.code = c.work_level
-        LEFT JOIN department d ON d.id = c.department_id
+        LEFT OUTER JOIN department d ON d.uuid = c.department_uuid
+        LEFT OUTER JOIN business_type bt ON d.business_type_uuid = bt.uuid
         <if test="statusFilter != null and !statusFilter.isEmpty()">
             LEFT JOIN pm_colleague_cycle pcc on c.uuid = pcc.colleague_uuid
         </if>
@@ -146,7 +154,7 @@
         LEFT JOIN job j ON j.id = c.job_id
         JOIN country co ON co.code = c.country_code
         LEFT JOIN work_level wl ON wl.code = c.work_level
-        LEFT JOIN department d ON d.id = c.department_id
+        LEFT JOIN department d ON d.uuid = c.department_uuid
         <include refid="whereClauseFindColleagueByKey"/>
         AND c.uuid = #{colleagueUuid}))
         THEN true

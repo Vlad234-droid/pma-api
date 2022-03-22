@@ -50,8 +50,15 @@ public class ColleagueEntity { //NOPMD
 
     @Data
     public static class Department {
+        private UUID uuid;
         private String id;
         private String name;
-        private String businessType;
+        private BusinessType businessType;
+
+        @Data
+        public static class BusinessType {
+            private UUID uuid;
+            private String name;
+        }
     }
 }

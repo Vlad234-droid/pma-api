@@ -36,8 +36,13 @@ public class ProcessColleaguesDataServiceImpl implements ProcessColleaguesDataSe
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Set<ColleagueEntity.Department> saveDepartments(ParsingResult result) {
-        var departments = ColleagueEntityMapper.mapDepartments(result.getData());
-        departments.forEach(profileDAO::updateDepartment);
+        var existingDepartment = profileDAO.findAllDepartments();
+        var departments = ColleagueEntityMapper
+                .mapDepartments(result.getData(), existingDepartment);
+        departments.forEach(d -> {
+            profileDAO.updateBusinessType(d.getBusinessType());
+            profileDAO.updateDepartment(d);
+        });
         return departments;
     }
 

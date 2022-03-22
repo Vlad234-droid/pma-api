@@ -135,7 +135,10 @@ public class ColleagueFactsApiLocalMapper {
             var dp = new Department();
             dp.setId(ocDp.getId());
             dp.setName(ocDp.getName());
-            dp.setBusinessType(ocDp.getBusinessType());
+            var businessType = ocDp.getBusinessType();
+            if (businessType != null) {
+                dp.setBusinessType(businessType.getName());
+            }
             return dp;
         }
         return null;
@@ -156,7 +159,7 @@ public class ColleagueFactsApiLocalMapper {
             destination.setEmail(contact.getEmail());
         }
 
-        ColleagueEntity.Country country = new ColleagueEntity.Country();
+        var country = new ColleagueEntity.Country();
         country.setCode(source.getCountryCode());
         country.setName(UNDEFINED_VALUE);
         destination.setCountry(country);
@@ -180,10 +183,10 @@ public class ColleagueFactsApiLocalMapper {
 
     private void mappingWorkRelationshipProperties(Colleague source, ColleagueEntity destination) {
         if (Objects.nonNull(source.getWorkRelationships())) {
-            Optional<WorkRelationship> optionalWorkRelationship = source.getWorkRelationships().stream().findFirst();
+            var optionalWorkRelationship = source.getWorkRelationships().stream().findFirst();
 
             if (optionalWorkRelationship.isPresent()) {
-                WorkRelationship workRelationship = optionalWorkRelationship.get();
+                var workRelationship = optionalWorkRelationship.get();
 
                 destination.setPrimaryEntity(workRelationship.getPrimaryEntity());
                 destination.setSalaryFrequency(workRelationship.getSalaryFrequency());
@@ -192,18 +195,23 @@ public class ColleagueFactsApiLocalMapper {
                 destination.setManagerUuid(workRelationship.getManagerUUID());
                 destination.setManager(BooleanUtils.toBoolean(workRelationship.getIsManager()));
 
-                ColleagueEntity.WorkLevel workLevel =
-                        new ColleagueEntity.WorkLevel();
+                var workLevel = new ColleagueEntity.WorkLevel();
                 workLevel.setCode(workRelationship.getWorkLevel().name());
                 workLevel.setName("Work Level #");
                 destination.setWorkLevel(workLevel);
 
-                ColleagueEntity.Department department =
-                        new ColleagueEntity.Department();
-                BeanUtils.copyProperties(workRelationship.getDepartment(), department);
-                destination.setDepartment(department);
+                var department = new ColleagueEntity.Department();
+                var workRelationshipDepartment = workRelationship.getDepartment();
+                if (workRelationshipDepartment != null) {
+                    department.setId(workRelationshipDepartment.getId());
+                    department.setName(workRelationshipDepartment.getName());
+                    var businessType = new ColleagueEntity.Department.BusinessType();
+                    businessType.setName(workRelationshipDepartment.getBusinessType());
+                    department.setBusinessType(businessType);
+                    destination.setDepartment(department);
+                }
 
-                ColleagueEntity.Job job = new ColleagueEntity.Job();
+                var job = new ColleagueEntity.Job();
                 BeanUtils.copyProperties(workRelationship.getJob(), job);
                 destination.setJob(job);
 

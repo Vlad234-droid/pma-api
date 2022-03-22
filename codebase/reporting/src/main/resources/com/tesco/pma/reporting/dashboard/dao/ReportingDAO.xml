@@ -130,7 +130,7 @@
                c.first_name,
                c.last_name,
                j.name          as job_name,
-               d.business_type as business_type,
+               bt.name         as business_type,
                pcc.uuid        as colleague_cycle_uuid,
                pc.type_id      as cycle_type_id,
                case
@@ -145,7 +145,9 @@
                  left join job j
                            on (j.id = c.job_id)
                  left join department d
-                           on (d.id = c.department_id)
+                           on (d.uuid = c.department_uuid)
+                 left join business_type bt
+                           on (bt.uuid = d.business_type_uuid)
         where 1 = 1
           and pc.type_id = 1
           and pcc.start_time between make_date(<include refid="getYear"/>, 3, 1) and (make_date(<include refid="getYear"/> + 1, 3, 1) - interval '1 day')::date
@@ -175,10 +177,10 @@
             select c.uuid,
                    c.first_name,
                    c.last_name,
-                   j.name          as job_name,
-                   d.business_type as business_type,
-                   pcc.uuid        as colleague_cycle_uuid,
-                   pc.type_id      as cycle_type_id
+                   j.name           as job_name,
+                   bt.name          as business_type,
+                   pcc.uuid         as colleague_cycle_uuid,
+                   pc.type_id       as cycle_type_id
             from colleague c
                      inner join pm_colleague_cycle pcc
                                 on (pcc.colleague_uuid = c.uuid)
@@ -187,7 +189,9 @@
                      left join job j
                                on (j.id = c.job_id)
                      left join department d
-                               on (d.id = c.department_id)
+                               on (d.uuid = c.department_uuid)
+                     left join business_type bt
+                               on (bt.uuid = d.business_type_uuid)
             where 1 = 1
               and pc.type_id = 2
               <if test="!requestQuery.filters.isEmpty()">
@@ -258,7 +262,7 @@
 
     <sql id="prepareValue">
         <choose>
-            <when test="filter.property == 'manager-uuid'">
+            <when test="filter.property == 'manager-uuid' or filter.property == 'department-uuid'">
                 '${filter.value}'::uuid
             </when>
             <otherwise>
@@ -317,8 +321,11 @@
             <when test="filter.property == 'manager-uuid'">
                 manager_uuid
             </when>
+            <when test="filter.property == 'department-uuid'">
+                department_uuid
+            </when>
             <when test="filter.property == 'department-id'">
-                department_id
+                d.id
             </when>
             <when test="filter.property == 'job-id'">
                 job_id

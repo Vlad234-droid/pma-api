@@ -23,7 +23,19 @@
         <association property="job" autoMapping="true" columnPrefix="j_"/>
         <association property="country" autoMapping="true" columnPrefix="co_"/>
         <association property="workLevel" autoMapping="true" columnPrefix="wl_"/>
-        <association property="department" autoMapping="true" columnPrefix="d_"/>
+        <association property="department">
+            <id column="d_uuid" property="uuid"/>
+            <result column="d_id" property="id"/>
+            <result column="d_name" property="name"/>
+            <association property="businessType" autoMapping="true" columnPrefix="bt_"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="departmentMap" type="com.tesco.pma.colleague.profile.domain.ColleagueEntity$Department">
+        <id column="uuid" property="uuid"/>
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <association property="businessType" autoMapping="true" columnPrefix="bt_"/>
     </resultMap>
 
     <resultMap id="colleagueApiMap" type="com.tesco.pma.colleague.api.Colleague">
@@ -82,14 +94,17 @@
                co.name         as co_name,
                wl.code         as wl_code,
                wl.name         as wl_name,
+               d.uuid          as d_uuid,
                d.id            as d_id,
                d.name          as d_name,
-               d.business_type as d_businessType
+               bt.uuid         as bt_uuid,
+               bt.name         as bt_name
         FROM colleague c
                  LEFT OUTER JOIN job j ON j.id = c.job_id
                  JOIN country co ON co.code = c.country_code
                  LEFT OUTER JOIN work_level wl ON wl.code = c.work_level
-                 LEFT OUTER JOIN department d ON d.id = c.department_id
+                 LEFT OUTER JOIN department d ON d.uuid = c.department_uuid
+                 LEFT OUTER JOIN business_type bt ON d.business_type_uuid = bt.uuid
     </sql>
 
     <select id="getColleague" resultMap="colleagueMap">
@@ -122,9 +137,16 @@
     </insert>
 
     <insert id="updateDepartment" flushCache="true">
-        INSERT INTO department (id, name, business_type)
-        VALUES (#{department.id}, #{department.name}, #{department.businessType}) ON CONFLICT (id) DO
-        UPDATE SET (name, business_type) = (EXCLUDED.name, EXCLUDED.business_type)
+        INSERT INTO department (uuid, id, name, business_type_uuid)
+        VALUES (#{department.uuid}, #{department.id}, #{department.name},
+                #{department.businessType.uuid}) ON CONFLICT (uuid) DO
+        UPDATE SET (id, name, business_type_uuid) = (EXCLUDED.id, EXCLUDED.name, EXCLUDED.business_type_uuid)
+    </insert>
+
+    <insert id="updateBusinessType" flushCache="true">
+        INSERT INTO business_type (uuid, name)
+        VALUES (#{businessType.uuid}, #{businessType.name}) ON CONFLICT (uuid) DO
+        UPDATE SET name = EXCLUDED.name
     </insert>
 
     <insert id="updateJob" flushCache="true">
@@ -136,13 +158,13 @@
     <insert id="saveColleague" flushCache="true">
         INSERT INTO colleague(uuid, first_name, middle_name, last_name, email, primary_entity,
                               salary_frequency, iam_source, iam_id, manager_uuid, employment_type,
-                              hire_date, leaving_date, is_manager, job_id, country_code, work_level, department_id,
+                              hire_date, leaving_date, is_manager, job_id, country_code, work_level, department_uuid,
                               location_id, legal_entity)
         VALUES (#{colleague.uuid}, #{colleague.firstName}, #{colleague.middleName}, #{colleague.lastName},
                 #{colleague.email}, #{colleague.primaryEntity}, #{colleague.salaryFrequency}, #{colleague.iamSource},
                 #{colleague.iamId}, #{colleague.managerUuid}, #{colleague.employmentType}, #{colleague.hireDate},
                 #{colleague.leavingDate}, #{colleague.manager}, #{colleague.job.id}, #{colleague.country.code},
-                #{colleague.workLevel.code}, #{colleague.department.id}, #{colleague.locationId},
+                #{colleague.workLevel.code}, #{colleague.department.uuid}, #{colleague.locationId},
                 #{colleague.legalEntity})
     </insert>
 
@@ -164,7 +186,7 @@
             job_id           = #{colleague.job.id},
             country_code     = #{colleague.country.code},
             work_level       = #{colleague.workLevel.code},
-            department_id    = #{colleague.department.id},
+            department_uuid  = #{colleague.department.uuid},
             location_id      = #{colleague.locationId},
             legal_entity     = #{colleague.legalEntity}
         WHERE uuid = #{colleague.uuid}
@@ -184,6 +206,16 @@
                        THEN true
                    ELSE false
                    END;
+    </select>
+
+    <select id="findAllDepartments" resultMap="departmentMap">
+        SELECT d.uuid  as uuid,
+               d.id    as id,
+               d.name  as name,
+               bt.uuid as bt_uuid,
+               bt.name as bt_name
+        FROM department d
+                 LEFT OUTER JOIN business_type bt ON d.business_type_uuid = bt.uuid
     </select>
 
     <select id="findColleagueSuggestionsByFullName" resultMap="colleagueApiMap">
@@ -214,23 +246,26 @@
         wl.name as wl_name,
         d.id as d_id,
         d.name as d_name,
-        d.business_type as d_businessType
+        bt.name as d_businessType
 
         FROM colleague c
         LEFT JOIN job j ON j.id = c.job_id
         JOIN country co ON co.code = c.country_code
         LEFT JOIN work_level wl ON wl.code = c.work_level
-        LEFT JOIN department d ON d.id = c.department_id
+        LEFT JOIN department d ON d.uuid = c.department_uuid
+        LEFT JOIN business_type bt ON d.business_type_uuid = bt.uuid
 
         <where>
             <if test="!requestQuery.filters.isEmpty()">
 
                 <foreach collection="requestQuery.filters" item="filter" index="index" separator="AND">
                     <if test="filter.operand.name == 'EQUALS' and filter.property == 'manager-uuid'">
-                        <include refid="getFilterField"/> = uuid(#{filter.value})
+                        <include refid="getFilterField"/>
+                        = uuid(#{filter.value})
                     </if>
                     <if test="filter.operand.name == 'EQUALS' and filter.property == 'work-level'">
-                        <include refid="getFilterField"/> = #{filter.value}
+                        <include refid="getFilterField"/>
+                        = #{filter.value}
                     </if>
                 </foreach>
 

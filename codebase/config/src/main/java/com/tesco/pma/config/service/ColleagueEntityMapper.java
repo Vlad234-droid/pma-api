@@ -15,20 +15,27 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Slf4j
 @UtilityClass
 public class ColleagueEntityMapper {
 
-    private static final String DEPARTMENT_ID = "department_id";
     private static final String JOB_ID = "job_id";
+    private static final String DEPARTMENT_ID = "department_id";
+    private static final String DEPARTMENT_NAME = "department_name";
+    private static final String BUSINESS_TYPE = "business_type";
 
     List<ColleagueEntity> mapColleagues(List<FieldSet> data, Set<ColleagueEntity.WorkLevel> workLevels,
                                         Set<ColleagueEntity.Country> countries, Set<ColleagueEntity.Department> departments,
@@ -36,7 +43,6 @@ public class ColleagueEntityMapper {
 
         var wlMap = workLevels.stream().collect(Collectors.toMap(ColleagueEntity.WorkLevel::getCode, Function.identity()));
         var countryMap = countries.stream().collect(Collectors.toMap(ColleagueEntity.Country::getCode, Function.identity()));
-        var depMap = departments.stream().collect(Collectors.toMap(ColleagueEntity.Department::getId, Function.identity()));
         var jobMap = jobs.stream().collect(Collectors.toMap(ColleagueEntity.Job::getId, Function.identity()));
         return data.stream()
                 .map(FieldSet::getValues)
@@ -50,7 +56,7 @@ public class ColleagueEntityMapper {
                     colleague.setWorkLevel(wlMap.get(getValueNullSafe(fs, "work_level")));
                     colleague.setPrimaryEntity(getValueNullSafe(fs, "primary_entity"));
                     colleague.setCountry(countryMap.get(getValueNullSafe(fs, "country_code")));
-                    colleague.setDepartment(depMap.get(getValueNullSafe(fs, DEPARTMENT_ID)));
+                    colleague.setDepartment(resolveDepartment(fs, departments));
                     colleague.setSalaryFrequency(getValueNullSafe(fs, "salary_frequency"));
                     colleague.setJob(jobMap.get(getValueNullSafe(fs, JOB_ID)));
                     colleague.setIamId(getValueNullSafe(fs, "iam_id"));
@@ -132,23 +138,61 @@ public class ColleagueEntityMapper {
                 }).collect(Collectors.toSet());
     }
 
-    Set<ColleagueEntity.Department> mapDepartments(List<FieldSet> data) {
+    Set<ColleagueEntity.Department> mapDepartments(List<FieldSet> data, List<ColleagueEntity.Department> existingDepartments) {
+        var btNameToUuidMap = existingDepartments
+                .stream()
+                .map(ColleagueEntity.Department::getBusinessType)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toMap(ColleagueEntity.Department.BusinessType::getName,
+                        ColleagueEntity.Department.BusinessType::getUuid));
         return data.stream()
                 .map(FieldSet::getValues)
-                .filter(c -> c.get(DEPARTMENT_ID).getType() != ValueType.BLANK)
-                .map(c -> {
-                    var department = new ColleagueEntity.Department();
-                    department.setId(getValueNullSafe(c, DEPARTMENT_ID));
-                    department.setName(getValueNullSafe(c, "department_name"));
-                    department.setBusinessType(getValueNullSafe(c, "business_type"));
-                    return department;
-                })
-                .collect(Collectors.groupingBy(ColleagueEntity.Department::getId))
-                .values()
-                .stream()
-                .filter(list -> list.size() == 1)
-                .map(CollectionUtils::firstElement)
+                .map(c -> getDepartment(existingDepartments, btNameToUuidMap, c))
+                .filter(distinctByKeys(ColleagueEntity.Department::getId, ColleagueEntity.Department::getName, ColleagueEntity.Department::getBusinessType))
                 .collect(Collectors.toSet());
+    }
+
+    private ColleagueEntity.Department getDepartment(Collection<ColleagueEntity.Department> existingDepartments, Map<String, UUID> btNameToUuidMap, Map<String, Value> c) {
+        var department = new ColleagueEntity.Department();
+        var id = getValueNullSafe(c, DEPARTMENT_ID);
+        var name = getValueNullSafe(c, DEPARTMENT_NAME);
+        var businessTypeString = getValueNullSafe(c, BUSINESS_TYPE);
+        department.setUuid(resolveDepartmentUuid(existingDepartments, id, name, businessTypeString));
+        department.setId(id);
+        department.setName(name);
+        Optional.ofNullable(businessTypeString)
+                .ifPresent(bt -> {
+                    var businessType = new ColleagueEntity.Department.BusinessType();
+                    businessType.setUuid(btNameToUuidMap.computeIfAbsent(bt, s -> UUID.randomUUID()));
+                    businessType.setName(bt);
+                    department.setBusinessType(businessType);
+                });
+        return department;
+    }
+
+    UUID resolveDepartmentUuid(Collection<ColleagueEntity.Department> existingDepartments, String id,
+                               String name, String businessTypeString) {
+        return getDepartmentOptional(existingDepartments, id, name, businessTypeString)
+                .map(ColleagueEntity.Department::getUuid)
+                .orElseGet(UUID::randomUUID);
+    }
+
+    ColleagueEntity.Department resolveDepartment(Map<String, Value> c, Collection<ColleagueEntity.Department> existingDepartments) {
+        var id = getValueNullSafe(c, DEPARTMENT_ID);
+        var name = getValueNullSafe(c, DEPARTMENT_NAME);
+        var businessTypeString = getValueNullSafe(c, BUSINESS_TYPE);
+        return getDepartmentOptional(existingDepartments, id, name, businessTypeString)
+                .orElse(null);
+    }
+
+    private Optional<ColleagueEntity.Department> getDepartmentOptional(Collection<ColleagueEntity.Department> existingDepartments,
+                                                                       String id, String name, String businessTypeString) {
+        return existingDepartments.stream()
+                .filter(d -> Objects.equals(d.getId(), id) && Objects.equals(d.getName(), name)
+                        && (d.getBusinessType() == null && businessTypeString == null || d.getBusinessType() != null
+                        && Objects.equals(d.getBusinessType().getName(), businessTypeString)))
+                .findFirst();
     }
 
     Set<ColleagueEntity.Job> mapJobs(List<FieldSet> data) {
@@ -176,5 +220,16 @@ public class ColleagueEntityMapper {
         var isoFormatter = DateTimeFormatter.ISO_INSTANT;
         var dateInstant = Instant.from(isoFormatter.parse(dateString));
         return LocalDate.ofInstant(dateInstant, ZoneOffset.UTC);
+    }
+
+    private static <T> Predicate<T> distinctByKeys(Function<? super T, ?>... keyExtractors) {
+        final Map<List<?>, Boolean> seen = new ConcurrentHashMap<>();
+
+        return t -> {
+            final List<?> keys = Arrays.stream(keyExtractors)
+                    .map(ke -> ke.apply(t))
+                    .collect(Collectors.toList());
+            return seen.putIfAbsent(keys, Boolean.TRUE) == null;
+        };
     }
 }
