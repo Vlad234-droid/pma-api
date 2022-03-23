@@ -5,17 +5,24 @@ import com.tesco.pma.bpm.camunda.flow.AbstractCamundaSpringBootTest;
 import com.tesco.pma.bpm.camunda.flow.CamundaSpringBootTestConfig;
 import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.api.workrelationships.WorkLevel;
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.api.PMCycle;
+import com.tesco.pma.cycle.service.PMCycleService;
+import com.tesco.pma.event.service.EventSender;
+import com.tesco.pma.flow.exception.ErrorCodes;
 import com.tesco.pma.flow.handlers.EventSendHandler;
 import com.tesco.pma.flow.handlers.FindCycleHandler;
 import com.tesco.pma.util.TestUtils.KEYS;
 import com.tesco.pma.flow.handlers.ReadColleaguesHandler;
 import org.camunda.bpm.engine.delegate.BpmnError;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
@@ -50,11 +57,26 @@ public class PMCycleAssignmentFlowTest extends AbstractCamundaSpringBootTest {
     @MockBean
     ReadColleaguesHandler readColleaguesHandler;
 
-    @MockBean
+    @SpyBean
     FindCycleHandler findCycleHandler;
 
     @MockBean
+    NamedMessageSourceAccessor messageSourceAccessor;
+
+    @MockBean
+    PMCycleService pmCycleService;
+
+    @SpyBean
     EventSendHandler eventSendHandler;
+
+    @MockBean
+    EventSender eventSender;
+
+    @BeforeEach
+    void init() {
+        Mockito.when(messageSourceAccessor.getMessage(Mockito.any(ErrorCodes.class), Mockito.anyMap()))
+                .thenReturn("Mock error");
+    }
 
     @Test
     void successMany() throws Exception {
@@ -67,12 +89,15 @@ public class PMCycleAssignmentFlowTest extends AbstractCamundaSpringBootTest {
     void cannotFindPMCycle() throws Exception {
         var colleagues = getColleagues(1);
         var uuids = colleagues.stream().map(c -> c.getColleagueUUID().toString()).collect(Collectors.toList());
+
         mockExecutionInHandler(readColleaguesHandler,
                 (context) -> context.setVariable(FlowParameters.COLLEAGUES.name(), colleagues));
 
-        doThrow(new BpmnError(PM_CYCLE_MORE_THAN_ONE_IN_STATUSES.getCode())).when(findCycleHandler).execute(any());
+        Mockito.when(pmCycleService.findAll(Mockito.any(), Mockito.anyBoolean()))
+                .thenReturn(List.of(buildCycle(), buildCycle()));
 
         var pid = runProcess(PROCESS_KEY, Map.of(FlowParameters.COLLEAGUE_UUIDS.name(), uuids));
+
         assertThatForProcess(pid)
                 .activity(READ_COLLEAGUES).executedOnce()
                 .activity(CALCULATE_CYCLE).executedOnce()
@@ -81,14 +106,39 @@ public class PMCycleAssignmentFlowTest extends AbstractCamundaSpringBootTest {
                 .activity(COUNT_DOWN).executedOnce();
     }
 
-    private void successCount(int count) throws Exception {
-        var colleagues = getColleagues(count);
+    @Test
+    void pmCycleKeyNullTest() throws Exception {
+        var colleagues = List.of(createColleague(Map.of(KEYS.COLLEAGUE_UUID, UUID.randomUUID())));
         var uuids = colleagues.stream().map(c -> c.getColleagueUUID().toString()).collect(Collectors.toList());
+
         mockExecutionInHandler(readColleaguesHandler,
                 (context) -> context.setVariable(FlowParameters.COLLEAGUES.name(), colleagues));
 
-        mockExecutionInHandler(findCycleHandler,
-                (context) -> context.setVariable(FlowParameters.PM_CYCLE.name(), buildCycle()));
+        Mockito.when(pmCycleService.findAll(Mockito.any(), Mockito.anyBoolean()))
+                .thenReturn(List.of(buildCycle()));
+
+        var pid = runProcess(PROCESS_KEY, Map.of(FlowParameters.COLLEAGUE_UUIDS.name(), uuids));
+
+        assertThatForProcess(pid)
+                .activity(READ_COLLEAGUES).executedOnce()
+                .activity(CALCULATE_CYCLE).executedOnce()
+                .activity(FIND_CYCLE).executedOnce()
+                .activity(SEND_EVENT).neverExecuted()
+                .activity(COUNT_DOWN).executedOnce();
+
+        Mockito.verify(eventSender, Mockito.times(0))
+                .sendEvent(Mockito.any(), Mockito.isNull(), Mockito.anyBoolean());
+    }
+
+    private void successCount(int count) throws Exception {
+        var colleagues = getColleagues(count);
+        var uuids = colleagues.stream().map(c -> c.getColleagueUUID().toString()).collect(Collectors.toList());
+
+        mockExecutionInHandler(readColleaguesHandler,
+                (context) -> context.setVariable(FlowParameters.COLLEAGUES.name(), colleagues));
+
+        Mockito.when(pmCycleService.findAll(Mockito.any(), Mockito.anyBoolean()))
+                .thenReturn(List.of(buildCycle()));
 
         var pid = runProcess(PROCESS_KEY, Map.of(FlowParameters.COLLEAGUE_UUIDS.name(), uuids));
         assertThatForProcess(pid)
