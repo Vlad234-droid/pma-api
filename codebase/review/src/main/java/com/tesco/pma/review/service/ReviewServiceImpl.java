@@ -612,7 +612,7 @@ public class ReviewServiceImpl implements ReviewService {
                 colleagueCycle.getUuid(),
                 type.getCode(),
                 null);
-        if (timelinePoints == null || 1 != timelinePoints.size()) {
+        if (timelinePoints == null || 1 != timelinePoints.size() || timelinePoints.get(0) == null) {
             throw notFound(TIMELINE_POINT_NOT_FOUND,
                     Map.of(COLLEAGUE_CYCLE_UUID_PARAMETER_NAME, colleagueCycle.getUuid(),
                             TYPE_PARAMETER_NAME, type.getCode()));
