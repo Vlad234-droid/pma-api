@@ -147,7 +147,6 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
             var processUUID = processManagerService.runProcessById(process.getBpmProcessId(),
                     prepareFlowProperties(cycle, colleagueUuid));
             log.debug("Started process: {}", processUUID);
-            pmProcessService.updateStatus(process.getId(), PMProcessStatus.STARTED, null);
         } catch (ProcessExecutionException e) {
             log.error("Can't start process: {}", process.getBpmProcessId());
         }
