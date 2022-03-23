@@ -5,13 +5,14 @@ import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
 import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
-import com.tesco.pma.event.Event;
 import com.tesco.pma.flow.FlowParameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -44,15 +45,15 @@ public class ReadColleaguesHandler extends CamundaAbstractFlowHandler {
     @SuppressWarnings("unchecked")
     private List<UUID> getColleagueUuids(ExecutionContext context) {
         try {
-            List<String> uuids = context.getNullableVariable(COLLEAGUE_UUIDS);
+            List<? extends Serializable> uuids = context.getNullableVariable(COLLEAGUE_UUIDS);
             if (uuids == null || uuids.isEmpty()) {
-                Event event = context.getEvent();
-                uuids = (List<String>) event.getEventProperty(COLLEAGUE_UUIDS.name());
+                var event = context.getEvent();
+                uuids = (List<? extends Serializable>) event.getEventProperty(COLLEAGUE_UUIDS.name());
                 if (uuids == null || uuids.isEmpty()) {
                     return Collections.emptyList();
                 }
             }
-            return uuids.stream().map(UUID::fromString).collect(Collectors.toList());
+            return uuids.stream().map(Objects::toString).map(UUID::fromString).collect(Collectors.toList());
         } catch (Exception e) {
             log.warn(messages.getMessage(EVENT_INVALID_COLLEAGUE_UUID_FORMAT), e);
             return Collections.emptyList();
