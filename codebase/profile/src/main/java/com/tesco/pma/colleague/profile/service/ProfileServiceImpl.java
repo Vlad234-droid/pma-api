@@ -346,7 +346,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         if (existingLocalColleague == null
                 || existingLocalColleague.getJob() == null
-                || !existingLocalColleague.getJob().getCode().equals(changedJob.getId())) {
+                || !existingLocalColleague.getJob().getId().equals(changedJob.getId())) {
             profileDAO.updateJob(changedJob);
         }
     }

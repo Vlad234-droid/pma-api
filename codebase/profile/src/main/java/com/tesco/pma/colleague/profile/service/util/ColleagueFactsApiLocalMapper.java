@@ -207,7 +207,10 @@ public class ColleagueFactsApiLocalMapper {
 
                 if (workRelationship.getJob() != null) {
                     ColleagueEntity.Job job = new ColleagueEntity.Job();
-                    BeanUtils.copyProperties(workRelationship.getJob(), job);
+                    job.setId(workRelationship.getJob().getId());
+                    job.setCode(workRelationship.getJob().getCode());
+                    job.setName(workRelationship.getJob().getName());
+                    job.setCostCategory(workRelationship.getJob().getCostCategory());
                     destination.setJob(job);
                 }
 
