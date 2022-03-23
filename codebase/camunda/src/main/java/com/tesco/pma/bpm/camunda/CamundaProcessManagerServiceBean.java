@@ -186,10 +186,15 @@ public class CamundaProcessManagerServiceBean implements ProcessManagerService {
             ProcessEngine processEngine = getProcessEngine();
             ProcessDefinitionQuery processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
             processDefinitionQuery.processDefinitionKey(processName);
+
+            ProcessDefinition processDefinition;
             if (version != null) {
                 processDefinitionQuery.processDefinitionVersion(Integer.valueOf(version));
+                processDefinition = processDefinitionQuery.singleResult();
+            } else {
+                processDefinition = processDefinitionQuery.latestVersion().singleResult();
             }
-            ProcessDefinition processDefinition = processDefinitionQuery.singleResult();
+
             if (processDefinition == null) {
                 String message = "Couldn't find process by key %s, version %s";
                 throw new ProcessExecutionException(String.format(message, processName, version));
