@@ -5,7 +5,6 @@ import com.tesco.pma.cycle.LocalTestConfig;
 import com.tesco.pma.cycle.dao.PMColleagueCycleDAO;
 import com.tesco.pma.cycle.dao.PMCycleDAO;
 import com.tesco.pma.exception.NotFoundException;
-import com.tesco.pma.process.api.PMProcessStatus;
 import com.tesco.pma.process.service.PMProcessService;
 import com.tesco.pma.service.BatchService;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,6 @@ import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
 import static com.tesco.pma.util.TestDataUtil.BPM_PROCESS_ID;
 import static com.tesco.pma.util.TestDataUtil.COLLEAGUE_CYCLE_UUID;
 import static com.tesco.pma.util.TestDataUtil.CYCLE_UUID;
-import static com.tesco.pma.util.TestDataUtil.PROCESS_UUID;
 import static com.tesco.pma.util.TestDataUtil.USER_UUID;
 import static com.tesco.pma.util.TestDataUtil.buildColleagueCycle;
 import static com.tesco.pma.util.TestDataUtil.buildCycle;
@@ -163,6 +161,5 @@ class PMColleagueCycleServiceImplTest {
 
         verify(pmProcessService).findByCycleUuidAndStatus(eq(CYCLE_UUID), any());
         verify(processManagerService).runProcessById(eq(BPM_PROCESS_ID), any());
-        verify(pmProcessService).updateStatus(eq(PROCESS_UUID), eq(PMProcessStatus.STARTED), any());
     }
 }
