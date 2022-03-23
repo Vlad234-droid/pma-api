@@ -218,6 +218,23 @@
                  LEFT OUTER JOIN business_type bt ON d.business_type_uuid = bt.uuid
     </select>
 
+    <select id="findDepartment" resultMap="departmentMap">
+        SELECT d.uuid  as uuid,
+               d.id    as id,
+               d.name  as name,
+               bt.uuid as bt_uuid,
+               bt.name as bt_name
+        FROM department d
+                 LEFT OUTER JOIN business_type bt ON d.business_type_uuid = bt.uuid
+        WHERE d.id = #{id} AND d.name = #{name} AND bt.name = #{businessType}
+    </select>
+
+    <select id="findBusinessType" resultType="com.tesco.pma.colleague.profile.domain.ColleagueEntity$Department$BusinessType">
+        SELECT bt.uuid, bt.name
+        FROM business_type bt
+        WHERE bt.name = #{name}
+    </select>
+
     <select id="findColleagueSuggestionsByFullName" resultMap="colleagueApiMap">
         SELECT
         c.uuid,

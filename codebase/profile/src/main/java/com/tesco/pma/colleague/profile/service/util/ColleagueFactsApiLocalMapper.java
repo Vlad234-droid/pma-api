@@ -203,10 +203,19 @@ public class ColleagueFactsApiLocalMapper {
                 var department = new ColleagueEntity.Department();
                 var workRelationshipDepartment = workRelationship.getDepartment();
                 if (workRelationshipDepartment != null) {
+                    department.setUuid(Optional.ofNullable(profileDAO.findDepartment(workRelationshipDepartment.getId(),
+                            workRelationshipDepartment.getName(), workRelationshipDepartment.getBusinessType()))
+                            .map(ColleagueEntity.Department::getUuid)
+                            .orElseGet(UUID::randomUUID));
                     department.setId(workRelationshipDepartment.getId());
                     department.setName(workRelationshipDepartment.getName());
+
                     var businessType = new ColleagueEntity.Department.BusinessType();
+                    businessType.setUuid(Optional.ofNullable(profileDAO.findBusinessType(workRelationshipDepartment.getBusinessType()))
+                            .map(ColleagueEntity.Department.BusinessType::getUuid)
+                            .orElseGet(UUID::randomUUID));
                     businessType.setName(workRelationshipDepartment.getBusinessType());
+
                     department.setBusinessType(businessType);
                     destination.setDepartment(department);
                 }

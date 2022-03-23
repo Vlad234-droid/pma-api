@@ -121,4 +121,10 @@ public interface ProfileDAO {
     List<Colleague> findColleagueSuggestionsByFullName(@Param("requestQuery") RequestQuery requestQuery);
 
     List<ColleagueEntity.Department> findAllDepartments();
+
+    ColleagueEntity.Department findDepartment(@Param("id") String id,
+                                              @Param("name") String name,
+                                              @Param("businessType") String businessType);
+
+    ColleagueEntity.Department.BusinessType findBusinessType(@Param("name") String name);
 }

@@ -64,5 +64,24 @@
         <dropNotNullConstraint tableName="department" columnName="id"/>
         <addPrimaryKey tableName="department" columnNames="uuid" constraintName="department_pk"/>
         <dropColumn tableName="department" columnName="business_type"/>
+        <rollback>
+            <addColumn tableName="department">
+                <column name="business_type" type="varchar(1000)"/>
+            </addColumn>
+            <createIndex tableName="department" indexName="department_business_type_idx" unique="false">
+                <column name="business_type"/>
+            </createIndex>
+            <dropPrimaryKey tableName="department" constraintName="department_pk"/>
+            <addPrimaryKey tableName="department" columnNames="id" constraintName="department_pk"/>
+            <addColumn tableName="colleague">
+                <column name="department_id" type="varchar(1000)"/>
+            </addColumn>
+            <addForeignKeyConstraint baseColumnNames="department_id" baseTableName="colleague"
+                                     constraintName="department_fk" referencedColumnNames="id"
+                                     referencedTableName="department"/>
+            <createIndex tableName="colleague" indexName="colleague_department_idx" unique="false">
+                <column name="department_id"/>
+            </createIndex>
+        </rollback>
     </changeSet>
 </databaseChangeLog>

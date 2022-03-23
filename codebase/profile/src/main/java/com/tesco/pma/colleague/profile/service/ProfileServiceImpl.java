@@ -315,9 +315,13 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private void updateDepartmentDictionary(ColleagueEntity existingLocalColleague, ColleagueEntity changedLocalColleague) {
-        ColleagueEntity.Department changedDepartment = changedLocalColleague.getDepartment();
-        if (changedDepartment != null && changedDepartment.getId() != null && (existingLocalColleague == null
-                || !existingLocalColleague.getDepartment().getId().equals(changedDepartment.getId()))) {
+        var changedDepartment = changedLocalColleague.getDepartment();
+        if (changedDepartment != null && changedDepartment.getUuid() != null && (existingLocalColleague == null
+                || !existingLocalColleague.getDepartment().getUuid().equals(changedDepartment.getUuid()))) {
+            var businessType = changedDepartment.getBusinessType();
+            if (businessType != null && businessType.getUuid() != null) {
+                profileDAO.updateBusinessType(businessType);
+            }
             profileDAO.updateDepartment(changedDepartment);
         }
     }

@@ -496,7 +496,7 @@ class ProfileDAOTest extends AbstractDAOTest {
         return department;
     }
 
-    private ColleagueEntity buildColleagueEntity(UUID colleagueUuid, UUID managerUuid) {
+    private ColleagueEntity buildColleagueEntity(UUID colleagueUuid, UUID managerUuid) { //NOPMD
         var job = new ColleagueEntity.Job();
         job.setId("JobID");
         job.setCode("JC");
