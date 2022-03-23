@@ -46,9 +46,9 @@ public class MapJsonbCombinedSerializer {
         @Override
         public void serialize(MapJson value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
             gen.writeStartObject();
-            var reviewPropertyValues = value.getMapJson();
+            var reviewPropertyValues = value.getPropsMap();
             for (var ci : reviewPropertyValues.keySet()) {
-                gen.writeObjectField(ci, value.getMapJson().get(ci));
+                gen.writeObjectField(ci, value.getPropsMap().get(ci));
             }
             gen.writeEndObject();
         }

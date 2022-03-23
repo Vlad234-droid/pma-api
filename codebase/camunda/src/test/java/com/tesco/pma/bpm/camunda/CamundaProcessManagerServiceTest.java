@@ -3,16 +3,10 @@ package com.tesco.pma.bpm.camunda;
 import com.tesco.pma.bpm.api.ProcessExecutionException;
 import com.tesco.pma.exception.InitializationException;
 import org.apache.commons.io.IOUtils;
-import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngineConfiguration;
 import org.camunda.bpm.engine.ProcessEngineException;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
-import org.camunda.bpm.engine.repository.Deployment;
-import org.camunda.bpm.engine.repository.DeploymentBuilder;
-import org.camunda.bpm.engine.repository.ProcessDefinition;
-import org.camunda.bpm.engine.runtime.Execution;
-import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,10 +15,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -55,9 +48,9 @@ class CamundaProcessManagerServiceTest {
 
     @BeforeAll
     static void setup() throws IOException {
-        ProcessEngineConfiguration processEngineConfiguration =
+        var processEngineConfiguration =
                 ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration();
-        ProcessEngine processEngine = processEngineConfiguration.buildProcessEngine();
+        var processEngine = processEngineConfiguration.buildProcessEngine();
         processManager = new CamundaProcessManagerServiceBean();
         repositoryService = processEngine.getRepositoryService();
         runtimeService = processEngine.getRuntimeService();
@@ -66,24 +59,19 @@ class CamundaProcessManagerServiceTest {
     }
 
     private static void createProcessArchive() throws IOException {
-        InputStream input = CamundaProcessManagerServiceTest.class.getResourceAsStream("/" + PROCESS_BPMN20_XML);
-        File zip = new File(PROCESS_ARCHIVE_PATH);
-        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zip)); //NOPMD
-        ZipEntry entry = new ZipEntry(PROCESS_BPMN20_XML);
-        try {
+        var entry = new ZipEntry(PROCESS_BPMN20_XML);
+        try (var input = CamundaProcessManagerServiceTest.class.getResourceAsStream("/" + PROCESS_BPMN20_XML);
+             var out = new ZipOutputStream(Files.newOutputStream(Paths.get(PROCESS_ARCHIVE_PATH)))) {
             out.putNextEntry(entry);
             IOUtils.copy(input, out);
             out.closeEntry();
-        } finally {
-            out.close();
-            input.close();
         }
     }
 
     @AfterEach
     void deleteDeployment() {
-        List<Deployment> deployments = repositoryService.createDeploymentQuery().list();
-        for (Deployment deployment : deployments) {
+        var deployments = repositoryService.createDeploymentQuery().list();
+        for (var deployment : deployments) {
             repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
@@ -95,21 +83,21 @@ class CamundaProcessManagerServiceTest {
 
     @AfterAll
     static void cleanUp() {
-        File zip = new File(PROCESS_ARCHIVE_PATH);
+        var zip = new File(PROCESS_ARCHIVE_PATH);
         zip.delete();
     }
 
     @Test
     void deployProcessTest() throws FileNotFoundException, InitializationException {
         deploymentId = processManager.deployProcessArchive(new File(PROCESS_ARCHIVE_PATH)).getId();
-        long deploymentCount = repositoryService.createDeploymentQuery().deploymentId(deploymentId).count();
+        var deploymentCount = repositoryService.createDeploymentQuery().deploymentId(deploymentId).count();
         assertEquals(1, deploymentCount, "Should be 1 deployed process");
     }
 
     @Test
     void undeployProcessByKeyTest() throws InitializationException {
         deployProcess();
-        long deploymentCount = repositoryService.createProcessDefinitionQuery().processDefinitionKey(PROCESS_NAME).count();
+        var deploymentCount = repositoryService.createProcessDefinitionQuery().processDefinitionKey(PROCESS_NAME).count();
         assertEquals(2, deploymentCount, "Should be 2 deployed process");
         processManager.undeployProcess(PROCESS_NAME);
         deploymentCount = repositoryService.createProcessDefinitionQuery().processDefinitionKey(PROCESS_NAME).count();
@@ -119,7 +107,7 @@ class CamundaProcessManagerServiceTest {
     @Test
     void undeployProcessByKeyVersionTest() throws InitializationException {
         deployProcess();
-        long deploymentCount = repositoryService.createProcessDefinitionQuery().processDefinitionKey(PROCESS_NAME).count();
+        var deploymentCount = repositoryService.createProcessDefinitionQuery().processDefinitionKey(PROCESS_NAME).count();
         assertEquals(2, deploymentCount, "Should be 2 deployed process");
         processManager.undeployProcess(PROCESS_NAME, "1");
         deploymentCount = repositoryService.createProcessDefinitionQuery().processDefinitionKey(PROCESS_NAME).count();
@@ -128,8 +116,8 @@ class CamundaProcessManagerServiceTest {
 
     @Test
     void runProcessByKeyTest() throws ProcessExecutionException {
-        String executionId = processManager.runProcess(PROCESS_NAME);
-        Execution execution = runtimeService.createExecutionQuery().executionId(executionId).singleResult();
+        var executionId = processManager.runProcess(PROCESS_NAME);
+        var execution = runtimeService.createExecutionQuery().executionId(executionId).singleResult();
         assertNotNull(execution, "Execution should be present");
         assertFalse(execution.isEnded(), "Execution should not be ended");
     }
@@ -137,13 +125,13 @@ class CamundaProcessManagerServiceTest {
     @Test
     void runProcessByKeyVersionTest() throws ProcessExecutionException {
         deployProcess();
-        final int version = 1;
-        String executionId = processManager.runProcess(PROCESS_NAME, String.valueOf(version));
+        final var version = 1;
+        var executionId = processManager.runProcess(PROCESS_NAME, String.valueOf(version));
 
-        Execution execution = runtimeService.createExecutionQuery().executionId(executionId).singleResult();
-        ProcessInstance processInstance =
+        var execution = runtimeService.createExecutionQuery().executionId(executionId).singleResult();
+        var processInstance =
                 runtimeService.createProcessInstanceQuery().processInstanceId(execution.getProcessInstanceId()).singleResult();
-        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+        var processDefinition = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionId(processInstance.getProcessDefinitionId()).singleResult();
 
         assertNotNull(execution, "Execution should be present");
@@ -153,8 +141,8 @@ class CamundaProcessManagerServiceTest {
 
     @Test
     void signalProcessByEventTest() throws ProcessExecutionException {
-        String processInstanceId = processManager.runProcess(PROCESS_NAME);
-        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+        var processInstanceId = processManager.runProcess(PROCESS_NAME);
+        var processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
         assertNotNull(processInstance, "Process instance should be present");
         processManager.signalEvent("auth", processInstanceId);
         processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
@@ -163,8 +151,8 @@ class CamundaProcessManagerServiceTest {
 
     @Test
     void testSameMessageNameFails() {
-        String deploymentId = repositoryService.createDeployment().addClasspathResource(SAME_MESSAGE_BPMN20_XML).deploy().getId();
-        DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().addClasspathResource(OTHER_SAME_MESSAGE_BPMN20_XML);
+        var deploymentId = repositoryService.createDeployment().addClasspathResource(SAME_MESSAGE_BPMN20_XML).deploy().getId();
+        var deploymentBuilder = repositoryService.createDeployment().addClasspathResource(OTHER_SAME_MESSAGE_BPMN20_XML);
         try {
             deploymentBuilder.deploy();
             fail("exception expected");
