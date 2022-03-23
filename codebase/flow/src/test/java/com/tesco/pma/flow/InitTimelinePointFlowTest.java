@@ -10,6 +10,7 @@ import org.camunda.bpm.scenario.delegate.ExternalTaskDelegate;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.UUID;
@@ -24,6 +25,7 @@ import static org.mockito.Mockito.when;
         classes = {CamundaSpringBootTestConfig.class},
         properties = "camunda.bpm.deployment-resource-pattern=com/tesco/pma/flow/init_timeline_point.bpmn"
 )
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class InitTimelinePointFlowTest {
 
     private static final String KEY = "init_timeline_point";
