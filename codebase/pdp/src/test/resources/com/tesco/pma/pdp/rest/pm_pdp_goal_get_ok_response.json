@@ -7,7 +7,7 @@
         "colleagueUuid": "ce245be1-1f43-4d5f-85dc-db6e2cce0c2a",
         "number": 1,
         "properties": {
-          "mapJson": {
+          "propsMap": {
             "pm_pdp_test_property1": "P1",
             "pm_pdp_test_property2": "P2"
           }
