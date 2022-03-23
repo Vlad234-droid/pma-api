@@ -139,7 +139,7 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F3">
-          <text>"people data in","_null"</text>
+          <text>"people data in"</text>
         </inputEntry>
         <inputEntry id="G3">
           <text>"in"</text>
@@ -174,7 +174,7 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F4">
-          <text>"oracle hcm","people data grp","people data in","uk maintenance"</text>
+          <text>"oracle hcm","people data grp","people data in","uk maintenance","_null"</text>
         </inputEntry>
         <inputEntry id="G4">
           <text></text>
@@ -204,7 +204,7 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F5">
-          <text>"people data in","_null"</text>
+          <text>"people data in"</text>
         </inputEntry>
         <inputEntry id="G5">
           <text></text>
@@ -242,10 +242,10 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F6">
-          <text>"people data in","_null"</text>
+          <text>"oracle hcm","people data grp","people data in","uk maintenance", "_null"</text>
         </inputEntry>
         <inputEntry id="G6">
-          <text>"in"</text>
+          <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_1hlpia3">
           <text>"_null"</text>
@@ -308,7 +308,7 @@
         </inputEntry>
         <inputEntry id="F8">
           <text>"access api","oracle hcm",
-"people data oakwood"</text>
+"people data oakwood", "_null"</text>
         </inputEntry>
         <inputEntry id="G8">
           <text></text>
@@ -338,7 +338,7 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F9">
-          <text>"access api","oracle hcm","people data oakwood (blank)"</text>
+          <text>"access api","oracle hcm","people data oakwood","_null"</text>
         </inputEntry>
         <inputEntry id="G9">
           <text></text>
@@ -369,7 +369,7 @@
         </inputEntry>
         <inputEntry id="F10">
           <text>"access api","oracle hcm",
-"people data oakwood (blank)"</text>
+"people data oakwood","_null"</text>
         </inputEntry>
         <inputEntry id="G10">
           <text></text>
@@ -387,7 +387,7 @@
           <text>"tesco stores limited","oakwood distribution limited"</text>
         </inputEntry>
         <inputEntry id="B11">
-          <text>"depot, distribution &amp; store"</text>
+          <text>"depot", "distribution", "store"</text>
         </inputEntry>
         <inputEntry id="C11">
           <text>"wl2"</text>
@@ -419,7 +419,7 @@
           <text>"tesco stores limited","oakwood distribution limited"</text>
         </inputEntry>
         <inputEntry id="B12">
-          <text>"depot, distribution &amp; store"</text>
+          <text>"depot", "distribution", "store"</text>
         </inputEntry>
         <inputEntry id="C12">
           <text>"wl1"</text>
@@ -451,7 +451,7 @@
           <text>"tesco stores limited","oakwood distribution limited","_null"</text>
         </inputEntry>
         <inputEntry id="B13">
-          <text>"depot, distribution &amp; store"</text>
+          <text>"depot", "distribution", "store"</text>
         </inputEntry>
         <inputEntry id="C13">
           <text>"wl1"</text>
@@ -483,7 +483,7 @@
           <text>"_null"</text>
         </inputEntry>
         <inputEntry id="B14">
-          <text>"depot, distribution &amp; store"</text>
+          <text>"depot", "distribution", "store"</text>
         </inputEntry>
         <inputEntry id="C14">
           <text>"_null"</text>
@@ -515,7 +515,7 @@
           <text>"_null"</text>
         </inputEntry>
         <inputEntry id="B15">
-          <text>"depot, distribution &amp; store"</text>
+          <text>"depot", "distribution", "store"</text>
         </inputEntry>
         <inputEntry id="C15">
           <text>"_null"</text>
@@ -547,7 +547,7 @@
           <text>"tesco stores limited", "oakwood distribution limited","_null"</text>
         </inputEntry>
         <inputEntry id="B16">
-          <text>"depot, distribution &amp; store"</text>
+          <text>"depot", "distribution", "store"</text>
         </inputEntry>
         <inputEntry id="C16">
           <text>"_null"</text>
@@ -1011,7 +1011,7 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F31">
-          <text>"people data in","_null"</text>
+          <text>"people data in"</text>
         </inputEntry>
         <inputEntry id="G31">
           <text>"in"</text>
@@ -1041,7 +1041,7 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F32">
-          <text>"people data in","_null"</text>
+          <text>"people data in"</text>
         </inputEntry>
         <inputEntry id="G32">
           <text>"in"</text>
