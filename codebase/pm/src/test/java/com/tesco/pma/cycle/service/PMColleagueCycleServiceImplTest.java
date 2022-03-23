@@ -163,6 +163,5 @@ class PMColleagueCycleServiceImplTest {
 
         verify(pmProcessService).findByCycleUuidAndStatus(eq(CYCLE_UUID), any());
         verify(processManagerService).runProcessById(eq(BPM_PROCESS_ID), any());
-        verify(pmProcessService).updateStatus(eq(PROCESS_UUID), eq(PMProcessStatus.STARTED), any());
     }
 }
