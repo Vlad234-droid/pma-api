@@ -200,10 +200,6 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public int updateColleague(Colleague colleague) {
         var existingLocalColleague = profileDAO.getColleague(colleague.getColleagueUUID());
-        if (existingLocalColleague == null) {
-            return 0;
-        }
-
         return persistColleague(colleague, existingLocalColleague);
     }
 

@@ -64,6 +64,25 @@ public class HandlerUtils {
     }
 
     /**
+     * Gets a event property
+     *
+     * @param context  execution context
+     * @param property property name
+     * @param cls      type
+     * @return value
+     */
+    public static <T> T getEventProperty(ExecutionContext context, String property, Class<T> cls) {
+        var event = context.getEvent();
+        if (event != null) {
+            var eventProperties = event.getEventProperties();
+            if (eventProperties.containsKey(property)) {
+                return cls.cast(eventProperties.get(property));
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns instant at start of date in UTC time zone
      *
      * @param date source date

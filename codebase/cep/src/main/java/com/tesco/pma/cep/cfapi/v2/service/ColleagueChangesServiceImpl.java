@@ -3,6 +3,7 @@ package com.tesco.pma.cep.cfapi.v2.service;
 import com.tesco.pma.cep.cfapi.v2.configuration.ColleagueChangesProperties;
 import com.tesco.pma.cep.cfapi.v2.domain.ColleagueChangeEventPayload;
 import com.tesco.pma.cep.cfapi.v2.domain.EventType;
+import com.tesco.pma.colleague.api.Colleague;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
@@ -18,10 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
@@ -98,20 +96,9 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     }
 
     private int processJoinerEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
-        int updated;
-        if (colleagueChangesProperties.isForce()) {
-            updated = profileService.create(colleagueChangeEventPayload.getColleagueUuid());
-        } else {
-            updated = profileService.create(colleagueChangeEventPayload.getCurrent());
-        }
-        if (updated > 0) {
-            // Send an event to User Management Service on creation a new account
-            sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.POST_CEP_COLLEAGUE_ADDED);
-
-            // Send an event to Camunda
-            sendAssignmentEvent(colleagueChangeEventPayload.getColleagueUuid());
-        }
-        return updated;
+        // Send an event to Camunda
+        sendAssignmentEvent(colleagueChangeEventPayload.getColleagueUuid(), colleagueChangeEventPayload.getCurrent());
+        return 1;
     }
 
     private int processLeaverEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
@@ -188,10 +175,11 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         eventSender.sendEvent(event);
     }
 
-    private void sendAssignmentEvent(UUID colleagueUuid) {
-        var event = new EventSupport(EventNames.PM_COLLEAGUE_CYCLE_ASSIGNMENT);
-        Map<String, Serializable> properties = Map
-                .of(FlowParameters.COLLEAGUE_UUIDS.name(), new ArrayList<>(Collections.singleton(colleagueUuid)));
+    private void sendAssignmentEvent(UUID colleagueUuid, Colleague colleague) {
+        var event = new EventSupport(EventNames.PM_COLLEAGUE_CYCLE_ASSIGNMENT_NEW_JOINER);
+        var properties = Map
+                .of(FlowParameters.COLLEAGUE.name(), colleague,
+                        FlowParameters.COLLEAGUE_UUID.name(), colleagueUuid);
         event.setEventProperties(properties);
         eventSender.sendEvent(event);
     }

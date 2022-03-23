@@ -17,6 +17,7 @@ dependencies {
     implementation project(':pm')
     implementation project(':pdp')
     implementation project(':tip')
+    implementation project(':cep')
 
     implementation("org.springdoc:springdoc-openapi-core:${openApiCoreVersion}")
     implementation("org.springdoc:springdoc-openapi-ui:${openApiUiVersion}")
