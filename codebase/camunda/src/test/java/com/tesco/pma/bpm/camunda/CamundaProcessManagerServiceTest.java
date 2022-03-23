@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class CamundaProcessManagerServiceTest {
+class CamundaProcessManagerServiceTest {
 
     private static final String UNEXISTED = "unexisted";
     private static final String PROCESS_NAME = "activityTest";
@@ -54,7 +54,7 @@ public class CamundaProcessManagerServiceTest {
     private String deploymentId;
 
     @BeforeAll
-    public static void setup() throws FileNotFoundException, IOException {
+    static void setup() throws IOException {
         ProcessEngineConfiguration processEngineConfiguration =
                 ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration();
         ProcessEngine processEngine = processEngineConfiguration.buildProcessEngine();
@@ -81,7 +81,7 @@ public class CamundaProcessManagerServiceTest {
     }
 
     @AfterEach
-    public void deleteDeployment() {
+    void deleteDeployment() {
         List<Deployment> deployments = repositoryService.createDeploymentQuery().list();
         for (Deployment deployment : deployments) {
             repositoryService.deleteDeployment(deployment.getId(), true);
@@ -89,12 +89,12 @@ public class CamundaProcessManagerServiceTest {
     }
 
     @BeforeEach
-    public void deployProcess() {
+    void deployProcess() {
         deploymentId = repositoryService.createDeployment().addClasspathResource(PROCESS_BPMN20_XML).deploy().getId();
     }
 
     @AfterAll
-    public static void cleanUp() {
+    static void cleanUp() {
         File zip = new File(PROCESS_ARCHIVE_PATH);
         zip.delete();
     }

@@ -13,5 +13,5 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CompositePMCycleResponse implements Serializable {
     PMCycle cycle;
-    List<PMForm> forms;
+    private List<PMForm> forms;
 }

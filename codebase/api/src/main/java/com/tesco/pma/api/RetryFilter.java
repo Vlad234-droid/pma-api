@@ -50,8 +50,8 @@ public class RetryFilter {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
+        final var prime = 31;
+        var result = 1;
         result = prime * result + ((currentDate == null) ? 0 : currentDate.hashCode());
         result = prime * result + retryCount;
         result = prime * result + (int) (retryInterval ^ (retryInterval >>> 32));

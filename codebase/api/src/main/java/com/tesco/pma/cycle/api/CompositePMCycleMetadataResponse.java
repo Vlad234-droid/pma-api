@@ -16,5 +16,5 @@ public class CompositePMCycleMetadataResponse implements Serializable {
     private static final long serialVersionUID = -9187871593097610915L;
 
     PMCycleMetadata metadata;
-    List<PMForm> forms;
+    private List<PMForm> forms;
 }

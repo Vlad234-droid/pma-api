@@ -21,7 +21,7 @@ public class StartDBTransactionListenerDelegate implements ExecutionListener {
 
     @Override
     public void notify(DelegateExecution execution) throws Exception {
-        final DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+        final var transactionDefinition = new DefaultTransactionDefinition();
         transactionDefinition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
         transactionDefinition.setName(execution.getActivityInstanceId());
 

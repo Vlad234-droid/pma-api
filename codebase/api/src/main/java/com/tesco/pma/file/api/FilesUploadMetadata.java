@@ -19,5 +19,5 @@ import java.util.List;
 public class FilesUploadMetadata implements Serializable {
     private static final long serialVersionUID = -6087516482098984582L;
 
-    List<UploadMetadata> uploadMetadataList;
+    private List<UploadMetadata> uploadMetadataList;
 }

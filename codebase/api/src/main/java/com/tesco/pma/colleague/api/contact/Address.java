@@ -13,7 +13,7 @@ public class Address implements Serializable {
 
     private static final long serialVersionUID = -7976077387623366848L;
 
-    List<String> lines;
+    private List<String> lines;
     String countryCode;
     String postcode;
     String city;

@@ -47,7 +47,7 @@ public abstract class CamundaAbstractFlowHandler implements JavaDelegate { //NOP
 
     protected boolean assertNull(Object object, String message, ExecutionContext context) {
         if (object == null) {
-            log.warn(message);
+            log.warn(message, context);
             return true;
         }
         return false;

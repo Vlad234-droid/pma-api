@@ -16,5 +16,5 @@ import java.util.Map;
 public class MapJson implements Jsonb, Serializable {
     private static final long serialVersionUID = -4692785779291237336L;
 
-    Map<String, String> mapJson;
+    private Map<String, String> mapJson;
 }
