@@ -200,10 +200,6 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public int updateColleague(Colleague colleague) {
         var existingLocalColleague = profileDAO.getColleague(colleague.getColleagueUUID());
-        if (existingLocalColleague == null) {
-            return 0;
-        }
-
         return persistColleague(colleague, existingLocalColleague);
     }
 
@@ -230,7 +226,7 @@ public class ProfileServiceImpl implements ProfileService {
             return 0;
         }
 
-        return persistColleague(colleague, existingLocalColleague);
+        return persistColleague(colleague, null);
     }
 
     private int persistColleague(Colleague colleague, ColleagueEntity existingLocalColleague) {
@@ -274,6 +270,16 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         var localColleague = colleagueFactsApiLocalMapper.colleagueFactsApiToLocal(colleague);
+
+        updateDictionaries(null, localColleague);
+
+        if (localColleague.getManagerUuid() != null) {
+            var colleagueEntity = persistManager(localColleague.getManagerUuid());
+            if (colleagueEntity == null) {
+                localColleague.setManagerUuid(null);
+            }
+        }
+
         var inserted = profileDAO.saveColleague(localColleague);
         if (inserted > 0) {
             manager = profileDAO.getColleague(managerUuid);

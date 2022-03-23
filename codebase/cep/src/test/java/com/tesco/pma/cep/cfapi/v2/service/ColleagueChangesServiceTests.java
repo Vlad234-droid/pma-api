@@ -21,7 +21,9 @@ import java.util.List;
 
 import static com.tesco.pma.cep.cfapi.v2.service.TestDataUtils.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -42,35 +44,12 @@ class ColleagueChangesServiceTests {
     private ColleagueChangesServiceImpl colleagueChangesService;
 
     @Test
-    void processColleagueChangeEventWithJoinerEventTypeAndForceMode() {
-        var colleagueChangeEventPayload = buildColleagueChangeEventPayload(EventType.JOINER);
-
-        when(mockColleagueChangesProperties.isForce())
-                .thenReturn(true);
-        when(mockProfileService.create(COLLEAGUE_UUID))
-                .thenReturn(1);
-
-        colleagueChangesService.processColleagueChangeEvent(colleagueChangeEventPayload);
-
-        verify(mockColleagueChangesProperties, times(1)).isForce();
-        verify(mockProfileService, times(1)).create(COLLEAGUE_UUID);
-        verify(eventSender, times(2)).sendEvent(any(Event.class));
-    }
-
-    @Test
     void processColleagueChangeEventWithJoinerEventType() {
         var colleagueChangeEventPayload = buildColleagueChangeEventPayload(EventType.JOINER);
 
-        when(mockColleagueChangesProperties.isForce())
-                .thenReturn(false);
-        when(mockProfileService.create(any(Colleague.class)))
-                .thenReturn(1);
-
         colleagueChangesService.processColleagueChangeEvent(colleagueChangeEventPayload);
 
-        verify(mockColleagueChangesProperties, times(1)).isForce();
-        verify(mockProfileService, times(1)).create(any(Colleague.class));
-        verify(eventSender, times(2)).sendEvent(any(Event.class));
+        verify(eventSender).sendEvent(any(Event.class));
     }
 
     @Test
