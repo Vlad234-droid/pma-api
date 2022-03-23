@@ -15,7 +15,6 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.logging.TraceUtils;
 import com.tesco.pma.process.api.PMProcessErrorCodes;
-import com.tesco.pma.process.api.PMProcessStatus;
 import com.tesco.pma.process.service.PMProcessService;
 import com.tesco.pma.service.BatchService;
 import lombok.RequiredArgsConstructor;
@@ -147,7 +146,6 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
             var processUUID = processManagerService.runProcessById(process.getBpmProcessId(),
                     prepareFlowProperties(cycle, colleagueUuid));
             log.debug("Started process: {}", processUUID);
-            pmProcessService.updateStatus(process.getId(), PMProcessStatus.STARTED, null);
         } catch (ProcessExecutionException e) {
             log.error("Can't start process: {}", process.getBpmProcessId());
         }

@@ -8,7 +8,7 @@
     },
     {
       "key": "look_back_what_and_how",
-      "label": "What have you contributed this year? Capture your thoughts about both **what** you’ve achieved and **how** you’ve gone about it. What could you have done better?",
+      "label": "**What have you contributed this year? Capture your thoughts about both WHAT you’ve achieved and HOW you’ve gone about it. What could you have done better?**",
       "type": "textfield",
       "id": "Field_17nyw6d",
       "validate": {
@@ -42,7 +42,7 @@
         }
       ],
       "key": "what_rating",
-      "label": "what rating",
+      "label": "**what rating**",
       "type": "select",
       "id": "Field_1ribi5m",
       "validate": {
@@ -70,7 +70,7 @@
         }
       ],
       "key": "how_rating",
-      "label": "how rating",
+      "label": "**how rating**",
       "type": "select",
       "id": "Field_1ribi4m",
       "validate": {
@@ -79,9 +79,15 @@
       "description": "{listener.rating:overall_rating}"
     },
     {
-      "text": "**Overall:** {request.rating:overall_rating}",
-      "type": "text",
-      "id": "Field_1iezgvn"
+      "key": "overall_rating",
+      "label": "**Overall current rating:**",
+      "type": "textfield",
+      "id": "Field_15z04545454s",
+      "validate": {
+        "required": false,
+        "maxLength": 100
+      },
+      "description": "{request.rating:overall_rating;auth.permission.read:Colleague,LineManager}"
     },
     {
       "text": "## Look forward",
@@ -90,7 +96,7 @@
     },
     {
       "key": "look_foeward_what_and_how",
-      "label": "Over the next year, **what** do you need to focus on to make the biggest difference in your job? **How** will you develop yourself to be at your best?",
+      "label": "**Over the next year, WHAT do you need to focus on to make the biggest difference in your job? HOW will you develop yourself to be at your best?**",
       "type": "textfield",
       "id": "Field_15z0fpz",
       "validate": {
@@ -100,7 +106,7 @@
       }
     },
     {
-      "text": "{auth.role:LineManager}**Line Manager**",
+      "text": "{auth.permission.read:Colleague,LineManager;auth.permission.write:LineManager}**Line Manager**",
       "type": "text",
       "id": "Field_0s73vfz"
     },
@@ -114,7 +120,7 @@
         "minLength": 10,
         "maxLength": 500
       },
-      "description": "{auth.role:LineManager}"
+      "description": "{auth.permission.read:Colleague,LineManager;auth.permission.write:LineManager}"
     }
   ],
   "exporter": {

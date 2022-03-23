@@ -25,6 +25,7 @@ import com.tesco.pma.rest.RestResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -395,7 +396,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         StringBuilder sb = new StringBuilder("{\"success\":false,\"errors\":[{")
                 .append("\"code\":\"").append(ex instanceof CodeAware ? ((CodeAware) ex).getCode() : ER_CODE_UNEXPECTED_EXCEPTION.getCode())
                 .append("\",")
-                .append("\"message\":\"").append(wrapJson(ex.getMessage())).append("\",")
+                .append("\"message\":\"").append(wrapJson(ExceptionUtils.getMessage(ex))).append("\",")
                 .append("\"target\":\"").append(ex instanceof TargetAware ? ((TargetAware) ex).getTarget() : "")
                 .append('"');
         if (ex.getCause() != null) {
@@ -408,7 +409,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private void toJsonInternal(StringBuilder sb, Throwable tr) {
         sb.append(",\"innerError\":{")
                 .append("\"code\":\"").append(tr instanceof CodeAware ? ((CodeAware) tr).getCode() : tr.getClass().getName()).append("\",")
-                .append("\"message\":\"").append(wrapJson(tr.getMessage())).append('"');
+                .append("\"message\":\"").append(wrapJson(ExceptionUtils.getMessage(tr))).append('"');
         if (tr.getCause() != null) {
             toJsonInternal(sb, tr.getCause());
         }

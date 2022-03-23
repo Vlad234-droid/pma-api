@@ -192,20 +192,27 @@ public class ColleagueFactsApiLocalMapper {
                 destination.setManagerUuid(workRelationship.getManagerUUID());
                 destination.setManager(BooleanUtils.toBoolean(workRelationship.getIsManager()));
 
-                ColleagueEntity.WorkLevel workLevel =
-                        new ColleagueEntity.WorkLevel();
-                workLevel.setCode(workRelationship.getWorkLevel().name());
-                workLevel.setName("Work Level #");
-                destination.setWorkLevel(workLevel);
+                if (workRelationship.getWorkLevel() != null) {
+                    ColleagueEntity.WorkLevel workLevel = new ColleagueEntity.WorkLevel();
+                    workLevel.setCode(workRelationship.getWorkLevel().name());
+                    workLevel.setName("Work Level #");
+                    destination.setWorkLevel(workLevel);
+                }
 
-                ColleagueEntity.Department department =
-                        new ColleagueEntity.Department();
-                BeanUtils.copyProperties(workRelationship.getDepartment(), department);
-                destination.setDepartment(department);
+                if (workRelationship.getDepartment() != null) {
+                    ColleagueEntity.Department department = new ColleagueEntity.Department();
+                    BeanUtils.copyProperties(workRelationship.getDepartment(), department);
+                    destination.setDepartment(department);
+                }
 
-                ColleagueEntity.Job job = new ColleagueEntity.Job();
-                BeanUtils.copyProperties(workRelationship.getJob(), job);
-                destination.setJob(job);
+                if (workRelationship.getJob() != null) {
+                    ColleagueEntity.Job job = new ColleagueEntity.Job();
+                    job.setId(workRelationship.getJob().getId());
+                    job.setCode(workRelationship.getJob().getCode());
+                    job.setName(workRelationship.getJob().getName());
+                    job.setCostCategory(workRelationship.getJob().getCostCategory());
+                    destination.setJob(job);
+                }
 
                 destination.setLocationId(workRelationship.getLocationUUID());
 
