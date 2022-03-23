@@ -15,7 +15,6 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.logging.TraceUtils;
 import com.tesco.pma.process.api.PMProcessErrorCodes;
-import com.tesco.pma.process.api.PMProcessStatus;
 import com.tesco.pma.process.service.PMProcessService;
 import com.tesco.pma.service.BatchService;
 import lombok.RequiredArgsConstructor;
