@@ -14,6 +14,7 @@ import org.camunda.bpm.scenario.Scenario;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
@@ -28,6 +29,7 @@ import static org.mockito.Mockito.verify;
         classes = {CamundaSpringBootTestConfig.class},
         properties = "camunda.bpm.deployment-resource-pattern=com/tesco/pma/flow/schedule_end_annual_cycle.bpmn"
 )
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ScheduleEndCycleFlowTest {
 
     private static final UUID CYCLE_UUID = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");

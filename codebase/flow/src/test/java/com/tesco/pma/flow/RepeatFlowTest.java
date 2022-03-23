@@ -10,6 +10,7 @@ import org.camunda.bpm.scenario.Scenario;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.mockito.Mockito.mock;
@@ -20,6 +21,7 @@ import static org.mockito.Mockito.verify;
 @SpringBootTest(classes = {CamundaSpringBootTestConfig.class},
         properties = "camunda.bpm.deployment-resource-pattern=com/tesco/pma/flow/repeat_cycle.bpmn"
 )
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class RepeatFlowTest {
 
     private static final String END_EVENT_NEXT_CYCLE_STARTED = "Event_0udd3h7";
