@@ -5,6 +5,7 @@ import com.tesco.pma.bpm.camunda.flow.handlers.CamundaAbstractFlowHandler;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.service.PMCycleService;
 import com.tesco.pma.flow.FlowParameters;
+import com.tesco.pma.flow.exception.ErrorCodes;
 import com.tesco.pma.pagination.RequestQuery;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.BpmnError;
@@ -37,7 +38,14 @@ public class FindCycleHandler extends CamundaAbstractFlowHandler {
 
     @Override
     protected void execute(ExecutionContext context) throws Exception {
-        var configKey = context.getVariable(FlowParameters.PM_CYCLE_KEY, String.class);
+        var configKey = context.getNullableVariable(FlowParameters.PM_CYCLE_KEY, String.class);
+
+        if (configKey == null) {
+            throw new BpmnError(ErrorCodes.PARAMETER_CANNOT_BE_READ.getCode(),
+                    messageSourceAccessor.getMessage(ErrorCodes.PARAMETER_CANNOT_BE_READ,
+                            Map.of("property", FlowParameters.PM_CYCLE_KEY.name())));
+        }
+
         var statuses = getStatuses(context);
         var requestQuery = buildRequestQuery(configKey, statuses);
 
