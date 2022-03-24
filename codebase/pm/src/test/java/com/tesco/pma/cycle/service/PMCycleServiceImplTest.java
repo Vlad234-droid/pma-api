@@ -6,6 +6,7 @@ import com.tesco.pma.cycle.LocalTestConfig;
 import com.tesco.pma.cycle.api.CompositePMCycleResponse;
 import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
+import com.tesco.pma.cycle.dao.PMColleagueCycleDAO;
 import com.tesco.pma.cycle.dao.PMCycleDAO;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.fs.service.FileService;
@@ -50,6 +51,8 @@ class PMCycleServiceImplTest {
 
     @MockBean
     private PMCycleDAO cycleDAO;
+    @MockBean
+    private PMColleagueCycleDAO pmColleagueCycleDAO;
     @MockBean
     private ProcessManagerService processManagerService;
     @MockBean
