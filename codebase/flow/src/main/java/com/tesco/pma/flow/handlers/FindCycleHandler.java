@@ -41,9 +41,11 @@ public class FindCycleHandler extends CamundaAbstractFlowHandler {
         var configKey = context.getNullableVariable(FlowParameters.PM_CYCLE_KEY, String.class);
 
         if (configKey == null) {
+            Map<String, Object> params = Map.of("property", FlowParameters.PM_CYCLE_KEY.name(),
+                    "colleague", context.getNullableVariable(FlowParameters.COLLEAGUE));
             throw new BpmnError(ErrorCodes.PARAMETER_CANNOT_BE_READ.getCode(),
-                    messageSourceAccessor.getMessage(ErrorCodes.PARAMETER_CANNOT_BE_READ,
-                            Map.of("property", FlowParameters.PM_CYCLE_KEY.name())));
+                    messageSourceAccessor.getMessage(ErrorCodes.PARAMETER_CANNOT_BE_READ, params)
+            );
         }
 
         var statuses = getStatuses(context);
