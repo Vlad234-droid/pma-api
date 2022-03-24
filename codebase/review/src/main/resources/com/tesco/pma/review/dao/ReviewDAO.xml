@@ -70,9 +70,10 @@
     </insert>
 
     <select id="read" resultMap="reviewResultMap">
-        with change_status_reason as (<include refid="changeStatusReasonQuery"/>)
-        <include refid="reviewQuery"/>
-        WHERE r.uuid = #{uuid}
+        select t.*
+        from (<include refid="reviewQuery"/>
+        WHERE r.uuid = #{uuid}) t
+        where t.rn = 1
     </select>
 
     <update id="intUpdate" flushCache="true">
@@ -105,8 +106,8 @@
     </delete>
 
     <select id="getByParams" resultMap="reviewResultMap">
-        with change_status_reason as (<include refid="changeStatusReasonQuery"/>)
-        <include refid="reviewQuery"/>
+        select t.*
+        from (<include refid="reviewQuery"/>
         WHERE 1=1
         <if test="tlPointUuid != null">
             AND r.tl_point_uuid = #{tlPointUuid}
@@ -120,25 +121,29 @@
         <if test="number != null">
             AND r.number = #{number}
         </if>
-        order by r.tl_point_uuid, r.type_id, r.number
+        ) t
+        where t.rn = 1
+        order by t.tl_point_uuid, t.type_id, t.number
     </select>
 
     <select id="getReviewsByColleague" resultMap="reviewResultMap">
-        with change_status_reason as (<include refid="changeStatusReasonQuery"/>)
-        select r.*,
-        csr.change_reason
-        from pm_colleague_cycle cc
-        inner join pm_timeline_point tlp
-        on (cc.uuid = tlp.colleague_cycle_uuid)
-        inner join pm_review r
-        on (tlp.uuid = r.tl_point_uuid)
-        left join change_status_reason csr
-        on (r.uuid = csr.review_uuid
-        and r.status_id = csr.new_status_id
-        and csr.rn = 1)
-        where cc.colleague_uuid = #{colleagueUuid}
-        and cc.status_id = #{pmCycleStatus.id}
-        order by r.type_id, r.number
+        select t.*
+        from (select r.*,
+                     rcsh.change_reason,
+                     row_number()
+                         over (partition by r.uuid order by rcsh.updated_time desc) rn
+              from pm_colleague_cycle cc
+                       inner join pm_timeline_point tlp
+                                  on (cc.uuid = tlp.colleague_cycle_uuid)
+                       inner join pm_review r
+                                  on (tlp.uuid = r.tl_point_uuid)
+                       left join pm_review_change_status_hi rcsh
+                                 on (r.uuid = rcsh.review_uuid
+                                     and r.status_id = rcsh.new_status_id)
+              where cc.colleague_uuid = #{colleagueUuid}
+                and cc.status_id = #{pmCycleStatus.id}) t
+        where t.rn = 1
+        order by t.type_id, t.number
     </select>
 
     <select id="getTeamView" resultMap="colleagueReviewsResultMap">
@@ -261,15 +266,6 @@
                  r.status_id
     </select>
 
-    <sql id="changeStatusReasonQuery">
-        select rcsh.review_uuid,
-               rcsh.new_status_id,
-               rcsh.updated_time,
-               rcsh.change_reason,
-               row_number() over (partition by rcsh.review_uuid order by rcsh.updated_time desc) rn
-        from pm_review_change_status_hi rcsh
-    </sql>
-
     <sql id="reviewQuery">
         SELECT r.uuid,
                r.tl_point_uuid,
@@ -277,12 +273,13 @@
                r.number,
                r.properties,
                r.status_id,
-               csr.change_reason
+               rcsh.change_reason,
+               row_number()
+                   over (partition by r.uuid order by rcsh.updated_time desc) rn
         FROM pm_review r
-                 left join change_status_reason csr
-                           on (r.uuid = csr.review_uuid
-                               and r.status_id = csr.new_status_id
-                               and csr.rn = 1)
+                 left join pm_review_change_status_hi rcsh
+                           on (r.uuid = rcsh.review_uuid
+                               and r.status_id = rcsh.new_status_id)
     </sql>
 
 </mapper>
