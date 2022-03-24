@@ -116,7 +116,7 @@
       "type": "textfield",
       "id": "Field_07w2uk5",
       "validate": {
-        "required": true,
+        "required": false,
         "minLength": 10,
         "maxLength": 500
       },
