@@ -1,0 +1,74 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet author="adublyanin" id="1">
+        <update tableName="cms_content">
+            <column name="properties">{"url": "https://view.pagetiger.com/your-contributionblr-colleague-guide"}</column>
+            <where>key = 'help-faqs/countries/in/ids/your-contribution'</where>
+        </update>
+        <rollback>
+            <update tableName="cms_content">
+                <column name="properties">{"url": "https://view.pagetiger.com/Your-ContributionBLR"}</column>
+                <where>key = 'help-faqs/countries/in/ids/your-contribution'</where>
+            </update>
+        </rollback>
+
+        <update tableName="cms_content">
+            <column name="properties">{"url": "https://view.pagetiger.com/your-contributionblr-colleague-guide/Usingfeedbacktohelpyougrow.pdf"}</column>
+            <where>key = 'help-faqs/countries/in/ids/feedback-at-tesco'</where>
+        </update>
+        <rollback>
+            <update tableName="cms_content">
+                <column name="properties">{"url": "https://view.pagetiger.com/Your-ContributionBLR"}</column>
+                <where>key = 'help-faqs/countries/in/ids/feedback-at-tesco'</where>
+            </update>
+        </rollback>
+
+        <update tableName="cms_content">
+            <column name="properties">{"url": "https://view.pagetiger.com/your-contributionblr-colleague-guide/Havinggreatperformancereviews.pdf"}</column>
+            <where>key = 'help-faqs/countries/in/ids/everyday-conversations'</where>
+        </update>
+        <rollback>
+            <update tableName="cms_content">
+                <column name="properties">{"url": "https://view.pagetiger.com/Your-ContributionBLR"}</column>
+                <where>key = 'help-faqs/countries/in/ids/everyday-conversations'</where>
+            </update>
+        </rollback>
+
+        <update tableName="cms_content">
+            <column name="properties">{"url": "https://view.pagetiger.com/your-contributionblr-colleague-guide/Havinggreatperformancereviewsfinalpdf.pdf"}</column>
+            <where>key = 'help-faqs/countries/in/ids/performance-reviews'</where>
+        </update>
+        <rollback>
+            <update tableName="cms_content">
+                <column name="properties">{"url": "https://view.pagetiger.com/Your-ContributionBLR"}</column>
+                <where>key = 'help-faqs/countries/in/ids/performance-reviews'</where>
+            </update>
+        </rollback>
+
+        <update tableName="cms_content">
+            <column name="properties">{"url": "https://view.pagetiger.com/bengaluru/v4/page3.htm"}</column>
+            <where>key = 'help-faqs/countries/in/ids/opportunities-to-get-on'</where>
+        </update>
+        <rollback>
+            <update tableName="cms_content">
+                <column name="properties">{"url": "https://view.pagetiger.com/Your-ContributionBLR"}</column>
+                <where>key = 'help-faqs/countries/in/ids/opportunities-to-get-on'</where>
+            </update>
+        </rollback>
+
+        <update tableName="cms_content">
+            <column name="properties">{"url": "https://tesco.pagetiger.com/strategyblr"}</column>
+            <where>key = 'help-faqs/countries/in/ids/our-purpose-and-strategic-pillars'</where>
+        </update>
+        <rollback>
+            <update tableName="cms_content">
+                <column name="properties">{"url": "https://tesco.sharepoint.com/sites/Mission-23?OR=Teams-HL&amp;CT=1639989328664"}</column>
+                <where>key = 'help-faqs/countries/in/ids/our-purpose-and-strategic-pillars'</where>
+            </update>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
