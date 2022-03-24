@@ -7,7 +7,7 @@
       "id": "Field_0wbgg9g"
     },
     {
-      "label": "What have you contributed so far? Capture your thoughts about both  **what** you’ve achieved and **how** you’ve gone about it. What could you have done better?",
+      "label": "**What have you contributed so far? Capture your thoughts about both  WHAT you’ve achieved and HOW you’ve gone about it. What could you have done better?**",
       "type": "textfield",
       "id": "Field_0geokc1",
       "key": "look_back",
@@ -23,7 +23,7 @@
       "id": "Field_0yrih7e"
     },
     {
-      "label": "**What** priorities do you need to focus on to make the biggest difference in your role? **How** will you develop yourself to be at your best?",
+      "label": "**WHAT priorities do you need to focus on to make the biggest difference in your role? HOW will you develop yourself to be at your best?**",
       "type": "textfield",
       "id": "Field_07pc4bt",
       "key": "look_forward",
@@ -57,7 +57,7 @@
           "value": "Below expected"
         }
       ],
-      "label": "what rating",
+      "label": "**what rating**",
       "type": "select",
       "id": "Field_1lasfcg",
       "key": "what_rating",
@@ -85,7 +85,7 @@
           "value": "Below expected"
         }
       ],
-      "label": "how rating",
+      "label": "**how rating**",
       "type": "select",
       "id": "Field_0s32np0",
       "key": "how_rating",
@@ -96,7 +96,7 @@
     },
     {
       "key": "overall_rating",
-      "label": "**Overall:**",
+      "label": "**Overall current rating:**",
       "type": "textfield",
       "id": "Field_15z04545454s",
       "validate": {

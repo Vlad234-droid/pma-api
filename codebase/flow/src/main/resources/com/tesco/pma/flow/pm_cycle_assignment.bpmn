@@ -55,8 +55,7 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0u2i8fq</bpmn:incoming>
-      <bpmn:incoming>Flow_1sf4lbi</bpmn:incoming>
-      <bpmn:incoming>Flow_1uxd2o0</bpmn:incoming>
+      <bpmn:incoming>Flow_0q2y0sk</bpmn:incoming>
       <bpmn:outgoing>Flow_0x082xc</bpmn:outgoing>
     </bpmn:task>
     <bpmn:serviceTask id="send_event" name="Send event" camunda:class="com.tesco.pma.flow.handlers.EventSendHandler">
@@ -95,16 +94,11 @@
       <bpmn:incoming>Flow_0qspkka</bpmn:incoming>
       <bpmn:outgoing>Flow_1ucb76t</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0q2y0sk" sourceRef="Event_120sj2b" targetRef="count_down" />
     <bpmn:boundaryEvent id="Event_120sj2b" attachedToRef="find_cycle">
-      <bpmn:outgoing>Flow_1uxd2o0</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0q2y0sk</bpmn:outgoing>
       <bpmn:errorEventDefinition id="ErrorEventDefinition_0yzsmlh" errorRef="Error_04kaxdf" />
     </bpmn:boundaryEvent>
-    <bpmn:boundaryEvent id="Event_0lm46dr" attachedToRef="find_cycle">
-      <bpmn:outgoing>Flow_1sf4lbi</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_07v0k4g" errorRef="Error_0d2v2ko" />
-    </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="Flow_1sf4lbi" sourceRef="Event_0lm46dr" targetRef="count_down" />
-    <bpmn:sequenceFlow id="Flow_1uxd2o0" sourceRef="Event_120sj2b" targetRef="count_down" />
     <bpmn:textAnnotation id="TextAnnotation_1om5661">
       <bpmn:text>List of colleague_uuid identifiers</bpmn:text>
     </bpmn:textAnnotation>
@@ -144,9 +138,13 @@ PM_CYCLE_KEY</bpmn:text>
   <bpmn:message id="Message_03v6y3h" name="PM_COLLEAGUE_CYCLE_ASSIGNMENT" />
   <bpmn:error id="Error_04kaxdf" name="More than one in statuses" errorCode="PM_CYCLE_MORE_THAN_ONE_IN_STATUSES" />
   <bpmn:escalation id="Escalation_06pt3q2" name="Escalation_0habstg" />
-  <bpmn:error id="Error_0d2v2ko" name="Flow or event parameter cannot be read" errorCode="PARAMETER_CANNOT_BE_READ" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="pm_cycle_assignment">
+      <bpmndi:BPMNEdge id="Flow_0q2y0sk_di" bpmnElement="Flow_0q2y0sk">
+        <di:waypoint x="740" y="285" />
+        <di:waypoint x="740" y="310" />
+        <di:waypoint x="520" y="310" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ucb76t_di" bpmnElement="Flow_1ucb76t">
         <di:waypoint x="790" y="227" />
         <di:waypoint x="870" y="227" />
@@ -191,16 +189,6 @@ PM_CYCLE_KEY</bpmn:text>
       <bpmndi:BPMNEdge id="Flow_15635sa_di" bpmnElement="Flow_15635sa">
         <di:waypoint x="238" y="227" />
         <di:waypoint x="300" y="227" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1sf4lbi_di" bpmnElement="Flow_1sf4lbi">
-        <di:waypoint x="770" y="285" />
-        <di:waypoint x="770" y="330" />
-        <di:waypoint x="520" y="330" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1uxd2o0_di" bpmnElement="Flow_1uxd2o0">
-        <di:waypoint x="710" y="285" />
-        <di:waypoint x="710" y="330" />
-        <di:waypoint x="520" y="330" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Gateway_1tan81w_di" bpmnElement="Gateway_1tan81w" isMarkerVisible="true">
         <dc:Bounds x="445" y="202" width="50" height="50" />
@@ -247,6 +235,9 @@ PM_CYCLE_KEY</bpmn:text>
       <bpmndi:BPMNShape id="TextAnnotation_04x845v_di" bpmnElement="TextAnnotation_04x845v">
         <dc:Bounds x="545" y="80" width="111" height="54" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1f4v5iu_di" bpmnElement="Event_120sj2b">
+        <dc:Bounds x="722" y="249" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_187l81e_di" bpmnElement="Association_187l81e">
         <di:waypoint x="220" y="209" />
         <di:waypoint x="220" y="175" />
@@ -271,12 +262,6 @@ PM_CYCLE_KEY</bpmn:text>
         <di:waypoint x="601" y="134" />
         <di:waypoint x="600" y="187" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_1f4v5iu_di" bpmnElement="Event_120sj2b">
-        <dc:Bounds x="692" y="249" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1u0bv97_di" bpmnElement="Event_0lm46dr">
-        <dc:Bounds x="752" y="249" width="36" height="36" />
-      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

@@ -96,7 +96,7 @@
         }
       ],
       "key": "what_rating",
-      "label": "what rating",
+      "label": "**what rating**",
       "type": "select",
       "id": "Field_1ribi5m",
       "validate": {
@@ -124,7 +124,7 @@
         }
       ],
       "key": "how_rating",
-      "label": "how rating",
+      "label": "**how rating**",
       "type": "select",
       "id": "Field_1ribi4m",
       "validate": {
@@ -134,7 +134,7 @@
     },
     {
       "key": "overall_rating",
-      "label": "**Overall:**",
+      "label": "**Overall current rating:**",
       "type": "textfield",
       "id": "Field_15z04545454s",
       "validate": {
