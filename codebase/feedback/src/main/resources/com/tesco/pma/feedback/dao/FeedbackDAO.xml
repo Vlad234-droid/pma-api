@@ -21,7 +21,8 @@
             <association property="colleague">
                 <id column="c_uuid" property="colleagueUUID"/>
                 <association property="profile" autoMapping="true" columnPrefix="c_"/>
-                <collection property="workRelationships" ofType="com.tesco.pma.colleague.api.workrelationships.WorkRelationship">
+                <collection property="workRelationships"
+                            ofType="com.tesco.pma.colleague.api.workrelationships.WorkRelationship">
                     <association property="department">
                         <result column="c_department" property="name"/>
                     </association>
@@ -35,7 +36,8 @@
             <association property="colleague">
                 <id column="tc_uuid" property="colleagueUUID"/>
                 <association property="profile" autoMapping="true" columnPrefix="tc_"/>
-                <collection property="workRelationships" ofType="com.tesco.pma.colleague.api.workrelationships.WorkRelationship">
+                <collection property="workRelationships"
+                            ofType="com.tesco.pma.colleague.api.workrelationships.WorkRelationship">
                     <association property="department">
                         <result column="tc_department" property="name"/>
                     </association>
@@ -45,7 +47,8 @@
                 </collection>
             </association>
         </association>
-        <collection property="feedbackItems" autoMapping="true" columnPrefix="fi_" ofType="com.tesco.pma.feedback.api.FeedbackItem"/>
+        <collection property="feedbackItems" autoMapping="true" columnPrefix="fi_"
+                    ofType="com.tesco.pma.feedback.api.FeedbackItem"/>
     </resultMap>
 
     <!--todo check exclude null case and replace with
@@ -67,7 +70,15 @@
     </sql>
 
     <sql id="addFeedbackColleagueCondition">
-        AND (f.colleague_uuid = #{colleagueUuid} OR f.target_colleague_uuid = #{colleagueUuid})
+        AND (f.colleague_uuid =
+        #{colleagueUuid}
+        OR
+        f
+        .
+        target_colleague_uuid
+        =
+        #{colleagueUuid}
+        )
     </sql>
 
     <sql id="getSortField">
@@ -274,10 +285,10 @@
                  LEFT JOIN feedback_item fi ON f.uuid = fi.feedback_uuid
                  JOIN colleague c ON f.colleague_uuid = c.uuid
                  LEFT JOIN job cj on c.job_id = cj.id
-                 LEFT JOIN department cd on c.department_id = cd.id
+                 LEFT JOIN department cd on c.department_uuid = cd.uuid
                  JOIN colleague tc ON f.target_colleague_uuid = tc.uuid
                  LEFT JOIN job tcj on tc.job_id = tcj.id
-                 LEFT JOIN department tcd on tc.department_id = tcd.id
+                 LEFT JOIN department tcd on tc.department_uuid = tcd.uuid
         WHERE f.uuid = #{uuid}
     </select>
 
@@ -346,10 +357,10 @@
         FROM feedback f
         JOIN colleague c ON f.colleague_uuid = c.uuid
         LEFT JOIN job cj on c.job_id = cj.id
-        LEFT JOIN department cd on c.department_id = cd.id
+        LEFT JOIN department cd on c.department_uuid = cd.uuid
         JOIN colleague tc ON f.target_colleague_uuid = tc.uuid
         LEFT JOIN job tcj on tc.job_id = tcj.id
-        LEFT JOIN department tcd on tc.department_id = tcd.id
+        LEFT JOIN department tcd on tc.department_uuid = tcd.uuid
         WHERE 1 = 1
         <if test="!requestQuery.filters.isEmpty()">
             <foreach collection="requestQuery.filters" item="filter" index="index" open=" AND " separator=" AND ">
@@ -374,15 +385,15 @@
         SELECT count(f.uuid)
         FROM feedback f
         WHERE f.read = false
-          AND f.target_colleague_uuid = #{colleagueUuid}
-          <include refid="addStatusIdCondition"/>
+        AND f.target_colleague_uuid = #{colleagueUuid}
+        <include refid="addStatusIdCondition"/>
     </select>
 
     <select id="getRequestedFeedbackCount" flushCache="true" resultType="int">
         SELECT count(f.uuid)
         FROM feedback f
         WHERE f.colleague_uuid = #{colleagueUuid}
-          <include refid="addStatusIdCondition"/>
+        <include refid="addStatusIdCondition"/>
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="uuid" keyColumn="uuid" flushCache="true">
@@ -428,12 +439,13 @@
         <include refid="addFeedbackColleagueCondition"/>
     </update>
 
-    <insert id="insertOrUpdateFeedbackItem" flushCache="true" useGeneratedKeys="true" keyColumn="uuid" keyProperty="uuid">
+    <insert id="insertOrUpdateFeedbackItem" flushCache="true" useGeneratedKeys="true" keyColumn="uuid"
+            keyProperty="uuid">
         INSERT INTO feedback_item (uuid, code, content, feedback_uuid)
-        VALUES (#{feedbackItem.uuid}, #{feedbackItem.code}, #{feedbackItem.content}, #{feedbackItem.feedbackUuid})
-        ON CONFLICT (uuid)
-            DO UPDATE SET code    = #{feedbackItem.code},
-                          content = #{feedbackItem.content}
+        VALUES (#{feedbackItem.uuid}, #{feedbackItem.code}, #{feedbackItem.content}, #{feedbackItem.feedbackUuid}) ON CONFLICT (uuid)
+            DO
+        UPDATE SET code = #{feedbackItem.code},
+            content = #{feedbackItem.content}
         WHERE feedback_item.uuid = #{feedbackItem.uuid}
     </insert>
 

@@ -326,7 +326,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private void updateDepartmentDictionary(ColleagueEntity existingLocalColleague, ColleagueEntity changedLocalColleague) {
-        ColleagueEntity.Department changedDepartment = changedLocalColleague.getDepartment();
+        var changedDepartment = changedLocalColleague.getDepartment();
         if (changedDepartment == null || changedDepartment.getId() == null) {
             return;
         }
@@ -334,6 +334,11 @@ public class ProfileServiceImpl implements ProfileService {
         if (existingLocalColleague == null
                 || existingLocalColleague.getDepartment() == null
                 || !existingLocalColleague.getDepartment().getId().equals(changedDepartment.getId())) {
+
+            var businessType = changedDepartment.getBusinessType();
+            if (businessType != null && businessType.getUuid() != null) {
+                profileDAO.updateBusinessType(businessType);
+            }
             profileDAO.updateDepartment(changedDepartment);
         }
     }

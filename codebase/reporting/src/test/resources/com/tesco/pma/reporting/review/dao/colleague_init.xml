@@ -5,7 +5,9 @@
 
     <work_level name="WL4" code="WL4"/>
 
-    <department id="1" name="Bank" business_type="Bank"/>
+    <business_type uuid="4696ebb0-511b-49e3-a46d-4f130c5c7682" name="Bank"/>
+
+    <department uuid="ce9e5a9e-992e-4872-a532-639d5c2817d1" id="1" name="Bank" business_type_uuid="4696ebb0-511b-49e3-a46d-4f130c5c7682"/>
 
     <colleague uuid="10000000-0000-0000-0000-000000000001"
                first_name="first_name"
@@ -19,7 +21,7 @@
                job_id="1"
                country_code="GB"
                work_level="WL4"
-               department_id="1"
+               department_uuid="ce9e5a9e-992e-4872-a532-639d5c2817d1"
                manager_uuid="10000000-0000-0000-0000-000000000001"
                is_manager="true"
     />
@@ -36,7 +38,7 @@
                job_id="1"
                country_code="GB"
                work_level="WL4"
-               department_id="1"
+               department_uuid="ce9e5a9e-992e-4872-a532-639d5c2817d1"
                manager_uuid="10000000-0000-0000-0000-000000000001"
                is_manager="false"
     />

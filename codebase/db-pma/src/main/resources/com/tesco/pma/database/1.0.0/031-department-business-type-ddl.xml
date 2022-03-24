@@ -1,0 +1,87 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+
+    <changeSet author="mdiadia" id="1">
+        <createTable tableName="business_type">
+            <column name="uuid" type="${uuid_type}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="business_type_pk"/>
+            </column>
+
+            <column name="name" type="varchar(1000)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="mdiadia" id="2">
+        <addColumn tableName="department">
+            <column name="uuid" type="${uuid_type}">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="business_type_uuid" type="${uuid_type}">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <addForeignKeyConstraint baseTableName="department" baseColumnNames="business_type_uuid"
+                                 constraintName="business_type_fk" referencedTableName="business_type"
+                                 referencedColumnNames="uuid"/>
+    </changeSet>
+
+    <changeSet author="mdiadia" id="3">
+        <addColumn tableName="colleague">
+            <column name="department_uuid" type="${uuid_type}"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="mdiadia" id="4">
+        <comment>Migration</comment>
+        <sql>
+            UPDATE department SET uuid = md5(random()::text || clock_timestamp()::text)::uuid;
+
+            INSERT INTO business_type(uuid, name)
+            SELECT md5(random()::text || clock_timestamp()::text)::uuid, d.bt FROM
+            (SELECT DISTINCT business_type as bt
+            FROM department
+            WHERE business_type IS NOT NULL) as d;
+
+            UPDATE department d
+            SET business_type_uuid = (SELECT uuid FROM business_type WHERE name = d.business_type);
+
+            UPDATE colleague c
+            SET department_uuid = (SELECT uuid FROM department WHERE id = c.department_id);
+        </sql>
+        <rollback/>
+    </changeSet>
+
+    <changeSet author="mdiadia" id="5">
+        <dropColumn tableName="colleague" columnName="department_id"/>
+        <dropPrimaryKey tableName="department" constraintName="department_pk"/>
+        <dropNotNullConstraint tableName="department" columnName="id"/>
+        <addPrimaryKey tableName="department" columnNames="uuid" constraintName="department_pk"/>
+        <dropColumn tableName="department" columnName="business_type"/>
+        <rollback>
+            <addColumn tableName="department">
+                <column name="business_type" type="varchar(1000)"/>
+            </addColumn>
+            <createIndex tableName="department" indexName="department_business_type_idx" unique="false">
+                <column name="business_type"/>
+            </createIndex>
+            <dropPrimaryKey tableName="department" constraintName="department_pk"/>
+            <addPrimaryKey tableName="department" columnNames="id" constraintName="department_pk"/>
+            <addColumn tableName="colleague">
+                <column name="department_id" type="varchar(1000)"/>
+            </addColumn>
+            <addForeignKeyConstraint baseColumnNames="department_id" baseTableName="colleague"
+                                     constraintName="department_fk" referencedColumnNames="id"
+                                     referencedTableName="department"/>
+            <createIndex tableName="colleague" indexName="colleague_department_idx" unique="false">
+                <column name="department_id"/>
+            </createIndex>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

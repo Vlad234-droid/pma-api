@@ -13,7 +13,7 @@
             <column name="email">william.smith5@tesco.com</column>
             <column name="work_level">WL3</column>
             <column name="primary_entity">Tesco PLC</column>
-            <column name="department_id">300001051375877</column>
+            <column name="department_uuid" valueComputed="(SELECT uuid FROM DEPARTMENT where id='300001051375877')"/>
             <column name="salary_frequency">ANNUAL</column>
             <column name="job_id">300000600015282</column>
             <column name="iam_source">OracleHCM</column>
@@ -33,7 +33,7 @@
             <column name="email">alex.smith6@tesco.com</column>
             <column name="work_level">WL4</column>
             <column name="primary_entity">Tesco PLC</column>
-            <column name="department_id">300001051375877</column>
+            <column name="department_uuid" valueComputed="(SELECT uuid FROM DEPARTMENT where id='300001051375877')"/>
             <column name="salary_frequency">ANNUAL</column>
             <column name="job_id">300000600015282</column>
             <column name="iam_source">OracleHCM</column>
@@ -53,7 +53,7 @@
             <column name="email">joe.smith7@tesco.com</column>
             <column name="work_level">WL5</column>
             <column name="primary_entity">Tesco PLC</column>
-            <column name="department_id">300001051375877</column>
+            <column name="department_uuid" valueComputed="(SELECT uuid FROM DEPARTMENT where id='300001051375877')"/>
             <column name="salary_frequency">ANNUAL</column>
             <column name="job_id">300000600015282</column>
             <column name="iam_source">OracleHCM</column>

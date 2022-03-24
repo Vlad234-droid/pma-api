@@ -34,6 +34,7 @@ class ProfileDAOTest extends AbstractDAOTest {
     private static final UUID COLLEAGUE_UUID_1 = UUID.fromString("119e0d2b-1dc2-409f-8198-ecd66e59d47a");
     private static final UUID MANAGER_UUID_1 = UUID.fromString("c409869b-2acf-45cd-8cc6-e13af2e6f935");
     private static final UUID MANAGER_UUID_2 = UUID.fromString("b5f79bef-7905-400f-8cb6-d0ebe41b961c");
+    private static final UUID DEPARTMENT_UUID = UUID.fromString("ce9e5a9e-992e-4872-a532-639d5c2817d4");
     private static final String LEGAL_ENTITY = "Tesco Stores Limited";
     private static final String LOCATION_ID = "INDH000001";
     private static final String V_DOW = "Dow";
@@ -253,6 +254,7 @@ class ProfileDAOTest extends AbstractDAOTest {
         var colleague = buildColleagueEntity(colleagueUuid, MANAGER_UUID_2);
 
         dao.updateCountry(colleague.getCountry());
+        dao.updateBusinessType(colleague.getDepartment().getBusinessType());
         dao.updateDepartment(colleague.getDepartment());
         dao.updateJob(colleague.getJob());
         dao.updateWorkLevel(colleague.getWorkLevel());
@@ -287,6 +289,7 @@ class ProfileDAOTest extends AbstractDAOTest {
         var colleague = buildColleagueEntity(colleagueUuid, MANAGER_UUID_2);
 
         dao.updateCountry(colleague.getCountry());
+        dao.updateBusinessType(colleague.getDepartment().getBusinessType());
         dao.updateDepartment(colleague.getDepartment());
         dao.updateJob(colleague.getJob());
         dao.updateWorkLevel(colleague.getWorkLevel());
@@ -364,12 +367,12 @@ class ProfileDAOTest extends AbstractDAOTest {
 
     @Test
     void insertDepartmentWithExistsId() {
-        assertEquals(1, dao.updateDepartment(getDepartment("1")));
+        assertEquals(1, dao.updateDepartment(getDepartment(DEPARTMENT_UUID)));
     }
 
     @Test
     void insertDepartmentWithNotExistsId() {
-        assertEquals(1, dao.updateDepartment(getDepartment("5")));
+        assertEquals(1, dao.updateDepartment(getDepartment(UUID.randomUUID())));
     }
 
     @Test
@@ -442,7 +445,7 @@ class ProfileDAOTest extends AbstractDAOTest {
         colleague.setJob(getJob("1"));
         colleague.setCountry(getCountry("GB"));
         colleague.setWorkLevel(getWorkLevel("WL1"));
-        colleague.setDepartment(getDepartment("1"));
+        colleague.setDepartment(getDepartment(DEPARTMENT_UUID));
 
         return colleague;
     }
@@ -456,7 +459,7 @@ class ProfileDAOTest extends AbstractDAOTest {
         colleague.setJob(getJob("3"));
         colleague.setCountry(getCountry("DE"));
         colleague.setWorkLevel(getWorkLevel("WL7"));
-        colleague.setDepartment(getDepartment("5"));
+        colleague.setDepartment(getDepartment(UUID.randomUUID()));
 
         return colleague;
     }
@@ -484,15 +487,16 @@ class ProfileDAOTest extends AbstractDAOTest {
         return workLevel;
     }
 
-    private ColleagueEntity.Department getDepartment(String id) {
+    private ColleagueEntity.Department getDepartment(UUID uuid) {
         ColleagueEntity.Department department = new ColleagueEntity.Department();
-        department.setId(id);
-        department.setName(id);
-        department.setBusinessType(id);
+        department.setUuid(uuid);
+        department.setId("id");
+        department.setName("name");
+        department.setBusinessType(null);
         return department;
     }
 
-    private ColleagueEntity buildColleagueEntity(UUID colleagueUuid, UUID managerUuid) {
+    private ColleagueEntity buildColleagueEntity(UUID colleagueUuid, UUID managerUuid) { //NOPMD
         var job = new ColleagueEntity.Job();
         job.setId("JobID");
         job.setCode("JC");
@@ -503,9 +507,13 @@ class ProfileDAOTest extends AbstractDAOTest {
         var workLevel = new ColleagueEntity.WorkLevel();
         workLevel.setCode("WL1_new");
 
+        var bt = new ColleagueEntity.Department.BusinessType();
+        bt.setName("Store");
+        bt.setUuid(UUID.randomUUID());
         var dep = new ColleagueEntity.Department();
+        dep.setUuid(UUID.randomUUID());
         dep.setId("DepId");
-        dep.setBusinessType("Store");
+        dep.setBusinessType(bt);
 
         var colleague = new ColleagueEntity();
         colleague.setUuid(colleagueUuid);
