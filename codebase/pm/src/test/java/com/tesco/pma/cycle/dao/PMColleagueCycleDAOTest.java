@@ -1,7 +1,6 @@
 package com.tesco.pma.cycle.dao;
 
 import com.github.database.rider.core.api.dataset.DataSet;
-import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.cycle.api.PMColleagueCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.dao.config.PMCycleTypeHandlerConfig;
@@ -16,6 +15,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+import static com.tesco.pma.api.DictionaryFilter.includeFilter;
 import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
 import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
 import static com.tesco.pma.cycle.api.PMCycleStatus.REGISTERED;
@@ -73,7 +73,7 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
             BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml"})
     void getByCycleUuidWithoutTimelinePoint() {
         var cc = dao.getByCycleUuidWithoutTimelinePoint(CYCLE_UUID,
-                DictionaryFilter.includeFilter(REGISTERED, ACTIVE));
+                includeFilter(REGISTERED, ACTIVE));
         assertEquals(1, cc.size());
         assertColleagueCycle(UUID.fromString("98c23a14-8a46-41f0-bfcf-312a17c7dae2"), COLLEAGUE_UUID, ACTIVE, cc.get(0));
     }
@@ -124,6 +124,17 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
     void delete() {
         assertEquals(1, dao.delete(COLLEAGUE_CYCLE_UUID_2));
         assertNull(dao.read(COLLEAGUE_CYCLE_UUID_2));
+    }
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
+            BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml"})
+    void changeStatusByParent() {
+        var updatedCount = dao.changeStatusByParent(CYCLE_UUID, INACTIVE, includeFilter(ACTIVE));
+        assertEquals(1, updatedCount);
+
+        var updatedCycle = dao.read(COLLEAGUE_CYCLE_UUID);
+        assertEquals(INACTIVE, updatedCycle.getStatus());
     }
 
     private void assertColleagueCycle(UUID uuid, UUID colleagueUuid, PMCycleStatus status, PMColleagueCycle colleagueCycle) {
