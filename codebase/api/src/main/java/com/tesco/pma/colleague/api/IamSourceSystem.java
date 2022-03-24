@@ -12,4 +12,13 @@ public class IamSourceSystem implements Serializable {
     private String id;
     private String name;
     private String source;
+
+    @Override
+    public String toString() {
+        return "IamSourceSystem{" +
+                "id='*****'" +
+                ", name='" + name + '\'' +
+                ", source='" + source + '\'' +
+                '}';
+    }
 }

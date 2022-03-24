@@ -22,4 +22,15 @@ public class Profile implements Serializable {
 
     private LocalDate dateOfBirth;
 
+    @Override
+    public String toString() {
+        return "Profile{" +
+                "title='" + title + '\'' +
+                ", firstName='*****'" +
+                ", middleName='*****'" +
+                ", lastName='*****'" +
+                ", gender='" + gender + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                '}';
+    }
 }

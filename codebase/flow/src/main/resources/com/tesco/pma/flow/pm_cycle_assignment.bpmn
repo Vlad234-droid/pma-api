@@ -144,9 +144,14 @@ PM_CYCLE_KEY</bpmn:text>
   <bpmn:message id="Message_03v6y3h" name="PM_COLLEAGUE_CYCLE_ASSIGNMENT" />
   <bpmn:error id="Error_04kaxdf" name="More than one in statuses" errorCode="PM_CYCLE_MORE_THAN_ONE_IN_STATUSES" />
   <bpmn:escalation id="Escalation_06pt3q2" name="Escalation_0habstg" />
-  <bpmn:error id="Error_10hcoe6" name="Flow or event parameter cannot be read" errorCode="PARAMETER_CANNOT_BE_READ" />
+  <bpmn:error id="Error_10hcoe6" name="PM cycle was not assigned for colleague" errorCode="PM_CYCLE_NOT_ASSIGNED_FOR_COLLEAGUE" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="pm_cycle_assignment">
+      <bpmndi:BPMNEdge id="Flow_15q3o27_di" bpmnElement="Flow_15q3o27">
+        <di:waypoint x="770" y="285" />
+        <di:waypoint x="770" y="330" />
+        <di:waypoint x="520" y="330" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0q2y0sk_di" bpmnElement="Flow_0q2y0sk">
         <di:waypoint x="710" y="285" />
         <di:waypoint x="710" y="330" />
@@ -197,11 +202,6 @@ PM_CYCLE_KEY</bpmn:text>
         <di:waypoint x="238" y="227" />
         <di:waypoint x="300" y="227" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_15q3o27_di" bpmnElement="Flow_15q3o27">
-        <di:waypoint x="770" y="285" />
-        <di:waypoint x="770" y="330" />
-        <di:waypoint x="520" y="330" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Gateway_1tan81w_di" bpmnElement="Gateway_1tan81w" isMarkerVisible="true">
         <dc:Bounds x="445" y="202" width="50" height="50" />
       </bpmndi:BPMNShape>
@@ -247,6 +247,12 @@ PM_CYCLE_KEY</bpmn:text>
       <bpmndi:BPMNShape id="TextAnnotation_04x845v_di" bpmnElement="TextAnnotation_04x845v">
         <dc:Bounds x="545" y="80" width="111" height="54" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1xgdj9w_di" bpmnElement="Event_1fxo7lt">
+        <dc:Bounds x="752" y="249" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1f4v5iu_di" bpmnElement="Event_120sj2b">
+        <dc:Bounds x="692" y="249" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_187l81e_di" bpmnElement="Association_187l81e">
         <di:waypoint x="220" y="209" />
         <di:waypoint x="220" y="175" />
@@ -271,12 +277,6 @@ PM_CYCLE_KEY</bpmn:text>
         <di:waypoint x="601" y="134" />
         <di:waypoint x="600" y="187" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_1f4v5iu_di" bpmnElement="Event_120sj2b">
-        <dc:Bounds x="692" y="249" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1xgdj9w_di" bpmnElement="Event_1fxo7lt">
-        <dc:Bounds x="752" y="249" width="36" height="36" />
-      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
