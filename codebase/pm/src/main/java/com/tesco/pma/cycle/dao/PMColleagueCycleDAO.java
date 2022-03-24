@@ -67,8 +67,8 @@ public interface PMColleagueCycleDAO {
     /**
      * Gets list of pm colleague cycles without timeline points
      *
-     * @param cycleUuid - PM cycle identifier
-     * @param statusFilter  - filter by status
+     * @param cycleUuid    - PM cycle identifier
+     * @param statusFilter - filter by status
      * @return - collection of PM colleague cycles
      */
     List<PMColleagueCycle> getByCycleUuidWithoutTimelinePoint(@Param("cycleUuid") UUID cycleUuid,
@@ -89,8 +89,20 @@ public interface PMColleagueCycleDAO {
     /**
      * Gets list of colleagues by key
      *
-     * @param key                   - key
+     * @param key - key
      * @return list of colleagues
      */
     List<ColleagueEntity> findColleagues(@Param("key") String key, @Param("statusFilter") DictionaryFilter<PMCycleStatus> statusFilter);
+
+    /**
+     * Changes status for all colleague cycles with the specified parent cycle identifier
+     *
+     * @param parentCycleUuid - parent performance cycle identifier
+     * @param newStatus       - new status
+     * @param statusFilter    - status filter
+     * @return number of changed rows
+     */
+    int changeStatusByParent(@Param("parentCycleUuid") UUID parentCycleUuid,
+                             @Param("newStatus") PMCycleStatus newStatus,
+                             @Param("statusFilter") DictionaryFilter<PMCycleStatus> statusFilter);
 }

@@ -15,6 +15,7 @@ import com.tesco.pma.cycle.api.model.PMProcessModelParser;
 import com.tesco.pma.cycle.api.model.PMReviewElement;
 import com.tesco.pma.cycle.api.request.PMCycleUpdateFormRequest;
 import com.tesco.pma.cycle.api.request.PMFormRequest;
+import com.tesco.pma.cycle.dao.PMColleagueCycleDAO;
 import com.tesco.pma.cycle.dao.PMCycleDAO;
 import com.tesco.pma.cycle.exception.ErrorCodes;
 import com.tesco.pma.cycle.exception.PMCycleException;
@@ -55,6 +56,7 @@ import static com.tesco.pma.cycle.api.PMCycleStatus.DRAFT;
 import static com.tesco.pma.cycle.api.PMCycleStatus.FAILED;
 import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
 import static com.tesco.pma.cycle.api.PMCycleStatus.REGISTERED;
+import static com.tesco.pma.cycle.api.PMCycleStatus.STARTED;
 import static com.tesco.pma.cycle.api.model.PMElementType.REVIEW;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_METADATA_NOT_FOUND;
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_ALLOWED_TO_START;
@@ -65,7 +67,6 @@ import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_FOR_ST
 import static com.tesco.pma.exception.ErrorCodes.ERROR_FILE_NOT_FOUND;
 import static com.tesco.pma.logging.TraceId.TRACE_ID_HEADER;
 import static com.tesco.pma.pagination.Condition.Operand.EQUALS;
-import static com.tesco.pma.process.api.PMProcessStatus.STARTED;
 import static com.tesco.pma.util.FileUtils.getFormName;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Set.of;
@@ -95,15 +96,16 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     static {
         UPDATE_STATUS_RULE_MAP = Map.of(
-                ACTIVE, includeFilter(of(INACTIVE, DRAFT, REGISTERED)),
-                INACTIVE, includeFilter(of(REGISTERED, DRAFT)),
+                ACTIVE, includeFilter(of(DRAFT, REGISTERED)),
+                INACTIVE, includeFilter(of(REGISTERED, DRAFT, ACTIVE, STARTED)),
                 DRAFT, includeFilter(of(DRAFT, REGISTERED)),
-                COMPLETED, includeFilter(of(ACTIVE, DRAFT)),
+                COMPLETED, includeFilter(of(ACTIVE, DRAFT, STARTED)),
                 REGISTERED, includeFilter(of(DRAFT, REGISTERED))
         );
     }
 
     private final PMCycleDAO cycleDAO;
+    private final PMColleagueCycleDAO pmColleagueCycleDAO;
     private final NamedMessageSourceAccessor messageSourceAccessor;
     private final ProcessManagerService processManagerService;
     private final PMProcessService pmProcessService;
@@ -171,7 +173,7 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     @Override
     public PMCycle getCurrentByColleague(UUID colleagueUuid) {
-        var activeFilter = includeFilter(Set.of(PMCycleStatus.STARTED));
+        var activeFilter = includeFilter(Set.of(STARTED));
         var cycles = cycleDAO.getByColleague(colleagueUuid, activeFilter);
         if (null == cycles || cycles.isEmpty()) {
             throw notFound(PM_CYCLE_NOT_FOUND_COLLEAGUE,
@@ -346,6 +348,9 @@ public class PMCycleServiceImpl implements PMCycleService {
         if (1 == cycleDAO.updateStatus(uuid, status, resultStatusFilter)) {
             cycle.setStatus(status);
             log.debug("Performance cycle UUID: {} changed status to: {}", cycle.getUuid(), status);
+
+            int updatedColleagues = pmColleagueCycleDAO.changeStatusByParent(uuid, status, statusFilter);
+            log.debug("Updated {} records for corresponding colleague cycles", updatedColleagues);
             return cycle;
         } else {
             throw notFound(PM_CYCLE_NOT_FOUND_FOR_STATUS_UPDATE,
@@ -454,7 +459,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         try {
             var processUUID = processManagerService.runProcessById(process.getBpmProcessId(), prepareFlowProperties(cycle));
             log.debug("Started process: {}", processUUID);
-            pmProcessService.updateStatus(process.getId(), STARTED, processStatusFilter);
+            pmProcessService.updateStatus(process.getId(), PMProcessStatus.STARTED, processStatusFilter);
         } catch (ProcessExecutionException e) {
             cycleFailed(process.getBpmProcessId(), cycleUUID, e);
         }
