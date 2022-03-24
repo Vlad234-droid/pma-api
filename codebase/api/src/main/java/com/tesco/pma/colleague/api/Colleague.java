@@ -32,16 +32,16 @@ public class Colleague implements Serializable {
 
     @Override
     public String toString() {
-        return "Colleague{" +
-                "colleagueUUID=" + colleagueUUID +
-                ", employeeId='*****'"+
-                ", countryCode='" + countryCode + '\'' +
-                ", effectivity=" + effectivity +
-                ", externalSystems=" + externalSystems +
-                ", profile=" + profile +
-                ", contact=" + contact +
-                ", serviceDates=" + serviceDates +
-                ", workRelationships=" + workRelationships +
-                '}';
+        return "Colleague{"
+                + "colleagueUUID=" + colleagueUUID
+                + ", employeeId='*****'"
+                + ", countryCode='" + countryCode + '\''
+                + ", effectivity=" + effectivity
+                + ", externalSystems=" + externalSystems
+                + ", profile=" + profile
+                + ", contact=" + contact
+                + ", serviceDates=" + serviceDates
+                + ", workRelationships=" + workRelationships
+                + '}';
     }
 }
