@@ -120,11 +120,30 @@ public interface ProfileDAO {
      */
     List<Colleague> findColleagueSuggestionsByFullName(@Param("requestQuery") RequestQuery requestQuery);
 
+    /**
+     * Find all departments
+     *
+     * @return list of departments
+     */
     List<ColleagueEntity.Department> findAllDepartments();
 
+    /**
+     * Try to find department by main properties
+     *
+     * @param id           - external identifier
+     * @param name         - name
+     * @param businessType - business type name
+     * @return department
+     */
     ColleagueEntity.Department findDepartment(@Param("id") String id,
                                               @Param("name") String name,
                                               @Param("businessType") String businessType);
 
+    /**
+     * Find business type by its name
+     *
+     * @param name - name
+     * @return business type
+     */
     ColleagueEntity.Department.BusinessType findBusinessType(@Param("name") String name);
 }
