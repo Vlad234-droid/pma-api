@@ -14,4 +14,13 @@ public class Contact implements Serializable {
     private String email;
     private String workPhoneNumber;
     private List<Address> addresses;
+
+    @Override
+    public String toString() {
+        return "Contact{" +
+                "email='*****'" +
+                ", workPhoneNumber='" + workPhoneNumber + '\'' +
+                ", addresses=" + addresses +
+                '}';
+    }
 }

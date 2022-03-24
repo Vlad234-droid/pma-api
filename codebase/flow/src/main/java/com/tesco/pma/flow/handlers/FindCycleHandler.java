@@ -38,13 +38,13 @@ public class FindCycleHandler extends CamundaAbstractFlowHandler {
 
     @Override
     protected void execute(ExecutionContext context) throws Exception {
+        var colleague = context.getVariable(FlowParameters.COLLEAGUE);
         var configKey = context.getNullableVariable(FlowParameters.PM_CYCLE_KEY, String.class);
 
         if (configKey == null) {
-            Map<String, Object> params = Map.of("property", FlowParameters.PM_CYCLE_KEY.name(),
-                    "colleague", context.getNullableVariable(FlowParameters.COLLEAGUE));
-            throw new BpmnError(ErrorCodes.PARAMETER_CANNOT_BE_READ.getCode(),
-                    messageSourceAccessor.getMessage(ErrorCodes.PARAMETER_CANNOT_BE_READ, params)
+            throw new BpmnError(ErrorCodes.PM_CYCLE_NOT_ASSIGNED_FOR_COLLEAGUE.getCode(),
+                    messageSourceAccessor.getMessage(ErrorCodes.PM_CYCLE_NOT_ASSIGNED_FOR_COLLEAGUE,
+                            Map.of("colleague", colleague))
             );
         }
 
@@ -61,6 +61,9 @@ public class FindCycleHandler extends CamundaAbstractFlowHandler {
                             KEY_PARAM, configKey,
                             STATUSES_PARAM, statuses)));
         }
+        log.info(messageSourceAccessor.getMessage(ErrorCodes.PM_CYCLE_ASSIGNED_FOR_COLLEAGUE,
+                Map.of("colleague", colleague))
+        );
     }
 
     private RequestQuery buildRequestQuery(String configKey, List<String> statuses) {
