@@ -56,6 +56,14 @@ public interface ProfileDAO {
     int updateDepartment(@Param("department") ColleagueEntity.Department department);
 
     /**
+     * Save business type into DB, if object already exists update it
+     *
+     * @param businessType - object to be saved
+     * @return number of inserted / updated business types
+     */
+    int updateBusinessType(@Param("businessType") ColleagueEntity.Department.BusinessType businessType);
+
+    /**
      * Save job into DB, if object already exists update it
      *
      * @param job - object to be saved
@@ -111,4 +119,31 @@ public interface ProfileDAO {
      * @return list colleagues
      */
     List<Colleague> findColleagueSuggestionsByFullName(@Param("requestQuery") RequestQuery requestQuery);
+
+    /**
+     * Find all departments
+     *
+     * @return list of departments
+     */
+    List<ColleagueEntity.Department> findAllDepartments();
+
+    /**
+     * Try to find department by main properties
+     *
+     * @param id           - external identifier
+     * @param name         - name
+     * @param businessType - business type name
+     * @return department
+     */
+    ColleagueEntity.Department findDepartment(@Param("id") String id,
+                                              @Param("name") String name,
+                                              @Param("businessType") String businessType);
+
+    /**
+     * Find business type by its name
+     *
+     * @param name - name
+     * @return business type
+     */
+    ColleagueEntity.Department.BusinessType findBusinessType(@Param("name") String name);
 }

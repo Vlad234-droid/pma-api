@@ -135,7 +135,10 @@ public class ColleagueFactsApiLocalMapper {
             var dp = new Department();
             dp.setId(ocDp.getId());
             dp.setName(ocDp.getName());
-            dp.setBusinessType(ocDp.getBusinessType());
+            var businessType = ocDp.getBusinessType();
+            if (businessType != null) {
+                dp.setBusinessType(businessType.getName());
+            }
             return dp;
         }
         return null;
@@ -156,7 +159,7 @@ public class ColleagueFactsApiLocalMapper {
             destination.setEmail(contact.getEmail());
         }
 
-        ColleagueEntity.Country country = new ColleagueEntity.Country();
+        var country = new ColleagueEntity.Country();
         country.setCode(source.getCountryCode());
         country.setName(UNDEFINED_VALUE);
         destination.setCountry(country);
@@ -180,10 +183,10 @@ public class ColleagueFactsApiLocalMapper {
 
     private void mappingWorkRelationshipProperties(Colleague source, ColleagueEntity destination) {
         if (Objects.nonNull(source.getWorkRelationships())) {
-            Optional<WorkRelationship> optionalWorkRelationship = source.getWorkRelationships().stream().findFirst();
+            var optionalWorkRelationship = source.getWorkRelationships().stream().findFirst();
 
             if (optionalWorkRelationship.isPresent()) {
-                WorkRelationship workRelationship = optionalWorkRelationship.get();
+                var workRelationship = optionalWorkRelationship.get();
 
                 destination.setPrimaryEntity(workRelationship.getPrimaryEntity());
                 destination.setSalaryFrequency(workRelationship.getSalaryFrequency());
@@ -199,9 +202,9 @@ public class ColleagueFactsApiLocalMapper {
                     destination.setWorkLevel(workLevel);
                 }
 
-                if (workRelationship.getDepartment() != null) {
-                    ColleagueEntity.Department department = new ColleagueEntity.Department();
-                    BeanUtils.copyProperties(workRelationship.getDepartment(), department);
+                var workRelationshipDepartment = workRelationship.getDepartment();
+                if (workRelationshipDepartment != null) {
+                    var department = mapDepartment(workRelationshipDepartment);
                     destination.setDepartment(department);
                 }
 
@@ -222,6 +225,25 @@ public class ColleagueFactsApiLocalMapper {
             }
         }
 
+    }
+
+    private ColleagueEntity.Department mapDepartment(Department workRelationshipDepartment) {
+        var department = new ColleagueEntity.Department();
+        department.setUuid(Optional.ofNullable(profileDAO.findDepartment(workRelationshipDepartment.getId(),
+                workRelationshipDepartment.getName(), workRelationshipDepartment.getBusinessType()))
+                .map(ColleagueEntity.Department::getUuid)
+                .orElseGet(UUID::randomUUID));
+        department.setId(workRelationshipDepartment.getId());
+        department.setName(workRelationshipDepartment.getName());
+
+        var businessType = new ColleagueEntity.Department.BusinessType();
+        businessType.setUuid(Optional.ofNullable(profileDAO.findBusinessType(workRelationshipDepartment.getBusinessType()))
+                .map(ColleagueEntity.Department.BusinessType::getUuid)
+                .orElseGet(UUID::randomUUID));
+        businessType.setName(workRelationshipDepartment.getBusinessType());
+
+        department.setBusinessType(businessType);
+        return department;
     }
 
     public Collection<String> getColleagueFactsAPISupportedAttributes() {

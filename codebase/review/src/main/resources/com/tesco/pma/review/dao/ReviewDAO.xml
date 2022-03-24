@@ -162,12 +162,12 @@
                         c.first_name,
                         c.last_name,
                         j.name             as job_name,
-                        d.business_type    as business_type,
+                        bt.name    as business_type,
                         lm_c.uuid          as lm_uuid,
                         lm_c.first_name    as lm_firstName,
                         lm_c.last_name     as lm_lastName,
                         lm_j.name          as lm_jobName,
-                        lm_d.business_type as lm_businessType,
+                        lm_bt.name as lm_businessType,
                         r.uuid             as review_uuid,
                         r.type_id          as review_type_id,
                         r.status_id        as review_status_id,
@@ -178,13 +178,17 @@
                  left join job j
                            on (j.id = c.job_id)
                  left join department d
-                           on (d.id = c.department_id)
+                           on (d.uuid = c.department_uuid)
+                 left join business_type bt
+                           on (bt.uuid = d.business_type_uuid)
                  inner join colleague lm_c
                             on (c.manager_uuid = lm_c.uuid)
                  left join job lm_j
                            on (lm_j.id = lm_c.job_id)
                  left join department lm_d
-                           on (lm_d.id = lm_c.department_id)
+                           on (lm_d.uuid = lm_c.department_uuid)
+                 left join business_type lm_bt
+                           on (lm_bt.uuid = lm_d.business_type_uuid)
                  left join pm_colleague_cycle cc
                            on (c.uuid = cc.colleague_uuid
                                and cc.status_id = 7)
