@@ -314,16 +314,26 @@ public class ProfileServiceImpl implements ProfileService {
 
     private void updateCountryDictionary(ColleagueEntity existingLocalColleague, ColleagueEntity changedLocalColleague) {
         ColleagueEntity.Country changedCountry = changedLocalColleague.getCountry();
-        if (changedCountry != null && (existingLocalColleague == null
-                || !existingLocalColleague.getCountry().getCode().equals(changedCountry.getCode()))) {
+        if (changedCountry == null || changedCountry.getCode() == null) {
+            return;
+        }
+
+        if (existingLocalColleague == null
+                || existingLocalColleague.getCountry() == null
+                || !existingLocalColleague.getCountry().getCode().equals(changedCountry.getCode())) {
             profileDAO.updateCountry(changedCountry);
         }
     }
 
     private void updateDepartmentDictionary(ColleagueEntity existingLocalColleague, ColleagueEntity changedLocalColleague) {
         var changedDepartment = changedLocalColleague.getDepartment();
-        if (changedDepartment != null && changedDepartment.getUuid() != null && (existingLocalColleague == null
-                || !existingLocalColleague.getDepartment().getUuid().equals(changedDepartment.getUuid()))) {
+        if (changedDepartment == null || changedDepartment.getId() == null) {
+            return;
+        }
+
+        if (existingLocalColleague == null
+                || existingLocalColleague.getDepartment() == null
+                || !existingLocalColleague.getDepartment().getId().equals(changedDepartment.getId())) {
             var businessType = changedDepartment.getBusinessType();
             if (businessType != null && businessType.getUuid() != null) {
                 profileDAO.updateBusinessType(businessType);
@@ -334,16 +344,26 @@ public class ProfileServiceImpl implements ProfileService {
 
     private void updateJobDictionary(ColleagueEntity existingLocalColleague, ColleagueEntity changedLocalColleague) {
         ColleagueEntity.Job changedJob = changedLocalColleague.getJob();
-        if (changedJob != null && (existingLocalColleague == null
-                || !existingLocalColleague.getJob().getCode().equals(changedJob.getId()))) {
+        if (changedJob == null || changedJob.getId() == null) {
+            return;
+        }
+
+        if (existingLocalColleague == null
+                || existingLocalColleague.getJob() == null
+                || !existingLocalColleague.getJob().getId().equals(changedJob.getId())) {
             profileDAO.updateJob(changedJob);
         }
     }
 
     private void updateWorkLevelDictionary(ColleagueEntity existingLocalColleague, ColleagueEntity changedLocalColleague) {
         ColleagueEntity.WorkLevel changedWorkLevel = changedLocalColleague.getWorkLevel();
-        if (changedWorkLevel != null && (existingLocalColleague == null
-                || !existingLocalColleague.getWorkLevel().getCode().equals(changedWorkLevel.getCode()))) {
+        if (changedWorkLevel == null || changedWorkLevel.getCode() == null) {
+            return;
+        }
+
+        if (existingLocalColleague == null
+                || existingLocalColleague.getWorkLevel() == null
+                || !existingLocalColleague.getWorkLevel().getCode().equals(changedWorkLevel.getCode())) {
             profileDAO.updateWorkLevel(changedWorkLevel);
         }
     }

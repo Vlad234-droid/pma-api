@@ -295,13 +295,12 @@ camunda:
       enabled: true
     #      db-reporter-activate: true
     job-execution:
-      enabled: false
+      enabled: true
     id-generator: strong
 #    deployment-resource-pattern: classpath:*.bpmn
 #   todo: remove in production
     auto-deployment-enabled: true
-    deployment-resource-pattern: classpath:com/tesco/pma/flow/standard_init_timeline_point.bpmn,
-                                           com/tesco/pma/flow/notifications/review/review_flow.bpmn,
+    deployment-resource-pattern: classpath:com/tesco/pma/flow/notifications/review/review_flow.bpmn,
                                            com/tesco/pma/flow/notifications/review/review_notifications_decisions.dmn,
                                            com/tesco/pma/flow/notifications/review/review_event_to_attribute.dmn,
                                            com/tesco/pma/flow/notifications/review/review_event_to_template_id.dmn,
