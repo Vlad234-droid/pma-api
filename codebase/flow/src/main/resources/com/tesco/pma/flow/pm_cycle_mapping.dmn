@@ -10,7 +10,7 @@
           <text>{
     wr: COLLEAGUE.workRelationships[1],
     le: wr.getLegalEmployer(),
-    val: if (le = null) then null else le.getName(),
+    val: if (le = null or le.getName() = null) then "" else le.getName(),
     result: if matches(val, "^(?!\s*$).+") then lower case(val) else "_null"
 }.result</text>
         </inputExpression>
@@ -20,7 +20,8 @@
           <text>{
     wr: COLLEAGUE.workRelationships[1],
     dep: wr.getDepartment(),
-    val: if (dep = null) then null else dep.getBusinessType(),
+    bt: if (dep = null) then null else dep.getBusinessType(),
+    val: if bt = null then "" else bt,
     result: if matches(val, "^(?!\s*$).+") then lower case(val) else "_null"
 }.result</text>
         </inputExpression>
@@ -29,7 +30,7 @@
         <inputExpression id="InputExpression225691907" typeRef="string" expressionLanguage="feel">
           <text>{
     wr: COLLEAGUE.workRelationships[1],
-    wl: wr.getWorkLevel(),
+    wl: if wr.getWorkLevel() = null then "" else wr.getWorkLevel(),
     result: if matches(wl, "^(?!\s*$).+") then lower case(wl) else "_null"
 }.result</text>
         </inputExpression>
@@ -38,9 +39,9 @@
         <inputExpression id="InputExpression1677684130" typeRef="string">
           <text>{
     wr: COLLEAGUE.workRelationships[1],
-    val: wr.getSalaryFrequency(),
-    valLowerCase: lower case(val),
-    result: if matches(val, "^(?!\s*$).+") then valLowerCase else "_null"
+    sf: wr.getSalaryFrequency(),
+    val: if sf = null then "" else sf,
+    result: if matches(val, "^(?!\s*$).+") then lower case(val) else "_null"
 }.result</text>
         </inputExpression>
       </input>
@@ -49,7 +50,7 @@
           <text>{
     wr: COLLEAGUE.workRelationships[1],
     job: wr.getJob(),
-    val: if (job = null) then null else job.getName(),
+    val: if (job = null or job.getName() = null) then "" else job.getName(),
     result: if matches(val, "^(?!\s*$).+") then lower case(val) else "_null"
 }.result</text>
         </inputExpression>
@@ -59,7 +60,7 @@
           <text>{
     es: COLLEAGUE.getExternalSystems(),
     iam: if (es = null) then null else es.getIam(),
-    val: if (iam = null) then null else iam.getSource(),
+    val: if (iam = null or iam.getSource() = null) then "" else iam.getSource(),
     result: if matches(val, "^(?!\s*$).+") then lower case(val) else "_null"
 }.result</text>
         </inputExpression>
@@ -68,7 +69,8 @@
         <inputExpression id="InputExpression568074149" typeRef="string" expressionLanguage="feel">
           <text>{
     cc: COLLEAGUE.getCountryCode(),
-    result: if matches(cc, "^(?!\s*$).+") then lower case(cc) else "_null"
+    val: if cc = null then "" else cc,
+    result: if matches(val, "^(?!\s*$).+") then lower case(val) else "_null"
 }.result</text>
         </inputExpression>
       </input>
@@ -77,7 +79,8 @@
           <text>{
     wr: COLLEAGUE.workRelationships[1],
     pe: wr.getPrimaryEntity(),
-    result: if matches(pe, "^(?!\s*$).+") then lower case(pe) else "_null"
+    val: if pe = null then "" else pe,
+    result: if matches(val, "^(?!\s*$).+") then lower case(val) else "_null"
 }.result</text>
         </inputExpression>
       </input>
@@ -87,12 +90,12 @@
         <inputEntry id="A2">
           <text>"oakwood distribution limited",
 "tesco family dining",
-"tesco International sourcing limited",
-"tesco International sourcing limited hong kong - sucursala bucuresti",
+"tesco international sourcing limited",
+"tesco international sourcing limited hong kong - sucursala bucuresti",
 "tesco ireland limited",
 "tesco joint buying service (shanghai) co., ltd.",
 "tesco maintenance",
-"tesco sourcing India private ltd",
+"tesco sourcing india private ltd",
 "tesco stores limited",
 "_null"</text>
         </inputEntry>
@@ -221,12 +224,12 @@
         <inputEntry id="A6">
           <text>"oakwood distribution limited",
 "tesco family dining",
-"tesco International sourcing limited",
-"tesco International sourcing limited hong kong - sucursala bucuresti",
+"tesco international sourcing limited",
+"tesco international sourcing limited hong kong - sucursala bucuresti",
 "tesco ireland limited",
 "tesco joint buying service (shanghai) co., ltd.",
 "tesco maintenance",
-"tesco sourcing India private ltd",
+"tesco sourcing india private ltd",
 "tesco stores limited"</text>
         </inputEntry>
         <inputEntry id="B6">
