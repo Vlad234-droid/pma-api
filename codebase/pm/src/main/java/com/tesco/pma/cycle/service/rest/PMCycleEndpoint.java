@@ -11,7 +11,7 @@ import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.api.request.PMCycleUpdateFormRequest;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.cycle.service.PMCycleService;
-import com.tesco.pma.cycle.service.PmCycleMappingService;
+import com.tesco.pma.cycle.service.PMCycleMappingService;
 import com.tesco.pma.exception.DeploymentException;
 import com.tesco.pma.exception.InvalidParameterException;
 import com.tesco.pma.exception.InvalidPayloadException;
@@ -61,7 +61,7 @@ public class PMCycleEndpoint {
     private final PMCycleService service;
     private final ProcessManagerService processManagerService;
     private final PMColleagueCycleService pmColleagueCycleService;
-    private final PmCycleMappingService pmCycleMappingService;
+    private final PMCycleMappingService pmCycleMappingService;
     private final AuditorAware<UUID> auditorAware;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 

@@ -24,13 +24,13 @@ public class Profile implements Serializable {
 
     @Override
     public String toString() {
-        return "Profile{"
+        return "Profile("
                 + "title='" + title + '\''
                 + ", firstName='*****'"
                 + ", middleName='*****'"
                 + ", lastName='*****'"
                 + ", gender='" + gender + '\''
                 + ", dateOfBirth=" + dateOfBirth
-                + '}';
+                + ')';
     }
 }

@@ -32,7 +32,7 @@ public class Colleague implements Serializable {
 
     @Override
     public String toString() {
-        return "Colleague{"
+        return "Colleague("
                 + "colleagueUUID=" + colleagueUUID
                 + ", employeeId='*****'"
                 + ", countryCode='" + countryCode + '\''
@@ -42,6 +42,6 @@ public class Colleague implements Serializable {
                 + ", contact=" + contact
                 + ", serviceDates=" + serviceDates
                 + ", workRelationships=" + workRelationships
-                + '}';
+                + ')';
     }
 }
