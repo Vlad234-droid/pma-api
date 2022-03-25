@@ -59,8 +59,8 @@ class CalculateRemainingCyclesHandlerTest {
         //given
         var cycle = buildPmCycle();
         cycle.setProperties(new MapJson());
-        cycle.getProperties().setPropsMap(new HashMap<>());
-        cycle.getProperties().getPropsMap().put(FlowParameters.PM_CYCLE_REPEATS_LEFT.name(), "4");
+        cycle.getProperties().setMapJson(new HashMap<>());
+        cycle.getProperties().getMapJson().put(FlowParameters.PM_CYCLE_REPEATS_LEFT.name(), "4");
         var executionContext = FlowTestUtil.executionBuilder()
                 .withVariable(FlowParameters.PM_CYCLE, cycle)
                 .build();

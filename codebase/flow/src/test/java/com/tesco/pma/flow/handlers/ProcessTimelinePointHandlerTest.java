@@ -140,7 +140,7 @@ class ProcessTimelinePointHandlerTest {
         assertEquals(endDate.atStartOfDay().toInstant(ZoneOffset.UTC), tp.getEndTime());
         assertEquals(PMTimelinePointStatus.STARTED, tp.getStatus());
 
-        var mapJson = tp.getProperties().getPropsMap();
+        var mapJson = tp.getProperties().getMapJson();
         assertTrue(mapJson.containsKey(FlowParameters.START_DATE.name()));
         assertTrue(mapJson.containsKey(FlowParameters.END_DATE.name()));
         assertEquals(PM_CYCLE_MIN_ONE, mapJson.get(PMReviewElement.PM_REVIEW_MIN));

@@ -130,7 +130,7 @@ public abstract class AbstractNotificationsFlowTest extends AbstractCamundaSprin
             var propsMap = new HashMap<String, String>();
             propsMap.put(FlowParameters.START_DATE.name(), startDateString);
             var props = new MapJson();
-            props.setPropsMap(propsMap);
+            props.setMapJson(propsMap);
             timelinePoint.setProperties(props);
         }
 

@@ -16,8 +16,8 @@ public class CalculateRemainingCyclesHandler extends CamundaAbstractFlowHandler 
     protected void execute(ExecutionContext context) {
         var cycle = context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class);
         int remainingCycles = -1;
-        if (cycle.getProperties() != null && cycle.getProperties().getPropsMap() != null) {
-            remainingCycles = Integer.parseInt(cycle.getProperties().getPropsMap().getOrDefault(FlowParameters.PM_CYCLE_REPEATS_LEFT.name(),
+        if (cycle.getProperties() != null && cycle.getProperties().getMapJson() != null) {
+            remainingCycles = Integer.parseInt(cycle.getProperties().getMapJson().getOrDefault(FlowParameters.PM_CYCLE_REPEATS_LEFT.name(),
                     "0")) - 1;
         }
         if (remainingCycles < 0 && cycle.getMetadata() != null && cycle.getMetadata().getCycle() != null

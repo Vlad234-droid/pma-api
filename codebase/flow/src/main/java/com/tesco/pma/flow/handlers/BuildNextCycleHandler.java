@@ -44,7 +44,7 @@ public class BuildNextCycleHandler extends CamundaAbstractFlowHandler {
             throw new BpmnError(ERROR, "Don't need to repeat cycle. It seems the same event sends again.");
         }
         initPropertiesMap(previousCycle);
-        previousCycle.getProperties().getPropsMap().put(FlowParameters.PM_CYCLE_REPEATS_LEFT.name(), String.valueOf(left));
+        previousCycle.getProperties().getMapJson().put(FlowParameters.PM_CYCLE_REPEATS_LEFT.name(), String.valueOf(left));
         previousCycle.setStartTime(previousCycle.getStartTime().atZone(ZoneOffset.UTC).plus(Period.ofYears(1)).toInstant());
         previousCycle.setEndTime(previousCycle.getEndTime().atZone(ZoneOffset.UTC).plus(Period.ofYears(1)).toInstant());
         previousCycle.setUuid(null);
@@ -55,8 +55,8 @@ public class BuildNextCycleHandler extends CamundaAbstractFlowHandler {
         if (previousCycle.getProperties() == null) {
             previousCycle.setProperties(new MapJson());
         }
-        if (previousCycle.getProperties().getPropsMap() == null) {
-            previousCycle.getProperties().setPropsMap(new HashMap<>());
+        if (previousCycle.getProperties().getMapJson() == null) {
+            previousCycle.getProperties().setMapJson(new HashMap<>());
         }
     }
 

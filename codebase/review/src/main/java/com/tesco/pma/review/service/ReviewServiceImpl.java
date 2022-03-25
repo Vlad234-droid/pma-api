@@ -374,7 +374,7 @@ public class ReviewServiceImpl implements ReviewService {
                 var actualReview = actualReviews.get(0);
                 //feedback presents in MYR
                 if (review.getProperties() != null
-                        && !review.getProperties().getPropsMap().isEmpty()) {
+                        && !review.getProperties().getMapJson().isEmpty()) {
                     actualReview.setProperties(review.getProperties());
                     updateReview(actualReview);
                 }
@@ -649,7 +649,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private Integer getVariable(TimelinePoint timelinePoint, String variableName, Integer defaultValue) {
-        var variable = timelinePoint.getProperties().getPropsMap().get(variableName);
+        var variable = timelinePoint.getProperties().getMapJson().get(variableName);
         if (variable != null) {
             try {
                 return Integer.valueOf(variable);
