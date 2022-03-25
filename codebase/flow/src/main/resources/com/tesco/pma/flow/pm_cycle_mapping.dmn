@@ -97,7 +97,7 @@
 "_null"</text>
         </inputEntry>
         <inputEntry id="B2">
-          <text>"office","depot","distribution","store","maintainance"</text>
+          <text>"office","depot","distribution","store","maintenance"</text>
         </inputEntry>
         <inputEntry id="C2">
           <text>"wl4","wl5"</text>
@@ -109,7 +109,7 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F2">
-          <text>"oraclehcm","peopledatagrp","peopledatain","peopledataints","uk maintainance","_null"</text>
+          <text>"oraclehcm","peopledatagrp","peopledatain","peopledataints","ukmaintenance","_null"</text>
         </inputEntry>
         <inputEntry id="G2">
           <text></text>
@@ -162,7 +162,7 @@
 "_null"</text>
         </inputEntry>
         <inputEntry id="B4">
-          <text>"office","depot","distribution","store","maintainance"</text>
+          <text>"office","depot","distribution","store","maintenance"</text>
         </inputEntry>
         <inputEntry id="C4">
           <text>"wl3"</text>
@@ -230,7 +230,7 @@
 "tesco stores limited"</text>
         </inputEntry>
         <inputEntry id="B6">
-          <text>"office","depot","distribution","store","maintainance"</text>
+          <text>"office","depot","distribution","store","maintenance"</text>
         </inputEntry>
         <inputEntry id="C6">
           <text>"wl4","wl5"</text>
@@ -265,7 +265,7 @@
 "_null"</text>
         </inputEntry>
         <inputEntry id="B7">
-          <text>"office","depot","distribution","store","maintainance"</text>
+          <text>"office","depot","distribution","store","maintenance"</text>
         </inputEntry>
         <inputEntry id="C7">
           <text>"wl3"</text>
