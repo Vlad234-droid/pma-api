@@ -15,10 +15,10 @@ public class IamSourceSystem implements Serializable {
 
     @Override
     public String toString() {
-        return "IamSourceSystem{"
+        return "IamSourceSystem("
                 + "id='*****'"
                 + ", name='" + name + '\''
                 + ", source='" + source + '\''
-                + '}';
+                + ')';
     }
 }
