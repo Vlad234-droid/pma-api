@@ -28,6 +28,7 @@ dependencies {
     testImplementation project(':service').sourceSets.test.output
     testImplementation ("com.h2database:h2:${h2Version}")
     testImplementation ("com.zaxxer:HikariCP:${hikariVersion}")
+    testImplementation ("org.awaitility:awaitility:${awaitilityVersion}")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}") {
         exclude group: 'junit' // excluding junit 4
