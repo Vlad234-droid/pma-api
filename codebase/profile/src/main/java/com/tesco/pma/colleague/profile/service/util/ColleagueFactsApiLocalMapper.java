@@ -15,6 +15,7 @@ import com.tesco.pma.colleague.profile.dao.ProfileDAO;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
@@ -236,13 +237,14 @@ public class ColleagueFactsApiLocalMapper {
         department.setId(workRelationshipDepartment.getId());
         department.setName(workRelationshipDepartment.getName());
 
-        var businessType = new ColleagueEntity.Department.BusinessType();
-        businessType.setUuid(Optional.ofNullable(profileDAO.findBusinessType(workRelationshipDepartment.getBusinessType()))
-                .map(ColleagueEntity.Department.BusinessType::getUuid)
-                .orElseGet(UUID::randomUUID));
-        businessType.setName(workRelationshipDepartment.getBusinessType());
-
-        department.setBusinessType(businessType);
+        if (StringUtils.isNotEmpty(workRelationshipDepartment.getBusinessType())) {
+            var businessType = new ColleagueEntity.Department.BusinessType();
+            businessType.setUuid(Optional.ofNullable(profileDAO.findBusinessType(workRelationshipDepartment.getBusinessType()))
+                    .map(ColleagueEntity.Department.BusinessType::getUuid)
+                    .orElseGet(UUID::randomUUID));
+            businessType.setName(workRelationshipDepartment.getBusinessType());
+            department.setBusinessType(businessType);
+        }
         return department;
     }
 

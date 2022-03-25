@@ -149,6 +149,7 @@ public class ColleagueEntityMapper {
         return data.stream()
                 .map(FieldSet::getValues)
                 .map(c -> getDepartment(existingDepartments, btNameToUuidMap, c))
+                .filter(Objects::nonNull)
                 .filter(distinctByKeys(ColleagueEntity.Department::getId,
                         ColleagueEntity.Department::getName, ColleagueEntity.Department::getBusinessType))
                 .collect(Collectors.toSet());
@@ -156,10 +157,13 @@ public class ColleagueEntityMapper {
 
     private ColleagueEntity.Department getDepartment(Collection<ColleagueEntity.Department> existingDepartments,
                                                      Map<String, UUID> btNameToUuidMap, Map<String, Value> fields) {
-        var department = new ColleagueEntity.Department();
         var id = getValueNullSafe(fields, DEPARTMENT_ID);
         var name = getValueNullSafe(fields, DEPARTMENT_NAME);
         var businessTypeString = getValueNullSafe(fields, BUSINESS_TYPE);
+        if (StringUtils.isAllEmpty(id, name, businessTypeString)) {
+            return null;
+        }
+        var department = new ColleagueEntity.Department();
         department.setUuid(resolveDepartmentUuid(existingDepartments, id, name, businessTypeString));
         department.setId(id);
         department.setName(name);

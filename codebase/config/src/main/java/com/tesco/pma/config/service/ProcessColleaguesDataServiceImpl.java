@@ -40,7 +40,10 @@ public class ProcessColleaguesDataServiceImpl implements ProcessColleaguesDataSe
         var departments = ColleagueEntityMapper
                 .mapDepartments(result.getData(), existingDepartment);
         departments.forEach(d -> {
-            profileDAO.updateBusinessType(d.getBusinessType());
+            var businessType = d.getBusinessType();
+            if (businessType != null) {
+                profileDAO.updateBusinessType(businessType);
+            }
             profileDAO.updateDepartment(d);
         });
         return departments;
