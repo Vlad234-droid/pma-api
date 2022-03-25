@@ -1056,7 +1056,7 @@
       <rule id="excelRow33">
         <description>GROUP B</description>
         <inputEntry id="A33">
-          <text>"tesco international sourcing limited","tesco sourcing india private ltd","tesco international sourcing limited hong kong","äì sucursala bucuresti","tesco joint buying service (shanghai) co."</text>
+          <text>"tesco international sourcing limited","tesco sourcing india private ltd","tesco international sourcing limited hong kong ,äì sucursala bucuresti","tesco international sourcing limited hong kong - sucursala bucuresti","tesco joint buying service (shanghai) co."</text>
         </inputEntry>
         <inputEntry id="B33">
           <text>"office"</text>
@@ -1086,7 +1086,7 @@
       <rule id="excelRow34">
         <description>GROUP A2</description>
         <inputEntry id="A34">
-          <text>"tesco international sourcing limited","tesco sourcing india private ltd","tesco international sourcing limited hong kong","äì sucursala bucuresti","tesco joint buying service (shanghai) co."</text>
+          <text>"tesco international sourcing limited","tesco sourcing india private ltd","tesco international sourcing limited hong kong ,äì sucursala bucuresti","tesco international sourcing limited hong kong - sucursala bucuresti","tesco joint buying service (shanghai) co."</text>
         </inputEntry>
         <inputEntry id="B34">
           <text>"office"</text>
@@ -1116,7 +1116,7 @@
       <rule id="excelRow35">
         <description>GROUP A2</description>
         <inputEntry id="A35">
-          <text>"tesco international sourcing limited","tesco sourcing india private ltd","tesco international sourcing limited hong kong","äì sucursala bucuresti","tesco joint buying service (shanghai) co."</text>
+          <text>"tesco international sourcing limited","tesco sourcing india private ltd","tesco international sourcing limited hong kong ,äì sucursala bucuresti","tesco international sourcing limited hong kong - sucursala bucuresti","tesco joint buying service (shanghai) co."</text>
         </inputEntry>
         <inputEntry id="B35">
           <text>"office"</text>
