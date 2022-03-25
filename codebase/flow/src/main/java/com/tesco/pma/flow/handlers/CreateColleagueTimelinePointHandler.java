@@ -61,6 +61,7 @@ public class CreateColleagueTimelinePointHandler extends CamundaAbstractFlowHand
                         .properties(buildProps(context))
                         .status(calculateStatus(startDate))
                         .build();
+        context.setVariable(FlowParameters.TIMELINE_POINT, timelinePoint);
         try {
             timelinePointService.create(timelinePoint);
         } catch (AlreadyExistsException e) {

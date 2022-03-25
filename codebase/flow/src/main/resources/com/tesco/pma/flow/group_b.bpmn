@@ -138,6 +138,8 @@
       <bpmn:extensionElements>
         <camunda:in source="PM_CYCLE" target="PM_CYCLE" />
         <camunda:in source="SCHEDULED" target="SCHEDULED" />
+        <camunda:in source="CYCLE_BEFORE_START_DATE" target="CYCLE_BEFORE_START_DATE" />
+        <camunda:in source="CYCLE_START_DATE" target="CYCLE_START_DATE" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_010cmv6</bpmn:incoming>
       <bpmn:outgoing>Flow_156uzry</bpmn:outgoing>
@@ -146,6 +148,8 @@
       <bpmn:extensionElements>
         <camunda:in source="PM_CYCLE" target="PM_CYCLE" />
         <camunda:in source="SCHEDULED" target="SCHEDULED" />
+        <camunda:in source="CYCLE_END_DATE" target="CYCLE_END_DATE" />
+        <camunda:in source="CYCLE_BEFORE_END_DATE" target="CYCLE_BEFORE_END_DATE" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1l8lyyz</bpmn:incoming>
       <bpmn:outgoing>Flow_1qcajud</bpmn:outgoing>
@@ -328,6 +332,9 @@ COLLEAGUE_UUID - assign the employee</bpmn:text>
       <bpmndi:BPMNShape id="Activity_05lfqis_di" bpmnElement="myr">
         <dc:Bounds x="790" y="260" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_14tl3mq_di" bpmnElement="eyr">
+        <dc:Bounds x="790" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0q24l2p_di" bpmnElement="Gateway_0q24l2p" isMarkerVisible="true">
         <dc:Bounds x="625" y="275" width="50" height="50" />
       </bpmndi:BPMNShape>
@@ -357,9 +364,6 @@ COLLEAGUE_UUID - assign the employee</bpmn:text>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0xgpen9_di" bpmnElement="TextAnnotation_0xgpen9">
         <dc:Bounds x="160" y="120" width="280" height="124" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_14tl3mq_di" bpmnElement="eyr">
-        <dc:Bounds x="790" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0ngjglu_di" bpmnElement="Event_0hw207d">
         <dc:Bounds x="342" y="322" width="36" height="36" />
