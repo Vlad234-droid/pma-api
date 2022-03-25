@@ -19,6 +19,7 @@ import java.util.UUID;
 import static com.tesco.pma.cycle.exception.ErrorCodes.FILE_DEPLOYMENT_ERROR;
 import static java.util.Map.of;
 import static org.apache.commons.io.FilenameUtils.getBaseName;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Slf4j
 @Service
@@ -56,7 +57,13 @@ public class DeploymentServiceImpl implements DeploymentService {
             log.debug("Deployment id: {}", deploymentInfo.getId());
 
             List<String> procdefs = processManagerService.getProcessesIds(deploymentInfo.getId(), resourceName);
-            return procdefs.iterator().next();
+
+            var deploymentResult = deploymentInfo.getId();
+            if (!isEmpty(procdefs)) {
+                deploymentResult = procdefs.iterator().next();
+            }
+            log.debug("Deployment result: {}", deploymentResult);
+            return deploymentResult;
         } catch (InitializationException ex) {
             log.error("Exception while deploying file: {}", file.getFileName());
             throw new PMCycleException(FILE_DEPLOYMENT_ERROR.getCode(),

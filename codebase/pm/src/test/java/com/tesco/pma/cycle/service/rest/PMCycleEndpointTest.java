@@ -7,7 +7,7 @@ import com.tesco.pma.configuration.audit.AuditorAware;
 import com.tesco.pma.cycle.LocalTestConfig;
 import com.tesco.pma.cycle.service.PMColleagueCycleService;
 import com.tesco.pma.cycle.service.PMCycleService;
-import com.tesco.pma.cycle.service.PmCycleMappingService;
+import com.tesco.pma.cycle.service.PMCycleMappingService;
 import com.tesco.pma.error.ApiExceptionHandler;
 import com.tesco.pma.rest.AbstractEndpointTest;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ class PMCycleEndpointTest extends AbstractEndpointTest {
     private AuditorAware<UUID> auditorAware;
 
     @MockBean
-    private PmCycleMappingService pmCycleMappingService;
+    private PMCycleMappingService pmCycleMappingService;
 
     @MockBean
     private NamedMessageSourceAccessor messageSourceAccessor;

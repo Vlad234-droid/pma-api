@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class PmCycleMappingServiceImpl implements PmCycleMappingService {
+public class PMCycleMappingServiceImpl implements PMCycleMappingService {
 
     private static final String PM_CYCLE_MAPPING_TABLE_KEY = "pm_cycle_mapping";
 
