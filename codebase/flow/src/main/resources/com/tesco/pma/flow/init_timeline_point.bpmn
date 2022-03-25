@@ -14,6 +14,13 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${SCHEDULED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:callActivity id="Activity_18xvw5z" name="Schedule timeline point" calledElement="schedule_timeline_point">
+      <bpmn:extensionElements>
+        <camunda:in source="START_DATE" target="START_DATE" />
+        <camunda:in source="BEFORE_START_DATE" target="BEFORE_START_DATE" />
+        <camunda:in source="BEFORE_END_DATE" target="BEFORE_END_DATE" />
+        <camunda:in source="END_DATE" target="END_DATE" />
+        <camunda:in source="TIMELINE_POINT" target="TIMELINE_POINT" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_10fekkl</bpmn:incoming>
       <bpmn:outgoing>Flow_1bupvs0</bpmn:outgoing>
     </bpmn:callActivity>
@@ -41,13 +48,17 @@
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="init_timeline_point">
-      <bpmndi:BPMNEdge id="Flow_10fekkl_di" bpmnElement="Flow_10fekkl">
-        <di:waypoint x="400" y="172" />
-        <di:waypoint x="400" y="120" />
-        <di:waypoint x="490" y="120" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="413" y="102" width="51" height="14" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNEdge id="Flow_1j0jloz_di" bpmnElement="Flow_1j0jloz">
+        <di:waypoint x="590" y="270" />
+        <di:waypoint x="626" y="270" />
+        <di:waypoint x="626" y="197" />
+        <di:waypoint x="662" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bupvs0_di" bpmnElement="Flow_1bupvs0">
+        <di:waypoint x="590" y="120" />
+        <di:waypoint x="626" y="120" />
+        <di:waypoint x="626" y="197" />
+        <di:waypoint x="662" y="197" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1qjpvlo_di" bpmnElement="Flow_1qjpvlo">
         <di:waypoint x="425" y="197" />
@@ -61,26 +72,28 @@
           <dc:Bounds x="401" y="273" width="75" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_17y9gy5_di" bpmnElement="Flow_17y9gy5">
-        <di:waypoint x="188" y="197" />
-        <di:waypoint x="230" y="197" />
+      <bpmndi:BPMNEdge id="Flow_10fekkl_di" bpmnElement="Flow_10fekkl">
+        <di:waypoint x="400" y="172" />
+        <di:waypoint x="400" y="120" />
+        <di:waypoint x="490" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="413" y="102" width="51" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_13h7w6t_di" bpmnElement="Flow_13h7w6t">
         <di:waypoint x="330" y="197" />
         <di:waypoint x="375" y="197" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1bupvs0_di" bpmnElement="Flow_1bupvs0">
-        <di:waypoint x="590" y="120" />
-        <di:waypoint x="626" y="120" />
-        <di:waypoint x="626" y="197" />
-        <di:waypoint x="662" y="197" />
+      <bpmndi:BPMNEdge id="Flow_17y9gy5_di" bpmnElement="Flow_17y9gy5">
+        <di:waypoint x="188" y="197" />
+        <di:waypoint x="230" y="197" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1j0jloz_di" bpmnElement="Flow_1j0jloz">
-        <di:waypoint x="590" y="270" />
-        <di:waypoint x="626" y="270" />
-        <di:waypoint x="626" y="197" />
-        <di:waypoint x="662" y="197" />
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="179" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_07wrsjd_di" bpmnElement="initTimelinePointHandler">
+        <dc:Bounds x="230" y="157" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_16dcfhg_di" bpmnElement="Activity_18xvw5z">
         <dc:Bounds x="490" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -89,12 +102,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1jhggpn_di" bpmnElement="Activity_1hk4ozx">
         <dc:Bounds x="490" y="230" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds x="152" y="179" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_07wrsjd_di" bpmnElement="initTimelinePointHandler">
-        <dc:Bounds x="230" y="157" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_17tdopz_di" bpmnElement="Gateway_1gsdgtz" isMarkerVisible="true">
         <dc:Bounds x="375" y="172" width="50" height="50" />
