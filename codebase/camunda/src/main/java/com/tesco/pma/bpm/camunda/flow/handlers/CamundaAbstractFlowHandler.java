@@ -45,14 +45,6 @@ public abstract class CamundaAbstractFlowHandler implements JavaDelegate { //NOP
         return new CamundaExecutionContext(execution);
     }
 
-    protected boolean assertNull(Object object, String message, ExecutionContext context) {
-        if (object == null) {
-            log.warn(message, context);
-            return true;
-        }
-        return false;
-    }
-
     protected <T> T executeInTx(ExecutionContext context, TxSupplier<T> txSupplier) throws Exception {
         return executeInTx(() -> context.getBean(PlatformTransactionManager.class), context, txSupplier);
     }
