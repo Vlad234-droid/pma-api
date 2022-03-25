@@ -211,6 +211,7 @@ public class ColleagueEntityMapper {
                     job.setName(getValueNullSafe(c, "job_name"));
                     return job;
                 })
+                .distinct()
                 .collect(Collectors.groupingBy(ColleagueEntity.Job::getId))
                 .values()
                 .stream()
