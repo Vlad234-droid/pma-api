@@ -112,7 +112,7 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F2">
-          <text>"oraclehcm","peopledatagrp","peopledatain","peopledataints","ukmaintenance","_null"</text>
+          <text>"oraclehcm","peopledatagrp","peopledatain","peopledataints","ukmaintenance","peopledataoakwood","_null"</text>
         </inputEntry>
         <inputEntry id="G2">
           <text></text>
@@ -177,7 +177,7 @@
           <text></text>
         </inputEntry>
         <inputEntry id="F4">
-          <text>"oraclehcm","peopledatagrp","peopledatain","ukmaintenance","_null"</text>
+          <text>"oraclehcm","peopledatagrp","peopledatain","ukmaintenance","peopledataoakwood","_null"</text>
         </inputEntry>
         <inputEntry id="G4">
           <text></text>
@@ -702,7 +702,7 @@
           <text>"tesco maintenance"</text>
         </inputEntry>
         <inputEntry id="B21">
-          <text>"maintenance"</text>
+          <text>"maintenance","office"</text>
         </inputEntry>
         <inputEntry id="C21">
           <text>"wl1"</text>
@@ -732,7 +732,7 @@
           <text>"tesco maintenance"</text>
         </inputEntry>
         <inputEntry id="B22">
-          <text>"maintenance"</text>
+          <text>"maintenance","office"</text>
         </inputEntry>
         <inputEntry id="C22">
           <text>"wl2"</text>
@@ -765,7 +765,7 @@
           <text>"office"</text>
         </inputEntry>
         <inputEntry id="C23">
-          <text>"wl1"</text>
+          <text>"wl1","_null"</text>
         </inputEntry>
         <inputEntry id="D23">
           <text>"annual","_null"</text>
@@ -825,7 +825,7 @@
           <text>"store"</text>
         </inputEntry>
         <inputEntry id="C25">
-          <text>"wl1"</text>
+          <text>"wl1","_null"</text>
         </inputEntry>
         <inputEntry id="D25">
           <text>"hourly"</text>
@@ -843,36 +843,6 @@
           <text>"tesco plc","_null"</text>
         </inputEntry>
         <outputEntry id="I25">
-          <text>"group_b"</text>
-        </outputEntry>
-      </rule>
-      <rule id="excelRow26">
-        <description>GROUP B</description>
-        <inputEntry id="A26">
-          <text>"tesco family dining", "tesco family dining limited"</text>
-        </inputEntry>
-        <inputEntry id="B26">
-          <text>"store"</text>
-        </inputEntry>
-        <inputEntry id="C26">
-          <text>"_null"</text>
-        </inputEntry>
-        <inputEntry id="D26">
-          <text>"hourly"</text>
-        </inputEntry>
-        <inputEntry id="E26">
-          <text></text>
-        </inputEntry>
-        <inputEntry id="F26">
-          <text>"uk hospitality","_null"</text>
-        </inputEntry>
-        <inputEntry id="G26">
-          <text>"gb"</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1bzron6">
-          <text>"tesco plc","_null"</text>
-        </inputEntry>
-        <outputEntry id="I26">
           <text>"group_b"</text>
         </outputEntry>
       </rule>
