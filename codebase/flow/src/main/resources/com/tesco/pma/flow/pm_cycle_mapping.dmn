@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="pm_cycle_mapping_file" name="PM CYCLE MAPPING" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" id="pm_cycle_mapping_file" name="PM CYCLE MAPPING" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
   <decision id="pm_cycle_mapping" name="Performance Cycles&#10;mapping">
     <informationRequirement id="InformationRequirement_05cotss">
       <requiredInput href="#InputData_16ljmch" />
     </informationRequirement>
     <decisionTable id="decisionTable">
-      <input id="InputA" label="Legal Employer Name">
+      <input id="InputA" label="Legal Employer Name" biodi:width="399">
         <inputExpression id="InputExpression1174389866" typeRef="string" expressionLanguage="feel">
           <text>{
     wr: COLLEAGUE.workRelationships[1],
@@ -428,10 +428,10 @@
           <text>"wl1"</text>
         </inputEntry>
         <inputEntry id="D12">
-          <text>"annual"</text>
+          <text>"annual", "_null"</text>
         </inputEntry>
         <inputEntry id="E12">
-          <text></text>
+          <text>"express store manager"</text>
         </inputEntry>
         <inputEntry id="F12">
           <text>"access api","oraclehcm",
@@ -1029,7 +1029,11 @@
       <rule id="excelRow33">
         <description>GROUP B</description>
         <inputEntry id="A33">
-          <text>"tesco international sourcing limited","tesco sourcing india private ltd","tesco international sourcing limited hong kong ,äì sucursala bucuresti","tesco international sourcing limited hong kong - sucursala bucuresti","tesco joint buying service (shanghai) co., ltd."</text>
+          <text>"tesco international sourcing limited",
+"tesco sourcing india private ltd",
+"tesco international sourcing limited hong kong ,äì sucursala bucuresti",
+"tesco international sourcing limited hong kong - sucursala bucuresti",
+"tesco joint buying service (shanghai) co., ltd."</text>
         </inputEntry>
         <inputEntry id="B33">
           <text>"office"</text>
@@ -1059,7 +1063,11 @@
       <rule id="excelRow34">
         <description>GROUP A2</description>
         <inputEntry id="A34">
-          <text>"tesco international sourcing limited","tesco sourcing india private ltd","tesco international sourcing limited hong kong ,äì sucursala bucuresti","tesco international sourcing limited hong kong - sucursala bucuresti","tesco joint buying service (shanghai) co., ltd."</text>
+          <text>"tesco international sourcing limited",
+"tesco sourcing india private ltd",
+"tesco international sourcing limited hong kong ,äì sucursala bucuresti",
+"tesco international sourcing limited hong kong - sucursala bucuresti",
+"tesco joint buying service (shanghai) co., ltd."</text>
         </inputEntry>
         <inputEntry id="B34">
           <text>"office"</text>
@@ -1089,7 +1097,11 @@
       <rule id="excelRow35">
         <description>GROUP A2</description>
         <inputEntry id="A35">
-          <text>"tesco international sourcing limited","tesco sourcing india private ltd","tesco international sourcing limited hong kong ,äì sucursala bucuresti","tesco international sourcing limited hong kong - sucursala bucuresti","tesco joint buying service (shanghai) co., ltd."</text>
+          <text>"tesco international sourcing limited",
+"tesco sourcing india private ltd",
+"tesco international sourcing limited hong kong ,äì sucursala bucuresti",
+"tesco international sourcing limited hong kong - sucursala bucuresti",
+"tesco joint buying service (shanghai) co., ltd."</text>
         </inputEntry>
         <inputEntry id="B35">
           <text>"office"</text>
