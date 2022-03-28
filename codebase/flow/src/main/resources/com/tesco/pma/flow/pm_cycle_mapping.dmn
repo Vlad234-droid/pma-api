@@ -416,6 +416,38 @@
           <text>"group_b"</text>
         </outputEntry>
       </rule>
+      <rule id="DecisionRule_06vvbk7">
+        <description>GROUP A2</description>
+        <inputEntry id="UnaryTests_0f4rypi">
+          <text>"tesco stores limited","oakwood distribution limited"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0258o3e">
+          <text>"depot", "distribution", "store"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_11zrs5h">
+          <text>"wl2"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0hw1wi3">
+          <text>"annual","_null"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1xg9q63">
+          <text>"express store manager"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ha5bw8">
+          <text>"access api","oraclehcm",
+"peopledataoakwood", "uk stores sage",
+"_null"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_02hg25n">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0iewbf9">
+          <text>"tesco plc","_null"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0onocad">
+          <text>"group_a2"</text>
+        </outputEntry>
+      </rule>
       <rule id="excelRow12">
         <description>GROUP B</description>
         <inputEntry id="A12">
@@ -428,10 +460,10 @@
           <text>"wl1"</text>
         </inputEntry>
         <inputEntry id="D12">
-          <text>"annual", "_null"</text>
+          <text>"annual"</text>
         </inputEntry>
         <inputEntry id="E12">
-          <text>"express store manager"</text>
+          <text></text>
         </inputEntry>
         <inputEntry id="F12">
           <text>"access api","oraclehcm",
@@ -492,7 +524,7 @@
           <text>"_null"</text>
         </inputEntry>
         <inputEntry id="D14">
-          <text>"annual"</text>
+          <text>"annual","_null"</text>
         </inputEntry>
         <inputEntry id="E14">
           <text>not("express store manager")</text>
@@ -759,13 +791,13 @@
       <rule id="excelRow23">
         <description>GROUP B</description>
         <inputEntry id="A23">
-          <text>"tesco family dining", "tesco family dining limited"</text>
+          <text>"tesco family dining"</text>
         </inputEntry>
         <inputEntry id="B23">
           <text>"office"</text>
         </inputEntry>
         <inputEntry id="C23">
-          <text>"wl1","_null"</text>
+          <text>"wl1"</text>
         </inputEntry>
         <inputEntry id="D23">
           <text>"annual","_null"</text>
@@ -787,15 +819,15 @@
         </outputEntry>
       </rule>
       <rule id="excelRow24">
-        <description>GROUP A2</description>
+        <description>GROUP B</description>
         <inputEntry id="A24">
-          <text>"tesco family dining", "tesco family dining limited"</text>
+          <text>"tesco family dining"</text>
         </inputEntry>
         <inputEntry id="B24">
           <text>"office"</text>
         </inputEntry>
         <inputEntry id="C24">
-          <text>"wl2"</text>
+          <text>"_null"</text>
         </inputEntry>
         <inputEntry id="D24">
           <text>"annual","_null"</text>
@@ -813,22 +845,22 @@
           <text>"tesco plc","_null"</text>
         </inputEntry>
         <outputEntry id="I24">
-          <text>"group_a2"</text>
+          <text>"group_b"</text>
         </outputEntry>
       </rule>
       <rule id="excelRow25">
-        <description>GROUP B</description>
+        <description>GROUP A2</description>
         <inputEntry id="A25">
-          <text>"tesco family dining", "tesco family dining limited"</text>
+          <text>"tesco family dining"</text>
         </inputEntry>
         <inputEntry id="B25">
-          <text>"store"</text>
+          <text>"office"</text>
         </inputEntry>
         <inputEntry id="C25">
-          <text>"wl1","_null"</text>
+          <text>"wl2"</text>
         </inputEntry>
         <inputEntry id="D25">
-          <text>"hourly"</text>
+          <text>"annual","_null"</text>
         </inputEntry>
         <inputEntry id="E25">
           <text></text>
@@ -843,22 +875,22 @@
           <text>"tesco plc","_null"</text>
         </inputEntry>
         <outputEntry id="I25">
-          <text>"group_b"</text>
+          <text>"group_a2"</text>
         </outputEntry>
       </rule>
       <rule id="excelRow27">
-        <description>GROUP C</description>
+        <description>GROUP B</description>
         <inputEntry id="A27">
-          <text>"tesco family dining", "tesco family dining limited"</text>
+          <text>"tesco family dining"</text>
         </inputEntry>
         <inputEntry id="B27">
           <text>"store"</text>
         </inputEntry>
         <inputEntry id="C27">
-          <text>"_null"</text>
+          <text>"wl1"</text>
         </inputEntry>
         <inputEntry id="D27">
-          <text>"_null"</text>
+          <text>"hourly"</text>
         </inputEntry>
         <inputEntry id="E27">
           <text></text>
@@ -873,6 +905,65 @@
           <text>"tesco plc","_null"</text>
         </inputEntry>
         <outputEntry id="I27">
+          <text>"group_b"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0azdcjz">
+        <description>GROUP B</description>
+        <inputEntry id="UnaryTests_1rm74ge">
+          <text>"tesco family dining"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0vzm6qh">
+          <text>"store"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0wuxy0p">
+          <text>"_null"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0g4buup">
+          <text>"hourly"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1dedwyn">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1uqcp26">
+          <text>"uk hospitality","_null"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_19a2485">
+          <text>"gb"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0zllznf">
+          <text>"tesco plc","_null"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0e56ai6">
+          <text>"group_b"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0sa4m3i">
+        <inputEntry id="UnaryTests_0iwr8xp">
+          <text>"tesco family dining"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0pogj8n">
+          <text>"store"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0qms0em">
+          <text>"_null"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0lj5os4">
+          <text>"_null"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1j4pzvb">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0dxrdaj">
+          <text>"uk hospitality","_null"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0xzf6gk">
+          <text>"gb"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_070nyhi">
+          <text>"tesco plc","_null"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ka7al9">
           <text>"group_c"</text>
         </outputEntry>
       </rule>
