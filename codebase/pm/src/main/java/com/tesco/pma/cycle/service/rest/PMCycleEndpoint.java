@@ -218,7 +218,7 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle not found",
             content = @Content)
     @GetMapping(value = "/colleagues/{colleagueUuid}/metadata", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    @PreAuthorize("isColleague()")
+    @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isProcessManager() or isAdmin()")
     public RestResponse<CompositePMCycleMetadataResponse> getMetadataByColleague(@PathVariable UUID colleagueUuid,
                                                                                  @RequestParam(value = INCLUDE_FORMS,
                                                                                          defaultValue = "false")
@@ -252,6 +252,7 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle deployed")
     @PostMapping(value = "/pm-cycles/{uuid}/deploy")
     @ResponseStatus(HttpStatus.ACCEPTED)
+    @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
     public RestResponse<UUID> deploy(@PathVariable final UUID uuid) {
 
         return success(service.deploy(uuid));
@@ -269,6 +270,7 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle started")
     @PutMapping(value = "/pm-cycles/{uuid}/start-scheduled")
     @ResponseStatus(HttpStatus.ACCEPTED)
+    @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
     public RestResponse<Void> startScheduled(@PathVariable final UUID uuid) {
         log.debug("REST request to start cycle : {}", uuid);
         service.start(uuid);
@@ -288,6 +290,7 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle started")
     @PutMapping(value = "/pm-cycles/{cycleUuid}/colleagues/{colleagueUuid}/start")
     @ResponseStatus(HttpStatus.ACCEPTED)
+    @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
     public RestResponse<Void> startColleagueCycle(@PathVariable final UUID cycleUuid,
                                                   @PathVariable final UUID colleagueUuid) {
         log.debug("REST request to start cycle : {}, colleague: {}", cycleUuid, colleagueUuid);
