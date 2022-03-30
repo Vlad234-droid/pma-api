@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,6 +62,11 @@ class HelpServiceTest extends AbstractCamundaSpringBootTest {
                 OUTPUT_SYSTEM_GUIDANCE_AND_FAQS_PEOPLEDATAINTS);
         assertSuccessRule(Map.of(KEYS.COUNTRY_CODE, COUNTRY_GB, KEYS.IAM_SOURCE, IAM_SOURCE_UK_HOSPITALITY),
                 OUTPUT_SYSTEM_GUIDANCE_AND_FAQS_UK_HOSPITALITY);
+
+        var params = new HashMap<KEYS, Object>();
+        params.put(KEYS.COUNTRY_CODE, "SK");
+        params.put(KEYS.IAM_SOURCE, null);
+        assertSuccessRule(params, OUTPUT_SYSTEM_GUIDANCE_AND_FAQS_GB);
     }
 
     @Test
