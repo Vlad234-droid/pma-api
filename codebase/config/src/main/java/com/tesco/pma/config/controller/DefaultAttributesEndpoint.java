@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +27,7 @@ public class DefaultAttributesEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Update default attributes for a colleague")
     @PutMapping(path = "/default/attributes/colleagues/{colleagueUuid}")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isAdmin() or isTalentAdmin()")
     public RestResponse<Void> updateDefaultAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid) {
         defaultAttributesService.updateDefaultAttributes(colleagueUuid);
         return RestResponse.success();
