@@ -158,7 +158,8 @@ class ReviewDAOTest extends AbstractDAOTest {
                 .returns(OBJECTIVE, from(Review::getType))
                 .returns(NUMBER_1, from(Review::getNumber))
                 .returns(REVIEW_PROPERTIES_INIT, from(Review::getProperties))
-                .returns(DRAFT, from(Review::getStatus));
+                .returns(DRAFT, from(Review::getStatus))
+                .returns(COLLEAGUE_UUID, from(Review::getColleagueUuid));
     }
 
 
@@ -289,6 +290,7 @@ class ReviewDAOTest extends AbstractDAOTest {
         final var reviews = List.of(
                 Review.builder()
                         .uuid(REVIEW_UUID)
+                        .colleagueUuid(COLLEAGUE_UUID)
                         .tlPointUuid(TIMELINE_POINT_UUID)
                         .type(OBJECTIVE)
                         .status(DRAFT)
@@ -298,6 +300,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                         .build(),
                 Review.builder()
                         .uuid(DECLINED_REVIEW_UUID)
+                        .colleagueUuid(COLLEAGUE_UUID)
                         .tlPointUuid(TIMELINE_POINT_UUID)
                         .type(OBJECTIVE)
                         .status(DECLINED)
@@ -307,6 +310,7 @@ class ReviewDAOTest extends AbstractDAOTest {
                         .build(),
                 Review.builder()
                         .uuid(MYR_REVIEW_UUID)
+                        .colleagueUuid(COLLEAGUE_UUID)
                         .tlPointUuid(MYR_TIMELINE_POINT_UUID)
                         .type(MYR)
                         .status(DRAFT)
