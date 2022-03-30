@@ -218,7 +218,7 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle not found",
             content = @Content)
     @GetMapping(value = "/colleagues/{colleagueUuid}/metadata", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    @PreAuthorize("isPeopleTeam() or isTalentAdmin() or isProcessManager() or isAdmin()")
+    @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
     public RestResponse<CompositePMCycleMetadataResponse> getMetadataByColleague(@PathVariable UUID colleagueUuid,
                                                                                  @RequestParam(value = INCLUDE_FORMS,
                                                                                          defaultValue = "false")
