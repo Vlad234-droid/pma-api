@@ -1,5 +1,7 @@
 package com.tesco.pma.notes.controller;
 
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
+import com.tesco.pma.notes.exception.NotesErrorCodes;
 import com.tesco.pma.notes.model.Note;
 import com.tesco.pma.notes.service.NotesService;
 import com.tesco.pma.rest.HttpStatusCodes;
@@ -8,7 +10,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -21,8 +26,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import static com.tesco.pma.util.SecurityUtils.getColleagueUuid;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RequiredArgsConstructor
@@ -31,12 +38,13 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 public class NotesEndpoint {
 
     private final NotesService notesService;
+    private final NamedMessageSourceAccessor messageSourceAccessor;
 
     @Operation(summary = "Create a Note", tags = {"Notes"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Create a new Note")
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("isColleague()")
+    @PreAuthorize("isColleague() and isCurrentUser(#note.ownerColleagueUuid)")
     public RestResponse<Note> createNote(@RequestBody Note note) {
         return RestResponse.success(notesService.createNote(note));
     }
@@ -45,7 +53,7 @@ public class NotesEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Update a Note")
     @PutMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isColleague()")
+    @PreAuthorize("isColleague() and isCurrentUser(#note.ownerColleagueUuid)")
     public RestResponse<Note> update(@PathVariable("id") UUID uuid, @RequestBody Note note) {
         return RestResponse.success(notesService.updateNote(note));
     }
@@ -54,7 +62,7 @@ public class NotesEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Find Note")
     @GetMapping(produces = APPLICATION_JSON_VALUE, params = "ownerId")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isColleague()")
+    @PreAuthorize("isColleague() and isCurrentUser(#ownerId)")
     public RestResponse<List<Note>> findByOwner(@RequestParam UUID ownerId) {
         return RestResponse.success(notesService.findNoteByOwner(ownerId));
     }
@@ -64,7 +72,9 @@ public class NotesEndpoint {
     @GetMapping(produces = APPLICATION_JSON_VALUE, params = "folderId")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isColleague()")
-    public RestResponse<List<Note>> findByFolder(@RequestParam UUID folderId) {
+    public RestResponse<List<Note>> findByFolder(@RequestParam UUID folderId,
+                                                 @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+        resolveFolderAccess(folderId, authentication);
         return RestResponse.success(notesService.findNoteByFolder(folderId));
     }
 
@@ -73,9 +83,31 @@ public class NotesEndpoint {
     @DeleteMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isColleague()")
-    public RestResponse<Void> delete(@PathVariable("id") UUID uuid) {
+    public RestResponse<Void> delete(@PathVariable("id") UUID uuid,
+                                     @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+        resolveNoteAccess(uuid, authentication);
         notesService.deleteNote(uuid);
         return RestResponse.success();
+    }
+
+    private void resolveNoteAccess(UUID uuid, Authentication authentication) {
+        var currentUserUuid = getColleagueUuid(authentication);
+        var found = notesService.findNoteByOwner(currentUserUuid).stream()
+                .anyMatch(note -> note.getId().equals(uuid));
+        if (!found) {
+            throw new AccessDeniedException(messageSourceAccessor.getMessage(NotesErrorCodes.NOT_A_NOTE_OWNER,
+                    Map.of("uuid", uuid)));
+        }
+    }
+
+    private void resolveFolderAccess(UUID uuid, Authentication authentication) {
+        var currentUserUuid = getColleagueUuid(authentication);
+        var found = notesService.findFolderByOwner(currentUserUuid).stream()
+                .anyMatch(folder -> folder.getId().equals(uuid));
+        if (!found) {
+            throw new AccessDeniedException(messageSourceAccessor.getMessage(NotesErrorCodes.NOT_A_FOLDER_OWNER,
+                    Map.of("uuid", uuid)));
+        }
     }
 
 }
