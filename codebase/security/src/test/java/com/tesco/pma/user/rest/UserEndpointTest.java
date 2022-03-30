@@ -35,6 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = UserEndpoint.class)
 @ContextConfiguration(classes = TestConfig.class)
 class UserEndpointTest extends AbstractEndpointTest {
+    private static final UUID COLLEAGUE_UUID = UUID.fromString("10000001-1001-1001-1001-100000000001");
+
     static final EasyRandom RANDOM = new EasyRandom();
     static final String ERRORS_0_CODE_JSON_PATH = "$.errors[0].code";
 
@@ -57,7 +59,7 @@ class UserEndpointTest extends AbstractEndpointTest {
                 .thenReturn(Optional.of(user));
 
         mvc.perform(get("/users/{colleagueUuid}", colleagueUuid)
-                        .with(roles(List.of(role)))
+                        .with(roles(List.of(role), COLLEAGUE_UUID.toString()))
                         .accept(APPLICATION_JSON))
                 .andExpect(status().is(status))
                 .andExpect(content().contentType(APPLICATION_JSON))
@@ -72,7 +74,7 @@ class UserEndpointTest extends AbstractEndpointTest {
                 .thenReturn(Optional.empty());
 
         mvc.perform(get("/users/{colleagueUuid}", colleagueUuid)
-                        .with(colleague())
+                        .with(colleague(colleagueUuid.toString()))
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(APPLICATION_JSON))
@@ -88,7 +90,7 @@ class UserEndpointTest extends AbstractEndpointTest {
                 .thenReturn(Optional.of(user));
 
         mvc.perform(get("/users/iam-ids/{iamId}", iamId)
-                        .with(colleague())
+                        .with(colleague(COLLEAGUE_UUID.toString()))
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
@@ -103,7 +105,7 @@ class UserEndpointTest extends AbstractEndpointTest {
                 .thenReturn(Optional.empty());
 
         mvc.perform(get("/users/iam-ids/{iamId}", iamId)
-                        .with(colleague())
+                        .with(colleague(COLLEAGUE_UUID.toString()))
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(APPLICATION_JSON))
@@ -154,7 +156,7 @@ class UserEndpointTest extends AbstractEndpointTest {
 
     private User randomUser() {
         var colleague = new Colleague();
-        colleague.setColleagueUUID(randomUuid());
+        colleague.setColleagueUUID(COLLEAGUE_UUID);
 
         var user = new User();
         user.setColleague(colleague);

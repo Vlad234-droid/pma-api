@@ -5,6 +5,7 @@
 
     <resultMap id="reviewResultMap" type="com.tesco.pma.review.domain.Review">
         <id property="uuid" column="uuid"/>
+        <result property="colleagueUuid" column="colleague_uuid"/>
         <result property="tlPointUuid" column="tl_point_uuid"/>
         <result property="type" column="type_id" typeHandler="com.tesco.pma.dao.utils.DictionaryItemTypeHandler"
                 javaType="com.tesco.pma.cycle.api.PMReviewType"/>
@@ -129,6 +130,7 @@
     <select id="getReviewsByColleague" resultMap="reviewResultMap">
         select t.*
         from (select r.*,
+                     cc.colleague_uuid,
                      rcsh.change_reason,
                      row_number()
                          over (partition by r.uuid order by rcsh.updated_time desc) rn
@@ -272,6 +274,7 @@
 
     <sql id="reviewQuery">
         SELECT r.uuid,
+               pcc.colleague_uuid,
                r.tl_point_uuid,
                r.type_id,
                r.number,
@@ -281,6 +284,10 @@
                row_number()
                    over (partition by r.uuid order by rcsh.updated_time desc) rn
         FROM pm_review r
+                 inner join pm_timeline_point ptp
+                            on (ptp.uuid = r.tl_point_uuid)
+                 inner join pm_colleague_cycle pcc
+                            on (pcc.uuid = ptp.colleague_cycle_uuid)
                  left join pm_review_change_status_hi rcsh
                            on (r.uuid = rcsh.review_uuid
                                and r.status_id = rcsh.new_status_id)
