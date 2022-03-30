@@ -23,7 +23,7 @@
       </input>
       <input id="InputClause_121u26s" label="IAM Source" biodi:width="150">
         <inputExpression id="LiteralExpression_10ojknf" typeRef="string" expressionLanguage="juel">
-          <text>${COLLEAGUE.externalSystems.iam == null ? "_null" : COLLEAGUE.externalSystems.iam.source.toLowerCase()}</text>
+          <text>${COLLEAGUE.externalSystems.iam == null || COLLEAGUE.externalSystems.iam.source == null ? "_null" : COLLEAGUE.externalSystems.iam.source.toLowerCase()}</text>
         </inputExpression>
         <inputValues id="UnaryTests_1m4fhu8">
           <text>"peopledataints","uk hospitality"</text>
