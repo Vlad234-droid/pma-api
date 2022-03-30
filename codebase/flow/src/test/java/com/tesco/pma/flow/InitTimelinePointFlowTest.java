@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
         classes = {CamundaSpringBootTestConfig.class},
         properties = "camunda.bpm.deployment-resource-pattern=com/tesco/pma/flow/init_timeline_point.bpmn"
 )
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@DirtiesContext
 class InitTimelinePointFlowTest {
 
     private static final String KEY = "init_timeline_point";

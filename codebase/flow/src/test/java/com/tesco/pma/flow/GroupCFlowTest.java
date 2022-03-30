@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
         classes = {CamundaSpringBootTestConfig.class},
         properties = "camunda.bpm.deployment-resource-pattern=com/tesco/pma/flow/group_c.bpmn"
 )
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 class GroupCFlowTest {
 
     private static final String KEY = "group_c";
@@ -59,7 +59,7 @@ class GroupCFlowTest {
         //given
         var variables = Variables.createVariables()
                 .putValue(FlowParameters.SCHEDULED.name(), true)
-                .putValue(FlowParameters.CYCLE_END_DATE.name(), LocalDate.now().plusDays(2).toString())
+                .putValue(FlowParameters.CYCLE_END_DATE_S.name(), LocalDate.now().plusDays(2).toString())
                 .putValue(FlowParameters.PM_CYCLE_UUID.name(), UUID.randomUUID());
         when(scenario.waitsAtMockedCallActivity(SCHEDULE_START_CYCLE)).thenReturn((task) -> task.defer("PT12H1S", task::complete));
         when(scenario.waitsAtMockedCallActivity(EYR)).thenReturn(ExternalTaskDelegate::complete);
@@ -131,7 +131,7 @@ class GroupCFlowTest {
     void shouldFinishCycleMoreThanTwoTimes() {
         //given
         var variables = Variables.createVariables()
-                .putValue(FlowParameters.CYCLE_END_DATE.name(), LocalDate.now().plusDays(2).toString())
+                .putValue(FlowParameters.CYCLE_END_DATE_S.name(), LocalDate.now().plusDays(2).toString())
                 .putValue(FlowParameters.SCHEDULED.name(), true)
                 .putValue(FlowParameters.PM_CYCLE_UUID.name(), UUID.randomUUID());
         when(scenario.waitsAtMockedCallActivity(SCHEDULE_END_CYCLE)).thenReturn(ExternalTaskDelegate::complete);
