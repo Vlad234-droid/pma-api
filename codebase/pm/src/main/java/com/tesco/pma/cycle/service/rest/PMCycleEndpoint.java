@@ -351,6 +351,7 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle mapping keys not found",
             content = @Content)
     @GetMapping(value = "/pm-cycles/mappings/keys/colleagues", produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isProcessManager() or isAdmin()")
     public RestResponse<Map<UUID, String>> getPmCycleMappingKeyByColleagues(@RequestParam List<UUID> uuids) {
         return success(pmCycleMappingService.getPmCycleMappingKeys(uuids));
     }
