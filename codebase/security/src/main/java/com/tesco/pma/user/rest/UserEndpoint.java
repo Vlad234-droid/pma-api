@@ -9,6 +9,7 @@ import com.tesco.pma.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
@@ -36,7 +37,7 @@ public class UserEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "User found")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "User not found")
     @GetMapping(path = "/{colleagueUuid}")
-    @PreAuthorize("hasAnyRole()")
+    @PreAuthorize("isCurrentUser(#colleagueUuid)")
     public RestResponse<User> getUserByColleagueUuid(@PathVariable UUID colleagueUuid) {
         return RestResponse.success(userService.findUserByColleagueUuid(colleagueUuid)
                 .orElseThrow(() -> notFound("colleagueUuid", colleagueUuid)));
@@ -47,6 +48,7 @@ public class UserEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "User not found")
     @GetMapping(path = "/iam-ids/{iamId}")
     @PreAuthorize("hasAnyRole()")
+    @PostAuthorize("isCurrentUser(returnObject.data.colleague.colleagueUUID)")
     public RestResponse<User> getUserByIamId(@PathVariable String iamId) {
         return RestResponse.success(userService.findUserByIamId(iamId)
                 .orElseThrow(() -> notFound("iamId", iamId)));
