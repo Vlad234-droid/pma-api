@@ -36,7 +36,7 @@ public class NotesEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Create a new Note")
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("isColleague()")
+    @PreAuthorize("isColleague() and isCurrentUser(#note.ownerColleagueUuid)")
     public RestResponse<Note> createNote(@RequestBody Note note) {
         return RestResponse.success(notesService.createNote(note));
     }
@@ -45,7 +45,7 @@ public class NotesEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Update a Note")
     @PutMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isColleague()")
+    @PreAuthorize("isColleague() and isCurrentUser(#note.ownerColleagueUuid)")
     public RestResponse<Note> update(@PathVariable("id") UUID uuid, @RequestBody Note note) {
         return RestResponse.success(notesService.updateNote(note));
     }
@@ -54,7 +54,7 @@ public class NotesEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "Find Note")
     @GetMapping(produces = APPLICATION_JSON_VALUE, params = "ownerId")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isColleague()")
+    @PreAuthorize("isColleague() and isCurrentUser(#ownerId)")
     public RestResponse<List<Note>> findByOwner(@RequestParam UUID ownerId) {
         return RestResponse.success(notesService.findNoteByOwner(ownerId));
     }

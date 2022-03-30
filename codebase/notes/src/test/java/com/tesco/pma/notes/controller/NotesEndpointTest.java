@@ -103,7 +103,7 @@ public class NotesEndpointTest extends AbstractEndpointTest {
                 .thenReturn(new ArrayList<>());
 
         mvc.perform(get("/notes?ownerId={colleagueUuid}", colleagueUuid)
-                        .with(colleague())
+                        .with(colleague(colleagueUuid.toString()))
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON));
