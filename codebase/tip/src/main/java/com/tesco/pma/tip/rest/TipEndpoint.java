@@ -51,7 +51,7 @@ public class TipEndpoint {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new tip or create a new version of an existing tip", tags = {"tip"})
     @ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "New Tip successfully created.")
-    @PreAuthorize("isColleague()")
+    @PreAuthorize("isTalentAdmin() or isAdmin()")
     public RestResponse<Tip> create(@Valid @RequestBody Tip tip) throws URISyntaxException {
         log.debug("REST request to save Tip : {}", tip);
         return RestResponse.success(tipService.create(tip));
@@ -109,7 +109,7 @@ public class TipEndpoint {
      */
     @GetMapping("/tips/{uuid}/history")
     @Operation(summary = "Get tip history", tags = {"tip"})
-    @PreAuthorize("isColleague()")
+    @PreAuthorize("isTalentAdmin() or isAdmin()")
     public RestResponse<List<Tip>> readHistory(@PathVariable final UUID uuid) {
         log.debug("REST request to get Tip history : {}", uuid);
         return RestResponse.success(tipService.findHistory(uuid));
@@ -126,7 +126,7 @@ public class TipEndpoint {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete an existing Tip", tags = {"tip"})
     @ApiResponse(responseCode = HttpStatusCodes.NO_CONTENT, description = "Tip successfully deleted.")
-    @PreAuthorize("isColleague()")
+    @PreAuthorize("isTalentAdmin() or isAdmin()")
     public RestResponse<Void> delete(@PathVariable final UUID uuid, @RequestParam(required = false) boolean withHistory)
             throws URISyntaxException {
         log.debug("REST request to delete Tip: {}", uuid);
@@ -145,7 +145,7 @@ public class TipEndpoint {
     @PatchMapping(value = "/tips/{uuid}/publish")
     @Operation(summary = "Publish tip", tags = {"tip"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Tip published successfully.")
-    @PreAuthorize("isColleague()")
+    @PreAuthorize("isTalentAdmin() or isAdmin()")
     public RestResponse<Tip> publish(@PathVariable final UUID uuid) throws URISyntaxException {
         log.debug("REST request to publish Tip : {}", uuid);
         return RestResponse.success(tipService.publish(uuid));

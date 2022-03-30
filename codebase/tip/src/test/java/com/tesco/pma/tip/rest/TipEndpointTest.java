@@ -52,7 +52,7 @@ class TipEndpointTest extends AbstractEndpointTest {
         //when
         mvc.perform(post("/tips")
                 .contentType(APPLICATION_JSON)
-                .content(OBJECT_MAPPER.writeValueAsString(tip)).with(colleague()))
+                .content(OBJECT_MAPPER.writeValueAsString(tip)).with(talentAdmin()))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(APPLICATION_JSON));
 
@@ -113,7 +113,7 @@ class TipEndpointTest extends AbstractEndpointTest {
         tip.setUuid(TestDataUtil.TIP_UUID);
 
         //when
-        mvc.perform(delete(TIPS_UUID_URL_TEMPLATE, TestDataUtil.TIP_UUID).with(colleague()))
+        mvc.perform(delete(TIPS_UUID_URL_TEMPLATE, TestDataUtil.TIP_UUID).with(admin()))
                 .andExpect(status().isNoContent());
 
         //then
@@ -128,7 +128,7 @@ class TipEndpointTest extends AbstractEndpointTest {
         when(service.publish(TestDataUtil.TIP_UNPUBLISHED_UUID)).thenReturn(tip);
 
         //when
-        mvc.perform(patch("/tips/{uuid}/publish", TestDataUtil.TIP_UNPUBLISHED_UUID).with(colleague()))
+        mvc.perform(patch("/tips/{uuid}/publish", TestDataUtil.TIP_UNPUBLISHED_UUID).with(admin()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON));
 
