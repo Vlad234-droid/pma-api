@@ -3,6 +3,7 @@ package com.tesco.pma.notes.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tesco.pma.TestConfig;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.notes.model.Folder;
 import com.tesco.pma.notes.model.Note;
 import com.tesco.pma.notes.model.NoteStatus;
 import com.tesco.pma.notes.service.NotesServiceImpl;
@@ -166,6 +167,54 @@ public class NotesEndpointTest extends AbstractEndpointTest {
 
     }
 
+    @Test
+    void findByFolderSuccessful() throws Exception {
+
+        var ownerId = UUID.randomUUID();
+        var folder = createFolder(UUID.randomUUID(), ownerId);
+        var note = createNote(UUID.randomUUID(), UUID.randomUUID(), ownerId);
+
+        when(notesService.findFolderByOwner(ownerId)).thenReturn(List.of(folder));
+        when(notesService.findNoteByFolder(ownerId)).thenReturn(List.of(note));
+
+        mvc.perform(get("/notes?folderId={folderId}", folder.getId())
+                        .with(colleague(ownerId.toString()))
+                        .accept(APPLICATION_JSON)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON));
+
+        verify(notesService, times(1))
+                .findFolderByOwner(ownerId);
+
+        verify(notesService, times(1))
+                .findNoteByFolder(any(UUID.class));
+
+    }
+
+    @Test
+    void findByFolderUnsuccessfulWithAccessDeniedException() throws Exception {
+
+        var ownerId = UUID.randomUUID();
+        var folder = createFolder(UUID.randomUUID(), ownerId);
+
+        when(notesService.findFolderByOwner(ownerId)).thenReturn(List.of(folder));
+
+        mvc.perform(get("/notes?folderId={folderId}", UUID.randomUUID())
+                        .with(colleague(ownerId.toString()))
+                        .accept(APPLICATION_JSON)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andExpect(content().contentType(APPLICATION_JSON));
+
+        verify(notesService, times(1))
+                .findFolderByOwner(ownerId);
+
+        verify(notesService, never())
+                .findNoteByFolder(any(UUID.class));
+
+    }
+
     private Note createNote(UUID id, UUID folderId, UUID ownerId){
         var note = new Note();
         note.setId(id);
@@ -178,5 +227,12 @@ public class NotesEndpointTest extends AbstractEndpointTest {
         return note;
     }
 
+    private Folder createFolder(UUID id, UUID ownerId){
+        var folder = new Folder();
+        folder.setId(id);
+        folder.setOwnerColleagueUuid(ownerId);
+        folder.setTitle("Title");
+        return folder;
+    }
 
 }

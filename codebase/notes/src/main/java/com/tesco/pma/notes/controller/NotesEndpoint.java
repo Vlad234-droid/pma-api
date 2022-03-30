@@ -74,6 +74,7 @@ public class NotesEndpoint {
     @PreAuthorize("isColleague()")
     public RestResponse<List<Note>> findByFolder(@RequestParam UUID folderId,
                                                  @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+        resolveFolderAccess(folderId, authentication);
         return RestResponse.success(notesService.findNoteByFolder(folderId));
     }
 
@@ -95,6 +96,16 @@ public class NotesEndpoint {
                 .anyMatch(note -> note.getId().equals(uuid));
         if (!found) {
             throw new AccessDeniedException(messageSourceAccessor.getMessage(NotesErrorCodes.NOT_A_NOTE_OWNER,
+                    Map.of("uuid", uuid)));
+        }
+    }
+
+    private void resolveFolderAccess(UUID uuid, Authentication authentication) {
+        var currentUserUuid = getColleagueUuid(authentication);
+        var found = notesService.findFolderByOwner(currentUserUuid).stream()
+                .anyMatch(folder -> folder.getId().equals(uuid));
+        if (!found) {
+            throw new AccessDeniedException(messageSourceAccessor.getMessage(NotesErrorCodes.NOT_A_FOLDER_OWNER,
                     Map.of("uuid", uuid)));
         }
     }
