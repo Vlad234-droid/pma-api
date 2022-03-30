@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static com.tesco.pma.flow.exception.ErrorCodes.PM_CYCLE_MORE_THAN_ONE_IN_STATUSES;
+import static com.tesco.pma.flow.exception.ErrorCodes.PM_CYCLE_NOT_ASSIGNED_FOR_COLLEAGUE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,6 +32,7 @@ class FindCycleHandlerTest {
     private static final String ALLOWED_STATUSES = "ALLOWED_STATUSES";
     private static final String CONFIG_KEY = "config-key";
     private static final Colleague COLLEAGUE = new Colleague();
+
     static {
         COLLEAGUE.setColleagueUUID(UUID.fromString("10000000-1000-1000-1000-100000000001"));
     }
@@ -77,6 +79,24 @@ class FindCycleHandlerTest {
         var bpmnError = assertThrows(BpmnError.class, () -> handler.execute(executionContext));
 
         assertEquals(PM_CYCLE_MORE_THAN_ONE_IN_STATUSES.getCode(), bpmnError.getErrorCode());
+        assertEquals(message, bpmnError.getMessage());
+    }
+
+    @Test
+    void pmCycleKeyNotFound() {
+        var message = "error message";
+        var executionContext = FlowTestUtil.executionBuilder()
+                .withVariable(FlowParameters.PM_CYCLE_KEY, null)
+                .withVariable(ALLOWED_STATUSES, STATUSES)
+                .withVariable(FlowParameters.COLLEAGUE, COLLEAGUE)
+                .build();
+
+        when(messageSourceAccessor.getMessage(PM_CYCLE_NOT_ASSIGNED_FOR_COLLEAGUE,
+                Map.of("colleague", COLLEAGUE))).thenReturn(message);
+
+        var bpmnError = assertThrows(BpmnError.class, () -> handler.execute(executionContext));
+
+        assertEquals(PM_CYCLE_NOT_ASSIGNED_FOR_COLLEAGUE.getCode(), bpmnError.getErrorCode());
         assertEquals(message, bpmnError.getMessage());
     }
 }
