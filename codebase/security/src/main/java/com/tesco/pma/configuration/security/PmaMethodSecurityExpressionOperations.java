@@ -98,7 +98,7 @@ public class PmaMethodSecurityExpressionOperations implements MethodSecurityExpr
      * @param depth         a level of colleague's tree
      * @return true - if user is manager of colleague.
      */
-    boolean isManagerOf(UUID colleagueUuid, Integer depth) {
+    public boolean isManagerOf(UUID colleagueUuid, Integer depth) {
         if (colleagueUuid == null || depth == null) {
             return false;
         }
