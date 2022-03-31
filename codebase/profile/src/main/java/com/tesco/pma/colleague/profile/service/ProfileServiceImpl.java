@@ -12,6 +12,7 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.logging.LogFormatter;
+import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.service.colleague.ColleagueApiService;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +23,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.Optional;
-import java.util.UUID;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.MANAGER_NOT_FOUND;
@@ -164,6 +166,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public List<ColleagueProfile> getSuggestions(RequestQuery requestQuery) {
+        requestQuery.setFilters(resetSuggestionsFilters(requestQuery.getFilters()));
 
         return profileDAO.findColleagueSuggestionsByFullName(requestQuery).stream()
                 .map(colleague -> {
@@ -367,6 +370,21 @@ public class ProfileServiceImpl implements ProfileService {
                 || !existingLocalColleague.getWorkLevel().getCode().equals(changedWorkLevel.getCode())) {
             profileDAO.updateWorkLevel(changedWorkLevel);
         }
+    }
+
+    // Replace single quote with two single quotes for PostgreSQL
+    private List<Condition> resetSuggestionsFilters(List<Condition> filters) {
+        List<Condition> result = new ArrayList<>();
+        for (Condition condition : filters) {
+            if (Set.of("first-name", "middle-name", "last-name").contains(condition.getProperty())
+                    && Condition.Operand.LIKE.equals(condition.getOperand())) {
+                var value = ((String) condition.getValue()).replace("'", "''");
+                result.add(new Condition(condition.getProperty(), condition.getOperand(), value));
+            } else {
+                result.add(condition);
+            }
+        }
+        return result;
     }
 
     private NotFoundException profileNotFound(String paramName, Object paramValue) {
