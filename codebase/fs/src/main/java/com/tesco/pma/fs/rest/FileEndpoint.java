@@ -9,15 +9,13 @@ import com.tesco.pma.fs.service.FileService;
 import com.tesco.pma.logging.TraceUtils;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.rest.HttpStatusCodes;
-
 import com.tesco.pma.rest.RestResponse;
-
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Encoding;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -28,8 +26,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,11 +52,7 @@ import static com.tesco.pma.fs.exception.ErrorCodes.FILES_COUNT_MISMATCH;
 import static com.tesco.pma.fs.exception.ErrorCodes.INVALID_PAYLOAD;
 import static com.tesco.pma.logging.TraceId.TRACE_ID_HEADER;
 import static com.tesco.pma.rest.HttpStatusCodes.CREATED;
-
 import static com.tesco.pma.rest.RestResponse.success;
-import static com.tesco.pma.security.UserRoleNames.ADMIN;
-import static com.tesco.pma.util.SecurityUtils.hasAuthority;
-import static com.tesco.pma.util.SecurityUtils.getColleagueUuid;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
 /**
@@ -86,11 +78,10 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
             })
     @GetMapping(path = "/last", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("isColleague()")
+    @PreAuthorize("isProcessManager() or isAdmin()")
     public RestResponse<File> get(@RequestParam("path") String path,
-                                  @RequestParam("fileName") String fileName,
-                                  @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        return success(fileService.get(path, fileName, INCLUDE_FILE_CONTENT_DEFAULT, resolveColleagueUuid(authentication)));
+                                  @RequestParam("fileName") String fileName) {
+        return success(fileService.get(path, fileName, INCLUDE_FILE_CONTENT_DEFAULT, null));
     }
 
     @Operation(
@@ -102,10 +93,9 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
             })
     @GetMapping("{fileUuid}")
-    @PreAuthorize("isColleague()")
-    public RestResponse<File> get(@PathVariable UUID fileUuid,
-                                  @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        return success(fileService.get(fileUuid, INCLUDE_FILE_CONTENT_DEFAULT, resolveColleagueUuid(authentication)));
+    @PreAuthorize("isProcessManager() or isAdmin()")
+    public RestResponse<File> get(@PathVariable UUID fileUuid) {
+        return success(fileService.get(fileUuid, INCLUDE_FILE_CONTENT_DEFAULT, null));
     }
 
     @Operation(
@@ -117,10 +107,9 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Files data not found", content = @Content),
             })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("isColleague()")
-    public RestResponse<List<File>> get(RequestQuery requestQuery,
-                                        @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        return success(fileService.get(requestQuery, INCLUDE_FILE_CONTENT_DEFAULT, resolveColleagueUuid(authentication), true));
+    @PreAuthorize("isProcessManager() or isAdmin()")
+    public RestResponse<List<File>> get(RequestQuery requestQuery) {
+        return success(fileService.get(requestQuery, INCLUDE_FILE_CONTENT_DEFAULT, null, true));
     }
 
     @Operation(
@@ -132,11 +121,10 @@ public class FileEndpoint {
                     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File data not found", content = @Content),
             })
     @GetMapping(path = "/versions", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("isColleague()")
+    @PreAuthorize("isProcessManager() or isAdmin()")
     public RestResponse<List<File>> getAllVersions(@RequestParam("path") String path,
-                                                   @RequestParam("fileName") String fileName,
-                                                   @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        return success(fileService.getAllVersions(path, fileName, INCLUDE_FILE_CONTENT_DEFAULT, resolveColleagueUuid(authentication)));
+                                                   @RequestParam("fileName") String fileName) {
+        return success(fileService.getAllVersions(path, fileName, INCLUDE_FILE_CONTENT_DEFAULT, null));
     }
 
     /**
@@ -156,10 +144,9 @@ public class FileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.FORBIDDEN, description = "Forbidden", content = @Content)
     @ApiResponse(responseCode = HttpStatusCodes.INTERNAL_SERVER_ERROR, description = "Internal Server Error", content = @Content)
     @GetMapping("/{fileUuid}/download")
-    @PreAuthorize("isColleague()")
-    public ResponseEntity<Resource> download(@PathVariable UUID fileUuid,
-                                             @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        var file = fileService.get(fileUuid, true, resolveColleagueUuid(authentication));
+    @PreAuthorize("isProcessManager() or isAdmin()")
+    public ResponseEntity<Resource> download(@PathVariable UUID fileUuid) {
+        var file = fileService.get(fileUuid, true, null);
         var content = file.getFileContent();
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
@@ -187,7 +174,7 @@ public class FileEndpoint {
     )
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("isColleague()")
+    @PreAuthorize("isProcessManager() or isAdmin()")
     public RestResponse<List<File>> upload(
             @RequestPart("uploadMetadata")
             @Valid @Parameter(schema = @Schema(type = "string", format = "binary")) FilesUploadMetadata filesUploadMetadata,
@@ -243,10 +230,9 @@ public class FileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "File deleted")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "File not found", content = @Content)
     @DeleteMapping(path = "/{fileUuid}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("isColleague()")
-    public RestResponse<Void> delete(@PathVariable("fileUuid") UUID fileUuid,
-                                     @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        fileService.delete(fileUuid, resolveColleagueUuid(authentication));
+    @PreAuthorize("isProcessManager() or isAdmin()")
+    public RestResponse<Void> delete(@PathVariable("fileUuid") UUID fileUuid) {
+        fileService.delete(fileUuid, null);
         return RestResponse.success();
     }
 
@@ -262,17 +248,11 @@ public class FileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Files deleted")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Files not found", content = @Content)
     @DeleteMapping(path = "/versions", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("isColleague()")
+    @PreAuthorize("isProcessManager() or isAdmin()")
     public RestResponse<Void> delete(@RequestParam("path") String path,
                                      @RequestParam("fileName") String fileName,
-                                     @RequestParam(name = "versions", required = false) List<@NotNull Integer> versions,
-                                     @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
-        fileService.deleteVersions(path, fileName, versions, resolveColleagueUuid(authentication));
+                                     @RequestParam(name = "versions", required = false) List<@NotNull Integer> versions) {
+        fileService.deleteVersions(path, fileName, versions, null);
         return RestResponse.success();
     }
-
-    private UUID resolveColleagueUuid(Authentication authentication) {
-        return hasAuthority(authentication, ADMIN) ? null : getColleagueUuid(authentication);
-    }
-
 }
