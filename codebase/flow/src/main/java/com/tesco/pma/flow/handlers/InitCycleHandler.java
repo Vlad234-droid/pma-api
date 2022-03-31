@@ -51,10 +51,10 @@ public class InitCycleHandler extends CamundaAbstractFlowHandler {
         }
         var scheduleCycle = colleagueUuid == null && BooleanUtils.isTrue(scheduled);
         context.setVariable(FlowParameters.SCHEDULED, scheduleCycle);
-        context.setVariable(FlowParameters.CYCLE_START_DATE, cycle.getStartTime());
+        context.setVariable(FlowParameters.CYCLE_START_DATE, HandlerUtils.instantToDate(cycle.getStartTime()));
         context.setVariable(FlowParameters.CYCLE_START_DATE_S,
                 HandlerUtils.formatDate(HandlerUtils.instantToDate(cycle.getStartTime())));
-        context.setVariable(FlowParameters.CYCLE_END_DATE, cycle.getEndTime());
+        context.setVariable(FlowParameters.CYCLE_END_DATE, HandlerUtils.instantToDate(cycle.getEndTime()));
         context.setVariable(FlowParameters.CYCLE_END_DATE_S,
                 HandlerUtils.formatDate(HandlerUtils.instantToDate(cycle.getEndTime())));
 
@@ -66,7 +66,7 @@ public class InitCycleHandler extends CamundaAbstractFlowHandler {
         if (StringUtils.isNotEmpty(beforeStart)) {
             var period = Period.parse(beforeStart);
             var beforeStartDate = cycle.getStartTime().minus(period);
-            context.setVariable(FlowParameters.CYCLE_BEFORE_START_DATE, beforeStartDate);
+            context.setVariable(FlowParameters.CYCLE_BEFORE_START_DATE, HandlerUtils.instantToDate(beforeStartDate));
             context.setVariable(FlowParameters.CYCLE_BEFORE_START_DATE_S,
                     HandlerUtils.formatDate(HandlerUtils.instantToDate(beforeStartDate)));
         }
@@ -75,7 +75,7 @@ public class InitCycleHandler extends CamundaAbstractFlowHandler {
             var period = Period.parse(beforeEnd);
             var before = cycle.getEndTime().minus(period);
             var beforeEndDate = before.isBefore(cycle.getStartTime()) ? cycle.getStartTime() : before;
-            context.setVariable(FlowParameters.CYCLE_BEFORE_END_DATE, beforeEndDate);
+            context.setVariable(FlowParameters.CYCLE_BEFORE_END_DATE, HandlerUtils.instantToDate(beforeEndDate));
             context.setVariable(FlowParameters.CYCLE_BEFORE_END_DATE_S,
                     HandlerUtils.formatDate(HandlerUtils.instantToDate(beforeEndDate)));
         }
