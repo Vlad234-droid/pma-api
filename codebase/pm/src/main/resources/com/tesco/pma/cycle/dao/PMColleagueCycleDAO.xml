@@ -122,4 +122,13 @@
         WHERE cycle_uuid = #{parentCycleUuid}
         <include refid="addStatusIdCondition" />
     </update>
+
+    <update id="changeStatusForColleagueAndCycle" flushCache="true">
+        UPDATE pm_colleague_cycle
+        SET status_id =
+            #{newStatus, typeHandler=com.tesco.pma.dao.utils.DictionaryItemTypeHandler, javaType=com.tesco.pma.cycle.api.PMCycleStatus}
+        WHERE cycle_uuid = #{cycleUuid}
+        AND colleague_uuid = #{colleagueUuid}
+        <include refid="addStatusIdCondition" />
+    </update>
 </mapper>

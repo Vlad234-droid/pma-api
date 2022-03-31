@@ -1,6 +1,5 @@
 package com.tesco.pma.cep.cfapi.v2.service;
 
-import com.tesco.pma.cep.cfapi.v2.configuration.ColleagueChangesProperties;
 import com.tesco.pma.cep.cfapi.v2.domain.ColleagueChangeEventPayload;
 import com.tesco.pma.cep.cfapi.v2.domain.EventType;
 import com.tesco.pma.colleague.api.Colleague;
@@ -41,7 +40,6 @@ import static com.tesco.pma.colleague.security.exception.ErrorCodes.SECURITY_ACC
 @RequiredArgsConstructor
 public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
-    private final ColleagueChangesProperties colleagueChangesProperties;
     private final ProfileService profileService;
     private final UserManagementService userManagementService;
     private final EventSender eventSender;
@@ -136,20 +134,10 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
             return 1;
         }
 
-        int updated;
-        if (colleagueChangesProperties.isForce()) {
-            updated = profileService.updateColleague(colleagueChangeEventPayload.getColleagueUuid(),
-                    colleagueChangeEventPayload.getChangedAttributes());
-        } else {
-            updated = profileService.updateColleague(colleagueChangeEventPayload.getCurrent());
-        }
-
         // Send event to Camunda
-        if (updated > 0) {
-            sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.CEP_COLLEAGUE_UPDATED);
-        }
+        sendUpdateEvent(colleagueChangeEventPayload.getColleagueUuid(), colleagueChangeEventPayload.getCurrent());
 
-        return updated;
+        return 1;
     }
 
     private int processDeletionEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
@@ -172,6 +160,15 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     private void sendEvent(UUID colleagueUuid, EventNames eventName) {
         var event = new EventSupport(eventName);
         event.setEventProperties(Map.of(FlowParameters.COLLEAGUE_UUID.name(), colleagueUuid));
+        eventSender.sendEvent(event);
+    }
+
+    private void sendUpdateEvent(UUID colleagueUuid, Colleague colleague) {
+        var event = new EventSupport(EventNames.CEP_COLLEAGUE_UPDATED);
+        var properties = Map
+                .of(FlowParameters.COLLEAGUE.name(), colleague,
+                        FlowParameters.COLLEAGUE_UUID.name(), colleagueUuid);
+        event.setEventProperties(properties);
         eventSender.sendEvent(event);
     }
 

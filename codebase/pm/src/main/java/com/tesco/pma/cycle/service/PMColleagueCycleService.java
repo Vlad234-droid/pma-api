@@ -76,5 +76,8 @@ public interface PMColleagueCycleService {
      */
     void changeStatusForColleague(UUID colleagueUuid, PMCycleStatus oldStatus, PMCycleStatus newStatus);
 
+    void changeStatusForColleagueAndCycle(UUID colleagueUuid, UUID cycleUuid,
+                                          DictionaryFilter<PMCycleStatus> oldStatus, PMCycleStatus newStatus);
+
     void start(UUID cycleUuid, UUID colleagueUuid);
 }
