@@ -8,7 +8,7 @@
       <bpmn:incoming>Flow_1oilf03</bpmn:incoming>
       <bpmn:outgoing>Flow_1d3qt6f</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1bgdpl8">
-        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${BEFORE_START_DATE}</bpmn:timeDate>
+        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${BEFORE_START_DATE_S}</bpmn:timeDate>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_1hnn181" sourceRef="Event_1mop64d" targetRef="Gateway_02rftxe" />
@@ -18,7 +18,7 @@
       <bpmn:incoming>Flow_0b75mjz</bpmn:incoming>
       <bpmn:outgoing>Flow_168874h</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1e29whp">
-        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${START_DATE}</bpmn:timeDate>
+        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${START_DATE_S}</bpmn:timeDate>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_0gpmgag" sourceRef="Activity_0gtujyz" targetRef="Event_19zy80f" />
@@ -32,7 +32,7 @@
       <bpmn:incoming>Flow_07x3awe</bpmn:incoming>
       <bpmn:outgoing>Flow_0jx4z3r</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1ynqk9e">
-        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${BEFORE_END_DATE}</bpmn:timeDate>
+        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${BEFORE_END_DATE_S}</bpmn:timeDate>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_0hk6bxu" sourceRef="Gateway_19u7dw8" targetRef="Activity_02h925b" />
@@ -53,7 +53,7 @@
       <bpmn:incoming>Flow_1q4oeu0</bpmn:incoming>
       <bpmn:outgoing>Flow_0xc9oqw</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1dg07s3">
-        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${END_DATE}</bpmn:timeDate>
+        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${END_DATE_S}</bpmn:timeDate>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_04ta6o2" sourceRef="Activity_02h925b" targetRef="Gateway_1do8e8p" />
@@ -74,7 +74,7 @@
       <bpmn:outgoing>Flow_0b75mjz</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1oilf03" sourceRef="Gateway_1j7nfg7" targetRef="Event_1gsa5iq">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('BEFORE_START_DATE') != null}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('BEFORE_START_DATE_S') != null}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0b75mjz" sourceRef="Gateway_1j7nfg7" targetRef="Event_19zy80f" />
     <bpmn:serviceTask id="Activity_0gtujyz" name="Send&#10;before start&#10;review&#10;event" camunda:class="com.tesco.pma.flow.handlers.ColleaguesEventsSendHandler">
@@ -165,7 +165,7 @@
       <bpmn:incoming>Flow_0twlvto</bpmn:incoming>
       <bpmn:outgoing>Flow_0ay69ky</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1ef0bky">
-        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${START_DATE}</bpmn:timeDate>
+        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${START_DATE_S}</bpmn:timeDate>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:serviceTask id="Activity_1du843u" name="Send Qn&#10;notification&#10;event" camunda:class="com.tesco.pma.flow.handlers.ColleaguesEventsSendHandler">
@@ -202,7 +202,7 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0n4pm0q" sourceRef="Gateway_19u7dw8" targetRef="Gateway_1angv7d" />
     <bpmn:sequenceFlow id="Flow_07x3awe" name="Date is not null" sourceRef="Gateway_1angv7d" targetRef="Event_0j75pfy">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('BEFORE_END_DATE') != null}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('BEFORE_END_DATE_S') != null}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_15e91rh" sourceRef="Gateway_1angv7d" targetRef="Gateway_02hnn48" />
     <bpmn:sequenceFlow id="Flow_0gxu936" sourceRef="Gateway_02hnn48" targetRef="Gateway_1do8e8p" />
@@ -215,6 +215,19 @@
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="schedule_timeline_point">
+      <bpmndi:BPMNEdge id="Flow_0i505vl_di" bpmnElement="Flow_0i505vl">
+        <di:waypoint x="830" y="300" />
+        <di:waypoint x="890" y="300" />
+        <di:waypoint x="890" y="245" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gxu936_di" bpmnElement="Flow_0gxu936">
+        <di:waypoint x="890" y="195" />
+        <di:waypoint x="890" y="165" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15e91rh_di" bpmnElement="Flow_15e91rh">
+        <di:waypoint x="695" y="220" />
+        <di:waypoint x="865" y="220" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_07x3awe_di" bpmnElement="Flow_07x3awe">
         <di:waypoint x="670" y="245" />
         <di:waypoint x="670" y="282" />
@@ -298,19 +311,6 @@
         <di:waypoint x="188" y="140" />
         <di:waypoint x="215" y="140" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_15e91rh_di" bpmnElement="Flow_15e91rh">
-        <di:waypoint x="695" y="220" />
-        <di:waypoint x="865" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0gxu936_di" bpmnElement="Flow_0gxu936">
-        <di:waypoint x="890" y="195" />
-        <di:waypoint x="890" y="165" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0i505vl_di" bpmnElement="Flow_0i505vl">
-        <di:waypoint x="830" y="300" />
-        <di:waypoint x="890" y="300" />
-        <di:waypoint x="890" y="245" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1mop64d_di" bpmnElement="Event_1mop64d">
         <dc:Bounds x="152" y="122" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -338,7 +338,7 @@
       <bpmndi:BPMNShape id="Event_1u807sf_di" bpmnElement="Event_1u807sf">
         <dc:Bounds x="942" y="122" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="941" y="85" width="38" height="27" />
+          <dc:Bounds x="942" y="85" width="37" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_11gtxe2_di" bpmnElement="Gateway_1do8e8p">

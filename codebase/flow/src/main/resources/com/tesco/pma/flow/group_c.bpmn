@@ -19,9 +19,6 @@
       <bpmn:incoming>Flow_18212m7</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0y1flzn" sourceRef="eyr" targetRef="Gateway_1f3fwrs" />
-    <bpmn:startEvent id="Event_0e0xeep" name="Cycle start">
-      <bpmn:outgoing>Flow_0nbbfyl</bpmn:outgoing>
-    </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_0nbbfyl" sourceRef="Event_0e0xeep" targetRef="init_process" />
     <bpmn:sequenceFlow id="Flow_1qcajud" sourceRef="schedule_end_cycle" targetRef="event_cycle_finished" />
     <bpmn:callActivity id="eyr" name="Year-end review" calledElement="init_timeline_point" camunda:variableMappingClass="com.tesco.pma.bpm.camunda.util.ExtensionsDelegateVariableMapping">
@@ -47,11 +44,10 @@
       <bpmn:incoming>Flow_10o56ax</bpmn:incoming>
       <bpmn:outgoing>Flow_0y1flzn</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:sequenceFlow id="Flow_156uzry" sourceRef="schedule_start_cycle" targetRef="Gateway_0q24l2p" />
     <bpmn:sequenceFlow id="Flow_000dycs" sourceRef="init_process" targetRef="Gateway_0ymn740" />
     <bpmn:exclusiveGateway id="Gateway_0q24l2p">
-      <bpmn:incoming>Flow_156uzry</bpmn:incoming>
       <bpmn:incoming>Flow_0jbjb05</bpmn:incoming>
+      <bpmn:incoming>Flow_1buagyj</bpmn:incoming>
       <bpmn:outgoing>Flow_10o56ax</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:exclusiveGateway id="Gateway_0ymn740" default="Flow_0kt3k6v">
@@ -79,18 +75,17 @@
       <bpmn:extensionElements>
         <camunda:in source="PM_CYCLE" target="PM_CYCLE" />
         <camunda:in source="SCHEDULED" target="SCHEDULED" />
-        <camunda:in source="CYCLE_START_DATE" target="CYCLE_START_DATE" />
-        <camunda:in source="CYCLE_BEFORE_START_DATE" target="CYCLE_BEFORE_START_DATE" />
+        <camunda:in source="CYCLE_START_DATE_S" target="CYCLE_START_DATE_S" />
+        <camunda:in source="CYCLE_BEFORE_START_DATE_S" target="CYCLE_BEFORE_START_DATE_S" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_010cmv6</bpmn:incoming>
-      <bpmn:outgoing>Flow_156uzry</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:callActivity id="schedule_end_cycle" name="Schedule end cycle" calledElement="schedule_end_annual_cycle">
       <bpmn:extensionElements>
         <camunda:in source="PM_CYCLE" target="PM_CYCLE" />
         <camunda:in source="SCHEDULED" target="SCHEDULED" />
-        <camunda:in source="CYCLE_BEFORE_END_DATE" target="CYCLE_BEFORE_END_DATE" />
-        <camunda:in source="CYCLE_END_DATE" target="CYCLE_END_DATE" />
+        <camunda:in source="CYCLE_BEFORE_END_DATE_S" target="CYCLE_BEFORE_END_DATE_S" />
+        <camunda:in source="CYCLE_END_DATE_S" target="CYCLE_END_DATE_S" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1l8lyyz</bpmn:incoming>
       <bpmn:outgoing>Flow_1qcajud</bpmn:outgoing>
@@ -122,6 +117,16 @@
       <bpmn:incoming>Flow_0kcyq0g</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0kcyq0g" sourceRef="Event_0hw207d" targetRef="Event_010wo6f" />
+    <bpmn:startEvent id="Event_0e0xeep" name="Cycle start">
+      <bpmn:outgoing>Flow_0nbbfyl</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1buagyj" sourceRef="Event_0la7sds" targetRef="Gateway_0q24l2p" />
+    <bpmn:boundaryEvent id="Event_0la7sds" name="Repeat for hiring colleagues" cancelActivity="false" attachedToRef="schedule_start_cycle">
+      <bpmn:outgoing>Flow_1buagyj</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_19rtozb">
+        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R/PT12H/${CYCLE_END_DATE_S}</bpmn:timeCycle>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
     <bpmn:textAnnotation id="TextAnnotation_0xgpen9">
       <bpmn:text>Parameters:
 PM_CYCLE the cycle
@@ -141,6 +146,11 @@ COLLEAGUE_UUID - assign the employee</bpmn:text>
   <bpmn:error id="Error_09mtnxy" name="Initialization error" errorCode="init_error" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="group_c">
+      <bpmndi:BPMNEdge id="Flow_1buagyj_di" bpmnElement="Flow_1buagyj">
+        <di:waypoint x="618" y="470" />
+        <di:waypoint x="650" y="470" />
+        <di:waypoint x="650" y="325" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0kcyq0g_di" bpmnElement="Flow_0kcyq0g">
         <di:waypoint x="360" y="358" />
         <di:waypoint x="360" y="402" />
@@ -189,11 +199,6 @@ COLLEAGUE_UUID - assign the employee</bpmn:text>
         <di:waypoint x="390" y="300" />
         <di:waypoint x="425" y="300" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_156uzry_di" bpmnElement="Flow_156uzry">
-        <di:waypoint x="600" y="430" />
-        <di:waypoint x="650" y="430" />
-        <di:waypoint x="650" y="325" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1qcajud_di" bpmnElement="Flow_1qcajud">
         <di:waypoint x="940" y="430" />
         <di:waypoint x="980" y="430" />
@@ -216,12 +221,6 @@ COLLEAGUE_UUID - assign the employee</bpmn:text>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0v9jvii_di" bpmnElement="event_cycle_finished">
         <dc:Bounds x="962" y="282" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0yqaexd_di" bpmnElement="Event_0e0xeep">
-        <dc:Bounds x="222" y="282" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="163" y="293" width="53" height="14" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_14tl3mq_di" bpmnElement="eyr">
         <dc:Bounds x="720" y="260" width="100" height="80" />
@@ -253,8 +252,20 @@ COLLEAGUE_UUID - assign the employee</bpmn:text>
       <bpmndi:BPMNShape id="Event_010wo6f_di" bpmnElement="Event_010wo6f">
         <dc:Bounds x="342" y="402" width="36" height="36" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1h5s26y_di" bpmnElement="Event_0e0xeep">
+        <dc:Bounds x="222" y="282" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="163" y="293" width="53" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0xgpen9_di" bpmnElement="TextAnnotation_0xgpen9">
         <dc:Bounds x="160" y="120" width="280" height="124" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0tsbr6e_di" bpmnElement="Event_0la7sds">
+        <dc:Bounds x="582" y="452" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="561" y="495" width="82" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0ngjglu_di" bpmnElement="Event_0hw207d">
         <dc:Bounds x="342" y="322" width="36" height="36" />

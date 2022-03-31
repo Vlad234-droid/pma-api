@@ -27,7 +27,7 @@ import static org.mockito.Mockito.verify;
         classes = {CamundaSpringBootTestConfig.class},
         properties = "camunda.bpm.deployment-resource-pattern=com/tesco/pma/flow/schedule_timeline_point.bpmn"
 )
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@DirtiesContext
 class ScheduleTimelinePointFlowTest {
 
     private static final UUID TIMELINE_POINT_UUID = UUID.fromString("a0c0e913-5a45-4165-86a7-2fa9d5b1c8cb");
@@ -50,7 +50,7 @@ class ScheduleTimelinePointFlowTest {
         var variables = Variables.createVariables()
                 .putValue(PMElement.PM_TYPE, PMElementType.TIMELINE_POINT.name().toLowerCase())
                 .putValue(FlowParameters.TIMELINE_POINT.name(), buildTimelinePoint())
-                .putValue(FlowParameters.START_DATE.name(), LocalDate.now().toString())
+                .putValue(FlowParameters.START_DATE_S.name(), LocalDate.now().toString())
                 .putValue(PMTimelinePointElement.PM_TIMELINE_POINT_CODE, "Q1");
 
         //when
@@ -67,10 +67,10 @@ class ScheduleTimelinePointFlowTest {
         var variables = Variables.createVariables()
                 .putValue(PMElement.PM_TYPE, PMElementType.REVIEW.name().toLowerCase())
                 .putValue(FlowParameters.TIMELINE_POINT.name(), buildTimelinePoint())
-                .putValue(FlowParameters.START_DATE.name(), LocalDate.now().toString())
-                .putValue(FlowParameters.END_DATE.name(), LocalDate.now().toString())
-                .putValue(FlowParameters.BEFORE_START_DATE.name(), LocalDate.now().toString())
-                .putValue(FlowParameters.BEFORE_END_DATE.name(), LocalDate.now().toString());
+                .putValue(FlowParameters.START_DATE_S.name(), LocalDate.now().toString())
+                .putValue(FlowParameters.END_DATE_S.name(), LocalDate.now().toString())
+                .putValue(FlowParameters.BEFORE_START_DATE_S.name(), LocalDate.now().toString())
+                .putValue(FlowParameters.BEFORE_END_DATE_S.name(), LocalDate.now().toString());
 
         //when
         Scenario.run(scenario).startByKey(KEY, variables).execute();
@@ -90,8 +90,8 @@ class ScheduleTimelinePointFlowTest {
         var variables = Variables.createVariables()
                 .putValue(PMElement.PM_TYPE, PMElementType.REVIEW.name().toLowerCase())
                 .putValue(FlowParameters.TIMELINE_POINT.name(), buildTimelinePoint())
-                .putValue(FlowParameters.START_DATE.name(), LocalDate.now().toString())
-                .putValue(FlowParameters.END_DATE.name(), LocalDate.now().toString());
+                .putValue(FlowParameters.START_DATE_S.name(), LocalDate.now().toString())
+                .putValue(FlowParameters.END_DATE_S.name(), LocalDate.now().toString());
 
         //when
         Scenario.run(scenario).startByKey(KEY, variables).execute();
@@ -110,10 +110,10 @@ class ScheduleTimelinePointFlowTest {
         var variables = Variables.createVariables()
                 .putValue(PMElement.PM_TYPE, PMElementType.REVIEW.name().toLowerCase())
                 .putValue(FlowParameters.TIMELINE_POINT.name(), buildTimelinePoint())
-                .putValue(FlowParameters.START_DATE.name(), LocalDate.now().toString())
-                .putValue(FlowParameters.END_DATE.name(), LocalDate.now().toString())
-                .putValue(FlowParameters.BEFORE_START_DATE.name(), null)
-                .putValue(FlowParameters.BEFORE_END_DATE.name(), null);
+                .putValue(FlowParameters.START_DATE_S.name(), LocalDate.now().toString())
+                .putValue(FlowParameters.END_DATE_S.name(), LocalDate.now().toString())
+                .putValue(FlowParameters.BEFORE_START_DATE_S.name(), null)
+                .putValue(FlowParameters.BEFORE_END_DATE_S.name(), null);
 
         //when
         Scenario.run(scenario).startByKey(KEY, variables).execute();
