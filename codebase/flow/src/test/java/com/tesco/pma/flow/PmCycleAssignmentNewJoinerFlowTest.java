@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.tesco.pma.event.EventNames.PM_COLLEAGUE_CYCLE_ASSIGNMENT_NEW_JOINER;
+import static com.tesco.pma.flow.exception.ErrorCodes.PM_CYCLE_NOT_ASSIGNED_FOR_COLLEAGUE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -43,6 +44,7 @@ class PmCycleAssignmentNewJoinerFlowTest {
     private static final String END_EVENT_NO_CYCLE = "Event_0wbcq88";
     private static final String COLLEAGUE_NOT_FOUND = "COLLEAGUE_NOT_FOUND";
     private static final String PM_CYCLE_MORE_THAN_ONE_IN_STATUSES = "PM_CYCLE_MORE_THAN_ONE_IN_STATUSES";
+    private static final String PM_CYCLE_NOT_ASSIGNED_FOR_COLLEAGUE = "PM_CYCLE_NOT_ASSIGNED_FOR_COLLEAGUE";
 
     private static final String RESOLVE_COLLEAGUE_HANDLER_ACTIVITY = "resolveColleagueHandler";
     private static final String CALCULATE_CYCLE_NEW_JOINER_ACTIVITY = "calculate_cycle_new_joiner";
@@ -112,6 +114,26 @@ class PmCycleAssignmentNewJoinerFlowTest {
                 .putValue(FlowParameters.COLLEAGUE.name(), colleague);
 
         doThrow(new BpmnError(PM_CYCLE_MORE_THAN_ONE_IN_STATUSES)).when(findCycleHandler).execute(any());
+        //when
+        Scenario.run(scenario).startByMessage(MESSAGE_KEY, variables).execute();
+
+        //then
+        verify(scenario, times(1)).hasCompleted(RESOLVE_COLLEAGUE_HANDLER_ACTIVITY);
+        verify(scenario, times(1)).hasCompleted(CALCULATE_CYCLE_NEW_JOINER_ACTIVITY);
+        verify(scenario, times(1)).hasCanceled(FIND_CYCLE_NEW_JOINER_ACTIVITY);
+        verify(scenario, times(1)).hasFinished(END_EVENT_NO_CYCLE);
+    }
+
+    @Test
+    void pmCycleKeyNotFound() throws Exception {
+        //given
+        var colleagueUuid = UUID.randomUUID();
+        var colleague = getColleague();
+        var variables = Variables.createVariables()
+                .putValue(FlowParameters.COLLEAGUE_UUID.name(), colleagueUuid)
+                .putValue(FlowParameters.COLLEAGUE.name(), colleague);
+
+        doThrow(new BpmnError(PM_CYCLE_NOT_ASSIGNED_FOR_COLLEAGUE)).when(findCycleHandler).execute(any());
         //when
         Scenario.run(scenario).startByMessage(MESSAGE_KEY, variables).execute();
 

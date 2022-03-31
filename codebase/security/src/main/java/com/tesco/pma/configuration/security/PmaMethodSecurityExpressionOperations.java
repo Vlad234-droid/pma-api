@@ -92,6 +92,37 @@ public class PmaMethodSecurityExpressionOperations implements MethodSecurityExpr
     }
 
     /**
+     * Check if user is manager of colleague
+     *
+     * @param colleagueUuid an identifier of colleague
+     * @param depth         a level of colleague's tree
+     * @return true - if user is manager of colleague.
+     */
+    public boolean isManagerOf(UUID colleagueUuid, Integer depth) {
+        if (colleagueUuid == null || depth == null) {
+            return false;
+        }
+
+        var currentUserUuid = getCurrentUserId();
+        var currentUser = profileService.getColleague(currentUserUuid);
+        if (Boolean.FALSE.equals(currentUser.isManager())) {
+            return false;
+        }
+        var managerUuid = colleagueUuid;
+        for (var level = 1; level <= depth; level++) {
+            managerUuid = profileService.getColleague(managerUuid).getManagerUuid();
+            if (managerUuid == null) {
+                return false;
+            }
+
+            if (currentUserUuid.equals(managerUuid)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Check if user has {@link UserRoleNames#LINE_MANAGER} role.
      *
      * @return true - if user is a Line Manager, false otherwise.

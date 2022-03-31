@@ -48,7 +48,7 @@ public class ProfileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Profile found")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Profile not found")
     @GetMapping(path = "/{colleagueUuid}")
-    @PreAuthorize("isColleague()")
+    @PreAuthorize("isColleague() and isCurrentUser(#colleagueUuid)")
     public RestResponse<ColleagueProfile> getProfileByColleagueUuid(@PathVariable UUID colleagueUuid) {
         return RestResponse.success(profileService.findProfileByColleagueUuid(colleagueUuid)
                 .orElseThrow(() -> notFound("colleagueUuid", colleagueUuid)));
@@ -65,7 +65,7 @@ public class ProfileEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Profile attributes updated")
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Profile not found", content = @Content)
     @PutMapping(path = "{colleagueUuid}/attributes", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isColleague()")
+    @PreAuthorize("isColleague() and isCurrentUser(#colleagueUuid)")
     public RestResponse<List<TypedAttribute>> updateProfileAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                                                       @RequestBody @Valid List<TypedAttribute> profileAttributes) {
         return RestResponse.success(profileService.updateProfileAttributes(colleagueUuid, profileAttributes));
@@ -82,7 +82,7 @@ public class ProfileEndpoint {
     @ApiResponse(responseCode = CREATED, description = "Successful operation")
     @PostMapping(path = "{colleagueUuid}/attributes", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("isColleague()")
+    @PreAuthorize("isColleague() and isCurrentUser(#colleagueUuid)")
     public RestResponse<List<TypedAttribute>> createProfileAttributes(@PathVariable("colleagueUuid") UUID colleagueUuid,
                                                                       @RequestBody @Valid List<TypedAttribute> profileAttributes) {
         return RestResponse.success(profileService.createProfileAttributes(colleagueUuid, profileAttributes));

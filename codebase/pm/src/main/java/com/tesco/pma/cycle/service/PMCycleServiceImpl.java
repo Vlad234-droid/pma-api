@@ -469,6 +469,7 @@ public class PMCycleServiceImpl implements PMCycleService {
         Map<String, Object> props = new HashMap<>();
         props.put(TRACE_ID_HEADER, TraceUtils.getTraceId().getValue());
         props.put(FlowParameters.PM_CYCLE.name(), cycle);
+        props.put(FlowParameters.SCHEDULED.name(), Boolean.TRUE);
         return props;
     }
 

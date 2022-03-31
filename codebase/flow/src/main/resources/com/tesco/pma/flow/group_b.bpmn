@@ -138,8 +138,8 @@
       <bpmn:extensionElements>
         <camunda:in source="PM_CYCLE" target="PM_CYCLE" />
         <camunda:in source="SCHEDULED" target="SCHEDULED" />
-        <camunda:in source="CYCLE_BEFORE_START_DATE" target="CYCLE_BEFORE_START_DATE" />
-        <camunda:in source="CYCLE_START_DATE" target="CYCLE_START_DATE" />
+        <camunda:in source="CYCLE_BEFORE_START_DATE_S" target="CYCLE_BEFORE_START_DATE_S" />
+        <camunda:in source="CYCLE_START_DATE_S" target="CYCLE_START_DATE_S" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_010cmv6</bpmn:incoming>
       <bpmn:outgoing>Flow_156uzry</bpmn:outgoing>
@@ -148,8 +148,8 @@
       <bpmn:extensionElements>
         <camunda:in source="PM_CYCLE" target="PM_CYCLE" />
         <camunda:in source="SCHEDULED" target="SCHEDULED" />
-        <camunda:in source="CYCLE_END_DATE" target="CYCLE_END_DATE" />
-        <camunda:in source="CYCLE_BEFORE_END_DATE" target="CYCLE_BEFORE_END_DATE" />
+        <camunda:in source="CYCLE_END_DATE_S" target="CYCLE_END_DATE_S" />
+        <camunda:in source="CYCLE_BEFORE_END_DATE_S" target="CYCLE_BEFORE_END_DATE_S" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1l8lyyz</bpmn:incoming>
       <bpmn:outgoing>Flow_1qcajud</bpmn:outgoing>

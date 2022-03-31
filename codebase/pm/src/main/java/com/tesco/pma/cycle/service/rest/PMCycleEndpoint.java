@@ -218,7 +218,7 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle not found",
             content = @Content)
     @GetMapping(value = "/colleagues/{colleagueUuid}/metadata", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    @PreAuthorize("isColleague()")
+    @PreAuthorize("isCurrentUser(#colleagueUuid) or isManagerOf(#colleagueUuid,2) or isProcessManager() or isAdmin()")
     public RestResponse<CompositePMCycleMetadataResponse> getMetadataByColleague(@PathVariable UUID colleagueUuid,
                                                                                  @RequestParam(value = INCLUDE_FORMS,
                                                                                          defaultValue = "false")
@@ -252,6 +252,7 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle deployed")
     @PostMapping(value = "/pm-cycles/{uuid}/deploy")
     @ResponseStatus(HttpStatus.ACCEPTED)
+    @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
     public RestResponse<UUID> deploy(@PathVariable final UUID uuid) {
 
         return success(service.deploy(uuid));
@@ -269,6 +270,7 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle started")
     @PutMapping(value = "/pm-cycles/{uuid}/start-scheduled")
     @ResponseStatus(HttpStatus.ACCEPTED)
+    @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
     public RestResponse<Void> startScheduled(@PathVariable final UUID uuid) {
         log.debug("REST request to start cycle : {}", uuid);
         service.start(uuid);
@@ -288,6 +290,7 @@ public class PMCycleEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Performance cycle started")
     @PutMapping(value = "/pm-cycles/{cycleUuid}/colleagues/{colleagueUuid}/start")
     @ResponseStatus(HttpStatus.ACCEPTED)
+    @PreAuthorize("isTalentAdmin() or isProcessManager() or isAdmin()")
     public RestResponse<Void> startColleagueCycle(@PathVariable final UUID cycleUuid,
                                                   @PathVariable final UUID colleagueUuid) {
         log.debug("REST request to start cycle : {}, colleague: {}", cycleUuid, colleagueUuid);
@@ -342,6 +345,18 @@ public class PMCycleEndpoint {
     @GetMapping(value = "/pm-cycles/mappings/keys", produces = APPLICATION_JSON_VALUE)
     public RestResponse<Set<String>> getPmCycleMappingKey() {
         return success(pmCycleMappingService.getPmCycleMappingKeys());
+    }
+
+
+    @Operation(summary = "Get performance cycle mapping keys per colleagues",
+            tags = {"performance-cycle"})
+    @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found performance cycle mapping keys per colleagues")
+    @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Performance cycle mapping keys not found",
+            content = @Content)
+    @GetMapping(value = "/pm-cycles/mappings/keys/colleagues", produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isProcessManager() or isAdmin()")
+    public RestResponse<Map<UUID, String>> getPmCycleMappingKeyByColleagues(@RequestParam List<UUID> uuids) {
+        return success(pmCycleMappingService.getPmCycleMappingKeys(uuids));
     }
 
     private DeploymentException deploymentException(String processKey, Map<String, ?> parameters, Throwable cause) {

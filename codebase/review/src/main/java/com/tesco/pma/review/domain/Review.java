@@ -22,6 +22,7 @@ import java.util.UUID;
 public class Review extends SimplifiedReview implements Serializable {
     private static final long serialVersionUID = 310609427305520535L;
 
+    UUID colleagueUuid;
     UUID tlPointUuid;
     MapJson properties;
     Instant lastUpdatedTime;

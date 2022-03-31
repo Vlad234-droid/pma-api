@@ -76,6 +76,7 @@ class InitCycleHandlerTest {
                 .uuid(UUID.fromString(CYCLE_UUID))
                 .type(PMCycleType.FISCAL)
                 .startTime(startDate.atStartOfDay().toInstant(ZoneOffset.UTC))
+                .endTime(endDate.atStartOfDay().toInstant(ZoneOffset.UTC))
                 .build();
     }
 }

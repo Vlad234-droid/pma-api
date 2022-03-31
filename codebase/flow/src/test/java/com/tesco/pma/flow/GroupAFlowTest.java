@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
         classes = {CamundaSpringBootTestConfig.class},
         properties = "camunda.bpm.deployment-resource-pattern=com/tesco/pma/flow/group_a.bpmn"
 )
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 class GroupAFlowTest {
 
     private static final String SCHEDULE_START_CYCLE = "schedule_start_cycle";

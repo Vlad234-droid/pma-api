@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verify;
 @SpringBootTest(classes = {CamundaSpringBootTestConfig.class},
         properties = "camunda.bpm.deployment-resource-pattern=com/tesco/pma/flow/repeat_cycle.bpmn"
 )
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@DirtiesContext
 class RepeatFlowTest {
 
     private static final String END_EVENT_NEXT_CYCLE_STARTED = "Event_0udd3h7";

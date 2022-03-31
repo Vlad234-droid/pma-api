@@ -8,7 +8,7 @@
       <bpmn:incoming>Flow_067w3uv</bpmn:incoming>
       <bpmn:outgoing>Flow_0739xeu</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_07yw5fu">
-        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${CYCLE_BEFORE_END_DATE}</bpmn:timeDate>
+        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${CYCLE_BEFORE_END_DATE_S}</bpmn:timeDate>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:serviceTask id="Activity_1qxyb5w" name="Send&#10;notification&#10;before end&#10;cycle event" camunda:class="com.tesco.pma.flow.handlers.ColleaguesEventsSendHandler">
@@ -35,7 +35,7 @@
       <bpmn:incoming>Flow_0f5h6zq</bpmn:incoming>
       <bpmn:outgoing>Flow_1dt5u9u</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1vjmuox">
-        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${CYCLE_END_DATE}</bpmn:timeDate>
+        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${CYCLE_END_DATE_S}</bpmn:timeDate>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:serviceTask id="Activity_0s5ed5q" name="Update performance cycle status:&#10;COMPLETED" camunda:class="com.tesco.pma.flow.handlers.UpdatePMCycleStatusHandler">
@@ -140,12 +140,29 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_18pk1x4" sourceRef="StartEvent_1" targetRef="Gateway_1qb1dp4" />
     <bpmn:sequenceFlow id="Flow_067w3uv" name="Date is&#10;not null" sourceRef="Gateway_1qb1dp4" targetRef="Event_1sz30jk">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('CYCLE_BEFORE_END_DATE') != null}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('CYCLE_BEFORE_END_DATE_S') != null}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0f5h6zq" sourceRef="Gateway_1qb1dp4" targetRef="Event_1rfbf99" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="schedule_end_annual_cycle">
+      <bpmndi:BPMNEdge id="Flow_0f5h6zq_di" bpmnElement="Flow_0f5h6zq">
+        <di:waypoint x="250" y="92" />
+        <di:waypoint x="250" y="40" />
+        <di:waypoint x="540" y="40" />
+        <di:waypoint x="540" y="99" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_067w3uv_di" bpmnElement="Flow_067w3uv">
+        <di:waypoint x="275" y="117" />
+        <di:waypoint x="322" y="117" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="272" y="86" width="36" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18pk1x4_di" bpmnElement="Flow_18pk1x4">
+        <di:waypoint x="188" y="117" />
+        <di:waypoint x="225" y="117" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_17927e3_di" bpmnElement="Flow_17927e3">
         <di:waypoint x="1140" y="117" />
         <di:waypoint x="1205" y="117" />
@@ -190,23 +207,9 @@
         <di:waypoint x="358" y="117" />
         <di:waypoint x="390" y="117" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_18pk1x4_di" bpmnElement="Flow_18pk1x4">
-        <di:waypoint x="188" y="117" />
-        <di:waypoint x="225" y="117" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_067w3uv_di" bpmnElement="Flow_067w3uv">
-        <di:waypoint x="275" y="117" />
-        <di:waypoint x="322" y="117" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="272" y="86" width="36" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0f5h6zq_di" bpmnElement="Flow_0f5h6zq">
-        <di:waypoint x="250" y="92" />
-        <di:waypoint x="250" y="40" />
-        <di:waypoint x="540" y="40" />
-        <di:waypoint x="540" y="99" />
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1sz30jk_di" bpmnElement="Event_1sz30jk">
         <dc:Bounds x="322" y="99" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -242,9 +245,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_06dy5dc_di" bpmnElement="Activity_123sf2q">
         <dc:Bounds x="1040" y="77" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds x="152" y="99" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1qb1dp4_di" bpmnElement="Gateway_1qb1dp4" isMarkerVisible="true">
         <dc:Bounds x="225" y="92" width="50" height="50" />

@@ -25,7 +25,7 @@ import static org.mockito.Mockito.verify;
         classes = {CamundaSpringBootTestConfig.class},
         properties = "camunda.bpm.deployment-resource-pattern=com/tesco/pma/flow/schedule_start_annual_cycle.bpmn"
 )
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@DirtiesContext
 class ScheduleStartCycleFlowTest {
 
     private static final UUID CYCLE_UUID = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
@@ -47,8 +47,8 @@ class ScheduleStartCycleFlowTest {
     void shouldFinishScheduledCycle() {
         //given
         var variables = Variables.createVariables()
-                .putValue(FlowParameters.CYCLE_BEFORE_START_DATE.name(), LocalDate.now().toString())
-                .putValue(FlowParameters.CYCLE_START_DATE.name(), LocalDate.now().toString())
+                .putValue(FlowParameters.CYCLE_BEFORE_START_DATE_S.name(), LocalDate.now().toString())
+                .putValue(FlowParameters.CYCLE_START_DATE_S.name(), LocalDate.now().toString())
                 .putValue(FlowParameters.PM_CYCLE.name(), buildPmCycle());
 
         //when
@@ -67,7 +67,7 @@ class ScheduleStartCycleFlowTest {
         //given
         //Don not put DATE variables (do not confused with null value)
         var variables = Variables.createVariables()
-                .putValue(FlowParameters.CYCLE_START_DATE.name(), LocalDate.now().toString())
+                .putValue(FlowParameters.CYCLE_START_DATE_S.name(), LocalDate.now().toString())
                 .putValue(FlowParameters.PM_CYCLE.name(), buildPmCycle());
 
         //when
@@ -85,8 +85,8 @@ class ScheduleStartCycleFlowTest {
     void shouldNotSendBeforeStartEventIfDateIsNull() {
         //given
         var variables = Variables.createVariables()
-                .putValue(FlowParameters.CYCLE_BEFORE_START_DATE.name(), null)
-                .putValue(FlowParameters.CYCLE_START_DATE.name(), LocalDate.now().toString())
+                .putValue(FlowParameters.CYCLE_BEFORE_START_DATE_S.name(), null)
+                .putValue(FlowParameters.CYCLE_START_DATE_S.name(), LocalDate.now().toString())
                 .putValue(FlowParameters.PM_CYCLE.name(), buildPmCycle());
 
         //when

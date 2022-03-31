@@ -14,9 +14,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -28,7 +30,7 @@ import static org.mockito.Mockito.when;
         classes = {CamundaSpringBootTestConfig.class},
         properties = "camunda.bpm.deployment-resource-pattern=com/tesco/pma/flow/group_c.bpmn"
 )
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 class GroupCFlowTest {
 
     private static final String KEY = "group_c";
@@ -57,8 +59,9 @@ class GroupCFlowTest {
         //given
         var variables = Variables.createVariables()
                 .putValue(FlowParameters.SCHEDULED.name(), true)
+                .putValue(FlowParameters.CYCLE_END_DATE_S.name(), LocalDate.now().plusDays(2).toString())
                 .putValue(FlowParameters.PM_CYCLE_UUID.name(), UUID.randomUUID());
-        when(scenario.waitsAtMockedCallActivity(SCHEDULE_START_CYCLE)).thenReturn(ExternalTaskDelegate::complete);
+        when(scenario.waitsAtMockedCallActivity(SCHEDULE_START_CYCLE)).thenReturn((task) -> task.defer("PT12H1S", task::complete));
         when(scenario.waitsAtMockedCallActivity(EYR)).thenReturn(ExternalTaskDelegate::complete);
         when(scenario.waitsAtMockedCallActivity(SCHEDULE_END_CYCLE)).thenReturn(ExternalTaskDelegate::complete);
 
@@ -122,6 +125,28 @@ class GroupCFlowTest {
         //then
         verify(scenario, times(1)).hasCanceled(CREATE_COLLEAGUE_CYCLE);
         verify(scenario, times(1)).hasFinished(END_EVENT_ALREADY_EXISTS_ERROR);
+    }
+
+    @Test
+    void shouldFinishCycleMoreThanTwoTimes() {
+        //given
+        var variables = Variables.createVariables()
+                .putValue(FlowParameters.CYCLE_END_DATE_S.name(), LocalDate.now().plusDays(2).toString())
+                .putValue(FlowParameters.SCHEDULED.name(), true)
+                .putValue(FlowParameters.PM_CYCLE_UUID.name(), UUID.randomUUID());
+        when(scenario.waitsAtMockedCallActivity(SCHEDULE_END_CYCLE)).thenReturn(ExternalTaskDelegate::complete);
+        when(scenario.waitsAtMockedCallActivity(SCHEDULE_START_CYCLE)).thenReturn((task) -> task.defer("P3DT1S", task::complete));
+        when(scenario.waitsAtMockedCallActivity(EYR)).thenReturn(ExternalTaskDelegate::complete);
+
+        //when
+        Scenario.run(scenario)
+                .withMockedProcess(SCHEDULE_START_ANNUAL_CYCLE)
+                .withMockedProcess(INIT_TIMELINE_POINT)
+                .withMockedProcess(SCHEDULE_END_ANNUAL_CYCLE)
+                .startByKey(KEY, variables).execute();
+
+        //then
+        verify(scenario, atLeast(2)).hasFinished(END_EVENT);
     }
 
 }

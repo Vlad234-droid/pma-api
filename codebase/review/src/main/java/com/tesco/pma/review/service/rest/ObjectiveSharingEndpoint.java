@@ -9,6 +9,7 @@ import com.tesco.pma.review.service.ObjectiveSharingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,8 +34,9 @@ public class ObjectiveSharingEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Objectives sharing have been enabled")
     @PostMapping(value = "/colleagues/{colleagueUuid}/pm-cycles/{cycleUuid}/review-types/objective/sharing",
             produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isCurrentUser(#colleagueUuid) and isLineManager()")
     public RestResponse<Void> shareObjectives(@PathVariable("cycleUuid") String pmCycle,
-                                           @PathVariable("colleagueUuid") UUID colleagueUuid) {
+                                              @PathVariable("colleagueUuid") UUID colleagueUuid) {
         objectiveSharingService.shareObjectives(colleagueUuid, getPMCycleUuid(colleagueUuid, pmCycle));
         return RestResponse.success();
     }
@@ -43,8 +45,9 @@ public class ObjectiveSharingEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Objectives sharing have been disabled")
     @DeleteMapping(value = "/colleagues/{colleagueUuid}/pm-cycles/{cycleUuid}/review-types/objective/sharing",
             produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isCurrentUser(#colleagueUuid) and isLineManager()")
     public RestResponse<Void> stopSharingObjectives(@PathVariable("cycleUuid") String pmCycle,
-                                                 @PathVariable("colleagueUuid") UUID colleagueUuid) {
+                                                    @PathVariable("colleagueUuid") UUID colleagueUuid) {
         objectiveSharingService.stopSharingObjectives(colleagueUuid, getPMCycleUuid(colleagueUuid, pmCycle));
         return RestResponse.success();
     }
@@ -53,6 +56,7 @@ public class ObjectiveSharingEndpoint {
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Info about sharing objectives")
     @GetMapping(value = "/colleagues/{colleagueUuid}/pm-cycles/{cycleUuid}/review-types/objective/sharing",
             produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isCurrentUser(#colleagueUuid) and isLineManager()")
     public RestResponse<Boolean> isColleagueShareObjectives(@PathVariable("cycleUuid") String pmCycle,
                                                             @PathVariable("colleagueUuid") UUID colleagueUuid) {
         return RestResponse.success(objectiveSharingService.isColleagueShareObjectives(
@@ -63,6 +67,7 @@ public class ObjectiveSharingEndpoint {
     @Operation(summary = "Get all shared objectives by their manager", tags = {"objective-sharing"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Shared objectives")
     @GetMapping(value = "/colleagues/{colleagueUuid}/review-types/objective/sharing", produces = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isCurrentUser(#colleagueUuid) and isLineManager()")
     public RestResponse<List<Review>> getSharedObjectivesForColleague(@PathVariable("colleagueUuid") UUID colleagueUuid) {
         return RestResponse.success(objectiveSharingService.getSharedObjectivesForColleague(colleagueUuid));
     }

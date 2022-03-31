@@ -15,10 +15,10 @@
     </bpmn:sequenceFlow>
     <bpmn:callActivity id="Activity_18xvw5z" name="Schedule timeline point" calledElement="schedule_timeline_point">
       <bpmn:extensionElements>
-        <camunda:in source="START_DATE" target="START_DATE" />
-        <camunda:in source="BEFORE_START_DATE" target="BEFORE_START_DATE" />
-        <camunda:in source="BEFORE_END_DATE" target="BEFORE_END_DATE" />
-        <camunda:in source="END_DATE" target="END_DATE" />
+        <camunda:in source="START_DATE_S" target="START_DATE_S" />
+        <camunda:in source="BEFORE_START_DATE_S" target="BEFORE_START_DATE_S" />
+        <camunda:in source="BEFORE_END_DATE_S" target="BEFORE_END_DATE_S" />
+        <camunda:in source="END_DATE_S" target="END_DATE_S" />
         <camunda:in source="TIMELINE_POINT" target="TIMELINE_POINT" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_10fekkl</bpmn:incoming>
