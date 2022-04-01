@@ -11,6 +11,7 @@ import com.tesco.pma.colleague.profile.service.util.ColleagueFactsApiLocalMapper
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
+import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.service.colleague.ColleagueApiService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +23,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -229,4 +231,22 @@ class ProfileServiceImplTest extends AbstractProfileTests {
 
         verify(mockProfileDAO, times(1)).delete(any(TypedAttribute.class));
     }
+
+    @Test
+    void getSuggestionsShouldReturnColleagueProfiles() {
+
+        RequestQuery requestQuery = new RequestQuery();
+        requestQuery.addFilters("first-name_eq", "O'Rodgers");
+        requestQuery.addFilters("last-name_like", "O'Rodgers");
+
+        when(profileDAO.findColleagueSuggestionsByFullName(any(RequestQuery.class)))
+                .thenReturn(List.of());
+
+        var result = profileService.getSuggestions(requestQuery);
+
+        assertTrue(result.isEmpty());
+
+        verify(profileDAO, times(1)).findColleagueSuggestionsByFullName(any(RequestQuery.class));
+    }
+
 }
