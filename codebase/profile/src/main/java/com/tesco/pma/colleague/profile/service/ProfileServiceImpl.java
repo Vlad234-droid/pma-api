@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -376,8 +375,8 @@ public class ProfileServiceImpl implements ProfileService {
     private List<Condition> resetSuggestionsFilters(List<Condition> filters) {
         List<Condition> result = new ArrayList<>();
         for (Condition condition : filters) {
-            if (Set.of("first-name", "middle-name", "last-name").contains(condition.getProperty())
-                    && Condition.Operand.LIKE.equals(condition.getOperand())) {
+            if (Condition.Operand.LIKE.equals(condition.getOperand())
+                    && condition.getValue() instanceof String) {
                 var value = ((String) condition.getValue()).replace("'", "''");
                 result.add(new Condition(condition.getProperty(), condition.getOperand(), value));
             } else {
