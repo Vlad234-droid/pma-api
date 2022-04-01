@@ -12,7 +12,6 @@ import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.logging.LogFormatter;
-import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import com.tesco.pma.service.colleague.ColleagueApiService;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +33,7 @@ import java.util.stream.Collectors;
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.MANAGER_NOT_FOUND;
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_ATTRIBUTE_NOT_FOUND;
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_NOT_FOUND;
+import static com.tesco.pma.dao.utils.DAOUtils.resetFilters;
 
 /**
  * Implementation of {@link ProfileService}.
@@ -165,7 +165,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public List<ColleagueProfile> getSuggestions(RequestQuery requestQuery) {
-        requestQuery.setFilters(resetSuggestionsFilters(requestQuery.getFilters()));
+        resetFilters(requestQuery);
 
         return profileDAO.findColleagueSuggestionsByFullName(requestQuery).stream()
                 .map(colleague -> {
@@ -369,21 +369,6 @@ public class ProfileServiceImpl implements ProfileService {
                 || !existingLocalColleague.getWorkLevel().getCode().equals(changedWorkLevel.getCode())) {
             profileDAO.updateWorkLevel(changedWorkLevel);
         }
-    }
-
-    // Replace single quote with two single quotes for PostgreSQL
-    private List<Condition> resetSuggestionsFilters(List<Condition> filters) {
-        List<Condition> result = new ArrayList<>();
-        for (Condition condition : filters) {
-            if (Condition.Operand.LIKE.equals(condition.getOperand())
-                    && condition.getValue() instanceof String) {
-                var value = ((String) condition.getValue()).replace("'", "''");
-                result.add(new Condition(condition.getProperty(), condition.getOperand(), value));
-            } else {
-                result.add(condition);
-            }
-        }
-        return result;
     }
 
     private NotFoundException profileNotFound(String paramName, Object paramValue) {
