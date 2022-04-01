@@ -9,6 +9,8 @@ dependencies {
     implementation project(':bpm')
     implementation project(':service')
 
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server:${springBootVersion}")
+
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
