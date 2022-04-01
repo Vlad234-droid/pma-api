@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.MANAGER_NOT_FOUND;
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_ATTRIBUTE_NOT_FOUND;
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_NOT_FOUND;
-import static com.tesco.pma.dao.utils.DAOUtils.resetFilters;
 
 /**
  * Implementation of {@link ProfileService}.
@@ -165,9 +164,8 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public List<ColleagueProfile> getSuggestions(RequestQuery requestQuery) {
-        resetFilters(requestQuery);
 
-        return profileDAO.findColleagueSuggestionsByFullName(requestQuery).stream()
+        return profileDAO.findColleagueSuggestionsByFullName(requestQuery.toDAO()).stream()
                 .map(colleague -> {
                     var colleagueProfile = new ColleagueProfile();
                     colleagueProfile.setColleague(colleague);
