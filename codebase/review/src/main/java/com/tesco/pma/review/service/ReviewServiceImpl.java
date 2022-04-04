@@ -481,7 +481,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<AuditOrgObjectiveReport> getAuditOrgObjectiveReport(RequestQuery requestQuery) {
-        return reviewAuditLogDAO.getAuditOrgObjectiveReport(requestQuery);
+        return reviewAuditLogDAO.getAuditOrgObjectiveReport(requestQuery.toDAO());
     }
 
     private TimelinePoint calcTlPoint(TimelinePoint timelinePoint) {

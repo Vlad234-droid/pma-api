@@ -94,7 +94,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public List<File> get(RequestQuery requestQuery, boolean includeFileContent, UUID colleagueUuid, boolean latest) {
-        return fileDao.findByRequestQuery(requestQuery, includeFileContent, colleagueUuid, latest);
+        return fileDao.findByRequestQuery(requestQuery.toDAO(), includeFileContent, colleagueUuid, latest);
     }
 
     @Override

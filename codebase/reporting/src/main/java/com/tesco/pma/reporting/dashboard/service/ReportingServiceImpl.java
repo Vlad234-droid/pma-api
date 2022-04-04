@@ -62,7 +62,7 @@ public class ReportingServiceImpl implements ReportingService {
 
     @Override
     public List<ColleagueReportTargeting> getReportColleagues(RequestQuery requestQuery) {
-        var targetingColleagues = Optional.ofNullable(reportingDAO.getColleagueTargeting(requestQuery))
+        var targetingColleagues = Optional.ofNullable(reportingDAO.getColleagueTargeting(requestQuery.toDAO()))
                 .orElseThrow(() -> notFound(ErrorCodes.REPORT_NOT_FOUND, Map.of(QUERY_PARAMS, requestQuery)));
 
         targetingColleagues.forEach(c -> {
@@ -104,7 +104,7 @@ public class ReportingServiceImpl implements ReportingService {
 
         statsData.setNewToBusinessCount(getCountWithTag(colleagues, IS_NEW_TO_BUSINESS));
 
-        var colleaguesAnniversary = reportingDAO.getColleagueTargetingAnniversary(requestQuery);
+        var colleaguesAnniversary = reportingDAO.getColleagueTargetingAnniversary(requestQuery.toDAO());
         if (!CollectionUtils.isEmpty(colleaguesAnniversary)) {
             fillAnniversaryReviewPerQuarters(statsData, colleaguesAnniversary);
         }
