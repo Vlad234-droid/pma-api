@@ -1,0 +1,32 @@
+<dataset>
+
+    <job id="2" code="SL" name="Shift Leader" cost_category="cc"/>
+
+    <country name="UK" code="UK"/>
+
+    <work_level name="WL2" code="WL2"/>
+
+    <business_type uuid="86a5e647-75a8-4b19-bd6c-3aa6e54d7ac0" name="Store"/>
+
+    <department uuid="ce9e5a9e-992e-4872-a532-639d5c2817d4" id="4" name="Store" business_type_uuid="86a5e647-75a8-4b19-bd6c-3aa6e54d7ac0"/>
+
+    <colleague uuid="c409869b-2acf-45cd-8cc6-e13af2e6f935"
+               first_name="Ron"
+               middle_name="Johnson"
+               last_name="O'Rodgers"
+               email="test@test"
+               primary_entity="Tesco Bank"
+               salary_frequency="ANNUAL"
+               iam_source="Test"
+               iam_id="TPX1"
+               job_id="2"
+               employment_type="ET"
+               hire_date="2019-01-02"
+               leaving_date="2021-02-01"
+               country_code="UK"
+               work_level="WL2"
+               department_uuid="ce9e5a9e-992e-4872-a532-639d5c2817d4"
+               location_id="INDH000001"
+               legal_entity="Tesco Stores Limited"/>
+
+</dataset>
