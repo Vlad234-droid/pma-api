@@ -19,11 +19,13 @@ public class UpdatePMColleagueCycleStatusHandler extends AbstractUpdateEnumStatu
 
     @Override
     protected void execute(ExecutionContext context) {
-        var cycle = context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class);
+        var cycle = context.getNullableVariable(FlowParameters.PM_CYCLE, PMCycle.class);
         var colleagueUuid = context.getVariable(FlowParameters.COLLEAGUE_UUID, UUID.class);
 
-        pmColleagueCycleService.changeStatusForColleagueAndCycle(colleagueUuid, cycle.getUuid(),
-                DictionaryFilter.includeFilter(getOldStatuses()), getStatus());
+        if (cycle != null) {
+            pmColleagueCycleService.changeStatusForColleagueAndCycle(colleagueUuid, cycle.getUuid(),
+                    DictionaryFilter.includeFilter(getOldStatuses()), getStatus());
+        }
     }
 
     @Override

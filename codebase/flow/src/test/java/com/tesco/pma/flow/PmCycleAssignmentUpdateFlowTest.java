@@ -46,6 +46,7 @@ class PmCycleAssignmentUpdateFlowTest {
     private static final String END_EVENT_NO_UPDATE_NEEDED = "end_event_no_update_needed";
     private static final String COLLEAGUE_NOT_FOUND = "COLLEAGUE_NOT_FOUND";
     private static final String PM_CYCLE_MORE_THAN_ONE_IN_STATUSES = "PM_CYCLE_MORE_THAN_ONE_IN_STATUSES";
+    private static final String PM_CYCLE_NOT_ASSIGNED_FOR_COLLEAGUE = "PM_CYCLE_NOT_ASSIGNED_FOR_COLLEAGUE";
 
     private static final String RESOLVE_COLLEAGUE_HANDLER_ACTIVITY = "resolve_colleague_handler_update";
     private static final String CALCULATE_CYCLE_UPDATE_ACTIVITY = "calculate_cycle_update";
@@ -54,6 +55,7 @@ class PmCycleAssignmentUpdateFlowTest {
     private static final String CHANGE_STATUS_PM_COL_CYCLE_ACTIVITY = "change_status_pm_col_cycle_update";
     private static final String SEND_EVENT_COL_CYCLE_UPDATE_ACTIVITY = "send_event_col_cycle_update";
     private static final String FIND_CURRENT_CYCLE_ACTIVITY = "find_current_cycle_update";
+    private static final String GROUP_A2_KEY = "group_a2";
 
     private final ProcessScenario scenario = mock(ProcessScenario.class);
 
@@ -130,44 +132,87 @@ class PmCycleAssignmentUpdateFlowTest {
         //then
         verify(scenario, times(1)).hasCanceled(RESOLVE_COLLEAGUE_HANDLER_ACTIVITY);
         verify(scenario, times(1)).hasFinished(END_EVENT_NO_COLLEAGUE);
-
     }
 
-//    @Test
-//    void colleagueNotFound() throws Exception {
-//        //given
-//        var colleagueUuid = UUID.randomUUID();
-//        var variables = Variables.createVariables()
-//                .putValue(FlowParameters.COLLEAGUE_UUID.name(), colleagueUuid);
-//        doThrow(new BpmnError(COLLEAGUE_NOT_FOUND)).when(resolveColleagueHandler).execute(any());
-//
-//        //when
-//        Scenario.run(scenario).startByMessage(MESSAGE_KEY, variables).execute();
-//
-//        //then
-//        verify(scenario, times(1)).hasCanceled(RESOLVE_COLLEAGUE_HANDLER_ACTIVITY);
-//        verify(scenario, times(1)).hasFinished(END_EVENT_NO_COLLEAGUE);
-//    }
-//
-//    @Test
-//    void cycleNotFound() throws Exception {
-//        //given
-//        var colleagueUuid = UUID.randomUUID();
-//        var colleague = getColleague();
-//        var variables = Variables.createVariables()
-//                .putValue(FlowParameters.COLLEAGUE_UUID.name(), colleagueUuid)
-//                .putValue(FlowParameters.COLLEAGUE.name(), colleague);
-//
-//        doThrow(new BpmnError(PM_CYCLE_MORE_THAN_ONE_IN_STATUSES)).when(findCycleHandler).execute(any());
-//        //when
-//        Scenario.run(scenario).startByMessage(MESSAGE_KEY, variables).execute();
-//
-//        //then
-//        verify(scenario, times(1)).hasCompleted(RESOLVE_COLLEAGUE_HANDLER_ACTIVITY);
-//        verify(scenario, times(1)).hasCompleted(CALCULATE_CYCLE_NEW_JOINER_ACTIVITY);
-//        verify(scenario, times(1)).hasCanceled(FIND_CYCLE_NEW_JOINER_ACTIVITY);
-//        verify(scenario, times(1)).hasFinished(END_EVENT_NO_CYCLE);
-//    }
+    @Test
+    void successFlowUpdateDifferentKey() {
+        //given
+        var colleagueUuid = UUID.randomUUID();
+        var colleague = getColleagueGroupA();
+        var pmCycle = new PMCycle();
+        pmCycle.setEntryConfigKey(GROUP_A2_KEY);
+        var variables = Variables.createVariables()
+                .putValue(FlowParameters.COLLEAGUE_UUID.name(), colleagueUuid)
+                .putValue(FlowParameters.COLLEAGUE.name(), colleague)
+                .putValue(FlowParameters.PM_CYCLE.name(), pmCycle);
+
+        //when
+        Scenario.run(scenario).startByMessage(MESSAGE_KEY, variables).execute();
+
+        //then
+        verify(scenario, times(1)).hasCompleted(RESOLVE_COLLEAGUE_HANDLER_ACTIVITY);
+        verify(scenario, times(1)).hasCompleted(UPSERT_COLLEAGUE_UPDATE_ACTIVITY);
+        verify(scenario, times(1)).hasCompleted(FIND_CURRENT_CYCLE_ACTIVITY);
+        verify(scenario, times(1)).hasCompleted(CALCULATE_CYCLE_UPDATE_ACTIVITY);
+        verify(scenario, times(1)).hasCompleted(CHANGE_STATUS_PM_COL_CYCLE_ACTIVITY);
+        verify(scenario, times(1)).hasCompleted(FIND_CYCLE_UPDATE_ACTIVITY);
+        verify(scenario, times(1)).hasCompleted(SEND_EVENT_COL_CYCLE_UPDATE_ACTIVITY);
+        verify(scenario, times(1)).hasFinished(END_EVENT_1);
+    }
+
+    @Test
+    void cycleNotFound() throws Exception {
+        //given
+        var colleagueUuid = UUID.randomUUID();
+        var colleague = getColleagueGroupA();
+        var pmCycle = new PMCycle();
+        pmCycle.setEntryConfigKey(GROUP_A2_KEY);
+        var variables = Variables.createVariables()
+                .putValue(FlowParameters.COLLEAGUE_UUID.name(), colleagueUuid)
+                .putValue(FlowParameters.COLLEAGUE.name(), colleague)
+                .putValue(FlowParameters.PM_CYCLE.name(), pmCycle);
+
+        doThrow(new BpmnError(PM_CYCLE_MORE_THAN_ONE_IN_STATUSES)).when(findCycleHandler).execute(any());
+
+        //when
+        Scenario.run(scenario).startByMessage(MESSAGE_KEY, variables).execute();
+
+        //then
+        verify(scenario, times(1)).hasCompleted(RESOLVE_COLLEAGUE_HANDLER_ACTIVITY);
+        verify(scenario, times(1)).hasCompleted(UPSERT_COLLEAGUE_UPDATE_ACTIVITY);
+        verify(scenario, times(1)).hasCompleted(FIND_CURRENT_CYCLE_ACTIVITY);
+        verify(scenario, times(1)).hasCompleted(CALCULATE_CYCLE_UPDATE_ACTIVITY);
+        verify(scenario, times(1)).hasCompleted(CHANGE_STATUS_PM_COL_CYCLE_ACTIVITY);
+        verify(scenario, times(1)).hasCanceled(FIND_CYCLE_UPDATE_ACTIVITY);
+        verify(scenario, times(1)).hasFinished(END_EVENT_NO_CYCLE);
+    }
+
+    @Test
+    void pmCycleKeyNotFound() throws Exception {
+        //given
+        var colleagueUuid = UUID.randomUUID();
+        var colleague = getColleagueGroupA();
+        var pmCycle = new PMCycle();
+        pmCycle.setEntryConfigKey(GROUP_A2_KEY);
+        var variables = Variables.createVariables()
+                .putValue(FlowParameters.COLLEAGUE_UUID.name(), colleagueUuid)
+                .putValue(FlowParameters.COLLEAGUE.name(), colleague)
+                .putValue(FlowParameters.PM_CYCLE.name(), pmCycle);
+
+        doThrow(new BpmnError(PM_CYCLE_NOT_ASSIGNED_FOR_COLLEAGUE)).when(findCycleHandler).execute(any());
+
+        //when
+        Scenario.run(scenario).startByMessage(MESSAGE_KEY, variables).execute();
+
+        //then
+        verify(scenario, times(1)).hasCompleted(RESOLVE_COLLEAGUE_HANDLER_ACTIVITY);
+        verify(scenario, times(1)).hasCompleted(UPSERT_COLLEAGUE_UPDATE_ACTIVITY);
+        verify(scenario, times(1)).hasCompleted(FIND_CURRENT_CYCLE_ACTIVITY);
+        verify(scenario, times(1)).hasCompleted(CALCULATE_CYCLE_UPDATE_ACTIVITY);
+        verify(scenario, times(1)).hasCompleted(CHANGE_STATUS_PM_COL_CYCLE_ACTIVITY);
+        verify(scenario, times(1)).hasCanceled(FIND_CYCLE_UPDATE_ACTIVITY);
+        verify(scenario, times(1)).hasFinished(END_EVENT_NO_CYCLE);
+    }
 
     private Colleague getColleagueGroupA() {
         var value = new Colleague();
