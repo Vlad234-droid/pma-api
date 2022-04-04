@@ -1,6 +1,5 @@
 package com.tesco.pma.flow.handlers;
 
-import com.tesco.pma.process.api.PMProcessErrorCodes;
 import lombok.RequiredArgsConstructor;
 
 import java.util.EnumSet;
@@ -9,6 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.tesco.pma.process.api.PMProcessErrorCodes.WRONG_VALUE;
 import static org.apache.commons.lang3.EnumUtils.getEnumIgnoreCase;
 
 /**
@@ -18,6 +18,9 @@ import static org.apache.commons.lang3.EnumUtils.getEnumIgnoreCase;
 @RequiredArgsConstructor
 public abstract class AbstractUpdateEnumStatusHandler<E extends Enum<E>> extends AbstractUpdateStatusHandler {
 
+    protected static final String PARAM_NAME = "paramName";
+    protected static final String PARAM_VALUE = "paramValue";
+
     protected E getStatus() {
         return getStatus(statusValue.getExpressionText());
     }
@@ -25,7 +28,7 @@ public abstract class AbstractUpdateEnumStatusHandler<E extends Enum<E>> extends
     protected E getStatus(String status) {
         return Optional.ofNullable(getEnumIgnoreCase(getEnumClass(), status))
                 .orElseThrow(() -> new IllegalStateException(
-                        messageSourceAccessor.getMessage(PMProcessErrorCodes.WRONG_VALUE, Map.of(STATUS_VALUE, status))));
+                        messageSourceAccessor.getMessage(WRONG_VALUE, Map.of(PARAM_NAME, STATUS_VALUE, PARAM_VALUE, status))));
     }
 
     protected Set<E> getOldStatuses() {

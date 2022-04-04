@@ -25,6 +25,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class NotesServiceImpl implements NotesService {
 
+    private static final String ID_PARAM_NAME = "id";
+
     private final FoldersDAO foldersDao;
     private final NotesDAO notesDao;
     private final NamedMessageSourceAccessor messageSourceAccessor;
@@ -39,11 +41,13 @@ public class NotesServiceImpl implements NotesService {
 
         try {
             if (0 == notesDao.create(note)) {
-                throw new UnknownDataManipulationException(messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_HAS_NOT_BEEN_CREATED));
+                throw new UnknownDataManipulationException(messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_HAS_NOT_BEEN_CREATED,
+                        Map.of(ID_PARAM_NAME, note.getId())));
             }
         } catch (DataIntegrityViolationException e) {
             throw new NoteIntegrityException(NotesErrorCodes.NOTE_INTEGRITY_VIOLATION.getCode(),
-                    messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_INTEGRITY_VIOLATION), null, e);
+                    messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_INTEGRITY_VIOLATION, Map.of(ID_PARAM_NAME, note.getId())),
+                    null, e);
         }
 
         return note;
@@ -70,11 +74,12 @@ public class NotesServiceImpl implements NotesService {
             }
         } catch (DataIntegrityViolationException e) {
             throw new NoteIntegrityException(NotesErrorCodes.NOTE_INTEGRITY_VIOLATION.getCode(),
-                    messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_INTEGRITY_VIOLATION), null, e);
+                    messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_INTEGRITY_VIOLATION, Map.of(ID_PARAM_NAME, note.getId())),
+                    null, e);
         }
 
         throw new NotFoundException(NotesErrorCodes.NOTE_NOT_FOUND.getCode(),
-                messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_NOT_FOUND, Map.of("id", note.getId())));
+                messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_NOT_FOUND, Map.of(ID_PARAM_NAME, note.getId())));
     }
 
     @Override
@@ -91,11 +96,13 @@ public class NotesServiceImpl implements NotesService {
 
         try {
             if (0 == foldersDao.create(folder)) {
-                throw new UnknownDataManipulationException(messageSourceAccessor.getMessage(NotesErrorCodes.FOLDER_HAS_NOT_BEEN_CREATED));
+                throw new UnknownDataManipulationException(messageSourceAccessor.getMessage(NotesErrorCodes.FOLDER_HAS_NOT_BEEN_CREATED,
+                        Map.of(ID_PARAM_NAME, folder.getId())));
             }
         } catch (DataIntegrityViolationException e) {
             throw new NoteIntegrityException(NotesErrorCodes.FOLDER_INTEGRITY_VIOLATION.getCode(),
-                    messageSourceAccessor.getMessage(NotesErrorCodes.FOLDER_INTEGRITY_VIOLATION), null, e);
+                    messageSourceAccessor.getMessage(NotesErrorCodes.FOLDER_INTEGRITY_VIOLATION, Map.of(ID_PARAM_NAME, folder.getId())),
+                    null, e);
         }
 
         return folder;
@@ -115,11 +122,12 @@ public class NotesServiceImpl implements NotesService {
             }
         } catch (DataIntegrityViolationException e) {
             throw new NoteIntegrityException(NotesErrorCodes.FOLDER_INTEGRITY_VIOLATION.getCode(),
-                    messageSourceAccessor.getMessage(NotesErrorCodes.FOLDER_INTEGRITY_VIOLATION), null, e);
+                    messageSourceAccessor.getMessage(NotesErrorCodes.FOLDER_INTEGRITY_VIOLATION, Map.of(ID_PARAM_NAME, folder.getId())),
+                    null, e);
         }
 
         throw new NotFoundException(NotesErrorCodes.FOLDER_NOT_FOUND.getCode(),
-                messageSourceAccessor.getMessage(NotesErrorCodes.FOLDER_NOT_FOUND, Map.of("id", folder.getId())));
+                messageSourceAccessor.getMessage(NotesErrorCodes.FOLDER_NOT_FOUND, Map.of(ID_PARAM_NAME, folder.getId())));
     }
 
     @Override
@@ -136,7 +144,7 @@ public class NotesServiceImpl implements NotesService {
 
         if (managerUuid.equals(referenceColleagueId)) {
             throw new NoteIntegrityException(NotesErrorCodes.NOTE_OWNER_REFERENCE_COLLISION.getCode(),
-                    messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_OWNER_REFERENCE_COLLISION, Map.of("id", managerUuid)));
+                    messageSourceAccessor.getMessage(NotesErrorCodes.NOTE_OWNER_REFERENCE_COLLISION, Map.of(ID_PARAM_NAME, managerUuid)));
         }
 
         var referenceColleague = profileService.findColleagueByColleagueUuid(referenceColleagueId);
