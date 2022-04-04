@@ -56,7 +56,7 @@ public class ContentEntryServiceImpl implements ContentEntryService {
 
     @Override
     public List<ContentEntry> find(RequestQuery rq) {
-        return contentEntryDAO.find(rq);
+        return contentEntryDAO.find(rq.toDAO());
     }
 
     @Override

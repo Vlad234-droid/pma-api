@@ -30,7 +30,7 @@ public class ReviewReportingServiceImpl implements ReviewReportingService {
     @Override
     public Report getLinkedObjectivesReport(RequestQuery requestQuery) {
         var reportProvider = new ObjectiveLinkedReviewReportProvider();
-        reportProvider.setObjectives(reviewReportingDAO.getLinkedObjectivesData(requestQuery));
+        reportProvider.setObjectives(reviewReportingDAO.getLinkedObjectivesData(requestQuery.toDAO()));
 
         if (isEmpty(reportProvider.getObjectives())) {
             throw notFound(ErrorCodes.REPORT_NOT_FOUND, Map.of(ReportingConstants.QUERY_PARAMS, requestQuery));
