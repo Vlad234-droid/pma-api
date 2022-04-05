@@ -92,4 +92,27 @@ public class RequestQuery {
     public static RequestQuery create(String name, Object value) {
         return create(Map.of(name, value));
     }
+
+    @JsonIgnore
+    // Replace single quote with two single quotes for PostgreSQL
+    public RequestQuery toDAO() {
+        if (filters == null) {
+            return this;
+        }
+
+        List<Condition> result = new ArrayList<>();
+        for (Condition condition : this.getFilters()) {
+            if (Condition.Operand.LIKE.equals(condition.getOperand())
+                    && condition.getValue() instanceof String) {
+                var value = ((String) condition.getValue()).replace("'", "''");
+                result.add(new Condition(condition.getProperty(), condition.getOperand(), value));
+            } else {
+                result.add(condition);
+            }
+        }
+        this.setFilters(result);
+
+        return this;
+    }
+
 }

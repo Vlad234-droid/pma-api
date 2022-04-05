@@ -430,6 +430,19 @@ class ProfileDAOTest extends AbstractDAOTest {
         assertEquals(1, dao.findColleagueSuggestionsByFullName(rq).size());
     }
 
+
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "colleagues_with_single_quote.xml"})
+    void findColleagueSuggestionsByFullNameWithSingleQuote() {
+
+        assertEquals(1, dao.findColleagueSuggestionsByFullName(
+                createRQ(Map.of("last-name_eq", "O'Rodgers"))).size());
+
+        assertEquals(1, dao.findColleagueSuggestionsByFullName(
+                createRQ(Map.of("last-name_like", "O''Rodgers"))).size());
+
+    }
+
     private RequestQuery createRQ(Map<String, Object> filters) {
         var result = new RequestQuery();
         filters.forEach(result::addFilters);

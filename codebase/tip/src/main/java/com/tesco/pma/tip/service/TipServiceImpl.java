@@ -67,7 +67,7 @@ public class TipServiceImpl implements TipService {
     @Override
     public List<Tip> findAll(RequestQuery requestQuery) {
         log.debug("Service find all tips");
-        return tipDAO.findAll(requestQuery);
+        return tipDAO.findAll(requestQuery.toDAO());
     }
 
     @Override

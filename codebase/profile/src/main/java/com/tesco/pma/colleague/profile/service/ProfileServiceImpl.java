@@ -22,12 +22,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.Optional;
-import java.util.UUID;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.MANAGER_NOT_FOUND;
@@ -165,7 +165,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public List<ColleagueProfile> getSuggestions(RequestQuery requestQuery) {
 
-        return profileDAO.findColleagueSuggestionsByFullName(requestQuery).stream()
+        return profileDAO.findColleagueSuggestionsByFullName(requestQuery.toDAO()).stream()
                 .map(colleague -> {
                     var colleagueProfile = new ColleagueProfile();
                     colleagueProfile.setColleague(colleague);

@@ -133,7 +133,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Transactional(readOnly = true)
     public List<Feedback> findAll(RequestQuery requestQuery) {
         log.debug("Request to get all Feedbacks");
-        return feedbackDAO.findAll(requestQuery);
+        return feedbackDAO.findAll(requestQuery.toDAO());
     }
 
     @Override
