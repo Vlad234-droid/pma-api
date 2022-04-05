@@ -337,14 +337,6 @@ camunda:
     # https://docs.camunda.org/manual/latest/user-guide/security/#authorization
     # https://docs.camunda.org/manual/latest/user-guide/process-engine/authorization-service/
     authorization.enabled: ${CAMUNDA_AUTHORIZATION_ENABLED:true}
-    run:
-      # https://docs.camunda.org/manual/latest/user-guide/security/#authentication
-      # https://docs.camunda.org/manual/latest/user-guide/camunda-bpm-run/#authentication
-      auth.enabled: true
-      # https://docs.camunda.org/manual/latest/user-guide/camunda-bpm-run/#cross-origin-resource-sharing
-      cors:
-        enabled: true
-        allowed-origins: "*"
     generic-properties:
       properties:
         generalResourceWhitelistPattern: "[a-zA-Z0-9\\-_]+"

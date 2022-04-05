@@ -13,7 +13,7 @@ import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class CamundaProcessEngineAuthenticationProvider implements AuthenticationProvider {
+public class PmaAuthenticationProvider implements AuthenticationProvider {
 
     private static final String ROLE_PREFIX = "ROLE_";
     private static final String CAMUNDA_GROUP_ID_PREFIX = "tesco-";
