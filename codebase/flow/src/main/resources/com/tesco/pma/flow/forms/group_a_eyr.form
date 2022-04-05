@@ -57,7 +57,7 @@
         "minLength": 10,
         "maxLength": 500
       },
-      "description": "How have you gone about your work and what have you done to develop yourself? How have you lived the Win Together behaviours, purpose and values?"
+      "description": "How have you gone about your work and what have you done to develop yourself? How have you lived the purpose, values and Win Together behaviours?"
     },
     {
       "key": "impact_on_others",

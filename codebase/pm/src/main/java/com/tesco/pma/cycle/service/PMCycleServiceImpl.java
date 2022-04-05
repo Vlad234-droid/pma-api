@@ -216,7 +216,7 @@ public class PMCycleServiceImpl implements PMCycleService {
 
     @Override
     public List<PMCycle> findAll(RequestQuery requestQuery, boolean includeMetadata) {
-        return cycleDAO.findAll(requestQuery, includeMetadata);
+        return cycleDAO.findAll(requestQuery.toDAO(), includeMetadata);
     }
 
     @Override
@@ -482,7 +482,7 @@ public class PMCycleServiceImpl implements PMCycleService {
                 new Condition(TEMPLATE_UUID_CONDITION, EQUALS, cycle.getTemplate().getUuid())
         ));
 
-        List<PMCycle> cycleList = cycleDAO.findAll(query, false);
+        List<PMCycle> cycleList = cycleDAO.findAll(query.toDAO(), false);
         if (!isEmpty(cycleList)) {
             throw notFound(PM_CYCLE_NOT_ALLOWED_TO_START,
                     Map.of(CONDITION_PARAMETER_NAME, query.getFilters()));
