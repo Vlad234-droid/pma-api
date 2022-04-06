@@ -13,7 +13,7 @@ public class CaseInsensitiveEnumEditor extends PropertyEditorSupport {
             throw new IllegalArgumentException("Unsupported " + type);
         }
         this.enumNames = new String[values.length];
-        for (int i = 0; i < values.length; i++) {
+        for (var i = 0; i < values.length; i++) {
             this.enumNames[i] = ((Enum<?>) values[i]).name();
         }
     }

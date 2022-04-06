@@ -75,11 +75,11 @@ public class UserManagementServiceImpl implements UserManagementService {
      */
     @Override
     public List<Account> getAccounts(int page) {
-        Integer offset = (page - 1) * defaultPageLimit;
-        RequestQuery requestQuery = new RequestQuery();
+        var offset = (page - 1) * defaultPageLimit;
+        var requestQuery = new RequestQuery();
         requestQuery.setOffset(offset);
         requestQuery.setLimit(defaultPageLimit);
-        List<Account> accounts = accountManagementDAO.get(requestQuery);
+        var accounts = accountManagementDAO.get(requestQuery);
         return refinementAccounts(accounts);
     }
 
@@ -100,7 +100,7 @@ public class UserManagementServiceImpl implements UserManagementService {
         //    throw colleagueNotFoundException(request.getName(), request.getIamId());
         // }
 
-        Optional<Account> optionalAccount = findAccountByName(request.getName());
+        var optionalAccount = findAccountByName(request.getName());
         if (optionalAccount.isPresent()) {
             throw accountAlreadyExistsException(request.getName());
         }
@@ -127,7 +127,7 @@ public class UserManagementServiceImpl implements UserManagementService {
             throw accountAlreadyExistsException(e, request.getName());
         }
 
-        Collection<Integer> roleIds = remappingRoles(request.getRoleId());
+        var roleIds = remappingRoles(request.getRoleId());
         if (!roleIds.isEmpty()) {
             updateRoles(true, request.getName(), roleIds);
         }
@@ -137,14 +137,14 @@ public class UserManagementServiceImpl implements UserManagementService {
     @Override
     @Transactional
     public void grantRole(RoleRequest request) {
-        Collection<Integer> roleIds = remappingRoles(request.getRole());
+        var roleIds = remappingRoles(request.getRole());
         updateRoles(true, request.getAccountName(), roleIds);
     }
 
     @Override
     @Transactional
     public void revokeRole(RoleRequest request) {
-        Collection<Integer> roleIds = remappingRoles(request.getRole());
+        var roleIds = remappingRoles(request.getRole());
         updateRoles(false, request.getAccountName(), roleIds);
     }
 
@@ -170,11 +170,11 @@ public class UserManagementServiceImpl implements UserManagementService {
 
     private List<Account> refinementAccounts(List<Account> accounts) {
         return accounts.stream().map(account -> {
-            Collection<Role> roles = account.getRoles();
+            var roles = account.getRoles();
             if (roles.isEmpty()) {
                 account.setRoles(null);
             } else if (roles.size() == 1) {
-                Integer roleId = roles.iterator().next().getId();
+                var roleId = roles.iterator().next().getId();
                 account.setRoleId(roleId);
                 account.setRoles(null);
             }
@@ -188,7 +188,7 @@ public class UserManagementServiceImpl implements UserManagementService {
      * @return
      */
     private Collection<Integer> remappingRoles(Object role) {
-        Collection<Integer> retValue = new HashSet<>();
+        var retValue = new HashSet<Integer>();
         if (role != null) {
             if (Collection.class.isAssignableFrom(role.getClass())) {
                 retValue.addAll((Collection) role);
@@ -200,12 +200,12 @@ public class UserManagementServiceImpl implements UserManagementService {
     }
 
     private void updateRoles(boolean granted, String accountName, Collection<Integer> roleIds) {
-        Optional<Account> optionalAccount = findAccountByName(accountName);
+        var optionalAccount = findAccountByName(accountName);
         if (optionalAccount.isEmpty()) {
             throw accountNotFoundException(accountName);
         }
 
-        UUID accountId = optionalAccount.get().getId();
+        var accountId = optionalAccount.get().getId();
         for (Integer roleId : roleIds) {
             try {
                 if (granted) {
@@ -221,7 +221,7 @@ public class UserManagementServiceImpl implements UserManagementService {
     }
 
     private Optional<Account> findAccountByName(String name) {
-        Account account = accountManagementDAO.findAccountByName(name);
+        var account = accountManagementDAO.findAccountByName(name);
         return Optional.ofNullable(account);
     }
 
