@@ -29,8 +29,10 @@ public class ResolveColleagueHandler extends CamundaAbstractFlowHandler {
 
     @Override
     protected void execute(ExecutionContext context) throws Exception {
+        var colleagueUuid = HandlerUtils.getEventColleagueUuid(context);
+        context.setVariable(FlowParameters.COLLEAGUE_UUID, colleagueUuid);
+
         if (colleagueChangesProperties.isForce()) {
-            var colleagueUuid = HandlerUtils.getEventColleagueUuid(context);
             var colleague = colleagueApiService.findColleagueByUuid(colleagueUuid);
             if (colleague != null) {
                 context.setVariable(FlowParameters.COLLEAGUE, colleague);

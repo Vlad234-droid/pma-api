@@ -105,4 +105,9 @@ public interface PMColleagueCycleDAO {
     int changeStatusByParent(@Param("parentCycleUuid") UUID parentCycleUuid,
                              @Param("newStatus") PMCycleStatus newStatus,
                              @Param("statusFilter") DictionaryFilter<PMCycleStatus> statusFilter);
+
+    int changeStatusForColleagueAndCycle(@Param("colleagueUuid") UUID colleagueUuid,
+                                         @Param("cycleUuid") UUID cycleUuid,
+                                         @Param("statusFilter") DictionaryFilter<PMCycleStatus> statusFilter,
+                                         @Param("newStatus") PMCycleStatus newStatus);
 }

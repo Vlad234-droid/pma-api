@@ -124,6 +124,12 @@ public class PMColleagueCycleServiceImpl implements PMColleagueCycleService {
     }
 
     @Override
+    public void changeStatusForColleagueAndCycle(UUID colleagueUuid, UUID cycleUuid,
+                                                 DictionaryFilter<PMCycleStatus> oldStatus, PMCycleStatus newStatus) {
+        dao.changeStatusForColleagueAndCycle(colleagueUuid, cycleUuid, oldStatus, newStatus);
+    }
+
+    @Override
     public void start(UUID cycleUuid, UUID colleagueUuid) {
 
         DictionaryFilter<PMCycleStatus> statusFilter = includeFilter(REGISTERED, ACTIVE, STARTED);
