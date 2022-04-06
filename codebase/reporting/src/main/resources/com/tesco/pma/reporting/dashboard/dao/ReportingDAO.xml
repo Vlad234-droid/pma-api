@@ -58,10 +58,10 @@
                             count(
                                     case when upper(ptp.code) = 'MYR' and pr.status_id = 3 then 1 end)       as myr_approved_cnt,
                             max(case
-                                    when upper(ptp.code) = 'MYR'
+                                    when upper(ptp.code) = 'MYR' and pr.status_id = 3
                                         then (pr.properties::json ->> 'what_rating')::varchar end)            as myr_what_rating,
                             max(case
-                                    when upper(ptp.code) = 'MYR'
+                                    when upper(ptp.code) = 'MYR' and pr.status_id = 3
                                         then (pr.properties::json ->> 'how_rating')::varchar end)             as myr_how_rating,
                             count(case when upper(ptp.code) = 'EYR' then 1 end)                              as eyr_cnt,
                             count(
@@ -69,10 +69,10 @@
                             count(
                                     case when upper(ptp.code) = 'EYR' and pr.status_id = 3 then 1 end)       as eyr_approved_cnt,
                             max(case
-                                    when upper(ptp.code) = 'EYR'
+                                    when upper(ptp.code) = 'EYR' and pr.status_id = 3
                                         then (pr.properties::json ->> 'what_rating')::varchar end)            as eyr_what_rating,
                             max(case
-                                    when upper(ptp.code) = 'EYR'
+                                    when upper(ptp.code) = 'EYR' and pr.status_id = 3
                                         then (pr.properties::json ->> 'how_rating')::varchar end)             as eyr_how_rating,
                             count(
                                      case when fr.uuid is not null then 1 end)                                as feedback_requested_cnt,
