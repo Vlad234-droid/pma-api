@@ -137,6 +137,17 @@ class PMColleagueCycleDAOTest extends AbstractDAOTest {
         assertEquals(INACTIVE, updatedCycle.getStatus());
     }
 
+    @Test
+    @DataSet({BASE_PATH_TO_DATA_SET + "pm_cycle_init.xml",
+            BASE_PATH_TO_DATA_SET + "pm_colleague_cycle_init.xml"})
+    void changeStatusForColleagueAndCycle() {
+        var updatedCount = dao.changeStatusForColleagueAndCycle(COLLEAGUE_UUID, CYCLE_UUID, includeFilter(ACTIVE), INACTIVE);
+        assertEquals(1, updatedCount);
+
+        var updatedCycle = dao.read(COLLEAGUE_CYCLE_UUID);
+        assertEquals(INACTIVE, updatedCycle.getStatus());
+    }
+
     private void assertColleagueCycle(UUID uuid, UUID colleagueUuid, PMCycleStatus status, PMColleagueCycle colleagueCycle) {
         assertNotNull(colleagueCycle);
         assertEquals(uuid, colleagueCycle.getUuid());
