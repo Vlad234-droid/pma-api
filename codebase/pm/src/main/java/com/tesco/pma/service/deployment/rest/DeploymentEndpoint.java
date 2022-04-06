@@ -2,12 +2,13 @@ package com.tesco.pma.service.deployment.rest;
 
 import com.tesco.pma.bpm.api.DeploymentInfo;
 import com.tesco.pma.bpm.api.ProcessManagerService;
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.cycle.service.DeploymentService;
 import com.tesco.pma.exception.DeploymentException;
-import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.exception.InitializationException;
 import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.logging.TraceUtils;
+import com.tesco.pma.process.api.PMProcessErrorCodes;
 import com.tesco.pma.rest.HttpStatusCodes;
 import com.tesco.pma.rest.RestResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,6 +42,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.tesco.pma.exception.ErrorCodes.ERROR_FILE_NOT_FOUND;
+import static com.tesco.pma.exception.ErrorCodes.PROCESSING_FAILED;
 import static com.tesco.pma.logging.TraceId.TRACE_ID_HEADER;
 import static com.tesco.pma.rest.RestResponse.success;
 
@@ -51,13 +54,18 @@ import static com.tesco.pma.rest.RestResponse.success;
 @RestController
 public class DeploymentEndpoint {
 
-    private static final String PROCESS_UNDEPLOYMENT_FAILED = "Process undeployment failed";
+    private static final String PROCESS_TYPE_PARAM_NAME = "processType";
+    private static final String PROCESS_INITIALIZATION = "Process initialization";
+    private static final String PROCESS_UNDEPLOYMENT = "Process undeployment";
 
     @Autowired
     ProcessManagerService processManagerService;
 
     @Autowired
     DeploymentService deploymentService;
+
+    @Autowired
+    NamedMessageSourceAccessor messageSourceAccessor;
 
     @Operation(summary = "Get list of deployed processes",
             tags = {"deployment"})
@@ -79,9 +87,11 @@ public class DeploymentEndpoint {
         try {
             return RestResponse.success(processManagerService.deployProcessArchive(diagramPath));
         } catch (FileNotFoundException e) {
-            throw new NotFoundException(ErrorCodes.ERROR_FILE_NOT_FOUND.name(), "Diagram file was not found", diagramPath, e);
+            throw new NotFoundException(ERROR_FILE_NOT_FOUND.name(), "Diagram file was not found", diagramPath, e);
         } catch (InitializationException e) {
-            throw new DeploymentException(ErrorCodes.PROCESSING_FAILED.name(), "Process initialization failed", diagramPath, e);
+            throw new DeploymentException(PROCESSING_FAILED.name(),
+                    messageSourceAccessor.getMessage(PROCESSING_FAILED, Map.of(PROCESS_TYPE_PARAM_NAME, PROCESS_INITIALIZATION)),
+                    diagramPath, e);
         }
     }
 
@@ -99,7 +109,9 @@ public class DeploymentEndpoint {
             processManagerService.undeployProcess(processName);
             return RestResponse.success(processName);
         } catch (InitializationException e) {
-            throw new DeploymentException(ErrorCodes.PROCESSING_FAILED.name(), PROCESS_UNDEPLOYMENT_FAILED, processName, e);
+            throw new DeploymentException(PROCESSING_FAILED.name(),
+                    messageSourceAccessor.getMessage(PROCESSING_FAILED, Map.of(PROCESS_TYPE_PARAM_NAME, PROCESS_UNDEPLOYMENT)),
+                    processName, e);
         }
     }
 
@@ -132,14 +144,16 @@ public class DeploymentEndpoint {
             response.setHeader(TRACE_ID_HEADER, traceId.getValue());
             return RestResponse.success(processManagerService.deploy(deploymentName, resources));
         } catch (Exception e) {
-            throw new DeploymentException(ErrorCodes.PROCESSING_FAILED.name(), "Deployment initialization failed", deploymentName, e);
+            throw new DeploymentException(PROCESSING_FAILED.name(), 
+                    messageSourceAccessor.getMessage(PROCESSING_FAILED, Map.of(PROCESS_TYPE_PARAM_NAME, PROCESS_INITIALIZATION)), 
+                    deploymentName, e);
         } finally {
             for (Map.Entry<String, InputStream> resource : resources.entrySet()) {
                 try {
                     resource.getValue().close();
                 } catch (IOException ex) {
-                    // todo naming service
-                    log.warn("Resources was not closed correctly: {}", resource.getKey(), ex);
+                    log.warn(messageSourceAccessor.getMessage(PMProcessErrorCodes.RESOURCE_NOT_FOUND,
+                            Map.of("path", resource.getKey())), ex);
                 }
             }
         }
@@ -157,7 +171,9 @@ public class DeploymentEndpoint {
         try {
             return RestResponse.success(processManagerService.undeploy(id, null));
         } catch (InitializationException e) {
-            throw new DeploymentException(ErrorCodes.PROCESSING_FAILED.name(), PROCESS_UNDEPLOYMENT_FAILED, id, e);
+            throw new DeploymentException(PROCESSING_FAILED.name(), 
+                    messageSourceAccessor.getMessage(PROCESSING_FAILED, Map.of(PROCESS_TYPE_PARAM_NAME, PROCESS_UNDEPLOYMENT)), 
+                    id, e);
         }
     }
 
@@ -173,7 +189,9 @@ public class DeploymentEndpoint {
         try {
             return RestResponse.success(processManagerService.undeploy(null, name));
         } catch (InitializationException e) {
-            throw new DeploymentException(ErrorCodes.PROCESSING_FAILED.name(), PROCESS_UNDEPLOYMENT_FAILED, name, e);
+            throw new DeploymentException(PROCESSING_FAILED.name(), 
+                    messageSourceAccessor.getMessage(PROCESSING_FAILED, Map.of(PROCESS_TYPE_PARAM_NAME, PROCESS_UNDEPLOYMENT)), 
+                    name, e);
         }
     }
 
