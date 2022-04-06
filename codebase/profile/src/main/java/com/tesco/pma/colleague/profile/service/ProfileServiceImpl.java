@@ -6,7 +6,6 @@ import com.tesco.pma.colleague.profile.dao.ProfileDAO;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
-import com.tesco.pma.colleague.profile.exception.ErrorCodes;
 import com.tesco.pma.colleague.profile.service.util.ColleagueFactsApiLocalMapper;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
@@ -33,6 +32,8 @@ import java.util.stream.Collectors;
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.MANAGER_NOT_FOUND;
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_ATTRIBUTE_NOT_FOUND;
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_NOT_FOUND;
+import static com.tesco.pma.colleague.profile.exception.ErrorCodes.DATA_INTEGRITY_VIOLATION_EXCEPTION;
+import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS;
 
 /**
  * Implementation of {@link ProfileService}.
@@ -52,6 +53,8 @@ public class ProfileServiceImpl implements ProfileService {
 
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     private static final String PROFILE_ATTRIBUTE_NAME_PARAMETER_NAME = "profileAttributeName";
+    private static final String MANAGER_UUID_PARAMETER_NAME = "managerUuid";
+    private static final String ERROR_MESSAGE_PARAMETER_NAME = "errorMessage";
 
     @Override
     //todo    @Cacheable //NOSONAR
@@ -116,8 +119,8 @@ public class ProfileServiceImpl implements ProfileService {
                     throw profileAttributeNotFound(profileAttribute.getName(), profileAttribute.getColleagueUuid());
                 }
             } catch (DuplicateKeyException e) {
-                throw new DatabaseConstraintViolationException(ErrorCodes.PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS.name(),
-                        messages.getMessage(ErrorCodes.PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS,
+                throw new DatabaseConstraintViolationException(PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS.name(),
+                        messages.getMessage(PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS,
                                 Map.of(PROFILE_ATTRIBUTE_NAME_PARAMETER_NAME, profileAttribute.getName(),
                                         COLLEAGUE_UUID_PARAMETER_NAME, profileAttribute.getColleagueUuid()
                                 )), null, e);
@@ -247,8 +250,8 @@ public class ProfileServiceImpl implements ProfileService {
                 updated = profileDAO.updateColleague(changedLocalColleague);
             }
         } catch (DataIntegrityViolationException exception) {
-            var message = String.format("Data integrity violation exception = %s", exception.getMessage());
-            log.error(LogFormatter.formatMessage(ErrorCodes.DATA_INTEGRITY_VIOLATION_EXCEPTION, message));
+            log.error(LogFormatter.formatMessage(messages, DATA_INTEGRITY_VIOLATION_EXCEPTION,
+                    Map.of(ERROR_MESSAGE_PARAMETER_NAME, exception.getMessage())));
         }
 
         return updated;
@@ -286,8 +289,7 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         if (manager == null) {
-            log.warn(LogFormatter.formatMessage(MANAGER_NOT_FOUND, "For colleague manager '{}' was not found"),
-                    managerUuid);
+            log.warn(LogFormatter.formatMessage(messages, MANAGER_NOT_FOUND, Map.of(MANAGER_UUID_PARAMETER_NAME, managerUuid)));
         }
 
         return manager;

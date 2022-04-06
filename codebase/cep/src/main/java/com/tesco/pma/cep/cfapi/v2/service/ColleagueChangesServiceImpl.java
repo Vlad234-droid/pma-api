@@ -8,6 +8,7 @@ import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
 import com.tesco.pma.colleague.security.service.UserManagementService;
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.event.EventNames;
 import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.event.service.EventSender;
@@ -39,10 +40,13 @@ import static com.tesco.pma.colleague.security.exception.ErrorCodes.SECURITY_ACC
 @RequiredArgsConstructor
 public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
+    private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
+
     private final ColleagueChangesProperties colleagueChangesProperties;
     private final ProfileService profileService;
     private final UserManagementService userManagementService;
     private final EventSender eventSender;
+    private final NamedMessageSourceAccessor messages;
 
     private static final EnumMap<EventType, ToIntFunction<ColleagueChangeEventPayload>> PROCESSORS
             = new EnumMap<>(EventType.class);
@@ -129,8 +133,8 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
         var changedAttributes = filteringChangedAttributes(colleagueChangeEventPayload);
         if (changedAttributes.isEmpty()) {
-            log.warn(LogFormatter.formatMessage(CHANGED_ATTRIBUTES_NOT_FOUND, "For colleague '{}' was not updated records"),
-                    colleagueChangeEventPayload.getColleagueUuid());
+            log.warn(LogFormatter.formatMessage(messages, CHANGED_ATTRIBUTES_NOT_FOUND,
+                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueChangeEventPayload.getColleagueUuid())));
             return 1;
         }
 

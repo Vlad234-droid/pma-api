@@ -35,6 +35,12 @@ public enum PMProcessErrorCodes implements ErrorCodeAware {
      * Resource not found
      */
     RESOURCE_NOT_FOUND,
+
+    /**
+     * Resource not closed
+     */
+    RESOURCE_NOT_CLOSED,
+
     /**
      * Process not found by cycle uuid
      */

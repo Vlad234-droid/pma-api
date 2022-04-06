@@ -1,5 +1,6 @@
 package com.tesco.pma.service.cep;
 
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.configuration.cep.CEPProperties;
 import com.tesco.pma.api.Identified;
 import com.tesco.pma.exception.ErrorCodes;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -21,10 +23,14 @@ public class EventServiceImpl implements EventService {
 
     private final CEPProperties cepProperties;
     private final RestTemplate restTemplate;
+    private final NamedMessageSourceAccessor messages;
 
-    public EventServiceImpl(CEPProperties cepProperties, RestTemplate restTemplate) {
+    private static final String EVENT_ID_PARAMETER_NAME = "eventId";
+
+    public EventServiceImpl(CEPProperties cepProperties, RestTemplate restTemplate, NamedMessageSourceAccessor messages) {
         this.cepProperties = cepProperties;
         this.restTemplate = restTemplate;
+        this.messages = messages;
     }
 
     @Override
@@ -55,14 +61,16 @@ public class EventServiceImpl implements EventService {
         switch (statusCode) {
             case OK:
                 throw new EventPublishException(ErrorCodes.EVENT_NOT_PUBLISHED.getCode(),
-                        String.format("Event %s accepted but not published", eventId));
+                        messages.getMessage(ErrorCodes.EVENT_NOT_PUBLISHED, Map.of(EVENT_ID_PARAMETER_NAME, eventId)));
             case CREATED:
                 log.trace("Event {} has been successfully published", eventId);
                 break;
             case UNAUTHORIZED:
-                throw new EventPublishException(ErrorCodes.USER_NOT_AUTHENTICATED.getCode(), "User is not authenticated");
+                throw new EventPublishException(ErrorCodes.USER_NOT_AUTHENTICATED.getCode(),
+                        messages.getMessage(ErrorCodes.USER_NOT_AUTHENTICATED));
             case FORBIDDEN:
-                throw new EventPublishException(ErrorCodes.USER_NOT_AUTHORIZED.getCode(), "User is not authorized");
+                throw new EventPublishException(ErrorCodes.USER_NOT_AUTHORIZED.getCode(),
+                        messages.getMessage(ErrorCodes.USER_NOT_AUTHORIZED));
             case UNPROCESSABLE_ENTITY:
                 throw new EventPublishException(ErrorCodes.EVENT_PAYLOAD_ERROR.getCode(),
                         String.format("Event %s has errors in payload: %s", eventId, body));
