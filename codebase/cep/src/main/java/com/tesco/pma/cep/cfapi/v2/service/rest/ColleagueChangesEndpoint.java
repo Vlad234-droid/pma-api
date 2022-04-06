@@ -4,6 +4,7 @@ import com.tesco.pma.cep.cfapi.v2.domain.ColleagueChangeEventPayload;
 import com.tesco.pma.cep.cfapi.v2.service.ColleagueChangesService;
 import com.tesco.pma.exception.ErrorCodes;
 import com.tesco.pma.logging.LogFormatter;
+import com.tesco.pma.logging.TraceId;
 import com.tesco.pma.logging.TraceUtils;
 import com.tesco.pma.rest.HttpStatusCodes;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,6 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
 import java.util.concurrent.Executor;
+
+import static com.tesco.pma.cep.cfapi.v2.exception.DebugCodes.CEP_EVENT_HEADERS;
+import static com.tesco.pma.cep.cfapi.v2.exception.DebugCodes.CEP_EVENT_PAYLOAD;
 
 @RestController
 @RequestMapping(path = "/colleagues")
@@ -54,28 +58,41 @@ public class ColleagueChangesEndpoint {
     public ResponseEntity<Void> processColleagueChangeEvent(@RequestHeader HttpHeaders headers,
                                                       @RequestBody ColleagueChangeEventPayload colleagueChangeEventPayload) {
 
-        if (headers != null) {
-            var eventId = headers.getFirst("EventId");
-            var feedId = headers.getFirst("FeedId");
-            var traceId = headers.getFirst("TraceId");
-            log.debug(String.format("Tried to process a event request for eventId = %s, feedId = %s, traceId = %s",
-                    eventId, feedId, traceId));
+        var traceId = TraceUtils.getTraceId();
+
+        if (log.isDebugEnabled() && headers != null) {
+            var eventIdHeader = headers.getFirst("EventId");
+            var feedIdHeader = headers.getFirst("FeedId");
+            var traceIdHeader = headers.getFirst("TraceId");
+            if (traceIdHeader != null) {
+                traceId = new TraceId(traceIdHeader, null);
+                TraceUtils.setTraceId(traceId);
+            }
+            String message = String.format("Tried to process a event request for eventId = %s, feedId = %s, traceId = %s",
+                    eventIdHeader, feedIdHeader, traceIdHeader);
+            log.debug(LogFormatter.formatMessage(CEP_EVENT_HEADERS, message));
+
         }
 
         if (Objects.isNull(colleagueChangeEventPayload) || Objects.isNull(colleagueChangeEventPayload.getEventType())) {
-            log.warn(LogFormatter.formatMessage(ErrorCodes.EVENT_PAYLOAD_ERROR, "Invalid payload was received from CEP"));
-            log.debug(String.format("Tried to process a event request %s", colleagueChangeEventPayload));
+            String message = String.format("Invalid payload was received from CEP = %s", colleagueChangeEventPayload);
+            log.warn(LogFormatter.formatMessage(ErrorCodes.EVENT_PAYLOAD_ERROR, message));
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
 
-        startProcessingColleagueChangeEvent(colleagueChangeEventPayload);
+        if (log.isDebugEnabled()) {
+            String message = String.format("Tried to process an event request %s", colleagueChangeEventPayload);
+            log.debug(LogFormatter.formatMessage(CEP_EVENT_PAYLOAD, message));
+        }
+
+        startProcessingColleagueChangeEvent(colleagueChangeEventPayload, traceId);
 
         return ResponseEntity.ok().build();
 
     }
 
-    private void startProcessingColleagueChangeEvent(ColleagueChangeEventPayload colleagueChangeEventPayload) {
-        var traceId = TraceUtils.getTraceId();
+    private void startProcessingColleagueChangeEvent(ColleagueChangeEventPayload colleagueChangeEventPayload,
+                                                     TraceId traceId) {
 
         executor.execute(() -> {
             TraceUtils.setTraceId(traceId);
