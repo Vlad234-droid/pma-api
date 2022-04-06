@@ -181,7 +181,7 @@ public class SpringDocOpenApiConfiguration {
                         new MediaType().schema(new ObjectSchema().$ref(REST_RESPONSE_VOID))
                                 .example(RestResponse.fail(ApiError.builder()
                                         .code(ErrorCodes.ER_CODE_UNEXPECTED_EXCEPTION.getCode())
-                                        .message("Unexpected internal service error")
+                                        .message(messages.getMessage(ErrorCodes.ER_CODE_UNEXPECTED_EXCEPTION))
                                         .build()))));
     }
 

@@ -53,6 +53,7 @@ public class UserManagementServiceImpl implements UserManagementService {
     private static final String ACCOUNT_NAME_PARAMETER_NAME = "accountName";
     private static final String IAM_ID_PARAMETER_NAME = "iamId";
     private static final String ROLE_NAME_PARAMETER_NAME = "roleName";
+    private static final String REQUEST_PARAMETER_NAME = "request";
 
     @Value("${tesco.application.user-management.page.size:50}")
     private int defaultPageLimit;
@@ -105,8 +106,8 @@ public class UserManagementServiceImpl implements UserManagementService {
         }
 
         if (request.getName() == null || request.getIamId() == null) {
-            String message = String.format("Empty an account name or IAM ID for request = %s", request);
-            log.error(LogFormatter.formatMessage(EMPTY_SECURITY_ACCOUNT_NAME_OR_IAM_ID, message));
+            log.error(LogFormatter.formatMessage(messages, EMPTY_SECURITY_ACCOUNT_NAME_OR_IAM_ID,
+                    Map.of(REQUEST_PARAMETER_NAME, request)));
             return;
         }
 
