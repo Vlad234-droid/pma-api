@@ -31,7 +31,7 @@ class NotesServiceTest {
 
 
     @BeforeEach
-    public void init(){
+    void init(){
         var colleague = new Colleague();
         colleague.setColleagueUUID(currentUserUuid);
 

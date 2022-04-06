@@ -20,7 +20,7 @@ import java.util.Optional;
 @ActiveProfiles("test")
 @SpringBootTest(classes = {CamundaSpringBootTestConfig.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class ReviewNotificationsTest extends AbstractNotificationsFlowTest {
+class ReviewNotificationsTest extends AbstractNotificationsFlowTest {
 
     private static final String NF_PM_REVIEW_SUBMITTED = "NF_PM_REVIEW_SUBMITTED";
     private static final String NF_PM_REVIEW_APPROVED = "NF_PM_REVIEW_APPROVED";

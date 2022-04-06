@@ -93,7 +93,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     @Transactional
     public List<TypedAttribute> updateProfileAttributes(UUID colleagueUuid, List<TypedAttribute> profileAttributes) {
-        List<TypedAttribute> results = new ArrayList<>();
+        var results = new ArrayList<TypedAttribute>();
         profileAttributes.forEach(profileAttribute -> {
             profileAttribute.setColleagueUuid(colleagueUuid);
             if (1 == profileAttributeDAO.update(profileAttribute)) {
@@ -109,7 +109,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     @Transactional
     public List<TypedAttribute> createProfileAttributes(UUID colleagueUuid, List<TypedAttribute> profileAttributes) {
-        List<TypedAttribute> results = new ArrayList<>();
+        var results = new ArrayList<TypedAttribute>();
         profileAttributes.forEach(profileAttribute -> {
             try {
                 profileAttribute.setColleagueUuid(colleagueUuid);
@@ -132,7 +132,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public List<TypedAttribute> deleteProfileAttributes(final UUID colleagueUuid, List<TypedAttribute> profileAttributes) {
-        List<TypedAttribute> results = new ArrayList<>();
+        var results = new ArrayList<TypedAttribute>();
         profileAttributes.forEach(profileAttribute -> {
             profileAttribute.setColleagueUuid(colleagueUuid);
             if (1 == profileAttributeDAO.delete(profileAttribute)) {
@@ -185,14 +185,14 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     // TODO To optimize logic for update only changed fields //NOSONAR
     public int updateColleague(UUID colleagueUuid, Collection<String> changedFields) {
-        int updated = 0;
+        var updated = 0;
 
         var existingLocalColleague = profileDAO.getColleague(colleagueUuid);
         if (existingLocalColleague == null) {
             return updated;
         }
 
-        Colleague colleague = colleagueApiService.findColleagueByUuid(colleagueUuid);
+        var colleague = colleagueApiService.findColleagueByUuid(colleagueUuid);
         if (colleague == null) {
             return updated;
         }
@@ -233,7 +233,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private int persistColleague(Colleague colleague, ColleagueEntity existingLocalColleague) {
-        int updated = 0;
+        var updated = 0;
 
         try {
             var changedLocalColleague = colleagueFactsApiLocalMapper.colleagueFactsApiToLocal(colleague);
@@ -315,7 +315,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private void updateCountryDictionary(ColleagueEntity existingLocalColleague, ColleagueEntity changedLocalColleague) {
-        ColleagueEntity.Country changedCountry = changedLocalColleague.getCountry();
+        var changedCountry = changedLocalColleague.getCountry();
         if (changedCountry == null || changedCountry.getCode() == null) {
             return;
         }
@@ -346,7 +346,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private void updateJobDictionary(ColleagueEntity existingLocalColleague, ColleagueEntity changedLocalColleague) {
-        ColleagueEntity.Job changedJob = changedLocalColleague.getJob();
+        var changedJob = changedLocalColleague.getJob();
         if (changedJob == null || changedJob.getId() == null) {
             return;
         }
@@ -359,7 +359,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private void updateWorkLevelDictionary(ColleagueEntity existingLocalColleague, ColleagueEntity changedLocalColleague) {
-        ColleagueEntity.WorkLevel changedWorkLevel = changedLocalColleague.getWorkLevel();
+        var changedWorkLevel = changedLocalColleague.getWorkLevel();
         if (changedWorkLevel == null || changedWorkLevel.getCode() == null) {
             return;
         }

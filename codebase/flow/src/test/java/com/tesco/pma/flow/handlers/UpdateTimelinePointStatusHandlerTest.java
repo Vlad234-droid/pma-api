@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 @ActiveProfiles("test")
 @SpringBootTest(classes = {CamundaSpringBootTestConfig.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class UpdateTimelinePointStatusHandlerTest extends AbstractCamundaSpringBootTest {
+class UpdateTimelinePointStatusHandlerTest extends AbstractCamundaSpringBootTest {
 
     private static final String PM_TL_POINT_CHECK_OVERDUE = "PM_TL_POINT_CHECK_OVERDUE";
 
@@ -34,7 +34,7 @@ public class UpdateTimelinePointStatusHandlerTest extends AbstractCamundaSpringB
     private final UUID tlPointUUID = UUID.randomUUID();
 
     @BeforeEach
-    public void init() {
+    void init() {
 
         Mockito.when(timelinePointService.updateStatus(any(), any(), any()))
                 .thenReturn(1);

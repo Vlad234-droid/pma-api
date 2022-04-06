@@ -16,8 +16,8 @@ public class CreateCycleHandler extends CamundaAbstractFlowHandler {
 
     @Override
     protected void execute(ExecutionContext context) {
-        PMCycle previousCycle = context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class);
-        PMCycle nextCycle = pmCycleService.create(previousCycle, previousCycle.getCreatedBy().getUuid());
+        var previousCycle = context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class);
+        var nextCycle = pmCycleService.create(previousCycle, previousCycle.getCreatedBy().getUuid());
         context.setVariable(FlowParameters.PM_CYCLE_UUID, nextCycle.getUuid());
         context.setVariable(FlowParameters.PM_CYCLE, nextCycle);
     }

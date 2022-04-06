@@ -39,7 +39,7 @@ import static com.tesco.pma.util.TestUtils.createColleague;
  */
 @ActiveProfiles("test")
 @SpringBootTest(classes = {JacksonAutoConfiguration.class, CamundaSpringBootTestConfig.class})
-public class PMCycleAssignmentFlowTest extends AbstractCamundaSpringBootTest {
+class PMCycleAssignmentFlowTest extends AbstractCamundaSpringBootTest {
     private static final String PROCESS_KEY = "pm_cycle_assignment";
     private static final String READ_COLLEAGUES = "read_colleagues";
     private static final String CALCULATE_CYCLE = "calculate_cycle";

@@ -34,7 +34,7 @@ import java.util.HashMap;
 @ActiveProfiles("test")
 @SpringBootTest(classes = {CamundaSpringBootTestConfig.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class NotificationsFlowTest extends AbstractNotificationsFlowTest {
+class NotificationsFlowTest extends AbstractNotificationsFlowTest {
 
     private static final String NF_ORGANISATION_OBJECTIVES = "NF_ORGANISATION_OBJECTIVES";
     private static final String NF_OBJECTIVES_APPROVED_FOR_SHARING = "NF_OBJECTIVES_APPROVED_FOR_SHARING";
@@ -72,7 +72,7 @@ public class NotificationsFlowTest extends AbstractNotificationsFlowTest {
     private ColleagueProfile colleagueProfile;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         colleagueProfile = createColleagueProfile(UUID.randomUUID(), WorkLevel.WL1, Map.of());
 
         Mockito.when(profileService.findProfileByColleagueUuid(colleagueProfile.getColleague().getColleagueUUID()))

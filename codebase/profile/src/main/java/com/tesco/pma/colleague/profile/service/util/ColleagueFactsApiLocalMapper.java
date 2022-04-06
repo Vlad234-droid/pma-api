@@ -146,7 +146,7 @@ public class ColleagueFactsApiLocalMapper {
     }
 
     public ColleagueEntity colleagueFactsApiToLocal(Colleague source) {
-        ColleagueEntity destination = new ColleagueEntity();
+        var destination = new ColleagueEntity();
 
         destination.setUuid(source.getColleagueUUID());
 
@@ -197,7 +197,7 @@ public class ColleagueFactsApiLocalMapper {
                 destination.setManager(BooleanUtils.toBoolean(workRelationship.getIsManager()));
 
                 if (workRelationship.getWorkLevel() != null) {
-                    ColleagueEntity.WorkLevel workLevel = new ColleagueEntity.WorkLevel();
+                    var workLevel = new ColleagueEntity.WorkLevel();
                     workLevel.setCode(workRelationship.getWorkLevel().name());
                     workLevel.setName("Work Level #");
                     destination.setWorkLevel(workLevel);
@@ -210,7 +210,7 @@ public class ColleagueFactsApiLocalMapper {
                 }
 
                 if (workRelationship.getJob() != null) {
-                    ColleagueEntity.Job job = new ColleagueEntity.Job();
+                    var job = new ColleagueEntity.Job();
                     job.setId(workRelationship.getJob().getId());
                     job.setCode(workRelationship.getJob().getCode());
                     job.setName(workRelationship.getJob().getName());

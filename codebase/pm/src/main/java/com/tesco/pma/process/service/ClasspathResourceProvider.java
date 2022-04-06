@@ -70,7 +70,7 @@ public class ClasspathResourceProvider implements ResourceProvider {
     @SneakyThrows
     @Override
     public File readFile(String resourcePath, String resourceName) {
-        File file = new File();
+        var file = new File();
         file.setUuid(UUID.randomUUID());
         file.setFileContent(IOUtils.toByteArray(read(resourcePath, resourceName)));
         return file;

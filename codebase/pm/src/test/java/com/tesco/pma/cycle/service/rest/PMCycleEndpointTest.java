@@ -67,7 +67,7 @@ class PMCycleEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void runCycleAssignmentProcessThrowsProcessExecutionException() throws Exception {
+    void runCycleAssignmentProcessThrowsProcessExecutionException() throws Exception { //NOSONAR used MockMvc checks
         var parameters = Map.of(COLLEAGUE_UUIDS.name(), COLLEAGUES);
         when(processManagerService.runProcess(PM_CYCLE_ASSIGNMENT, parameters)).thenThrow(ProcessExecutionException.class);
 
@@ -75,13 +75,13 @@ class PMCycleEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getPmCycleMappingKeyTest() throws Exception {
+    void getPmCycleMappingKeyTest() throws Exception { //NOSONAR used MockMvc checks
         when(pmCycleMappingService.getPmCycleMappingKeys()).thenReturn(Set.of("Group A", "Group B"));
         performGetWith(admin(), status().isOk(), PM_CYCLES_MAPPING_KEYS);
     }
 
     @Test
-    void getPmCycleMappingKeyByColleagues() throws Exception {
+    void getPmCycleMappingKeyByColleagues() throws Exception { //NOSONAR used MockMvc checks
 
         var uuid1 = UUID.randomUUID();
         var uuid2 = UUID.randomUUID();

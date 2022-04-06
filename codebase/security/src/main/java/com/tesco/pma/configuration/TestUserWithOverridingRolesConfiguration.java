@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -153,12 +152,12 @@ public class TestUserWithOverridingRolesConfiguration {
 
         @Override
         public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            var auth = SecurityContextHolder.getContext().getAuthentication();
 
             if (auth instanceof BearerTokenAuthentication) {
                 final var roles = roleOverridesMap.get(UUID.fromString(auth.getName()));
                 if (roles != null) {
-                    Collection<GrantedAuthority> authorities = new HashSet<>(auth.getAuthorities());
+                    var authorities = new HashSet<GrantedAuthority>(auth.getAuthorities());
 
                     authorities.removeIf(grantedAuthority -> ALL_ROLES_WITH_PREFIX.contains(grantedAuthority.getAuthority()));
 

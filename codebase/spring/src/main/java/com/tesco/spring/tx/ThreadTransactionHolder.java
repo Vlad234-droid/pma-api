@@ -27,23 +27,23 @@ public final class ThreadTransactionHolder { // NOPMD
         if (transactionManager == null) {
             throw new IllegalArgumentException("transactionManager must be specified");
         }
-        final TransactionInfo transactionInfo = transactionInfoHolder.get();
+        final var transactionInfo = transactionInfoHolder.get();
         if (transactionInfo != null) {
             throw new IllegalStateException("ThreadTransactionHolder supports only single transaction per thread. Transaction "
                     + transactionInfo + " should be finished before usage.");
         }
 
-        final TransactionStatus transactionStatus = transactionManager.getTransaction(txDefinition);
+        final var transactionStatus = transactionManager.getTransaction(txDefinition);
         transactionInfoHolder.set(new TransactionInfo(transactionManager, transactionStatus, txDefinition));
         log.debug("Start transaction: {}({}), tx: {}", txDefinition.getName(), txDefinition, transactionStatus);
         return transactionStatus;
     }
 
     public static void commit() {
-        final TransactionInfo transactionInfo = transactionInfoHolder.get();
+        final var transactionInfo = transactionInfoHolder.get();
         if (transactionInfo != null) {
-            final TransactionStatus transactionStatus = transactionInfo.getTransactionStatus();
-            final DefaultTransactionDefinition txDefinition = transactionInfo.getTransactionDefinition();
+            final var transactionStatus = transactionInfo.getTransactionStatus();
+            final var txDefinition = transactionInfo.getTransactionDefinition();
             try {
                 try {
                     transactionInfo.getTransactionManager().commit(transactionStatus);
@@ -61,10 +61,10 @@ public final class ThreadTransactionHolder { // NOPMD
     }
 
     public static void rollback() {
-        final TransactionInfo transactionInfo = transactionInfoHolder.get();
+        final var transactionInfo = transactionInfoHolder.get();
         if (transactionInfo != null) {
-            final TransactionStatus transactionStatus = transactionInfo.getTransactionStatus();
-            final DefaultTransactionDefinition txDefinition = transactionInfo.getTransactionDefinition();
+            final var transactionStatus = transactionInfo.getTransactionStatus();
+            final var txDefinition = transactionInfo.getTransactionDefinition();
             try {
                 try {
                     transactionInfo.getTransactionManager().rollback(transactionStatus);

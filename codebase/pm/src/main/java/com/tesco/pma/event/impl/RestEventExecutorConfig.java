@@ -27,7 +27,7 @@ public class RestEventExecutorConfig implements AsyncConfigurer {
     @Override
     @Bean(name = "restEventExecutor")
     public Executor getAsyncExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        var executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(corePoolSize);
         executor.setMaxPoolSize(maxCorePoolSize);
         executor.setQueueCapacity(queueCapacity);

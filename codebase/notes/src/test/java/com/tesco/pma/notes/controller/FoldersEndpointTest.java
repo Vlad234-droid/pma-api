@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = FoldersEndpoint.class)
 @ContextConfiguration(classes = TestConfig.class)
-public class FoldersEndpointTest extends AbstractEndpointTest {
+class FoldersEndpointTest extends AbstractEndpointTest {
 
     private final UUID colleagueUuid = UUID.randomUUID();
 
