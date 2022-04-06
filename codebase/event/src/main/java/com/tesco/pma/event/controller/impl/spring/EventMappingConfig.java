@@ -39,9 +39,9 @@ public class EventMappingConfig {
 
     @Bean
     public EventController eventController(EventMapping eventMapping, Optional<List<EventMonitor>> eventMonitors) {
-        EventMonitor eventMonitor = eventMonitors.orElse(Collections.emptyList()).stream()
-                                                 .filter(m -> m.getClass().getName().equals(eventMonitorClassName))
-                                                 .findAny().orElse(new SimpleEventMonitor());
+        var eventMonitor = eventMonitors.orElse(Collections.emptyList()).stream()
+                                                     .filter(m -> m.getClass().getName().equals(eventMonitorClassName))
+                                                     .findAny().orElse(new SimpleEventMonitor());
         return new EventControllerImpl(eventMapping, eventMonitor);
     }
 }

@@ -140,9 +140,9 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Transactional(readOnly = true)
     public Feedback findOne(UUID uuid) {
         log.debug("Request to get Feedback : {}", uuid);
-        Feedback feedback = feedbackDAO.getByUuid(uuid);
+        var feedback = feedbackDAO.getByUuid(uuid);
         if (feedback == null) {
-            String message = messageSourceAccessor.getMessage(ErrorCodes.FEEDBACK_NOT_FOUND,
+            var message = messageSourceAccessor.getMessage(ErrorCodes.FEEDBACK_NOT_FOUND,
                     Map.of(PARAM_NAME, "uuid", PARAM_VALUE, uuid));
             throw new NotFoundException(ErrorCodes.FEEDBACK_NOT_FOUND.getCode(), message);
         }
@@ -172,7 +172,7 @@ public class FeedbackServiceImpl implements FeedbackService {
             feedbackItem.setUuid(UUID.randomUUID());
         }
         if (1 != feedbackDAO.insertOrUpdateFeedbackItem(feedbackItem)) {
-            String message = messageSourceAccessor.getMessage(ErrorCodes.FEEDBACK_ITEM_NOT_FOUND,
+            var message = messageSourceAccessor.getMessage(ErrorCodes.FEEDBACK_ITEM_NOT_FOUND,
                     Map.of(PARAM_NAME, "uuid", PARAM_VALUE, feedbackItem.getUuid()));
             throw new NotFoundException(ErrorCodes.FEEDBACK_ITEM_NOT_FOUND.getCode(), message);
         }

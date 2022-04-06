@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,19 +88,19 @@ public class ExternalEventReader implements EventDeserializer.ValueReader {
 
     @Override
     public Event read(JsonNode node) throws IOException {
-        JsonNode headers = node.path("headers");
-        JsonNode operation = headers.path("operation");
+        var headers = node.path("headers");
+        var operation = headers.path("operation");
         if (operation.isMissingNode()) {
             return null;
         }
 
-        JsonNode messageCorrelationId = headers.path("messageCorrelationId");
-        JsonNode createdDate = headers.path("createdDate").path("iso");
-        Date createdDateParsed = parseDate(createdDate);
+        var messageCorrelationId = headers.path("messageCorrelationId");
+        var createdDate = headers.path("createdDate").path("iso");
+        var createdDateParsed = parseDate(createdDate);
 
-        EventSupport event = new EventSupport(operation.asText(), messageCorrelationId.asText(), createdDateParsed);
+        var event = new EventSupport(operation.asText(), messageCorrelationId.asText(), createdDateParsed);
 
-        Map<String, Serializable> props = new LinkedHashMap<>();
+        var props = new LinkedHashMap<String, Serializable>();
         jsonToProperties(new ArrayList<>(), node, props);
         event.setEventProperties(props);
         return event;
@@ -122,7 +121,7 @@ public class ExternalEventReader implements EventDeserializer.ValueReader {
     }
 
     private void processArrayNode(List<String> path, JsonNode node, Map<String, Serializable> properties) {
-        ArrayList<Serializable> values = new ArrayList<>();
+        var values = new ArrayList<Serializable>();
         node.forEach(child -> {
             if (child.isValueNode()) {
                 values.add(child.asText());
@@ -138,9 +137,9 @@ public class ExternalEventReader implements EventDeserializer.ValueReader {
     private void processObjectNode(List<String> path, JsonNode node, Map<String, Serializable> properties) {
         processIfDate(path, node, properties);
         path.add(null);
-        Iterator<Map.Entry<String, JsonNode>> fieldsIterator = node.fields();
+        var fieldsIterator = node.fields();
         while (fieldsIterator.hasNext()) {
-            Map.Entry<String, JsonNode> entry = fieldsIterator.next();
+            var entry = fieldsIterator.next();
             path.set(path.size() - 1, entry.getKey());
             jsonToProperties(path, entry.getValue(), properties);
         }
@@ -148,9 +147,9 @@ public class ExternalEventReader implements EventDeserializer.ValueReader {
     }
 
     private void processIfDate(List<String> path, JsonNode node, Map<String, Serializable> properties) {
-        JsonNode iso = node.path("iso");
+        var iso = node.path("iso");
         if (iso.isValueNode()) { // assume it's a date structure like headers.createdDate.iso
-            Date date = parseDate(iso);
+            var date = parseDate(iso);
             if (date != null) {
                 properties.put(pathToString(path), date);
             }
@@ -160,8 +159,8 @@ public class ExternalEventReader implements EventDeserializer.ValueReader {
     private Date parseDate(JsonNode node) {
         Date value = null;
         try {
-            String textPatched = node.asText() + " "; // see comments on SerdeUtils.looseDateTimeFormatter
-            ZonedDateTime zdt = ZonedDateTime.parse(textPatched, SerdeUtils.LOOSE_DATE_TIME_FORMATTER);
+            var textPatched = node.asText() + " "; // see comments on SerdeUtils.looseDateTimeFormatter
+            var zdt = ZonedDateTime.parse(textPatched, SerdeUtils.LOOSE_DATE_TIME_FORMATTER);
             value = Date.from(zdt.toInstant());
         } catch (Exception e) {
             // Ignore

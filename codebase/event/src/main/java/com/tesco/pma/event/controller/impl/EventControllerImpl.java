@@ -3,7 +3,6 @@ package com.tesco.pma.event.controller.impl;
 import com.tesco.pma.event.Event;
 import com.tesco.pma.event.EventResponse;
 import com.tesco.pma.event.EventResponseSupport;
-import com.tesco.pma.event.controller.Action;
 import com.tesco.pma.event.controller.EventController;
 import com.tesco.pma.event.controller.EventException;
 import com.tesco.pma.event.controller.EventMapping;
@@ -32,16 +31,16 @@ public class EventControllerImpl implements EventController {
             }
             eventMonitor.occurred(event);
 
-            final Action action = eventMapping.getAction(event);
+            final var action = eventMapping.getAction(event);
             if (action != null) {
                 eventMonitor.start(event);
 
-                EventResponse response = action.perform(event);
+                var response = action.perform(event);
                 eventMonitor.end(event, response);
                 return response;
             } else {
                 eventMonitor.notMapped(event);
-                String message = "There is no action for the event: " + event.getEventName();
+                var message = "There is no action for the event: " + event.getEventName();
                 return new EventResponseSupport(event.getEventName(), EventResponse.END, message);
             }
         } catch (EventException e) {

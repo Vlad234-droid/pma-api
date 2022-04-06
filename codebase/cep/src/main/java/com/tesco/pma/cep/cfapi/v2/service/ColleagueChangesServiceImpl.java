@@ -4,7 +4,6 @@ import com.tesco.pma.cep.cfapi.v2.configuration.ColleagueChangesProperties;
 import com.tesco.pma.cep.cfapi.v2.domain.ColleagueChangeEventPayload;
 import com.tesco.pma.cep.cfapi.v2.domain.EventType;
 import com.tesco.pma.colleague.api.Colleague;
-import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
@@ -23,7 +22,6 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
@@ -68,7 +66,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
         // For all event types except for Joiner and Modification profile must be existing
         if (EnumSet.of(LEAVER, DELETION).contains(colleagueChangeEventPayload.getEventType())) {
-            Optional<ColleagueProfile> optionalColleagueProfile = profileService.findProfileByColleagueUuid(
+            var optionalColleagueProfile = profileService.findProfileByColleagueUuid(
                     colleagueChangeEventPayload.getColleagueUuid());
             if (optionalColleagueProfile.isEmpty()) {
                 log.error(LogFormatter.formatMessage(COLLEAGUE_NOT_FOUND, "Colleague '{}' not found"),
@@ -105,7 +103,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         // Disable an access a colleague to app
         var account = userManagementService.findAccountByColleagueUuid(colleagueChangeEventPayload.getColleagueUuid());
         if (account == null) {
-            String message = String.format("An account for colleague with uuid = %s not found",
+            var message = String.format("An account for colleague with uuid = %s not found",
                     colleagueChangeEventPayload.getColleagueUuid());
             log.error(LogFormatter.formatMessage(SECURITY_ACCOUNT_NOT_FOUND, message));
             return 0;
@@ -123,7 +121,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     }
 
     private int processModificationEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
-        Optional<ColleagueProfile> optionalColleagueProfile = profileService.findProfileByColleagueUuid(
+        var optionalColleagueProfile = profileService.findProfileByColleagueUuid(
                 colleagueChangeEventPayload.getColleagueUuid());
         if (optionalColleagueProfile.isEmpty()) {
             return processJoinerEventType(colleagueChangeEventPayload);
