@@ -18,19 +18,6 @@
     </changeSet>
     <changeSet author="ypashynskyi" id="2">
         <sql><![CDATA[
-            drop index if exists pm_timeline_point_element_type_id_ix;
-
-            CREATE INDEX if not exists pm_timeline_point_element_type_id_ix ON pm_timeline_point (element_type_id);
-            ]]>
-        </sql>
-        <rollback>
-            <sql><![CDATA[
-            drop index if exists pm_timeline_point_element_type_id_ix;
-            ]]></sql>
-        </rollback>
-    </changeSet>
-    <changeSet author="ypashynskyi" id="3">
-        <sql><![CDATA[
             drop index if exists pm_timeline_point_status_id_ix;
 
             CREATE INDEX if not exists pm_timeline_point_status_id_ix ON pm_timeline_point (status_id);
@@ -42,7 +29,7 @@
             ]]></sql>
         </rollback>
     </changeSet>
-    <changeSet author="ypashynskyi" id="4">
+    <changeSet author="ypashynskyi" id="3">
         <sql><![CDATA[
             drop index if exists colleague_manager_uuid_ix;
 
@@ -55,46 +42,20 @@
             ]]></sql>
         </rollback>
     </changeSet>
+    <changeSet author="ypashynskyi" id="4">
+        <sql><![CDATA[
+            drop index if exists pm_colleague_cycle_ix;
+
+            CREATE INDEX if not exists pm_colleague_cycle_ix ON pm_colleague_cycle (cycle_uuid, colleague_uuid, status_id);
+            ]]>
+        </sql>
+        <rollback>
+            <sql><![CDATA[
+            drop index if exists pm_colleague_cycle_ix;
+            ]]></sql>
+        </rollback>
+    </changeSet>
     <changeSet author="ypashynskyi" id="5">
-        <sql><![CDATA[
-            drop index if exists pm_colleague_cycle_cycle_uuid_ix;
-
-            CREATE INDEX if not exists pm_colleague_cycle_cycle_uuid_ix ON pm_colleague_cycle (cycle_uuid);
-            ]]>
-        </sql>
-        <rollback>
-            <sql><![CDATA[
-            drop index if exists pm_colleague_cycle_cycle_uuid_ix;
-            ]]></sql>
-        </rollback>
-    </changeSet>
-    <changeSet author="ypashynskyi" id="6">
-        <sql><![CDATA[
-            drop index if exists pm_colleague_cycle_colleague_uuid_ix;
-
-            CREATE INDEX if not exists pm_colleague_cycle_colleague_uuid_ix ON pm_colleague_cycle (colleague_uuid);
-            ]]>
-        </sql>
-        <rollback>
-            <sql><![CDATA[
-            drop index if exists pm_colleague_cycle_colleague_uuid_ix;
-            ]]></sql>
-        </rollback>
-    </changeSet>
-    <changeSet author="ypashynskyi" id="7">
-        <sql><![CDATA[
-            drop index if exists pm_colleague_cycle_status_id_ix;
-
-            CREATE INDEX if not exists pm_colleague_cycle_status_id_ix ON pm_colleague_cycle (status_id);
-            ]]>
-        </sql>
-        <rollback>
-            <sql><![CDATA[
-            drop index if exists pm_colleague_cycle_status_id_ix;
-            ]]></sql>
-        </rollback>
-    </changeSet>
-    <changeSet author="ypashynskyi" id="8">
         <sql><![CDATA[
             drop index if exists note_folders_parent_uuid_ix;
 
@@ -107,33 +68,20 @@
             ]]></sql>
         </rollback>
     </changeSet>
-    <changeSet author="ypashynskyi" id="9">
+    <changeSet author="ypashynskyi" id="6">
         <sql><![CDATA[
-            drop index if exists pm_review_status_id_ix;
+            drop index if exists pm_review_type_id_status_id_ix;
 
-            CREATE INDEX if not exists pm_review_status_id_ix ON pm_review (status_id);
+            CREATE INDEX if not exists pm_review_type_id_status_id_ix ON pm_review (type_id, status_id);
             ]]>
         </sql>
         <rollback>
             <sql><![CDATA[
-            drop index if exists pm_review_status_id_ix;
+            drop index if exists pm_review_type_id_status_id_ix;
             ]]></sql>
         </rollback>
     </changeSet>
-    <changeSet author="ypashynskyi" id="10">
-        <sql><![CDATA[
-            drop index if exists pm_review_type_id_ix;
-
-            CREATE INDEX if not exists pm_review_type_id_ix ON pm_review (type_id);
-            ]]>
-        </sql>
-        <rollback>
-            <sql><![CDATA[
-            drop index if exists pm_review_type_id_ix;
-            ]]></sql>
-        </rollback>
-    </changeSet>
-    <changeSet author="ypashynskyi" id="11">
+    <changeSet author="ypashynskyi" id="7">
         <sql><![CDATA[
             drop index if exists feedback_item_feedback_uuid_ix;
 
@@ -146,7 +94,7 @@
             ]]></sql>
         </rollback>
     </changeSet>
-    <changeSet author="ypashynskyi" id="12">
+    <changeSet author="ypashynskyi" id="8">
         <sql><![CDATA[
             drop index if exists pdp_goal_status_id_ix;
 
@@ -159,7 +107,7 @@
             ]]></sql>
         </rollback>
     </changeSet>
-    <changeSet author="ypashynskyi" id="13">
+    <changeSet author="ypashynskyi" id="9">
         <sql><![CDATA[
             drop index if exists notes_folder_uuid_ix;
 
@@ -172,7 +120,7 @@
             ]]></sql>
         </rollback>
     </changeSet>
-    <changeSet author="ypashynskyi" id="14">
+    <changeSet author="ypashynskyi" id="10">
         <sql><![CDATA[
             drop index if exists pm_review_change_status_hi_old_status_id_ix;
 
@@ -185,7 +133,7 @@
             ]]></sql>
         </rollback>
     </changeSet>
-    <changeSet author="ypashynskyi" id="15">
+    <changeSet author="ypashynskyi" id="11">
         <sql><![CDATA[
             drop index if exists pm_review_change_status_hi_new_status_id_ix;
 
@@ -198,7 +146,7 @@
             ]]></sql>
         </rollback>
     </changeSet>
-    <changeSet author="ypashynskyi" id="16">
+    <changeSet author="ypashynskyi" id="12">
         <sql><![CDATA[
             drop index if exists feedback_target_type_id_ix;
 
@@ -211,7 +159,7 @@
             ]]></sql>
         </rollback>
     </changeSet>
-    <changeSet author="ypashynskyi" id="17">
+    <changeSet author="ypashynskyi" id="13">
         <sql><![CDATA[
             drop index if exists feedback_colleague_uuid_ix;
 
@@ -224,7 +172,7 @@
             ]]></sql>
         </rollback>
     </changeSet>
-    <changeSet author="ypashynskyi" id="18">
+    <changeSet author="ypashynskyi" id="14">
         <sql><![CDATA[
             drop index if exists feedback_target_colleague_uuid_ix;
 
@@ -237,7 +185,7 @@
             ]]></sql>
         </rollback>
     </changeSet>
-    <changeSet author="ypashynskyi" id="19">
+    <changeSet author="ypashynskyi" id="15">
         <sql><![CDATA[
             drop index if exists feedback_status_id_ix;
 
@@ -250,33 +198,20 @@
             ]]></sql>
         </rollback>
     </changeSet>
-    <changeSet author="ypashynskyi" id="20">
+    <changeSet author="ypashynskyi" id="16">
         <sql><![CDATA[
-            drop index if exists file_type_id_ix;
+            drop index if exists file_type_ix;
 
-            CREATE INDEX if not exists file_type_id_ix ON file (type_id);
+            CREATE INDEX if not exists file_type_ix ON file (type_id, status_id);
             ]]>
         </sql>
         <rollback>
             <sql><![CDATA[
-            drop index if exists file_type_id_ix;
+            drop index if exists file_type_ix;
             ]]></sql>
         </rollback>
     </changeSet>
-    <changeSet author="ypashynskyi" id="21">
-        <sql><![CDATA[
-            drop index if exists file_status_id_ix;
-
-            CREATE INDEX if not exists file_status_id_ix ON file (status_id);
-            ]]>
-        </sql>
-        <rollback>
-            <sql><![CDATA[
-            drop index if exists file_status_id_ix;
-            ]]></sql>
-        </rollback>
-    </changeSet>
-    <changeSet author="ypashynskyi" id="22">
+    <changeSet author="ypashynskyi" id="17">
         <sql><![CDATA[
             drop index if exists tip_target_organisation_uuid_ix;
 
