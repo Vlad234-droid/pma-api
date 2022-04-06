@@ -17,7 +17,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class NotesDAOTest extends AbstractDAOTest {
+class NotesDAOTest extends AbstractDAOTest {
 
     protected static final String BASE_PATH_TO_DATA_SET = "db_init_scripts/";
     protected static final UUID FOLDER_UUID = UUID.fromString("56141037-6e2d-45f0-b47f-4875e68dd1d7");
@@ -91,7 +91,7 @@ public class NotesDAOTest extends AbstractDAOTest {
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml",
             BASE_PATH_TO_DATA_SET + "notes_entries_init.xml"})
-    public void findByFolderTest(){
+    void findByFolderTest(){
 
         var notes = notesDao.findByFolder(FOLDER_UUID);
 

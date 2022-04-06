@@ -38,7 +38,7 @@ import static com.tesco.pma.flow.FlowParameters.START_DATE;
 @ActiveProfiles("test")
 @SpringBootTest(classes = {CamundaSpringBootTestConfig.class})
 //@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class FiscalFlowTest extends AbstractCamundaSpringBootTest {
+class FiscalFlowTest extends AbstractCamundaSpringBootTest {
 
     private static final String IMPORT_NEW_COLLEAGUE_EVENT_NAME = "IMPORT_NEW_COLLEAGUE_1";
 

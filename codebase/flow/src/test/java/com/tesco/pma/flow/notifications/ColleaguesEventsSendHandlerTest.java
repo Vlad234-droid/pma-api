@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ActiveProfiles("test")
 @SpringBootTest(classes = {CamundaSpringBootTestConfig.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class ColleaguesEventsSendHandlerTest extends AbstractCamundaSpringBootTest {
+class ColleaguesEventsSendHandlerTest extends AbstractCamundaSpringBootTest {
 
     private static final String ENTRY_CONFIG_KEY = "some key";
 

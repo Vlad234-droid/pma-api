@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class PDPDaoTest extends AbstractDAOTest {
+class PDPDaoTest extends AbstractDAOTest {
 
     private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/pdp/dao/";
 

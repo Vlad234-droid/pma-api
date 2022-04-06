@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = NotesEndpoint.class)
 @ContextConfiguration(classes = TestConfig.class)
-public class NotesEndpointTest extends AbstractEndpointTest {
+class NotesEndpointTest extends AbstractEndpointTest {
 
     private final UUID colleagueUuid = UUID.randomUUID();
 

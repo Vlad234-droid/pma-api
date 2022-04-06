@@ -40,7 +40,7 @@ class ColleaguesEventsSendHandlerTest {
     private final List<ColleagueEntity> colleagueEntities = new ArrayList<>();
 
     @BeforeEach
-    public void init(){
+    void init(){
         MockitoAnnotations.openMocks(this);
         Expression expression = Mockito.mock(Expression.class);
         Mockito.when(expression.getExpressionText()).thenReturn(EXPRESSION_VALUE);
