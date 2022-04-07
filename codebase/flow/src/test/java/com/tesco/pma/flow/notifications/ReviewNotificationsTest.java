@@ -92,21 +92,6 @@ class ReviewNotificationsTest extends AbstractNotificationsFlowTest {
 
         check(REVIEW_SEND_FLOW, event);
 
-        checkContent("Kind reminder, the review is due to be closed in 7 days ("+ getDateSevenDaysAgo("dd.MM.yyyy") +")");
+        checkContent("Kind reminder, the review is due to be closed in 7 days (" + getDateSevenDaysAgo("dd.MM.yyyy") + ")");
     }
-
-//    @Test
-//    void checkReviewEYR() throws Exception {
-//        checkReviewGroup(NF_PM_REVIEW_BEFORE_START, PMReviewType.EYR, true, true);
-//        checkReviewGroup(NF_PM_REVIEW_BEFORE_START, PMReviewType.EYR, false, true);
-//        checkReviewGroup(NF_PM_REVIEW_SUBMITTED, PMReviewType.EYR, true, true);
-//        checkReviewGroup(NF_PM_REVIEW_SUBMITTED, PMReviewType.EYR, false, false);
-//        checkReviewGroup(NF_PM_REVIEW_APPROVED, PMReviewType.EYR, true, true);
-//        checkReviewGroup(NF_PM_REVIEW_APPROVED, PMReviewType.EYR, false, true);
-//        checkReviewGroup(NF_PM_REVIEW_DECLINED, PMReviewType.EYR, true, true);
-//        checkReviewGroup(NF_PM_REVIEW_DECLINED, PMReviewType.EYR, false, true);
-//        checkReviewGroup(NF_PM_REVIEW_BEFORE_END, PMReviewType.EYR, true, true);
-//        checkReviewGroup(NF_PM_REVIEW_BEFORE_END, PMReviewType.EYR, false, true);
-//    }
-
 }

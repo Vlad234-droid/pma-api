@@ -3,7 +3,6 @@ package com.tesco.pma.cep.cfapi.v2.service;
 import com.tesco.pma.cep.cfapi.v2.domain.ColleagueChangeEventPayload;
 import com.tesco.pma.cep.cfapi.v2.domain.EventType;
 import com.tesco.pma.colleague.api.Colleague;
-import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.security.domain.Account;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
@@ -16,7 +15,7 @@ import java.util.UUID;
 @UtilityClass
 public class TestDataUtils {
 
-    public final static UUID COLLEAGUE_UUID = UUID.fromString("10000000-0000-0000-0000-000000000001");
+    public static final UUID COLLEAGUE_UUID = UUID.fromString("10000000-0000-0000-0000-000000000001");
 
     public static ColleagueChangeEventPayload buildColleagueChangeEventPayload(EventType eventType) {
         var colleagueChangeEventPayload = new ColleagueChangeEventPayload();
@@ -47,12 +46,6 @@ public class TestDataUtils {
         colleagueProfile.setProfileAttributes(List.of());
 
         return Optional.of(colleagueProfile);
-    }
-
-    public static ColleagueEntity buildColleague(UUID colleagueUuid) {
-        var colleague = new ColleagueEntity();
-        colleague.setUuid(colleagueUuid);
-        return colleague;
     }
 
     public static Account buildAccount(UUID colleagueUuid) {

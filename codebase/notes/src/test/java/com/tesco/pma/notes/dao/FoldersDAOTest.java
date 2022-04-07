@@ -93,10 +93,9 @@ class FoldersDAOTest extends AbstractDAOTest {
 
     }
 
-
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml"})
-    void findByOwnerColleagueUuid(){
+    void findByOwnerColleagueUuid() {
 
         var folders = foldersDao.findByOwner(OWNER_UUID_2);
 
@@ -104,7 +103,7 @@ class FoldersDAOTest extends AbstractDAOTest {
 
     }
 
-    private Folder createFolder(UUID id, UUID ownerId, UUID parentId){
+    private Folder createFolder(UUID id, UUID ownerId, UUID parentId) {
         var folder = new Folder();
         folder.setId(id);
         folder.setOwnerColleagueUuid(ownerId);
@@ -112,6 +111,4 @@ class FoldersDAOTest extends AbstractDAOTest {
         folder.setParentFolderUuid(parentId);
         return folder;
     }
-
-
 }

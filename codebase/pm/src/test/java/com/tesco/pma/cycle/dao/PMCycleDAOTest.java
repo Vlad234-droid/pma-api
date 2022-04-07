@@ -26,7 +26,10 @@ import java.util.Set;
 import java.util.UUID;
 
 import static com.tesco.pma.api.DictionaryFilter.includeFilter;
-import static com.tesco.pma.cycle.api.PMCycleStatus.*;
+import static com.tesco.pma.cycle.api.PMCycleStatus.ACTIVE;
+import static com.tesco.pma.cycle.api.PMCycleStatus.INACTIVE;
+import static com.tesco.pma.cycle.api.PMCycleStatus.COMPLETED;
+import static com.tesco.pma.cycle.api.PMCycleStatus.DRAFT;
 import static java.util.List.of;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -53,7 +53,7 @@ public class TestDataUtil {
                 .build();
     }
 
-    public static PMRuntimeProcess buildRuntimeProcess(){
+    public static PMRuntimeProcess buildRuntimeProcess() {
         var process  = new PMRuntimeProcess();
         process.setId(PROCESS_UUID);
         process.setCycleUuid(CYCLE_UUID);

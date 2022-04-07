@@ -34,8 +34,8 @@ import static org.mockito.Mockito.verify;
 @ActiveProfiles("test")
 @SpringBootTest(
         classes = {CamundaSpringBootTestConfig.class},
-        properties = "camunda.bpm.deployment-resource-pattern=com/tesco/pma/flow/pm_cycle_assignment_update.bpmn," +
-                "com/tesco/pma/flow/pm_cycle_mapping.dmn"
+        properties = "camunda.bpm.deployment-resource-pattern=com/tesco/pma/flow/pm_cycle_assignment_update.bpmn,"
+                + "com/tesco/pma/flow/pm_cycle_mapping.dmn"
 )
 class PmCycleAssignmentUpdateFlowTest {
 
@@ -215,7 +215,6 @@ class PmCycleAssignmentUpdateFlowTest {
     }
 
     private Colleague getColleagueGroupA() {
-        var value = new Colleague();
         var wr = new WorkRelationship();
         wr.setWorkLevel(WorkLevel.WL4);
         wr.setIsManager(false);
@@ -223,6 +222,7 @@ class PmCycleAssignmentUpdateFlowTest {
         dep.setBusinessType("Office");
         wr.setDepartment(dep);
         wr.setPrimaryEntity("tesco plc");
+        var value = new Colleague();
         value.setWorkRelationships(List.of(wr));
         return value;
     }

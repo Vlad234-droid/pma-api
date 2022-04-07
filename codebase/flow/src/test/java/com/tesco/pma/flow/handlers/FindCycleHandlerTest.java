@@ -44,17 +44,16 @@ class FindCycleHandlerTest {
 
     @Test
     void cycleFound() throws Exception {
+        var rq = new RequestQuery();
+        rq.addFilters("status_in", STATUSES);
+        rq.addFilters("entry-config-key", CONFIG_KEY);
         var pmCycle = new PMCycle();
+        when(pmCycleService.findAll(rq, false)).thenReturn(List.of(pmCycle));
         var executionContext = FlowTestUtil.executionBuilder()
                 .withVariable(FlowParameters.PM_CYCLE_KEY, CONFIG_KEY)
                 .withVariable(ALLOWED_STATUSES, STATUSES)
                 .withVariable(FlowParameters.COLLEAGUE, COLLEAGUE)
                 .build();
-        var rq = new RequestQuery();
-        rq.addFilters("status_in", STATUSES);
-        rq.addFilters("entry-config-key", CONFIG_KEY);
-
-        when(pmCycleService.findAll(rq, false)).thenReturn(List.of(pmCycle));
 
         handler.execute(executionContext);
 
@@ -62,7 +61,7 @@ class FindCycleHandlerTest {
     }
 
     @Test
-    void cycleNotFound() throws Exception {
+    void cycleNotFound() {
         var message = "error message";
         var executionContext = FlowTestUtil.executionBuilder()
                 .withVariable(FlowParameters.PM_CYCLE_KEY, CONFIG_KEY)

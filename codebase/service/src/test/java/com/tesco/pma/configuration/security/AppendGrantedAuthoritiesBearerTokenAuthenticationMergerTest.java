@@ -86,7 +86,8 @@ class AppendGrantedAuthoritiesBearerTokenAuthenticationMergerTest {
         final var authorityFromSecondary = "AUTHORITY_FROM_SECONDARY";
         final var secondary = new BearerTokenAuthentication(
                 new DefaultOAuth2AuthenticatedPrincipal(secondaryTokenAttributes, Collections.emptyList()),
-                new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, random(36), Instant.now(), Instant.now().plus(1, ChronoUnit.DAYS)),
+                new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, random(36), Instant.now(),
+                        Instant.now().plus(1, ChronoUnit.DAYS)),
                 AuthorityUtils.createAuthorityList(authorityFromSecondary));
 
         final var res = instance.merge(main, secondary);

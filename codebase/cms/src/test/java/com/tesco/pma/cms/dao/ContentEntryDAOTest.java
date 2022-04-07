@@ -40,7 +40,7 @@ class ContentEntryDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    void createTest(){
+    void createTest() {
         var uuid = UUID.randomUUID();
         var content = new ContentEntry();
         content.setUuid(uuid);
@@ -64,7 +64,7 @@ class ContentEntryDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    void deleteTest(){
+    void deleteTest() {
         contentEntryDAO.delete(UUID.fromString(TEST_CONTENT_UUID));
 
         assertEquals(0,

@@ -27,7 +27,7 @@ public class LocalTestConfig {
     private NamedMessageSourceAccessor messageSourceAccessor;
 
     @Bean
-    public ResourceProvider classpathResourceProvider(){
+    public ResourceProvider classpathResourceProvider() {
         return new ClasspathResourceProvider(messageSourceAccessor);
     }
 

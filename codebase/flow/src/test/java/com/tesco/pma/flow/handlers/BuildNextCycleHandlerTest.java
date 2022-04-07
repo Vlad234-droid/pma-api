@@ -52,7 +52,7 @@ class BuildNextCycleHandlerTest {
     private PMCycleService service;
 
     @Test
-    void shouldBuildNextCycle() throws Exception {
+    void shouldBuildNextCycle() {
         //given
         var event = new EventSupport("PM_CYCLE_REPEAT");
         var compositeResponse = new CompositePMCycleResponse();
@@ -60,14 +60,14 @@ class BuildNextCycleHandlerTest {
         compositeResponse.setCycle(cycle);
         event.putProperty(FlowParameters.PM_CYCLE_UUID.name(), CYCLE_UUID);
         event.putProperty(FlowParameters.PM_CYCLE_REPEATS_LEFT.name(), PM_CYCLE_REPEATS_LEFT);
+        Mockito.when(service.get(CYCLE_UUID, false)).thenReturn(compositeResponse);
+        var pmCycles = Mockito.mock(List.class);
+        Mockito.when(pmCycles.size()).thenReturn(4);
+        Mockito.when(service.findAll(Mockito.any(RequestQuery.class), Mockito.eq(false))).thenReturn(pmCycles);
         var executionContext = FlowTestUtil.executionBuilder()
                 .withEvent(event)
                 .withVariable(FlowParameters.PM_CYCLE, cycle)
                 .build();
-        Mockito.when(service.get(CYCLE_UUID, false)).thenReturn(compositeResponse);
-        List<PMCycle> pmCycles = Mockito.mock(List.class);
-        Mockito.when(pmCycles.size()).thenReturn(4);
-        Mockito.when(service.findAll(Mockito.any(RequestQuery.class), Mockito.eq(false))).thenReturn(pmCycles);
 
         //when
         handler.execute(executionContext);
@@ -80,9 +80,6 @@ class BuildNextCycleHandlerTest {
     }
 
     private PMCycle buildPmCycle() {
-        ColleagueSimple colleagueSimple = ColleagueSimple.builder()
-                .uuid(COLLEAGUE_UUID)
-                .build();
         var file = new File();
         file.setUuid(FILE_UUID);
         var metadata = new PMCycleMetadata();
@@ -91,6 +88,9 @@ class BuildNextCycleHandlerTest {
         properties.put(PMCycleElement.PM_CYCLE_MAX, "5");
         element.setProperties(properties);
         metadata.setCycle(element);
+        var colleagueSimple = ColleagueSimple.builder()
+                .uuid(COLLEAGUE_UUID)
+                .build();
         return PMCycle.builder()
                 .uuid(CYCLE_UUID)
                 .type(PMCycleType.FISCAL)
