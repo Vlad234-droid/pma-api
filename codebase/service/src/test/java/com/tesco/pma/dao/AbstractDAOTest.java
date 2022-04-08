@@ -23,6 +23,7 @@ public abstract class AbstractDAOTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDAOTest.class);
 
     static Properties properties;
+
     static {
         properties = new Properties();
         var url = AbstractDAOTest.class.getClassLoader().getResource("config/application-test.yml");

@@ -31,7 +31,7 @@ class NotesServiceTest {
 
 
     @BeforeEach
-    public void init(){
+    void init() {
         var colleague = new Colleague();
         colleague.setColleagueUUID(currentUserUuid);
 
@@ -40,7 +40,7 @@ class NotesServiceTest {
     }
 
     @Test
-    void createNoteWithWrongReferenceTest(){
+    void createNoteWithWrongReferenceTest() {
 
         UUID referenceUuid = UUID.randomUUID();
 
@@ -64,7 +64,7 @@ class NotesServiceTest {
     }
 
     @Test
-    void createNoteWithOwnerEqualsReferenceTest(){
+    void createNoteWithOwnerEqualsReferenceTest() {
 
         var note = new Note();
         note.setOwnerColleagueUuid(currentUser.getColleague().getColleagueUUID());

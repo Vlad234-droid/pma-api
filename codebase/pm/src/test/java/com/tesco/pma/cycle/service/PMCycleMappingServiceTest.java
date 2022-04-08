@@ -14,7 +14,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PMCycleMappingServiceTest {
+class PMCycleMappingServiceTest {
 
     private final ProfileService profileService = Mockito.mock(ProfileService.class);
     private final ProcessEngine processEngine = Mockito.mock(ProcessEngine.class);
@@ -28,8 +28,7 @@ public class PMCycleMappingServiceTest {
         colleague.setColleagueUUID(UUID.randomUUID());
         colleague.setWorkRelationships(List.of(wl));
 
-        Mockito.when(profileService.findColleagueByColleagueUuid(Mockito.eq(colleague.getColleagueUUID())))
-                        .thenReturn(colleague);
+        Mockito.when(profileService.findColleagueByColleagueUuid(colleague.getColleagueUUID())).thenReturn(colleague);
 
         var groupRes = "Group A";
         var result = Mockito.mock(DmnDecisionTableResult.class);

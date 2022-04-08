@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class OrganisationDictionaryDAOTest extends AbstractDAOTest {
+class OrganisationDictionaryDAOTest extends AbstractDAOTest {
 
     private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/organisation/dao/";
     private static final String UK_CODE = "uk";
@@ -37,9 +37,9 @@ public class OrganisationDictionaryDAOTest extends AbstractDAOTest {
         assertEquals("UK", result.getName());
         assertEquals(1, result.getLevel());
 
-        result = dao.findOrganisationDictionary("invalid_code");
+        var invalidOrganisationDictionary = dao.findOrganisationDictionary("invalid_code");
 
-        assertNull(result);
+        assertNull(invalidOrganisationDictionary);
     }
 
     @Test
@@ -60,14 +60,14 @@ public class OrganisationDictionaryDAOTest extends AbstractDAOTest {
         od.setName(name);
         od.setLevel(level);
 
-        var i = dao.create(od);
-        assertEquals(1, i);
+        var result = dao.create(od);
+        assertEquals(1, result);
 
-        var result = dao.findOrganisationDictionary(code);
+        var organisationDictionary = dao.findOrganisationDictionary(code);
 
-        assertEquals(code, result.getCode());
-        assertEquals(name, result.getName());
-        assertEquals(level, result.getLevel());
+        assertEquals(code, organisationDictionary.getCode());
+        assertEquals(name, organisationDictionary.getName());
+        assertEquals(level, organisationDictionary.getLevel());
     }
 
     @Test
@@ -81,29 +81,29 @@ public class OrganisationDictionaryDAOTest extends AbstractDAOTest {
         od.setName(name);
         od.setLevel(level);
 
-        var i = dao.update(od);
-        assertEquals(1, i);
+        var result = dao.update(od);
+        assertEquals(1, result);
 
-        var result = dao.findOrganisationDictionary(code);
+        var organisationDictionary = dao.findOrganisationDictionary(code);
 
-        assertEquals(code, result.getCode());
-        assertEquals(name, result.getName());
-        assertEquals(level, result.getLevel());
+        assertEquals(code, organisationDictionary.getCode());
+        assertEquals(name, organisationDictionary.getName());
+        assertEquals(level, organisationDictionary.getLevel());
     }
 
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "organisation-dictionary-init.xml"})
     void delete() {
-        var result = dao.findOrganisationDictionary(UK_CODE);
+        var organisationDictionary = dao.findOrganisationDictionary(UK_CODE);
 
-        assertNotNull(result);
+        assertNotNull(organisationDictionary);
 
-        var delete = dao.delete(UK_CODE);
+        var result = dao.delete(UK_CODE);
 
-        assertEquals(1, delete);
+        assertEquals(1, result);
 
-        result = dao.findOrganisationDictionary(UK_CODE);
+        organisationDictionary = dao.findOrganisationDictionary(UK_CODE);
 
-        assertNull(result);
+        assertNull(organisationDictionary);
     }
 }

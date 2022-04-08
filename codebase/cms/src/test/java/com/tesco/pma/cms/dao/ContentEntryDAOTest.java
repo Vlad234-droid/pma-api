@@ -18,7 +18,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ContentEntryDAOTest extends AbstractDAOTest {
+class ContentEntryDAOTest extends AbstractDAOTest {
 
     private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/cms/dao/";
     private static final String TEST_CONTENT_UUID = "d9d819fc-c1ee-4df8-a87b-d88f1c006c11";
@@ -40,7 +40,7 @@ public class ContentEntryDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    void createTest(){
+    void createTest() {
         var uuid = UUID.randomUUID();
         var content = new ContentEntry();
         content.setUuid(uuid);
@@ -64,7 +64,7 @@ public class ContentEntryDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    void deleteTest(){
+    void deleteTest() {
         contentEntryDAO.delete(UUID.fromString(TEST_CONTENT_UUID));
 
         assertEquals(0,

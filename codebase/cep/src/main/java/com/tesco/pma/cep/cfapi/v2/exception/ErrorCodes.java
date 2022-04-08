@@ -12,12 +12,7 @@ public enum ErrorCodes implements ErrorCodeAware {
     /**
      * Changed attributes not found
      */
-    CHANGED_ATTRIBUTES_NOT_FOUND,
-
-    /**
-     * Invalid feed Id
-     */
-    EVENT_FEED_ID_ERROR;
+    CHANGED_ATTRIBUTES_NOT_FOUND;
 
     @Override
     public String getCode() {

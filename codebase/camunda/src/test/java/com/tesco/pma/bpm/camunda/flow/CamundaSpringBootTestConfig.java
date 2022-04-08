@@ -17,7 +17,7 @@ import com.tesco.pma.bpm.camunda.starter.CamundaConfig;
 /**
  * This config can be used to test camunda flow.
  * Usage:
- * @SpringBootTest(classes = {CamundaSpringBootTestConfig.class})
+ * <code>@SpringBootTest(classes = {CamundaSpringBootTestConfig.class})</code>
  * Required resources you can find in <a href="file:/resources/application-test.yml">/resources/application-test.yml</a>
  */
 @Configuration

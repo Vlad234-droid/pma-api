@@ -8,10 +8,8 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
 
 @Configuration(proxyBeanMethods = false)
 public class TrustedConnectorConfiguration {
@@ -31,19 +29,19 @@ public class TrustedConnectorConfiguration {
      */
     @Bean
     public WebServerFactoryCustomizer<TomcatServletWebServerFactory> servletContainer() {
-        Connector[] additionalConnectors = this.additionalConnector();
-        ServerProperties serverProperties = new ServerProperties();
+        var additionalConnectors = this.additionalConnector();
+        var serverProperties = new ServerProperties();
         return new TomcatMultiConnectorServletWebServerFactoryCustomizer(serverProperties, additionalConnectors);
     }
 
     private Connector[] additionalConnector() {
 
-        Set<String> defaultPorts = new HashSet<>();
+        var defaultPorts = new HashSet<String>();
         defaultPorts.add(serverPort);
         defaultPorts.add(managementPort);
 
         if (!defaultPorts.contains(trustedPort)) {
-            Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
+            var connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
             connector.setScheme("http");
             connector.setPort(Integer.parseInt(trustedPort));
             return new Connector[]{connector};

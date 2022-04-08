@@ -25,7 +25,11 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -61,12 +65,12 @@ public abstract class AbstractNotificationsFlowTest extends AbstractCamundaSprin
         execBlocks.forEach((block, execTimes) -> assertion.activity(block).executedTimes(execTimes));
     }
 
-     ColleagueProfile createColleagueProfile(UUID colleagueUUID, WorkLevel wl, Map<String, String> attrs){
+    ColleagueProfile createColleagueProfile(UUID colleagueUUID, WorkLevel wl, Map<String, String> attrs) {
         return createColleagueProfile(colleagueUUID, "Random" , "Name", wl, attrs);
     }
 
     ColleagueProfile createColleagueProfile(UUID colleagueUUID, String firstName, String lastName,
-                                            WorkLevel wl, Map<String, String> attrs){
+                                            WorkLevel wl, Map<String, String> attrs) {
         var wr = new WorkRelationship();
         wr.setWorkLevel(wl);
         wr.setIsManager(false);
@@ -87,21 +91,21 @@ public abstract class AbstractNotificationsFlowTest extends AbstractCamundaSprin
         return colleagueProfile;
     }
 
-     TypedAttribute createAttr(String name, String value) {
+    TypedAttribute createAttr(String name, String value) {
         var attr = new TypedAttribute();
         attr.setName(name);
         attr.setValue(value);
         return attr;
     }
 
-    EventSupport createEvent(String evenName){
+    EventSupport createEvent(String evenName) {
         return createEvent(evenName, (String) null);
     }
 
     EventSupport createEvent(String evenName, String timelineCode) {
         var event = new EventSupport(evenName);
 
-        if(timelineCode != null) {
+        if (timelineCode != null) {
             var timelinePoint = createTimelinePoint(timelineCode, null);
             Mockito.when(timelinePointDAO.getTimelineByUUID(timelinePoint.getUuid())).thenReturn(timelinePoint);
             event.putProperty(FlowParameters.TIMELINE_POINT_UUID.name(), timelinePoint.getUuid());
@@ -113,7 +117,7 @@ public abstract class AbstractNotificationsFlowTest extends AbstractCamundaSprin
     EventSupport createEvent(String evenName, TimelinePoint timelinePoint) {
         var event = new EventSupport(evenName);
 
-        if(timelinePoint != null) {
+        if (timelinePoint != null) {
             Mockito.when(timelinePointDAO.getTimelineByUUID(timelinePoint.getUuid())).thenReturn(timelinePoint);
             event.putProperty(FlowParameters.TIMELINE_POINT_UUID.name(), timelinePoint.getUuid());
         }
@@ -126,7 +130,7 @@ public abstract class AbstractNotificationsFlowTest extends AbstractCamundaSprin
         timelinePoint.setUuid(UUID.randomUUID());
         timelinePoint.setCode(timelineCode);
 
-        if(startDateString != null){
+        if (startDateString != null) {
             var propsMap = new HashMap<String, String>();
             propsMap.put(FlowParameters.START_DATE.name(), startDateString);
             var props = new MapJson();

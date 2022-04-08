@@ -4,7 +4,6 @@ import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.bpm.api.ProcessManagerService;
 import com.tesco.pma.cycle.LocalTestConfig;
 import com.tesco.pma.cycle.api.CompositePMCycleResponse;
-import com.tesco.pma.cycle.api.PMCycle;
 import com.tesco.pma.cycle.api.PMCycleStatus;
 import com.tesco.pma.cycle.dao.PMColleagueCycleDAO;
 import com.tesco.pma.cycle.dao.PMCycleDAO;
@@ -84,7 +83,7 @@ class PMCycleServiceImplTest {
         when(cycleDAO.read(eq(CYCLE_UUID), any())).thenReturn(cycle);
         when(cycleDAO.updateStatus(eq(CYCLE_UUID), any(), any())).thenReturn(1);
 
-        PMCycle updatedCycle = cycleService.updateStatus(CYCLE_UUID, ACTIVE);
+        var updatedCycle = cycleService.updateStatus(CYCLE_UUID, ACTIVE);
 
         assertEquals(ACTIVE, updatedCycle.getStatus());
     }
@@ -97,7 +96,7 @@ class PMCycleServiceImplTest {
         when(cycleDAO.updateStatus(eq(CYCLE_UUID), any(), any())).thenReturn(1);
 
         DictionaryFilter<PMCycleStatus> filter = DictionaryFilter.includeFilter(DRAFT);
-        PMCycle updatedCycle = cycleService.updateStatus(CYCLE_UUID, ACTIVE, filter);
+        var updatedCycle = cycleService.updateStatus(CYCLE_UUID, ACTIVE, filter);
 
         assertEquals(ACTIVE, updatedCycle.getStatus());
     }
@@ -125,7 +124,7 @@ class PMCycleServiceImplTest {
         cycle.setStatus(DRAFT);
         when(cycleDAO.update(eq(cycle), any())).thenReturn(1);
 
-        PMCycle updated = cycleService.update(cycle);
+        var updated = cycleService.update(cycle);
         assertEquals(cycle, updated);
     }
 
@@ -169,12 +168,12 @@ class PMCycleServiceImplTest {
         when(cycleDAO.updateStatus(eq(CYCLE_UUID), any(), any())).thenReturn(1);
         when(pmProcessService.register(any(), eq(PMProcessStatus.REGISTERED))).thenReturn(process);
 
-        UUID deployedUUID = cycleService.deploy(CYCLE_UUID);
+        var deployedUUID = cycleService.deploy(CYCLE_UUID);
 
+        assertEquals(processUUID, deployedUUID);
         verify(deploymentService).deploy(TEMPLATE_UUID);
         verify(pmProcessService).register(any(), eq(PMProcessStatus.REGISTERED));
         assertEquals(ACTIVE, cycle.getStatus());
-        assertEquals(processUUID, deployedUUID);
     }
 
     @Test

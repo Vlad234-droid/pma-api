@@ -104,7 +104,8 @@ class HealthCheckEndpointTest extends AbstractEndpointTest {
 
     @ParameterizedTest
     @MethodSource("provideArgsForGetWorkingIfUnauthorized")
-    void getWorkingSuccessIfUnauthorized(HealthStatus healthStatus, String expectedFileNameWithResponse, String urlTemplate) throws Exception {
+    void getWorkingSuccessIfUnauthorized(HealthStatus healthStatus, String expectedFileNameWithResponse,
+                                         String urlTemplate) throws Exception {
         var health = new Health();
         health.setStatus(healthStatus);
         health.setVersion(VERSION);

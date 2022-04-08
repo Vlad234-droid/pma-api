@@ -52,7 +52,8 @@ class IdentityOAuth2ClientCredentialsGrantRequestEntityConverterTest {
 
         Assertions.assertThat(requestEntity.getHeaders()).asInstanceOf(type(HttpHeaders.class))
                 .returns(List.of(IDENTITY_ISSUE_TOKEN_MEDIA_TYPE), HttpHeaders::getAccept)
-                .returns(MediaType.valueOf(MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=UTF-8"), from(HttpHeaders::getContentType));
+                .returns(MediaType.valueOf(MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=UTF-8"),
+                        from(HttpHeaders::getContentType));
 
         Assertions.assertThat((MultiValueMap<String, String>) requestEntity.getBody())
                 .containsEntry(OAuth2ParameterNames.GRANT_TYPE, List.of(AuthorizationGrantType.CLIENT_CREDENTIALS.getValue()))

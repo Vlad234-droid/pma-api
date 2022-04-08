@@ -43,7 +43,7 @@ public class NamedMessageSourceAccessor extends MessageSourceAccessor {
         if (StringUtils.isEmpty(code)) {
             return null;
         }
-        String mapAsString = params.keySet().stream().sorted()
+        var mapAsString = params.keySet().stream().sorted()
                 .map(key -> key + "=" + params.get(key))
                 .collect(Collectors.joining(", ", "{", "}"));
         var message = getMessage(code);

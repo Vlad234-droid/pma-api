@@ -299,7 +299,6 @@ class ReportingEndpointTest extends AbstractEndpointTest {
     }
 
     private Report buildReport() {
-        var reportProvider = new StatsReportProvider();
         var data = new StatsData();
         data.setColleaguesCount(2);
         data.setObjectivesSubmittedPercentage(50);
@@ -327,6 +326,7 @@ class ReportingEndpointTest extends AbstractEndpointTest {
         data.setNewToBusinessCount(2);
         data.setFeedbackGivenPercentage(100);
         data.setFeedbackRequestedPercentage(50);
+        var reportProvider = new StatsReportProvider();
         reportProvider.setData(List.of(data));
 
         return reportProvider.getReport();
@@ -352,7 +352,6 @@ class ReportingEndpointTest extends AbstractEndpointTest {
     }
 
     private Report buildStatsReport(int colleaguesCount) {
-        var reportProvider = new StatsReportProvider();
         var data = new StatsData();
         data.setColleaguesCount(colleaguesCount);
         data.setObjectivesSubmittedPercentage(50);
@@ -380,6 +379,7 @@ class ReportingEndpointTest extends AbstractEndpointTest {
         data.setNewToBusinessCount(2);
         data.setFeedbackGivenPercentage(100);
         data.setFeedbackRequestedPercentage(50);
+        var reportProvider = new StatsReportProvider();
         reportProvider.setData(List.of(data));
 
         return reportProvider.getReport();

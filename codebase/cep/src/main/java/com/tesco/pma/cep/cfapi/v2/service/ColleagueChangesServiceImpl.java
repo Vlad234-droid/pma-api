@@ -1,14 +1,13 @@
 package com.tesco.pma.cep.cfapi.v2.service;
 
-import com.tesco.pma.cep.cfapi.v2.configuration.ColleagueChangesProperties;
 import com.tesco.pma.cep.cfapi.v2.domain.ColleagueChangeEventPayload;
 import com.tesco.pma.cep.cfapi.v2.domain.EventType;
 import com.tesco.pma.colleague.api.Colleague;
-import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.service.ProfileService;
 import com.tesco.pma.colleague.security.domain.AccountStatus;
 import com.tesco.pma.colleague.security.domain.request.ChangeAccountStatusRequest;
 import com.tesco.pma.colleague.security.service.UserManagementService;
+import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.event.EventNames;
 import com.tesco.pma.event.EventSupport;
 import com.tesco.pma.event.service.EventSender;
@@ -23,7 +22,6 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
@@ -41,10 +39,12 @@ import static com.tesco.pma.colleague.security.exception.ErrorCodes.SECURITY_ACC
 @RequiredArgsConstructor
 public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
-    private final ColleagueChangesProperties colleagueChangesProperties;
+    private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
+
     private final ProfileService profileService;
     private final UserManagementService userManagementService;
     private final EventSender eventSender;
+    private final NamedMessageSourceAccessor messages;
 
     private static final EnumMap<EventType, ToIntFunction<ColleagueChangeEventPayload>> PROCESSORS
             = new EnumMap<>(EventType.class);
@@ -68,7 +68,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
         // For all event types except for Joiner and Modification profile must be existing
         if (EnumSet.of(LEAVER, DELETION).contains(colleagueChangeEventPayload.getEventType())) {
-            Optional<ColleagueProfile> optionalColleagueProfile = profileService.findProfileByColleagueUuid(
+            var optionalColleagueProfile = profileService.findProfileByColleagueUuid(
                     colleagueChangeEventPayload.getColleagueUuid());
             if (optionalColleagueProfile.isEmpty()) {
                 log.error(LogFormatter.formatMessage(COLLEAGUE_NOT_FOUND, "Colleague '{}' not found"),
@@ -105,7 +105,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
         // Disable an access a colleague to app
         var account = userManagementService.findAccountByColleagueUuid(colleagueChangeEventPayload.getColleagueUuid());
         if (account == null) {
-            String message = String.format("An account for colleague with uuid = %s not found",
+            var message = String.format("An account for colleague with uuid = %s not found",
                     colleagueChangeEventPayload.getColleagueUuid());
             log.error(LogFormatter.formatMessage(SECURITY_ACCOUNT_NOT_FOUND, message));
             return 0;
@@ -123,7 +123,7 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     }
 
     private int processModificationEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
-        Optional<ColleagueProfile> optionalColleagueProfile = profileService.findProfileByColleagueUuid(
+        var optionalColleagueProfile = profileService.findProfileByColleagueUuid(
                 colleagueChangeEventPayload.getColleagueUuid());
         if (optionalColleagueProfile.isEmpty()) {
             return processJoinerEventType(colleagueChangeEventPayload);
@@ -131,25 +131,15 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
 
         var changedAttributes = filteringChangedAttributes(colleagueChangeEventPayload);
         if (changedAttributes.isEmpty()) {
-            log.warn(LogFormatter.formatMessage(CHANGED_ATTRIBUTES_NOT_FOUND, "For colleague '{}' was not updated records"),
-                    colleagueChangeEventPayload.getColleagueUuid());
+            log.warn(LogFormatter.formatMessage(messages, CHANGED_ATTRIBUTES_NOT_FOUND,
+                    Map.of(COLLEAGUE_UUID_PARAMETER_NAME, colleagueChangeEventPayload.getColleagueUuid())));
             return 1;
         }
 
-        int updated;
-        if (colleagueChangesProperties.isForce()) {
-            updated = profileService.updateColleague(colleagueChangeEventPayload.getColleagueUuid(),
-                    colleagueChangeEventPayload.getChangedAttributes());
-        } else {
-            updated = profileService.updateColleague(colleagueChangeEventPayload.getCurrent());
-        }
-
         // Send event to Camunda
-        if (updated > 0) {
-            sendEvent(colleagueChangeEventPayload.getColleagueUuid(), EventNames.CEP_COLLEAGUE_UPDATED);
-        }
+        sendUpdateEvent(colleagueChangeEventPayload.getColleagueUuid(), colleagueChangeEventPayload.getCurrent());
 
-        return updated;
+        return 1;
     }
 
     private int processDeletionEventType(ColleagueChangeEventPayload colleagueChangeEventPayload) {
@@ -172,6 +162,15 @@ public class ColleagueChangesServiceImpl implements ColleagueChangesService {
     private void sendEvent(UUID colleagueUuid, EventNames eventName) {
         var event = new EventSupport(eventName);
         event.setEventProperties(Map.of(FlowParameters.COLLEAGUE_UUID.name(), colleagueUuid));
+        eventSender.sendEvent(event);
+    }
+
+    private void sendUpdateEvent(UUID colleagueUuid, Colleague colleague) {
+        var event = new EventSupport(EventNames.CEP_COLLEAGUE_UPDATED);
+        var properties = Map
+                .of(FlowParameters.COLLEAGUE.name(), colleague,
+                        FlowParameters.COLLEAGUE_UUID.name(), colleagueUuid);
+        event.setEventProperties(properties);
         eventSender.sendEvent(event);
     }
 

@@ -44,8 +44,8 @@ public class BaseEventMapping implements EventMapping {
     private void setMapping(Object actionKey, Object actionClassName) {
         try {
             @SuppressWarnings("unchecked")
-            Class<Action> actionClass = (Class<Action>) Class.forName((String) actionClassName);
-            Action actionInstance = actionClass.newInstance();
+            var actionClass = (Class<Action>) Class.forName((String) actionClassName);
+            var actionInstance = actionClass.getDeclaredConstructor().newInstance();
             eventsToActionsMap.put((String) actionKey, actionInstance);
             if (logger.isInfoEnabled()) {
                 logger.info("Event -> Action mapping: {} -> {}", actionKey, actionInstance);

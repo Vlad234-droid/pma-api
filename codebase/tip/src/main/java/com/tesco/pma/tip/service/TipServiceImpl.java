@@ -44,7 +44,7 @@ public class TipServiceImpl implements TipService {
     @Transactional
     public Tip create(Tip tip) {
         log.debug("Service create Tip : {}", tip);
-        Tip lastVersionTip = tipDAO.read(tip.getUuid());
+        var lastVersionTip = tipDAO.read(tip.getUuid());
         if (lastVersionTip == null) {
             tip.setVersion(1);
             tip.setCreatedTime(Instant.now());
@@ -73,7 +73,7 @@ public class TipServiceImpl implements TipService {
     @Override
     public Tip findOne(UUID uuid) {
         log.debug("Service find one tip : {}", uuid);
-        Tip tip = tipDAO.read(uuid);
+        var tip = tipDAO.read(uuid);
         if (tip == null) {
             throwNotFound(uuid);
         }
@@ -91,7 +91,7 @@ public class TipServiceImpl implements TipService {
     public void delete(UUID uuid, boolean withHistory) {
         log.debug("Service delete tip : {}", uuid);
         if (withHistory) {
-            Tip tip = tipDAO.read(uuid);
+            var tip = tipDAO.read(uuid);
             if (tip == null) {
                 throwNotFound(uuid);
             }
@@ -107,7 +107,7 @@ public class TipServiceImpl implements TipService {
     @Transactional
     public Tip publish(UUID uuid) {
         log.debug("Service publish Tip : {}", uuid);
-        Tip tip = tipDAO.read(uuid);
+        var tip = tipDAO.read(uuid);
         if (tip == null) {
             throwNotFound(uuid);
         }
@@ -125,7 +125,7 @@ public class TipServiceImpl implements TipService {
     }
 
     private void throwNotFound(UUID uuid) {
-        String message = namedMessageSourceAccessor.getMessage(ErrorCodes.TIP_NOT_FOUND,
+        var message = namedMessageSourceAccessor.getMessage(ErrorCodes.TIP_NOT_FOUND,
                 Map.of(PARAM_NAME, "uuid", PARAM_VALUE, uuid));
         throw new NotFoundException(ErrorCodes.TIP_NOT_FOUND.getCode(), message);
     }

@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = PDPEndpoint.class)
 @ContextConfiguration(classes = {LocalTestConfig.class, PDPEndpoint.class})
 @WithMockUser(username = PDPEndpointTest.COLLEAGUE_UUID_STR)
-public class PDPEndpointTest extends AbstractEndpointTest {
+class PDPEndpointTest extends AbstractEndpointTest {
 
     static final String COLLEAGUE_UUID_STR = "ce245be1-1f43-4d5f-85dc-db6e2cce0c2a";
 
@@ -54,15 +54,14 @@ public class PDPEndpointTest extends AbstractEndpointTest {
     private static final String PDP_GOALS_UPDATE_OK_RESPONSE_JSON_FILE_NAME = "pm_pdp_goals_update_ok_response.json";
     private static final LocalDate ACHIEVEMENT_DATE = LocalDate.parse("2021-12-29");
     private static final MapJson PROPERTIES = new MapJson(Map.of("pm_pdp_test_property1", "P1", "pm_pdp_test_property2", "P2"));
-    public static final String STANDARD_PDP_FORM = "pdp/forms/standard_pdp.form";
-    public static final String PDP_FORM_PATH = "pdp/forms";
-    public static final String PDP_FORM_NAME = "standard_pdp.form";
 
-    public static final String PDP_TEMPLATE = "pdp/templates/Personal Development Plan Template.pptx";
-    public static final UUID PDP_TEMPLATE_UUID = UUID.fromString("c8727e57-8844-4db5-b1b3-7548b7582244");
-    public static final String PDP_TEMPLATE_PATH = "pdp/templates";
-    public static final String PDP_TEMPLATE_FILE_NAME = "Personal Development Plan Template.pptx";
-    public static final String PDP_GOAL_EARLY_DATE_GET_RESPONSE_JSON_FILE_NAME = "pm_pdp_goal_early_date_get_ok_response.json";
+    private static final String PDP_FORM_PATH = "pdp/forms";
+    private static final String PDP_FORM_NAME = "standard_pdp.form";
+
+    private static final UUID PDP_TEMPLATE_UUID = UUID.fromString("c8727e57-8844-4db5-b1b3-7548b7582244");
+    private static final String PDP_TEMPLATE_PATH = "pdp/templates";
+    private static final String PDP_TEMPLATE_FILE_NAME = "Personal Development Plan Template.pptx";
+    private static final String PDP_GOAL_EARLY_DATE_GET_RESPONSE_JSON_FILE_NAME = "pm_pdp_goal_early_date_get_ok_response.json";
 
     @MockBean
     private PDPService pdpService;
@@ -85,7 +84,8 @@ public class PDPEndpointTest extends AbstractEndpointTest {
 
     @Test
     void createGoalsUnsuccessIfBadRequest() throws Exception { //NOSONAR used MockMvc checks
-        doThrow(DatabaseConstraintViolationException.class).when(pdpService).createGoals(COLLEAGUE_UUID, buildGoals(GOAL_UUID_1, GOAL_UUID_2));
+        doThrow(DatabaseConstraintViolationException.class).when(pdpService).createGoals(COLLEAGUE_UUID,
+                buildGoals(GOAL_UUID_1, GOAL_UUID_2));
 
         performPost(PDP_GOALS_UPDATE_REQUEST_JSON_FILE_NAME, status().isBadRequest(), PDP_GOALS_URL);
     }
@@ -109,7 +109,8 @@ public class PDPEndpointTest extends AbstractEndpointTest {
 
     @Test
     void updateGoalsUnsuccessIfGoalIfBadRequest() throws Exception { //NOSONAR used MockMvc checks
-        doThrow(DatabaseConstraintViolationException.class).when(pdpService).updateGoals(COLLEAGUE_UUID, buildGoals(GOAL_UUID_1, GOAL_UUID_2));
+        doThrow(DatabaseConstraintViolationException.class).when(pdpService).updateGoals(COLLEAGUE_UUID,
+                buildGoals(GOAL_UUID_1, GOAL_UUID_2));
 
         performPut(PDP_GOALS_UPDATE_REQUEST_JSON_FILE_NAME, status().isBadRequest(), PDP_GOALS_URL);
     }

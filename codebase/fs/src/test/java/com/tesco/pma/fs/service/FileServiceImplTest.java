@@ -163,12 +163,13 @@ class FileServiceImplTest {
 
     @Test
     void getAllVersionsByFileNameAndPath() {
-        var filesData = asList(buildFileData(FILE_NAME, FILE_UUID_1, 1), buildFileData(FILE_NAME, FILE_UUID_1, 2));
-        var includeFileContent = false;
+
         var requestQuery = new RequestQuery();
         requestQuery.setFilters(asList(new Condition("path", EQUALS, PATH), new Condition("file-name", EQUALS, FILE_NAME)));
         requestQuery.setLimit(null);
         requestQuery.setSort(Arrays.asList(new Sort("version", DESC)));
+        var filesData = asList(buildFileData(FILE_NAME, FILE_UUID_1, 1), buildFileData(FILE_NAME, FILE_UUID_1, 2));
+        var includeFileContent = false;
         when(fileDao.findByRequestQuery(requestQuery, includeFileContent, CREATOR_ID, false)).thenReturn(filesData);
 
         var result = service.getAllVersions(PATH, FILE_NAME, includeFileContent, CREATOR_ID);
@@ -178,11 +179,11 @@ class FileServiceImplTest {
 
     @Test
     void getAllVersionsReturnsNothingWhenDaoFindsNothing() {
-        var includeFileContent = false;
         var requestQuery = new RequestQuery();
         requestQuery.setFilters(asList(new Condition("path", EQUALS, PATH), new Condition("file-name", EQUALS, FILE_NAME)));
         requestQuery.setLimit(null);
         requestQuery.setSort(Arrays.asList(new Sort("version", DESC)));
+        var includeFileContent = false;
         when(fileDao.findByRequestQuery(requestQuery, includeFileContent, CREATOR_ID, false)).thenReturn(emptyList());
 
         var result = service.getAllVersions(PATH, FILE_NAME, includeFileContent, CREATOR_ID);

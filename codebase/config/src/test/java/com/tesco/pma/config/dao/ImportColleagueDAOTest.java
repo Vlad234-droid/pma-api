@@ -14,7 +14,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ImportColleagueDAOTest extends AbstractDAOTest {
+class ImportColleagueDAOTest extends AbstractDAOTest {
 
     private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/config/dao/";
     public static final UUID REQUEST_UUID = UUID.fromString("c409869b-2acf-45cd-8cc6-e13af2e6f935");

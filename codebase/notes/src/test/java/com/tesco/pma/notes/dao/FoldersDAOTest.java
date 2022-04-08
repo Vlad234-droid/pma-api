@@ -14,7 +14,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FoldersDAOTest extends AbstractDAOTest {
+class FoldersDAOTest extends AbstractDAOTest {
 
     protected static final String BASE_PATH_TO_DATA_SET = "db_init_scripts/";
     protected static final UUID FOLDER_UUID = UUID.fromString("56141037-6e2d-45f0-b47f-4875e68dd1d7");
@@ -93,10 +93,9 @@ public class FoldersDAOTest extends AbstractDAOTest {
 
     }
 
-
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml"})
-    public void findByOwnerColleagueUuid(){
+    void findByOwnerColleagueUuid() {
 
         var folders = foldersDao.findByOwner(OWNER_UUID_2);
 
@@ -104,7 +103,7 @@ public class FoldersDAOTest extends AbstractDAOTest {
 
     }
 
-    private Folder createFolder(UUID id, UUID ownerId, UUID parentId){
+    private Folder createFolder(UUID id, UUID ownerId, UUID parentId) {
         var folder = new Folder();
         folder.setId(id);
         folder.setOwnerColleagueUuid(ownerId);
@@ -112,6 +111,4 @@ public class FoldersDAOTest extends AbstractDAOTest {
         folder.setParentFolderUuid(parentId);
         return folder;
     }
-
-
 }

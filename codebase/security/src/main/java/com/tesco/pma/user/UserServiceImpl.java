@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> findUserByIamId(final String iamId) {
-        ColleagueProfile colleagueProfile = tryFindColleagueProfileByIamId(iamId);
+        var colleagueProfile = tryFindColleagueProfileByIamId(iamId);
         if (colleagueProfile != null) {
             return Optional.of(mapColleagueProfileToUser(colleagueProfile));
         } else {

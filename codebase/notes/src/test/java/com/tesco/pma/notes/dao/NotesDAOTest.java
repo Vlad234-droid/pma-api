@@ -17,7 +17,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class NotesDAOTest extends AbstractDAOTest {
+class NotesDAOTest extends AbstractDAOTest {
 
     protected static final String BASE_PATH_TO_DATA_SET = "db_init_scripts/";
     protected static final UUID FOLDER_UUID = UUID.fromString("56141037-6e2d-45f0-b47f-4875e68dd1d7");
@@ -62,7 +62,7 @@ public class NotesDAOTest extends AbstractDAOTest {
 
         var titleTooLong = new StringBuilder();
 
-        for(int i = 0; i<12; i++){
+        for (int i = 0; i < 12; i++) {
             titleTooLong.append("1234567890");
         }
         var note = createNote(UUID.randomUUID(), FOLDER_UUID, OWNER_UUID, titleTooLong.toString());
@@ -91,18 +91,18 @@ public class NotesDAOTest extends AbstractDAOTest {
     @Test
     @DataSet({BASE_PATH_TO_DATA_SET + "folder_entries_init.xml",
             BASE_PATH_TO_DATA_SET + "notes_entries_init.xml"})
-    public void findByFolderTest(){
+    void findByFolderTest() {
 
         var notes = notesDao.findByFolder(FOLDER_UUID);
 
         assertEquals(1, notes.size());
     }
 
-    private Note createNote(UUID id, UUID folderId, UUID ownerId){
+    private Note createNote(UUID id, UUID folderId, UUID ownerId) {
         return createNote(id, folderId, ownerId, "Title");
     }
 
-    private Note createNote(UUID id, UUID folderId, UUID ownerId, String title){
+    private Note createNote(UUID id, UUID folderId, UUID ownerId, String title) {
         var note = new Note();
         note.setId(id);
         note.setFolderUuid(folderId);

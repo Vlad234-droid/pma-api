@@ -17,10 +17,6 @@ public enum ErrorCodes implements ErrorCodeAware {
      */
     MISSING_SERVLET_REQUEST_PART_EXCEPTION,
     /**
-     * Type mismatch
-     */
-    TYPE_MISMATCH,
-    /**
      * Method argument not valid
      */
     METHOD_ARGUMENT_NOT_VALID,
@@ -36,10 +32,6 @@ public enum ErrorCodes implements ErrorCodeAware {
      * Constraint violation
      */
     CONSTRAINT_VIOLATION,
-    /**
-     * Unique constraint violation
-     */
-    UNIQUE_CONSTRAINT_VIOLATION,
     /**
      * Unexpected error
      */

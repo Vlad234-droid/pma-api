@@ -61,4 +61,30 @@ public class ColleagueEntity { //NOPMD
             private String name;
         }
     }
+
+    @Override
+    public String toString() {
+        return "ColleagueEntity("
+                + "uuid=" + uuid
+                + ", firstName='*****'"
+                + ", middleName='*****'"
+                + ", lastName='*****'"
+                + ", email='*****'"
+                + ", workLevel=" + workLevel
+                + ", primaryEntity='" + primaryEntity + '\''
+                + ", country=" + country
+                + ", department=" + department
+                + ", salaryFrequency='" + salaryFrequency + '\''
+                + ", job=" + job
+                + ", iamSource='" + iamSource + '\''
+                + ", iamId='*****'"
+                + ", managerUuid=" + managerUuid
+                + ", employmentType='" + employmentType + '\''
+                + ", hireDate=" + hireDate
+                + ", leavingDate=" + leavingDate
+                + ", manager=" + manager
+                + ", locationId='" + locationId + '\''
+                + ", legalEntity='" + legalEntity + '\''
+                + ')';
+    }
 }

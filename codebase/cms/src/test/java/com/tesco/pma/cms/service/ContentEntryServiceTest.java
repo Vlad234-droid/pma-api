@@ -7,7 +7,8 @@ import com.tesco.pma.cms.api.ContentStatus;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.configuration.audit.AuditorAware;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.mockito.Mockito;
+
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,10 +19,11 @@ class ContentEntryServiceTest {
     private final ContentEntryDAO contentEntryDAO = Mockito.mock(ContentEntryDAO.class);
     private final AuditorAware<UUID> auditorAware = Mockito.mock(AuditorAware.class);
     private final NamedMessageSourceAccessor messageSourceAccessor = Mockito.mock(NamedMessageSourceAccessor.class);
-    private final ContentEntryServiceImpl contentEntryService = new ContentEntryServiceImpl(contentEntryDAO, auditorAware, messageSourceAccessor);
+    private final ContentEntryServiceImpl contentEntryService =
+            new ContentEntryServiceImpl(contentEntryDAO, auditorAware, messageSourceAccessor);
 
     @Test
-    void createTest(){
+    void createTest() {
 
         var newContent = new ContentEntry();
         newContent.setTitle("test");
@@ -34,7 +36,7 @@ class ContentEntryServiceTest {
     }
 
     @Test()
-    void createWithoutTitleTest(){
+    void createWithoutTitleTest() {
         var newContent = new ContentEntry();
         Mockito.when(contentEntryDAO.create(newContent)).thenReturn(1);
 

@@ -41,7 +41,7 @@ class PMCycleMappingDMNTest {
             dmnEngine = DmnEngineConfiguration
                     .createDefaultDmnEngineConfiguration()
                     .buildEngine();
-            try(InputStream inputStream = getClass().getClassLoader().getResourceAsStream(PATH)) {
+            try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(PATH)) {
                 decision = dmnEngine.parseDecision(DMN_ID, inputStream);
             }
         }

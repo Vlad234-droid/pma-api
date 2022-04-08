@@ -30,7 +30,7 @@ class EventControllerTest {
     private EventMonitor monitor;
 
     @BeforeEach
-    public void init() {
+    void init() {
         mapping = mock(EventMapping.class);
         monitor = spy(new SimpleEventMonitor());
         eventController = new EventControllerImpl(mapping, monitor);

@@ -6,7 +6,6 @@ import com.tesco.pma.colleague.profile.dao.ProfileDAO;
 import com.tesco.pma.colleague.profile.domain.ColleagueEntity;
 import com.tesco.pma.colleague.profile.domain.ColleagueProfile;
 import com.tesco.pma.colleague.profile.domain.TypedAttribute;
-import com.tesco.pma.colleague.profile.exception.ErrorCodes;
 import com.tesco.pma.colleague.profile.service.util.ColleagueFactsApiLocalMapper;
 import com.tesco.pma.configuration.NamedMessageSourceAccessor;
 import com.tesco.pma.exception.DatabaseConstraintViolationException;
@@ -33,6 +32,8 @@ import java.util.stream.Collectors;
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.MANAGER_NOT_FOUND;
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_ATTRIBUTE_NOT_FOUND;
 import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_NOT_FOUND;
+import static com.tesco.pma.colleague.profile.exception.ErrorCodes.DATA_INTEGRITY_VIOLATION_EXCEPTION;
+import static com.tesco.pma.colleague.profile.exception.ErrorCodes.PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS;
 
 /**
  * Implementation of {@link ProfileService}.
@@ -52,6 +53,8 @@ public class ProfileServiceImpl implements ProfileService {
 
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     private static final String PROFILE_ATTRIBUTE_NAME_PARAMETER_NAME = "profileAttributeName";
+    private static final String MANAGER_UUID_PARAMETER_NAME = "managerUuid";
+    private static final String ERROR_MESSAGE_PARAMETER_NAME = "errorMessage";
 
     @Override
     //todo    @Cacheable //NOSONAR
@@ -90,7 +93,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     @Transactional
     public List<TypedAttribute> updateProfileAttributes(UUID colleagueUuid, List<TypedAttribute> profileAttributes) {
-        List<TypedAttribute> results = new ArrayList<>();
+        var results = new ArrayList<TypedAttribute>();
         profileAttributes.forEach(profileAttribute -> {
             profileAttribute.setColleagueUuid(colleagueUuid);
             if (1 == profileAttributeDAO.update(profileAttribute)) {
@@ -106,7 +109,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     @Transactional
     public List<TypedAttribute> createProfileAttributes(UUID colleagueUuid, List<TypedAttribute> profileAttributes) {
-        List<TypedAttribute> results = new ArrayList<>();
+        var results = new ArrayList<TypedAttribute>();
         profileAttributes.forEach(profileAttribute -> {
             try {
                 profileAttribute.setColleagueUuid(colleagueUuid);
@@ -116,8 +119,8 @@ public class ProfileServiceImpl implements ProfileService {
                     throw profileAttributeNotFound(profileAttribute.getName(), profileAttribute.getColleagueUuid());
                 }
             } catch (DuplicateKeyException e) {
-                throw new DatabaseConstraintViolationException(ErrorCodes.PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS.name(),
-                        messages.getMessage(ErrorCodes.PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS,
+                throw new DatabaseConstraintViolationException(PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS.name(),
+                        messages.getMessage(PROFILE_ATTRIBUTE_NAME_ALREADY_EXISTS,
                                 Map.of(PROFILE_ATTRIBUTE_NAME_PARAMETER_NAME, profileAttribute.getName(),
                                         COLLEAGUE_UUID_PARAMETER_NAME, profileAttribute.getColleagueUuid()
                                 )), null, e);
@@ -129,7 +132,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public List<TypedAttribute> deleteProfileAttributes(final UUID colleagueUuid, List<TypedAttribute> profileAttributes) {
-        List<TypedAttribute> results = new ArrayList<>();
+        var results = new ArrayList<TypedAttribute>();
         profileAttributes.forEach(profileAttribute -> {
             profileAttribute.setColleagueUuid(colleagueUuid);
             if (1 == profileAttributeDAO.delete(profileAttribute)) {
@@ -182,14 +185,14 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     // TODO To optimize logic for update only changed fields //NOSONAR
     public int updateColleague(UUID colleagueUuid, Collection<String> changedFields) {
-        int updated = 0;
+        var updated = 0;
 
         var existingLocalColleague = profileDAO.getColleague(colleagueUuid);
         if (existingLocalColleague == null) {
             return updated;
         }
 
-        Colleague colleague = colleagueApiService.findColleagueByUuid(colleagueUuid);
+        var colleague = colleagueApiService.findColleagueByUuid(colleagueUuid);
         if (colleague == null) {
             return updated;
         }
@@ -230,7 +233,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private int persistColleague(Colleague colleague, ColleagueEntity existingLocalColleague) {
-        int updated = 0;
+        var updated = 0;
 
         try {
             var changedLocalColleague = colleagueFactsApiLocalMapper.colleagueFactsApiToLocal(colleague);
@@ -247,8 +250,8 @@ public class ProfileServiceImpl implements ProfileService {
                 updated = profileDAO.updateColleague(changedLocalColleague);
             }
         } catch (DataIntegrityViolationException exception) {
-            String message = String.format("Data integrity violation exception = %s", exception.getMessage());
-            log.error(LogFormatter.formatMessage(ErrorCodes.DATA_INTEGRITY_VIOLATION_EXCEPTION, message));
+            log.error(LogFormatter.formatMessage(messages, DATA_INTEGRITY_VIOLATION_EXCEPTION,
+                    Map.of(ERROR_MESSAGE_PARAMETER_NAME, exception.getMessage())));
         }
 
         return updated;
@@ -286,8 +289,7 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         if (manager == null) {
-            log.warn(LogFormatter.formatMessage(MANAGER_NOT_FOUND, "For colleague manager '{}' was not found"),
-                    managerUuid);
+            log.warn(LogFormatter.formatMessage(messages, MANAGER_NOT_FOUND, Map.of(MANAGER_UUID_PARAMETER_NAME, managerUuid)));
         }
 
         return manager;
@@ -313,7 +315,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private void updateCountryDictionary(ColleagueEntity existingLocalColleague, ColleagueEntity changedLocalColleague) {
-        ColleagueEntity.Country changedCountry = changedLocalColleague.getCountry();
+        var changedCountry = changedLocalColleague.getCountry();
         if (changedCountry == null || changedCountry.getCode() == null) {
             return;
         }
@@ -344,7 +346,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private void updateJobDictionary(ColleagueEntity existingLocalColleague, ColleagueEntity changedLocalColleague) {
-        ColleagueEntity.Job changedJob = changedLocalColleague.getJob();
+        var changedJob = changedLocalColleague.getJob();
         if (changedJob == null || changedJob.getId() == null) {
             return;
         }
@@ -357,7 +359,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private void updateWorkLevelDictionary(ColleagueEntity existingLocalColleague, ColleagueEntity changedLocalColleague) {
-        ColleagueEntity.WorkLevel changedWorkLevel = changedLocalColleague.getWorkLevel();
+        var changedWorkLevel = changedLocalColleague.getWorkLevel();
         if (changedWorkLevel == null || changedWorkLevel.getCode() == null) {
             return;
         }

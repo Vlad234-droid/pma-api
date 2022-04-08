@@ -14,12 +14,10 @@ import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
 import java.time.Period;
 import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -30,16 +28,16 @@ public class BuildNextCycleHandler extends CamundaAbstractFlowHandler {
 
     @Override
     protected void execute(ExecutionContext context) {
-        Event event = context.getEvent();
+        var event = context.getEvent();
         if (!validateEvent(event)) {
             throw new BpmnError(ERROR, "Event is null or does not contain properties to repeat cycle.");
         }
-        PMCycle previousCycle = context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class);
+        var previousCycle = context.getVariable(FlowParameters.PM_CYCLE, PMCycle.class);
         if (previousCycle.getCreatedBy() == null || previousCycle.getTemplate() == null) {
             throw new BpmnError(ERROR, "Previous cycle invalid. Template or created by is null.");
         }
-        Map<String, Serializable> eventProperties = event.getEventProperties();
-        int left = (int) eventProperties.get(FlowParameters.PM_CYCLE_REPEATS_LEFT.name());
+        var eventProperties = event.getEventProperties();
+        var left = (int) eventProperties.get(FlowParameters.PM_CYCLE_REPEATS_LEFT.name());
         if (!needToRepeat(previousCycle, left)) {
             throw new BpmnError(ERROR, "Don't need to repeat cycle. It seems the same event sends again.");
         }
@@ -61,21 +59,21 @@ public class BuildNextCycleHandler extends CamundaAbstractFlowHandler {
     }
 
     private boolean needToRepeat(PMCycle previousCycle, int left) {
-        int existCyclesCount = getExistCyclesCount(previousCycle);
-        int max = getPmCycleMax(previousCycle);
+        var existCyclesCount = getExistCyclesCount(previousCycle);
+        var max = getPmCycleMax(previousCycle);
         return existCyclesCount <= max - left;
     }
 
     private int getExistCyclesCount(PMCycle previousCycle) {
-        RequestQuery requestQuery = new RequestQuery();
-        Condition condition1 = new Condition("entry-config-key", Condition.Operand.EQUALS, previousCycle.getEntryConfigKey());
-        Condition condition2 = new Condition("template-uuid", Condition.Operand.EQUALS, previousCycle.getTemplate().getUuid());
+        var requestQuery = new RequestQuery();
+        var condition1 = new Condition("entry-config-key", Condition.Operand.EQUALS, previousCycle.getEntryConfigKey());
+        var condition2 = new Condition("template-uuid", Condition.Operand.EQUALS, previousCycle.getTemplate().getUuid());
         requestQuery.setFilters(List.of(condition1, condition2));
         return pmCycleService.findAll(requestQuery, false).size();
     }
 
     private int getPmCycleMax(PMCycle previousCycle) {
-        int max = 0;
+        var max = 0;
         if (previousCycle.getMetadata() != null && previousCycle.getMetadata().getCycle() != null
                 && previousCycle.getMetadata().getCycle().getProperties() != null) {
             max = Integer.parseInt(previousCycle.getMetadata().getCycle().getProperties().getOrDefault(PMCycleElement.PM_CYCLE_MAX, "0"));
@@ -87,7 +85,7 @@ public class BuildNextCycleHandler extends CamundaAbstractFlowHandler {
         if (event == null) {
             return false;
         }
-        Map<String, Serializable> eventProperties = event.getEventProperties();
+        var eventProperties = event.getEventProperties();
         return eventProperties.containsKey(FlowParameters.PM_CYCLE_UUID.name())
                 && eventProperties.containsKey(FlowParameters.PM_CYCLE_REPEATS_LEFT.name());
     }

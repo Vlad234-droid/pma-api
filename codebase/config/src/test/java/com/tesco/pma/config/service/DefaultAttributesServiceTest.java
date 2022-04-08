@@ -32,7 +32,7 @@ class DefaultAttributesServiceTest {
             new DefaultAttributesServiceImpl(defaultAttributesDAO, profileService, reviewService, messages);
 
     @Test
-    void updateDefaultAttributesTest(){
+    void updateDefaultAttributesTest() {
 
         var colleagueId = UUID.randomUUID();
         var colleague = new Colleague();
@@ -72,10 +72,10 @@ class DefaultAttributesServiceTest {
         defaultAttributesService.updateDefaultAttributes(colleagueId);
 
         Mockito.verify(profileService, Mockito.times(1))
-                .createProfileAttributes(Mockito.eq(colleagueId), Mockito.argThat(list -> list.size()==4));
+                .createProfileAttributes(Mockito.eq(colleagueId), Mockito.argThat(list -> list.size() == 4));
     }
 
-    private DefaultAttribute createDefaultAttr(String name, DefaultAttributeCriteria criteria){
+    private DefaultAttribute createDefaultAttr(String name, DefaultAttributeCriteria criteria) {
         var defaultAttr = new DefaultAttribute();
         defaultAttr.setName(name);
         defaultAttr.setCategory(DefaultAttributeCategory.NOTIFICATION);

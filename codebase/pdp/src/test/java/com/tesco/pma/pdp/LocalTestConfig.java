@@ -19,9 +19,6 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 import java.util.Properties;
 
-import static com.tesco.pma.pdp.rest.PDPEndpointTest.PDP_TEMPLATE;
-import static com.tesco.pma.pdp.rest.PDPEndpointTest.STANDARD_PDP_FORM;
-
 @Profile("test")
 @Configuration
 @ComponentScan(basePackages = {"com.tesco.pma.pdp", "com.tesco.pma.configuration", "com.tesco.pma.error"})
@@ -34,6 +31,9 @@ import static com.tesco.pma.pdp.rest.PDPEndpointTest.STANDARD_PDP_FORM;
         OAuth2ClientAutoConfiguration.class
 })
 public class LocalTestConfig {
+
+    private static final String STANDARD_PDP_FORM = "pdp/forms/standard_pdp.form";
+    private static final String PDP_TEMPLATE = "pdp/templates/Personal Development Plan Template.pptx";
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer properties() throws Exception {

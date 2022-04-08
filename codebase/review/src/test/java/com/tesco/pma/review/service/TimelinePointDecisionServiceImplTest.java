@@ -65,13 +65,15 @@ class TimelinePointDecisionServiceImplTest {
         assertEquals("NF_PM_REVIEW_APPROVED", result.getSingleEntry());
     }
 
-    static Collection<PMTimelinePointStatus> getTimelinePointStatus(String dmnPath, String dmnId, VariableMap variables, DmnEngine dmnEngine) throws IOException {
+    static Collection<PMTimelinePointStatus> getTimelinePointStatus(String dmnPath, String dmnId,
+                                                                    VariableMap variables, DmnEngine dmnEngine) throws IOException {
         DmnDecisionTableResult result = getDmnDecisionRuleResults(dmnPath, dmnId, variables, dmnEngine);
 
         return toList(result.collectEntries(STATUS_VAR_KEY));
     }
 
-    static DmnDecisionTableResult getDmnDecisionRuleResults(String dmnPath, String dmnId, VariableMap variables, DmnEngine dmnEngine) throws IOException {
+    static DmnDecisionTableResult getDmnDecisionRuleResults(String dmnPath, String dmnId,
+                                                            VariableMap variables, DmnEngine dmnEngine) throws IOException {
         DmnDecision decision;
         try (InputStream inputStream = TimelinePointDecisionServiceImplTest.class.getClassLoader().getResourceAsStream(dmnPath)) {
             decision = dmnEngine.parseDecision(dmnId, inputStream);

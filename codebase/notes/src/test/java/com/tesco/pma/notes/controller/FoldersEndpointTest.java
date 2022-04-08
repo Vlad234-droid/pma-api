@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = FoldersEndpoint.class)
 @ContextConfiguration(classes = TestConfig.class)
-public class FoldersEndpointTest extends AbstractEndpointTest {
+class FoldersEndpointTest extends AbstractEndpointTest {
 
     private final UUID colleagueUuid = UUID.randomUUID();
 
@@ -49,7 +49,7 @@ public class FoldersEndpointTest extends AbstractEndpointTest {
     private NotesServiceImpl notesService;
 
     @Test
-    void create() throws Exception {
+    void create() throws Exception { //NOSONAR used MockMvc checks
 
         var ownerId = UUID.randomUUID();
         var folder = createFolder(UUID.randomUUID(), ownerId);
@@ -68,7 +68,7 @@ public class FoldersEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void update() throws Exception {
+    void update() throws Exception { //NOSONAR used MockMvc checks
 
         var ownerId = UUID.randomUUID();
         var folder = createFolder(UUID.randomUUID(), ownerId);
@@ -87,7 +87,7 @@ public class FoldersEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void updateNotFound() throws Exception {
+    void updateNotFound() throws Exception { //NOSONAR used MockMvc checks
 
         var ownerId = UUID.randomUUID();
         var folder = createFolder(UUID.randomUUID(), ownerId);
@@ -105,7 +105,7 @@ public class FoldersEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void findByColleagueUUID() throws Exception {
+    void findByColleagueUUID() throws Exception { //NOSONAR used MockMvc checks
 
         when(notesService.findFolderByOwner(colleagueUuid))
                 .thenReturn(new ArrayList<>());
@@ -161,7 +161,7 @@ public class FoldersEndpointTest extends AbstractEndpointTest {
     }
 
 
-    private Folder createFolder(UUID id, UUID ownerId){
+    private Folder createFolder(UUID id, UUID ownerId) {
         var folder = new Folder();
         folder.setId(id);
         folder.setOwnerColleagueUuid(ownerId);

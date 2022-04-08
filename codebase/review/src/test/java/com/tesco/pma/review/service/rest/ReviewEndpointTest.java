@@ -111,13 +111,13 @@ class ReviewEndpointTest extends AbstractEndpointTest {
     @Test
     void getReviewsFilesByColleagueWithLineManagerWithInsufficientAccess() throws Exception { //NOSONAR used MockMvc checks
         var colleagueUuid = UUID.randomUUID();
-        var currentUserUuid = UUID.randomUUID();
         var anotherUserUuid = UUID.randomUUID();
         var colleagueEntity = new ColleagueEntity();
         colleagueEntity.setManagerUuid(anotherUserUuid);
 
         when(mockProfileService.getColleague(colleagueUuid)).thenReturn(colleagueEntity);
         when(mockFileService.get(new RequestQuery(), false, colleagueUuid, true)).thenReturn(files(3));
+        var currentUserUuid = UUID.randomUUID();
 
         mvc.perform(get(REVIEWS_FILES_URL_TEMPLATE, colleagueUuid.toString()).with(colleague(currentUserUuid.toString())))
                 .andExpect(status().isForbidden());
@@ -144,8 +144,6 @@ class ReviewEndpointTest extends AbstractEndpointTest {
 
     @Test
     void uploadReviewFilesSuccess() throws Exception {
-        var multipartUploadMetadataMock = getUploadMetadataMultipartFile("test_metadata.json");
-        var multipartFileMock = getMultipartFileToUpload(CONTENT, PDF_FILE_NAME);
         var fileType = new FileType();
         fileType.setId(3);
         fileType.setCode("PDF");
@@ -153,6 +151,8 @@ class ReviewEndpointTest extends AbstractEndpointTest {
 
         var dataFile = buildFileData(FILE_UUID, PDF_FILE_NAME, 1, fileType);
         when(mockFileService.upload(any(), any(), any())).thenReturn(dataFile);
+        var multipartUploadMetadataMock = getUploadMetadataMultipartFile("test_metadata.json");
+        var multipartFileMock = getMultipartFileToUpload(CONTENT, PDF_FILE_NAME);
 
         final var result = performMultipartWithMetadata(colleague(COLLEAGUE_UUID_STR), multipartUploadMetadataMock, multipartFileMock,
                 status().isCreated(), REVIEWS_FILES_URL);
@@ -162,8 +162,6 @@ class ReviewEndpointTest extends AbstractEndpointTest {
 
     @Test
     void uploadReviewFilesUnsuccessWithInvalidType() throws Exception {
-        var multipartUploadMetadataMock = getUploadMetadataMultipartFile("test_metadata_invalid.json");
-        var multipartFileMock = getMultipartFileToUpload(CONTENT, "test.form");
         var fileUuid = UUID.randomUUID();
         var fileType = new FileType();
         fileType.setId(2);
@@ -172,6 +170,8 @@ class ReviewEndpointTest extends AbstractEndpointTest {
 
         var dataFile = buildFileData(fileUuid, "test.form", 1, fileType);
         when(mockFileService.upload(any(), any(), any())).thenReturn(dataFile);
+        var multipartUploadMetadataMock = getUploadMetadataMultipartFile("test_metadata_invalid.json");
+        var multipartFileMock = getMultipartFileToUpload(CONTENT, "test.form");
 
         final var result = performMultipartWithMetadata(colleague(COLLEAGUE_UUID_STR), multipartUploadMetadataMock, multipartFileMock,
                 status().isBadRequest(), REVIEWS_FILES_URL);
@@ -226,7 +226,6 @@ class ReviewEndpointTest extends AbstractEndpointTest {
 
     @Test
     void downloadUnsuccessWithLineManagerWithInsufficientAccess() throws Exception { //NOSONAR used MockMvc checks
-        var currentUserUuid = UUID.randomUUID();
         var colleagueEntity = new ColleagueEntity();
         var anotherUserUuid = UUID.randomUUID();
         colleagueEntity.setManagerUuid(anotherUserUuid);
@@ -239,6 +238,7 @@ class ReviewEndpointTest extends AbstractEndpointTest {
         when(mockProfileService.getColleague(CREATOR_ID)).thenReturn(colleagueEntity);
         when(mockFileService.get(FILE_UUID, true, CREATOR_ID))
                 .thenReturn(buildFileData(FILE_UUID, PDF_FILE_NAME, 1, fileType));
+        var currentUserUuid = UUID.randomUUID();
 
         performGetWith(colleague(currentUserUuid.toString()), status().isForbidden(),
                 APPLICATION_JSON, DOWNLOAD_REVIEW_FILES_URL, CREATOR_ID);

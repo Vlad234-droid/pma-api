@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DefaultAttributesDAOTest extends AbstractDAOTest {
+class DefaultAttributesDAOTest extends AbstractDAOTest {
 
 
     @Autowired
@@ -27,23 +27,23 @@ public class DefaultAttributesDAOTest extends AbstractDAOTest {
     }
 
     @Test
-    public void findByCriteriaAndCategoryTest() {
+    void findByCriteriaAndCategoryTest() {
         var attrs = defaultAttributesDAO.findByCriteriaAndCategory(DefaultAttributeCriteria.ALL,
                 DefaultAttributeCategory.NOTIFICATION);
 
-        assertTrue(attrs.size()>0);
+        assertTrue(attrs.size() > 0);
     }
 
     @Test
-    public void findByCriteriasAndCategoryTest() {
+    void findByCriteriasAndCategoryTest() {
         var criterias = List.of(DefaultAttributeCriteria.ALL, DefaultAttributeCriteria.WL_4_OR_5);
 
         var attrs = defaultAttributesDAO.findByCriteriasAndCategory(
                 criterias, DefaultAttributeCategory.NOTIFICATION);
 
-        assertTrue(attrs.size()>0);
+        assertTrue(attrs.size() > 0);
 
-        for(DefaultAttribute attribute : attrs){
+        for (DefaultAttribute attribute : attrs) {
             assertTrue(criterias.contains(attribute.getCriteria()));
         }
     }

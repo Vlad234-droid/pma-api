@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ActiveProfiles("test")
 @SpringBootTest(classes = {CamundaSpringBootTestConfig.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class ColleaguesEventsSendHandlerTest extends AbstractCamundaSpringBootTest {
+class ColleaguesEventsSendHandlerTest extends AbstractCamundaSpringBootTest {
 
     private static final String ENTRY_CONFIG_KEY = "some key";
 
@@ -51,7 +51,7 @@ public class ColleaguesEventsSendHandlerTest extends AbstractCamundaSpringBootTe
     private final TimelinePoint timelinePoint = new TimelinePoint();
 
     @BeforeEach
-    void init(){
+    void init() {
         pmCycle.setEntryConfigKey(ENTRY_CONFIG_KEY);
 
         var colleagueEntity = new ColleagueEntity();
@@ -62,8 +62,7 @@ public class ColleaguesEventsSendHandlerTest extends AbstractCamundaSpringBootTe
     }
 
     @Test
-    void test(){
-
+    void test() {
         var event = new EventSupport("TEST_EVENT");
         event.putProperty(FlowParameters.PM_CYCLE.name(), pmCycle);
         event.putProperty(FlowParameters.TIMELINE_POINT.name(), timelinePoint);
@@ -73,7 +72,7 @@ public class ColleaguesEventsSendHandlerTest extends AbstractCamundaSpringBootTe
                 .sendEvent(Mockito.argThat(this::checkEvent), Mockito.isNull(), Mockito.anyBoolean());
     }
 
-    private boolean checkEvent(Event event){
+    private boolean checkEvent(Event event) {
         assertEquals("NF_TEST_EVENT", event.getEventName());
         assertEquals(timelinePoint, event.getEventProperty(FlowParameters.TIMELINE_POINT.name()));
         return true;

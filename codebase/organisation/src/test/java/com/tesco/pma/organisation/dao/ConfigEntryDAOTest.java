@@ -19,18 +19,18 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ConfigEntryDAOTest extends AbstractDAOTest {
+class ConfigEntryDAOTest extends AbstractDAOTest {
 
     private static final String BASE_PATH_TO_DATA_SET = "com/tesco/pma/organisation/dao/";
     private static final UUID CE_UUID = UUID.fromString("dc55e38f-d4cc-4420-b20c-d9fcfed8ba40");
     private static final UUID CE_UUID_2 = UUID.fromString("a7a76484-bbe2-4b61-b6f6-ea260159a340");
     private static final UUID CE_UUID_3 = UUID.fromString("6bc4f35b-4fd2-4e95-986e-765e4fd9b037");
+    private static final UUID CE_UUID_4 = UUID.fromString("aedff942-2e19-44e0-9c23-bd8f152a937f");
     private static final String COMPOSITE_KEY_FILTER = "BU/WCE%/#v2";
 
     @Autowired
@@ -58,10 +58,8 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
     void findConfigEntryParentStructure() {
         final var result = dao.findConfigEntryParentStructure(CE_UUID_2);
 
-        assertThat(result)
-                .hasSize(2)
-                .element(0)
-                .returns(CE_UUID, ConfigEntry::getUuid);
+        assertEquals(2, result.size());
+        assertEquals(CE_UUID, result.get(0).getUuid());
     }
 
     @Test
@@ -69,11 +67,9 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
     void findConfigEntryChildStructure() {
         final var result = dao.findConfigEntryChildStructure(CE_UUID);
 
-        assertThat(result)
-                .hasSize(2)
-                .element(1)
-                .returns(CE_UUID_2, ConfigEntry::getUuid)
-                .returns(CE_UUID, ConfigEntry::getParentUuid);
+        assertEquals(2, result.size());
+        assertEquals(CE_UUID_2, result.get(1).getUuid());
+        assertEquals(CE_UUID, result.get(1).getParentUuid());
     }
 
     @Test
@@ -81,7 +77,7 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
     void create() {
         var result = dao.findConfigEntryChildStructure(CE_UUID);
 
-        assertThat(result).hasSize(2);
+        assertEquals(2, result.size());
 
         var ce = new ConfigEntry();
         var uuid = UUID.fromString("fe33d24d-1fd2-4e68-8dff-6220609a80df");
@@ -100,12 +96,10 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
 
         result = dao.findConfigEntryChildStructure(CE_UUID);
 
-        assertThat(result).hasSize(3)
-                .element(2)
-                .returns(uuid, ConfigEntry::getUuid)
-                .returns(4, ConfigEntry::getVersion)
-                .returns(CE_UUID_2, ConfigEntry::getParentUuid);
-
+        assertEquals(3, result.size());
+        assertEquals(uuid, result.get(2).getUuid());
+        assertEquals(4, result.get(2).getVersion());
+        assertEquals(CE_UUID_2, result.get(2).getParentUuid());
     }
 
     @Test
@@ -113,15 +107,10 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
     void findPublishedConfigEntriesByKey() {
         final var result = dao.findPublishedConfigEntriesByKey(COMPOSITE_KEY_FILTER);
 
-        assertThat(result)
-                .hasSize(2)
-                .element(0)
-                .returns(CE_UUID_3, ConfigEntry::getUuid);
-
-        assertThat(result)
-                .element(1)
-                .returns(UUID.fromString("aedff942-2e19-44e0-9c23-bd8f152a937f"), ConfigEntry::getUuid)
-                .returns(CE_UUID_3, ConfigEntry::getParentUuid);
+        assertEquals(2, result.size());
+        assertEquals(CE_UUID_3, result.get(0).getUuid());
+        assertEquals(CE_UUID_4, result.get(1).getUuid());
+        assertEquals(CE_UUID_3, result.get(1).getParentUuid());
     }
 
     @Test
@@ -130,11 +119,11 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
 
         var result = dao.findPublishedConfigEntriesByKey(COMPOSITE_KEY_FILTER);
 
-        assertThat(result).hasSize(2);
+        assertEquals(2, result.size());
 
         dao.unpublishConfigEntries(COMPOSITE_KEY_FILTER);
 
-        assertThat(dao.findPublishedConfigEntriesByKey(COMPOSITE_KEY_FILTER)).isEmpty();
+        assertTrue(dao.findPublishedConfigEntriesByKey(COMPOSITE_KEY_FILTER).isEmpty());
     }
 
     @Test
@@ -155,9 +144,8 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
 
         var result = dao.findPublishedConfigEntriesByKey(COMPOSITE_KEY_FILTER);
 
-        assertThat(result).hasSize(3)
-                .element(2)
-                .returns(CE_UUID_2, ConfigEntry::getUuid);
+        assertEquals(3, result.size());
+        assertEquals(CE_UUID_2, result.get(2).getUuid());
     }
 
     @Test
@@ -177,7 +165,7 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
 
         var result = dao.findAllUnpublishedRootEntries();
 
-        assertThat(result).hasSize(3);
+        assertEquals(3, result.size());
 
         var uuids = result.stream().map(ConfigEntry::getUuid).collect(Collectors.toSet());
 
@@ -192,8 +180,8 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
 
         var result = dao.findAllPublishedRootEntries();
 
-        assertThat(result).singleElement()
-                .returns(CE_UUID_3, ConfigEntry::getUuid);
+        assertEquals(1, result.size());
+        assertEquals(CE_UUID_3, result.get(0).getUuid());
     }
 
     @Test
@@ -201,15 +189,13 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
     void findPublishedConfigEntryChildStructure() {
         final var unpublishedResult = dao.findPublishedConfigEntryChildStructure(CE_UUID);
 
-        assertThat(unpublishedResult).isEmpty();
+        assertTrue(unpublishedResult.isEmpty());
 
         final var result = dao.findPublishedConfigEntryChildStructure(CE_UUID_3);
 
-        assertThat(result)
-                .hasSize(2)
-                .element(1)
-                .returns(UUID.fromString("aedff942-2e19-44e0-9c23-bd8f152a937f"), ConfigEntry::getUuid)
-                .returns(CE_UUID_3, ConfigEntry::getParentUuid);
+        assertEquals(2, result.size());
+        assertEquals(CE_UUID_4, result.get(1).getUuid());
+        assertEquals(CE_UUID_3, result.get(1).getParentUuid());
     }
 
     @Test
@@ -217,15 +203,11 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
     void findConfigEntriesByKey() {
         final var result = dao.findConfigEntriesByKey("BU/CE1%/#v3");
 
-        assertThat(result)
-                .hasSize(2)
-                .element(0)
-                .returns(CE_UUID, ConfigEntry::getUuid);
+        assertEquals(2, result.size());
+        assertEquals(CE_UUID, result.get(0).getUuid());
 
-        assertThat(result)
-                .element(1)
-                .returns(CE_UUID_2, ConfigEntry::getUuid)
-                .returns(CE_UUID, ConfigEntry::getParentUuid);
+        assertEquals(CE_UUID_2, result.get(1).getUuid());
+        assertEquals(CE_UUID, result.get(1).getParentUuid());
     }
 
     @Test
@@ -233,9 +215,7 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
     void deleteConfigEntry() {
         dao.deleteConfigEntry(CE_UUID);
 
-        assertThat(dao.findConfigEntryChildStructure(CE_UUID))
-                .isEmpty();
-
+        assertTrue(dao.findConfigEntryChildStructure(CE_UUID).isEmpty());
     }
 
     @Test
@@ -247,7 +227,6 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
         var exists = dao.isColleagueExistsForCompositeKey(colleagueUuid, key);
 
         assertTrue(exists);
-
     }
 
     @ParameterizedTest
@@ -263,7 +242,6 @@ public class ConfigEntryDAOTest extends AbstractDAOTest {
                 .collect(Collectors.toSet());
 
         assertTrue(colleagueUuids.containsAll(uuids));
-
     }
 
     private static Stream<Arguments> provideArgsForGettingColleagues() { //NOPMD
