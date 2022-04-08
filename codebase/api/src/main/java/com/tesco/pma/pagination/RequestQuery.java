@@ -15,15 +15,19 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
+import static com.tesco.pma.pagination.Condition.Operand.CONTAINS;
+import static com.tesco.pma.pagination.Condition.Operand.LIKE;
+import static com.tesco.pma.pagination.Condition.Operand.NOT_CONTAINS;
+
 /**
  * Class is used to describe next JSON object:
  * {
- *   "_sort": "created_at:desc",
- *   "_publicationState": "preview",
- *   "published_at_null": "false",
- *   "_start": "5",
- *   "_limit": "20",
- *   "_search": "String",
+ * "_sort": "created_at:desc",
+ * "_publicationState": "preview",
+ * "published_at_null": "false",
+ * "_start": "5",
+ * "_limit": "20",
+ * "_search": "String",
  * }
  * _where section wil be ignored, since we don't need to use OR operand
  */
@@ -102,7 +106,7 @@ public class RequestQuery {
 
         List<Condition> result = new ArrayList<>();
         for (Condition condition : this.getFilters()) {
-            if (Condition.Operand.LIKE.equals(condition.getOperand())
+            if (List.of(LIKE, CONTAINS, NOT_CONTAINS).contains(condition.getOperand())
                     && condition.getValue() instanceof String) {
                 var value = ((String) condition.getValue()).replace("'", "''");
                 result.add(new Condition(condition.getProperty(), condition.getOperand(), value));

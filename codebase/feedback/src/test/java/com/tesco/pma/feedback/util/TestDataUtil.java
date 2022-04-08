@@ -18,6 +18,7 @@ public final class TestDataUtil {
     public static final String FEEDBACK_ITEM_CODE = "code";
     public static final String FEEDBACK_ITEM_CONTENT = "Content";
     public static final Integer FEEDBACKS_COUNT = 5;
+    public static final String FIRST_NAME = "O'test";
 
     private TestDataUtil() {
     }

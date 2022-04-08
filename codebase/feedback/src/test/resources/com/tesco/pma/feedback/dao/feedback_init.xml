@@ -2,6 +2,7 @@
     <colleague
             uuid="be245be1-1f43-4d5f-85dc-db6e2cce0c2a"
             country_code="GB"
+            first_name="O'test"
         />
     <colleague
             uuid="bc7e9e13-4e6a-46c2-bc67-af03fc3afd2e"
