@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.util.concurrent.TimeUnit;
 
+import static com.tesco.pma.cep.cfapi.v2.service.TestDataUtils.buildRandomUUID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.timeout;
@@ -37,6 +38,7 @@ class ColleagueChangesEndpointTests extends AbstractEndpointTest {
 
     private static final String REQUEST_CEP_HEADER_FEED_ID = "FeedId";
     private static final String REQUEST_CEP_FEED_ID = "capi-colleagues-v2";
+    private static final String REQUEST_CEP_HEADER_TRACE_ID = "TraceId";
 
     private static final String JOINER_EVENT_TYPE_JSON = "request_cep_joiner_event_type.json";
     private static final String LEAVER_EVENT_TYPE_JSON = "request_cep_leaver_event_type.json";
@@ -137,6 +139,7 @@ class ColleagueChangesEndpointTests extends AbstractEndpointTest {
         mvc.perform(post(POST_EVENT_PATH)
                         .with(jwtWithSubject(TEST_CEP_SUBJECT))
                         .header(REQUEST_CEP_HEADER_FEED_ID, REQUEST_CEP_FEED_ID)
+                        .header(REQUEST_CEP_HEADER_TRACE_ID, buildRandomUUID())
                         .content("{\"colleagueUUID\":\"77778888-9999-0000-1111-222222222222\"}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -145,6 +148,7 @@ class ColleagueChangesEndpointTests extends AbstractEndpointTest {
         mvc.perform(post(POST_EVENT_PATH)
                         .with(jwtWithSubject(TEST_CEP_SUBJECT))
                         .header(REQUEST_CEP_HEADER_FEED_ID, REQUEST_CEP_FEED_ID)
+                        .header(REQUEST_CEP_HEADER_TRACE_ID, buildRandomUUID())
                         .content("{}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -169,6 +173,7 @@ class ColleagueChangesEndpointTests extends AbstractEndpointTest {
     void processColleagueChangeEventForbiddenWithSubjectNotMatch() throws Exception {
         mvc.perform(post(POST_EVENT_PATH).with(jwtWithSubject("not-cep-subject"))
                         .header(REQUEST_CEP_HEADER_FEED_ID, REQUEST_CEP_FEED_ID)
+                        .header(REQUEST_CEP_HEADER_TRACE_ID, buildRandomUUID())
                         .content(json.from(JOINER_EVENT_TYPE_JSON).getJson())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -181,6 +186,7 @@ class ColleagueChangesEndpointTests extends AbstractEndpointTest {
         mvc.perform(post(POST_EVENT_PATH)
                         .with(jwtWithSubject(TEST_CEP_SUBJECT))
                         .header(REQUEST_CEP_HEADER_FEED_ID, feedId)
+                        .header(REQUEST_CEP_HEADER_TRACE_ID, buildRandomUUID())
                         .content(json.from(jsonSource).getJson())
                         .contentType(APPLICATION_JSON)
                         .accept(APPLICATION_JSON))

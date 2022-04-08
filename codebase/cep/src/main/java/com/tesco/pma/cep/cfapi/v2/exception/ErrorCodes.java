@@ -5,6 +5,11 @@ import com.tesco.pma.error.ErrorCodeAware;
 public enum ErrorCodes implements ErrorCodeAware {
 
     /**
+     * CEP event payload error
+     */
+    CEP_EVENT_PAYLOAD_ERROR,
+
+    /**
      * Colleague not found
      */
     COLLEAGUE_NOT_FOUND,

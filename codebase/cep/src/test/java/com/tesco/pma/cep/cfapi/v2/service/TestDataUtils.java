@@ -55,4 +55,8 @@ public class TestDataUtils {
         return account;
     }
 
+    public static String buildRandomUUID() {
+        return UUID.randomUUID().toString();
+    }
+
 }
