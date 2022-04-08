@@ -47,6 +47,7 @@
             <camunda:list>
               <camunda:value>ACTIVE</camunda:value>
               <camunda:value>STARTED</camunda:value>
+              <camunda:value>REGISTERED</camunda:value>
             </camunda:list>
           </camunda:inputParameter>
         </camunda:inputOutput>
