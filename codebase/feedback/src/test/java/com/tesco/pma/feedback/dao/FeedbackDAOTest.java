@@ -5,6 +5,7 @@ import com.tesco.pma.api.DictionaryFilter;
 import com.tesco.pma.dao.AbstractDAOTest;
 import com.tesco.pma.feedback.api.FeedbackStatus;
 import com.tesco.pma.feedback.api.FeedbackTargetType;
+import com.tesco.pma.pagination.Condition;
 import com.tesco.pma.pagination.RequestQuery;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,9 +22,11 @@ import static com.tesco.pma.feedback.util.TestDataUtil.COLLEAGUE_UUID;
 import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACK_ITEM_UUID;
 import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACK_UUID_LAST;
 import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACK_UUID_UNREAD;
+import static com.tesco.pma.feedback.util.TestDataUtil.FIRST_NAME;
 import static com.tesco.pma.feedback.util.TestDataUtil.TARGET_COLLEAGUE_UUID;
 import static com.tesco.pma.feedback.util.TestDataUtil.buildFeedback;
 import static com.tesco.pma.feedback.util.TestDataUtil.buildFeedbackItem;
+import static com.tesco.pma.pagination.Condition.Operand.CONTAINS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -46,13 +50,15 @@ class FeedbackDAOTest extends AbstractDAOTest {
     void findAllFeedbacksWithItems() {
         //given
         var requestQuery = new RequestQuery();
+        requestQuery.setFilters(List.of(new Condition("colleague-first-name", CONTAINS, "O'tes")));
 
         //when
-        var result = underTest.findAll(requestQuery);
+        var result = underTest.findAll(requestQuery.toDAO());
 
         //then
-        assertEquals(6, result.size());
+        assertEquals(3, result.size());
         assertEquals(FEEDBACK_UUID_LAST, result.get(0).getUuid());
+        assertEquals(FIRST_NAME, result.get(0).getColleagueProfile().getColleague().getProfile().getFirstName());
         assertEquals(3, result.get(0).getFeedbackItems().size());
     }
 

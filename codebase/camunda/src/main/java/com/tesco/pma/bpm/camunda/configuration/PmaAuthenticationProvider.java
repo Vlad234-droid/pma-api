@@ -10,7 +10,11 @@ import org.springframework.security.oauth2.server.resource.authentication.Bearer
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class PmaAuthenticationProvider implements AuthenticationProvider {
@@ -18,6 +22,7 @@ public class PmaAuthenticationProvider implements AuthenticationProvider {
     private static final String ROLE_PREFIX = "ROLE_";
     private static final String CAMUNDA_GROUP_ID_PREFIX = "tesco-";
 
+    @Override
     public AuthenticationResult extractAuthenticatedUser(HttpServletRequest request, ProcessEngine engine) {
         Principal principal = request.getUserPrincipal();
 
@@ -33,7 +38,7 @@ public class PmaAuthenticationProvider implements AuthenticationProvider {
         AuthenticationResult authenticationResult = new AuthenticationResult(name, true);
 
         if (principal instanceof BearerTokenAuthentication) {
-            List<String> groupIds = new ArrayList<String>();
+            List<String> groupIds = new ArrayList<>();
             List<String> tenantIds = List.of();
             final Collection<GrantedAuthority> authorities = new LinkedHashSet<>(((Authentication) principal).getAuthorities());
             for (GrantedAuthority authority : authorities) {
@@ -56,6 +61,7 @@ public class PmaAuthenticationProvider implements AuthenticationProvider {
                 .collect(Collectors.joining("-"));
     }
 
+    @Override
     public void augmentResponseByAuthenticationChallenge(HttpServletResponse response, ProcessEngine engine) {
         response.setHeader("WWW-Authenticate", "Basic realm=\"" + engine.getName() + "\"");
     }
