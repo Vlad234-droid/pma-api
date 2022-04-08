@@ -23,7 +23,7 @@ public class CamundaSecurityConfig {
     /**
      * Register the servlet filter for the Web Apps (Tasklist, Cockpit, Admin)
      *
-     * @return
+     * @return Filter registration bean
      */
     @Bean
     @ConditionalOnProperty(name = "tesco.application.security.enabled", havingValue = "true", matchIfMissing = true)
@@ -33,7 +33,8 @@ public class CamundaSecurityConfig {
         filterRegistration.setFilter(new ContainerBasedAuthenticationFilter());
         filterRegistration.setInitParameters(Collections.singletonMap(AUTHENTICATION_PROVIDER_PARAM,
                 PmaAuthenticationProvider.class.getCanonicalName()));
-        filterRegistration.setOrder(WEB_APPS_FILTER_PRECEDENCE); // make sure the filter is registered after the Spring Security Filter Chain
+        /* Make sure the filter is registered after the Spring Security Filter Chain */
+        filterRegistration.setOrder(WEB_APPS_FILTER_PRECEDENCE);
         filterRegistration.addUrlPatterns(WEB_APPS_URL_PATTERNS);
         return filterRegistration;
     }
@@ -41,7 +42,7 @@ public class CamundaSecurityConfig {
     /**
      * Register the servlet filter for the REST API
      *
-     * @return
+     * @return Filter registration bean
      */
     @Bean
     @ConditionalOnProperty(name = "tesco.application.security.enabled", havingValue = "true", matchIfMissing = true)
@@ -51,7 +52,8 @@ public class CamundaSecurityConfig {
         filterRegistration.setFilter(new ProcessEngineAuthenticationFilter());
         filterRegistration.setInitParameters(Collections.singletonMap(AUTHENTICATION_PROVIDER_PARAM,
                 PmaAuthenticationProvider.class.getCanonicalName()));
-        filterRegistration.setOrder(REST_API_FILTER_PRECEDENCE); // make sure the filter is registered after the Spring Security Filter Chain
+        /* Make sure the filter is registered after the Spring Security Filter Chain */
+        filterRegistration.setOrder(REST_API_FILTER_PRECEDENCE);
         filterRegistration.addUrlPatterns(REST_API_URL_PATTERNS);
         return filterRegistration;
     }
