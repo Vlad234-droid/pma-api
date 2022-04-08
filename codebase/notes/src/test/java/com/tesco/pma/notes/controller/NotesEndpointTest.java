@@ -215,7 +215,7 @@ class NotesEndpointTest extends AbstractEndpointTest {
 
     }
 
-    private Note createNote(UUID id, UUID folderId, UUID ownerId){
+    private Note createNote(UUID id, UUID folderId, UUID ownerId) {
         var note = new Note();
         note.setId(id);
         note.setFolderUuid(folderId);
@@ -227,7 +227,7 @@ class NotesEndpointTest extends AbstractEndpointTest {
         return note;
     }
 
-    private Folder createFolder(UUID id, UUID ownerId){
+    private Folder createFolder(UUID id, UUID ownerId) {
         var folder = new Folder();
         folder.setId(id);
         folder.setOwnerColleagueUuid(ownerId);

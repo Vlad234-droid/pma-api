@@ -41,9 +41,9 @@ class DefaultAttributesDAOTest extends AbstractDAOTest {
         var attrs = defaultAttributesDAO.findByCriteriasAndCategory(
                 criterias, DefaultAttributeCategory.NOTIFICATION);
 
-        assertTrue(attrs.size()>0);
+        assertTrue(attrs.size() > 0);
 
-        for(DefaultAttribute attribute : attrs){
+        for (DefaultAttribute attribute : attrs) {
             assertTrue(criterias.contains(attribute.getCriteria()));
         }
     }

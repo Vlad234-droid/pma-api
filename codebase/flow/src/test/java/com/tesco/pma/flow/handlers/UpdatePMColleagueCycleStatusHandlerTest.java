@@ -33,8 +33,8 @@ class UpdatePMColleagueCycleStatusHandlerTest {
 
         handler.execute(executionContext);
 
-        Mockito.verify(colleagueCycleService).
-                changeStatusForColleagueAndCycle(colleagueUuid, pmCycle.getUuid(),
+        Mockito.verify(colleagueCycleService)
+                .changeStatusForColleagueAndCycle(colleagueUuid, pmCycle.getUuid(),
                         DictionaryFilter.includeFilter(PMCycleStatus.ACTIVE, PMCycleStatus.REGISTERED, PMCycleStatus.STARTED),
                         PMCycleStatus.INACTIVE);
     }

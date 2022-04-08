@@ -49,14 +49,13 @@ class PMColleagueCycleHandlerTest {
     @Test
     void shouldSaveColleagueCycle() throws Exception {
         //given
+        List<ColleagueEntity> colleagues = Collections.singletonList(new ColleagueEntity());
+        DictionaryFilter<PMCycleStatus> statusFilter = DictionaryFilter.excludeFilter(PMCycleStatus.ACTIVE);
+        Mockito.when(configEntryService.findColleaguesByCompositeKey(KEY, statusFilter)).thenReturn(colleagues);
         var pmCycle = buildPmCycle();
         var ec = FlowTestUtil.executionBuilder()
                 .withVariable(FlowParameters.PM_CYCLE, pmCycle)
                 .build();
-        List<ColleagueEntity> colleagues = Collections.singletonList(new ColleagueEntity());
-        DictionaryFilter<PMCycleStatus> statusFilter = DictionaryFilter.excludeFilter(PMCycleStatus.ACTIVE);
-        Mockito.when(configEntryService.findColleaguesByCompositeKey(KEY, statusFilter)).thenReturn(colleagues);
-
         var pmcr = new CompositePMCycleResponse();
         pmcr.setCycle(pmCycle);
         Mockito.when(pmCycleService.get(UUID, false)).thenReturn(pmcr);
@@ -71,6 +70,12 @@ class PMColleagueCycleHandlerTest {
     @Test
     void shouldSaveHiringColleagueCycle() throws Exception {
         //given
+        var colleagueEntity = new ColleagueEntity();
+        var hiringDate = LocalDate.now();
+        colleagueEntity.setHireDate(hiringDate);
+        List<ColleagueEntity> colleagues = Collections.singletonList(colleagueEntity);
+        DictionaryFilter<PMCycleStatus> statusFilter = DictionaryFilter.excludeFilter(PMCycleStatus.ACTIVE);
+        Mockito.when(configEntryService.findColleaguesByCompositeKey(KEY, statusFilter)).thenReturn(colleagues);
         var pmCycle = PMCycle.builder()
                 .uuid(UUID)
                 .type(PMCycleType.HIRING)
@@ -81,13 +86,6 @@ class PMColleagueCycleHandlerTest {
         var ec = FlowTestUtil.executionBuilder()
                 .withVariable(FlowParameters.PM_CYCLE, pmCycle)
                 .build();
-        ColleagueEntity colleagueEntity = new ColleagueEntity();
-        LocalDate hiringDate = LocalDate.now();
-        colleagueEntity.setHireDate(hiringDate);
-        List<ColleagueEntity> colleagues = Collections.singletonList(colleagueEntity);
-        DictionaryFilter<PMCycleStatus> statusFilter = DictionaryFilter.excludeFilter(PMCycleStatus.ACTIVE);
-        Mockito.when(configEntryService.findColleaguesByCompositeKey(KEY, statusFilter)).thenReturn(colleagues);
-
         var pmcr = new CompositePMCycleResponse();
         pmcr.setCycle(pmCycle);
         Mockito.when(pmCycleService.get(UUID, false)).thenReturn(pmcr);
@@ -98,7 +96,8 @@ class PMColleagueCycleHandlerTest {
         //then
         Mockito.verify(pmColleagueCycleService, Mockito.times(1))
                 .saveColleagueCycles(ArgumentMatchers.argThat((List<PMColleagueCycle> pmColleagueCycles) ->
-                        pmColleagueCycles.get(0).getStartTime().equals(colleagueEntity.getHireDate().atStartOfDay().toInstant(ZoneOffset.UTC))));
+                        pmColleagueCycles.get(0).getStartTime().equals(colleagueEntity.getHireDate().atStartOfDay()
+                                .toInstant(ZoneOffset.UTC))));
     }
 
     private PMCycle buildPmCycle() {

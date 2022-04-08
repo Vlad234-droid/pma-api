@@ -84,7 +84,8 @@ class PDPEndpointTest extends AbstractEndpointTest {
 
     @Test
     void createGoalsUnsuccessIfBadRequest() throws Exception { //NOSONAR used MockMvc checks
-        doThrow(DatabaseConstraintViolationException.class).when(pdpService).createGoals(COLLEAGUE_UUID, buildGoals(GOAL_UUID_1, GOAL_UUID_2));
+        doThrow(DatabaseConstraintViolationException.class).when(pdpService).createGoals(COLLEAGUE_UUID,
+                buildGoals(GOAL_UUID_1, GOAL_UUID_2));
 
         performPost(PDP_GOALS_UPDATE_REQUEST_JSON_FILE_NAME, status().isBadRequest(), PDP_GOALS_URL);
     }
@@ -108,7 +109,8 @@ class PDPEndpointTest extends AbstractEndpointTest {
 
     @Test
     void updateGoalsUnsuccessIfGoalIfBadRequest() throws Exception { //NOSONAR used MockMvc checks
-        doThrow(DatabaseConstraintViolationException.class).when(pdpService).updateGoals(COLLEAGUE_UUID, buildGoals(GOAL_UUID_1, GOAL_UUID_2));
+        doThrow(DatabaseConstraintViolationException.class).when(pdpService).updateGoals(COLLEAGUE_UUID,
+                buildGoals(GOAL_UUID_1, GOAL_UUID_2));
 
         performPut(PDP_GOALS_UPDATE_REQUEST_JSON_FILE_NAME, status().isBadRequest(), PDP_GOALS_URL);
     }

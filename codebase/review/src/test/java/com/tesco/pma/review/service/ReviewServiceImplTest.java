@@ -76,8 +76,8 @@ class ReviewServiceImplTest {
     private static final UUID COLLEAGUE_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0011");
     private static final UUID CURRENT_USER_UUID = UUID.fromString("ddb9ab0b-f50f-4442-8900-b03777ee0014");
 
-    final static String REVIEW_NOT_FOUND_MESSAGE =
-            "Review not found for: {allowedStatuses=[DRAFT, DECLINED, APPROVED], number=1, operation=DELETE, tlPointUuid=ddb9ab0b-f50f-4442-8900-b03777ee0010}";
+    static final String REVIEW_NOT_FOUND_MESSAGE = "Review not found for: {allowedStatuses=[DRAFT, DECLINED, APPROVED], "
+            + "number=1, operation=DELETE, tlPointUuid=ddb9ab0b-f50f-4442-8900-b03777ee0010}";
 
     @Autowired
     private NamedMessageSourceAccessor messages;

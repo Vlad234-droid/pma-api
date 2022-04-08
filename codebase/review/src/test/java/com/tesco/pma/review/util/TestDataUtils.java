@@ -26,7 +26,7 @@ public class TestDataUtils {
                 .collect(toList());
     }
 
-    static private File file(int index) {
+    private static File file(int index) {
         File file = RANDOM.nextObject(File.class);
         file.setFileName("fileName" + index);
         file.setPath("path" + index);

@@ -41,7 +41,7 @@ class ReviewNotificationsDmnTest {
                 .createDefaultDmnEngineConfiguration()
                 .buildEngine();
 
-        try(InputStream inputStream = getClass().getClassLoader().getResourceAsStream(PATH)) {
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(PATH)) {
             decision = dmnEngine.parseDecision(DMN_ID, inputStream);
         }
 
@@ -51,7 +51,6 @@ class ReviewNotificationsDmnTest {
 
     @Test
     void sendTest() {
-
         var attrName = "Attr name";
         var colleagueProfile = createColleagueProfile(null, WorkLevel.WL1, Map.of(attrName, "true"));
 
@@ -69,8 +68,6 @@ class ReviewNotificationsDmnTest {
 
     @Test
     void sendTestWhenAttrNotExist() {
-        var colleagueProfile = createColleagueProfile(null, WorkLevel.WL1, Map.of("Some attr name", "false"));
-
         var timelinePoint = new TimelinePoint();
         timelinePoint.setCode("MYR");
 
@@ -79,6 +76,7 @@ class ReviewNotificationsDmnTest {
         variables.putValue(FlowParameters.TIMELINE_POINT.name(), timelinePoint);
         variables.putValue(FlowParameters.IS_MANAGER.name(), true);
         variables.putValue(FlowParameters.PROFILE_ATTRIBUTE_NAME.name(), "Attr name");
+        var colleagueProfile = createColleagueProfile(null, WorkLevel.WL1, Map.of("Some attr name", "false"));
         variables.putValue(FlowParameters.COLLEAGUE_PROFILE.name(), colleagueProfile);
 
         var result = dmnEngine.evaluateDecisionTable(decision, (VariableMap) variables);
@@ -88,14 +86,12 @@ class ReviewNotificationsDmnTest {
 
     @Test
     void sendTestWhenAttrsNull() {
-
-        var colleagueProfile = new ColleagueProfile();
-
         var variables = new VariableMapImpl();
         variables.putValue(FlowParameters.EVENT_NAME.name(), NF_PM_REVIEW_SUBMITTED);
         variables.putValue(FlowParameters.TIMELINE_POINT.name(), timelinePoint);
         variables.putValue(FlowParameters.IS_MANAGER.name(), true);
         variables.putValue(FlowParameters.PROFILE_ATTRIBUTE_NAME.name(), "Attr name");
+        var colleagueProfile = new ColleagueProfile();
         variables.putValue(FlowParameters.COLLEAGUE_PROFILE.name(), colleagueProfile);
         variables.putValue(FlowParameters.COLLEAGUE_WORK_LEVEL.name(), WorkLevel.WL1.name());
 
@@ -104,7 +100,7 @@ class ReviewNotificationsDmnTest {
         assertTrue((Boolean) result.getFirstResult().getEntry(FlowParameters.SEND.name()));
     }
 
-    private ColleagueProfile createColleagueProfile(UUID colleagueUUID, WorkLevel wl, Map<String, String> attrs){
+    private ColleagueProfile createColleagueProfile(UUID colleagueUUID, WorkLevel wl, Map<String, String> attrs) {
         var wr = new WorkRelationship();
         wr.setWorkLevel(wl);
 

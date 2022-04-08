@@ -181,7 +181,7 @@ class ExcelReportUtilsTest {
 
         var rowCellsIterator = headerRow.cellIterator();
         var cellIndex = 0;
-        while(rowCellsIterator.hasNext()) {
+        while (rowCellsIterator.hasNext()) {
             assertEquals(columnMetadata.get(cellIndex++).getName(), rowCellsIterator.next().getStringCellValue());
         }
     }
@@ -191,7 +191,7 @@ class ExcelReportUtilsTest {
 
         var rowCellsIterator = row.cellIterator();
         var cellIndex = 0;
-        while(rowCellsIterator.hasNext()) {
+        while (rowCellsIterator.hasNext()) {
             Object cellValue = null;
             if (STRING == columnMetadata.get(cellIndex).getType()) {
                 cellValue = rowCellsIterator.next().getStringCellValue();
@@ -219,6 +219,16 @@ class ExcelReportUtilsTest {
         strings.add(data.getJobTitle());
         strings.add(data.getLineManager());
         strings.add(data.getObjectiveNumber());
+
+        return strings;
+    }
+
+    private List<Object> toList(StatsData data) {
+        var strings = new ArrayList<>();
+        strings.add(data.getColleaguesCount());
+        strings.add(data.getObjectivesSubmittedPercentage());
+        strings.add(data.getObjectivesApprovedPercentage());
+        strings.add(data.getNewToBusinessCount());
 
         return strings;
     }
@@ -270,16 +280,6 @@ class ExcelReportUtilsTest {
         return reportData.stream()
                 .map(this::toList)
                 .collect(Collectors.toList());
-    }
-
-    private List<Object> toList(StatsData data) {
-        var strings = new ArrayList<>();
-        strings.add(data.getColleaguesCount());
-        strings.add(data.getObjectivesSubmittedPercentage());
-        strings.add(data.getObjectivesApprovedPercentage());
-        strings.add(data.getNewToBusinessCount());
-
-        return strings;
     }
 
     private StatsData getStatsData() {

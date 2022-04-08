@@ -150,7 +150,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void findUserByAuthenticationAuthenticationNameNotUUIDReturnsEmpty() {
+    void findUserByAuthenticationAuthenticationNameNotUuidReturnsEmpty() {
         final var auth = new TestingAuthenticationToken("not-uuid", CREDENTIALS);
 
         final var res = instance.findUserByAuthentication(auth);

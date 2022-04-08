@@ -29,15 +29,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest(classes = {JacksonAutoConfiguration.class, CamundaSpringBootTestConfig.class})
 class HelpServiceTest extends AbstractCamundaSpringBootTest {
     private static final String KEY_SYSTEM_GUIDANCE_AND_FAQS = "system-guidance-and-faqs";
-    private static final String OUTPUT_SYSTEM_GUIDANCE_AND_FAQS_PEOPLEDATAINTS = "https://tesco.sharepoint.com/:u:/r/sites/" +
-            "TescoSourcingPeopleTeamSite/SitePages/System-Guides,-Learning-and-Help.aspx?csf=1&web=1&e=HUY4gs";
-    private static final String OUTPUT_SYSTEM_GUIDANCE_AND_FAQS_UK_HOSPITALITY = "https://help.ourtesco.com/hc/en-us/sections/" +
-            "4419952578962-System-Guidance-and-FAQs";
-    private static final String OUTPUT_SYSTEM_GUIDANCE_AND_FAQS_IE = "https://colleague-help.ourtesco.com/hc/en-us/articles/" +
-            "4417350843540-System-guides-learning-and-help";
+    private static final String OUTPUT_SYSTEM_GUIDANCE_AND_FAQS_PEOPLEDATAINTS = "https://tesco.sharepoint.com/:u:/r/sites/"
+            + "TescoSourcingPeopleTeamSite/SitePages/System-Guides,-Learning-and-Help.aspx?csf=1&web=1&e=HUY4gs";
+    private static final String OUTPUT_SYSTEM_GUIDANCE_AND_FAQS_UK_HOSPITALITY = "https://help.ourtesco.com/hc/en-us/sections/"
+            + "4419952578962-System-Guidance-and-FAQs";
+    private static final String OUTPUT_SYSTEM_GUIDANCE_AND_FAQS_IE = "https://colleague-help.ourtesco.com/hc/en-us/articles/"
+            + "4417350843540-System-guides-learning-and-help";
     private static final String OUTPUT_SYSTEM_GUIDANCE_AND_FAQS_IN = "https://view.pagetiger.com/Your-ContributionBLR";
-    private static final String OUTPUT_SYSTEM_GUIDANCE_AND_FAQS_GB = "https://colleague-help.ourtesco.com/hc/en-us/articles/" +
-            "4417358220820-System-guides-learning-and-help";
+    private static final String OUTPUT_SYSTEM_GUIDANCE_AND_FAQS_GB = "https://colleague-help.ourtesco.com/hc/en-us/articles/"
+            + "4417358220820-System-guides-learning-and-help";
 
     private static final String IAM_SOURCE_PEOPLEDATAINTS = "PeopleDataINTS";
     private static final String IAM_SOURCE_UK_HOSPITALITY = "UK Hospitality";
@@ -94,7 +94,7 @@ class HelpServiceTest extends AbstractCamundaSpringBootTest {
         assertEquals(content.getUuid(), result.get("system-guidance-and-faqs").get(0).getUuid());
     }
 
-    private ContentEntry createContentEntry(String key){
+    private ContentEntry createContentEntry(String key) {
         var content = new ContentEntry();
         content.setUuid(UUID.randomUUID());
         content.setKey(key);

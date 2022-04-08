@@ -38,10 +38,10 @@ class ReviewReportingServiceImplTest {
     private static final String LINE_MANAGER_UUID = "10000000-0000-0000-0000-000000000002";
     private static final Integer YEAR = 2021;
 
-    private static final String REPORT_NOT_FOUND_MESSAGE = "Report not found for: {" +
-            QUERY_PARAMS + "=RequestQuery(offset=null, limit=null, sort=[], filters=[" +
-            "Condition(property=year, operand=" + EQUALS + ", value=" + YEAR + "), " +
-            "Condition(property=statuses, operand=" + IN + ", value=[" + APPROVED + "])], groups=[], search=null)}";
+    private static final String REPORT_NOT_FOUND_MESSAGE = "Report not found for: {"
+            + QUERY_PARAMS + "=RequestQuery(offset=null, limit=null, sort=[], filters=["
+            + "Condition(property=year, operand=" + EQUALS + ", value=" + YEAR + "), "
+            + "Condition(property=statuses, operand=" + IN + ", value=[" + APPROVED + "])], groups=[], search=null)}";
 
     @Autowired
     private NamedMessageSourceAccessor messageSourceAccessor;
