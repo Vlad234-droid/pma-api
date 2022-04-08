@@ -332,3 +332,15 @@ camunda:
                                            com/tesco/pma/flow/review/tl_point_allowed_prev_statuses.dmn,
                                            com/tesco/pma/flow/review/tl_point_status_to_event.dmn
     deployment-resource-paths: com/tesco/pma/flow
+    filter:
+      create: All tasks
+    # https://docs.camunda.org/manual/latest/user-guide/security/#authorization
+    # https://docs.camunda.org/manual/latest/user-guide/process-engine/authorization-service/
+    authorization.enabled: ${CAMUNDA_AUTHORIZATION_ENABLED:true}
+    generic-properties:
+      properties:
+        generalResourceWhitelistPattern: "[a-zA-Z0-9\\-_]+"
+        userResourceWhitelistPattern: "[a-zA-Z0-9\\-_]+"
+        groupResourceWhitelistPattern: "[a-zA-Z0-9\\-_]+"
+        tenantResourceWhitelistPattern: "[a-zA-Z0-9\\-_]+"
+
