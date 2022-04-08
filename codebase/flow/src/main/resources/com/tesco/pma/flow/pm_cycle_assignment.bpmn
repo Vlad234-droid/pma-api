@@ -86,7 +86,6 @@
           <camunda:inputParameter name="ALLOWED_STATUSES">
             <camunda:list>
               <camunda:value>ACTIVE</camunda:value>
-              <camunda:value>REGISTERED</camunda:value>
               <camunda:value>STARTED</camunda:value>
             </camunda:list>
           </camunda:inputParameter>

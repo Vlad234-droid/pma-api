@@ -7,14 +7,12 @@ import com.tesco.pma.exception.NotFoundException;
 import com.tesco.pma.flow.FlowParameters;
 import com.tesco.pma.logging.LogFormatter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
 import static com.tesco.pma.cycle.exception.ErrorCodes.PM_CYCLE_NOT_FOUND_COLLEAGUE;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class FindCurrentColleagueCycleHandler extends CamundaAbstractFlowHandler {

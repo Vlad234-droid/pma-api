@@ -87,7 +87,6 @@ public class PMCycleServiceImpl implements PMCycleService {
     private static final String CYCLE_UUID_PARAMETER_NAME = "cycleUuid";
     private static final String CYCLE_STATUSES_PARAMETER_NAME = "statuses";
     private static final String STATUS_PARAMETER_NAME = "status";
-    private static final String INCLUDE_METADATA_PARAMETER_NAME = "includeMetadata";
     private static final String PREV_STATUSES_PARAMETER_NAME = "prevStatuses";
     private static final String COLLEAGUE_UUID_PARAMETER_NAME = "colleagueUuid";
     private static final String PROCESS_NAME_PARAMETER_NAME = "processName";

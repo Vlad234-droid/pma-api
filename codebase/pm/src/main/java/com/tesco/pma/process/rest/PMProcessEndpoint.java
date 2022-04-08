@@ -42,7 +42,7 @@ public class PMProcessEndpoint {
     private final ProcessManagerService processManagerService;
     private final NamedMessageSourceAccessor messageSourceAccessor;
 
-    @Operation(summary = "Get process metadata by process key, e.g., TYPE_1, TYPE_2, TYPE_4",
+    @Operation(summary = "Get process metadata by process key, e.g., group_a1, group_a2, group_b, group_c",
             tags = {"processes"})
     @ApiResponse(responseCode = HttpStatusCodes.OK, description = "Found the process metadata")
     @GetMapping(value = "metadata", produces = APPLICATION_JSON_VALUE)
