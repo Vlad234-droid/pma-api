@@ -124,11 +124,11 @@ class FlowModelTest {
     }
 
     private void checkObjective(String formName, List<PMReviewElement> reviews) {
-        Optional<PMReviewElement> oObjective = reviews.stream()
+        Optional<PMReviewElement> objective = reviews.stream()
                 .filter(r -> PMReviewType.OBJECTIVE.name().equalsIgnoreCase(r.getReviewType().getCode()))
                 .findFirst();
-        assertTrue(oObjective.isPresent());
-        PMFormElement form = oObjective.get().getForm();
+        assertTrue(objective.isPresent());
+        PMFormElement form = objective.get().getForm();
         assertNotNull(form);
         assertTrue(form.getKey().contains(formName));
     }

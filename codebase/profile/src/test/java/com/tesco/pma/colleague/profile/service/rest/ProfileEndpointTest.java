@@ -70,7 +70,7 @@ class ProfileEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void getProfileByColleagueUuidShouldReturnProfileBy() throws Exception {
+    void getProfileByColleagueUuidShouldReturnProfileBy() throws Exception { //NOSONAR used MockMvc checks
 
         when(mockProfileService.findProfileByColleagueUuid(colleagueUuid))
                 .thenReturn(Optional.of(randomProfileResponse()));
@@ -155,8 +155,8 @@ class ProfileEndpointTest extends AbstractEndpointTest {
 
         var qs = "first-name_eq=John&_groups[0][last-name_eq]=Dow&_groups[0][_type]=OR";
 
-         //when
-        ResultActions resultActions = mvc.perform(get("/colleagues/suggestions?"+qs)
+        // when
+        ResultActions resultActions = mvc.perform(get("/colleagues/suggestions?" + qs)
                 .with(allRoles(colleagueUuid.toString()))
                 .accept(APPLICATION_JSON));
 

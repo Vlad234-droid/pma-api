@@ -32,12 +32,6 @@ public abstract class AbstractCamundaSpringBootTest {
         return processInstance.getProcessInstanceId();
     }
 
-    private Map<String, Object> createCtx(Event event) {
-        Map<String, Object> ctx = new HashMap<>();
-        ctx.put(ExecutionContext.Params.EC_EVENT.name(), event);
-        return ctx;
-    }
-
     public String runProcessByEvent(Event event, Map<String, Object> ctx) {
         ctx.put(ExecutionContext.Params.EC_EVENT.name(), event);
         ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceByMessage(event.getEventName(), ctx);
@@ -150,6 +144,12 @@ public abstract class AbstractCamundaSpringBootTest {
                              + " time(s)");
             return this;
         }
+    }
+
+    private Map<String, Object> createCtx(Event event) {
+        Map<String, Object> ctx = new HashMap<>();
+        ctx.put(ExecutionContext.Params.EC_EVENT.name(), event);
+        return ctx;
     }
 
 }

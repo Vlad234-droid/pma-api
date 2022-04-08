@@ -102,7 +102,7 @@ class NotificationsFlowTest extends AbstractNotificationsFlowTest {
     }
 
     @Test
-    void checkTimelineNotifications() throws Exception {
+    void checkTimelineNotificationsTest() throws Exception {
         checkTimelineNotifications(NF_START_TIMELINE_NOTIFICATION, "Q1", true);
         checkTimelineNotifications(NF_START_TIMELINE_NOTIFICATION, "Q3", true);
         checkTimelineNotifications(NF_START_TIMELINE_NOTIFICATION, "Q2", false);
@@ -142,7 +142,7 @@ class NotificationsFlowTest extends AbstractNotificationsFlowTest {
         check(Map.of(
                 "InitObjectivesNotifications", 1,
                 "objectives_decision_table", 1,
-                SEND_NOTIFICATION_HANDLER_ID, send? 1: 0
+                SEND_NOTIFICATION_HANDLER_ID, send ? 1 : 0
         ), event);
 
         if (send) {
@@ -152,7 +152,7 @@ class NotificationsFlowTest extends AbstractNotificationsFlowTest {
 
     }
 
-    void checkFeedbackGroup(String evenName){
+    void checkFeedbackGroup(String evenName) {
         var event = createEvent(evenName);
         event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueProfile.getColleague().getColleagueUUID());
         event.putProperty(FlowParameters.SOURCE_COLLEAGUE_UUID.name(), sourceColleagueUUID);
@@ -191,17 +191,19 @@ class NotificationsFlowTest extends AbstractNotificationsFlowTest {
         ));
     }
 
-    void check(String initHandlerName, String decisionTable, String evenName, PMReviewType reviewType, Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
-        var event = createEvent(evenName, reviewType != null? reviewType.getCode(): null);
+    void check(String initHandlerName, String decisionTable, String evenName, PMReviewType reviewType,
+               Boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
+        var event = createEvent(evenName, reviewType != null ? reviewType.getCode() : null);
         event.putProperty(FlowParameters.COLLEAGUE_UUID.name(), colleagueProfile.getColleague().getColleagueUUID());
         check(initHandlerName, decisionTable, event, isManager, workLevel, send);
     }
 
-    void check(String initHandlerName, String decisionTable, Event event, boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
+    void check(String initHandlerName, String decisionTable, Event event,
+               boolean isManager, WorkLevel workLevel, boolean send) throws Exception {
 
         colleagueProfile.getColleague().getWorkRelationships().get(0).setIsManager(isManager);
 
-        if(workLevel!=null) {
+        if (workLevel != null) {
             colleagueProfile.getColleague().getWorkRelationships().get(0).setWorkLevel(workLevel);
         }
 

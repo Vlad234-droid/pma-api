@@ -22,11 +22,19 @@ import static com.tesco.pma.feedback.util.TestDataUtil.COLLEAGUE_UUID;
 import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACKS_COUNT;
 import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACK_UUID_LAST;
 import static com.tesco.pma.feedback.util.TestDataUtil.FEEDBACK_UUID_UNREAD;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.any;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = FeedbackEndpoint.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -167,7 +175,7 @@ class FeedbackEndpointTest extends AbstractEndpointTest {
     }
 
     @Test
-    void unsuccessGetFeedbackIfPostValidationFailed  () throws Exception { //NOSONAR used MockMvc checks
+    void unsuccessGetFeedbackIfPostValidationFailed() throws Exception { //NOSONAR used MockMvc checks
         // given
         var feedback = TestDataUtil.buildFeedback();
         feedback.setUuid(FEEDBACK_UUID_LAST);

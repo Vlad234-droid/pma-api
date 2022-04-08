@@ -30,12 +30,6 @@ public class TestDataUtils {
         return account;
     }
 
-    public static List<Account> buildAccounts(int size) {
-        return IntStream.rangeClosed(1, size)
-                .mapToObj(TestDataUtils::buildAccount)
-                .collect(toList());
-    }
-
     private static Account buildAccount(int index) {
         var account = buildAccount();
         account.setName("UKE1111" + index);
@@ -43,6 +37,12 @@ public class TestDataUtils {
             account.setRoles(buildRoles(index));
         }
         return account;
+    }
+
+    public static List<Account> buildAccounts(int size) {
+        return IntStream.rangeClosed(1, size)
+                .mapToObj(TestDataUtils::buildAccount)
+                .collect(toList());
     }
 
     public static CreateAccountRequest buildCreateAccountRequest(Object roleId) {

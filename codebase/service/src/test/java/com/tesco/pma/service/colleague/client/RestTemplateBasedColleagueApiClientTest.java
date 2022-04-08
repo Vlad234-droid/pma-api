@@ -72,10 +72,11 @@ class RestTemplateBasedColleagueApiClientTest {
     @Test
     void findColleagueByColleagueUuidNotFound() throws Exception {
         final var colleagueUuid = UUID.fromString("99f70ac2-f879-4828-b35e-1c1585bf20f8");
-        final var notFoundJson = "{\n" +
-                "    \"code\": \"404\",\n" +
-                "    \"message\": \"Colleague with identifier 99f70ac2-39d3-493c-9595-f665798b7578 effective on 2021-07-12 wasn't found\"\n" +
-                "}";
+        final var notFoundJson = "{\n"
+                + "    \"code\": \"404\",\n"
+                + "    \"message\": \"Colleague with identifier 99f70ac2-39d3-493c-9595-f665798b7578 "
+                + "effective on 2021-07-12 wasn't found\"\n"
+                + "}";
         try (MockWebServer server = new MockWebServer()) {
             server.setDispatcher(dispatcher(
                     request -> request.getPath().equals(COLLEAGUE_PATH + colleagueUuid)
@@ -93,10 +94,12 @@ class RestTemplateBasedColleagueApiClientTest {
 
     @Test
     void findColleaguesEmptyQueryParams() throws Exception {
-        final var errorJson = "{\n" +
-                "    \"code\": \"400\",\n" +
-                "    \"message\": \"At least one of the following query parameters required: workRelationships.locationUUID, colleagueUUID, externalSystems.iam.id, externalSystems.hcm.id, employeeId, countryCode, externalSystems.sourceSystem, workRelationships.managerUUID, updatedFrom , updatedTo\"\n" +
-                "}";
+        final var errorJson = "{\n"
+                + "    \"code\": \"400\",\n"
+                + "    \"message\": \"At least one of the following query parameters required: workRelationships.locationUUID, "
+                + "colleagueUUID, externalSystems.iam.id, externalSystems.hcm.id, employeeId, countryCode, externalSystems.sourceSystem, "
+                + "workRelationships.managerUUID, updatedFrom , updatedTo\"\n"
+                + "}";
         try (MockWebServer server = new MockWebServer()) {
             server.setDispatcher(dispatcher(
                     request -> COLLEAGUE_PATH.equals(request.getPath())
@@ -171,10 +174,10 @@ class RestTemplateBasedColleagueApiClientTest {
                 if (requestPredicate.test(request)) {
                     return responseSupplier.get();
                 }
-                return response(HttpStatus.NOT_FOUND.value(), "{\n" +
-                        "    \"message\": \"No matching endpoint found\",\n" +
-                        "    \"code\": \"404\"\n" +
-                        "}");
+                return response(HttpStatus.NOT_FOUND.value(), "{\n"
+                        + "    \"message\": \"No matching endpoint found\",\n"
+                        + "    \"code\": \"404\"\n"
+                        + "}");
             }
         };
     }

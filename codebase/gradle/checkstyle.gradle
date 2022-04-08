@@ -4,7 +4,7 @@ apply plugin: 'checkstyle'
 checkstyle {
     toolVersion = "${checkstyleVersion}"
     configFile = rootProject.file("gradle/config/checkstyle/checkstyle.xml")
-    checkstyleTest.enabled = false
+    checkstyleTest.enabled = true
 }
 
 tasks.withType(Checkstyle) {

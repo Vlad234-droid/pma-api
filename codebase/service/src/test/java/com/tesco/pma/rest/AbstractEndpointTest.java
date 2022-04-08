@@ -40,7 +40,8 @@ public abstract class AbstractEndpointTest {
     @Autowired
     protected MockMvc mvc;
 
-    protected void assertResponseContent(MockHttpServletResponse actualResponse, String expectedJsonResource) throws UnsupportedEncodingException {
+    protected void assertResponseContent(MockHttpServletResponse actualResponse,
+                                         String expectedJsonResource) throws UnsupportedEncodingException {
         var actualJsonContent = json.from(actualResponse.getContentAsString());
         assertNotNull(actualJsonContent);
         assertThat(actualJsonContent).isStrictlyEqualToJson(expectedJsonResource);
@@ -267,8 +268,8 @@ public abstract class AbstractEndpointTest {
         return requestPostProcessor;
     }
 
-    protected SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor jwtWithSubject(String s) {
-        return SecurityMockMvcRequestPostProcessors.jwt().jwt(builder -> builder.subject(s));
+    protected SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor jwtWithSubject(String subject) {
+        return SecurityMockMvcRequestPostProcessors.jwt().jwt(builder -> builder.subject(subject));
     }
 
 

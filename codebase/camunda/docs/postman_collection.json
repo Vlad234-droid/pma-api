@@ -1,0 +1,544 @@
+{
+	"info": {
+		"_postman_id": "ef195e4e-4049-45f0-94d5-6ef2b6b64054",
+		"name": "PMA (Camunda)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "workflow",
+			"item": [
+				{
+					"name": "1) http://localhost:8083/v1/engine-rest/user/create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization-App",
+								"value": "{{token2}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"profile\": {\r\n        \"id\": \"5cbd8abe-2c69-4a20-923a-3ba671ae07d9\",\r\n        \"firstName\": \"John\",\r\n        \"lastName\": \"Doe\",\r\n        \"email\": \"john.doe@gmail.com\"\r\n    },\r\n    \"credentials\": {\r\n        \"password\": \"s3cret\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8083/v1/engine-rest/user/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"v1",
+								"engine-rest",
+								"user",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2) http://localhost:8083/v1/engine-rest/authorization",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization-App",
+								"value": "{{token2}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"type\" : 1,\r\n \"permissions\": [\"CREATE\", \"READ\", \"TASK_ASSIGN\", \"TASK_WORK\"],\r\n \"userId\": \"5cbd8abe-2c69-4a20-923a-3ba671ae07d9\",\r\n \"groupId\": null,\r\n \"resourceType\": 7,\r\n \"resourceId\": \"d4fc4696-2d96-11ec-8b58-002b67d4b67e\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8083/v1/engine-rest/authorization/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"v1",
+								"engine-rest",
+								"authorization",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3) http://localhost:8083/v1/engine-rest/process-definition/diagram_3:1:ff04a2ae-22a3-11ec-9305-002b67d4b67e/start",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization-App",
+								"value": "{{token2}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"variables\": {\r\n    \"aVariable\" : {\r\n        \"value\" : \"aStringValue\",\r\n        \"type\": \"String\"\r\n    },\r\n    \"anotherVariable\" : {\r\n      \"value\" : true,\r\n      \"type\": \"Boolean\"\r\n    }\r\n  },\r\n \"businessKey\" : \"myBusinessKey\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8083/v1/engine-rest/process-definition/diagram_3:1:ff40cc00-2c38-11ec-8e2f-002b67d4b67e/start",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"v1",
+								"engine-rest",
+								"process-definition",
+								"diagram_3:1:ff40cc00-2c38-11ec-8e2f-002b67d4b67e",
+								"start"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4) http://localhost:8083/v1/engine-rest/process-instance?sortBy=definitionKey&sortOrder=asc",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization-App",
+								"value": "{{token2}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8083/v1/engine-rest/process-instance?sortBy=definitionKey&sortOrder=asc&processDefinitionId=diagram_3:1:ff40cc00-2c38-11ec-8e2f-002b67d4b67e",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"v1",
+								"engine-rest",
+								"process-instance"
+							],
+							"query": [
+								{
+									"key": "sortBy",
+									"value": "definitionKey"
+								},
+								{
+									"key": "sortOrder",
+									"value": "asc"
+								},
+								{
+									"key": "processDefinitionId",
+									"value": "diagram_3:1:ff40cc00-2c38-11ec-8e2f-002b67d4b67e"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5) http://localhost:8083/v1/engine-rest/process-instance/352c3e95-2ab2-11ec-bca2-002b67d4b67e",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization-App",
+								"value": "{{token2}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8083/v1/engine-rest/process-instance/45bd4acd-2d8b-11ec-89b9-002b67d4b67e",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"v1",
+								"engine-rest",
+								"process-instance",
+								"45bd4acd-2d8b-11ec-89b9-002b67d4b67e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6) http://localhost:8083/v1/engine-rest/task?processInstanceId=b1fe01fd-2aaf-11ec-a330-002b67d4b67e",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization-App",
+								"value": "{{token2}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8083/v1/engine-rest/task?processInstanceId=4f4d32b1-2c39-11ec-8e2f-002b67d4b67e",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"v1",
+								"engine-rest",
+								"task"
+							],
+							"query": [
+								{
+									"key": "processInstanceId",
+									"value": "4f4d32b1-2c39-11ec-8e2f-002b67d4b67e"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "7) http://localhost:8083/v1/engine-rest/task/3533dfbc-2ab2-11ec-bca2-002b67d4b67e/assignee",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization-App",
+								"value": "{{token2}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": \"5cbd8abe-2c69-4a20-923a-3ba671ae07d9\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8083/v1/engine-rest/task/d4fc4696-2d96-11ec-8b58-002b67d4b67e/assignee",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"v1",
+								"engine-rest",
+								"task",
+								"d4fc4696-2d96-11ec-8b58-002b67d4b67e",
+								"assignee"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "8) http://localhost:8083/v1/engine-rest/task/3533dfbc-2ab2-11ec-bca2-002b67d4b67e/submit-form",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization-App",
+								"value": "{{token2}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"variables\": {\r\n        \"firstName\": {\r\n            \"value\": \"First Name\"\r\n        },\r\n        \"lastName\": {\r\n            \"value\": \"Last Name\"\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8083/v1/engine-rest/task/d4fc4696-2d96-11ec-8b58-002b67d4b67e/submit-form",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"v1",
+								"engine-rest",
+								"task",
+								"d4fc4696-2d96-11ec-8b58-002b67d4b67e",
+								"submit-form"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "authorization",
+			"item": [
+				{
+					"name": "http://localhost:8083/v1/engine-rest/authorization",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization-App",
+								"value": "{{token2}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8083/v1/engine-rest/authorization",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"v1",
+								"engine-rest",
+								"authorization"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8083/v1/engine-rest/authorization Copy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization-App",
+								"value": "{{token2}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"type\" : 1,\r\n \"permissions\": [\"CREATE\", \"READ\", \"TASK_ASSIGN\", \"TASK_WORK\"],\r\n \"userId\": \"5cbd8abe-2c69-4a20-923a-3ba671ae07d9\",\r\n \"groupId\": null,\r\n \"resourceType\": 7,\r\n \"resourceId\": \"d4fc4696-2d96-11ec-8b58-002b67d4b67e\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8083/v1/engine-rest/authorization/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"v1",
+								"engine-rest",
+								"authorization",
+								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "http://localhost:8083/v1/engine-rest/user/create Copy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization-App",
+								"value": "{{token2}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"profile\": {\r\n        \"id\": \"5cbd8abe-2c69-4a20-923a-3ba671ae07d9\",\r\n        \"firstName\": \"John\",\r\n        \"lastName\": \"Doe\",\r\n        \"email\": \"john.doe@gmail.com\"\r\n    },\r\n    \"credentials\": {\r\n        \"password\": \"s3cret\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8083/v1/engine-rest/user/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"v1",
+								"engine-rest",
+								"user",
+								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "task",
+			"item": [
+				{
+					"name": "http://localhost:8083/v1/engine-rest/engine/default/task",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization-App",
+								"value": "{{token2}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8083/v1/engine-rest/engine/default/task",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"v1",
+								"engine-rest",
+								"engine",
+								"default",
+								"task"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8083/v1/engine-rest/task/b2041c80-2aaf-11ec-a330-002b67d4b67e",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/v1/engine-rest/task/b2041c80-2aaf-11ec-a330-002b67d4b67e",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"v1",
+								"engine-rest",
+								"task",
+								"b2041c80-2aaf-11ec-a330-002b67d4b67e"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "process-instance",
+			"item": [
+				{
+					"name": "http://localhost:8083/v1/engine-rest/process-instance/008865e6-2c1f-11ec-af1a-002b67d4b67e",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization-App",
+								"value": "{{token2}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8083/v1/engine-rest/process-instance/008865e6-2c1f-11ec-af1a-002b67d4b67e",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"v1",
+								"engine-rest",
+								"process-instance",
+								"008865e6-2c1f-11ec-af1a-002b67d4b67e"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token1}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token1",
+			"value": "eyJraWQiOiIwNWU0ZjJkOS05MDY4LTQ5MGYtYTBmYy1jMTg4Y2NlODY5ZDciLCJhbGciOiJSUzI1NiJ9.eyJqdGkiOiI1ZDM4MWVhMS1lZTlhLTRiNTYtYmY4Yy03Mzc0NDg0NmJiYzAiLCJpc3MiOiJodHRwczovL2FwaS1wcGUudGVzY28uY29tL2lkZW50aXR5L3Y0L2lzc3VlLXRva2VuIiwic3ViIjoiNzhmZTUxNDktZDAxMS00MjNkLWIyMTgtZGQzY2M5Njc1MDhjIiwiaWF0IjoxNjM0NjY0MTA3LCJuYmYiOjE2MzQ2NjQxMDcsImV4cCI6MTYzNDY2NzcwNywic2NvcGUiOiJpbnRlcm5hbCBwdWJsaWMiLCJjb25maWRlbmNlX2xldmVsIjoxMiwiY2xpZW50X2lkIjoiNzhmZTUxNDktZDAxMS00MjNkLWIyMTgtZGQzY2M5Njc1MDhjIiwidG9rZW5fdHlwZSI6ImJlYXJlciJ9.AHGs-sebWp4ujjrPJdOMsqpOhjomTkY3ce1gVZSCus0nJJ4yZJenMrn9QhKHU9fUwNV9QHa_0T6blppB4yXwJB-mjE5F8lwMXF92628aMsm7LlXX2PHJQ5ZVwCC5X6ydCPpYbvjP99qMBS6mt9a3hCs6xnh8dKaFY7-Sg5aINynu80GdQsiAo1ETElUHcuCi5rcQNRakZh2c7UWMsExxDFZquJnvgfwVU9fZnKqkgahbZ2klMothBe6Z3UwSUEKGd8wjILrnW9olfy5zUcSOG9XkiaJpWdeCpsV5Q9ZPrvdVHqLY8ajDW8xauo3Gl1T_lzPOhLFZV7uEWtrZjLShJA"
+		},
+		{
+			"key": "token2",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ii1FY0U2TlE0MFJtaUJRQUt6Zm4wYnFheXhZY2JXOXdaaURmZ28wQm52a3cifQ.eyJzdWIiOiI2OTcxMzQzNyIsImVtYWlsIjoiYW5kcmlpLmt1em1pbkB0ZXNjby5jb20iLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhbmRyaWkua3V6bWluQHRlc2NvLmNvbSIsIm5hbWUiOiJBbmRyaWkgS3V6bWluIiwidXBkYXRlZF9hdCI6MTYzMzk2NzAzNCwiZ2l2ZW5fbmFtZSI6IkFuZHJpaSIsImZhbWlseV9uYW1lIjoiS3V6bWluIiwicGFyYW1zIjp7IkVtcGxveWVlTnVtYmVyIjoiVUtFMTIzNzg2OTIiLCJGaXJzdG5hbWUiOiJBbmRyaWkiLCJMYXN0bmFtZSI6Ikt1em1pbiIsInBvc3RfbG9nb3V0X3JlZGlyZWN0X3VyaSI6Imh0dHA6Ly9sb2NhbGhvc3Q6OTAwMC9zc28vbG9nb3V0L2NhbGxiYWNrXG5odHRwOi8vbG9jYWxob3N0OjkwMDAvZ2VuZGVyLXBheS1nYXAtcmVwb3J0aW5nL3Nzby9sb2dvdXQvY2FsbGJhY2tcbmh0dHA6Ly9wcGUuZXVuLmdwZy50ZXNjb2Nsb3VkLmNvbS9zc28vbG9nb3V0L2NhbGxiYWNrIn0sImdyb3VwcyI6IkdHLVVLLVRlc2NvR2xvYmFsLUdQR1JlcG9ydGluZy1QUEUtQWRtaW4sR0ctVUstVGVzY29HbG9iYWwtR1BHUmVwb3J0aW5nLVBQRS1TdWJzaWRpYXJ5TWFuYWdlcixHRy1VSy1UZXNjb0dsb2JhbC1HUEdSZXBvcnRpbmctUFBFLVZpZXdlciIsImF0X2hhc2giOiJFRGhVS2k3VHZVNUowWEc4VlFJM2hnIiwic2lkIjoiNWNiZDhhYmUtMmM2OS00YTIwLTkyM2EtM2JhNjcxYWUwN2Q5IiwiYXVkIjoiNjU2MjUwODAtN2IyOS0wMTM5LTU0OWEtMDY5YWYzNmE0MTE4Mzc1NDgiLCJleHAiOjE2MzQ2NjcxMzUsImlhdCI6MTYzNDY1OTkzNSwiaXNzIjoiaHR0cHM6Ly9sb2dpbnBwZS5vdXJ0ZXNjby5jb20vb2lkYy8yIn0.HxCCvI9pmwfnqfO7HnvLmo_JZJS1bCPKTKeE-1nC79SyKIKiiMI7q-iGK1VFurrEROK-WH9h2KZp43pp6lfBmTmfgWljDkNS0mZVEb7wPNncUrYu42HK2W35286RY1MLQIAiSFN0QjuU35REZJUYhoyIfmqU9a1lSuzL-0BG26h4sCtxUMP6w1q5ubm_BfAlN0D0FQkUOrOxBO_y7mvyofgxPZRnZ8Ejlt_XXG_57Y-9swW_Yut8_v8bviXs_v0Fldq2Nslc-Xwq26gnyPljDFcGHxLGXWa6HjiaiggThPLf8ZGSIAdssr_RDTJkXRu91za4RUBXvFjGGvE982gPkw"
+		}
+	]
+}

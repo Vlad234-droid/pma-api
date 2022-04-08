@@ -62,7 +62,8 @@ class ConfigEntryServiceTest {
         var uuids = children.stream().map(ConfigEntryResponse::getUuid).collect(Collectors.toList());
         assertTrue(uuids.contains(CHILD_UUID_1));
         assertTrue(uuids.contains(CHILD_UUID_2));
-        assertEquals(CHILD_UUID_1_1, children.stream().filter(s -> s.getUuid().equals(CHILD_UUID_1)).findFirst().get().getChildren().get(0).getUuid());
+        assertEquals(CHILD_UUID_1_1, children.stream()
+                .filter(s -> s.getUuid().equals(CHILD_UUID_1)).findFirst().get().getChildren().get(0).getUuid());
     }
 
     @Test
@@ -95,7 +96,8 @@ class ConfigEntryServiceTest {
         var uuids = children.stream().map(ConfigEntryResponse::getUuid).collect(Collectors.toList());
         assertTrue(uuids.contains(CHILD_UUID_1));
         assertTrue(uuids.contains(CHILD_UUID_2));
-        assertEquals(CHILD_UUID_1_1, children.stream().filter(s -> s.getUuid().equals(CHILD_UUID_1)).findFirst().get().getChildren().get(0).getUuid());
+        assertEquals(CHILD_UUID_1_1, children.stream()
+                .filter(s -> s.getUuid().equals(CHILD_UUID_1)).findFirst().get().getChildren().get(0).getUuid());
     }
 
     @Test
@@ -126,7 +128,8 @@ class ConfigEntryServiceTest {
 
         Mockito.verify(dao).unpublishConfigEntries("BU/root/BU/child_1%");
         Mockito.verify(dao).publishConfigEntry(getWorkingConfigEntry(CHILD_UUID_1, CHILD_NAME_1, BU_ROOT_BU_CHILD_1_V_4));
-        Mockito.verify(dao).publishConfigEntry(getWorkingConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, "BU/root/BU/child_1/BU/child_1_1/#v4"));
+        Mockito.verify(dao).publishConfigEntry(getWorkingConfigEntry(CHILD_UUID_1_1,
+                CHILD_NAME_1_1, "BU/root/BU/child_1/BU/child_1_1/#v4"));
     }
 
     @Test
@@ -173,8 +176,8 @@ class ConfigEntryServiceTest {
     void createConfigEntryWithParent() {
         Mockito.when(dao.findRootConfigEntry(ROOT_UUID))
                 .thenReturn(getConfigEntry(ROOT_UUID, ROOT_NAME, null));
-        Mockito.when(dao.findConfigEntryChildStructure(ROOT_UUID)).
-                thenReturn(new ArrayList<>(List.of(getConfigEntry(ROOT_UUID, ROOT_NAME, null),
+        Mockito.when(dao.findConfigEntryChildStructure(ROOT_UUID))
+                .thenReturn(new ArrayList<>(List.of(getConfigEntry(ROOT_UUID, ROOT_NAME, null),
                         getConfigEntry(CHILD_UUID_1, CHILD_NAME_1, ROOT_UUID),
                         getConfigEntry(CHILD_UUID_1_1, CHILD_NAME_1_1, CHILD_UUID_1))));
         Mockito.when(configEntryTypeDAO.findConfigEntryType(1))
@@ -267,7 +270,8 @@ class ConfigEntryServiceTest {
         var uuids = children.stream().map(ConfigEntryResponse::getUuid).collect(Collectors.toList());
         assertTrue(uuids.contains(CHILD_UUID_1));
         assertTrue(uuids.contains(CHILD_UUID_2));
-        assertEquals(CHILD_UUID_1_1, children.stream().filter(s -> s.getUuid().equals(CHILD_UUID_1)).findFirst().get().getChildren().get(0).getUuid());
+        assertEquals(CHILD_UUID_1_1, children.stream()
+                .filter(s -> s.getUuid().equals(CHILD_UUID_1)).findFirst().get().getChildren().get(0).getUuid());
     }
 
     @Test

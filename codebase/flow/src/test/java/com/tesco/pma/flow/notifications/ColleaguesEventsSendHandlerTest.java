@@ -51,7 +51,7 @@ class ColleaguesEventsSendHandlerTest extends AbstractCamundaSpringBootTest {
     private final TimelinePoint timelinePoint = new TimelinePoint();
 
     @BeforeEach
-    void init(){
+    void init() {
         pmCycle.setEntryConfigKey(ENTRY_CONFIG_KEY);
 
         var colleagueEntity = new ColleagueEntity();
@@ -62,8 +62,7 @@ class ColleaguesEventsSendHandlerTest extends AbstractCamundaSpringBootTest {
     }
 
     @Test
-    void test(){
-
+    void test() {
         var event = new EventSupport("TEST_EVENT");
         event.putProperty(FlowParameters.PM_CYCLE.name(), pmCycle);
         event.putProperty(FlowParameters.TIMELINE_POINT.name(), timelinePoint);
@@ -73,7 +72,7 @@ class ColleaguesEventsSendHandlerTest extends AbstractCamundaSpringBootTest {
                 .sendEvent(Mockito.argThat(this::checkEvent), Mockito.isNull(), Mockito.anyBoolean());
     }
 
-    private boolean checkEvent(Event event){
+    private boolean checkEvent(Event event) {
         assertEquals("NF_TEST_EVENT", event.getEventName());
         assertEquals(timelinePoint, event.getEventProperty(FlowParameters.TIMELINE_POINT.name()));
         return true;

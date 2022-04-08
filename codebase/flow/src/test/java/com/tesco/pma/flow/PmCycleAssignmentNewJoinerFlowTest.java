@@ -32,8 +32,8 @@ import static org.mockito.Mockito.verify;
 @ActiveProfiles("test")
 @SpringBootTest(
         classes = {CamundaSpringBootTestConfig.class},
-        properties = "camunda.bpm.deployment-resource-pattern=com/tesco/pma/flow/pm_cycle_assignment_new_joiner.bpmn," +
-                "com/tesco/pma/flow/pm_cycle_mapping.dmn"
+        properties = "camunda.bpm.deployment-resource-pattern=com/tesco/pma/flow/pm_cycle_assignment_new_joiner.bpmn,"
+                + "com/tesco/pma/flow/pm_cycle_mapping.dmn"
 )
 class PmCycleAssignmentNewJoinerFlowTest {
 

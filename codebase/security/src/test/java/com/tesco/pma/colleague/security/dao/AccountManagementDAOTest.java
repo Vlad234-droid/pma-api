@@ -79,7 +79,7 @@ class AccountManagementDAOTest extends AbstractDAOTest {
 
     @Test
     void findAccountByNameSucceeded() {
-        var account= dao.findAccountByName("string 1");
+        var account = dao.findAccountByName("string 1");
 
         assertEquals(UUID.fromString("a3d51c49-0ab3-448e-ae31-2c865e27c6ea"), account.getId());
         assertEquals(AccountStatus.ENABLED, account.getStatus());
@@ -108,7 +108,7 @@ class AccountManagementDAOTest extends AbstractDAOTest {
 
     @Test
     void findAccountByIamIdSucceeded() {
-        var account= dao.findAccountByIamId("string 2");
+        var account = dao.findAccountByIamId("string 2");
 
         assertEquals(UUID.fromString("d7b90699-521d-48cc-8d08-eaf240ffcb0d"), account.getId());
         assertEquals(AccountStatus.ENABLED, account.getStatus());
@@ -117,7 +117,7 @@ class AccountManagementDAOTest extends AbstractDAOTest {
 
     @Test
     void findAccountByColleagueUuidShouldReturnAccount() {
-        var account= dao.findAccountByColleagueUuid(UUID.fromString("10000000-0000-0000-0000-000000000001"));
+        var account = dao.findAccountByColleagueUuid(UUID.fromString("10000000-0000-0000-0000-000000000001"));
 
         assertEquals(UUID.fromString("a3d51c49-0ab3-448e-ae31-2c865e27c6ea"), account.getId());
         assertEquals(AccountStatus.ENABLED, account.getStatus());

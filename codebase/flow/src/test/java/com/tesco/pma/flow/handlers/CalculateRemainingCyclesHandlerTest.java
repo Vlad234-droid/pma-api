@@ -74,15 +74,15 @@ class CalculateRemainingCyclesHandlerTest {
     }
 
     private PMCycle buildPmCycle() {
-        ColleagueSimple colleagueSimple = ColleagueSimple.builder()
-                .uuid(COLLEAGUE_UUID)
-                .build();
         var metadata = new PMCycleMetadata();
         var element = new PMCycleElement();
         var properties = new HashMap<String, String>();
         properties.put(PMCycleElement.PM_CYCLE_MAX, "5");
         element.setProperties(properties);
         metadata.setCycle(element);
+        var colleagueSimple = ColleagueSimple.builder()
+                .uuid(COLLEAGUE_UUID)
+                .build();
         return PMCycle.builder()
                 .uuid(CYCLE_UUID)
                 .type(PMCycleType.FISCAL)
