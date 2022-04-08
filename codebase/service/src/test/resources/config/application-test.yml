@@ -40,7 +40,8 @@ spring:
       com/tesco/pma/fs/exception/AppExceptionMessage,
       com/tesco/pma/pdp/exception/AppExceptionMessage,
       com/tesco/pma/reporting/dashboard/exception/AppExceptionMessage,
-      com/tesco/pma/notes/exception/AppNotesMessages
+      com/tesco/pma/notes/exception/AppNotesMessages,
+      com/tesco/pma/cep/cfapi/v2/exception/AppExceptionMessage
     encoding: UTF-8
   async-executor:
     core-pool-size: 2
